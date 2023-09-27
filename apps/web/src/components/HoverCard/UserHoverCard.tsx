@@ -1,7 +1,7 @@
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   graphql,
   PreloadedQuery,
@@ -58,13 +58,12 @@ const UserHoverCardContentQueryNode = graphql`
   }
 `;
 
-type Props = {
+type Props = PropsWithChildren<{
   userRef: UserHoverCardFragment$key;
-  HoverableElement?: HoverCardProps<UserHoverCardContentQuery>['HoverableElement'];
   onClick?: HoverCardProps<UserHoverCardContentQuery>['onHoverableElementClick'];
-};
+}>;
 
-export default function UserHoverCard({ userRef, HoverableElement, onClick }: Props) {
+export default function UserHoverCard({ children, userRef, onClick }: Props) {
   const user = useFragment(
     graphql`
       fragment UserHoverCardFragment on GalleryUser {
@@ -98,7 +97,7 @@ export default function UserHoverCard({ userRef, HoverableElement, onClick }: Pr
 
   return (
     <HoverCard
-      HoverableElement={HoverableElement ?? <TitleDiatypeM>{displayName}</TitleDiatypeM>}
+      HoverableElement={children ?? <TitleDiatypeM>{displayName}</TitleDiatypeM>}
       onHoverableElementClick={onClick}
       hoverableElementHref={userProfileLink}
       HoveringContent={

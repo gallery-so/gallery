@@ -81,17 +81,14 @@ export default function SharedCommunitiesList({ userRef }: Props) {
 
       return (
         <div style={style} key={key}>
-          <CommunityHoverCard
-            communityRef={community}
-            HoverableElement={
-              <PaginatedListRow
-                title={community.name ?? ''}
-                subTitle={descriptionFirstLine}
-                href={communityUrlPath}
-                imageContent={<CommunityProfilePicture communityRef={community} size="md" />}
-              />
-            }
-          />
+          <CommunityHoverCard communityRef={community}>
+            <PaginatedListRow
+              title={community.name ?? ''}
+              subTitle={descriptionFirstLine}
+              href={communityUrlPath}
+              imageContent={<CommunityProfilePicture communityRef={community} size="md" />}
+            />
+          </CommunityHoverCard>
         </div>
       );
     },

@@ -127,16 +127,13 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
   };
 
   return (
-    <UserHoverCard
-      userRef={user}
-      HoverableElement={
-        <PaginatedListRow
-          href={userUrlPath}
-          title={user.username ?? ''}
-          subTitle={bioFirstLine}
-          imageContent={<ProfilePicture userRef={user} size="md" />}
-        />
-      }
-    />
+    <UserHoverCard userRef={user}>
+      <PaginatedListRow
+        href={userUrlPath}
+        title={user.username ?? ''}
+        subTitle={bioFirstLine}
+        imageContent={<ProfilePicture userRef={user} size="md" />}
+      />
+    </UserHoverCard>
   );
 }

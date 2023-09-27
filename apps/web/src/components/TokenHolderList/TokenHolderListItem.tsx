@@ -114,21 +114,18 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
-          <UserHoverCard
-            userRef={owner.user}
-            HoverableElement={
-              <StyledGalleryLink
-                to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-                underlined={false}
-                fadeUsernames={fadeUsernames}
-              >
-                <HStack gap={4} align="center">
-                  <ProfilePicture size="sm" userRef={owner.user} />
-                  <StyledUsername>{username}</StyledUsername>
-                </HStack>
-              </StyledGalleryLink>
-            }
-          />
+          <UserHoverCard userRef={owner.user}>
+            <StyledGalleryLink
+              to={{ pathname: '/[username]', query: { username: owner.user.username } }}
+              underlined={false}
+              fadeUsernames={fadeUsernames}
+            >
+              <HStack gap={4} align="center">
+                <ProfilePicture size="sm" userRef={owner.user} />
+                <StyledUsername>{username}</StyledUsername>
+              </HStack>
+            </StyledGalleryLink>
+          </UserHoverCard>
         )}
       </StyledUsernameWrapper>
       {isDesktop &&

@@ -83,21 +83,19 @@ export default function FollowListUserItem({
     >
       <HStack gap={8} align="center">
         <ProfilePicture userRef={user} size="md" />
-        <UserHoverCard
-          userRef={user}
-          HoverableElement={
-            <VStack inline>
-              <TitleS>{user.username}</TitleS>
-              <StyledBaseM>
-                {formattedUserBio && (
-                  <StyledContainer justify="center">
-                    <Markdown text={formattedUserBio} />
-                  </StyledContainer>
-                )}
-              </StyledBaseM>
-            </VStack>
-          }
-        />
+        <UserHoverCard userRef={user}>
+          <VStack inline>
+            <TitleS>{user.username}</TitleS>
+            <StyledBaseM>
+              {formattedUserBio && (
+                <StyledContainer justify="center">
+                  <Markdown text={formattedUserBio} />
+                </StyledContainer>
+              )}
+            </StyledBaseM>
+          </VStack>
+        </UserHoverCard>
+        children
       </HStack>
       <VStack justify="center">
         <StyledFollowButton queryRef={query} userRef={user} />

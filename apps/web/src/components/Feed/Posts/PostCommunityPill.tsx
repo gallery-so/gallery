@@ -40,15 +40,11 @@ export default function PostCommunityPill({ postRef }: Props) {
   }
 
   return (
-    <CommunityHoverCard
-      communityRef={token.community}
-      onClick={handleClick}
-      HoverableElement={
-        <StyledPill>
-          <StyledCommunityName>{token?.community.name}</StyledCommunityName>
-        </StyledPill>
-      }
-    />
+    <CommunityHoverCard communityRef={token.community} onClick={handleClick}>
+      <StyledPill>
+        <StyledCommunityName>{token?.community.name}</StyledCommunityName>
+      </StyledPill>
+    </CommunityHoverCard>
   );
 }
 

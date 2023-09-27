@@ -50,12 +50,9 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     <HStack key={comment.dbid} gap={4}>
       {comment.commenter && (
         <StyledUsernameWrapper>
-          <UserHoverCard
-            userRef={comment.commenter}
-            HoverableElement={
-              <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-            }
-          />
+          <UserHoverCard userRef={comment.commenter}>
+            <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+          </UserHoverCard>
         </StyledUsernameWrapper>
       )}
       <CommentText>

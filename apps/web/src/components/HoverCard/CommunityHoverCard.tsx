@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { PreloadedQuery, useFragment, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -57,13 +57,12 @@ const CommunityHoverCardQueryNode = graphql`
   }
 `;
 
-type Props = {
+type Props = PropsWithChildren<{
   communityRef: CommunityHoverCardFragment$key;
-  HoverableElement?: HoverCardProps<CommunityHoverCardQuery>['HoverableElement'];
   onClick?: HoverCardProps<CommunityHoverCardQuery>['onHoverableElementClick'];
-};
+}>;
 
-export default function CommunityHoverCard({ communityRef, HoverableElement, onClick }: Props) {
+export default function CommunityHoverCard({ children, communityRef, onClick }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityHoverCardFragment on Community {
@@ -108,7 +107,7 @@ export default function CommunityHoverCard({ communityRef, HoverableElement, onC
 
   return (
     <HoverCard
-      HoverableElement={HoverableElement ?? <BaseS color={colors.shadow}>{displayName}</BaseS>}
+      HoverableElement={children ?? <BaseS color={colors.shadow}>{displayName}</BaseS>}
       onHoverableElementClick={onClick}
       hoverableElementHref={communityProfileLink}
       HoveringContent={
