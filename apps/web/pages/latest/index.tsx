@@ -16,7 +16,6 @@ const latestQueryNode = graphql`
     $interactionsFirst: Int!
     $interactionsAfter: String
     $visibleTokensPerFeedEvent: Int!
-    $includePosts: Boolean!
   ) {
     ...LatestHomePageFragment
     ...HomeNavbarFragment

@@ -14,7 +14,6 @@ import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/Us
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import isProduction from '~/utils/isProduction';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 const activityQueryNode = graphql`
@@ -30,7 +29,6 @@ const activityQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
-    $includePosts: Boolean!
   ) {
     ...UserActivityPageFragment
     ...GalleryNavbarFragment
@@ -65,7 +63,6 @@ export default function UserFeed({ username, preloadedQuery }: UserActivityProps
 
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
-    const includePosts = !isProduction();
     return loadQuery<activityQuery>(
       relayEnvironment,
       activityQueryNode,
@@ -77,7 +74,6 @@ UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-        includePosts,
       },
       { fetchPolicy: 'store-or-network' }
     );

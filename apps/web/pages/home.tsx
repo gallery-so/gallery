@@ -15,7 +15,6 @@ const homePageCuratedQueryNode = graphql`
     $interactionsAfter: String
     $curatedLast: Int!
     $curatedBefore: String
-    $includePosts: Boolean!
     $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
   ) {
     ...CuratedHomePageFragment
@@ -53,7 +52,6 @@ Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       interactionsFirst: NOTES_PER_PAGE,
       curatedLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-      includePosts: true,
       // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
       // twitterListFirst: USER_PER_PAGE,
     },
