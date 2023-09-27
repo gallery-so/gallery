@@ -25,7 +25,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
       @refetchable(queryName: "ProfileViewActivityTabFragmentPaginationQuery") {
         userByUsername(username: $username) {
           ... on GalleryUser {
-            feed(before: $feedBefore, last: $feedLast, includePosts: $includePosts)
+            feed(before: $feedBefore, last: $feedLast)
               @connection(key: "ProfileViewActivityTabFragment_feed") {
               edges {
                 node {
