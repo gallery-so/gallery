@@ -57,7 +57,7 @@ export function FeedList({
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
 
-  const { items, stickyIndices } = useMemo(() => {
+  const { items } = useMemo(() => {
     return createVirtualizedFeedEventItems({
       itemRefs: posts,
       failedEvents,
@@ -98,7 +98,6 @@ export function FeedList({
       estimatedItemSize={300}
       renderItem={renderItem}
       scrollEventThrottle={100}
-      stickyHeaderIndices={stickyIndices}
       getItemType={(item) => item.kind}
       keyExtractor={(item) => item.key}
       refreshControl={<GalleryRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
