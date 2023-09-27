@@ -17,7 +17,7 @@ import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 
 import { HStack } from '../core/Spacer/Stack';
-import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
+import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 
@@ -40,7 +40,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
           universal
 
           ...walletTruncateUniversalUsernameFragment
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         previewTokens
@@ -114,18 +114,21 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
-          <HoverCardOnUsername userRef={owner.user}>
-            <StyledGalleryLink
-              to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-              underlined={false}
-              fadeUsernames={fadeUsernames}
-            >
-              <HStack gap={4} align="center">
-                <ProfilePicture size="sm" userRef={owner.user} />
-                <StyledUsername>{username}</StyledUsername>
-              </HStack>
-            </StyledGalleryLink>
-          </HoverCardOnUsername>
+          <UserHoverCard
+            userRef={owner.user}
+            HoverableElement={
+              <StyledGalleryLink
+                to={{ pathname: '/[username]', query: { username: owner.user.username } }}
+                underlined={false}
+                fadeUsernames={fadeUsernames}
+              >
+                <HStack gap={4} align="center">
+                  <ProfilePicture size="sm" userRef={owner.user} />
+                  <StyledUsername>{username}</StyledUsername>
+                </HStack>
+              </StyledGalleryLink>
+            }
+          />
         )}
       </StyledUsernameWrapper>
       {isDesktop &&

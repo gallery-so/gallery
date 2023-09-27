@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
@@ -60,7 +60,7 @@ export function SomeoneAdmiredYourFeedEvent({
         admirers(last: 1) {
           edges {
             node {
-              ...HoverCardOnUsernameFragment
+              ...UserHoverCardFragment
               ...ProfilePictureFragment
             }
           }
@@ -105,7 +105,7 @@ export function SomeoneAdmiredYourFeedEvent({
       <HStack align="center" gap={8}>
         <ProfilePicture size="md" userRef={firstAdmirer} />
         <StyledTextWrapper align="center" as="span" wrap="wrap">
-          <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+          <UserHoverCard userRef={firstAdmirer} onClick={onClose} />
           &nbsp;
           <BaseM as="span">
             {notificationCount > 1 && (

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
@@ -31,7 +31,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           ... on GalleryUser {
             username
             ...ProfilePictureFragment
-            ...HoverCardOnUsernameFragment
+            ...UserHoverCardFragment
           }
         }
         creationTime
@@ -55,14 +55,17 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
-        <HoverCardOnUsername userRef={post.author}>
-          <HStack align="center" gap={6}>
-            <ProfilePicture userRef={post.author} size="md" />
-            <VStack>
-              <TitleDiatypeM>{displayName}</TitleDiatypeM>
-            </VStack>
-          </HStack>
-        </HoverCardOnUsername>
+        <UserHoverCard
+          userRef={post.author}
+          HoverableElement={
+            <HStack align="center" gap={6}>
+              <ProfilePicture userRef={post.author} size="md" />
+              <VStack>
+                <TitleDiatypeM>{displayName}</TitleDiatypeM>
+              </VStack>
+            </HStack>
+          }
+        />
         <HStack align="center" gap={4}>
           <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
           <PostDropdown postRef={post} queryRef={query} />

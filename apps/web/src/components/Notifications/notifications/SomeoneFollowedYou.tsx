@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
 import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
@@ -31,7 +31,7 @@ export function SomeoneFollowedYou({
           edges {
             node {
               ...FollowButtonUserFragment
-              ...HoverCardOnUsernameFragment
+              ...UserHoverCardFragment
               ...ProfilePictureFragment
               ... on GalleryUser {
                 dbid
@@ -97,7 +97,7 @@ export function SomeoneFollowedYou({
               <HStack gap={8} align="center">
                 <ProfilePicture size="md" userRef={lastFollower} />
                 <StyledContainer gap={4}>
-                  <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+                  <UserHoverCard userRef={lastFollower} onClick={onClose} />
                   <BaseM>followed </BaseM>
                   <BaseM>you</BaseM>
                 </StyledContainer>

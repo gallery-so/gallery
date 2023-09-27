@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
 import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
@@ -23,7 +23,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef }: Props)
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
         eventTime
         owner @required(action: THROW) {
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
       }
@@ -48,7 +48,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef }: Props)
             <HStack gap={4} inline>
               <HStack gap={4} align="center">
                 <ProfilePicture userRef={event.owner} size="sm" />
-                <HoverCardOnUsername userRef={event.owner} />{' '}
+                <UserHoverCard userRef={event.owner} />{' '}
                 <BaseM>
                   followed you
                   {followInfo.followedBack && 'back'}

@@ -9,7 +9,7 @@ import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -47,7 +47,7 @@ export default function TokensAddedToCollectionFeedEvent({
         eventTime
         owner @required(action: THROW) {
           username
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         collection @required(action: THROW) {
@@ -105,7 +105,7 @@ export default function TokensAddedToCollectionFeedEvent({
                 {!isSubEvent && (
                   <HStack align="center" gap={4} inline>
                     <ProfilePicture userRef={event.owner} size="sm" />
-                    <HoverCardOnUsername userRef={event.owner} />
+                    <UserHoverCard userRef={event.owner} />
                   </HStack>
                 )}
                 <BaseM>

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
@@ -36,7 +36,7 @@ export function SomeoneViewedYourGallery({
 
           edges {
             node {
-              ...HoverCardOnUsernameFragment
+              ...UserHoverCardFragment
               ...ProfilePictureFragment
               ...ProfilePictureStackFragment
             }
@@ -64,7 +64,7 @@ export function SomeoneViewedYourGallery({
           {lastViewer ? (
             <HStack inline gap={8} align="center">
               <ProfilePicture size="md" userRef={lastViewer} />
-              <HoverCardOnUsername onClick={onClose} userRef={lastViewer} />
+              <UserHoverCard onClick={onClose} userRef={lastViewer} />
             </HStack>
           ) : (
             <BaseM>Someone</BaseM>
@@ -80,7 +80,7 @@ export function SomeoneViewedYourGallery({
           <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
 
           <BaseM>
-            {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
+            {lastViewer ? <UserHoverCard userRef={lastViewer} /> : 'Someone'}
             <span>
               {' '}
               and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your

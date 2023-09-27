@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
@@ -27,7 +27,7 @@ export function SomeoneCommentedOnYourFeedEvent({
 
         comment {
           commenter {
-            ...HoverCardOnUsernameFragment
+            ...UserHoverCardFragment
             ...ProfilePictureFragment
           }
           comment
@@ -97,7 +97,7 @@ export function SomeoneCommentedOnYourFeedEvent({
               <ProfilePicture size="md" userRef={notification.comment?.commenter} />
             </StyledProfilePictureContainer>
 
-            <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
+            <UserHoverCard userRef={notification.comment?.commenter} onClick={onClose} />
           </>
         ) : (
           <strong>Someone</strong>

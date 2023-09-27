@@ -9,7 +9,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { FeedMode } from '~/components/Feed/types';
 import FollowListUsers from '~/components/Follow/FollowListUsers';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -43,7 +43,7 @@ export default function UserFollowedUsersFeedEvent({
         eventTime
         owner @required(action: THROW) {
           username @required(action: THROW)
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         followed @required(action: THROW) {
@@ -51,7 +51,7 @@ export default function UserFollowedUsersFeedEvent({
             username
             dbid
             ...FollowListUsersFragment
-            ...HoverCardOnUsernameFragment
+            ...UserHoverCardFragment
             ...ProfilePictureFragment
           }
 
@@ -160,14 +160,14 @@ export default function UserFollowedUsersFeedEvent({
                 {!isSubEvent && (
                   <HStack gap={4} align="center" inline>
                     <ProfilePicture userRef={event.owner} size="sm" />
-                    <HoverCardOnUsername userRef={event.owner} />
+                    <UserHoverCard userRef={event.owner} />
                   </HStack>
                 )}
                 <BaseM>followed</BaseM>
                 {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
                   <HStack gap={4} align="center" inline>
                     <ProfilePicture userRef={firstFollowerUsernameRef.user} size="sm" />
-                    <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} />
+                    <UserHoverCard userRef={firstFollowerUsernameRef.user} />
                   </HStack>
                 )}
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
@@ -184,7 +184,7 @@ export default function UserFollowedUsersFeedEvent({
                   {!isSubEvent && (
                     <HStack gap={4} align="center" inline>
                       <ProfilePicture userRef={event.owner} size="sm" />
-                      <HoverCardOnUsername userRef={event.owner} />
+                      <UserHoverCard userRef={event.owner} />
                     </HStack>
                   )}
                   <BaseM>followed {genericFollows.length} collectors.</BaseM>
