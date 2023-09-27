@@ -19,6 +19,8 @@ type CommunityScreenInnerProps = {
   contractAddress: string;
 };
 
+export const POSTS_PER_PAGE = 24;
+
 function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerProps) {
   const communityQuery = useLazyLoadQuery<CommunityScreenInitializeQuery>(
     graphql`
@@ -61,7 +63,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
       },
       listOwnersFirst: 200,
       onlyGalleryUsers: true,
-      postLast: 24,
+      postLast: POSTS_PER_PAGE,
       communityID: communityQuery.community.dbid ?? '',
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }

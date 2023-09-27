@@ -13,13 +13,18 @@ import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { ProfileViewActivityTabFragment$key } from '~/generated/ProfileViewActivityTabFragment.graphql';
+import { ACTIVITY_FEED_ITEMS_PER_PAGE } from '~/screens/ProfileScreen/ProfileScreen';
 
 type ProfileViewActivityTabProps = {
   queryRef: ProfileViewActivityTabFragment$key;
 };
 
 export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps) {
-  const { data: query } = usePaginationFragment(
+  const {
+    data: query,
+    hasPrevious,
+    loadPrevious,
+  } = usePaginationFragment(
     graphql`
       fragment ProfileViewActivityTabFragment on Query
       @refetchable(queryName: "ProfileViewActivityTabFragmentPaginationQuery") {
@@ -85,10 +90,21 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
   );
 
   const contentContainerStyle = useListContentStyle();
+  const loadMore = useCallback(() => {
+    if (hasPrevious) {
+      loadPrevious(ACTIVITY_FEED_ITEMS_PER_PAGE);
+    }
+  }, [hasPrevious, loadPrevious]);
 
   return (
     <View style={contentContainerStyle}>
-      <Tabs.FlashList ref={ref} data={items} renderItem={renderItem} estimatedItemSize={400} />
+      <Tabs.FlashList
+        ref={ref}
+        data={items}
+        renderItem={renderItem}
+        estimatedItemSize={400}
+        onEndReached={loadMore}
+      />
     </View>
   );
 }

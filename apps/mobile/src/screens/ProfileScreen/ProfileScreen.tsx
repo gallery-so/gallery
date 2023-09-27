@@ -16,6 +16,8 @@ import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { useRefreshHandle } from '../../hooks/useRefreshHandle';
 
+export const ACTIVITY_FEED_ITEMS_PER_PAGE = 24;
+
 function ProfileScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
 
@@ -36,7 +38,7 @@ function ProfileScreenInner() {
     `,
     {
       username: route.params.username,
-      feedLast: 24,
+      feedLast: ACTIVITY_FEED_ITEMS_PER_PAGE,
       sharedCommunitiesFirst: SHARED_COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
       includePosts: true,
