@@ -16,7 +16,7 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
   const community = useFragment(
     graphql`
       fragment CommunityTabsHeaderFragment on Community {
-        posts(first: $postLast, after: $postBefore) {
+        posts(last: $postLast, before: $postBefore) {
           pageInfo {
             total
           }

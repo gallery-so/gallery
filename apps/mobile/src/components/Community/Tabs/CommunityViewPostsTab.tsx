@@ -18,6 +18,7 @@ import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { POSTS_PER_PAGE } from '~/screens/CommunityScreen/CommunityScreen';
 
 import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
 
@@ -27,7 +28,11 @@ type Props = {
 };
 
 export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
-  const { data: community } = usePaginationFragment(
+  const {
+    data: community,
+    hasPrevious,
+    loadPrevious,
+  } = usePaginationFragment(
     graphql`
       fragment CommunityViewPostsTabFragment on Community
       @refetchable(queryName: "CommunityViewPostsTabFragmentPaginationQuery") {
@@ -36,7 +41,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         contractAddress {
           address
         }
-        posts(first: $postLast, after: $postBefore)
+        posts(last: $postLast, before: $postBefore)
           @connection(key: "CommunityViewPostsTabFragment_posts") {
           edges {
             node {
@@ -133,6 +138,12 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     });
   }, [isMemberOfCommunity, navigation, community?.contractAddress?.address]);
 
+  const loadMore = useCallback(() => {
+    if (hasPrevious) {
+      loadPrevious(POSTS_PER_PAGE);
+    }
+  }, [hasPrevious, loadPrevious]);
+
   if (totalPosts === 0) {
     return (
       <View className="flex-1 pt-16 justify-center">
@@ -177,6 +188,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         estimatedItemSize={400}
         data={items}
         renderItem={renderItem}
+        onEndReached={loadMore}
       />
     </View>
   );
