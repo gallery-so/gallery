@@ -95,7 +95,25 @@ function NftPreview({
     [contractAddress]
   );
 
-  const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
+  const isIFrameLiveDisplay = Boolean(
+    (shouldLiveRender && token.media?.__typename === 'HtmlMedia') ||
+      (shouldLiveRender && token.media?.__typename === 'GltfMedia')
+  );
+
+  // iframes generally look better if they are free to occupy the full height of their container.
+  // however, there are exceptions to this rule as some canvases produce weird behavior if the parent
+  // container size is unexpected. since we're unable to parse the contents of an iframe easily,
+  // we keep track of a list of contracts manually to exempt from this rule.
+  //
+  // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
+  // NFT or per-collection basis, similar to the Live Render setting
+  const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
+    const contractAddress = token.contract?.contractAddress?.address ?? '';
+    return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
+  }, [token.contract?.contractAddress]);
+
+  const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
+
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const { handleNftLoaded } = useNftRetry({
@@ -118,14 +136,14 @@ function NftPreview({
       return <NftDetailGif onLoad={onNftLoad} tokenRef={token} />;
     }
     if (shouldLiveRender && token.media?.__typename === 'GltfMedia') {
-      return <NftDetailModel onLoad={onNftLoad} mediaRef={token.media} fullHeight={false} />;
+      return <NftDetailModel onLoad={onNftLoad} mediaRef={token.media} fullHeight={fullHeight} />;
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={onNftLoad} mediaRef={token} />;
     }
 
     return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
-  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, onNftLoad]);
+  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, onNftLoad, fullHeight]);
 
   // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
@@ -141,20 +159,6 @@ function NftPreview({
       isSvgOnWeirdBrowser ||
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
-
-  // iframes generally look better if they are free to occupy the full height of their container.
-  // however, there are exceptions to this rule as some canvases produce weird behavior if the parent
-  // container size is unexpected. since we're unable to parse the contents of an iframe easily,
-  // we keep track of a list of contracts manually to exempt from this rule.
-  //
-  // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
-  // NFT or per-collection basis, similar to the Live Render setting
-  const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
-    const contractAddress = token.contract?.contractAddress?.address ?? '';
-    return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
-  }, [token.contract?.contractAddress]);
-
-  const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
   return (
     // [GAL-4229] TODO: this failure boundary + wrapper can be greatly simplified.
