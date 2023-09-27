@@ -5,6 +5,7 @@ import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtuali
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { SharedFollowersListRowFragment$key } from '~/generated/SharedFollowersListRowFragment.graphql';
@@ -111,6 +112,7 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
         username
         bio
         ...ProfilePictureFragment
+        ...UserHoverCardFragment
       }
     `,
     userRef
@@ -125,11 +127,16 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
   };
 
   return (
-    <PaginatedListRow
-      href={userUrlPath}
-      title={user.username ?? ''}
-      subTitle={bioFirstLine}
-      imageContent={<ProfilePicture userRef={user} size="md" />}
+    <UserHoverCard
+      userRef={user}
+      HoverableElement={
+        <PaginatedListRow
+          href={userUrlPath}
+          title={user.username ?? ''}
+          subTitle={bioFirstLine}
+          imageContent={<ProfilePicture userRef={user} size="md" />}
+        />
+      }
     />
   );
 }

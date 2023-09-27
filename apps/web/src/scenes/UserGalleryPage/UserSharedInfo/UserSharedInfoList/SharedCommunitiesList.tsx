@@ -4,6 +4,7 @@ import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtuali
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -34,6 +35,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
               }
               chain
               ...CommunityProfilePictureFragment
+              ...CommunityHoverCardFragment
             }
           }
         }
@@ -79,11 +81,16 @@ export default function SharedCommunitiesList({ userRef }: Props) {
 
       return (
         <div style={style} key={key}>
-          <PaginatedListRow
-            title={community.name ?? ''}
-            subTitle={descriptionFirstLine}
-            href={communityUrlPath}
-            imageContent={<CommunityProfilePicture communityRef={community} size="md" />}
+          <CommunityHoverCard
+            communityRef={community}
+            HoverableElement={
+              <PaginatedListRow
+                title={community.name ?? ''}
+                subTitle={descriptionFirstLine}
+                href={communityUrlPath}
+                imageContent={<CommunityProfilePicture communityRef={community} size="md" />}
+              />
+            }
           />
         </div>
       );
