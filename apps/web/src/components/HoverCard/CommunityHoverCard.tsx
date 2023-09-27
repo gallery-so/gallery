@@ -1,26 +1,29 @@
-import unescape from 'lodash/unescape';
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useMemo } from 'react';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
+import { useCallback, useMemo } from 'react';
+import { PreloadedQuery, useFragment, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
-import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInnerQuery.graphql';
+import { CommunityHoverCardFragment$key } from '~/generated/CommunityHoverCardFragment.graphql';
+import { Chain, CommunityHoverCardQuery } from '~/generated/CommunityHoverCardQuery.graphql';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import colors from '~/shared/theme/colors';
 import { isValidEthereumAddress, truncateAddress } from '~/shared/utils/wallet';
+import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import Markdown from '../core/Markdown/Markdown';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { BaseM, BaseS, TitleM } from '../core/Text/Text';
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
+import HoverCard, { HoverCardProps } from './HoverCard';
 
-export const HoverCardCommunityInnerQueryNode = graphql`
-  query HoverCardCommunityInnerQuery($communityAddress: ChainAddressInput!) {
+const CommunityHoverCardQueryNode = graphql`
+  query CommunityHoverCardQuery($communityAddress: ChainAddressInput!) {
     communityByAddress(communityAddress: $communityAddress) {
       __typename
       ... on Community {
@@ -54,17 +57,77 @@ export const HoverCardCommunityInnerQueryNode = graphql`
   }
 `;
 
-type HoverCardOnCommunityInnerProps = {
-  preloadedCommunityQuery: PreloadedQuery<HoverCardCommunityInnerQuery>;
+type Props = {
+  communityRef: CommunityHoverCardFragment$key;
+  HoverableElement?: HoverCardProps<CommunityHoverCardQuery>['HoverableElement'];
+  onClick?: HoverCardProps<CommunityHoverCardQuery>['onHoverableElementClick'];
 };
 
-export function HoverCardCommunityInner({
-  preloadedCommunityQuery,
-}: HoverCardOnCommunityInnerProps) {
-  const communityQuery = usePreloadedQuery(
-    HoverCardCommunityInnerQueryNode,
-    preloadedCommunityQuery
+export default function CommunityHoverCard({ communityRef, HoverableElement, onClick }: Props) {
+  const community = useFragment(
+    graphql`
+      fragment CommunityHoverCardFragment on Community {
+        name
+        contractAddress {
+          address
+          chain
+        }
+      }
+    `,
+    communityRef
   );
+
+  const [preloadedHoverCardQuery, preloadHoverCardQuery] = useQueryLoader<CommunityHoverCardQuery>(
+    CommunityHoverCardQueryNode
+  );
+
+  const communityProfileLink = useMemo((): Route => {
+    return {
+      pathname: '/community/[chain]/[contractAddress]',
+      query: {
+        contractAddress: community.contractAddress?.address as string,
+        chain: community.contractAddress?.chain as string,
+      },
+    };
+  }, [community]);
+
+  const handlePreloadQuery = useCallback(() => {
+    preloadHoverCardQuery({
+      communityAddress: {
+        address: community.contractAddress?.address as string,
+        chain: community.contractAddress?.chain as Chain,
+      },
+    });
+  }, [community.contractAddress?.address, community.contractAddress?.chain, preloadHoverCardQuery]);
+
+  if (!community.name) {
+    return null;
+  }
+
+  const displayName = handleCustomDisplayName(community.name);
+
+  return (
+    <HoverCard
+      HoverableElement={HoverableElement ?? <BaseS color={colors.shadow}>{displayName}</BaseS>}
+      onHoverableElementClick={onClick}
+      hoverableElementHref={communityProfileLink}
+      HoveringContent={
+        preloadedHoverCardQuery ? (
+          <CommunityHoverCardContent preloadedQuery={preloadedHoverCardQuery} />
+        ) : null
+      }
+      preloadQuery={handlePreloadQuery}
+      preloadedQuery={preloadedHoverCardQuery}
+    />
+  );
+}
+
+function CommunityHoverCardContent({
+  preloadedQuery,
+}: {
+  preloadedQuery: PreloadedQuery<CommunityHoverCardQuery>;
+}) {
+  const communityQuery = usePreloadedQuery(CommunityHoverCardQueryNode, preloadedQuery);
 
   const community = communityQuery.communityByAddress;
 

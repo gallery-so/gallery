@@ -117,7 +117,6 @@ function UserHoverCardContent({
 }: {
   preloadedQuery: PreloadedQuery<UserHoverCardContentQuery>;
 }) {
-  console.log('user hoevr card content', { preloadedQuery });
   const query = usePreloadedQuery(UserHoverCardContentQueryNode, preloadedQuery);
 
   const user = query.userById;
