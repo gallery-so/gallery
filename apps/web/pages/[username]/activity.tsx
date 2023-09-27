@@ -66,6 +66,7 @@ export default function UserFeed({ username, preloadedQuery }: UserActivityProps
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
     const includePosts = !isProduction();
+    console.log("UserFeed.preloadQuery: includePosts = ", includePosts)
     return loadQuery<activityQuery>(
       relayEnvironment,
       activityQueryNode,
