@@ -40,6 +40,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           ...useGetPreviewImagesSingleFragment
           ...UniversalNftPreviewWithBoundaryFragment
         }
+
         ...useTogglePostAdmireFragment
       }
     `,
@@ -60,7 +61,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
   const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { toggleAdmire } = useTogglePostAdmire({
+  const { hasViewerAdmiredEvent, toggleAdmire } = useTogglePostAdmire({
     postRef: feedPost,
     queryRef: query,
   });
@@ -101,7 +102,9 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
       clearTimeout(singleTapTimeoutRef.current);
       singleTapTimeoutRef.current = null;
 
-      toggleAdmire();
+      if (!hasViewerAdmiredEvent) {
+        toggleAdmire();
+      }
     } else {
       singleTapTimeoutRef.current = setTimeout(() => {
         singleTapTimeoutRef.current = null;
@@ -111,7 +114,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
         });
       }, DOUBLE_TAP_WINDOW);
     }
-  }, [firstToken.dbid, navigation, imageUrl, toggleAdmire]);
+  }, [hasViewerAdmiredEvent, toggleAdmire, navigation, imageUrl, firstToken.dbid]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>

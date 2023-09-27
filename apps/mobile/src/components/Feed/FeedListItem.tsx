@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -51,10 +51,16 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     throw new ErrorWithSentryMetadata('Missing eventData on feed event', {});
   }
 
-  const { toggleAdmire } = useToggleAdmire({
+  const { hasViewerAdmiredEvent, toggleAdmire } = useToggleAdmire({
     eventRef: event,
     queryRef: query,
   });
+
+  const handleAdmire = useCallback(() => {
+    if (!hasViewerAdmiredEvent) {
+      toggleAdmire();
+    }
+  }, [hasViewerAdmiredEvent, toggleAdmire]);
 
   const inner = useMemo(() => {
     if (!event?.eventData) {
@@ -64,7 +70,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
       return (
         <GalleryUpdatedFeedEvent
-          onAdmire={toggleAdmire}
+          onAdmire={handleAdmire}
           eventId={eventId}
           eventDataRef={event.eventData}
         />
@@ -74,7 +80,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     return (
       <View className="overflow-hidden">
         <NonRecursiveFeedListItem
-          onAdmire={toggleAdmire}
+          onAdmire={handleAdmire}
           eventId={eventId}
           slideIndex={0}
           eventCount={1}
@@ -82,7 +88,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
         />
       </View>
     );
-  }, [event.eventData, eventId, toggleAdmire]);
+  }, [event.eventData, eventId, handleAdmire]);
 
   return <View>{inner}</View>;
 }
