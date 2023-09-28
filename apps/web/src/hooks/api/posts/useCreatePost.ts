@@ -66,15 +66,7 @@ export default function useCreatePost() {
           const rootRecord = store.getRoot();
           const curatedFeedConnection = ConnectionHandler.getConnection(
             rootRecord,
-            'NonAuthedFeed_curatedFeed',
-            { includePosts: true }
-          );
-
-          // this stuff will be cleaned up with [GAL-4175]
-          const otherCuratedFeedConnectionLol = ConnectionHandler.getConnection(
-            rootRecord,
-            'NonAuthedFeed_curatedFeed',
-            { includePosts: false }
+            'NonAuthedFeed_curatedFeed'
           );
 
           if (newPostRecord && curatedFeedConnection) {
@@ -85,16 +77,6 @@ export default function useCreatePost() {
               'FeedEdge'
             );
             ConnectionHandler.insertEdgeAfter(curatedFeedConnection, edge);
-          }
-
-          if (newPostRecord && otherCuratedFeedConnectionLol) {
-            const edge = ConnectionHandler.createEdge(
-              store,
-              otherCuratedFeedConnectionLol,
-              newPostRecord,
-              'FeedEdge'
-            );
-            ConnectionHandler.insertEdgeAfter(otherCuratedFeedConnectionLol, edge);
           }
 
           // UPDATE COMMUNITY FEED

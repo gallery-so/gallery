@@ -32,7 +32,7 @@ export default function CuratedFeed({ queryRef }: Props) {
     graphql`
       fragment CuratedFeedPaginationFragment on Query
       @refetchable(queryName: "CuratedFeedPaginationQuery") {
-        curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
+        curatedFeed(before: $curatedBefore, last: $curatedLast)
           @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
             node {

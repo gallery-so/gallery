@@ -42,7 +42,6 @@ export function LatestScreen() {
         $globalFeedCount: Int!
         $followingFeedBefore: String
         $followingFeedCount: Int!
-        $includePosts: Boolean!
       ) {
         ...LatestScreenFragment
       }
@@ -50,7 +49,6 @@ export function LatestScreen() {
     {
       globalFeedCount: FEED_PER_PAGE,
       followingFeedCount: FEED_PER_PAGE,
-      includePosts: true,
     }
   );
 
