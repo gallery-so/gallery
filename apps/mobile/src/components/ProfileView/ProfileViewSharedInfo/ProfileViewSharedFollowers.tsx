@@ -226,7 +226,7 @@ export function ProfilePictureBubblesWithCount({
       })}
 
       {Boolean(remainingCount) && (
-        <View className="bg-porcelain border-2 border-white dark:border-black-900 rounded-3xl px-1.5 -ml-2">
+        <View className="bg-porcelain dark:bg-black-500 border-2 border-white dark:border-black-900 rounded-3xl px-1.5 -ml-2">
           <Typography
             className="text-xs text-metal"
             font={{ family: 'ABCDiatype', weight: 'Medium' }}
