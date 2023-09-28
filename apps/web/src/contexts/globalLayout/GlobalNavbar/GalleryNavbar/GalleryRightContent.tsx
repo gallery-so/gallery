@@ -104,7 +104,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     });
   }, [query, showModal]);
 
-  const shouldShowEditButton = useMemo(() => {
+  const isViewingSignedInUser = useMemo(() => {
     return Boolean(
       query.viewer &&
         'user' in query.viewer &&
@@ -172,8 +172,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
       <HStack gap={8} align="center">
         <QRCodeButton username={username} />
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
-        <IconContainer onClick={handleSettingsClick} variant="default" icon={<CogIcon />} />
-        {shouldShowEditButton && (
+        {isViewingSignedInUser && (
           <EditLinkWrapper>
             <EditLink role="button" onClick={handleEditClick} />
 
@@ -184,6 +183,9 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
           <Suspense fallback={null}>
             <FollowButton queryRef={query} userRef={query.userByUsername} source="navbar mobile" />
           </Suspense>
+        )}
+        {isViewingSignedInUser && (
+          <IconContainer onClick={handleSettingsClick} variant="default" icon={<CogIcon />} />
         )}
       </HStack>
     );
