@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
@@ -28,7 +28,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         comment @required(action: THROW)
         commenter {
           username
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
         }
       }
     `,
@@ -50,9 +50,9 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     <HStack key={comment.dbid} gap={4}>
       {comment.commenter && (
         <StyledUsernameWrapper>
-          <HoverCardOnUsername userRef={comment.commenter}>
+          <UserHoverCard userRef={comment.commenter}>
             <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-          </HoverCardOnUsername>
+          </UserHoverCard>
         </StyledUsernameWrapper>
       )}
       <CommentText>

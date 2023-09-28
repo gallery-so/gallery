@@ -3,7 +3,7 @@ import { graphql } from 'relay-runtime';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneFollowedYouBackFragment$key } from '~/generated/SomeoneFollowedYouBackFragment.graphql';
 
@@ -21,7 +21,7 @@ export function SomeoneFollowedYouBack({ notificationRef, onClose }: SomeoneFoll
         followers(last: 1) {
           edges {
             node {
-              ...HoverCardOnUsernameFragment
+              ...UserHoverCardFragment
               ...ProfilePictureFragment
             }
           }
@@ -45,7 +45,7 @@ export function SomeoneFollowedYouBack({ notificationRef, onClose }: SomeoneFoll
           {lastFollower ? (
             <HStack align="center" gap={8} inline>
               <ProfilePicture size="md" userRef={lastFollower} />
-              <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+              <UserHoverCard userRef={lastFollower} onClick={onClose} />
             </HStack>
           ) : (
             <strong>Someone</strong>

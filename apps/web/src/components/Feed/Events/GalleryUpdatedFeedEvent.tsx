@@ -8,7 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedMode } from '~/components/Feed/types';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
@@ -50,7 +50,7 @@ export default function GalleryUpdatedFeedEvent({
         }
         owner @required(action: THROW) {
           username @required(action: THROW)
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         subEventDatas {
@@ -88,7 +88,7 @@ export default function GalleryUpdatedFeedEvent({
           <HStack gap={4} align="center" inline>
             <HStack gap={4} align="center" inline>
               <ProfilePicture size="sm" userRef={event.owner} />
-              <HoverCardOnUsername userRef={event.owner} />
+              <UserHoverCard userRef={event.owner} />
             </HStack>
             <BaseM>updated</BaseM>
             <Link href={galleryPagePath} passHref legacyBehavior>

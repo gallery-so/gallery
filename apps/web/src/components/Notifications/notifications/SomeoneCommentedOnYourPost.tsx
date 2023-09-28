@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneCommentedOnYourPostFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -30,7 +30,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
         }
         comment {
           commenter {
-            ...HoverCardOnUsernameFragment
+            ...UserHoverCardFragment
             ...ProfilePictureFragment
           }
           comment
@@ -66,7 +66,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
         <ProfilePicture size="md" userRef={commenter} />
         <VStack>
           <StyledTextWrapper align="center" as="span" wrap="wrap">
-            <HoverCardOnUsername userRef={commenter} onClick={onClose} />
+            <UserHoverCard userRef={commenter} onClick={onClose} />
             &nbsp;
             <BaseM as="span">
               commented on your <strong>post</strong>

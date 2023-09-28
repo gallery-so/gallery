@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import FollowButton from '~/components/Follow/FollowButton';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
 import { AdmireNoteQueryFragment$key } from '~/generated/AdmireNoteQueryFragment.graphql';
@@ -24,7 +24,7 @@ export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
 
         admirer {
           ...FollowButtonUserFragment
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
       }
@@ -51,7 +51,7 @@ export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
     <StyledListItem justify="space-between" gap={4}>
       <HStack gap={4} align="center">
         <ProfilePicture size="sm" userRef={admire.admirer} />
-        {admire.admirer && <HoverCardOnUsername userRef={admire.admirer} />}
+        {admire.admirer && <UserHoverCard userRef={admire.admirer} />}
       </HStack>
       <StyledFollowButton userRef={user} queryRef={query} />
     </StyledListItem>
