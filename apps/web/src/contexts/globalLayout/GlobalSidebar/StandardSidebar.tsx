@@ -29,6 +29,7 @@ import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
+import DrawerHeader from './DrawerHeader';
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
 import SidebarPfp from './SidebarPfp';
@@ -103,9 +104,15 @@ export function StandardSidebar({ queryRef }: Props) {
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');
     showDrawer({
-      content: <Settings queryRef={query} />,
+      content: (
+        <Settings
+          queryRef={query}
+          header={<DrawerHeader headerText="Settings" />}
+          onLogout={hideDrawer}
+        />
+      ),
     });
-  }, [query, showDrawer, track]);
+  }, [hideDrawer, query, showDrawer, track]);
 
   const handleNotificationsClick = useCallback(() => {
     track('Sidebar Notifications Click');

@@ -1,12 +1,15 @@
 import { startTransition, useCallback, useContext } from 'react';
 import { graphql } from 'react-relay';
 
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { RelayResetContext } from '~/contexts/RelayResetContext';
 import { useLogoutMutation } from '~/generated/useLogoutMutation.graphql';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-export const useLogout = () => {
+type Props = {
+  onLogout?: () => void;
+};
+
+export const useLogout = ({ onLogout }: Props) => {
   const [logout] = usePromisifiedMutation<useLogoutMutation>(
     graphql`
       mutation useLogoutMutation {
@@ -19,8 +22,6 @@ export const useLogout = () => {
 
   const reset = useContext(RelayResetContext);
 
-  const { hideDrawer } = useDrawerActions();
-
   return useCallback(async () => {
     await logout({
       variables: {},
@@ -29,8 +30,11 @@ export const useLogout = () => {
     // Wipe the relay cache and show the old content while
     // the new content is loading in the background.
     startTransition(() => {
-      hideDrawer();
+      if (onLogout) {
+        onLogout();
+      }
+
       reset?.();
     });
-  }, [hideDrawer, logout, reset]);
+  }, [logout, onLogout, reset]);
 };

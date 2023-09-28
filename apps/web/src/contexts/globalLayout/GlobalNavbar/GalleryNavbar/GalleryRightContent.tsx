@@ -10,9 +10,11 @@ import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import FollowButton from '~/components/Follow/FollowButton';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
+import Settings from '~/components/Settings/Settings';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -20,8 +22,10 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
 import { GalleryRightContentGalleryFragment$key } from '~/generated/GalleryRightContentGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import CogIcon from '~/icons/CogIcon';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { SignUpButton } from '../SignUpButton';
 import QRCodeButton from './QRCodeButton';
@@ -57,6 +61,8 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
             ...FollowButtonUserFragment
           }
         }
+
+        ...SettingsFragment
       }
     `,
     queryRef
@@ -120,6 +126,8 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const track = useTrack();
+
   const handleEditClick = useCallback(() => {
     setShowDropdown((previous) => !previous);
   }, []);
@@ -127,6 +135,15 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   const handleCloseDropdown = useCallback(() => {
     setShowDropdown(false);
   }, []);
+
+  const handleSettingsClick = useCallback(() => {
+    track('Sidebar Settings Click');
+    showModal({
+      content: <Settings queryRef={query} />,
+      headerText: 'Settings',
+      isFullPage: true,
+    });
+  }, [query, showModal, track]);
 
   const editGalleryUrl: Route | null = useMemo(() => {
     if (!gallery?.dbid) {
@@ -155,6 +172,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
       <HStack gap={8} align="center">
         <QRCodeButton username={username} />
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
+        <IconContainer onClick={handleSettingsClick} variant="default" icon={<CogIcon />} />
         {shouldShowEditButton && (
           <EditLinkWrapper>
             <EditLink role="button" onClick={handleEditClick} />
