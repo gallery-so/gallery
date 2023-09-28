@@ -59,4 +59,7 @@ const markdownStyles = StyleSheet.create({
   body: {
     fontSize: 14,
   },
+  paragraph: {
+    marginBottom: 0,
+  },
 });
