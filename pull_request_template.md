@@ -5,7 +5,11 @@ Provide a brief description of the changes made in this PR. Explain the problem 
 ### Demo or Before/After Pics
 
 - If this is a new feature, include screenshots or recordings of the feature in action.
-- If this PR makes visual changes, include before and after screenshots. You can type `/table` to quickly come up with a before/after table.
+- If this PR makes visual changes, include before and after screenshots.
+
+| Before                                     | After                                      |
+| ------------------------------------------ | ------------------------------------------ |
+| <img src="https://placehold.co/500x300" /> | <img src="https://placehold.co/500x300" /> |
 
 ### Edge Cases
 
