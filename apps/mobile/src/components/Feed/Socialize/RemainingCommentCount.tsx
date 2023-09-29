@@ -15,20 +15,18 @@ export function RemainingCommentCount({ style, onPress, totalCount }: Props) {
   }
 
   return (
-    <>
-      <GalleryTouchableOpacity
-        style={style}
-        onPress={onPress}
-        eventElementId="Expand Admirers Button"
-        eventName="Expand Admirers Button Clicked"
+    <GalleryTouchableOpacity
+      style={style}
+      onPress={onPress}
+      eventElementId="Expand Admirers Button"
+      eventName="Expand Admirers Button Clicked"
+    >
+      <Typography
+        className="text-sm color-shadow"
+        font={{ family: 'ABCDiatype', weight: 'Regular' }}
       >
-        <Typography
-          className="text-sm color-shadow"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
-          View all {totalCount} comments
-        </Typography>
-      </GalleryTouchableOpacity>
-    </>
+        View all {totalCount} comments
+      </Typography>
+    </GalleryTouchableOpacity>
   );
 }

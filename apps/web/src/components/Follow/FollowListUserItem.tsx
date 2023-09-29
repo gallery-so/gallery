@@ -13,7 +13,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/shared/utils/regex';
 
-import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
+import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
@@ -46,7 +46,7 @@ export default function FollowListUserItem({
         bio
         username
         ...FollowButtonUserFragment
-        ...HoverCardOnUsernameFragment
+        ...UserHoverCardFragment
         ...ProfilePictureFragment
       }
     `,
@@ -83,7 +83,7 @@ export default function FollowListUserItem({
     >
       <HStack gap={8} align="center">
         <ProfilePicture userRef={user} size="md" />
-        <HoverCardOnUsername userRef={user}>
+        <UserHoverCard userRef={user}>
           <VStack inline>
             <TitleS>{user.username}</TitleS>
             <StyledBaseM>
@@ -94,7 +94,8 @@ export default function FollowListUserItem({
               )}
             </StyledBaseM>
           </VStack>
-        </HoverCardOnUsername>
+        </UserHoverCard>
+        children
       </HStack>
       <VStack justify="center">
         <StyledFollowButton queryRef={query} userRef={user} />

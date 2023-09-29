@@ -86,12 +86,12 @@ export function usePost({ tokenRef }: Props) {
           const rootRecord = store.getRoot();
           const connectionId = ConnectionHandler.getConnectionID(
             rootRecord.getDataID(),
-            'WorldwideFeedFragment_globalFeed'
+            'CuratedScreenFragment_curatedFeed'
           );
 
           const communityStore = store.get(communityConnection);
 
-          const connectionName = `${connectionId}(includePosts:true)`;
+          const connectionName = `${connectionId}`;
 
           const relayStore = store.get(connectionName);
 

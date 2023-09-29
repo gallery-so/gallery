@@ -14,7 +14,7 @@ import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 
-import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
+import UserHoverCard from '../HoverCard/UserHoverCard';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
@@ -30,7 +30,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
           username @required(action: THROW)
           universal
           ...walletTruncateUniversalUsernameFragment
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
         }
         ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
@@ -89,11 +89,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
         {owner?.universal ? (
           <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
         ) : (
-          <HoverCardOnUsername userRef={token.owner}>
-            <InteractiveLink to={{ pathname: '/[username]', query: { username: owner.username } }}>
-              {usernameWithFallback}
-            </InteractiveLink>
-          </HoverCardOnUsername>
+          <UserHoverCard userRef={token.owner} />
         )}
       </VStack>
     </VStack>

@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TitleDiatypeM } from '~/components/core/Text/Text';
-import HoverCardOnCommunity from '~/components/HoverCard/HoverCardOnCommunity';
+import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import { ButtonPill } from '~/components/Pill';
 import { PostCommunityPillFragment$key } from '~/generated/PostCommunityPillFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -19,7 +19,7 @@ export default function PostCommunityPill({ postRef }: Props) {
         tokens {
           community {
             name
-            ...HoverCardOnCommunityFragment
+            ...CommunityHoverCardFragment
           }
         }
       }
@@ -40,11 +40,11 @@ export default function PostCommunityPill({ postRef }: Props) {
   }
 
   return (
-    <HoverCardOnCommunity communityRef={token.community} onClick={handleClick}>
+    <CommunityHoverCard communityRef={token.community} onClick={handleClick}>
       <StyledPill>
         <StyledCommunityName>{token?.community.name}</StyledCommunityName>
       </StyledPill>
-    </HoverCardOnCommunity>
+    </CommunityHoverCard>
   );
 }
 

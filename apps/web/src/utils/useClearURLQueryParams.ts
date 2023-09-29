@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 // clears a given parameter(s) from the URL.
 //
@@ -11,7 +11,11 @@ import { useEffect } from 'react';
 // position will simply be replaced.
 export function useClearURLQueryParams(param: string | string[]) {
   const { pathname, query: urlQuery, replace } = useRouter();
+
+  const hasRenderedOnce = useRef(false);
+
   useEffect(() => {
+    if (hasRenderedOnce.current) return;
     const params = new URLSearchParams(urlQuery as Record<string, string>);
     const paramsToClear = typeof param === 'string' ? [param] : param;
     for (const p of paramsToClear) {
@@ -21,5 +25,6 @@ export function useClearURLQueryParams(param: string | string[]) {
     }
     // @ts-expect-error we're simply replacing the current page with the same path
     replace({ pathname, query: params.toString() }, undefined, { shallow: true });
+    hasRenderedOnce.current = true;
   }, [param, pathname, replace, urlQuery]);
 }

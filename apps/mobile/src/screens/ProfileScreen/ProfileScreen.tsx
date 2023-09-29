@@ -31,7 +31,6 @@ function ProfileScreenInner() {
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
         $sharedFollowersAfter: String
-        $includePosts: Boolean!
       ) {
         ...ProfileScreenRefetchableFragment
       }
@@ -41,7 +40,6 @@ function ProfileScreenInner() {
       feedLast: ACTIVITY_FEED_ITEMS_PER_PAGE,
       sharedCommunitiesFirst: SHARED_COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
-      includePosts: true,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'full' }
   );

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
@@ -31,7 +31,7 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
         admirers(last: 1) {
           edges {
             node {
-              ...HoverCardOnUsernameFragment
+              ...UserHoverCardFragment
               ...ProfilePictureFragment
             }
           }
@@ -62,7 +62,7 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
       <HStack align="center" gap={8}>
         <ProfilePicture size="md" userRef={firstAdmirer} />
         <StyledTextWrapper align="center" as="span" wrap="wrap">
-          <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+          <UserHoverCard userRef={firstAdmirer} onClick={onClose} />
           &nbsp;
           <BaseM as="span">
             {notificationCount > 1 && (

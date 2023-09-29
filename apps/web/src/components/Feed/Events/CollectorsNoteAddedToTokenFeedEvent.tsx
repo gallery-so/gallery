@@ -7,7 +7,7 @@ import breakpoints from '~/components/core/breakpoints';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
@@ -48,7 +48,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
         eventTime
         owner @required(action: THROW) {
           username
-          ...HoverCardOnUsernameFragment
+          ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         newCollectorsNote
@@ -101,7 +101,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
               {!isSubEvent && (
                 <HStack gap={4} align="center">
                   <ProfilePicture userRef={event.owner} size="sm" />
-                  <HoverCardOnUsername userRef={event.owner} />
+                  <UserHoverCard userRef={event.owner} />
                 </HStack>
               )}
               <BaseM>add a collector's note to</BaseM>

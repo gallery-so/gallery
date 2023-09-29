@@ -53,7 +53,7 @@ export function Select<T extends string>({
       onPress={handlePress}
       eventName={`${eventElementId} opened`}
       eventElementId={eventElementId}
-      className="bg-faint dark:bg-black-500 h-7 py-1 px-2 flex flex-row items-center justify-between space-x-2"
+      className="bg-faint dark:bg-black-500 h-7 py-1 px-2 flex flex-row items-center justify-between"
     >
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
         {selected?.label}
@@ -177,15 +177,18 @@ export function SelectBottomSheet<T extends string>({
       <View
         onLayout={handleContentLayout}
         style={{ paddingBottom: bottom }}
-        className="px-8 flex flex-col space-y-5"
+        className="px-4 flex flex-col space-y-5"
       >
         <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-lg">
           {title}
         </Typography>
-
-        <Section>
-          <Options onChange={handleChange} {...optionsProps} />
-        </Section>
+        <View className="flex flex-col space-y-4">
+          <View className="flex space-y-2">
+            <Section>
+              <Options onChange={handleChange} {...optionsProps} />
+            </Section>
+          </View>
+        </View>
       </View>
     </GalleryBottomSheetModal>
   );

@@ -1,30 +1,35 @@
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useMemo } from 'react';
-import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
+import {
+  graphql,
+  PreloadedQuery,
+  useFragment,
+  usePreloadedQuery,
+  useQueryLoader,
+} from 'react-relay';
 import styled from 'styled-components';
 
-import Badge from '~/components/Badge/Badge';
-import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM } from '~/components/core/Text/Text';
-import FollowButton from '~/components/Follow/FollowButton';
-import { HoverCardUsernameInnerQuery } from '~/generated/HoverCardUsernameInnerQuery.graphql';
+import { UserHoverCardContentQuery } from '~/generated/UserHoverCardContentQuery.graphql';
+import { UserHoverCardFragment$key } from '~/generated/UserHoverCardFragment.graphql';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import Badge from '../Badge/Badge';
+import Markdown from '../core/Markdown/Markdown';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { BaseM, TitleDiatypeM, TitleM } from '../core/Text/Text';
+import FollowButton from '../Follow/FollowButton';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import HoverCard, { HoverCardProps } from './HoverCard';
 
-type Props = {
-  preloadedQuery: PreloadedQuery<HoverCardUsernameInnerQuery>;
-};
-
-export const HoverCardUsernameInnerQueryNode = graphql`
-  query HoverCardUsernameInnerQuery(
+const UserHoverCardContentQueryNode = graphql`
+  query UserHoverCardContentQuery(
     $userId: DBID!
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
@@ -53,8 +58,65 @@ export const HoverCardUsernameInnerQueryNode = graphql`
   }
 `;
 
-export function HoverCardUsernameInner({ preloadedQuery }: Props) {
-  const query = usePreloadedQuery(HoverCardUsernameInnerQueryNode, preloadedQuery);
+type Props = PropsWithChildren<{
+  userRef: UserHoverCardFragment$key;
+  onClick?: HoverCardProps<UserHoverCardContentQuery>['onHoverableElementClick'];
+}>;
+
+export default function UserHoverCard({ children, userRef, onClick }: Props) {
+  const user = useFragment(
+    graphql`
+      fragment UserHoverCardFragment on GalleryUser {
+        dbid
+        username
+      }
+    `,
+    userRef
+  );
+
+  const [preloadedHoverCardQuery, preloadHoverCardQuery] =
+    useQueryLoader<UserHoverCardContentQuery>(UserHoverCardContentQueryNode);
+
+  const userProfileLink = useMemo((): Route => {
+    return { pathname: '/[username]', query: { username: user.username as string } };
+  }, [user]);
+
+  const handlePreloadQuery = useCallback(() => {
+    preloadHoverCardQuery({
+      userId: user.dbid,
+      sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+      sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+    });
+  }, [preloadHoverCardQuery, user.dbid]);
+
+  if (!user.username) {
+    return null;
+  }
+
+  const displayName = handleCustomDisplayName(user.username);
+
+  return (
+    <HoverCard
+      HoverableElement={children ?? <TitleDiatypeM>{displayName}</TitleDiatypeM>}
+      onHoverableElementClick={onClick}
+      hoverableElementHref={userProfileLink}
+      HoveringContent={
+        preloadedHoverCardQuery ? (
+          <UserHoverCardContent preloadedQuery={preloadedHoverCardQuery} />
+        ) : null
+      }
+      preloadQuery={handlePreloadQuery}
+      preloadedQuery={preloadedHoverCardQuery}
+    />
+  );
+}
+
+function UserHoverCardContent({
+  preloadedQuery,
+}: {
+  preloadedQuery: PreloadedQuery<UserHoverCardContentQuery>;
+}) {
+  const query = usePreloadedQuery(UserHoverCardContentQueryNode, preloadedQuery);
 
   const user = query.userById;
 
