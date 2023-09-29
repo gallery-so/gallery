@@ -90,27 +90,40 @@ export function CommunityView({ queryRef }: Props) {
   }, [community, query, selectedRoute]);
 
   const Header = useCallback(() => {
-    return <CommunityHeader communityRef={community} />;
-  }, [community]);
+    return (
+      <View>
+        <View className="flex flex-col px-4 py-4 z-10 bg-white dark:bg-black-900">
+          <View className="flex flex-row justify-between">
+            <BackButton />
 
-  return (
-    <View className="flex-1">
-      <View className="flex flex-col px-4 py-4 z-10 bg-white dark:bg-black-900">
-        <View className="flex flex-row justify-between">
-          <BackButton />
-
-          <IconContainer
-            eventElementId="Community Share Icon"
-            eventName="Community Share Icon Clicked"
-            icon={<ShareIcon />}
-            onPress={handleShare}
+            <IconContainer
+              eventElementId="Community Share Icon"
+              eventName="Community Share Icon Clicked"
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+          </View>
+        </View>
+        <CommunityHeader communityRef={community} />
+        <View>
+          <View className="px-4">
+            <CommunityMeta communityRef={community} queryRef={query} />
+          </View>
+          <CommunityTabsHeader
+            communityRef={community}
+            selectedRoute={selectedRoute}
+            onRouteChange={setSelectedRoute}
           />
         </View>
       </View>
+    );
+  }, [community, query, selectedRoute]);
 
+  return (
+    <View className="flex-1">
       <View className="flex-grow">
         <GalleryTabsContainer
-          TabBar={TabBar}
+          // TabBar={TabBar}
           Header={Header}
           ref={containerRef}
           initialTabName={selectedRoute}

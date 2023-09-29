@@ -144,6 +144,11 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     }
   }, [hasPrevious, loadPrevious]);
 
+  const handleScroll = useCallback(
+    (e) => console.log('scrolling', e.nativeEvent.contentOffset.y),
+    []
+  );
+
   if (totalPosts === 0) {
     return (
       <View className="flex-1 pt-16 justify-center">
@@ -189,6 +194,8 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         data={items}
         renderItem={renderItem}
         onEndReached={loadMore}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
       />
     </View>
   );
