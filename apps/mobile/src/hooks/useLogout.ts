@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import * as Notifications from 'expo-notifications';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
@@ -16,8 +17,8 @@ export function useLogout(): [() => void, boolean] {
   const { provider } = useWalletConnectModal();
 
   const [mutate, isLoggingOut] = usePromisifiedMutation<useLogoutMutation>(graphql`
-    mutation useLogoutMutation {
-      logout {
+    mutation useLogoutMutation($token: String!) {
+      logout(pushTokenToUnregister: $token) {
         ... on LogoutPayload {
           __typename
         }
@@ -30,7 +31,12 @@ export function useLogout(): [() => void, boolean] {
     try {
       magic.user.logout();
       provider?.disconnect();
-      const response = await mutate({ variables: {} });
+      const expoPushToken = await Notifications.getExpoPushTokenAsync();
+      const response = await mutate({
+        variables: {
+          token: expoPushToken.data,
+        },
+      });
 
       if (response.logout?.__typename === 'LogoutPayload') {
         navigation.reset({ index: 0, routes: [{ name: 'Login', params: { screen: 'Landing' } }] });
