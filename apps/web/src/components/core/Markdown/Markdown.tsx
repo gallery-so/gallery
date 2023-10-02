@@ -44,7 +44,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === route({ pathname: '/' });
+            const isInternalLink = href.startsWith('https://gallery.so');
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>
