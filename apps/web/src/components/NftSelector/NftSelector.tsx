@@ -292,7 +292,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
               style={{ ...floatingStyle }}
               ref={floating}
               whiteSpace="pre-line"
-              text={`Refresh to update your collection`}
+              text={`Fetch your latest tokens on ${network}`}
             />
           </DropdownsContainer>
         )}
