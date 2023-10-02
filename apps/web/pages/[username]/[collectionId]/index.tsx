@@ -20,7 +20,12 @@ type CollectionGalleryProps = MetaTagProps & {
 export default function CollectionGallery({ collectionId, username }: CollectionGalleryProps) {
   const query = useLazyLoadQuery<CollectionIdQuery>(
     graphql`
-      query CollectionIdQuery($collectionId: DBID!, $username: String!) {
+      query CollectionIdQuery(
+        $collectionId: DBID!
+        $username: String!
+        $viewerLast: Int
+        $viewerBefore: String
+      ) {
         ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
         ...GalleryViewEmitterWithSuspenseFragment
@@ -37,7 +42,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
         }
       }
     `,
-    { collectionId, username }
+    { collectionId, username, viewerLast: 1 }
   );
 
   const rightfulOwner = query.collectionById?.gallery?.owner?.username;

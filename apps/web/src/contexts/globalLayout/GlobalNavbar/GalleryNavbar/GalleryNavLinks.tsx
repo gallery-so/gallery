@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
+import { GalleryNavLinksPaginationFragment$key } from '~/generated/GalleryNavLinksPaginationFragment.graphql';
+import { GalleryNavLinksPaginationFragmentQuery } from '~/generated/GalleryNavLinksPaginationFragmentQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NavbarLink } from '../NavbarLink';
@@ -13,9 +15,10 @@ import { NavbarLink } from '../NavbarLink';
 type Props = {
   username: string;
   queryRef: GalleryNavLinksFragment$key;
+  postsQueryRef: GalleryNavLinksPaginationFragment$key;
 };
 
-export function GalleryNavLinks({ username, queryRef }: Props) {
+export function GalleryNavLinks({ username, queryRef, postsQueryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryNavLinksFragment on GalleryUser {
@@ -31,6 +34,29 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
     queryRef
   );
 
+  const { data: userWithPostsFeed } = usePaginationFragment<
+    GalleryNavLinksPaginationFragmentQuery,
+    GalleryNavLinksPaginationFragment$key
+  >(
+    graphql`
+      fragment GalleryNavLinksPaginationFragment on GalleryUser
+      @refetchable(queryName: "GalleryNavLinksPaginationFragmentQuery") {
+        feed(before: $viewerBefore, last: $viewerLast)
+          @connection(key: "GalleryNavLinksPaginationFragment_feed") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
+          edges {
+            __typename
+          }
+          pageInfo {
+            total
+          }
+        }
+      }
+    `,
+    postsQueryRef
+  );
+
   const totalFollowers = query.followers?.length ?? 0;
   const totalGalleries = useMemo(() => {
     return (
@@ -38,6 +64,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         .length ?? 0
     );
   }, [query.galleries]);
+  const totalPosts = userWithPostsFeed?.feed?.pageInfo?.total ?? 0;
 
   const { pathname } = useRouter();
 
@@ -74,7 +101,10 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         href={route(postsRoute)}
         active={pathname === postsRoute.pathname}
       >
-        Posts
+        <HStack gap={4} align="baseline">
+          <span>Posts</span>
+          {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
+        </HStack>
       </NavbarLink>
 
       <NavbarLink

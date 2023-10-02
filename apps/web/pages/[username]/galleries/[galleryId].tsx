@@ -17,7 +17,12 @@ type Props = {
 export default function FocusedGallery({ galleryId, username }: Props) {
   const query = useLazyLoadQuery<GalleryIdFocusedGalleryQuery>(
     graphql`
-      query GalleryIdFocusedGalleryQuery($galleryId: DBID!, $username: String!) {
+      query GalleryIdFocusedGalleryQuery(
+        $galleryId: DBID!
+        $username: String!
+        $viewerLast: Int
+        $viewerBefore: String
+      ) {
         galleryById(id: $galleryId) @required(action: THROW) {
           ... on Gallery {
             owner {
@@ -33,7 +38,7 @@ export default function FocusedGallery({ galleryId, username }: Props) {
         ...StandardSidebarFragment
       }
     `,
-    { galleryId, username }
+    { galleryId, username, viewerLast: 1 }
   );
 
   const rightfulOwner = query.galleryById?.owner?.username;
