@@ -99,6 +99,11 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     bottomSheet.current?.dismiss();
   }, []);
 
+  const clearState = useCallback(() => {
+    setIsSigningIn(false);
+    provider?.disconnect();
+  }, [provider]);
+
   const handleSignMessage = useCallback(async () => {
     if (!web3Provider || !address || hasSigned.current) {
       return;
@@ -181,11 +186,12 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     } catch (error) {
       provider?.disconnect();
     } finally {
-      setIsSigningIn(false);
+      clearState();
     }
   }, [
     address,
     addWallet,
+    clearState,
     createNonce,
     login,
     isSyncing,
@@ -200,9 +206,9 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     if (isConnected && !hasSigned.current) {
       handleSignMessage();
     } else {
-      setIsSigningIn(false);
+      clearState();
     }
-  }, [isConnected, handleSignMessage]);
+  }, [clearState, isConnected, handleSignMessage]);
 
   const value = useMemo(
     () => ({
