@@ -44,7 +44,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   const featuredRoute: Route = { pathname: '/[username]', query: { username } };
   const galleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
   const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
-  const activityRoute: Route = { pathname: '/[username]/activity', query: { username } };
+  const postsRoute: Route = { pathname: '/[username]/posts', query: { username } };
 
   return (
     <HStack gap={8}>
@@ -71,10 +71,10 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
       <NavbarLink
         // @ts-expect-error We're not using the legacy Link
-        href={route(activityRoute)}
-        active={pathname === activityRoute.pathname}
+        href={route(postsRoute)}
+        active={pathname === postsRoute.pathname}
       >
-        Activity
+        Posts
       </NavbarLink>
 
       <NavbarLink

@@ -142,7 +142,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         showCaret: false,
         handleClick: function navigateToUserActivityWithFeedEventAtTop() {
           if (username && eventId) {
-            push({ pathname: '/[username]/activity', query: { username, eventId } });
+            push({ pathname: '/[username]/posts', query: { username, eventId } });
           }
           hideDrawer();
         },
