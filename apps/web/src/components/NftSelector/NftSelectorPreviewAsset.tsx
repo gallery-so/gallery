@@ -29,13 +29,11 @@ export function NftSelectorPreviewAsset({
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'medium' }) ?? '';
 
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
-  if (resizeToSquare) {
-    return (
-      <StyledSquareImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
-    );
-  } else {
-    return <StyledImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />;
-  }
+  return resizeToSquare ? (
+    <StyledSquareImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
+  ) : (
+    <StyledImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
+  );
 }
 
 type SelectedProps = {
