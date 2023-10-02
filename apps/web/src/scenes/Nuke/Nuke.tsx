@@ -8,7 +8,7 @@ import { useLogout } from '~/hooks/useLogout';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {
-  const logout = useLogout();
+  const logout = useLogout({});
 
   useEffect(() => {
     logout();

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
 import colors from '~/shared/theme/colors';
@@ -19,9 +18,11 @@ import MobileAuthManagerSection from './MobileAuthManagerSection/MobileAuthManag
 
 type Props = {
   queryRef: SettingsFragment$key;
+  onLogout?: () => void;
+  header?: React.ReactNode;
 };
 
-function Settings({ queryRef }: Props) {
+function Settings({ queryRef, onLogout, header }: Props) {
   const query = useFragment(
     graphql`
       fragment SettingsFragment on Query {
@@ -36,7 +37,7 @@ function Settings({ queryRef }: Props) {
 
   useClearURLQueryParams('settings');
 
-  const logout = useLogout();
+  const logout = useLogout({ onLogout });
 
   const handleSignOutClick = useCallback(() => {
     logout();
@@ -44,7 +45,7 @@ function Settings({ queryRef }: Props) {
 
   return (
     <>
-      <DrawerHeader headerText="Settings" />
+      {header}
       <StyledContentWrapper>
         <StyledSettings gap={12}>
           <SettingsContents gap={24}>
