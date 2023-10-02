@@ -90,11 +90,11 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         counter: totalGalleries,
       },
       {
-        name: 'Followers',
-        counter: totalFollowers,
+        name: 'Posts',
       },
       {
-        name: 'Activity',
+        name: 'Followers',
+        counter: totalFollowers,
       },
     ];
   }, [totalGalleries, totalFollowers]);

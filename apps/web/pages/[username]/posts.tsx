@@ -6,7 +6,7 @@ import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/component
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
-import { activityQuery } from '~/generated/activityQuery.graphql';
+import { postsQuery } from '~/generated/postsQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
@@ -16,8 +16,8 @@ import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
-const activityQueryNode = graphql`
-  query activityQuery(
+const postsQueryNode = graphql`
+  query postsQuery(
     $username: String!
     $interactionsFirst: Int!
     $interactionsAfter: String
@@ -41,11 +41,11 @@ const NON_EXISTENT_FEED_EVENT_ID = 'some-non-existent-feed-event-id';
 
 type UserActivityProps = MetaTagProps & {
   username: string;
-  preloadedQuery: PreloadedQuery<activityQuery>;
+  preloadedQuery: PreloadedQuery<postsQuery>;
 };
 
 export default function UserFeed({ username, preloadedQuery }: UserActivityProps) {
-  const query = usePreloadedQuery<activityQuery>(activityQueryNode, preloadedQuery);
+  const query = usePreloadedQuery<postsQuery>(postsQueryNode, preloadedQuery);
 
   return (
     <GalleryRoute
@@ -63,9 +63,9 @@ export default function UserFeed({ username, preloadedQuery }: UserActivityProps
 
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
-    return loadQuery<activityQuery>(
+    return loadQuery<postsQuery>(
       relayEnvironment,
-      activityQueryNode,
+      postsQueryNode,
       {
         topEventId: query.eventId ?? NON_EXISTENT_FEED_EVENT_ID,
         username: query.username,

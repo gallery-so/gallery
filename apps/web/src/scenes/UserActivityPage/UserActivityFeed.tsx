@@ -89,7 +89,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     return (
       <EmptyState
         title={"It's quiet in here"}
-        description="This user doesn't seem to have any activity yet."
+        description="This user doesn't seem to have any posts yet."
       />
     );
   }
