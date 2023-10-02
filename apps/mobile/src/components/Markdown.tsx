@@ -49,7 +49,7 @@ type GalleryMarkdownProps = PropsWithChildren<{
   style?: StyleProp<unknown>;
 }>;
 
-const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~'];
+const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~', 'home', 'token'];
 
 const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
