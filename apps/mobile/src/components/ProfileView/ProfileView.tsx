@@ -83,10 +83,8 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         <View className="flex flex-row items-center justify-between pt-4">
           <View className="flex flex-row">
             <ConnectedProfilePicture queryRef={query} />
-
             <ProfileViewUsername queryRef={query} />
           </View>
-
           <EditProfileButton queryRef={query} />
         </View>
       </View>
@@ -96,17 +94,14 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           <Tabs.Tab name="Featured">
             <ProfileViewFeaturedTab queryRef={query} />
           </Tabs.Tab>
-
           <Tabs.Tab name="Galleries">
             <ProfileViewGalleriesTab queryRef={query} />
           </Tabs.Tab>
-
+          <Tabs.Tab name="Posts">
+            <ProfileViewActivityTab queryRef={query} />
+          </Tabs.Tab>
           <Tabs.Tab name="Followers">
             <ProfileViewFollowersTab queryRef={query} />
-          </Tabs.Tab>
-
-          <Tabs.Tab name="Activity">
-            <ProfileViewActivityTab queryRef={query} />
           </Tabs.Tab>
         </GalleryTabsContainer>
       </View>
