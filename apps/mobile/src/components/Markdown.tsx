@@ -103,7 +103,7 @@ export function Markdown({
 
   const handleLinkPress = useCallback(
     (url: string) => {
-    const isInternalLink = url.startsWith('https://gallery.so');
+      const isInternalLink = url.startsWith('https://gallery.so');
       if (url && !isInternalLink && onBypassLinkPress) {
         onBypassLinkPress(url);
         return false;
