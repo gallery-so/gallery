@@ -1,17 +1,15 @@
+import { useNavigation } from '@react-navigation/native';
 import merge from 'lodash.merge';
 import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { StyleProp, Text, View } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
-
-import colors from '~/shared/theme/colors';
-
-import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { handleDeepLinkPress } from 'src/utils/handleDeepLinkPress';
 
 import { RootStackNavigatorProp } from '~/navigation/types';
+import colors from '~/shared/theme/colors';
 
-import { useNavigation } from '@react-navigation/native';
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 const markdownStyles = {
   paragraph: {
@@ -112,17 +110,15 @@ export function Markdown({
 
   const handleLinkPress = useCallback(
     (url: string) => {
+      const isInternalLink = url.startsWith('https://gallery.so');
       const parsedUrl = new URL(url);
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
-      const isInternalLink = url.startsWith('https://gallery.so');
       const isInternalLinkWithDeepLink =
         isInternalLink &&
         !(
           typeof splitBySlash[0] === 'string' && KNOWN_NON_DEEPLINK_ROUTES.includes(splitBySlash[0])
         );
-      console.log('isInternalLink', isInternalLink);
-      console.log('isInternalLinkWithDeepLink', isInternalLinkWithDeepLink);
 
       if (isInternalLinkWithDeepLink) {
         handleDeepLinkPress(url, navigation);

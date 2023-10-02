@@ -1,11 +1,10 @@
+import { RootStackNavigatorProp } from '~/navigation/types';
+
 const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~'];
 
-export async function handleDeepLinkPress(url: string, navigation) {
-  const newOne = 'https://gallery.so/post/2WCAhvUycxK6boKfXUmqX2L3wxw';
-  const parsedUrl = new URL(newOne);
+export async function handleDeepLinkPress(url: string, navigation: RootStackNavigatorProp) {
+  const parsedUrl = new URL(url);
   const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
-
-  console.log('parsedUrl.pathname.', parsedUrl.pathname);
 
   // if the url is for a route we don't support deeplinking to, return early so we don't treat it as a username, collectionId, etc.
   if (typeof splitBySlash[0] === 'string' && KNOWN_NON_DEEPLINK_ROUTES.includes(splitBySlash[0])) {
