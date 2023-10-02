@@ -110,7 +110,7 @@ export function Markdown({
 
   const handleLinkPress = useCallback(
     (url: string) => {
-      const isInternalLink = url.startsWith('https://gallery.so');
+      const isInternalLink = url.startsWith('https://gallery.so/');
       const parsedUrl = new URL(url);
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
