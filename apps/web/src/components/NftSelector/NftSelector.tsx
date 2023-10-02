@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -107,18 +107,28 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     rawTokensToDisplay: tokens,
   });
 
-  const { filterType, setFilterType, sortType, setSortType, network, setNetwork } =
-    usePostComposerContext();
+  const {
+    filterType,
+    setFilterType,
+    sortType,
+    setSortType,
+    network,
+    setNetwork,
+    selectedContract,
+    setSelectedContract,
+  } = usePostComposerContext();
 
-  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(
-    preSelectedContract || null
-  );
+  useEffect(() => {
+    if (preSelectedContract) {
+      setSelectedContract(preSelectedContract);
+    }
+  }, [preSelectedContract, setSelectedContract]);
 
   const { isLocked, syncTokens } = useSyncTokens();
 
   const handleResetSelectedContractAddress = useCallback(() => {
     setSelectedContract(null);
-  }, []);
+  }, [setSelectedContract]);
 
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   const tokensToDisplay = useMemo(() => {
