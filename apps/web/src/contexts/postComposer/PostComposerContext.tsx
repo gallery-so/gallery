@@ -12,6 +12,7 @@ import {
 } from 'react';
 
 import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { NftSelectorContractType } from '~/components/NftSelector/NftSelector';
 import { NftSelectorSortView } from '~/components/NftSelector/NftSelectorFilter/NftSelectorFilterSort';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { Chain, isSupportedChain } from '~/shared/utils/chains';
@@ -26,6 +27,8 @@ type PostComposerState = {
   setSortType: (s: NftSelectorSortView) => void;
   network: Chain;
   setNetwork: (s: Chain) => void;
+  selectedContract: NftSelectorContractType;
+  setSelectedContract: (s: NftSelectorContractType) => void;
 };
 
 const PostComposerContext = createContext<PostComposerState | undefined>(undefined);
@@ -71,11 +74,10 @@ const PostComposerProvider = memo(({ children }: Props) => {
     captionRef.current = _caption;
   }, [_caption]);
 
-  // TODO: move selectedContract state / selector up into this context. will need to handle the edge
-  // case where the contract address may be invalid.
   const [filterType, setFilterType] = useState<TokenFilterType>('Collected');
   const [sortType, setSortType] = useState<NftSelectorSortView>('Recently added');
   const [network, setNetwork] = useState<Chain>('Ethereum');
+  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -125,8 +127,10 @@ const PostComposerProvider = memo(({ children }: Props) => {
       setSortType,
       network,
       setNetwork,
+      selectedContract,
+      setSelectedContract,
     }),
-    [_caption, filterType, network, sortType]
+    [_caption, filterType, network, sortType, selectedContract]
   );
 
   return <PostComposerContext.Provider value={value}>{children}</PostComposerContext.Provider>;

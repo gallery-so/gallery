@@ -107,12 +107,22 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     rawTokensToDisplay: tokens,
   });
 
-  const { filterType, setFilterType, sortType, setSortType, network, setNetwork } =
-    usePostComposerContext();
+  const {
+    filterType,
+    setFilterType,
+    sortType,
+    setSortType,
+    network,
+    setNetwork,
+    selectedContract,
+    setSelectedContract,
+  } = usePostComposerContext();
 
-  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(
-    preSelectedContract || null
-  );
+  useEffect(() => {
+    if (preSelectedContract) {
+      setSelectedContract(preSelectedContract);
+    }
+  }, [preSelectedContract]);
 
   const { isLocked, syncTokens } = useSyncTokens();
 
