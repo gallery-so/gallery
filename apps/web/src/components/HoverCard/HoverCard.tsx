@@ -78,8 +78,6 @@ export default function HoverCard<T extends OperationType>({
     [onHoverableElementClick]
   );
 
-  console.log({ preloadedQuery });
-
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
