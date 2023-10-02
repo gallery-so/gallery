@@ -2,6 +2,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
 import { ScrollView, View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { POSTS_PER_PAGE } from 'src/constants/feed';
 import { useRefreshHandle } from 'src/hooks/useRefreshHandle';
 
 import { CommunityView } from '~/components/Community/CommunityView';
@@ -18,8 +19,6 @@ type CommunityScreenInnerProps = {
   chain: Chain;
   contractAddress: string;
 };
-
-export const POSTS_PER_PAGE = 24;
 
 function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerProps) {
   const communityQuery = useLazyLoadQuery<CommunityScreenInitializeQuery>(

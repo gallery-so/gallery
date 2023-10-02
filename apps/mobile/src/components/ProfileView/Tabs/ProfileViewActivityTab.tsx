@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { ACTIVITY_FEED_ITEMS_PER_PAGE } from 'src/constants/feed';
 
 import {
   createVirtualizedFeedEventItems,
@@ -13,7 +14,6 @@ import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { ProfileViewActivityTabFragment$key } from '~/generated/ProfileViewActivityTabFragment.graphql';
-import { ACTIVITY_FEED_ITEMS_PER_PAGE } from '~/screens/ProfileScreen/ProfileScreen';
 
 type ProfileViewActivityTabProps = {
   queryRef: ProfileViewActivityTabFragment$key;

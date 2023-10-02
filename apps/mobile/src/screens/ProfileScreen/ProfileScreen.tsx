@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { ACTIVITY_FEED_ITEMS_PER_PAGE } from 'src/constants/feed';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
@@ -15,8 +16,6 @@ import { ProfileScreenRefetchableFragmentQuery } from '~/generated/ProfileScreen
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { useRefreshHandle } from '../../hooks/useRefreshHandle';
-
-export const ACTIVITY_FEED_ITEMS_PER_PAGE = 24;
 
 function ProfileScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();

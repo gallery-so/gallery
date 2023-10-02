@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { POSTS_PER_PAGE } from 'src/constants/feed';
 
 import { Button } from '~/components/Button';
 import {
@@ -18,7 +19,6 @@ import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { POSTS_PER_PAGE } from '~/screens/CommunityScreen/CommunityScreen';
 
 import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
 
