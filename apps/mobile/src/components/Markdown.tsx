@@ -7,6 +7,11 @@ import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-
 import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
+import { handleDeepLinkPress } from 'src/utils/handleDeepLinkPress';
+
+import { RootStackNavigatorProp } from '~/navigation/types';
+
+import { useNavigation } from '@react-navigation/native';
 
 const markdownStyles = {
   paragraph: {
@@ -46,6 +51,8 @@ type GalleryMarkdownProps = PropsWithChildren<{
   style?: StyleProp<unknown>;
 }>;
 
+const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~'];
+
 const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
 export function Markdown({
@@ -57,6 +64,8 @@ export function Markdown({
 }: GalleryMarkdownProps) {
   const [showAll, setShowAll] = useState(false);
   const { colorScheme } = useColorScheme();
+
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
   const mergedStyles = useMemo(() => {
     const mergedStyles = { ...markdownStyles };
@@ -103,15 +112,29 @@ export function Markdown({
 
   const handleLinkPress = useCallback(
     (url: string) => {
+      const parsedUrl = new URL(url);
+      const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
+
       const isInternalLink = url.startsWith('https://gallery.so');
-      if (url && !isInternalLink && onBypassLinkPress) {
+      const isInternalLinkWithDeepLink =
+        isInternalLink &&
+        !(
+          typeof splitBySlash[0] === 'string' && KNOWN_NON_DEEPLINK_ROUTES.includes(splitBySlash[0])
+        );
+      console.log('isInternalLink', isInternalLink);
+      console.log('isInternalLinkWithDeepLink', isInternalLinkWithDeepLink);
+
+      if (isInternalLinkWithDeepLink) {
+        handleDeepLinkPress(url, navigation);
+        return false;
+      } else if (url && !isInternalLink && onBypassLinkPress) {
         onBypassLinkPress(url);
         return false;
       }
 
       return true;
     },
-    [onBypassLinkPress]
+    [onBypassLinkPress, navigation]
   );
 
   return (
