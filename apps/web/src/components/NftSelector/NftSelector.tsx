@@ -31,7 +31,6 @@ import { NftSelectorView } from './NftSelectorView';
 type Props = {
   onSelectToken: (tokenId: string) => void;
   headerText: string;
-  e;
   preSelectedContract?: NftSelectorContractType;
 };
 
