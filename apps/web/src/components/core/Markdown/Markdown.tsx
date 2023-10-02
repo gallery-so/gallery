@@ -1,4 +1,3 @@
-import { route } from 'nextjs-routes';
 import { PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
