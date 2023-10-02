@@ -9,9 +9,13 @@ import transitions from '../core/transitions';
 
 type NftSelectorPreviewAssetProps = {
   tokenRef: NftSelectorPreviewAssetFragment$key;
+  resizeToSquare?: boolean;
 };
 
-export function NftSelectorPreviewAsset({ tokenRef }: NftSelectorPreviewAssetProps) {
+export function NftSelectorPreviewAsset({
+  tokenRef,
+  resizeToSquare = true,
+}: NftSelectorPreviewAssetProps) {
   const token = useFragment(
     graphql`
       fragment NftSelectorPreviewAssetFragment on Token {
@@ -25,8 +29,13 @@ export function NftSelectorPreviewAsset({ tokenRef }: NftSelectorPreviewAssetPro
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'medium' }) ?? '';
 
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
-
-  return <StyledImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />;
+  if (resizeToSquare) {
+    return (
+      <StyledSquareImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
+    );
+  } else {
+    return <StyledImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />;
+  }
 }
 
 type SelectedProps = {
@@ -34,6 +43,15 @@ type SelectedProps = {
 };
 
 const StyledImage = styled.img<SelectedProps>`
+  max-height: 100%;
+  max-width: 100%;
+  transition: opacity ${transitions.cubic};
+  opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
+
+  object-fit: cover;
+`;
+
+const StyledSquareImage = styled.img<SelectedProps>`
   max-height: 100%;
   max-width: 100%;
   transition: opacity ${transitions.cubic};

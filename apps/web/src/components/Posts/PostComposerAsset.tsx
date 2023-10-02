@@ -26,13 +26,16 @@ export default function PostComposerAsset({ tokenRef }: Props) {
   return (
     <StyledPostComposerAsset>
       <NftFailureBoundary tokenId={token.dbid}>
-        <NftSelectorPreviewAsset tokenRef={token} />
+        <NftSelectorPreviewAsset tokenRef={token} resizeToSquare={false} />
       </NftFailureBoundary>
     </StyledPostComposerAsset>
   );
 }
 
 const StyledPostComposerAsset = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   min-width: 100%;
