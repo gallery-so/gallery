@@ -77,7 +77,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   }
 
   return (
-    <View className="flex flex-row items-center mt-3 mb-2 space-x-1">
+    <View className="flex flex-row items-center mt-3 mb-1 space-x-1">
       <CommunityProfilePictureBubblesWithCount
         onPress={handleSeeAllPress}
         totalCount={totalSharedCommunities}
