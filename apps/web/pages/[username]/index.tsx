@@ -27,8 +27,6 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
-    $viewerLast: Int
-    $viewerBefore: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
@@ -127,7 +125,6 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         username: query.username,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-        viewerLast: 1,
         // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
         // twitterListFirst: USER_PER_PAGE,
       },

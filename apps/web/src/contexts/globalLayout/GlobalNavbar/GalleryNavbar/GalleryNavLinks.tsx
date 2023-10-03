@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
-import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
-import { GalleryNavLinksPaginationFragment$key } from '~/generated/GalleryNavLinksPaginationFragment.graphql';
-import { GalleryNavLinksPaginationFragmentQuery } from '~/generated/GalleryNavLinksPaginationFragmentQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NavbarLink } from '../NavbarLink';
@@ -15,10 +13,9 @@ import { NavbarLink } from '../NavbarLink';
 type Props = {
   username: string;
   queryRef: GalleryNavLinksFragment$key;
-  postsQueryRef: GalleryNavLinksPaginationFragment$key;
 };
 
-export function GalleryNavLinks({ username, queryRef, postsQueryRef }: Props) {
+export function GalleryNavLinks({ username, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryNavLinksFragment on GalleryUser {
@@ -29,20 +26,8 @@ export function GalleryNavLinks({ username, queryRef, postsQueryRef }: Props) {
         followers {
           __typename
         }
-      }
-    `,
-    queryRef
-  );
-
-  const { data: userWithPostsFeed } = usePaginationFragment<
-    GalleryNavLinksPaginationFragmentQuery,
-    GalleryNavLinksPaginationFragment$key
-  >(
-    graphql`
-      fragment GalleryNavLinksPaginationFragment on GalleryUser
-      @refetchable(queryName: "GalleryNavLinksPaginationFragmentQuery") {
-        feed(before: $viewerBefore, last: $viewerLast)
-          @connection(key: "GalleryNavLinksPaginationFragment_feed") {
+        # Arbitrarily grabbing one item from the feed just so we can grab the total (pageInfo.total)
+        feed(before: null, last: 1) @connection(key: "GalleryNavLinksPaginationFragment_feed") {
           # Relay doesn't allow @connection w/o edges so we must query for it
           # eslint-disable-next-line relay/unused-fields
           edges {
@@ -54,7 +39,7 @@ export function GalleryNavLinks({ username, queryRef, postsQueryRef }: Props) {
         }
       }
     `,
-    postsQueryRef
+    queryRef
   );
 
   const totalFollowers = query.followers?.length ?? 0;
@@ -64,7 +49,7 @@ export function GalleryNavLinks({ username, queryRef, postsQueryRef }: Props) {
         .length ?? 0
     );
   }, [query.galleries]);
-  const totalPosts = userWithPostsFeed?.feed?.pageInfo?.total ?? 0;
+  const totalPosts = query?.feed?.pageInfo?.total ?? 0;
 
   const { pathname } = useRouter();
 

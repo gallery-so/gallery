@@ -65,8 +65,6 @@ export default function Followers({ username }: FollowersProps) {
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
         $sharedFollowersAfter: String
-        $viewerLast: Int
-        $viewerBefore: String
       ) {
         ...GalleryNavbarFragment
         ...followersFollowersPageFragment
@@ -78,7 +76,6 @@ export default function Followers({ username }: FollowersProps) {
       username,
       sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-      viewerLast: 1,
     }
   );
 

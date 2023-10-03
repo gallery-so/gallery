@@ -45,7 +45,6 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         ...UserFarcasterSectionFragment
         ...UserSharedInfoFragment
         ...GalleryNavLinksFragment
-        ...GalleryNavLinksPaginationFragment
         ...UserLensSectionFragment
       }
     `,
@@ -104,7 +103,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         )}
         {isMobile && (
           <MobileNavLinks align="center" justify="center">
-            <GalleryNavLinks username={user.username ?? ''} queryRef={user} postsQueryRef={user} />
+            <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
           </MobileNavLinks>
         )}
       </VStack>

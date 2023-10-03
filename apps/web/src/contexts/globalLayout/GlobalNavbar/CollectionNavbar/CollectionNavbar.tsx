@@ -42,7 +42,6 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
         userByUsername(username: $username) @required(action: THROW) {
           ...GalleryNavLinksFragment
-          ...GalleryNavLinksPaginationFragment
           ...NavActionFollowUserFragment
         }
 
@@ -108,13 +107,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
       </NavbarLeftContent>
 
       <NavbarCenterContent>
-        {!isMobile && (
-          <GalleryNavLinks
-            username={username}
-            queryRef={query.userByUsername}
-            postsQueryRef={query.userByUsername}
-          />
-        )}
+        {!isMobile && <GalleryNavLinks username={username} queryRef={query.userByUsername} />}
       </NavbarCenterContent>
 
       <NavbarRightContent>

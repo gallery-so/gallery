@@ -24,8 +24,6 @@ export default function Galleries({ username }: GalleriesProps) {
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
         $sharedFollowersAfter: String
-        $viewerLast: Int
-        $viewerBefore: String
       ) {
         ...GalleryNavbarFragment
         ...GalleryViewEmitterWithSuspenseFragment
@@ -37,7 +35,6 @@ export default function Galleries({ username }: GalleriesProps) {
       username,
       sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-      viewerLast: 1,
     },
     { fetchPolicy: 'network-only' }
   );

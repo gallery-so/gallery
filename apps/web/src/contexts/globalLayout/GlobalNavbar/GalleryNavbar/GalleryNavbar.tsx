@@ -37,7 +37,6 @@ export function GalleryNavbar({
 
         userByUsername(username: $username) @required(action: THROW) {
           ...GalleryNavLinksFragment
-          ...GalleryNavLinksPaginationFragment
         }
       }
     `,
@@ -73,13 +72,7 @@ export function GalleryNavbar({
         </NavbarLeftContent>
 
         <NavbarCenterContent>
-          {!isMobile && (
-            <GalleryNavLinks
-              username={username}
-              queryRef={query.userByUsername}
-              postsQueryRef={query.userByUsername}
-            />
-          )}
+          {!isMobile && <GalleryNavLinks username={username} queryRef={query.userByUsername} />}
         </NavbarCenterContent>
 
         <NavbarRightContent>
