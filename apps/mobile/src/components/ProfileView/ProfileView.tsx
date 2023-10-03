@@ -39,13 +39,18 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         ...ProfileViewConnectedQueryFragment
         ...ProfileViewFollowersTabQueryFragment
         ...GalleryViewEmitterWithSuspenseFragment
-        ...ProfileViewHeaderFragment
         ...ProfileViewGalleriesTabFragment
         ...ProfileViewFeaturedTabFragment
         ...ProfileViewActivityTabFragment
         ...ProfileViewUsernameFragment
         ...ProfileViewConnectedProfilePictureFragment
         ...ProfileViewEditProfileButtonFragment
+        ...ProfileViewHeaderFragment
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            ...ProfileViewHeaderPaginationFragment
+          }
+        }
       }
     `,
     queryRef
@@ -53,15 +58,22 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
 
   const [selectedRoute, setSelectedRoute] = useState('Featured');
 
+  const user = query.userByUsername;
+
+  if (!user) {
+    throw new Error('No user found for ProfileView');
+  }
+
   const Header = useCallback(() => {
     return (
       <ProfileViewHeader
         queryRef={query}
+        userRef={user}
         selectedRoute={selectedRoute}
         onRouteChange={setSelectedRoute}
       />
     );
-  }, [query, selectedRoute]);
+  }, [query, selectedRoute, user]);
 
   const containerRef = useRef<CollapsibleRef>(null);
   useEffect(() => {

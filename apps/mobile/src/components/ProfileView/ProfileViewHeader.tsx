@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
+import { ProfileViewHeaderPaginationFragment$key } from '~/generated/ProfileViewHeaderPaginationFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -18,9 +19,10 @@ type Props = {
   onRouteChange: (value: string) => void;
 
   queryRef: ProfileViewHeaderFragment$key;
+  userRef: ProfileViewHeaderPaginationFragment$key;
 };
 
-export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Props) {
+export function ProfileViewHeader({ queryRef, userRef, selectedRoute, onRouteChange }: Props) {
   const query = useFragment(
     graphql`
       fragment ProfileViewHeaderFragment on Query {
@@ -63,6 +65,26 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
     queryRef
   );
 
+  const { data: userWithPostsFeed } = usePaginationFragment(
+    graphql`
+      fragment ProfileViewHeaderPaginationFragment on GalleryUser
+      @refetchable(queryName: "ProfileViewHeaderPaginationFragmentQuery") {
+        feed(before: $feedBefore, last: $feedLast)
+          @connection(key: "ProfileViewHeaderPaginationFragment_feed") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
+          edges {
+            __typename
+          }
+          pageInfo {
+            total
+          }
+        }
+      }
+    `,
+    userRef
+  );
+
   const user = query?.userByUsername;
   const loggedInUserId = useLoggedInUserId(query);
 
@@ -79,6 +101,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         .length ?? 0
     );
   }, [user.galleries]);
+  const totalPosts = userWithPostsFeed?.feed?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
     return [
@@ -91,13 +114,14 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       },
       {
         name: 'Posts',
+        counter: totalPosts,
       },
       {
         name: 'Followers',
         counter: totalFollowers,
       },
     ];
-  }, [totalGalleries, totalFollowers]);
+  }, [totalGalleries, totalPosts, totalFollowers]);
 
   const numPills = useMemo(() => {
     return [
