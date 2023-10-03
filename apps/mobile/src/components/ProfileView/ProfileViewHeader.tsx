@@ -50,6 +50,18 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
               }
             }
 
+            feed(before: $feedBefore, last: $feedLast)
+              @connection(key: "ProfileViewHeaderFragment_feed") {
+              # Relay doesn't allow @connection w/o edges so we must query for it
+              # eslint-disable-next-line relay/unused-fields
+              edges {
+                __typename
+              }
+              pageInfo {
+                total
+              }
+            }
+
             ...ProfileViewSharedInfoFragment
             ...ProfileViewFarcasterPillFragment
             ...ProfileViewTwitterPillFragment
@@ -79,6 +91,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         .length ?? 0
     );
   }, [user.galleries]);
+  const totalPosts = user.feed?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
     return [
@@ -91,13 +104,14 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       },
       {
         name: 'Posts',
+        counter: totalPosts,
       },
       {
         name: 'Followers',
         counter: totalFollowers,
       },
     ];
-  }, [totalGalleries, totalFollowers]);
+  }, [totalGalleries, totalPosts, totalFollowers]);
 
   const numPills = useMemo(() => {
     return [

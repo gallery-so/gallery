@@ -26,6 +26,17 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         followers {
           __typename
         }
+        # Arbitrarily grabbing one item from the feed just so we can grab the total (pageInfo.total)
+        feed(before: null, last: 1) @connection(key: "GalleryNavLinksFragment_feed") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
+          edges {
+            __typename
+          }
+          pageInfo {
+            total
+          }
+        }
       }
     `,
     queryRef
@@ -38,6 +49,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         .length ?? 0
     );
   }, [query.galleries]);
+  const totalPosts = query?.feed?.pageInfo?.total ?? 0;
 
   const { pathname } = useRouter();
 
@@ -74,7 +86,10 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         href={route(postsRoute)}
         active={pathname === postsRoute.pathname}
       >
-        Posts
+        <HStack gap={4} align="baseline">
+          <span>Posts</span>
+          {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
+        </HStack>
       </NavbarLink>
 
       <NavbarLink

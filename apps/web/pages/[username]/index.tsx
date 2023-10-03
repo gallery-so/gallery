@@ -26,7 +26,7 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
-    $sharedFollowersAfter: String # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
+    $sharedFollowersAfter: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
