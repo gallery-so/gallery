@@ -8,12 +8,12 @@ import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-
 import { RootStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
-import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import {
   handleDeepLinkNavigation,
-  isInternalLinkWithDeepLink,
   isInternalLink,
+  isInternalLinkWithDeepLink,
 } from './DeepLinkRegistrar';
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 const markdownStyles = {
   paragraph: {
