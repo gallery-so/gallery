@@ -39,13 +39,13 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         ...ProfileViewConnectedQueryFragment
         ...ProfileViewFollowersTabQueryFragment
         ...GalleryViewEmitterWithSuspenseFragment
+        ...ProfileViewHeaderFragment
         ...ProfileViewGalleriesTabFragment
         ...ProfileViewFeaturedTabFragment
         ...ProfileViewActivityTabFragment
         ...ProfileViewUsernameFragment
         ...ProfileViewConnectedProfilePictureFragment
         ...ProfileViewEditProfileButtonFragment
-        ...ProfileViewHeaderFragment
       }
     `,
     queryRef

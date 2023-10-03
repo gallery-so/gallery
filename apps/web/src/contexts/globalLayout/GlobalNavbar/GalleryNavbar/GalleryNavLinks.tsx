@@ -27,7 +27,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
           __typename
         }
         # Arbitrarily grabbing one item from the feed just so we can grab the total (pageInfo.total)
-        feed(before: null, last: 1) @connection(key: "GalleryNavLinksPaginationFragment_feed") {
+        feed(before: null, last: 1) @connection(key: "GalleryNavLinksFragment_feed") {
           # Relay doesn't allow @connection w/o edges so we must query for it
           # eslint-disable-next-line relay/unused-fields
           edges {

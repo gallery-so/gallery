@@ -51,7 +51,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             }
 
             feed(before: $feedBefore, last: $feedLast)
-              @connection(key: "ProfileViewHeaderPaginationFragment_feed") {
+              @connection(key: "ProfileViewHeaderFragment_feed") {
               # Relay doesn't allow @connection w/o edges so we must query for it
               # eslint-disable-next-line relay/unused-fields
               edges {
