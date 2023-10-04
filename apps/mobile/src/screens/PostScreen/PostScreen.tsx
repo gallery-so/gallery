@@ -19,7 +19,8 @@ function PostScreenInner() {
         ...PostScreenFragment
       }
     `,
-    { postId: route.params.postId }
+    { postId: route.params.postId },
+    { fetchPolicy: 'store-or-network' }
   );
 
   const [query, refetch] = useRefetchableFragment<
