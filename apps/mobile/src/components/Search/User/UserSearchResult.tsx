@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { MentionType } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { MentionType } from '~/contexts/MentionableMessageContext';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -11,10 +11,10 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   userRef: UserSearchResultFragment$key;
-  onSelect: (item: MentionType) => void;
+  onSelect?: (item: MentionType) => void;
 };
 
-export function UserSearchResult({ userRef, onSelect }: Props) {
+export function UserSearchResult({ userRef, onSelect = () => {} }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {

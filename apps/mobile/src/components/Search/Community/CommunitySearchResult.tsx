@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { MentionType } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
+import { MentionType } from '~/contexts/MentionableMessageContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -11,9 +11,9 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
-  onSelect: (item: MentionType) => void;
+  onSelect?: (item: MentionType) => void;
 };
-export function CommunitySearchResult({ communityRef, onSelect }: Props) {
+export function CommunitySearchResult({ communityRef, onSelect = () => {} }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
