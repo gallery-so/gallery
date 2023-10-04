@@ -22,7 +22,6 @@ import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetail
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { isFxHashContractAddress } from '~/shared/utils/getTezosExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
@@ -80,7 +79,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const { openseaUrl } = extractRelevantMetadataFromToken(token);
+  const { openseaUrl, contractName } = extractRelevantMetadataFromToken(token);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
@@ -153,10 +152,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
       isFullPage: isMobile,
     });
   }, [isMobile, showModal, token, track]);
-
-  const contractName = isFxHashContractAddress(token.contract?.contractAddress?.address)
-    ? 'FxHash'
-    : token.contract?.name ?? 'Untitled Contract';
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
