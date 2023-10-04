@@ -9,8 +9,6 @@ import { RootStackNavigatorProp } from '~/navigation/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
-const MARFA_EVENT_HASH = -1082633448;
-
 const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~'];
 
 export const isInternalLink = (url: string) => url.startsWith('https://gallery.so/');
@@ -147,31 +145,6 @@ export function DeepLinkRegistrar() {
         if (response?.viewer?.__typename !== 'Viewer') {
           track('Deep Link Cancelled because signed out', { url });
 
-          return;
-        }
-
-        const parsedUrl = new URL(url);
-
-        // if the url is for a route we don't support deeplinking to, return early so we don't treat it as a username, collectionId, etc.
-        if (!isInternalLinkWithDeepLink(url)) {
-          return;
-        }
-
-        /**
-         * Marfa Event Check In
-         */
-        if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event')) {
-          const hashedEventParam = await simpleHash(parsedUrl.searchParams.get('event') ?? '');
-          if (hashedEventParam === MARFA_EVENT_HASH) {
-            navigation.navigate('MainTabs', {
-              screen: 'HomeTab',
-              params: {
-                screen: 'Home',
-                params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
-              },
-            });
-            return;
-          }
           return;
         }
 
