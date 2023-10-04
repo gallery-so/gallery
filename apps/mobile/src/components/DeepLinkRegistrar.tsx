@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { Linking } from 'react-native';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
-import { simpleHash } from 'src/utils/hashString';
 
 import { DeepLinkRegistrarAuthCheckQuery } from '~/generated/DeepLinkRegistrarAuthCheckQuery.graphql';
 import { RootStackNavigatorProp } from '~/navigation/types';
