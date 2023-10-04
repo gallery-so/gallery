@@ -82,7 +82,7 @@ export function extractRelevantMetadataFromToken(
   }
 
   result.contractName = isFxHashContractAddress(contractAddress)
-    ? 'fxhash'
+    ? 'fx(hash)'
     : contract?.name ?? 'Untitled Contract';
 
   if (tokenMetadata) {
