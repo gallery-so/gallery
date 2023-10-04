@@ -14,6 +14,7 @@ import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graph
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { DOUBLE_TAP_WINDOW } from '../constants';
 
@@ -39,6 +40,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           }
           ...useGetPreviewImagesSingleFragment
           ...UniversalNftPreviewWithBoundaryFragment
+          ...extractRelevantMetadataFromTokenFragment
         }
 
         ...useTogglePostAdmireFragment
@@ -116,6 +118,8 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     }
   }, [hasViewerAdmiredEvent, toggleAdmire, navigation, imageUrl, firstToken.dbid]);
 
+  const { contractName } = extractRelevantMetadataFromToken(firstToken);
+
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       <View
@@ -138,7 +142,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           onPress={handleCommunityPress}
           eventElementId="Post Community Pill"
           eventName="Clicked Post Community Pill"
-          properties={{ communityName: community.name }}
+          properties={{ communityName: contractName }}
         >
           <Pill className="dark:border-black-500">
             <Typography
@@ -146,7 +150,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
               className="text-sm "
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
             >
-              {community.name || 'Unknown Collection'}
+              {contractName}
             </Typography>
           </Pill>
         </GalleryTouchableOpacity>
