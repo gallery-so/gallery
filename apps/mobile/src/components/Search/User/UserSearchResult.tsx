@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { MentionType } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -10,12 +11,14 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   userRef: UserSearchResultFragment$key;
+  onSelect: (item: MentionType) => void;
 };
 
-export function UserSearchResult({ userRef }: Props) {
+export function UserSearchResult({ userRef, onSelect }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {
+        dbid
         username
         bio
 
@@ -27,10 +30,19 @@ export function UserSearchResult({ userRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
+    if (onSelect) {
+      onSelect({
+        type: 'User',
+        label: user.username ?? '',
+        value: user.dbid,
+      });
+      return;
+    }
+
     if (user.username) {
       navigation.push('Profile', { username: user.username });
     }
-  }, [navigation, user.username]);
+  }, [onSelect, navigation, user.dbid, user.username]);
 
   return (
     <SearchResult

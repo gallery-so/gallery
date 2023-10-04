@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { MentionType } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -10,8 +11,9 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
+  onSelect: (item: MentionType) => void;
 };
-export function CommunitySearchResult({ communityRef }: Props) {
+export function CommunitySearchResult({ communityRef, onSelect }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -32,6 +34,15 @@ export function CommunitySearchResult({ communityRef }: Props) {
     const contractAddress = community.contractAddress;
     const { address, chain } = contractAddress ?? {};
 
+    if (onSelect) {
+      onSelect({
+        type: 'Community',
+        label: community.name ?? '',
+        value: address ?? '',
+      });
+      return;
+    }
+
     if (!address || !chain) {
       return;
     }
@@ -40,7 +51,7 @@ export function CommunitySearchResult({ communityRef }: Props) {
       contractAddress: address,
       chain,
     });
-  }, [community, navigation]);
+  }, [community, navigation, onSelect]);
 
   return (
     <SearchResult
