@@ -21,7 +21,9 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
+import { useMentionableMessageActions } from '~/contexts/MentionableMessageContext';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListPaginationQuery.graphql';
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
@@ -57,6 +59,8 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
+
+  const { aliasKeyword, isSelectingMentions, selectMention } = useMentionableMessageActions();
 
   const handleSubmit = useCallback(
     (value: string) => {
@@ -114,14 +118,30 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       keyboardBlurBehavior="restore"
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
-        <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Comments
-        </Typography>
-
         <View className="flex-grow px-1">
-          <Suspense fallback={<CommentListFallback />}>
-            {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
-          </Suspense>
+          {isSelectingMentions ? (
+            <View className="flex-grow">
+              <Suspense fallback={<CommentListFallback />}>
+                <SearchResults
+                  keyword={aliasKeyword}
+                  activeFilter="top"
+                  onChangeFilter={() => {}}
+                  blurInputFocus={() => {}}
+                  onSelect={selectMention}
+                />
+              </Suspense>
+            </View>
+          ) : (
+            <>
+              <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Comments
+              </Typography>
+
+              <Suspense fallback={<CommentListFallback />}>
+                {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
+              </Suspense>
+            </>
+          )}
         </View>
 
         <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />

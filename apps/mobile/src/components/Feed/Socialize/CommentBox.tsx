@@ -1,11 +1,12 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { useMentionableMessageActions } from '~/contexts/MentionableMessageContext';
 import colors from '~/shared/theme/colors';
 
 import { SendIcon } from './SendIcon';
@@ -29,9 +30,9 @@ export function CommentBox({
   isSubmittingComment,
 }: Props) {
   const { colorScheme } = useColorScheme();
-  const [value, setValue] = useState('');
+  const { setMessage, parsedMessage } = useMentionableMessageActions();
 
-  const characterCount = useMemo(() => 300 - value.length, [value]);
+  const characterCount = useMemo(() => 300 - parsedMessage.length, [parsedMessage]);
 
   const isKeyboardActive = useKeyboardStatus();
 
@@ -40,8 +41,8 @@ export function CommentBox({
   }, [onClose]);
 
   const resetComment = useCallback(() => {
-    setValue('');
-  }, []);
+    setMessage('');
+  }, [setMessage]);
 
   const showXMark = useMemo(() => {
     // If its coming from comment button, show the x mark
@@ -52,18 +53,18 @@ export function CommentBox({
   }, [isKeyboardActive, isNotesModal]);
 
   const handleSubmit = useCallback(() => {
-    if (value.length === 0) {
+    if (parsedMessage.length === 0) {
       return;
     }
 
-    onSubmit(value);
+    onSubmit(parsedMessage);
 
     resetComment();
-  }, [onSubmit, resetComment, value]);
+  }, [onSubmit, resetComment, parsedMessage]);
 
   const disabledSendButton = useMemo(() => {
-    return value.length === 0 || characterCount < 0 || isSubmittingComment;
-  }, [value.length, characterCount, isSubmittingComment]);
+    return parsedMessage.length === 0 || characterCount < 0 || isSubmittingComment;
+  }, [parsedMessage.length, characterCount, isSubmittingComment]);
 
   const width = useSharedValue(0);
   const display = useSharedValue('none');
@@ -82,8 +83,8 @@ export function CommentBox({
     <View className="p-2 flex flex-row items-center space-x-3 border-t border-porcelain dark:border-black-500">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
         <BottomSheetTextInput
-          value={value}
-          onChangeText={setValue}
+          value={parsedMessage}
+          onChangeText={setMessage}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"
