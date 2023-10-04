@@ -154,7 +154,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   // }, [navigation, track, token.creator?.username]);
 
   const contractName = isFxHashContractAddress(token.contract?.contractAddress?.address)
-    ? 'FxHash'
+    ? 'fxhash'
     : token.contract?.name ?? 'Untitled Contract';
 
   return (
