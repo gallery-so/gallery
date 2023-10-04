@@ -22,6 +22,7 @@ import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetail
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
+import { isFxHashContractAddress } from '~/shared/utils/getTezosExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
@@ -153,23 +154,27 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     });
   }, [isMobile, showModal, token, track]);
 
+  const contractName = isFxHashContractAddress(token.contract?.contractAddress?.address)
+    ? 'FxHash'
+    : token.contract?.name ?? 'Untitled Contract';
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={8}>
           {token.name && <TitleM>{decodedTokenName}</TitleM>}
           <HStack align="center" gap={4}>
-            {communityUrl && token.contract?.name ? (
+            {communityUrl ? (
               <ClickablePill to={communityUrl}>
                 <StyledPillContent gap={4} align="center" justify="flex-end">
                   {token.chain === 'POAP' && <PoapLogo />}
                   {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-                  <StyledContractName>{token.contract.name}</StyledContractName>
+                  <StyledContractName>{contractName}</StyledContractName>
                 </StyledPillContent>
               </ClickablePill>
             ) : (
               <NonclickablePill>
-                <StyledContractName>{token.contract?.name}</StyledContractName>
+                <StyledContractName>{contractName}</StyledContractName>
               </NonclickablePill>
             )}
           </HStack>
