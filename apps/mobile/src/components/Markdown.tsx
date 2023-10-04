@@ -1,11 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
 import merge from 'lodash.merge';
 import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { StyleProp, Text, View } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
 
+import { RootStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
+import {
+  handleDeepLinkNavigation,
+  isInternalLink,
+  isInternalLinkWithDeepLink,
+} from './DeepLinkRegistrar';
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 const markdownStyles = {
@@ -58,6 +65,8 @@ export function Markdown({
   const [showAll, setShowAll] = useState(false);
   const { colorScheme } = useColorScheme();
 
+  const navigation = useNavigation<RootStackNavigatorProp>();
+
   const mergedStyles = useMemo(() => {
     const mergedStyles = { ...markdownStyles };
 
@@ -103,14 +112,17 @@ export function Markdown({
 
   const handleLinkPress = useCallback(
     (url: string) => {
-      if (url && onBypassLinkPress) {
+      if (isInternalLinkWithDeepLink(url)) {
+        handleDeepLinkNavigation(url, navigation);
+        return false;
+      } else if (url && !isInternalLink(url) && onBypassLinkPress) {
         onBypassLinkPress(url);
         return false;
       }
 
       return true;
     },
-    [onBypassLinkPress]
+    [onBypassLinkPress, navigation]
   );
 
   return (
