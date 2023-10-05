@@ -75,13 +75,16 @@ export default function SharedCommunitiesList({ userRef }: Props) {
             )
           : null;
 
-      if (!community.name && !descriptionFirstLine) {
+      const displayName =
+        community.name || community.contractAddress?.address || 'Untitled Contract';
+
+      if (!displayName && !descriptionFirstLine) {
         return null;
       }
 
       return (
         <div style={style} key={key}>
-          <CommunityHoverCard communityRef={community}>
+          <CommunityHoverCard communityRef={community} communityName={displayName}>
             <PaginatedListRow
               title={community.name ?? ''}
               subTitle={descriptionFirstLine}

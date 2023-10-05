@@ -24,7 +24,7 @@ import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import { isFxHashContractAddress } from '~/shared/utils/getTezosExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
@@ -83,6 +83,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
             ...TokenFailureBoundaryFragment
+            ...extractRelevantMetadataFromTokenFragment
           }
         }
         ...useLoggedInUserIdFragment
@@ -153,9 +154,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   //   }
   // }, [navigation, track, token.creator?.username]);
 
-  const contractName = isFxHashContractAddress(token.contract?.contractAddress?.address)
-    ? 'fx(hash)'
-    : token.contract?.name ?? 'Untitled Contract';
+  const { contractName } = extractRelevantMetadataFromToken(token);
 
   return (
     <ScrollView>

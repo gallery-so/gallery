@@ -17,6 +17,9 @@ export function CommunityProfilePicture({ communityRef, style, ...rest }: Profil
     graphql`
       fragment CommunityProfilePictureFragment on Community {
         name
+        contractAddress {
+          address
+        }
         profileImageURL
       }
     `,
@@ -25,7 +28,8 @@ export function CommunityProfilePicture({ communityRef, style, ...rest }: Profil
 
   const imageUrl = community?.profileImageURL;
 
-  const letter = community?.name?.[0]?.toUpperCase();
+  const letter =
+    community?.name?.[0]?.toUpperCase() || community?.contractAddress?.address?.[0]?.toUpperCase();
 
   const fallbackProfilePicture = (
     <RawProfilePicture

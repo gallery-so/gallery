@@ -13,6 +13,9 @@ export default function CommunityProfilePicture({ communityRef, ...rest }: Props
     graphql`
       fragment CommunityProfilePictureFragment on Community {
         name
+        contractAddress {
+          address
+        }
         profileImageURL
       }
     `,
@@ -24,6 +27,7 @@ export default function CommunityProfilePicture({ communityRef, ...rest }: Props
     return <RawProfilePicture imageUrl={imageUrl} {...rest} />;
   }
 
-  const firstLetter = community?.name?.[0]?.toUpperCase();
+  const firstLetter =
+    community?.name?.[0]?.toUpperCase() || community?.contractAddress?.address?.[0]?.toUpperCase();
   return <RawProfilePicture letter={firstLetter ?? ''} {...rest} />;
 }

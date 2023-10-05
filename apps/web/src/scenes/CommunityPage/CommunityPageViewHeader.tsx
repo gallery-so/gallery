@@ -19,7 +19,7 @@ import GlobeIcon from '~/icons/GlobeIcon';
 import ShareIcon from '~/icons/ShareIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-import { getExternalAddressLink } from '~/shared/utils/wallet';
+import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
@@ -37,6 +37,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         description
         badgeURL
         contractAddress {
+          address
           ...walletGetExternalAddressLinkFragment
         }
         ...CommunityPageMetadataFragment
@@ -152,6 +153,8 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     showExpandedDescription,
   ]);
 
+  const displayName = name || truncateAddress(contractAddress?.address ?? '');
+
   if (isMobile) {
     return (
       <VStack justify="space-between" gap={16}>
@@ -159,7 +162,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         <HStack gap={12} align="center">
           <CommunityProfilePicture communityRef={community} size="xxl" />
           <VStack>
-            <TitleDiatypeL>{name}</TitleDiatypeL>
+            <TitleDiatypeL>{displayName}</TitleDiatypeL>
             {DescriptionContainer}
           </VStack>
         </HStack>
@@ -175,7 +178,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
       <StyledContainer>
         <HStack gap={12} align="center">
           <CommunityProfilePicture communityRef={community} size="lg" />
-          <TitleL>{name}</TitleL>
+          <TitleL>{displayName}</TitleL>
           {badgeURL && <StyledBadge src={badgeURL} />}
         </HStack>
         <HStack gap={48}>
