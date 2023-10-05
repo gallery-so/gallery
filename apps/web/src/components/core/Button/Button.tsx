@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { ButtonHTMLAttributes, forwardRef, MouseEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { InternalAnchorElementProps } from '~/types/Elements';
 
@@ -127,24 +128,55 @@ const StyledButton = styled.button<StyledButtonProps>`
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   StyledButtonProps & {
     pending?: boolean;
-  };
+  } & GalleryElementTrackingProps;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ type = 'button', pending, disabled, children, ...otherProps }: ButtonProps, ref) => (
-    <StyledButton
-      type={type}
-      disabled={disabled || pending}
-      aria-disabled={disabled}
-      aria-busy={pending}
-      {...otherProps}
-      ref={ref}
-    >
-      <span className="Button-label">{children}</span>
-      <span className="Button-spinner" aria-hidden>
-        <Spinner />
-      </span>
-    </StyledButton>
-  )
+  (
+    {
+      type = 'button',
+      pending,
+      disabled,
+      children,
+      onClick,
+      eventElementId,
+      eventName,
+      properties,
+      ...otherProps
+    }: ButtonProps,
+    ref
+  ) => {
+    const track = useTrack();
+
+    const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+      (event) => {
+        track('Button Click', {
+          id: eventElementId,
+          name: eventName,
+          ...properties,
+        });
+
+        onClick?.(event);
+      },
+      [eventElementId, eventName, onClick, properties, track]
+    );
+
+    return (
+      <StyledButton
+        type={type}
+        disabled={disabled || pending}
+        aria-disabled={disabled}
+        aria-busy={pending}
+        onClick={handleClick}
+        {...otherProps}
+        ref={ref}
+      >
+        <span className="Button-label">{children}</span>
+        <span className="Button-spinner" aria-hidden>
+          <Spinner />
+        </span>
+      </StyledButton>
+    );
+  }
 );
 
 Button.displayName = 'Button';
