@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
-import { MentionType } from '~/contexts/MentionableMessageContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
