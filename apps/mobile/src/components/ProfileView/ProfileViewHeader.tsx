@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
+import { useIsChristinaFromLens } from '~/shared/hooks/useIsChristinaFromLens';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -66,6 +67,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewFarcasterPillFragment
             ...ProfileViewTwitterPillFragment
             ...ProfileViewLensPillFragment
+            ...useIsChristinaFromLensFragment
           }
         }
 
@@ -83,6 +85,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
   }
 
   const isLoggedInUser = loggedInUserId === user.id;
+  const isChristinaFromLens = useIsChristinaFromLens(user);
 
   const totalFollowers = user.followers?.length ?? 0;
   const totalGalleries = useMemo(() => {
@@ -138,7 +141,9 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       {numPills > 0 && (
         <View className={`flex flex-row mx-4 mt-4 w-full ml-2`}>
           <ProfileViewTwitterPill userRef={user} maxWidth={maxPillWidth} />
-          <ProfileViewFarcasterPill userRef={user} maxWidth={maxPillWidth} />
+          {isChristinaFromLens ? null : (
+            <ProfileViewFarcasterPill userRef={user} maxWidth={maxPillWidth} />
+          )}
           <ProfileViewLensPill userRef={user} maxWidth={maxPillWidth} />
         </View>
       )}
