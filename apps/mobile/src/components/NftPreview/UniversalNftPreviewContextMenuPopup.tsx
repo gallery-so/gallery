@@ -75,6 +75,7 @@ export function UniversalNftPreviewContextMenuPopup({
         navigation.navigate('UniversalNftDetail', {
           cachedPreviewAssetUrl: fallbackTokenUrl,
           tokenId: token.dbid,
+          userId: TODO,
         });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareUniversalToken(token);

@@ -36,7 +36,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     queryRef
   );
 
-  const event = useFragment(
+  const token = useFragment(
     graphql`
       fragment useToggleTokenAdmireFragment on Token {
         id
@@ -47,11 +47,11 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
             node {
               dbid
               __typename
-              admirer {
-                id
-                dbid
-                username
-              }
+              # admirer {
+              #   id
+              #   dbid
+              #   username
+              # }
             }
           }
         }
@@ -107,19 +107,19 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   `);
 
   const interactionsConnection = ConnectionHandler.getConnectionID(
-    event.id,
+    token.id,
     'Interactions_token_admires'
   );
 
   const handleRemoveAdmire = useCallback(async () => {
-    if (!event?.admires?.edges?.node?.dbid) {
+    if (!token?.admires?.edges?.node?.dbid) {
       return;
     }
 
     trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
-      eventId: event?.node?.dbid,
+      eventId: token?.node?.dbid,
     };
 
     const updater: SelectorStoreUpdater<useToggleAdmireRemoveMutation['response']> = (
@@ -146,11 +146,11 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         optimisticResponse: {
           removeAdmire: {
             __typename: 'RemoveAdmirePayload',
-            admireID: event?.node.dbid,
+            admireID: token?.node.dbid,
           },
         },
         variables: {
-          admireId: event?.node.dbid ?? '',
+          admireId: token?.node.dbid ?? '',
         },
       });
 
@@ -172,7 +172,13 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [event?.node?.dbid, interactionsConnection, removeAdmire, reportError]);
+  }, [
+    token?.admires?.edges?.node?.dbid,
+    token?.node.dbid,
+    interactionsConnection,
+    removeAdmire,
+    reportError,
+  ]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -182,7 +188,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
-      eventId: event?.node?.dbid,
+      eventId: token?.node?.dbid,
     };
 
     const updater: SelectorStoreUpdater<useToggleTokenAdmireAddMutation['response']> = (
@@ -205,8 +211,8 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
           admireToken: {
             __typename: 'AdmireTokenPayload',
             token: {
-              id: event?.node?.id,
-              dbid: event?.node?.dbid,
+              id: token?.node?.id,
+              dbid: token?.node?.dbid,
               admires: {
                 edges: {
                   node: {
@@ -246,7 +252,18 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [admire, token.dbid, token.id, interactionsConnection, query.viewer, reportError]);
+  }, [
+    query.viewer?.__typename,
+    query.viewer?.user?.id,
+    query.viewer?.user?.dbid,
+    query.viewer?.user?.username,
+    token?.node?.dbid,
+    token?.node?.id,
+    token.dbid,
+    interactionsConnection,
+    admire,
+    reportError,
+  ]);
 
   const hasViewerAdmiredEvent = false;
 

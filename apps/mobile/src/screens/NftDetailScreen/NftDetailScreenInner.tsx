@@ -14,7 +14,7 @@ export function NftDetailScreenInner() {
 
   const query = useLazyLoadQuery<NftDetailScreenInnerQuery>(
     graphql`
-      query NftDetailScreenInnerQuery($tokenId: DBID!, $collectionId: DBID!) {
+      query NftDetailScreenInnerQuery($tokenId: DBID!, $collectionId: DBID!, $userId: DBID!) {
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ... on CollectionToken {
             collection {
@@ -36,6 +36,7 @@ export function NftDetailScreenInner() {
     {
       tokenId: route.params.tokenId,
       collectionId: route.params.collectionId ?? 'definitely-not-a-collection',
+      userId: 'test',
     }
     // Use one of these if you want to test with a specific NFT
     // POAP

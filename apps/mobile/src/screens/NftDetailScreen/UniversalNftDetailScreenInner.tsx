@@ -14,7 +14,7 @@ export function UniversalNftDetailScreenInner() {
 
   const query = useLazyLoadQuery<UniversalNftDetailScreenInnerQuery>(
     graphql`
-      query UniversalNftDetailScreenInnerQuery($tokenId: DBID!) {
+      query UniversalNftDetailScreenInnerQuery($tokenId: DBID!, $userId: DBID!) {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
@@ -26,6 +26,7 @@ export function UniversalNftDetailScreenInner() {
     `,
     {
       tokenId: route.params.tokenId,
+      userId: 'test',
     }
   );
 

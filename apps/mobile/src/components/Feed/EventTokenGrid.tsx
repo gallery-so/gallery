@@ -64,6 +64,7 @@ export function EventTokenGrid({
         navigation.push('NftDetail', {
           tokenId: collectionToken.token.dbid,
           collectionId: collectionToken.collection?.dbid ?? null,
+          userId: TODO,
 
           cachedPreviewAssetUrl: cachedPreviewAssetUrl ?? null,
         });
