@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
+import { UserExperienceType } from '~/generated/enums';
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 
@@ -15,9 +16,17 @@ type Props = {
   onClose: () => void;
   onClick: () => void;
   ctaText?: string;
+  experienceFlag: UserExperienceType;
 };
 
-export function GlobalBanner({ title, ctaText, description, onClose, onClick }: Props) {
+export function GlobalBanner({
+  title,
+  ctaText,
+  description,
+  onClose,
+  onClick,
+  experienceFlag,
+}: Props) {
   return (
     <StyledWrapper align="center" justify="space-between">
       <StyledTextWrapper>
@@ -29,7 +38,14 @@ export function GlobalBanner({ title, ctaText, description, onClose, onClick }: 
         <BaseM>{description}</BaseM>
       </StyledTextWrapper>
       <StyledButtonWrapper>
-        <StyledButton onClick={onClick}>{ctaText}</StyledButton>
+        <StyledButton
+          eventElementId="Global Banner CTA Button"
+          eventName="Global Banner CTA Button Clicked"
+          properties={{ variant: 'default', experienceFlag }}
+          onClick={onClick}
+        >
+          {ctaText}
+        </StyledButton>
 
         <IconContainer variant="blue" size="sm" icon={<StyledCloseIcon />} onClick={onClose} />
       </StyledButtonWrapper>

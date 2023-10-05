@@ -4,32 +4,25 @@ import appIcon from 'public/gallery-app-ios-icon.png';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
+import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { UserExperienceType } from '~/generated/enums';
 import colors from '~/shared/theme/colors';
 
 type Props = {
   handleCTAClick: () => void;
+  experienceFlag: UserExperienceType;
 };
 
-export default function MobileBetaReleaseBanner({ handleCTAClick }: Props) {
+export default function MobileBetaReleaseBanner({ handleCTAClick, experienceFlag }: Props) {
   const { push } = useRouter();
 
-  const track = useTrack();
-
   const handleClick = useCallback(() => {
-    // TODO: standardize this tracking across all buttons, chips, and icons, like mobile
-    track('Button Click', {
-      id: 'Global Banner Button',
-      name: 'Global Banner Button Clicked',
-      variant: 'iOS',
-    });
-
     push('/mobile');
 
     handleCTAClick();
-  }, [handleCTAClick, push, track]);
+  }, [handleCTAClick, push]);
 
   return (
     <StyledContainer align="center">
@@ -41,7 +34,12 @@ export default function MobileBetaReleaseBanner({ handleCTAClick }: Props) {
             <StyledDescription>Mobile app beta now available</StyledDescription>
           </VStack>
         </StyledLeftContent>
-        <StyledDownloadButton onClick={handleClick}>
+        <StyledDownloadButton
+          eventElementId="Global Banner CTA Button"
+          eventName="Global Banner CTA Button Clicked"
+          properties={{ variant: 'iOS Mobile Beta Upsell', experienceFlag }}
+          onClick={handleClick}
+        >
           <StyledDownloadText>DOWNLOAD</StyledDownloadText>
         </StyledDownloadButton>
       </StyledContent>
@@ -84,7 +82,7 @@ const StyledImage = styled(Image)`
   height: 32px;
 `;
 
-const StyledDownloadButton = styled.button`
+const StyledDownloadButton = styled(Button)`
   background: #3478f6;
   border-radius: 48px;
   width: 107px;
