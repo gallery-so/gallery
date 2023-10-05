@@ -17,6 +17,7 @@ export function CommunitySearchResult({ communityRef, onSelect = () => {} }: Pro
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
+        dbid
         name
         description
         contractAddress {
@@ -38,7 +39,7 @@ export function CommunitySearchResult({ communityRef, onSelect = () => {} }: Pro
       onSelect({
         type: 'Community',
         label: community.name ?? '',
-        value: address ?? '',
+        value: community.dbid,
       });
       return;
     }

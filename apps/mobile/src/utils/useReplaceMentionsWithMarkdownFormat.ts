@@ -25,6 +25,11 @@ export function useReplaceMentionsWithMarkdownFormat(
           }
           ... on Community {
             __typename
+            contractAddress {
+              __typename
+              address
+              chain
+            }
           }
         }
       }
@@ -44,8 +49,15 @@ export function useReplaceMentionsWithMarkdownFormat(
 
       let markdownLink = '';
 
-      if (mention.entity.__typename === 'GalleryUser')
+      if (mention.entity.__typename === 'GalleryUser') {
         markdownLink = `[${mentionText}](https://gallery.so/${mention.entity.username})`;
+      } else if (mention.entity.__typename === 'Community') {
+        if (!mention.entity.contractAddress) return;
+
+        const { address, chain } = mention.entity.contractAddress;
+
+        markdownLink = `[${mentionText}](https://gallery.so/community/${chain}/${address})`;
+      }
 
       captionWithMarkdownLinks = captionWithMarkdownLinks.replace(mentionText, markdownLink);
     });

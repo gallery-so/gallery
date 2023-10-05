@@ -17,6 +17,15 @@ export type MentionType = {
   value: string;
 };
 
+type Mention = {
+  interval: {
+    start: number;
+    length: number;
+  };
+  userId?: string;
+  communityId?: string;
+};
+
 export function useMentionableMessage() {
   const [message, setMessage] = useState('');
   const [mentions, setMentions] = useState<MentionDataType[]>([]);
@@ -39,19 +48,21 @@ export function useMentionableMessage() {
       setMessage(newMessage);
       setIsSelectingMentions(false);
 
-      // add the mention to the list
-      setMentions((prevMentions) => [
-        ...prevMentions,
-        {
-          interval: {
-            start: message.length - lastWord.length,
-            length: mention.label.length + 1, // +1 for the @
-          },
-          userId: mention.value,
-          // communityId: mention.value,
-          // communityId: '',
+      const newMention: Mention = {
+        interval: {
+          start: message.length - lastWord.length,
+          length: mention.label.length + 1, // +1 for the @
         },
-      ]);
+      };
+
+      if (mention.type === 'User') {
+        newMention.userId = mention.value;
+      } else {
+        newMention.communityId = mention.value;
+      }
+
+      // add the mention to the list
+      setMentions((prevMentions) => [...prevMentions, newMention]);
     },
     [message, setMessage]
   );
