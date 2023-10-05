@@ -95,7 +95,6 @@ export default function FollowListUserItem({
             </StyledBaseM>
           </VStack>
         </UserHoverCard>
-        children
       </HStack>
       <VStack justify="center">
         <StyledFollowButton queryRef={query} userRef={user} />
