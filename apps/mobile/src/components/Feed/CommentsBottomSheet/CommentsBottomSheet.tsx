@@ -12,6 +12,7 @@ import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
+import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
@@ -23,7 +24,6 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
-import { useMentionableMessageActions } from '~/contexts/MentionableMessageContext';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListPaginationQuery.graphql';
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
@@ -60,7 +60,15 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
 
-  const { aliasKeyword, isSelectingMentions, selectMention } = useMentionableMessageActions();
+  const {
+    aliasKeyword,
+    isSelectingMentions,
+    selectMention,
+    mentions,
+    setMessage,
+    parsedMessage,
+    resetMentions,
+  } = useMentionableMessage();
 
   const handleSubmit = useCallback(
     (value: string) => {
@@ -68,10 +76,13 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         postComment({
           feedId,
           value,
+          mentions,
           onSuccess: () => {
             Keyboard.dismiss();
           },
         });
+
+        resetMentions();
         return;
       }
 
@@ -83,7 +94,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         },
       });
     },
-    [feedId, type, submitComment, postComment]
+    [feedId, type, mentions, submitComment, postComment, resetMentions]
   );
 
   const isSubmitting = useMemo(() => {
@@ -116,6 +127,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       onChange={() => setIsOpen(true)}
       android_keyboardInputMode="adjustResize"
       keyboardBlurBehavior="restore"
+      onDismiss={resetMentions}
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
         <View className="flex-grow px-1">
@@ -132,19 +144,26 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
               </Suspense>
             </View>
           ) : (
-            <>
+            <View className="flex-1 space-y-2">
               <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                 Comments
               </Typography>
-
-              <Suspense fallback={<CommentListFallback />}>
-                {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
-              </Suspense>
-            </>
+              <View className="flex-grow">
+                <Suspense fallback={<CommentListFallback />}>
+                  {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
+                </Suspense>
+              </View>
+            </View>
           )}
         </View>
 
-        <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />
+        <CommentBox
+          value={parsedMessage}
+          onChangeText={setMessage}
+          onSubmit={handleSubmit}
+          isSubmittingComment={isSubmitting}
+          onClose={() => {}}
+        />
       </Animated.View>
     </GalleryBottomSheetModal>
   );
