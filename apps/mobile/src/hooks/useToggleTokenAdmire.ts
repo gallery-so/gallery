@@ -36,26 +36,23 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     queryRef
   );
 
-  const token = useFragment(
+  const event = useFragment(
     graphql`
-      fragment useToggleTokenAdmireTokenFragment on Token {
+      fragment useToggleTokenAdmireFragment on Token {
         id
         dbid
-      }
-    `,
-    tokenRef
-  );
 
-  const admireVal = useFragment(
-    graphql`
-      fragment useToggleTokenAdmireFragment on TokenAdmireEdge {
-        node {
-          id
-          dbid
-          admirer {
-            id
-            dbid
-            username
+        admires(userID: $userId) {
+          edges {
+            node {
+              dbid
+              __typename
+              admirer {
+                id
+                dbid
+                username
+              }
+            }
           }
         }
       }
@@ -66,13 +63,12 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   const reportError = useReportError();
 
   const [admire] = usePromisifiedMutation<useToggleTokenAdmireAddMutation>(graphql`
-    mutation useToggleTokenAdmireAddMutation($tokenId: DBID!, $connections: [ID!]!, $userId: DBID!)
+    mutation useToggleTokenAdmireAddMutation($tokenId: DBID!, $userId: DBID!, $connections: [ID!]!)
     @raw_response_type {
       admireToken(tokenId: $tokenId) {
         ... on AdmireTokenPayload {
           __typename
           token {
-            ...useToggleTokenAdmireTokenFragment
             admires(userID: $userId) {
               edges {
                 node @appendNode(edgeTypeName: "TokenAdmireEdge", connections: $connections) {
@@ -85,9 +81,10 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
                     username
                   }
                 }
-                ...useToggleTokenAdmireFragment
               }
             }
+
+            ...useToggleTokenAdmireFragment
           }
         }
       }
@@ -110,19 +107,19 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   `);
 
   const interactionsConnection = ConnectionHandler.getConnectionID(
-    token.id,
+    event.id,
     'Interactions_token_admires'
   );
 
   const handleRemoveAdmire = useCallback(async () => {
-    if (!admireVal?.dbid) {
+    if (!event?.admires?.edges?.node?.dbid) {
       return;
     }
 
     trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
-      tokenId: token.dbid,
+      eventId: event?.node?.dbid,
     };
 
     const updater: SelectorStoreUpdater<useToggleAdmireRemoveMutation['response']> = (
@@ -149,11 +146,11 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         optimisticResponse: {
           removeAdmire: {
             __typename: 'RemoveAdmirePayload',
-            admireID: admireVal.dbid,
+            admireID: event?.node.dbid,
           },
         },
         variables: {
-          admireID: admireVal.dbid,
+          admireId: event?.node.dbid ?? '',
         },
       });
 
@@ -175,7 +172,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [admireVal?.dbid, admireVal?.admirer.dbid, interactionsConnection, removeAdmire, reportError]);
+  }, [event?.node?.dbid, interactionsConnection, removeAdmire, reportError]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -185,7 +182,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
-      eventId: token.dbid,
+      eventId: event?.node?.dbid,
     };
 
     const updater: SelectorStoreUpdater<useToggleTokenAdmireAddMutation['response']> = (
@@ -208,8 +205,8 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
           admireToken: {
             __typename: 'AdmireTokenPayload',
             token: {
-              id: token.id,
-              dbid: token.dbid,
+              id: event?.node?.id,
+              dbid: event?.node?.dbid,
               admires: {
                 edges: {
                   node: {

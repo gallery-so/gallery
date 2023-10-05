@@ -5,12 +5,14 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
 import { graphql, useFragment } from 'react-relay';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
+import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { InteractiveLink } from '~/components/InteractiveLink';
@@ -28,8 +30,6 @@ import colors from '~/shared/theme/colors';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
-import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
-import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 type Props = {
   onShare: () => void;
@@ -84,6 +84,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
             ...TokenFailureBoundaryFragment
+            ...useToggleTokenAdmireFragment
           }
         }
         ...useLoggedInUserIdFragment
@@ -149,12 +150,10 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   });
 
   const handleToggleAdmireToken = useCallback(() => {
-    if (!token.dbid) return;
+    if (hasViewerAdmiredEvent) return;
 
-    navigation.navigate('PostComposer', {
-      tokenId: token.dbid,
-    });
-  }, [navigation, token.dbid]);
+    toggleTokenAdmire();
+  }, [hasViewerAdmiredEvent, toggleTokenAdmire]);
 
   // const handleCreatorPress = useCallback(() => {
   //   if (token.creator?.username) {
@@ -294,9 +293,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         {!isTokenOwner && (
           <Button
-            icon={
-              <AdmireIcon active={isAdmired} />
-            }
+            icon={<AdmireIcon active={isAdmired} />}
             eventElementId={null}
             eventName={null}
             onPress={handleToggleAdmireToken}
