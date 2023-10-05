@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
@@ -28,6 +28,8 @@ import colors from '~/shared/theme/colors';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
+import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 type Props = {
   onShare: () => void;
@@ -141,6 +143,19 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     });
   }, [navigation, token.dbid]);
 
+  const { hasViewerAdmiredEvent, toggleTokenAdmire } = useToggleTokenAdmire({
+    tokenRef: token,
+    queryRef: query,
+  });
+
+  const handleToggleAdmireToken = useCallback(() => {
+    if (!token.dbid) return;
+
+    navigation.navigate('PostComposer', {
+      tokenId: token.dbid,
+    });
+  }, [navigation, token.dbid]);
+
   // const handleCreatorPress = useCallback(() => {
   //   if (token.creator?.username) {
   //     track('NFT Detail Creator Name Clicked', {
@@ -151,6 +166,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   //     navigation.push('Profile', { username: token.creator.username });
   //   }
   // }, [navigation, track, token.creator?.username]);
+
+  const [isAdmired, setIsAdmired] = useState(false);
 
   return (
     <ScrollView>
@@ -272,6 +289,18 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             eventName={null}
             onPress={handleCreatePost}
             text="create post"
+          />
+        )}
+
+        {!isTokenOwner && (
+          <Button
+            icon={
+              <AdmireIcon active={isAdmired} />
+            }
+            eventElementId={null}
+            eventName={null}
+            onPress={handleToggleAdmireToken}
+            text="admire"
           />
         )}
 
