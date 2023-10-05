@@ -1,4 +1,3 @@
-import { route } from 'nextjs-routes';
 import { PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
@@ -44,7 +43,7 @@ function BaseMarkdown({
       components={{
         a: ({ href, children }) => {
           if (href) {
-            const isInternalLink = href[0] === route({ pathname: '/' });
+            const isInternalLink = href.startsWith('https://gallery.so/');
             if (isInternalLink && CustomInternalLinkComponent) {
               return (
                 <CustomInternalLinkComponent href={href}>{children}</CustomInternalLinkComponent>

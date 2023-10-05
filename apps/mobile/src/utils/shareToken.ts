@@ -52,7 +52,7 @@ export async function shareUniversalToken(tokenRef: shareTokenUniversalFragment$
   );
 
   if (token.owner?.username) {
-    const url = `https://gallery.so/token/${token.dbid}`;
+    const url = `https://gallery.so/${token.owner.username}/token/${token.dbid}`;
 
     Share.share({ url });
   }

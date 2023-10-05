@@ -24,6 +24,7 @@ import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
+import { isFxHashContractAddress } from '~/shared/utils/getTezosExternalUrl';
 
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
@@ -152,6 +153,10 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   //   }
   // }, [navigation, track, token.creator?.username]);
 
+  const contractName = isFxHashContractAddress(token.contract?.contractAddress?.address)
+    ? 'fx(hash)'
+    : token.contract?.name ?? 'Untitled Contract';
+
   return (
     <ScrollView>
       <View className="flex flex-col space-y-6 px-4 pb-4">
@@ -189,28 +194,26 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             {token.name}
           </Typography>
 
-          {token.contract?.name ? (
-            <GalleryTouchableOpacity
-              eventElementId="NFT Detail Contract Name Pill"
-              eventName="NFT Detail Contract Name Pill Clicked"
-            >
-              <Pill className="flex flex-row space-x-1 self-start">
-                {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
-                {token.contract?.badgeURL && (
-                  <FastImage className="h-6 w-6" source={{ uri: token.contract.badgeURL }} />
-                )}
-                <GalleryTouchableOpacity
-                  onPress={handleOpenCommunityScreen}
-                  eventElementId="Community Pill"
-                  eventName="Community Pill Clicked"
-                >
-                  <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                    {token.contract.name}
-                  </Typography>
-                </GalleryTouchableOpacity>
-              </Pill>
-            </GalleryTouchableOpacity>
-          ) : null}
+          <GalleryTouchableOpacity
+            eventElementId="NFT Detail Contract Name Pill"
+            eventName="NFT Detail Contract Name Pill Clicked"
+          >
+            <Pill className="flex flex-row space-x-1 self-start">
+              {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
+              {token.contract?.badgeURL && (
+                <FastImage className="h-6 w-6" source={{ uri: token.contract.badgeURL }} />
+              )}
+              <GalleryTouchableOpacity
+                onPress={handleOpenCommunityScreen}
+                eventElementId="Community Pill"
+                eventName="Community Pill Clicked"
+              >
+                <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {contractName}
+                </Typography>
+              </GalleryTouchableOpacity>
+            </Pill>
+          </GalleryTouchableOpacity>
         </View>
 
         <View className="flex-row">

@@ -10,6 +10,7 @@ import { getProhibitionUrlDangerously } from './getProhibitionUrl';
 import {
   getFxHashExternalUrlDangerously,
   getObjktExternalUrlDangerously,
+  isFxHashContractAddress,
 } from './getTezosExternalUrl';
 import { hexToDec } from './hexToDec';
 import processProjectUrl from './processProjectUrl';
@@ -26,6 +27,7 @@ export function extractRelevantMetadataFromToken(
         chain
         lastUpdated
         contract {
+          name
           contractAddress {
             address
           }
@@ -49,6 +51,7 @@ export function extractRelevantMetadataFromToken(
   const result = {
     tokenId: '',
     contractAddress,
+    contractName: '',
     lastUpdated: '',
     openseaUrl: '',
     mirrorUrl: '',
@@ -77,6 +80,10 @@ export function extractRelevantMetadataFromToken(
       result.openseaUrl = getOpenseaExternalUrlDangerously(chain, contractAddress, tokenId);
     }
   }
+
+  result.contractName = isFxHashContractAddress(contractAddress)
+    ? 'fx(hash)'
+    : contract?.name ?? 'Untitled Contract';
 
   if (tokenMetadata) {
     result.mirrorUrl = extractMirrorXyzUrl(tokenMetadata);

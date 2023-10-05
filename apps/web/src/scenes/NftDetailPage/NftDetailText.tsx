@@ -79,7 +79,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const { openseaUrl } = extractRelevantMetadataFromToken(token);
+  const { openseaUrl, contractName } = extractRelevantMetadataFromToken(token);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
@@ -159,17 +159,17 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         <VStack gap={8}>
           {token.name && <TitleM>{decodedTokenName}</TitleM>}
           <HStack align="center" gap={4}>
-            {communityUrl && token.contract?.name ? (
+            {communityUrl ? (
               <ClickablePill to={communityUrl}>
                 <StyledPillContent gap={4} align="center" justify="flex-end">
                   {token.chain === 'POAP' && <PoapLogo />}
                   {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-                  <StyledContractName>{token.contract.name}</StyledContractName>
+                  <StyledContractName>{contractName}</StyledContractName>
                 </StyledPillContent>
               </ClickablePill>
             ) : (
               <NonclickablePill>
-                <StyledContractName>{token.contract?.name}</StyledContractName>
+                <StyledContractName>{contractName}</StyledContractName>
               </NonclickablePill>
             )}
           </HStack>
