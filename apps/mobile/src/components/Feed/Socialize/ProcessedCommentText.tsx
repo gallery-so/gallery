@@ -50,14 +50,12 @@ export default function ProcessedCommentText({ comment }: CommentProps) {
   }, [comment]);
 
   return (
-    <>
-      <Typography
-        className="text-sm"
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        style={{ fontSize: 14, lineHeight: 18, paddingVertical: 2 }}
-      >
-        {processedText}
-      </Typography>
-    </>
+    <Typography
+      className="text-sm"
+      font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      style={{ fontSize: 14, lineHeight: 18, paddingVertical: 2 }}
+    >
+      {processedText}
+    </Typography>
   );
 }

@@ -35,12 +35,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         className="flex flex-row wrap"
       >
         <Text numberOfLines={2}>
-          <UsernameDisplay
-            userRef={comment.commenter}
-            size="sm"
-            // className="border border-black mr-1"
-            style={{ marginRight: 4 }}
-          />{' '}
+          <UsernameDisplay userRef={comment.commenter} size="sm" style={{ marginRight: 4 }} />{' '}
           <ProcessedCommentText comment={comment.comment} />
         </Text>
       </GalleryTouchableOpacity>
