@@ -45,6 +45,7 @@ type Props = {
   onSelect?: (item: MentionType) => void;
 
   onlyShowTopResults?: boolean;
+  isMentionSearch?: boolean;
 };
 
 export function SearchResults({
@@ -54,6 +55,7 @@ export function SearchResults({
   blurInputFocus,
   onSelect = () => {},
   onlyShowTopResults = false,
+  isMentionSearch = false,
 }: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -219,7 +221,7 @@ export function SearchResults({
         }
       }
 
-      if (hasGalleries) {
+      if (hasGalleries && !isMentionSearch) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'gallery',
@@ -264,6 +266,7 @@ export function SearchResults({
     hasCommunities,
     hasGalleries,
     hasUsers,
+    isMentionSearch,
     searchCommunities,
     searchGalleries,
     searchUsers,

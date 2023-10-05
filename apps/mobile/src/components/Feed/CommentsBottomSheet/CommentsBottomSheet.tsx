@@ -141,6 +141,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
                   blurInputFocus={() => {}}
                   onSelect={selectMention}
                   onlyShowTopResults
+                  isMentionSearch
                 />
               </Suspense>
             </View>

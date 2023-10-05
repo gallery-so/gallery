@@ -184,6 +184,7 @@ function PostComposerScreenInner() {
                 blurInputFocus={() => {}}
                 onSelect={selectMention}
                 onlyShowTopResults
+                isMentionSearch
               />
             </Suspense>
           ) : (
