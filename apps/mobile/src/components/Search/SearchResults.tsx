@@ -43,6 +43,8 @@ type Props = {
   onChangeFilter: (filter: SearchFilterType) => void;
   blurInputFocus: () => void;
   onSelect?: (item: MentionType) => void;
+
+  onlyShowTopResults?: boolean;
 };
 
 export function SearchResults({
@@ -51,6 +53,7 @@ export function SearchResults({
   onChangeFilter,
   blurInputFocus,
   onSelect = () => {},
+  onlyShowTopResults = false,
 }: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -266,6 +269,15 @@ export function SearchResults({
     searchUsers,
   ]);
 
+  const showAllButton = useMemo(
+    () => (sectionType: SearchFilterType) => {
+      if (onlyShowTopResults) return true;
+
+      return activeFilter === sectionType;
+    },
+    [activeFilter, onlyShowTopResults]
+  );
+
   const renderItem = useCallback<ListRenderItem<SearchListItem>>(
     ({ item }) => {
       if (item.kind === 'search-section-header') {
@@ -274,7 +286,7 @@ export function SearchResults({
             title={item.sectionTitle}
             onShowAll={() => onChangeFilter(item.sectionType)}
             numResults={item.numberOfResults}
-            isShowAll={activeFilter === item.sectionType}
+            isShowAll={showAllButton(item.sectionType)}
           />
         );
       } else if (item.kind === 'user-search-result') {
@@ -287,7 +299,7 @@ export function SearchResults({
 
       return <View />;
     },
-    [activeFilter, onChangeFilter, onSelect]
+    [onChangeFilter, onSelect, showAllButton]
   );
 
   if (isEmpty) {

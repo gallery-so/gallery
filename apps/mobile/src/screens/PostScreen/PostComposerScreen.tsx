@@ -183,6 +183,7 @@ function PostComposerScreenInner() {
                 onChangeFilter={() => {}}
                 blurInputFocus={() => {}}
                 onSelect={selectMention}
+                onlyShowTopResults
               />
             </Suspense>
           ) : (
