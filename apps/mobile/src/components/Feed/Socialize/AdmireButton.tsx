@@ -15,7 +15,7 @@ export function AdmireButton({ isAdmired, onPress, style }: Props) {
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
-      className="flex justify-center align-center w-8 h-8 pt-0.5"
+      className="flex w-8 h-8 pt-0.5"
       style={style}
       eventElementId="Admire Button"
       eventName="Admire Button Clicked"

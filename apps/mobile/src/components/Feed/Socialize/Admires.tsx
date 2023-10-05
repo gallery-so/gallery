@@ -6,51 +6,23 @@ import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBot
 import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
-import { InteractionsAdmiresFragment$key } from '~/generated/InteractionsAdmiresFragment.graphql';
-import { InteractionsCommentsFragment$key } from '~/generated/InteractionsCommentsFragment.graphql';
+import { AdmiresFragment$key } from '~/generated/AdmiresFragment.graphql';
 
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
-import { CommentLine } from './CommentLine';
-import { RemainingCommentCount } from './RemainingCommentCount';
-
-const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
   type: FeedItemTypes;
   feedId: string;
-  admireRefs: InteractionsAdmiresFragment$key;
-  commentRefs: InteractionsCommentsFragment$key;
+  admireRefs: AdmiresFragment$key;
   totalAdmires: number;
-  totalComments: number;
-
   onAdmirePress: () => void;
   openCommentBottomSheet: () => void;
 };
 
-export function Interactions({
-  type,
-  feedId,
-  admireRefs,
-  commentRefs,
-  totalAdmires,
-  totalComments,
-  onAdmirePress,
-  openCommentBottomSheet,
-}: Props) {
-  const comments = useFragment(
-    graphql`
-      fragment InteractionsCommentsFragment on Comment @relay(plural: true) {
-        dbid
-        ...CommentLineFragment
-      }
-    `,
-    commentRefs
-  );
-
+export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress }: Props) {
   const admires = useFragment(
     graphql`
-      fragment InteractionsAdmiresFragment on Admire @relay(plural: true) {
-        dbid
+      fragment AdmiresFragment on Admire @relay(plural: true) {
         admirer {
           ...AdmireLineFragment
           ...ProfileViewSharedFollowersBubblesFragment
@@ -74,8 +46,6 @@ export function Interactions({
     return users;
   }, [admires]);
 
-  const previewComments = comments.slice(-PREVIEW_COMMENT_COUNT);
-
   const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   return (
@@ -97,22 +67,6 @@ export function Interactions({
           totalAdmires={totalAdmires}
           onAdmirePress={onAdmirePress}
         />
-      </View>
-
-      <View className="flex flex-col space-y-1">
-        {previewComments.map((comment) => {
-          return (
-            <CommentLine
-              key={comment.dbid}
-              commentRef={comment}
-              onCommentPress={openCommentBottomSheet}
-            />
-          );
-        })}
-
-        {totalComments > 1 && (
-          <RemainingCommentCount totalCount={totalComments} onPress={openCommentBottomSheet} />
-        )}
       </View>
 
       <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />

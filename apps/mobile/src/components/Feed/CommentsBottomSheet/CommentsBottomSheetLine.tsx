@@ -1,16 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
 
 import ProcessedCommentText from '../Socialize/ProcessedCommentText';
@@ -74,9 +72,7 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
             {timeAgo}
           </Typography>
         </View>
-        {/* <View className="flex"> */}
         <ProcessedCommentText comment={comment.comment} />
-        {/* </View> */}
       </View>
     </GalleryTouchableOpacity>
   );
