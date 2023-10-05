@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useReplaceMentionsWithMarkdownFormat } from 'src/utils/useReplaceMentionsWithMarkdownFormat';
 
 import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -12,7 +13,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
@@ -31,6 +32,9 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
 
           ...ProfilePictureFragment
         }
+        mentions {
+          ...useReplaceMentionsWithMarkdownFormatFragment
+        }
       }
     `,
     commentRef
@@ -40,10 +44,10 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [redirectUrl, setRedirectUrl] = useState('');
-  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(comment.comment ?? '');
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
+  // TODO: Update this when kaito new component is ready
   const handleLinkPress = useCallback((url: string) => {
     bottomSheetRef.current?.present();
     setRedirectUrl(url);
@@ -55,6 +59,11 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
       navigation.push('Profile', { username: username, hideBackButton: false });
     }
   }, [comment?.commenter?.username, navigation]);
+
+  const formattedComment = useReplaceMentionsWithMarkdownFormat(
+    comment.comment ?? '',
+    removeNullValues(comment.mentions)
+  );
 
   return (
     <GalleryTouchableOpacity
@@ -82,7 +91,7 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
         </View>
         <View className="flex">
           <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
-            {captionWithMarkdownLinks}
+            {formattedComment}
           </Markdown>
           <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
         </View>

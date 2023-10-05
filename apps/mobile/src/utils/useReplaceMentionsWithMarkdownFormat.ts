@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { useReplaceMentionsWithMarkdownFormatFragment$key } from '~/generated/useReplaceMentionsWithMarkdownFormatFragment.graphql';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 export function useReplaceMentionsWithMarkdownFormat(
   comment: string,
@@ -48,6 +49,8 @@ export function useReplaceMentionsWithMarkdownFormat(
 
       captionWithMarkdownLinks = captionWithMarkdownLinks.replace(mentionText, markdownLink);
     });
+
+    captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(captionWithMarkdownLinks);
 
     return captionWithMarkdownLinks;
   }, [comment, mentions]);
