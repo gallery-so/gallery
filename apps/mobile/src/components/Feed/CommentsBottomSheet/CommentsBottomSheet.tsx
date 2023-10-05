@@ -66,7 +66,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
     selectMention,
     mentions,
     setMessage,
-    parsedMessage,
+    message,
     resetMentions,
   } = useMentionableMessage();
 
@@ -158,7 +158,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         </View>
 
         <CommentBox
-          value={parsedMessage}
+          value={message}
           onChangeText={setMessage}
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}

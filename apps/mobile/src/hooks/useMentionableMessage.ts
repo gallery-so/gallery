@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import useDebounce from '~/shared/hooks/useDebounce';
 
@@ -56,11 +56,6 @@ export function useMentionableMessage() {
     [message, setMessage]
   );
 
-  //   TODO: Remove this
-  const parsedMessage = useMemo(() => {
-    return message;
-  }, [message]);
-
   const handleSetMessage = useCallback((text: string) => {
     const splitText = text.split(' ');
 
@@ -93,7 +88,6 @@ export function useMentionableMessage() {
     isSelectingMentions,
     message,
     setMessage: handleSetMessage,
-    parsedMessage,
     selectMention: handleSetMention,
     mentions: mentions || [],
     resetMentions,
