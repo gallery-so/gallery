@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, ButtonLink } from '~/components/core/Button/Button';
+import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
@@ -48,58 +48,36 @@ export default function DesignPage() {
       <Section>
         <TitleM>Button</TitleM>
         <Examples>
-          <Button>primary</Button>
-          <Button pending>primary</Button>
-          <Button disabled>primary</Button>
-          <Button disabled pending>
+          <Button eventElementId="foo" eventName="bar">
+            primary
+          </Button>
+          <Button eventElementId="foo" eventName="bar" pending>
+            primary
+          </Button>
+          <Button eventElementId="foo" eventName="bar" disabled>
+            primary
+          </Button>
+          <Button eventElementId="foo" eventName="bar" disabled pending>
             primary
           </Button>
         </Examples>
         <Examples>
-          <Button variant="secondary">secondary</Button>
-          <Button variant="secondary" pending>
+          <Button eventElementId="foo" eventName="bar" variant="secondary">
             secondary
           </Button>
-          <Button disabled variant="secondary">
+          <Button eventElementId="foo" eventName="bar" variant="secondary" pending>
             secondary
           </Button>
-          <Button disabled variant="secondary" pending>
+          <Button eventElementId="foo" eventName="bar" disabled variant="secondary">
+            secondary
+          </Button>
+          <Button eventElementId="foo" eventName="bar" disabled variant="secondary" pending>
             secondary
           </Button>
         </Examples>
         <Examples>
-          <PendingButton />
-          <PendingButton variant="secondary" />
-        </Examples>
-      </Section>
-
-      <Section>
-        <TitleM>ButtonLink</TitleM>
-        <Examples>
-          <ButtonLink href={{ pathname: '/' }}>primary</ButtonLink>
-          <ButtonLink href={{ pathname: '/' }} pending>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }}>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} pending>
-            primary
-          </ButtonLink>
-        </Examples>
-        <Examples>
-          <ButtonLink href={{ pathname: '/' }} variant="secondary">
-            secondary
-          </ButtonLink>
-          <ButtonLink href={{ pathname: '/' }} variant="secondary" pending>
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary">
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary" pending>
-            secondary
-          </ButtonLink>
+          <PendingButton eventElementId="foo" eventName="bar" />
+          <PendingButton eventElementId="foo" eventName="bar" variant="secondary" />
         </Examples>
       </Section>
 
@@ -180,7 +158,9 @@ export default function DesignPage() {
       <Section>
         <TitleM>NFT Selector</TitleM>
         <Examples>
-          <Button onClick={showNftSelector}>Open Nft Selector</Button>
+          <Button eventElementId="foo" eventName="bar" onClick={showNftSelector}>
+            Open Nft Selector
+          </Button>
         </Examples>
       </Section>
 

@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import ActionText from '~/components/core/ActionText/ActionText';
 import { Button } from '~/components/core/Button/Button';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
+import { FOOTER_HEIGHT, StepName } from '~/components/Onboarding/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 import isPromise from '~/utils/isPromise';
 
 type Props = {
+  step: StepName;
   isNextEnabled: boolean;
   nextText: string;
   previousText?: string;
@@ -17,7 +18,14 @@ type Props = {
   onNext: () => void | Promise<unknown>;
 };
 
-export function WizardFooter({ onNext, onPrevious, isNextEnabled, nextText, previousText }: Props) {
+export function WizardFooter({
+  onNext,
+  onPrevious,
+  isNextEnabled,
+  nextText,
+  previousText,
+  step,
+}: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const reportError = useReportError();
@@ -57,6 +65,9 @@ export function WizardFooter({ onNext, onPrevious, isNextEnabled, nextText, prev
           </ActionText>
         )}
         <Button
+          eventElementId="Onboarding Wizard Button"
+          eventName="Onboarding Wizard Next Click"
+          properties={{ step }}
           onClick={handleNextClick}
           disabled={!isNextEnabled}
           pending={isLoading}
