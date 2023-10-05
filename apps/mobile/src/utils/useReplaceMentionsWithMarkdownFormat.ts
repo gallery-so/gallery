@@ -38,7 +38,7 @@ export function useReplaceMentionsWithMarkdownFormat(
   );
 
   const captionWithMentions = useMemo(() => {
-    let captionWithMarkdownLinks = comment;
+    let formattedComment = comment;
 
     mentions.forEach((mention) => {
       if (!mention?.entity || !mention?.interval) return;
@@ -59,12 +59,12 @@ export function useReplaceMentionsWithMarkdownFormat(
         markdownLink = `[${mentionText}](https://gallery.so/community/${chain}/${address})`;
       }
 
-      captionWithMarkdownLinks = captionWithMarkdownLinks.replace(mentionText, markdownLink);
+      formattedComment = formattedComment.replace(mentionText, markdownLink);
     });
 
-    captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(captionWithMarkdownLinks);
+    formattedComment = replaceUrlsWithMarkdownFormat(formattedComment);
 
-    return captionWithMarkdownLinks;
+    return formattedComment;
   }, [comment, mentions]);
 
   return captionWithMentions;
