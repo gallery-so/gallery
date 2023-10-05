@@ -14,6 +14,7 @@ import {
 } from './getTezosExternalUrl';
 import { hexToDec } from './hexToDec';
 import processProjectUrl from './processProjectUrl';
+import { truncateAddress } from './wallet';
 
 export function extractRelevantMetadataFromToken(
   tokenRef: extractRelevantMetadataFromTokenFragment$key
@@ -81,9 +82,15 @@ export function extractRelevantMetadataFromToken(
     }
   }
 
-  result.contractName = isFxHashContractAddress(contractAddress)
-    ? 'fx(hash)'
-    : contract?.name ?? 'Untitled Contract';
+  if (isFxHashContractAddress(contractAddress)) {
+    result.contractName = 'fx(hash)';
+  } else if (contract?.name) {
+    result.contractName = contract.name;
+  } else if (contractAddress) {
+    result.contractName = truncateAddress(contractAddress);
+  } else {
+    result.contractName = 'Untitled Contract';
+  }
 
   if (tokenMetadata) {
     result.mirrorUrl = extractMirrorXyzUrl(tokenMetadata);

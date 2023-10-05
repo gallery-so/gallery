@@ -48,7 +48,11 @@ export default function PostCommunityPill({ postRef }: Props) {
   }
 
   return (
-    <CommunityHoverCard communityRef={token.community} onClick={handleClick}>
+    <CommunityHoverCard
+      communityRef={token.community}
+      communityName={contractName}
+      onClick={handleClick}
+    >
       <StyledPill>
         <StyledCommunityName>{contractName}</StyledCommunityName>
       </StyledPill>
