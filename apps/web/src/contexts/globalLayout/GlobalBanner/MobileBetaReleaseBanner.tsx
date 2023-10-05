@@ -4,7 +4,6 @@ import appIcon from 'public/gallery-app-ios-icon.png';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { GlobalBanner } from '~/components/core/GlobalBanner/GlobalBanner';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -31,15 +30,6 @@ export default function MobileBetaReleaseBanner({ handleCTAClick }: Props) {
 
     handleCTAClick();
   }, [handleCTAClick, push, track]);
-
-  return (
-    <GlobalBanner
-      title="Gallery"
-      description="Mobile app beta now available"
-      onClose={handleCTAClick}
-      onClick={handleClick}
-    />
-  );
 
   return (
     <StyledContainer align="center">
