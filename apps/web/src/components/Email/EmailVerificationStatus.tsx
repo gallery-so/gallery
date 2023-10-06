@@ -10,6 +10,7 @@ import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import ClockIcon from '~/icons/ClockIcon';
 import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
@@ -67,6 +68,8 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
 
   const { pushToast } = useToastActions();
 
+  const track = useTrack();
+
   const handleResendClick = useCallback(async () => {
     function pushErrorToast() {
       pushToast({
@@ -75,6 +78,11 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
       });
     }
     try {
+      track('Button Click', {
+        id: 'Resend Verification Email Button',
+        name: 'Resend Verification Email',
+        context: contexts.Email,
+      });
       const response = await resendVerificationEmail({ variables: {} });
       if (response.resendVerificationEmail?.__typename !== 'ResendVerificationEmailPayload') {
         pushErrorToast();
@@ -90,7 +98,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
     } catch (error) {
       pushErrorToast();
     }
-  }, [pushToast, resendVerificationEmail]);
+  }, [pushToast, resendVerificationEmail, track]);
 
   useEffect(
     function pollVerificationStatus() {

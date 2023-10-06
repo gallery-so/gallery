@@ -7,6 +7,7 @@ import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graph
 import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { AdmireIcon } from '~/icons/SocializeIcons';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type AdmireButtonProps = {
@@ -70,6 +71,12 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
   }, [onRemoveAdmire, feedItem.dbid, feedItem.id, feedItem.viewerAdmire?.dbid]);
 
   const handleAdmire = useCallback(async () => {
+    track('Button Click', {
+      id: 'Admire Button',
+      name: 'Admire',
+      context: contexts.Posts,
+    });
+
     if (query.viewer?.__typename !== 'Viewer') {
       showModal({
         content: <AuthModal queryRef={query} />,
@@ -79,7 +86,6 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
       return;
     }
 
-    track('Admire Click');
     onAdmire();
   }, [query, track, onAdmire, showModal]);
 
