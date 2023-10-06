@@ -13,7 +13,7 @@ export function CommentButton({ style, openCommentBottomSheet }: Props) {
   return (
     <GalleryTouchableOpacity
       onPress={openCommentBottomSheet}
-      className="flex justify-center items-center w-[32] h-[32] pt-1 "
+      className="flex justify-center items-center w-[32] h-[30] pt-1"
       style={style}
       eventElementId="Toggle Comment Box"
       eventName="Toggle Comment Box Clicked"
