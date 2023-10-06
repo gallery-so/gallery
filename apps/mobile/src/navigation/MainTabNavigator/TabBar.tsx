@@ -124,7 +124,6 @@ export function TabBar({ state, navigation }: TabBarProps) {
   );
 
   const user = query.viewer?.user;
-  console.log('user', user);
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
