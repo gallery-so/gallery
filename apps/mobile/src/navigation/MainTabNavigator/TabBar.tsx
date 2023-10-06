@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
@@ -106,6 +107,29 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
 type TabBarProps = MaterialTopTabBarProps;
 
 export function TabBar({ state, navigation }: TabBarProps) {
+  const query = useLazyLoadQuery<TabBarQuery>(
+    graphql`
+      query TabBarQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              bio
+              username
+              primaryWallet {
+                __typename
+              }
+
+              ...ProfilePictureFragment
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const user = query.viewer?.user;
+
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
@@ -121,7 +145,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
       {state.routes.map((route) => {
         let icon = null;
         if (route.name === 'AccountTab') {
-          icon = <AccountIcon />;
+          icon = !user ? <AccountIcon /> : <ProfilePicture userRef={user} size="sm" />;
         } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
         } else if (route.name === 'NotificationsTab') {
@@ -220,9 +244,9 @@ function LazyPostTabItem(props: TabItemProps) {
 }
 
 function LazyPostIcon(props: TabItemProps) {
-  const query = useLazyLoadQuery<TabBarQuery>(
+  const query = useLazyLoadQuery<TabBarLazyPostIconQuery>(
     graphql`
-      query TabBarQuery {
+      query TabBarLazyPostIconQuery {
         viewer {
           ... on Viewer {
             user {
