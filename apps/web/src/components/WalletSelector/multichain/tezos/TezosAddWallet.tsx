@@ -230,6 +230,9 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
             </BaseM>
           </VStack>
           <StyledButton
+            // event is tracked in handler above
+            eventElementId={null}
+            eventName={null}
             onClick={() => attemptAddWallet(account, publicKey)}
             disabled={isConnecting}
           >

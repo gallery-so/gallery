@@ -143,11 +143,18 @@ export function MembershipMintPage({
     }
 
     return active ? (
-      <Button disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}>
+      <Button
+        eventElementId={null}
+        eventName={null}
+        disabled={!isMintButtonEnabled}
+        onClick={handleMintButtonClick}
+      >
         {buttonText}
       </Button>
     ) : (
-      <Button onClick={handleConnectWalletButtonClick}>{buttonText}</Button>
+      <Button eventElementId={null} eventName={null} onClick={handleConnectWalletButtonClick}>
+        {buttonText}
+      </Button>
     );
   }, [
     active,

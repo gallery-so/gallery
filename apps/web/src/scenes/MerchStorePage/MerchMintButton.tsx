@@ -57,7 +57,13 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   return (
     <>
-      <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
+      <StyledButton
+        eventElementId="Mint Merch Button"
+        eventName="Mint Merch"
+        eventContext="Merch Store"
+        onClick={handleClick}
+        disabled={isButtonDisabled}
+      >
         {buttonText}
       </StyledButton>
 

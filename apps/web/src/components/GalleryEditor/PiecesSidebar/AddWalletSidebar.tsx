@@ -60,7 +60,13 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
         description={`You do not have any ${selectedChain} pieces`}
       >
         <StyledButtonContainer>
-          <Button variant="secondary" onClick={handleManageWalletsClick}>
+          <Button
+            eventElementId="Open Add Wallet Modal Button"
+            eventName="Open Add Wallet Modal"
+            properties={{ context: 'Web Editor Pieces Sidebar' }}
+            variant="secondary"
+            onClick={handleManageWalletsClick}
+          >
             {ctaButtonText}
           </Button>
         </StyledButtonContainer>

@@ -36,7 +36,13 @@ export default function MobileAppLandingPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                <StyledButton>Download The App</StyledButton>
+                <StyledButton
+                  eventElementId="Mobile Landing Page Download App Button"
+                  eventName="Mobile Landing Page Download App Button Click"
+                  eventContext="Mobile App Upsell"
+                >
+                  Download The App
+                </StyledButton>
               </StyledLink>
             </VStack>
           </VStack>

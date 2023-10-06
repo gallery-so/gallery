@@ -161,7 +161,12 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
           {verificationStatusIndicator}
         </HStack>
       </VStack>
-      <StyledButton variant="secondary" onClick={handleEditClick}>
+      <StyledButton
+        eventElementId="Edit Email Button"
+        eventName="Edit Email"
+        variant="secondary"
+        onClick={handleEditClick}
+      >
         EDIT
       </StyledButton>
     </HStack>

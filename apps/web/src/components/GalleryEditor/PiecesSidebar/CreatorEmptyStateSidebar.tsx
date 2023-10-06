@@ -15,6 +15,7 @@ export default function CreatorEmptyStateSidebar() {
     window.open('https://forms.gle/yJLK93LLw3618Y8y8', '_blank');
   }, [track]);
 
+  // TODO: this content needs to be updated / changed
   return (
     <StyledContainer gap={16} justify="center">
       <TitleS>Are you a creator?</TitleS>
@@ -22,7 +23,9 @@ export default function CreatorEmptyStateSidebar() {
         If you've created onchain work that you'd like to display in your Gallery, please provide
         details about your project and our team will handle the rest!
       </BaseM>
-      <Button onClick={handleClick}>Share project details</Button>
+      <Button eventElementId={null} eventName={null} onClick={handleClick}>
+        Share project details
+      </Button>
     </StyledContainer>
   );
 }

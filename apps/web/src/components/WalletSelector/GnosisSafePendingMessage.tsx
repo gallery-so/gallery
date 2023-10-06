@@ -94,8 +94,20 @@ function GnosisSafePendingMessage({
       description="We detected that you previously tried signing a message. Would you like to try authenticating again using the same transaction?"
     >
       <StyledButtonWrapper gap={8} align="center" justify="space-around">
-        <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-        <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
+        <Button
+          eventElementId="Retry Gnosis Safe Connect Button"
+          eventName="Retry Gnosis Safe Connect"
+          onClick={manuallyValidateSignature}
+        >
+          Yes, retry
+        </Button>
+        <StyledRestartButton
+          eventElementId="Sign New Gnosis Safe Message Button"
+          eventName="Sign New Gnosis Safe Message"
+          onClick={onRestartClick}
+        >
+          No, sign new message
+        </StyledRestartButton>
       </StyledButtonWrapper>
     </EmptyState>
   ) : (

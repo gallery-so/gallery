@@ -31,7 +31,13 @@ export default function MobileAuthManagerSection() {
         </SettingsRowDescription>
       </VStack>
       <VStack justify="center" align="start" gap={8}>
-        <Button onClick={handleDisplayMobileAuthModal}>View QR Code</Button>
+        <Button
+          eventElementId="View Mobile Auth QR Code Button"
+          eventName="View Mobile Auth QR Code"
+          onClick={handleDisplayMobileAuthModal}
+        >
+          View QR Code
+        </Button>
         <InteractiveLink to={{ pathname: '/mobile' }}>Learn more about the app</InteractiveLink>
       </VStack>
     </VStack>

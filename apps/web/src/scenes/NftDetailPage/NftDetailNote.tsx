@@ -132,6 +132,9 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
         {isEditing ? (
           <StyledSaveNoteButton justify="flex-end">
             <TextButton
+              eventElementId="Save NFT Note Button"
+              eventName="Save NFT Note"
+              eventContext="NFT Detail Page"
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
               onClick={handleSubmitCollectorsNote}
@@ -140,6 +143,9 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
         ) : (
           <StyledEditNoteButtonContainer hasCollectorsNote={hasCollectorsNote}>
             <EditNoteButton
+              eventElementId="Add Or Edit NFT Note Button"
+              eventName="Add Or Edit NFT Note"
+              eventContext="NFT Detail Page"
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
             />

@@ -194,7 +194,13 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (showShowMultiGalleryButton) {
     return (
       <VStack align="center">
-        <Button variant="primary" onClick={handleCreateGallery}>
+        <Button
+          eventElementId="Add New Gallery Button"
+          eventName="Add New Gallery"
+          eventContext="Web Editor"
+          variant="primary"
+          onClick={handleCreateGallery}
+        >
           Add New
         </Button>
       </VStack>

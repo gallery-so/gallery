@@ -53,13 +53,26 @@ export default function CommunityPageOwnershipRequiredModal({
         not displaying try <strong>refreshing your collection</strong>.
       </BaseM>
       <HStack justify="flex-end" gap={8}>
-        <Button variant="secondary" onClick={handleRefreshCollectionClick} disabled={isLocked}>
+        <Button
+          eventElementId="Refresh Tokens Button"
+          eventName="Refresh Tokens"
+          eventContext="Community Page Ownership Required Modal"
+          variant="secondary"
+          onClick={handleRefreshCollectionClick}
+          disabled={isLocked}
+        >
           <HStack align="center" gap={4}>
             <RefreshIcon />
             Refresh Collection
           </HStack>
         </Button>
-        <Button variant="primary" onClick={handleOkClick}>
+        <Button
+          eventElementId="Dismiss Button"
+          eventName="Dismiss Modal"
+          eventContext="Community Page Ownership Required Modal"
+          variant="primary"
+          onClick={handleOkClick}
+        >
           OK
         </Button>
       </HStack>

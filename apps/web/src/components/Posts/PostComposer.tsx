@@ -168,6 +168,8 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </StyledWrapper>
         )}
         <Button
+          eventElementId="Submit Post Button"
+          eventName="Submit Post"
           variant="primary"
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}

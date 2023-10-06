@@ -1,5 +1,7 @@
+import { MouseEventHandler, useCallback } from 'react';
 import styled from 'styled-components';
 
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import ActionText from '../ActionText/ActionText';
@@ -13,7 +15,7 @@ type Props = {
   disableTextTransform?: boolean;
   disabled?: boolean;
   dataTestId?: string;
-};
+} & GalleryElementTrackingProps;
 
 function TextButton({
   className,
@@ -22,11 +24,30 @@ function TextButton({
   disableTextTransform = false,
   disabled,
   dataTestId,
+  eventElementId,
+  eventName,
+  eventContext,
+  properties,
 }: Props) {
+  const track = useTrack();
+  const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    (event) => {
+      track('Button Click', {
+        id: eventElementId,
+        name: eventName,
+        context: eventContext,
+        ...properties,
+      });
+
+      onClick?.(event);
+    },
+    [eventContext, eventElementId, eventName, onClick, properties, track]
+  );
+
   return (
     <StyledButton
       className={className}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       data-testid={dataTestId}
     >

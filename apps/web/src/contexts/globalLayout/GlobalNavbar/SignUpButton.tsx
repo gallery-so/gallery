@@ -6,7 +6,16 @@ import useAuthModal from '~/hooks/useAuthModal';
 export function SignUpButton() {
   const showAuthModal = useAuthModal('sign-up');
 
-  return <StyledButton onClick={showAuthModal}>Sign up</StyledButton>;
+  return (
+    <StyledButton
+      eventElementId="Sign Up Button"
+      eventName="Attempt Sign Up"
+      eventContext="Authentication"
+      onClick={showAuthModal}
+    >
+      Sign up
+    </StyledButton>
+  );
 }
 
 const StyledButton = styled(Button)`

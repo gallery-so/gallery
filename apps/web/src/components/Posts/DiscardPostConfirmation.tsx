@@ -32,12 +32,21 @@ export default function DiscardPostConfirmation({ onSaveDraft, onDiscard }: Prop
     <StyledConfirmation>
       <BaseM>If you go back now, this post will be discarded.</BaseM>
       <HStack justify="flex-end" gap={8}>
-        <StyledButton onClick={handleSaveDraftClick} variant="secondary">
+        <StyledButton
+          eventElementId="Save Draft Post Button"
+          eventName="Save Draft Post"
+          onClick={handleSaveDraftClick}
+          variant="secondary"
+        >
           <HStack align="center" gap={6}>
             <EditPencilIcon width={12} height={12} /> SAVE DRAFT
           </HStack>
         </StyledButton>
-        <StyledButton onClick={handleDiscardConfirmClick}>
+        <StyledButton
+          eventElementId="Discard Post Button"
+          eventName="Discard Post"
+          onClick={handleDiscardConfirmClick}
+        >
           <HStack align="center" gap={6}>
             <TrashIconNew color={colors.white} /> DISCARD
           </HStack>

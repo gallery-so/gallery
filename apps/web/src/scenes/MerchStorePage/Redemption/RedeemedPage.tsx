@@ -64,7 +64,12 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
             })}
           </VStack>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleRedeem}>
+            <StyledRedeemSubmitButton
+              eventElementId="Redeem on Shopify Button"
+              eventName="Redeem on Shopify"
+              eventContext="Merch Store"
+              onClick={handleRedeem}
+            >
               <HStack gap={4} align="center">
                 Redeem on shopify
                 <ArrowUpRightIcon />
@@ -76,7 +81,7 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
         <StyledRedeemedPageContainer>
           <BaseM>You have not redeemed any items yet.</BaseM>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleClose}>
+            <StyledRedeemSubmitButton eventElementId={null} eventName={null} onClick={handleClose}>
               <HStack gap={4} align="center">
                 Close
               </HStack>

@@ -27,7 +27,14 @@ export default function GenericActionModal({
     <StyledModal>
       <LeaveWrapper gap={16}>
         <BaseM>{bodyText}</BaseM>
-        <StyledButton onClick={handleClick}>{buttonText}</StyledButton>
+        <StyledButton
+          // TODO: these should be passed in from parent
+          eventElementId={null}
+          eventName={null}
+          onClick={handleClick}
+        >
+          {buttonText}
+        </StyledButton>
       </LeaveWrapper>
     </StyledModal>
   );

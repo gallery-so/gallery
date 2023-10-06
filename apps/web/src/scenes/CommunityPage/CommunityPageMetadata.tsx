@@ -18,7 +18,6 @@ import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMeta
 import { CommunityPageMetadataQueryFragment$key } from '~/generated/CommunityPageMetadataQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -94,12 +93,10 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
 
   const { isMemberOfCommunity, refetchIsMemberOfCommunity } = useIsMemberOfCommunity();
 
-  const track = useTrack();
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
 
   const handleCreatePostClick = useCallback(() => {
-    track('Community Page: Clicked Enabled Post Button');
     if (query?.viewer?.__typename !== 'Viewer') {
       return;
     }
@@ -116,10 +113,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [track, showModal, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [showModal, query, community.name, community.contractAddress?.address, isMobile]);
 
   const handleDisabledPostButtonClick = useCallback(() => {
-    track('Community Page: Clicked Disabled Post Button');
     showModal({
       content: (
         <CommunityPageOwnershipRequiredModal
@@ -129,7 +125,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       ),
       headerText: 'Ownership required',
     });
-  }, [community, refetchIsMemberOfCommunity, showModal, track]);
+  }, [community, refetchIsMemberOfCommunity, showModal]);
 
   const showPostButton = query.viewer?.__typename === 'Viewer';
 
@@ -175,14 +171,24 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       </VStack>
       {showPostButton &&
         (isMemberOfCommunity ? (
-          <StyledPostButton onClick={handleCreatePostClick}>
+          <StyledPostButton
+            eventElementId="Community Page Create Post Button"
+            eventName="Community Page Create Post"
+            eventContext="Community Page"
+            onClick={handleCreatePostClick}
+          >
             <HStack align="center" gap={4}>
               <PlusSquareIcon stroke={colors.white} height={16} width={16} />
               Post
             </HStack>
           </StyledPostButton>
         ) : (
-          <StyledDisabledPostButton onClick={handleDisabledPostButtonClick}>
+          <StyledDisabledPostButton
+            eventElementId="Community Page Disabled Post Button"
+            eventName="Community Page Disabled Post Click"
+            eventContext="Community Page"
+            onClick={handleDisabledPostButtonClick}
+          >
             <HStack align="center" gap={4}>
               <PlusSquareIcon stroke={colors.metal} height={16} width={16} />
               Post

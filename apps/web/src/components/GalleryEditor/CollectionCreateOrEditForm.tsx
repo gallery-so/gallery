@@ -98,11 +98,22 @@ export function CollectionCreateOrEditForm({
 
         <ButtonContainer isNewCollection={mode === 'creating'}>
           {mode === 'creating' && (
-            <Button variant="secondary" onClick={handeSkipNameAndDescription}>
+            <Button
+              eventElementId="Skip Collection Title and Description Button"
+              eventName="Skip Collection Title and Dsescription"
+              variant="secondary"
+              onClick={handeSkipNameAndDescription}
+            >
               skip and add later
             </Button>
           )}
-          <Button onClick={handleClick}>save</Button>
+          <Button
+            eventElementId="Save Collection Title and Description Button"
+            eventName="Save Collection Title and Dsescription"
+            onClick={handleClick}
+          >
+            save
+          </Button>
         </ButtonContainer>
       </VStack>
     </StyledCollectionEditInfoForm>

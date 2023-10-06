@@ -106,7 +106,13 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
           </VStack>
 
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleSubmit} disabled={isRedeemButtonDisabled}>
+            <StyledRedeemSubmitButton
+              eventElementId="Redeem Merch Button"
+              eventName="Redeem Merch"
+              eventContext="Merch Store"
+              onClick={handleSubmit}
+              disabled={isRedeemButtonDisabled}
+            >
               Redeem
             </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
@@ -117,7 +123,9 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
             <BaseM>You do not have any merchandise to redeem.</BaseM>
           </StyledRedeemTextContainer>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleClose}>Close</StyledRedeemSubmitButton>
+            <StyledRedeemSubmitButton eventElementId={null} eventName={null} onClick={handleClose}>
+              Close
+            </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
         </StyledToRedeemPageContainer>
       )}

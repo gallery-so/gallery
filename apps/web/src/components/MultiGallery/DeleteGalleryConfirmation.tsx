@@ -52,7 +52,13 @@ export default function DeleteGalleryConfirmation({ galleryId, isLastGallery, on
         <BaseM>Are you sure you want to delete this gallery?</BaseM>
       </StyledTextWrapper>
       <HStack justify="flex-end">
-        <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
+        <StyledButton
+          eventElementId="Delete Gallery Button"
+          eventName="Delete Gallery"
+          onClick={handleConfirmClick}
+          disabled={isLoading}
+          pending={isLoading}
+        >
           Delete
         </StyledButton>
       </HStack>

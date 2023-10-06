@@ -172,7 +172,13 @@ export function NftSelectorView({
       <StyledWrapper>
         <StyledEmptyStateContainer align="center" justify="center" gap={24}>
           <StyledEmptyStateText>No NFTs found, try another wallet?</StyledEmptyStateText>
-          <Button variant="primary" onClick={handleManageWalletsClick}>
+          <Button
+            eventElementId="Open Add Wallet Modal Button"
+            eventName="Open Add Wallet Modal"
+            properties={{ context: 'NFT Selector View Component' }}
+            variant="primary"
+            onClick={handleManageWalletsClick}
+          >
             Connect Wallet
           </Button>
         </StyledEmptyStateContainer>

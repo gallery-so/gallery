@@ -95,11 +95,22 @@ export function GalleryNameAndDescriptionEditForm({
 
         <ButtonContainer isNewGallery={mode === 'creating'}>
           {mode === 'creating' && (
-            <Button variant="secondary" onClick={handeSkipNameAndDescription}>
+            <Button
+              eventElementId="Skip Gallery Title and Description Button"
+              eventName="Skip Gallery Title and Dsescription"
+              variant="secondary"
+              onClick={handeSkipNameAndDescription}
+            >
               skip and add later
             </Button>
           )}
-          <Button onClick={handleClick}>save</Button>
+          <Button
+            eventElementId="Save Gallery Title and Description Button"
+            eventName="Save Gallery Title and Dsescription"
+            onClick={handleClick}
+          >
+            save
+          </Button>
         </ButtonContainer>
       </VStack>
     </Container>

@@ -70,7 +70,12 @@ function Settings({ queryRef, onLogout, header }: Props) {
             <Divider />
 
             <HStack justify="end">
-              <StyledButton variant="warning" onClick={handleSignOutClick}>
+              <StyledButton
+                eventElementId="Sign Out Button"
+                eventName="Sign Out"
+                variant="warning"
+                onClick={handleSignOutClick}
+              >
                 Sign Out
               </StyledButton>
             </HStack>

@@ -162,7 +162,14 @@ const ExpandableBio = ({ text }: { text: string }) => {
           CustomInternalLinkComponent={NftDetailViewer}
         />
       </BaseM>
-      {isExpanded ? null : <TextButton text="Read More" onClick={handleClick} />}
+      {isExpanded ? null : (
+        <TextButton
+          eventElementId="Read More Bio Button"
+          eventName="Read More Bio"
+          text="Read More"
+          onClick={handleClick}
+        />
+      )}
     </VStack>
   );
 };

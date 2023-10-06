@@ -60,7 +60,13 @@ export default function MintButton({ onMintSuccess }: Props) {
 
   return (
     <>
-      <StyledButton onClick={handleClick} disabled={isDisabled}>
+      <StyledButton
+        eventElementId="Mint Memento Button"
+        eventName="Mint Memento"
+        eventContext="Mementos"
+        onClick={handleClick}
+        disabled={isDisabled}
+      >
         {buttonText}
       </StyledButton>
       {transactionHash && (

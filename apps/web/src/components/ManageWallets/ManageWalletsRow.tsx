@@ -81,6 +81,8 @@ function ManageWalletsRow({
       </HStack>
       <StyledButtonContainer>
         <StyledButton
+          eventElementId="Set Primary Wallet Button"
+          eventName="Set Primary Wallet"
           variant="secondary"
           onClick={handleSetPrimaryClick}
           disabled={isUpdatingPrimaryWallet || isRemovingWallet}
@@ -90,6 +92,8 @@ function ManageWalletsRow({
 
         <div {...getReferenceProps()} ref={reference}>
           <StyledButton
+            eventElementId="Remove Wallet Button"
+            eventName="Remove Wallet"
             variant="warning"
             onClick={handleDisconnectClick}
             data-tip

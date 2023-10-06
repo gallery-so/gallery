@@ -94,7 +94,12 @@ export default function TwitterSetting({ queryRef }: Props) {
             </BaseM>
           </HStack>
 
-          <Button onClick={handleDisconnectTwitter} variant="secondary">
+          <Button
+            eventElementId="Disconnect Twitter Button"
+            eventName="Disconnect Twitter"
+            onClick={handleDisconnectTwitter}
+            variant="secondary"
+          >
             DISCONNECT
           </Button>
         </HStack>
@@ -110,7 +115,14 @@ export default function TwitterSetting({ queryRef }: Props) {
         </BaseM>
 
         <StyledConnectLink href={TWITTER_AUTH_URL} target="_self">
-          <StyledConnectButton variant="secondary">CONNECT</StyledConnectButton>
+          <StyledConnectButton
+            eventElementId="Connect Twitter Button"
+            eventName="Connect Twitter"
+            eventContext="External Social"
+            variant="secondary"
+          >
+            CONNECT
+          </StyledConnectButton>
         </StyledConnectLink>
       </HStack>
     </StyledTwitterSettingContainer>

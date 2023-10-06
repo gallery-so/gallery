@@ -151,13 +151,12 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const { showModal } = useModalActions();
 
   const handleCreatePostClick = useCallback(() => {
-    track('NFT Detail: Clicked Create Post');
     showModal({
       content: <PostComposerModal tokenId={token.dbid} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [isMobile, showModal, token, track]);
+  }, [isMobile, showModal, token]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
@@ -234,14 +233,29 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
               <VStack gap={24}>
                 <HorizontalBreak />
                 <StyledInteractiveLink href={openseaUrl} onClick={handleBuyNowClick}>
-                  <StyledButton>Buy Now</StyledButton>
+                  <StyledButton
+                    eventElementId="Buy Now Button"
+                    eventName="Buy Now"
+                    eventContext="NFT Detail Page"
+                  >
+                    Buy Now
+                  </StyledButton>
                 </StyledInteractiveLink>
               </VStack>
             )}
           </VStack>
         ) : null}
 
-        {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
+        {authenticatedUserOwnsAsset && (
+          <Button
+            eventElementId="Create Post Button"
+            eventName="Create Post"
+            eventContext="NFT Detail Page"
+            onClick={handleCreatePostClick}
+          >
+            Create Post
+          </Button>
+        )}
 
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>
@@ -250,8 +264,24 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           </VStack>
         ) : null}
 
-        {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
-        {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
+        {!showDetails && (
+          <TextButton
+            eventElementId="Show Details Button"
+            eventName="Show Details"
+            eventContext="NFT Detail Page"
+            text="Show Details"
+            onClick={handleToggleClick}
+          />
+        )}
+        {showDetails && (
+          <TextButton
+            eventElementId="Hide Details Button"
+            eventName="Hide Details"
+            eventContext="NFT Detail Page"
+            text="Hide Details"
+            onClick={handleToggleClick}
+          />
+        )}
       </VStack>
     </StyledDetailLabel>
   );

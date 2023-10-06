@@ -132,7 +132,14 @@ function ManageWallets({ newAddress, queryRef, onConnectWalletSuccess }: Props) 
         </VStack>
       </VStack>
       <HStack justify="end">
-        <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
+        <StyledButton
+          eventElementId="Open Add Wallet Modal Button"
+          eventName="Open Add Wallet Modal"
+          properties={{ context: 'Manage Wallets Component' }}
+          onClick={handleSubmit}
+          disabled={addWalletDisabled}
+          variant="secondary"
+        >
           Add new wallet
         </StyledButton>
       </HStack>

@@ -124,7 +124,14 @@ export default function MerchStorePage({ queryRef }: Props) {
         </HStack>
       </StyledLogoContainer>
       <StyledButtonContainer>
-        <StyledButton onClick={handleShowRedeemModal}>Redeem</StyledButton>
+        <StyledButton
+          eventElementId="Redeem Merch Upsell Button"
+          eventName="Redeem Merch Upsell"
+          eventContext="Merch Store"
+          onClick={handleShowRedeemModal}
+        >
+          Redeem
+        </StyledButton>
       </StyledButtonContainer>
       <StyledContent gap={32} align="center">
         <TitleMonoM>Physical redemption is now available.</TitleMonoM>

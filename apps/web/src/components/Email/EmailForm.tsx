@@ -225,11 +225,19 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
 
           <HStack gap={8}>
             {showCancelButton && (
-              <Button variant="secondary" disabled={savePending} onClick={handleCancelClick}>
+              <Button
+                eventElementId="Cancel Save Email Button"
+                eventName="Cancel Save Email"
+                variant="secondary"
+                disabled={savePending}
+                onClick={handleCancelClick}
+              >
                 Cancel
               </Button>
             )}
             <Button
+              eventElementId="Save Email Button"
+              eventName="Save Email"
               variant="primary"
               disabled={!isValidEmail || savePending}
               onClick={handleSaveClick}

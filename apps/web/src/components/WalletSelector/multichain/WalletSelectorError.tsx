@@ -13,7 +13,13 @@ type Props = {
 export const WalletSelectorError = ({ heading, body, reset }: Props) => (
   <EmptyState title={heading} description={body}>
     <StyledButtonContainer>
-      <StyledRetryButton onClick={reset}>Try Another Wallet</StyledRetryButton>
+      <StyledRetryButton
+        eventElementId="Try Another Wallet Button"
+        eventName="Try Another Wallet"
+        onClick={reset}
+      >
+        Try Another Wallet
+      </StyledRetryButton>
     </StyledButtonContainer>
   </EmptyState>
 );

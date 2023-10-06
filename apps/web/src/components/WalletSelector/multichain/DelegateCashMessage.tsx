@@ -47,7 +47,14 @@ export default function DelegateCashMessage({ reset }: Props) {
             <InteractiveLink href={GALLERY_TWITTER}>Twitter</InteractiveLink>.
           </StyledText>
         </VStack>
-        <Button onClick={reset}>Back</Button>
+        <Button
+          // no need to track backing out of informational dialog
+          eventElementId={null}
+          eventName={null}
+          onClick={reset}
+        >
+          Back
+        </Button>
       </VStack>
     </EmptyState>
   );

@@ -121,10 +121,17 @@ export default function MagicLinkLogin({ reset }: Props) {
             />
             {errorMessage && <StyledErrorText message={errorMessage} />}
             <HStack gap={8} justify="flex-end">
-              <Button variant="secondary" onClick={reset}>
+              <Button
+                eventElementId="Cancel Magic Link Login Button"
+                eventName="Cancel Magic Link Login"
+                variant="secondary"
+                onClick={reset}
+              >
                 Back
               </Button>
               <Button
+                eventElementId="Send Magic Link Button"
+                eventName="Send Magic Link Login"
                 onClick={handleSendClick}
                 disabled={!isValidEmail || clickedSendLink}
                 type="submit"

@@ -158,7 +158,14 @@ export default function PurchaseBox({
         )}
 
         {!soldOut && (
-          <ExpandPurchaseButton onClick={toggleShowBox} show={!showBox} disabled={disabled}>
+          <ExpandPurchaseButton
+            eventElementId="Purchase Merch Button"
+            eventName="Purchase Merch"
+            eventContext="Merch Store"
+            onClick={toggleShowBox}
+            show={!showBox}
+            disabled={disabled}
+          >
             Purchase
           </ExpandPurchaseButton>
         )}
@@ -251,6 +258,9 @@ export default function PurchaseBox({
                 )
               ) : (
                 <StyledPurchaseMoreButton
+                  eventElementId="Purchase More Merch Button"
+                  eventName="Purchase More Merch"
+                  eventContext="Merch Store"
                   onClick={() => {
                     setIsReceiptState(false);
                   }}

@@ -34,7 +34,13 @@ export default function DeletePostConfirmation({ postDbid, communityId }: Props)
         <BaseM>This cannot be undone.</BaseM>
       </VStack>
       <HStack justify="flex-end">
-        <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
+        <StyledButton
+          eventElementId="Delete Post Button"
+          eventName="Delete Post"
+          onClick={handleConfirmClick}
+          disabled={isLoading}
+          pending={isLoading}
+        >
           Delete
         </StyledButton>
       </HStack>

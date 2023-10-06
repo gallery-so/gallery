@@ -300,7 +300,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         </StyledSearchBarContainer>
         {!isSearching && shouldDisplayRefreshButtonGroup && (
           <StyledButtonGroupContainer>
-            <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
+            <StyledButton
+              eventElementId="Refresh Tokens Button"
+              eventName="Refresh Tokens"
+              eventContext="Web Editor"
+              onClick={handleRefresh}
+              variant="primary"
+              disabled={refreshDisabled}
+            >
               <HStack gap={8} align="center">
                 {isLocked ? (
                   <Spinner />
@@ -312,7 +319,13 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
                 )}
               </HStack>
             </StyledButton>
-            <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
+            <StyledButton
+              eventElementId="Add Blank Space Button"
+              eventName="Add Blank Space"
+              eventContext="Web Editor"
+              onClick={handleAddBlankBlockClick}
+              variant="secondary"
+            >
               BLANK SPACE
             </StyledButton>
           </StyledButtonGroupContainer>

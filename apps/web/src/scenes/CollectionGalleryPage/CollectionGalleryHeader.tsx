@@ -1,4 +1,3 @@
-import { route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -97,15 +96,6 @@ function CollectionGalleryHeader({
     gallery: { dbid: galleryId },
   } = collection;
 
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', {
-      path: route({
-        pathname: '/[username]/[collectionId]',
-        query: { username: username as string, collectionId },
-      }),
-    });
-  }, [collectionId, username, track]);
-
   const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
   const collectionUrl = window.location.href;
@@ -186,7 +176,13 @@ function CollectionGalleryHeader({
           {showEditActions ? (
             <>
               <CopyToClipboard textToCopy={collectionUrl}>
-                <TextButton text="Share" onClick={handleShareClick} />
+                <TextButton
+                  eventElementId="Share Collection Button"
+                  eventName="Share Collection"
+                  eventContext="Collection Page"
+                  properties={{ url: collectionUrl }}
+                  text="Share"
+                />
               </CopyToClipboard>
 
               {/* On mobile, we show these options in the navbar, not in header */}
@@ -214,7 +210,13 @@ function CollectionGalleryHeader({
             </>
           ) : (
             <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
+              <TextButton
+                eventElementId="Share Collection Button"
+                eventName="Share Collection"
+                eventContext="Collection Page"
+                properties={{ url: collectionUrl }}
+                text="Share"
+              />
             </CopyToClipboard>
           )}
         </StyledCollectionActions>

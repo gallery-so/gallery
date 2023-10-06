@@ -109,10 +109,6 @@ function UserGalleryCollection({
     }
   }, [collectionElHeight, onLoad, cacheHeight]);
 
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: collectionUrl });
-  }, [track, collectionUrl]);
-
   const [updateCollectionInfo] = useUpdateCollectionInfo();
   const handleEditNameClick = useCallback(() => {
     showModal({
@@ -145,7 +141,12 @@ function UserGalleryCollection({
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${getBaseUrl()}${collectionUrl}`}>
-              <TextButton text="Share" onClick={handleShareClick} />
+              <TextButton
+                eventElementId="Share Collection Button"
+                eventName="Share Collection"
+                eventContext="User Gallery Page"
+                text="Share"
+              />
             </StyledCopyToClipboard>
             <SettingsDropdown iconVariant="default">
               <DropdownSection>

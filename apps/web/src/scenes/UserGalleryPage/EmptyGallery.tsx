@@ -50,7 +50,14 @@ export function EmptyAuthenticatedUsersGallery({ galleryId }: EmptyAuthenticated
           <strong>Get started below and showcase your collection.</strong>
         </StyledTitle>
       </VStack>
-      <Button onClick={handleSetupGalleryClick}>Create Gallery</Button>
+      <Button
+        eventElementId="Create Gallery Button"
+        eventName="Create Gallery"
+        eventContext="Empty Gallery"
+        onClick={handleSetupGalleryClick}
+      >
+        Create Gallery
+      </Button>
     </StyledEmptyGallery>
   );
 }

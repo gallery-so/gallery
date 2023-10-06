@@ -126,7 +126,13 @@ const Debugger = () => {
                   type="password"
                 />
               )}
-              <StyledButton onClick={handleLogin} disabled={!username.length}>
+
+              <StyledButton
+                eventElementId={null}
+                eventName={null}
+                onClick={handleLogin}
+                disabled={!username.length}
+              >
                 Submit
               </StyledButton>
             </VStack>

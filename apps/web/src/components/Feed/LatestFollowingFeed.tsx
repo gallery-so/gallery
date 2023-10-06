@@ -86,7 +86,12 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
         </StyledEmptyFeedBody>
       </VStack>
       <VStack>
-        <Button variant="secondary" onClick={handleSeeForYouClick}>
+        <Button
+          eventElementId="Take Me To For You Feed Button"
+          eventName="Visit For You Feed"
+          variant="secondary"
+          onClick={handleSeeForYouClick}
+        >
           Take me there
         </Button>
       </VStack>

@@ -193,6 +193,8 @@ export default function MoveCollectionModal({
 
       <StyledFooter justify="flex-end">
         <Button
+          eventElementId="Move Collection Button"
+          eventName="Move Collection"
           onClick={handleSubmit}
           variant="primary"
           disabled={!selectedGalleryId}

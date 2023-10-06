@@ -118,7 +118,9 @@ function PostComposerErrorScreen() {
         <BaseM>
           Sorry, there was an error while composing your post. The Gallery team has been notified.
         </BaseM>
-        <RetryButton onClick={handleCloseClick}>Close</RetryButton>
+        <RetryButton eventElementId={null} eventName={null} onClick={handleCloseClick}>
+          Close
+        </RetryButton>
       </StyledErrorContent>
     </StyledErrorScreen>
   );

@@ -106,7 +106,14 @@ export default function WelcomeAnimation() {
               arrange, and display your collection exactly how it was meant to be.
             </StyledBodyText>
           </VStack>
-          <StyledButton onClick={handleClick}>Enter Gallery</StyledButton>
+          <StyledButton
+            // onboarding steps are instrumented elsewhere
+            eventElementId={null}
+            eventName={null}
+            onClick={handleClick}
+          >
+            Enter Gallery
+          </StyledButton>
         </StyledTextContainer>
       </animated.div>
       {animatedImages.map((animatedImage) => (

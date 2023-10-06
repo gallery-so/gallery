@@ -191,7 +191,13 @@ export default function UserFollowedUsersFeedEvent({
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </StyledEventText>
               </StyledEventHeader>
-              <StyledSecondaryButton>See All</StyledSecondaryButton>
+              <StyledSecondaryButton
+                eventElementId="See All Button"
+                eventName="See All Button Clicked"
+                properties={{ variant: 'User Followed Users Feed Event' }}
+              >
+                See All
+              </StyledSecondaryButton>
             </StyledEventHeaderContainer>
           </StyledEventContent>
         </CustomStyledEvent>

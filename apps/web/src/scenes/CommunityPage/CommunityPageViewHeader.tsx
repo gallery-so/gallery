@@ -132,6 +132,9 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     if (!description) {
       return null;
     }
+
+    const buttonText = showExpandedDescription ? 'Show Less' : 'Show More';
+
     return (
       <StyledDescriptionWrapper gap={8}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
@@ -139,7 +142,10 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         </StyledBaseM>
         {isLineClampEnabled && (
           <TextButton
-            text={showExpandedDescription ? 'Show less' : 'Show More'}
+            eventElementId={`Community Page ${buttonText} Button`}
+            eventName={`Community Page ${buttonText}`}
+            eventContext="Community Page"
+            text={buttonText}
             onClick={handleShowMoreClick}
           />
         )}

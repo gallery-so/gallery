@@ -115,7 +115,14 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
               {community.name ? <strong>{community.name}</strong> : 'this community'} and inspire
               others!
             </BaseXL>
-            <StyledButton onClick={handleCreatePostClick}>Create a Post</StyledButton>
+            <StyledButton
+              eventElementId="Community Page Empty Feed Create Post Button"
+              eventName="Community Page Empty Feed Create Post"
+              eventContext="Community Page"
+              onClick={handleCreatePostClick}
+            >
+              Create a Post
+            </StyledButton>
           </StyledFirstPostCta>
         ) : (
           <BaseXL>

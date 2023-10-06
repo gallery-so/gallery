@@ -274,10 +274,17 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
       </StyledFollowingContainer>
 
       <HStack justify="flex-end" gap={10}>
-        <StyledButtonSkip onClick={handleClose} variant="secondary">
+        <StyledButtonSkip
+          eventElementId="Skip Twitter Follow All Button"
+          eventName="Skip Twitter Follow All"
+          onClick={handleClose}
+          variant="secondary"
+        >
           SKIP
         </StyledButtonSkip>
         <StyledButtonFollowAll
+          eventElementId="Twitter Follow All Button"
+          eventName="Twitter Follow All"
           onClick={handleFollowAll}
           variant="primary"
           disabled={isFollowingEveryone}

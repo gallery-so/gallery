@@ -152,7 +152,12 @@ export default function ManageEmailSection({ queryRef }: Props) {
         {shouldDisplayAddEmailInput && userEmail ? (
           <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
         ) : (
-          <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
+          <StyledButton
+            eventElementId="Begin Add Email Address Button"
+            eventName="Begin Add Email Address"
+            variant="secondary"
+            onClick={handleOpenEmailManager}
+          >
             add email address
           </StyledButton>
         )}
