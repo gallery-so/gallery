@@ -13,7 +13,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
 import { TabBarLazyPostIconQuery } from '~/generated/TabBarLazyPostIconQuery.graphql';
-import { TabBarQuery } from '~/generated/TabBarQuery.graphql';
+import { TabBarLazyProfilePictureQuery } from '~/generated/TabBarLazyProfilePictureQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
@@ -108,22 +108,6 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
 type TabBarProps = MaterialTopTabBarProps;
 
 export function TabBar({ state, navigation }: TabBarProps) {
-  const query = useLazyLoadQuery<TabBarQuery>(
-    graphql`
-      query TabBarQuery {
-        viewer {
-          ... on Viewer {
-            user {
-              ...ProfilePictureFragment
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
-
-  const user = query.viewer?.user;
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
@@ -139,7 +123,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
       {state.routes.map((route) => {
         let icon = null;
         if (route.name === 'AccountTab') {
-          icon = !user ? <AccountIcon /> : <ProfilePicture userRef={user} size="sm" />;
+          icon = <LazyAccountTabItem />;
         } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
         } else if (route.name === 'NotificationsTab') {
@@ -229,9 +213,40 @@ function LazyNotificationIcon() {
   );
 }
 
+function LazyAccountTabItem() {
+  return (
+    <Suspense fallback={<AccountIcon />}>
+      <LazyAccountIcon />
+    </Suspense>
+  );
+}
+
+function LazyAccountIcon() {
+  const query = useLazyLoadQuery<TabBarLazyProfilePictureQuery>(
+    graphql`
+      query TabBarLazyProfilePictureQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              ...ProfilePictureFragment
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const user = query.viewer?.user;
+
+  return user ? <ProfilePicture userRef={user} size="sm" /> : null;
+}
+
 function LazyPostTabItem(props: TabItemProps) {
   return (
     <Suspense fallback={null}>
+      {/* <CreatePostIcon onClick={noop} /> */}
+
       <LazyPostIcon {...props} />
     </Suspense>
   );
