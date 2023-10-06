@@ -31,19 +31,27 @@ type TabItemProps = {
   activeRoute: keyof MainTabNavigatorParamList;
   navigation: MaterialTopTabBarProps['navigation'];
   onPressOverride?: () => void;
+  ignoreActiveState?: boolean;
 };
 
-function TabItem({ navigation, route, icon, activeRoute, onPressOverride }: TabItemProps) {
+function TabItem({
+  navigation,
+  route,
+  icon,
+  activeRoute,
+  onPressOverride,
+  ignoreActiveState = false,
+}: TabItemProps) {
   const [isPressed, setIsPressed] = useState(false);
 
   const isFocused = activeRoute === route.name;
 
   const handleOnPressIn = useCallback(() => {
-    if (route.name === 'PostTab') {
+    if (ignoreActiveState) {
       return;
     }
     setIsPressed(true);
-  }, [route.name]);
+  }, [ignoreActiveState]);
 
   const handleOnPressOut = useCallback(() => {
     setIsPressed(false);
@@ -234,6 +242,7 @@ function LazyPostTabItem(props: TabItemProps) {
           // we don't immediately know the callback handler for the Post icon;
           // this will be lazily determined
           onPressOverride={noop}
+          ignoreActiveState
         />
       }
     >
@@ -285,5 +294,5 @@ function LazyPostIcon(props: TabItemProps) {
     });
   }, [openManageWallet, props.navigation, userHasWallet]);
 
-  return <TabItem {...props} onPressOverride={handlePressOverride} />;
+  return <TabItem {...props} onPressOverride={handlePressOverride} ignoreActiveState />;
 }
