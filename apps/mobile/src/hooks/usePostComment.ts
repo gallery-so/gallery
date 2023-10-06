@@ -43,14 +43,14 @@ export function usePostComment() {
                 }
                 entity {
                   ... on GalleryUser {
+                    __typename
                     id
                     dbid
-                    username
                   }
                   ... on Community {
+                    __typename
                     id
                     dbid
-                    name
                   }
                 }
               }
@@ -117,23 +117,24 @@ export function usePostComment() {
 
         const optimisticId = Math.random().toString();
 
-        // TODO: fix this
-        const optimisticResponseMentions = mentions.map((mention) => ({
-          __typename: 'Mention',
-          entity: {
-            __isNode: mention.userId ? 'GalleryUser' : 'Community',
-            __typename: mention.userId ? 'GalleryUser' : 'Community',
-            dbid: mention.userId ?? mention.communityId,
-            username: 'test',
-            name: 'community',
-            id: `GalleryUser:${mention.userId ?? mention.communityId}`,
-          },
-          interval: {
-            __typename: 'Interval',
-            start: mention?.interval?.start ?? 0,
-            length: mention?.interval?.length ?? 0,
-          },
-        }));
+        const optimisticResponseMentions = mentions.map((mention) => {
+          const mentionOptimisiticResponse = {
+            interval: {
+              start: mention?.interval?.start ?? 0,
+              length: mention?.interval?.length ?? 0,
+            },
+            entity: {
+              __isNode: mention.userId ? 'GalleryUser' : 'Community',
+              __typename: mention.userId ? 'GalleryUser' : 'Community',
+              dbid: mention.userId ?? mention.communityId,
+              id: mention.userId
+                ? `GalleryUser:${mention.userId}`
+                : `Community:${mention.communityId}`,
+            },
+          };
+
+          return mentionOptimisiticResponse;
+        });
 
         const response = await submitComment({
           updater,
