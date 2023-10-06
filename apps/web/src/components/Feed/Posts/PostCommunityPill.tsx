@@ -3,9 +3,10 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
-import { GalleryPill } from '~/components/Pill';
 import { PostCommunityPillFragment$key } from '~/generated/PostCommunityPillFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
@@ -52,7 +53,11 @@ export default function PostCommunityPill({ postRef }: Props) {
       communityName={contractName}
       onClick={handleClick}
     >
-      <StyledPill>
+      <StyledPill
+        eventElementId="Post Community Pill"
+        eventName="Post Community Pill Click"
+        eventContext={contexts.Posts}
+      >
         <StyledCommunityName>{contractName}</StyledCommunityName>
       </StyledPill>
     </CommunityHoverCard>
