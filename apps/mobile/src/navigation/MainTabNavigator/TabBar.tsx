@@ -19,6 +19,7 @@ import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIc
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
@@ -29,16 +30,13 @@ type TabItemProps = {
   route: NavigationRoute;
   activeRoute: keyof MainTabNavigatorParamList;
   navigation: MaterialTopTabBarProps['navigation'];
-
-  hasWallet?: boolean;
+  onPressOverride?: () => void;
 };
 
-function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemProps) {
+function TabItem({ navigation, route, icon, activeRoute, onPressOverride }: TabItemProps) {
   const [isPressed, setIsPressed] = useState(false);
 
   const isFocused = activeRoute === route.name;
-
-  const { openManageWallet } = useManageWalletActions();
 
   const handleOnPressIn = useCallback(() => {
     if (route.name === 'PostTab') {
@@ -58,27 +56,12 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
       canPreventDefault: true,
     });
 
-    if (route.name === 'PostTab') {
-      hasWallet
-        ? navigation.navigate('PostNftSelector', {
-            screen: 'Post',
-            fullScreen: true,
-          })
-        : openManageWallet({
-            title: 'You need to connect a wallet to post',
-            onSuccess: () => {
-              navigation.navigate('PostNftSelector', {
-                screen: 'Post',
-                fullScreen: true,
-              });
-            },
-          });
-    } else {
-      if (!isFocused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
-      }
+    if (onPressOverride) {
+      onPressOverride();
+    } else if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(route.name);
     }
-  }, [hasWallet, isFocused, openManageWallet, navigation, route]);
+  }, [navigation, route.key, route.name, onPressOverride, isFocused]);
 
   return (
     <GalleryTouchableOpacity
@@ -244,9 +227,16 @@ function LazyAccountIcon() {
 
 function LazyPostTabItem(props: TabItemProps) {
   return (
-    <Suspense fallback={null}>
-      {/* <CreatePostIcon onClick={noop} /> */}
-
+    <Suspense
+      fallback={
+        <TabItem
+          {...props}
+          // we don't immediately know the callback handler for the Post icon;
+          // this will be lazily determined
+          onPressOverride={noop}
+        />
+      }
+    >
       <LazyPostIcon {...props} />
     </Suspense>
   );
@@ -273,5 +263,27 @@ function LazyPostIcon(props: TabItemProps) {
 
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
-  return <TabItem {...props} hasWallet={userHasWallet} />;
+  const { openManageWallet } = useManageWalletActions();
+
+  const handlePressOverride = useCallback(() => {
+    if (userHasWallet) {
+      props.navigation.navigate('PostNftSelector', {
+        screen: 'Post',
+        fullScreen: true,
+      });
+      return;
+    }
+
+    openManageWallet({
+      title: 'You need to connect a wallet to post',
+      onSuccess: () => {
+        props.navigation.navigate('PostNftSelector', {
+          screen: 'Post',
+          fullScreen: true,
+        });
+      },
+    });
+  }, [openManageWallet, props.navigation, userHasWallet]);
+
+  return <TabItem {...props} onPressOverride={handlePressOverride} />;
 }
