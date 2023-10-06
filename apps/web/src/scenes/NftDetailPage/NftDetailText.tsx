@@ -12,7 +12,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
-import { GalleryPill, NonclickablePill } from '~/components/Pill';
+import { GalleryPill } from '~/components/Pill';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
@@ -176,9 +176,9 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
                 </GalleryPill>
               </CommunityHoverCard>
             ) : (
-              <NonclickablePill>
+              <GalleryPill clickDisabled>
                 <StyledContractName>{contractName}</StyledContractName>
-              </NonclickablePill>
+              </GalleryPill>
             )}
           </HStack>
         </VStack>

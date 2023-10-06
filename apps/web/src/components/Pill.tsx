@@ -9,6 +9,7 @@ import colors from '~/shared/theme/colors';
 type GalleryPillProps = {
   active?: boolean;
   className?: string;
+  clickDisabled?: boolean;
 } & InteractiveLinkProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
     disabled?: boolean;
@@ -26,7 +27,12 @@ export function GalleryPill(props: GalleryPillProps) {
   return <GalleryPillButton {...props} />;
 }
 
-const sharedStyles = ({ active }: { active?: boolean }) => `
+type StyledComponentProps = {
+  active?: boolean;
+  clickDisabled?: boolean;
+};
+
+const sharedStyles = ({ active, clickDisabled }: StyledComponentProps) => `
   border: 1px solid ${colors.porcelain};
   background-color: ${colors.white};
   padding: 0 12px;
@@ -41,26 +47,16 @@ const sharedStyles = ({ active }: { active?: boolean }) => `
   cursor: pointer;
 
   &:hover {
-    border-color: ${colors.black['800']};
+    border-color: ${clickDisabled ? colors.porcelain : colors.black['800']};
   }
 
   ${active ? `border-color: ${colors.black['800']};` : ''}
 `;
 
-export const GalleryPillLink = styled(InteractiveLink)<{ active?: boolean }>`
-  ${({ active }) => sharedStyles({ active })}
+export const GalleryPillLink = styled(InteractiveLink)<StyledComponentProps>`
+  ${(props) => sharedStyles(props)}
 `;
 
-export const GalleryPillButton = styled.button<{ active?: boolean }>`
-  ${({ active }) => sharedStyles({ active })}
-`;
-
-export const NonclickablePill = styled.div`
-  color: ${colors.black['800']};
-  width: fit-content;
-  max-width: 100%;
-  align-self: end;
-  height: 32px;
-  display: flex;
-  align-items: center;
+export const GalleryPillButton = styled.button<StyledComponentProps>`
+  ${(props) => sharedStyles(props)}
 `;
