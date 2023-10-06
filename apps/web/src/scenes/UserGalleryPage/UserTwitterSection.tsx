@@ -1,7 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { ClickablePill } from '~/components/Pill';
+import { GalleryPill } from '~/components/Pill';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
@@ -50,12 +50,12 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   if (isAuthenticatedUser && !userTwitterAccount) {
     return (
       <HStack align="flex-start" gap={8}>
-        <ClickablePill href={TWITTER_AUTH_URL} target="_self">
+        <GalleryPill href={TWITTER_AUTH_URL} target="_self">
           <HStack gap={5} align="center">
             <TwitterIcon />
             <strong>Connect Twitter</strong>
           </HStack>
-        </ClickablePill>
+        </GalleryPill>
       </HStack>
     );
   }

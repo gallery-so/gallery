@@ -1,57 +1,58 @@
-import styled, { css } from 'styled-components';
+import { ButtonHTMLAttributes } from 'react';
+import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import InteractiveLink, {
+  InteractiveLinkProps,
+} from '~/components/core/InteractiveLink/InteractiveLink';
 import colors from '~/shared/theme/colors';
 
-export const ClickablePill = styled(InteractiveLink)<{ active?: boolean; className?: string }>`
+type GalleryPillProps = {
+  active?: boolean;
+  className?: string;
+} & InteractiveLinkProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    disabled?: boolean;
+  };
+
+/**
+ * This component will either render an InteractiveLink for redirects,
+ * or a simple Button
+ */
+export function GalleryPill(props: GalleryPillProps) {
+  if (props.to || props.href) {
+    return <GalleryPillLink {...props} />;
+  }
+
+  return <GalleryPillButton {...props} />;
+}
+
+const sharedStyles = ({ active }: { active?: boolean }) => `
   border: 1px solid ${colors.porcelain};
+  background-color: ${colors.white};
   padding: 0 12px;
   border-radius: 24px;
   color: ${colors.black['800']};
   text-decoration: none;
   width: fit-content;
   max-width: 100%;
-  align-self: end;
   height: 32px;
   display: flex;
   align-items: center;
-
-  ${({ active }) =>
-    active &&
-    css`
-      border-color: ${colors.black['800']};
-    `}
-
-  &:hover {
-    border-color: ${colors.black['800']};
-  }
-`;
-
-export const ButtonPill = styled.button<{ active?: boolean }>`
-  border: 1px solid ${colors.porcelain};
-  padding: 0 12px;
-  border-radius: 24px;
-  color: ${colors.shadow};
-  text-decoration: none;
-  width: fit-content;
-  max-width: 100%;
-  align-self: end;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  background-color: ${colors.offWhite};
   cursor: pointer;
 
-  ${({ active }) =>
-    active &&
-    css`
-      border-color: ${colors.black['800']};
-    `}
-
   &:hover {
     border-color: ${colors.black['800']};
-    background-color: ${colors.faint};
   }
+
+  ${active ? `border-color: ${colors.black['800']};` : ''}
+`;
+
+export const GalleryPillLink = styled(InteractiveLink)<{ active?: boolean }>`
+  ${({ active }) => sharedStyles({ active })}
+`;
+
+export const GalleryPillButton = styled.button<{ active?: boolean }>`
+  ${({ active }) => sharedStyles({ active })}
 `;
 
 export const NonclickablePill = styled.div`

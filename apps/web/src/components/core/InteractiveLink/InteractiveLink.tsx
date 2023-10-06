@@ -11,7 +11,7 @@ import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 import NavigateConfirmation from './NavigateConfirmation';
 
-type InteractiveLinkProps = {
+export type InteractiveLinkProps = {
   to?: Route;
   href?: string;
   children: ReactNode;

@@ -5,7 +5,7 @@ import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
-import { ButtonPill } from '~/components/Pill';
+import { GalleryPill } from '~/components/Pill';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftDetailsExternalLinksEthFragment$key } from '~/generated/NftDetailsExternalLinksEthFragment.graphql';
@@ -48,13 +48,8 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
       {openseaUrl && (
         <VStack gap={14}>
           <InteractiveLink href={openseaUrl}>View on OpenSea</InteractiveLink>
-          <StartAlignedButtonPill
-            onClick={refresh}
-            disabled={isRefreshing}
-            ref={reference}
-            {...getReferenceProps()}
-          >
-            <HStack gap={6}>
+          <GalleryPill onClick={refresh} disabled={isRefreshing}>
+            <HStack gap={6} ref={reference} {...getReferenceProps()}>
               <IconContainer size="xs" variant="default" icon={<RefreshIcon />} />
               <TitleDiatypeM>Refresh metadata</TitleDiatypeM>
             </HStack>
@@ -65,7 +60,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
               whiteSpace="pre-line"
               text={`Last refreshed ${lastUpdated}`}
             />
-          </StartAlignedButtonPill>
+          </GalleryPill>
         </VStack>
       )}
       {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
@@ -74,7 +69,3 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
 }
 
 const StyledExternalLinks = styled(VStack)``;
-
-const StartAlignedButtonPill = styled(ButtonPill)`
-  align-self: start;
-`;

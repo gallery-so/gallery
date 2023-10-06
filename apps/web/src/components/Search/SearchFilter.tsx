@@ -5,7 +5,7 @@ import colors from '~/shared/theme/colors';
 
 import { HStack } from '../core/Spacer/Stack';
 import { TitleDiatypeM } from '../core/Text/Text';
-import { ButtonPill } from '../Pill';
+import { GalleryPill } from '../Pill';
 import { SearchFilterType } from './Search';
 
 type Props = {
@@ -64,8 +64,9 @@ const StyledFilterContainer = styled(HStack)`
   padding: 8px 16px;
 `;
 
-const StyledButtonPill = styled(ButtonPill)<{ active?: boolean }>`
-  cursor: pointer;
+const StyledButtonPill = styled(GalleryPill)<{ active?: boolean }>`
+  background: transparent;
+
   ${TitleDiatypeM} {
     color: ${({ active }) => (active ? colors.black['800'] : colors.shadow)};
   }

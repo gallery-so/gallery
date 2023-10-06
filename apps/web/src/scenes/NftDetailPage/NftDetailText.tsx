@@ -12,7 +12,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
-import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { GalleryPill, NonclickablePill } from '~/components/Pill';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
@@ -167,13 +167,13 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <HStack align="center" gap={4}>
             {communityUrl && token.community ? (
               <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-                <ClickablePill to={communityUrl}>
+                <GalleryPill to={communityUrl}>
                   <StyledPillContent gap={4} align="center" justify="flex-end">
                     {token.chain === 'POAP' && <PoapLogo />}
                     {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
                     <StyledContractName>{contractName}</StyledContractName>
                   </StyledPillContent>
-                </ClickablePill>
+                </GalleryPill>
               </CommunityHoverCard>
             ) : (
               <NonclickablePill>
