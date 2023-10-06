@@ -136,6 +136,7 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
                 // events will be tracked via OnboardingDialogContext
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 onClick={handleNext}
               >
                 {step === FINAL_STEP ? 'Finish' : 'Next'}{' '}

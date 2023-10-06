@@ -31,6 +31,7 @@ export default function GenericActionModal({
           // TODO: these should be passed in from parent
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           onClick={handleClick}
         >
           {buttonText}

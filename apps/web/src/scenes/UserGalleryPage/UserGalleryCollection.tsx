@@ -24,6 +24,7 @@ import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollec
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import useResizeObserver from '~/hooks/useResizeObserver';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import unescape from '~/shared/utils/unescape';
@@ -144,7 +145,7 @@ function UserGalleryCollection({
               <TextButton
                 eventElementId="Share Collection Button"
                 eventName="Share Collection"
-                eventContext="User Gallery Page"
+                eventContext={contexts.UserGallery}
                 text="Share"
               />
             </StyledCopyToClipboard>

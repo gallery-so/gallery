@@ -27,6 +27,7 @@ function TextButton({
   eventElementId,
   eventName,
   eventContext,
+  eventFlow,
   properties,
 }: Props) {
   const track = useTrack();
@@ -36,12 +37,13 @@ function TextButton({
         id: eventElementId,
         name: eventName,
         context: eventContext,
+        flow: eventFlow,
         ...properties,
       });
 
       onClick?.(event);
     },
-    [eventContext, eventElementId, eventName, onClick, properties, track]
+    [eventContext, eventElementId, eventFlow, eventName, onClick, properties, track]
   );
 
   return (

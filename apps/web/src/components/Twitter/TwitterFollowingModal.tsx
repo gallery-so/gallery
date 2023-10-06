@@ -11,6 +11,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
 import { TwitterFollowingModalMutation } from '~/generated/TwitterFollowingModalMutation.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -277,6 +278,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonSkip
           eventElementId="Skip Twitter Follow All Button"
           eventName="Skip Twitter Follow All"
+          eventContext={contexts['External Social']}
+          eventFlow={flows.Twitter}
           onClick={handleClose}
           variant="secondary"
         >
@@ -285,6 +288,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonFollowAll
           eventElementId="Twitter Follow All Button"
           eventName="Twitter Follow All"
+          eventContext={contexts['External Social']}
+          eventFlow={flows.Twitter}
           onClick={handleFollowAll}
           variant="primary"
           disabled={isFollowingEveryone}

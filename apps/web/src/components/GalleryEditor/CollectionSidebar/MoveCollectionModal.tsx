@@ -10,6 +10,7 @@ import { BaseM, BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -195,6 +196,7 @@ export default function MoveCollectionModal({
         <Button
           eventElementId="Move Collection Button"
           eventName="Move Collection"
+          eventContext={contexts.Editor}
           onClick={handleSubmit}
           variant="primary"
           disabled={!selectedGalleryId}

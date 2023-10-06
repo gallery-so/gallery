@@ -10,6 +10,7 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { AutoResizingTextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import formatError from '~/shared/errors/formatError';
 import unescape from '~/shared/utils/unescape';
@@ -134,7 +135,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
             <TextButton
               eventElementId="Save NFT Note Button"
               eventName="Save NFT Note"
-              eventContext="NFT Detail Page"
+              eventContext={contexts['NFT Detail']}
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
               onClick={handleSubmitCollectorsNote}
@@ -145,7 +146,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
             <EditNoteButton
               eventElementId="Add Or Edit NFT Note Button"
               eventName="Add Or Edit NFT Note"
-              eventContext="NFT Detail Page"
+              eventContext={contexts['NFT Detail']}
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
             />

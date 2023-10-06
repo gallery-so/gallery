@@ -10,6 +10,7 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackSignInSuccess } from '~/contexts/analytics/authUtil';
 import useMagicLogin from '~/hooks/useMagicLink';
+import { contexts } from '~/shared/analytics/constants';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
@@ -124,6 +125,7 @@ export default function MagicLinkLogin({ reset }: Props) {
               <Button
                 eventElementId="Cancel Magic Link Login Button"
                 eventName="Cancel Magic Link Login"
+                eventContext={contexts.Authentication}
                 variant="secondary"
                 onClick={reset}
               >
@@ -132,6 +134,7 @@ export default function MagicLinkLogin({ reset }: Props) {
               <Button
                 eventElementId="Send Magic Link Button"
                 eventName="Send Magic Link Login"
+                eventContext={contexts.Authentication}
                 onClick={handleSendClick}
                 disabled={!isValidEmail || clickedSendLink}
                 type="submit"

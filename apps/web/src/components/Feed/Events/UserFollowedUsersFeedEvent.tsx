@@ -130,7 +130,7 @@ export default function UserFollowedUsersFeedEvent({
     (e) => {
       e.preventDefault();
       track('Clicked See more followed users event', {
-        context: contexts['Web Feed'],
+        context: contexts.Feed,
       });
       showModal({
         content: (
@@ -198,6 +198,7 @@ export default function UserFollowedUsersFeedEvent({
                 // already tracked above
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               >
                 See All
               </StyledSecondaryButton>

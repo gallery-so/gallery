@@ -162,7 +162,7 @@ export function CustomizedGeneralMembershipMintPage({
             </InteractiveLink>
           </HStack>
           <StyledSecondaryLink href={route({ pathname: '/auth' })}>
-            <Button eventElementId={null} eventName={null}>
+            <Button eventElementId={null} eventName={null} eventContext={null}>
               Create Account
             </Button>
           </StyledSecondaryLink>
@@ -174,13 +174,19 @@ export function CustomizedGeneralMembershipMintPage({
       <Button
         eventElementId={null}
         eventName={null}
+        eventContext={null}
         disabled={!isMintButtonEnabled}
         onClick={handleMintButtonClick}
       >
         {buttonText}
       </Button>
     ) : (
-      <Button eventElementId={null} eventName={null} onClick={handleConnectWalletButtonClick}>
+      <Button
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+        onClick={handleConnectWalletButtonClick}
+      >
         {buttonText}
       </Button>
     );

@@ -14,6 +14,7 @@ import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.gra
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
@@ -303,7 +304,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             <StyledButton
               eventElementId="Refresh Tokens Button"
               eventName="Refresh Tokens"
-              eventContext="Web Editor"
+              eventContext={contexts.Editor}
               onClick={handleRefresh}
               variant="primary"
               disabled={refreshDisabled}
@@ -322,7 +323,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             <StyledButton
               eventElementId="Add Blank Space Button"
               eventName="Add Blank Space"
-              eventContext="Web Editor"
+              eventContext={contexts.Editor}
               onClick={handleAddBlankBlockClick}
               variant="secondary"
             >

@@ -21,6 +21,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
@@ -236,7 +237,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
                   <StyledButton
                     eventElementId="Buy Now Button"
                     eventName="Buy Now"
-                    eventContext="NFT Detail Page"
+                    eventContext={contexts['NFT Detail']}
                   >
                     Buy Now
                   </StyledButton>
@@ -250,7 +251,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <Button
             eventElementId="Create Post Button"
             eventName="Create Post"
-            eventContext="NFT Detail Page"
+            eventContext={contexts['NFT Detail']}
             onClick={handleCreatePostClick}
           >
             Create Post
@@ -268,7 +269,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <TextButton
             eventElementId="Show Details Button"
             eventName="Show Details"
-            eventContext="NFT Detail Page"
+            eventContext={contexts['NFT Detail']}
             text="Show Details"
             onClick={handleToggleClick}
           />
@@ -277,7 +278,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <TextButton
             eventElementId="Hide Details Button"
             eventName="Hide Details"
-            eventContext="NFT Detail Page"
+            eventContext={contexts['NFT Detail']}
             text="Hide Details"
             onClick={handleToggleClick}
           />

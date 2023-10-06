@@ -18,6 +18,7 @@ import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChang
 import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -121,7 +122,7 @@ export function EditGalleryNavbar({
         <DoneButton
           eventElementId="Done Editing Gallery Button"
           eventName="Done Editing Gallery"
-          eventContext="Web Editor"
+          eventContext={contexts.Editor}
           onClick={onBack}
         >
           Done
@@ -137,7 +138,7 @@ export function EditGalleryNavbar({
           <DoneButton
             eventElementId="Done Editing Gallery Button"
             eventName="Done Editing Gallery"
-            eventContext="Web Editor"
+            eventContext={contexts.Editor}
             onClick={handleDone}
             pending={isDone}
           >
@@ -155,7 +156,7 @@ export function EditGalleryNavbar({
           <DoneButton
             eventElementId="Save Gallery Button"
             eventName="Save Gallery"
-            eventContext="Web Editor"
+            eventContext={contexts.Editor}
             onClick={onSave}
             pending={isSaving}
           >

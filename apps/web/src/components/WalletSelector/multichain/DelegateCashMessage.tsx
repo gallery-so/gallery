@@ -51,6 +51,7 @@ export default function DelegateCashMessage({ reset }: Props) {
           // no need to track backing out of informational dialog
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           onClick={reset}
         >
           Back

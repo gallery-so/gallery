@@ -110,6 +110,7 @@ export default function WelcomeAnimation() {
             // onboarding steps are instrumented elsewhere
             eventElementId={null}
             eventName={null}
+            eventContext={null}
             onClick={handleClick}
           >
             Enter Gallery

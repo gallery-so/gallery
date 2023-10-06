@@ -22,6 +22,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
         <StyledCancelButton
           eventElementId="Leave Gallery Navigation Cancel Button"
           eventName="Cancel Leave Gallery"
+          eventContext={null}
           onClick={() => hideModal()}
         >
           Cancel
@@ -29,6 +30,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
         <Button
           eventElementId="Leave Gallery Navigation Confirmation Button"
           eventName="Confirm Leave Gallery"
+          eventContext={null}
           properties={{ externalLink: href }}
           onClick={() => {
             window.open(href);

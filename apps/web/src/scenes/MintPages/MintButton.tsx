@@ -10,6 +10,7 @@ import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract, WagmiContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
+import { contexts } from '~/shared/analytics/constants';
 
 import { ALLOWLIST_URL, MEMENTOS_NFT_TOKEN_ID } from './config';
 import useMintPhase from './useMintPhase';
@@ -63,7 +64,7 @@ export default function MintButton({ onMintSuccess }: Props) {
       <StyledButton
         eventElementId="Mint Memento Button"
         eventName="Mint Memento"
-        eventContext="Mementos"
+        eventContext={contexts.Mementos}
         onClick={handleClick}
         disabled={isDisabled}
       >

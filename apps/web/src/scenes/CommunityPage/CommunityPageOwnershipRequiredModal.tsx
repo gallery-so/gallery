@@ -9,6 +9,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageOwnershipRequiredModalFragment$key } from '~/generated/CommunityPageOwnershipRequiredModalFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   communityRef: CommunityPageOwnershipRequiredModalFragment$key;
@@ -56,7 +57,7 @@ export default function CommunityPageOwnershipRequiredModal({
         <Button
           eventElementId="Refresh Tokens Button"
           eventName="Refresh Tokens"
-          eventContext="Community Page Ownership Required Modal"
+          eventContext={contexts.Community}
           variant="secondary"
           onClick={handleRefreshCollectionClick}
           disabled={isLocked}
@@ -69,7 +70,7 @@ export default function CommunityPageOwnershipRequiredModal({
         <Button
           eventElementId="Dismiss Button"
           eventName="Dismiss Modal"
-          eventContext="Community Page Ownership Required Modal"
+          eventContext={contexts.Community}
           variant="primary"
           onClick={handleOkClick}
         >

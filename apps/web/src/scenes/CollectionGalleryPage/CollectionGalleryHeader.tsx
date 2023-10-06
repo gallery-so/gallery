@@ -20,6 +20,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/Collection
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import unescape from '~/shared/utils/unescape';
 
@@ -179,7 +180,7 @@ function CollectionGalleryHeader({
                 <TextButton
                   eventElementId="Share Collection Button"
                   eventName="Share Collection"
-                  eventContext="Collection Page"
+                  eventContext={contexts.UserCollection}
                   properties={{ url: collectionUrl }}
                   text="Share"
                 />
@@ -213,7 +214,7 @@ function CollectionGalleryHeader({
               <TextButton
                 eventElementId="Share Collection Button"
                 eventName="Share Collection"
-                eventContext="Collection Page"
+                eventContext={contexts.UserCollection}
                 properties={{ url: collectionUrl }}
                 text="Share"
               />

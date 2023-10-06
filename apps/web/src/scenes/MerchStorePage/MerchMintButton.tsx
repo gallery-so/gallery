@@ -10,6 +10,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { MAX_NFTS_PER_WALLET } from './constants';
@@ -60,7 +61,7 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
       <StyledButton
         eventElementId="Mint Merch Button"
         eventName="Mint Merch"
-        eventContext="Merch Store"
+        eventContext={contexts['Merch Store']}
         onClick={handleClick}
         disabled={isButtonDisabled}
       >

@@ -4,6 +4,7 @@ import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import transitions from '~/components/core/transitions';
 import useAuthModal from '~/hooks/useAuthModal';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 export function SignInButton() {
@@ -13,7 +14,7 @@ export function SignInButton() {
     <SignInWrapper
       eventElementId="Sign In Button"
       eventName="Attempt Sign In"
-      eventContext="Authentication"
+      eventContext={contexts.Authentication}
       text="Sign In"
       onClick={showAuthModal}
     />

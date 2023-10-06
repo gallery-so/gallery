@@ -18,6 +18,7 @@ import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserN
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
@@ -166,6 +167,7 @@ const ExpandableBio = ({ text }: { text: string }) => {
         <TextButton
           eventElementId="Read More Bio Button"
           eventName="Read More Bio"
+          eventContext={contexts.UserGallery}
           text="Read More"
           onClick={handleClick}
         />

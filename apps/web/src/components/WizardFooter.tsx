@@ -5,6 +5,7 @@ import ActionText from '~/components/core/ActionText/ActionText';
 import { Button } from '~/components/core/Button/Button';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FOOTER_HEIGHT, StepName } from '~/components/Onboarding/constants';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 import isPromise from '~/utils/isPromise';
@@ -67,6 +68,7 @@ export function WizardFooter({
         <Button
           eventElementId="Onboarding Wizard Button"
           eventName="Onboarding Wizard Next Click"
+          eventContext={contexts.Onboarding}
           properties={{ step }}
           onClick={handleNextClick}
           disabled={!isNextEnabled}

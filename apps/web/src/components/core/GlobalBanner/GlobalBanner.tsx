@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import IconContainer from '~/components/core/IconContainer';
 import { UserExperienceType } from '~/generated/enums';
 import CloseIcon from '~/icons/CloseIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../breakpoints';
@@ -41,6 +42,7 @@ export function GlobalBanner({
         <StyledButton
           eventElementId="Global Banner CTA Button"
           eventName="Global Banner CTA Button Clicked"
+          eventContext={contexts['Global Banner']}
           properties={{ variant: 'default', experienceFlag }}
           onClick={onClick}
         >

@@ -8,6 +8,7 @@ import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AddWalletSidebarQueryFragment$key } from '~/generated/AddWalletSidebarQueryFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { contexts } from '~/shared/analytics/constants';
 import { Chain } from '~/shared/utils/chains';
 
 type Props = {
@@ -63,7 +64,7 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
           <Button
             eventElementId="Open Add Wallet Modal Button"
             eventName="Open Add Wallet Modal"
-            properties={{ context: 'Web Editor Pieces Sidebar' }}
+            eventContext={contexts.Editor}
             variant="secondary"
             onClick={handleManageWalletsClick}
           >

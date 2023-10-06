@@ -13,6 +13,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { MAX_NFTS_PER_WALLET } from './constants';
@@ -161,7 +162,7 @@ export default function PurchaseBox({
           <ExpandPurchaseButton
             eventElementId="Purchase Merch Button"
             eventName="Purchase Merch"
-            eventContext="Merch Store"
+            eventContext={contexts['Merch Store']}
             onClick={toggleShowBox}
             show={!showBox}
             disabled={disabled}
@@ -260,7 +261,7 @@ export default function PurchaseBox({
                 <StyledPurchaseMoreButton
                   eventElementId="Purchase More Merch Button"
                   eventName="Purchase More Merch"
-                  eventContext="Merch Store"
+                  eventContext={contexts['Merch Store']}
                   onClick={() => {
                     setIsReceiptState(false);
                   }}

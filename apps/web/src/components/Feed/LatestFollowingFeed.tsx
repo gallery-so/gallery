@@ -90,7 +90,7 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
         <Button
           eventElementId="Take Me To For You Feed Button"
           eventName="Visit For You Feed"
-          eventContext={contexts['Web Feed']}
+          eventContext={contexts.Feed}
           variant="secondary"
           onClick={handleSeeForYouClick}
         >

@@ -8,6 +8,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { UserExperienceType } from '~/generated/enums';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -37,6 +38,7 @@ export default function MobileBetaReleaseBanner({ handleCTAClick, experienceFlag
         <StyledDownloadButton
           eventElementId="Global Banner CTA Button"
           eventName="Global Banner CTA Button Clicked"
+          eventContext={contexts['Mobile App Upsell']}
           properties={{ variant: 'iOS Mobile Beta Upsell', experienceFlag }}
           onClick={handleClick}
         >

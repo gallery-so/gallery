@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   heading: string;
@@ -16,6 +17,7 @@ export const WalletSelectorError = ({ heading, body, reset }: Props) => (
       <StyledRetryButton
         eventElementId="Try Another Wallet Button"
         eventName="Try Another Wallet"
+        eventContext={contexts.Authentication}
         onClick={reset}
       >
         Try Another Wallet

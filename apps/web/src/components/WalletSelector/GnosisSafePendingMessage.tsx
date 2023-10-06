@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
@@ -97,6 +98,7 @@ function GnosisSafePendingMessage({
         <Button
           eventElementId="Retry Gnosis Safe Connect Button"
           eventName="Retry Gnosis Safe Connect"
+          eventContext={contexts.Authentication}
           onClick={manuallyValidateSignature}
         >
           Yes, retry
@@ -104,6 +106,7 @@ function GnosisSafePendingMessage({
         <StyledRestartButton
           eventElementId="Sign New Gnosis Safe Message Button"
           eventName="Sign New Gnosis Safe Message"
+          eventContext={contexts.Authentication}
           onClick={onRestartClick}
         >
           No, sign new message

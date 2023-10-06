@@ -14,6 +14,7 @@ import { CommunityPagePostsTabFragment$key } from '~/generated/CommunityPagePost
 import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPagePostsTabQueryFragment.graphql';
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
@@ -118,7 +119,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
             <StyledButton
               eventElementId="Community Page Empty Feed Create Post Button"
               eventName="Community Page Empty Feed Create Post"
-              eventContext="Community Page"
+              eventContext={contexts.Community}
               onClick={handleCreatePostClick}
             >
               Create a Post

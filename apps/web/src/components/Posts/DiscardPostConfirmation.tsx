@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
@@ -35,6 +36,7 @@ export default function DiscardPostConfirmation({ onSaveDraft, onDiscard }: Prop
         <StyledButton
           eventElementId="Save Draft Post Button"
           eventName="Save Draft Post"
+          eventContext={contexts.Posts}
           onClick={handleSaveDraftClick}
           variant="secondary"
         >
@@ -45,6 +47,7 @@ export default function DiscardPostConfirmation({ onSaveDraft, onDiscard }: Prop
         <StyledButton
           eventElementId="Discard Post Button"
           eventName="Discard Post"
+          eventContext={contexts.Posts}
           onClick={handleDiscardConfirmClick}
         >
           <HStack align="center" gap={6}>

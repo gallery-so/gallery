@@ -7,6 +7,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { Chain } from '~/shared/utils/chains';
 
 import breakpoints from '../core/breakpoints';
@@ -175,7 +176,7 @@ export function NftSelectorView({
           <Button
             eventElementId="Open Add Wallet Modal Button"
             eventName="Open Add Wallet Modal"
-            properties={{ context: 'NFT Selector View Component' }}
+            eventContext={contexts.Posts}
             variant="primary"
             onClick={handleManageWalletsClick}
           >

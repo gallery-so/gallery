@@ -8,6 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { contexts } from '~/shared/analytics/constants';
 import unescape from '~/shared/utils/unescape';
 
 type Props = {
@@ -98,6 +99,7 @@ export function GalleryNameAndDescriptionEditForm({
             <Button
               eventElementId="Skip Gallery Title and Description Button"
               eventName="Skip Gallery Title and Dsescription"
+              eventContext={contexts.Editor}
               variant="secondary"
               onClick={handeSkipNameAndDescription}
             >
@@ -107,6 +109,7 @@ export function GalleryNameAndDescriptionEditForm({
           <Button
             eventElementId="Save Gallery Title and Description Button"
             eventName="Save Gallery Title and Dsescription"
+            eventContext={contexts.Editor}
             onClick={handleClick}
           >
             save

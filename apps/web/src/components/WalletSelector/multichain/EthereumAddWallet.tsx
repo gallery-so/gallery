@@ -229,6 +229,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
             // event is tracked in handler above
             eventElementId={null}
             eventName={null}
+            eventContext={null}
             onClick={() => attemptAddWallet(account)}
             disabled={isConnecting}
           >

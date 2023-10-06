@@ -18,6 +18,7 @@ import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMeta
 import { CommunityPageMetadataQueryFragment$key } from '~/generated/CommunityPageMetadataQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -174,7 +175,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
           <StyledPostButton
             eventElementId="Community Page Create Post Button"
             eventName="Community Page Create Post"
-            eventContext="Community Page"
+            eventContext={contexts.Community}
             onClick={handleCreatePostClick}
           >
             <HStack align="center" gap={4}>
@@ -186,7 +187,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
           <StyledDisabledPostButton
             eventElementId="Community Page Disabled Post Button"
             eventName="Community Page Disabled Post Click"
-            eventContext="Community Page"
+            eventContext={contexts.Community}
             onClick={handleDisabledPostButtonClick}
           >
             <HStack align="center" gap={4}>

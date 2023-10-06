@@ -11,6 +11,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { NewTokensTokenPreviewFragment$key } from '~/generated/NewTokensTokenPreviewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 
@@ -79,7 +80,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
       <StyledPostButton
         eventElementId="Create Post With Minted Token Button"
         eventName="Create Post With Minted Token"
-        properties={{ context: 'Notifications' }}
+        eventContext={contexts.Notifications}
         variant="primary"
         onClick={handleCreatePostClick}
       >

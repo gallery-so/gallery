@@ -146,13 +146,19 @@ export function MembershipMintPage({
       <Button
         eventElementId={null}
         eventName={null}
+        eventContext={null}
         disabled={!isMintButtonEnabled}
         onClick={handleMintButtonClick}
       >
         {buttonText}
       </Button>
     ) : (
-      <Button eventElementId={null} eventName={null} onClick={handleConnectWalletButtonClick}>
+      <Button
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+        onClick={handleConnectWalletButtonClick}
+      >
         {buttonText}
       </Button>
     );

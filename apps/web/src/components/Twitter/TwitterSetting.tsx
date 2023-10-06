@@ -7,6 +7,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import TwitterIcon from '~/icons/TwitterIcon';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
@@ -97,6 +98,8 @@ export default function TwitterSetting({ queryRef }: Props) {
           <Button
             eventElementId="Disconnect Twitter Button"
             eventName="Disconnect Twitter"
+            eventContext={contexts['External Social']}
+            eventFlow={flows.Twitter}
             onClick={handleDisconnectTwitter}
             variant="secondary"
           >
@@ -118,7 +121,8 @@ export default function TwitterSetting({ queryRef }: Props) {
           <StyledConnectButton
             eventElementId="Connect Twitter Button"
             eventName="Connect Twitter"
-            eventContext="External Social"
+            eventContext={contexts['External Social']}
+            eventFlow={flows.Twitter}
             variant="secondary"
           >
             CONNECT

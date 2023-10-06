@@ -25,6 +25,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { SignUpButton } from '../SignUpButton';
@@ -197,7 +198,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
         <Button
           eventElementId="Add New Gallery Button"
           eventName="Add New Gallery"
-          eventContext="Web Editor"
+          eventContext={contexts.Editor}
           variant="primary"
           onClick={handleCreateGallery}
         >

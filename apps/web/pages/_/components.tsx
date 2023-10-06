@@ -48,36 +48,60 @@ export default function DesignPage() {
       <Section>
         <TitleM>Button</TitleM>
         <Examples>
-          <Button eventElementId={null} eventName={null}>
+          <Button eventElementId={null} eventName={null} eventContext={null}>
             primary
           </Button>
-          <Button eventElementId={null} eventName={null} pending>
+          <Button eventElementId={null} eventName={null} eventContext={null} pending>
             primary
           </Button>
-          <Button eventElementId={null} eventName={null} disabled>
+          <Button eventElementId={null} eventName={null} eventContext={null} disabled>
             primary
           </Button>
-          <Button eventElementId={null} eventName={null} disabled pending>
+          <Button eventElementId={null} eventName={null} eventContext={null} disabled pending>
             primary
           </Button>
         </Examples>
         <Examples>
-          <Button eventElementId={null} eventName={null} variant="secondary">
+          <Button eventElementId={null} eventName={null} eventContext={null} variant="secondary">
             secondary
           </Button>
-          <Button eventElementId={null} eventName={null} variant="secondary" pending>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            variant="secondary"
+            pending
+          >
             secondary
           </Button>
-          <Button eventElementId={null} eventName={null} disabled variant="secondary">
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            disabled
+            variant="secondary"
+          >
             secondary
           </Button>
-          <Button eventElementId={null} eventName={null} disabled variant="secondary" pending>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            disabled
+            variant="secondary"
+            pending
+          >
             secondary
           </Button>
         </Examples>
         <Examples>
-          <PendingButton eventElementId={null} eventName={null} />
-          <PendingButton eventElementId={null} eventName={null} variant="secondary" />
+          <PendingButton eventElementId={null} eventName={null} eventContext={null} />
+          <PendingButton
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            variant="secondary"
+          />
         </Examples>
       </Section>
 
@@ -158,7 +182,12 @@ export default function DesignPage() {
       <Section>
         <TitleM>NFT Selector</TitleM>
         <Examples>
-          <Button eventElementId={null} eventName={null} onClick={showNftSelector}>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            onClick={showNftSelector}
+          >
             Open Nft Selector
           </Button>
         </Examples>

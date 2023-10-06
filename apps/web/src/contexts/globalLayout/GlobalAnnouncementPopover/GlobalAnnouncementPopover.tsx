@@ -13,6 +13,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import FeaturedCollectorCard from './components/FeaturedCollectorCard';
@@ -142,6 +143,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                     <Button
                       eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
                       eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
                       onClick={handlePrimaryButtonClick}
                     >
                       {BUTTON_TEXT_1}
@@ -245,6 +247,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Button
                 eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
                 eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                eventContext={contexts['Global Announcement Popover']}
                 onClick={handlePrimaryButtonClick}
               >
                 {BUTTON_TEXT_1}
@@ -269,6 +272,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                     <Button
                       eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
                       eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
                       onClick={handlePrimaryButtonClick}
                     >
                       {BUTTON_TEXT_1}
@@ -276,6 +280,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                     <Button
                       eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
                       eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
                       onClick={handleSecondaryButtonClick}
                       variant="secondary"
                     >
@@ -395,6 +400,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
               <Button
                 eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
                 eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                eventContext={contexts['Global Announcement Popover']}
                 onClick={handlePrimaryButtonClick}
               >
                 {BUTTON_TEXT_1}

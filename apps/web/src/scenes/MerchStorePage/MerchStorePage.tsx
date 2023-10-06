@@ -13,6 +13,7 @@ import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQuery
 import useAuthModal from '~/hooks/useAuthModal';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 
@@ -127,7 +128,7 @@ export default function MerchStorePage({ queryRef }: Props) {
         <StyledButton
           eventElementId="Redeem Merch Upsell Button"
           eventName="Redeem Merch Upsell"
-          eventContext="Merch Store"
+          eventContext={contexts['Merch Store']}
           onClick={handleShowRedeemModal}
         >
           Redeem

@@ -23,7 +23,7 @@ export default function CreatorEmptyStateSidebar() {
         If you've created onchain work that you'd like to display in your Gallery, please provide
         details about your project and our team will handle the rest!
       </BaseM>
-      <Button eventElementId={null} eventName={null} onClick={handleClick}>
+      <Button eventElementId={null} eventName={null} eventContext={null} onClick={handleClick}>
         Share project details
       </Button>
     </StyledContainer>

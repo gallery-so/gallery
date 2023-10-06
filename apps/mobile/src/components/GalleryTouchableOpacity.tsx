@@ -20,6 +20,8 @@ export function GalleryTouchableOpacity({
   children,
   eventElementId,
   eventName,
+  eventContext,
+  eventFlow,
   onPress,
   properties,
   withoutFeedback,
@@ -37,6 +39,8 @@ export function GalleryTouchableOpacity({
         track('Button Press', {
           id: eventElementId,
           name: eventName,
+          context: eventContext,
+          flow: eventFlow,
           screen: currentScreen,
           ...properties,
         });
@@ -46,7 +50,7 @@ export function GalleryTouchableOpacity({
         onPress(event);
       }
     },
-    [currentScreen, eventElementId, eventName, onPress, properties, track]
+    [currentScreen, eventContext, eventElementId, eventFlow, eventName, onPress, properties, track]
   );
 
   if (withoutFeedback) {

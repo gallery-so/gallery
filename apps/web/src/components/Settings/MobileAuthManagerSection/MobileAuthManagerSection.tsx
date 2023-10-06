@@ -7,6 +7,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import QRCode from '~/components/QRCode/QRCode';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import SettingsRowDescription from '../SettingsRowDescription';
@@ -34,6 +35,8 @@ export default function MobileAuthManagerSection() {
         <Button
           eventElementId="View Mobile Auth QR Code Button"
           eventName="View Mobile Auth QR Code"
+          eventContext={contexts.Authentication}
+          eventFlow={flows['Mobile Login Flow']}
           onClick={handleDisplayMobileAuthModal}
         >
           View QR Code

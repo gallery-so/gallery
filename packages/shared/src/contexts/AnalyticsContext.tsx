@@ -12,6 +12,8 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
+import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
+
 type EventProps = Record<string, unknown>;
 
 export type GalleryElementTrackingProps = {
@@ -26,10 +28,10 @@ export type GalleryElementTrackingProps = {
   eventName: string | null;
   // a bucket, category, or general location for the event.
   // e.g. `Authentication`, `Web Editor`
-  eventContext?: string | null;
+  eventContext: AnalyticsEventContextType | null;
   // an explicit user flow that the event falls into
   // e.g. `Add Wallet Flow` or `Post Flow`
-  eventFlow?: string | null;
+  eventFlow?: AnalyticsEventFlowType | null;
   // custom metadata.
   // e.g. { variant: 'Worldwide' }
   properties?: EventProps;

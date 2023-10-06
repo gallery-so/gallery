@@ -6,6 +6,7 @@ import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { contexts } from '~/shared/analytics/constants';
 
 export default function MobileAppLandingPage() {
   const navbarHeight = useGlobalNavbarHeight();
@@ -39,7 +40,7 @@ export default function MobileAppLandingPage() {
                 <StyledButton
                   eventElementId="Mobile Landing Page Download App Button"
                   eventName="Mobile Landing Page Download App Button Click"
-                  eventContext="Mobile App Upsell"
+                  eventContext={contexts['Mobile App Upsell']}
                 >
                   Download The App
                 </StyledButton>

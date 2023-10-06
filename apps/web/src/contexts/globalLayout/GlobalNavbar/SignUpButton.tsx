@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import useAuthModal from '~/hooks/useAuthModal';
+import { contexts, flows } from '~/shared/analytics/constants';
 
 export function SignUpButton() {
   const showAuthModal = useAuthModal('sign-up');
@@ -10,7 +11,8 @@ export function SignUpButton() {
     <StyledButton
       eventElementId="Sign Up Button"
       eventName="Attempt Sign Up"
-      eventContext="Authentication"
+      eventContext={contexts.Authentication}
+      eventFlow={flows['Web Signup Flow']}
       onClick={showAuthModal}
     >
       Sign up

@@ -17,6 +17,7 @@ import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityP
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ShareIcon from '~/icons/ShareIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -144,7 +145,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
           <TextButton
             eventElementId={`Community Page ${buttonText} Button`}
             eventName={`Community Page ${buttonText}`}
-            eventContext="Community Page"
+            eventContext={contexts.Community}
             text={buttonText}
             onClick={handleShowMoreClick}
           />

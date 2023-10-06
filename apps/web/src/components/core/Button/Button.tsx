@@ -140,6 +140,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       eventElementId,
       eventName,
+      eventContext,
+      eventFlow,
       properties,
       ...otherProps
     }: ButtonProps,
@@ -152,12 +154,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         track('Button Click', {
           id: eventElementId,
           name: eventName,
+          context: eventContext,
+          flow: eventFlow,
           ...properties,
         });
 
         onClick?.(event);
       },
-      [eventElementId, eventName, onClick, properties, track]
+      [eventContext, eventElementId, eventFlow, eventName, onClick, properties, track]
     );
 
     return (

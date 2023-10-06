@@ -233,6 +233,7 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
             // event is tracked in handler above
             eventElementId={null}
             eventName={null}
+            eventContext={null}
             onClick={() => attemptAddWallet(account, publicKey)}
             disabled={isConnecting}
           >
