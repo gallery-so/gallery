@@ -10,9 +10,9 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
-import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
@@ -167,18 +167,28 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <HStack align="center" gap={4}>
             {communityUrl && token.community ? (
               <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-                <ClickablePill to={communityUrl}>
+                <GalleryPill
+                  eventElementId="NFT Detail Community Pill"
+                  eventName="NFT Detail Community Pill Click"
+                  eventContext={contexts['NFT Detail']}
+                  to={communityUrl}
+                >
                   <StyledPillContent gap={4} align="center" justify="flex-end">
                     {token.chain === 'POAP' && <PoapLogo />}
                     {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
                     <StyledContractName>{contractName}</StyledContractName>
                   </StyledPillContent>
-                </ClickablePill>
+                </GalleryPill>
               </CommunityHoverCard>
             ) : (
-              <NonclickablePill>
+              <GalleryPill
+                eventElementId="NFT Detail Community Pill"
+                eventName="NFT Detail Community Pill Click"
+                eventContext={contexts['NFT Detail']}
+                disabled
+              >
                 <StyledContractName>{contractName}</StyledContractName>
-              </NonclickablePill>
+              </GalleryPill>
             )}
           </HStack>
         </VStack>

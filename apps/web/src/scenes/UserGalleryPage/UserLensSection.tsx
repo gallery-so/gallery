@@ -37,5 +37,7 @@ export default function UserLensSection({ userRef }: Props) {
 
   const lensUrl = `https://lenster.xyz/u/${rawLensUsername}`;
 
-  return <UserSocialPill url={lensUrl} icon={<LensIcon />} username={rawLensUsername} />;
+  return (
+    <UserSocialPill url={lensUrl} icon={<LensIcon />} username={rawLensUsername} platform="lens" />
+  );
 }

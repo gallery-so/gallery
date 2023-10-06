@@ -3,11 +3,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
-import { ButtonPill } from '~/components/Pill';
 import { PostCommunityPillFragment$key } from '~/generated/PostCommunityPillFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 type Props = {
@@ -53,23 +53,19 @@ export default function PostCommunityPill({ postRef }: Props) {
       communityName={contractName}
       onClick={handleClick}
     >
-      <StyledPill>
+      <StyledPill
+        eventElementId="Post Community Pill"
+        eventName="Post Community Pill Click"
+        eventContext={contexts.Posts}
+      >
         <StyledCommunityName>{contractName}</StyledCommunityName>
       </StyledPill>
     </CommunityHoverCard>
   );
 }
 
-const StyledPill = styled(ButtonPill)`
-  background-color: ${colors.white};
-  color: ${colors.black['800']};
+const StyledPill = styled(GalleryPill)`
   height: 28px;
-  padding: 4px 12px;
-
-  &:hover {
-    border-color: ${colors.black['800']};
-    background-color: ${colors.white};
-  }
 `;
 
 const StyledCommunityName = styled(TitleDiatypeM)`

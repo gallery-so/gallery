@@ -13,6 +13,7 @@ export const contexts = {
   UserGallery: 'UserGallery',
   'NFT Detail': 'NFT Detail',
   Community: 'Community',
+  Search: 'Search',
   'Global Banner': 'Global Banner',
   'Global Announcement Popover': 'Global Announcement Popover',
   'Mobile App Upsell': 'Mobile App Upsell',

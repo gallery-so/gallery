@@ -6,14 +6,15 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { GalleryPill } from '~/components/GalleryPill';
 import { LinkableAddress } from '~/components/LinkableAddress';
-import { ButtonPill } from '~/components/Pill';
 import { TezosDomainOrAddress } from '~/components/TezosDomainOrAddress';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { hexToDec } from '~/shared/utils/hexToDec';
 
@@ -85,13 +86,14 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
         {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
         {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
       </StyledLinkContainer>
-      <StartAlignedButtonPill
+      <GalleryPill
+        eventElementId="Refresh Single NFT Pill"
+        eventName="Refresh Single NFT"
+        eventContext={contexts['NFT Detail']}
         onClick={refresh}
         disabled={isRefreshing}
-        ref={reference}
-        {...getReferenceProps()}
       >
-        <HStack gap={6}>
+        <HStack gap={6} ref={reference} {...getReferenceProps()}>
           <IconContainer size="xs" variant="default" icon={<RefreshIcon />} />
           <TitleDiatypeM>Refresh metadata</TitleDiatypeM>
         </HStack>
@@ -102,7 +104,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
           whiteSpace="pre-line"
           text={`Last refreshed ${lastUpdated}`}
         />
-      </StartAlignedButtonPill>
+      </GalleryPill>
     </VStack>
   );
 }
@@ -111,8 +113,4 @@ const StyledLinkContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-`;
-
-const StartAlignedButtonPill = styled(ButtonPill)`
-  align-self: start;
 `;

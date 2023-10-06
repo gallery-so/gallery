@@ -32,6 +32,11 @@ export default function UserFarcasterSection({ userRef }: Props) {
   const farcasterUrl = `https://warpcast.com/${farcasterUsername}`;
 
   return (
-    <UserSocialPill url={farcasterUrl} icon={<FarcasterIcon />} username={farcasterUsername} />
+    <UserSocialPill
+      url={farcasterUrl}
+      icon={<FarcasterIcon />}
+      username={farcasterUsername}
+      platform="farcaster"
+    />
   );
 }
