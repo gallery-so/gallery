@@ -8,10 +8,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
+import { TabBarLazyPostIconQuery } from '~/generated/TabBarLazyPostIconQuery.graphql';
 import { TabBarQuery } from '~/generated/TabBarQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
@@ -113,35 +114,6 @@ export function TabBar({ state, navigation }: TabBarProps) {
         viewer {
           ... on Viewer {
             user {
-              bio
-              username
-              primaryWallet {
-                __typename
-              }
-
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    media {
-                      ... on Media {
-                        previewURLs {
-                          small
-                        }
-                      }
-                    }
-                  }
-                }
-                ... on EnsProfileImage {
-                  __typename
-                  profileImage {
-                    __typename
-                    previewURLs {
-                      small
-                    }
-                  }
-                }
-              }
-
               ...ProfilePictureFragment
             }
           }
@@ -152,11 +124,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
   );
 
   const user = query.viewer?.user;
-
-  const { token, profileImage: ensImage } = user?.profileImage ?? {};
-  const imageUrl = token?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
-  console.log('imageUrl', imageUrl);
-
+  console.log('user', user);
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
@@ -172,7 +140,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
       {state.routes.map((route) => {
         let icon = null;
         if (route.name === 'AccountTab') {
-          icon = user && imageUrl ? <ProfilePicture userRef={user} size="sm" /> : <AccountIcon />;
+          icon = !user ? <AccountIcon /> : <ProfilePicture userRef={user} size="sm" />;
         } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
         } else if (route.name === 'NotificationsTab') {
