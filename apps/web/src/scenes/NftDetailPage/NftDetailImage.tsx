@@ -3,8 +3,8 @@ import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { noop } from '~/shared/utils/noop';
 import isVideoUrl from '~/utils/isVideoUrl';
-import noop from '~/utils/noop';
 import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 
 import { StyledVideo } from './NftDetailVideo';

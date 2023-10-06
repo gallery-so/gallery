@@ -19,7 +19,7 @@ import { OperationType } from 'relay-runtime';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 import breakpoints, { pageGutter } from '../core/breakpoints';
 import { SelfCenteredSpinner } from '../core/Spinner/Spinner';
