@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -7,7 +8,6 @@ import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
 
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
-import { useMemo } from 'react';
 
 type Props = {
   commentRefs: CommentsFragment$key;
