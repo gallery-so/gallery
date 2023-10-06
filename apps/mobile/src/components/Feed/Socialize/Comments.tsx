@@ -7,6 +7,7 @@ import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
 
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
+import { useMemo } from 'react';
 
 type Props = {
   commentRefs: CommentsFragment$key;
@@ -25,7 +26,7 @@ export default function Comments({ commentRefs, totalComments, onCommentPress }:
     commentRefs
   );
 
-  const previewComments = comments.slice(-1);
+  const previewComments = useMemo(() => comments.slice(-1), [comments]);
 
   return (
     <View className="flex flex-col space-y-1">
