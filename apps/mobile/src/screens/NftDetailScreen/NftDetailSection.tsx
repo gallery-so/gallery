@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
@@ -66,6 +66,20 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             tokenId
             description
 
+            # We only show 1 but in case the user deletes something
+            # we want to be sure that we can show another comment beneath
+            admires(last: 5) @connection(key: "Interactions_token_admires") {
+              pageInfo {
+                total
+              }
+              edges {
+                node {
+                  dbid
+                  __typename
+                }
+              }
+            }
+
             contract {
               name
               badgeURL
@@ -88,6 +102,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           }
         }
         ...useLoggedInUserIdFragment
+        ...useToggleTokenAdmireQueryFragment
       }
     `,
     queryRef
@@ -144,17 +159,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     });
   }, [navigation, token.dbid]);
 
-  const { hasViewerAdmiredEvent, toggleTokenAdmire } = useToggleTokenAdmire({
-    tokenRef: token,
-    queryRef: query,
-  });
-
-  const handleToggleAdmireToken = useCallback(() => {
-    if (hasViewerAdmiredEvent) return;
-
-    toggleTokenAdmire();
-  }, [hasViewerAdmiredEvent, toggleTokenAdmire]);
-
   // const handleCreatorPress = useCallback(() => {
   //   if (token.creator?.username) {
   //     track('NFT Detail Creator Name Clicked', {
@@ -165,6 +169,34 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   //     navigation.push('Profile', { username: token.creator.username });
   //   }
   // }, [navigation, track, token.creator?.username]);
+
+  const { hasViewerAdmiredEvent, toggleTokenAdmire } = useToggleTokenAdmire({
+    tokenRef: token,
+    queryRef: query,
+  });
+  const handleToggleAdmireToken = useCallback(() => {
+    if (hasViewerAdmiredEvent) return;
+
+    toggleTokenAdmire();
+  }, [hasViewerAdmiredEvent, toggleTokenAdmire]);
+
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
+
+    for (const edge of token.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node);
+      }
+    }
+
+    admires.reverse();
+
+    return admires;
+  }, [token.admires?.edges]);
+
+  const totalAdmires = token.admires?.pageInfo?.total ?? 0;
+  console.log('nonNullAdmires', nonNullAdmires);
+  console.log('totalAdmires', totalAdmires);
 
   const [isAdmired, setIsAdmired] = useState(false);
 
@@ -198,12 +230,15 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         </View>
 
         <View className="flex flex-col space-y-4">
-          <Typography
-            className="text-2xl"
-            font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
-          >
-            {token.name}
-          </Typography>
+          <View className="flex space-x-2">
+            <Typography
+              className="text-2xl"
+              font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
+            >
+              {token.name}
+            </Typography>
+            <AdmireIcon active={isAdmired} />
+          </View>
 
           {token.contract?.name ? (
             <GalleryTouchableOpacity
