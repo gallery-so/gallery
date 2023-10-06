@@ -9,6 +9,7 @@ import { RefetchableEmailVerificationStatusFragment } from '~/generated/Refetcha
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import ClockIcon from '~/icons/ClockIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
@@ -164,6 +165,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
       <StyledButton
         eventElementId="Edit Email Button"
         eventName="Edit Email"
+        eventContext={contexts.Email}
         variant="secondary"
         onClick={handleEditClick}
       >

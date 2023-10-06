@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
@@ -228,6 +229,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
               <Button
                 eventElementId="Cancel Save Email Button"
                 eventName="Cancel Save Email"
+                eventContext={contexts.Email}
                 variant="secondary"
                 disabled={savePending}
                 onClick={handleCancelClick}
@@ -238,6 +240,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
             <Button
               eventElementId="Save Email Button"
               eventName="Save Email"
+              eventContext={contexts.Email}
               variant="primary"
               disabled={!isValidEmail || savePending}
               onClick={handleSaveClick}
