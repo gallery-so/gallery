@@ -223,7 +223,7 @@ export default function FeedList({
                 rowCount={feedData.length}
                 rowHeight={measurerCache.rowHeight}
                 scrollTop={scrollTop}
-                overscanRowCount={10}
+                overscanRowCount={2}
                 // By default, react-virtualized's list has the css property `will-change` set to `transform`
                 // An element with `position: fixed` beneath an element with `will-change: transform` will
                 // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)

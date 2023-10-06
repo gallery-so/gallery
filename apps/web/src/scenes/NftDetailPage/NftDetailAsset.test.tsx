@@ -57,6 +57,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       lastUpdated: '2023-07-25T11:47:41.83653Z',
       ownerIsCreator: false,
       owner: {
+        dbid: 'testOwnerId',
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
         profileImage: {
@@ -101,6 +102,14 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
         badgeURL: 'http://someurl.com',
+      },
+      community: {
+        __typename: 'Community',
+        id: 'Contract:someCommunityId',
+        contractAddress: {
+          chain: Chain.Ethereum,
+          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+        },
       },
     },
   },

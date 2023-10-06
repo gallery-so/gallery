@@ -10,9 +10,11 @@ import { getProhibitionUrlDangerously } from './getProhibitionUrl';
 import {
   getFxHashExternalUrlDangerously,
   getObjktExternalUrlDangerously,
+  isFxHashContractAddress,
 } from './getTezosExternalUrl';
 import { hexToDec } from './hexToDec';
 import processProjectUrl from './processProjectUrl';
+import { truncateAddress } from './wallet';
 
 export function extractRelevantMetadataFromToken(
   tokenRef: extractRelevantMetadataFromTokenFragment$key
@@ -26,6 +28,7 @@ export function extractRelevantMetadataFromToken(
         chain
         lastUpdated
         contract {
+          name
           contractAddress {
             address
           }
@@ -49,6 +52,7 @@ export function extractRelevantMetadataFromToken(
   const result = {
     tokenId: '',
     contractAddress,
+    contractName: '',
     lastUpdated: '',
     openseaUrl: '',
     mirrorUrl: '',
@@ -76,6 +80,16 @@ export function extractRelevantMetadataFromToken(
     ) {
       result.openseaUrl = getOpenseaExternalUrlDangerously(chain, contractAddress, tokenId);
     }
+  }
+
+  if (isFxHashContractAddress(contractAddress)) {
+    result.contractName = 'fx(hash)';
+  } else if (contract?.name) {
+    result.contractName = contract.name;
+  } else if (contractAddress) {
+    result.contractName = truncateAddress(contractAddress);
+  } else {
+    result.contractName = 'Untitled Contract';
   }
 
   if (tokenMetadata) {

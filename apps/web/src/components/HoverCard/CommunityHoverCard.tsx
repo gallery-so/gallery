@@ -11,8 +11,6 @@ import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import { isValidEthereumAddress, truncateAddress } from '~/shared/utils/wallet';
-import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import Markdown from '../core/Markdown/Markdown';
@@ -27,7 +25,6 @@ const CommunityHoverCardQueryNode = graphql`
     communityByAddress(communityAddress: $communityAddress) {
       __typename
       ... on Community {
-        name
         description
         contractAddress {
           address
@@ -59,14 +56,19 @@ const CommunityHoverCardQueryNode = graphql`
 
 type Props = PropsWithChildren<{
   communityRef: CommunityHoverCardFragment$key;
+  communityName: string;
   onClick?: HoverCardProps<CommunityHoverCardQuery>['onHoverableElementClick'];
 }>;
 
-export default function CommunityHoverCard({ children, communityRef, onClick }: Props) {
+export default function CommunityHoverCard({
+  children,
+  communityName,
+  communityRef,
+  onClick,
+}: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityHoverCardFragment on Community {
-        name
         contractAddress {
           address
           chain
@@ -99,20 +101,17 @@ export default function CommunityHoverCard({ children, communityRef, onClick }: 
     });
   }, [community.contractAddress?.address, community.contractAddress?.chain, preloadHoverCardQuery]);
 
-  if (!community.name) {
-    return null;
-  }
-
-  const displayName = handleCustomDisplayName(community.name);
-
   return (
     <HoverCard
-      HoverableElement={children ?? <BaseS color={colors.shadow}>{displayName}</BaseS>}
+      HoverableElement={children ?? <BaseS color={colors.shadow}>{communityName}</BaseS>}
       onHoverableElementClick={onClick}
       hoverableElementHref={communityProfileLink}
       HoveringContent={
         preloadedHoverCardQuery ? (
-          <CommunityHoverCardContent preloadedQuery={preloadedHoverCardQuery} />
+          <CommunityHoverCardContent
+            preloadedQuery={preloadedHoverCardQuery}
+            communityName={communityName}
+          />
         ) : null
       }
       preloadQuery={handlePreloadQuery}
@@ -123,8 +122,10 @@ export default function CommunityHoverCard({ children, communityRef, onClick }: 
 
 function CommunityHoverCardContent({
   preloadedQuery,
+  communityName,
 }: {
   preloadedQuery: PreloadedQuery<CommunityHoverCardQuery>;
+  communityName: string;
 }) {
   const communityQuery = usePreloadedQuery(CommunityHoverCardQueryNode, preloadedQuery);
 
@@ -197,10 +198,6 @@ function CommunityHoverCardContent({
     };
   }, [community]);
 
-  if (!community.name) {
-    return null;
-  }
-
   const hasDescription = Boolean(community.description);
   return (
     <VStack gap={6}>
@@ -210,11 +207,7 @@ function CommunityHoverCardContent({
         </StyledLink>
         <Section gap={2}>
           <StyledLink href={communityProfileLink}>
-            <StyledCardTitle>
-              {isValidEthereumAddress(community.name)
-                ? truncateAddress(community.name)
-                : community.name}
-            </StyledCardTitle>
+            <StyledCardTitle>{communityName}</StyledCardTitle>
           </StyledLink>
           {community.description && (
             <StyledCardDescription>

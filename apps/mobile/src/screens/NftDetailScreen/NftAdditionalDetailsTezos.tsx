@@ -95,7 +95,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <View className="flex flex-row">
                   <DetailExternalLink
                     link={fxhashUrl}
-                    label="fxhash"
+                    label="fx(hash)"
                     trackingLabel="NFT Detail View on fxhashUrl"
                     showExternalLinkIcon={true}
                     font={{ family: 'ABCDiatype', weight: 'Bold' }}

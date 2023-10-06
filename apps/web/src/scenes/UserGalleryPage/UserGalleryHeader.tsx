@@ -8,6 +8,7 @@ import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNav
 import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFragment.graphql';
 import { UserGalleryHeaderQueryFragment$key } from '~/generated/UserGalleryHeaderQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useIsChristinaFromLens } from '~/shared/hooks/useIsChristinaFromLens';
 import colors from '~/shared/theme/colors';
 
 import UserFarcasterSection from './UserFarcasterSection';
@@ -46,6 +47,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         ...UserSharedInfoFragment
         ...GalleryNavLinksFragment
         ...UserLensSectionFragment
+        ...useIsChristinaFromLensFragment
       }
     `,
     userRef
@@ -72,6 +74,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isLoggedIn = Boolean(loggedInUserId);
   const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isChristinaFromLens = useIsChristinaFromLens(user);
 
   const numberOfConnectedAccounts = useMemo(() => {
     return [
@@ -93,7 +96,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         {numberOfConnectedAccounts > 0 ? (
           <SocialConnectionsSection numPills={numberOfConnectedAccounts}>
             <UserTwitterSection userRef={user} queryRef={query} />
-            <UserFarcasterSection userRef={user} />
+            {isChristinaFromLens ? null : <UserFarcasterSection userRef={user} />}
             <UserLensSection userRef={user} />
           </SocialConnectionsSection>
         ) : (

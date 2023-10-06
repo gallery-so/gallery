@@ -10,6 +10,8 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
+import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -49,6 +51,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         owner {
           username
           ...ProfilePictureFragment
+          ...UserHoverCardFragment
         }
         ownerIsCreator
         contract {
@@ -58,6 +61,9 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             address
           }
           badgeURL
+        }
+        community {
+          ...CommunityHoverCardFragment
         }
 
         ...NftAdditionalDetailsFragment
@@ -79,7 +85,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const { openseaUrl } = extractRelevantMetadataFromToken(token);
+  const { openseaUrl, contractName } = extractRelevantMetadataFromToken(token);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
@@ -159,17 +165,19 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         <VStack gap={8}>
           {token.name && <TitleM>{decodedTokenName}</TitleM>}
           <HStack align="center" gap={4}>
-            {communityUrl && token.contract?.name ? (
-              <ClickablePill to={communityUrl}>
-                <StyledPillContent gap={4} align="center" justify="flex-end">
-                  {token.chain === 'POAP' && <PoapLogo />}
-                  {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-                  <StyledContractName>{token.contract.name}</StyledContractName>
-                </StyledPillContent>
-              </ClickablePill>
+            {communityUrl && token.community ? (
+              <CommunityHoverCard communityRef={token.community} communityName={contractName}>
+                <ClickablePill to={communityUrl}>
+                  <StyledPillContent gap={4} align="center" justify="flex-end">
+                    {token.chain === 'POAP' && <PoapLogo />}
+                    {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+                    <StyledContractName>{contractName}</StyledContractName>
+                  </StyledPillContent>
+                </ClickablePill>
+              </CommunityHoverCard>
             ) : (
               <NonclickablePill>
-                <StyledContractName>{token.contract?.name}</StyledContractName>
+                <StyledContractName>{contractName}</StyledContractName>
               </NonclickablePill>
             )}
           </HStack>
@@ -177,18 +185,20 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
 
         <HStack justify="space-between">
           {token.owner?.username && (
-            <VStack gap={2}>
-              <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
-              <StyledInteractiveLink
-                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
-                onClick={handleCollectorNameClick}
-              >
-                <HStack align="center" gap={4}>
-                  <ProfilePicture size="sm" userRef={token.owner} />
-                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
-                </HStack>
-              </StyledInteractiveLink>
-            </VStack>
+            <UserHoverCard userRef={token.owner}>
+              <VStack gap={2}>
+                <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
+                <StyledInteractiveLink
+                  to={{ pathname: '/[username]', query: { username: token.owner.username } }}
+                  onClick={handleCollectorNameClick}
+                >
+                  <HStack align="center" gap={4}>
+                    <ProfilePicture size="sm" userRef={token.owner} />
+                    <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
+                  </HStack>
+                </StyledInteractiveLink>
+              </VStack>
+            </UserHoverCard>
           )}
           {ENABLED_CREATOR && (
             // TODO: Update this to use the creator's username

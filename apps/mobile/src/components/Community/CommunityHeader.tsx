@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
+import { truncateAddress } from '~/shared/utils/wallet';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -19,6 +20,9 @@ export function CommunityHeader({ communityRef }: Props) {
     graphql`
       fragment CommunityHeaderFragment on Community {
         name
+        contractAddress {
+          address
+        }
         description
         ...CommunityProfilePictureFragment
         ...CommunityBottomSheetFragment
@@ -40,6 +44,8 @@ export function CommunityHeader({ communityRef }: Props) {
   const cleanedSentences = community.description?.trim().replace(/\s+/g, ' ');
   const formattedDescription = cleanedSentences?.split(/[.!?]\s+/).join(' ');
 
+  const displayName = community.name || truncateAddress(community.contractAddress?.address ?? '');
+
   return (
     <View className="mb-2">
       <View className="flex flex-row space-x-2 items-center">
@@ -56,7 +62,7 @@ export function CommunityHeader({ communityRef }: Props) {
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               className="text-lg leading-5 mb-1"
             >
-              {community.name}
+              {displayName}
             </Typography>
 
             {formattedDescription && <Markdown numberOfLines={3}>{formattedDescription}</Markdown>}

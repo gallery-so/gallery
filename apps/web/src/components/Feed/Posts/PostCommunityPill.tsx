@@ -8,6 +8,8 @@ import { ButtonPill } from '~/components/Pill';
 import { PostCommunityPillFragment$key } from '~/generated/PostCommunityPillFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
+
 type Props = {
   postRef: PostCommunityPillFragment$key;
 };
@@ -18,31 +20,41 @@ export default function PostCommunityPill({ postRef }: Props) {
       fragment PostCommunityPillFragment on Post {
         tokens {
           community {
-            name
             ...CommunityHoverCardFragment
           }
+          ...extractRelevantMetadataFromTokenFragment
         }
       }
     `,
     postRef
   );
 
-  const token = post.tokens && post.tokens[0];
+  const token = post.tokens?.[0];
+
+  if (!token) {
+    throw new Error('Post does not have a token');
+  }
+
+  const { contractName } = extractRelevantMetadataFromToken(token);
 
   const track = useTrack();
 
   const handleClick = useCallback(() => {
-    track('Clicked Post Community Pill', { community: token?.community?.name });
-  }, [token?.community?.name, track]);
+    track('Clicked Post Community Pill', { community: contractName });
+  }, [contractName, track]);
 
   if (!token?.community) {
     return null;
   }
 
   return (
-    <CommunityHoverCard communityRef={token.community} onClick={handleClick}>
+    <CommunityHoverCard
+      communityRef={token.community}
+      communityName={contractName}
+      onClick={handleClick}
+    >
       <StyledPill>
-        <StyledCommunityName>{token?.community.name}</StyledCommunityName>
+        <StyledCommunityName>{contractName}</StyledCommunityName>
       </StyledPill>
     </CommunityHoverCard>
   );
