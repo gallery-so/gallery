@@ -119,6 +119,29 @@ export function TabBar({ state, navigation }: TabBarProps) {
                 __typename
               }
 
+              profileImage {
+                ... on TokenProfileImage {
+                  token {
+                    media {
+                      ... on Media {
+                        previewURLs {
+                          small
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on EnsProfileImage {
+                  __typename
+                  profileImage {
+                    __typename
+                    previewURLs {
+                      small
+                    }
+                  }
+                }
+              }
+
               ...ProfilePictureFragment
             }
           }
@@ -129,6 +152,10 @@ export function TabBar({ state, navigation }: TabBarProps) {
   );
 
   const user = query.viewer?.user;
+
+  const { token, profileImage: ensImage } = user?.profileImage ?? {};
+  const imageUrl = token?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
+  console.log('imageUrl', imageUrl);
 
   const { bottom } = useSafeAreaInsets();
 
@@ -145,7 +172,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
       {state.routes.map((route) => {
         let icon = null;
         if (route.name === 'AccountTab') {
-          icon = !user ? <AccountIcon /> : <ProfilePicture userRef={user} size="sm" />;
+          icon = user && imageUrl ? <ProfilePicture userRef={user} size="sm" /> : <AccountIcon />;
         } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
         } else if (route.name === 'NotificationsTab') {
