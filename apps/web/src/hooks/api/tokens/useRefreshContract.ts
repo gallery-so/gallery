@@ -1,5 +1,7 @@
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { useRefreshContractMutation } from '~/generated/useRefreshContractMutation.graphql';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
@@ -19,21 +21,35 @@ export function useRefreshContract(): [(contractId: string) => Promise<void>, bo
       }
     `);
 
+  const reportError = useReportError();
+  const { pushToast } = useToastActions();
+
   const refreshContract = useCallback(
     async (contractId: string) => {
-      const response = await refreshContractMutate({ variables: { id: contractId } });
-      if (
-        response.refreshContract?.__typename === 'ErrInvalidInput' ||
-        response.refreshContract?.__typename === 'ErrSyncFailed'
-      ) {
-        if (response.refreshContract?.message?.includes('context deadline exceeded')) {
-          // don't show timeout errors because that means the refresh is still continuing async
-          return;
+      try {
+        await refreshContractMutate({ variables: { id: contractId } });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          reportError(error, {
+            tags: {
+              contractId: contractId,
+            },
+          });
+
+          pushToast({
+            message: error.message,
+            autoClose: true,
+          });
+        } else {
+          reportError('Error while refreshing collection, unknown error');
+
+          pushToast({
+            message: "Something went wrong, we're looking into it now.",
+          });
         }
-        throw new Error(`Could not refresh token: ${response.refreshToken?.message}`);
       }
     },
-    [refreshContractMutate]
+    [pushToast, refreshContractMutate, reportError]
   );
 
   return [refreshContract, isContractRefreshing];

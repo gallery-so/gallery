@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import {
-  SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
-  SIDEBAR_COLLECTION_TITLE_HEIGHT,
+    SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
+    SIDEBAR_COLLECTION_TITLE_HEIGHT,
 } from '~/constants/sidebar';
 import colors from '~/shared/theme/colors';
 
@@ -13,6 +13,7 @@ import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../../GalleryOnboardingGuide/OnboardingDialogContext';
 import { ExpandedIcon } from '../ExpandedIcon';
 import { TokenFilterType } from '../SidebarViewSelector';
+import RefreshContractIcon from './RefreshContractIcon';
 import { CollectionTitleRow } from './SidebarList';
 import ToggleSpamIcon, { SetSpamFn } from './ToggleSpamIcon';
 
@@ -44,6 +45,13 @@ export default function CollectionTitle({
     return isMouseHovering;
   }, [selectedView, isMouseHovering]);
 
+  const shouldDisplayContractRefreshIcon = useMemo(() => {
+    if (selectedView !== 'Created') {
+      return false;
+    }
+    return isMouseHovering;
+  }, [selectedView, isMouseHovering]);
+
   return (
     <CollectionTitleRow style={style}>
       <CollectionTitleContainer
@@ -64,6 +72,10 @@ export default function CollectionTitle({
             row={row}
             selectedView={selectedView}
             setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+          />
+        ) : shouldDisplayContractRefreshIcon ? (
+          <RefreshContractIcon
+            row={row}
           />
         ) : (
           <CollectionCount>{row.count}</CollectionCount>
