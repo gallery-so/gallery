@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
+import { useRefreshContract } from '~/hooks/api/tokens/useRefreshContract';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
@@ -217,6 +218,18 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     await syncTokens({ type: filterType, chain: network });
   }, [refreshDisabled, track, filterType, syncTokens, network]);
 
+  const [refreshContract, isContractRefreshing] = useRefreshContract();
+  const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
+
+  const handleCreatorRefreshContract = useCallback(async () => {
+    if (!selectedContract) {
+      return;
+    }
+
+    track('NFT Selector: Clicked Creator Contract Refresh');
+    await refreshContract(selectedContract.address);
+  }, [selectedContract, track, refreshContract]);
+
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'bottom-end',
@@ -257,8 +270,26 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
         {selectedContract ? (
           <StyledHeaderContainer justify="space-between" align="center">
             <StyledTitleText>{selectedContract?.title}</StyledTitleText>
+            <HStack align="center">
+              <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <IconContainer
+                disabled={contractRefreshDisabled}
+                onClick={handleCreatorRefreshContract}
+                size="xs"
+                variant="default"
+                icon={<RefreshIcon />}
+                ref={reference}
+                {...getReferenceProps()}
+              />
 
-            <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <NewTooltip
+                {...getFloatingProps()}
+                style={{ ...floatingStyle }}
+                ref={floating}
+                whiteSpace="pre-line"
+                text={`Refresh Collection`}
+              />
+            </HStack>
           </StyledHeaderContainer>
         ) : (
           <DropdownsContainer gap={4} align="center" disabled={isSearching}>
