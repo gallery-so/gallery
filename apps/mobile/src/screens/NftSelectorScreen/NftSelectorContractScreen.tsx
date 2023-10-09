@@ -1,20 +1,20 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useEffect,useMemo, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { RefreshIcon } from 'src/icons/RefreshIcon';
 
 import { BackButton } from '~/components/BackButton';
+import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useToastActions } from '~/contexts/ToastContext';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
-import { useToastActions } from '~/contexts/ToastContext';
-import { IconContainer } from '~/components/IconContainer';
-import { RefreshIcon } from 'src/icons/RefreshIcon';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
@@ -120,10 +120,7 @@ export function NftSelectorContractScreen() {
           </View>
           {isCreator ? (
             <View>
-              <AnimatedRefreshContractIcon
-                contractId={route.params.contractAddress}
-                onRefresh={() => {}}
-              />
+              <AnimatedRefreshContractIcon contractId={route.params.contractAddress} />
             </View>
           ) : null}
         </View>
@@ -137,10 +134,9 @@ export function NftSelectorContractScreen() {
 
 type AnimatedRefreshContractIconProps = {
   contractId: string;
-  onRefresh: () => void;
 };
 
-function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshContractIconProps) {
+function AnimatedRefreshContractIcon({ contractId }: AnimatedRefreshContractIconProps) {
   const [refreshContract, isRefreshing] = useRefreshContract();
 
   const { pushToast } = useToastActions();
@@ -149,12 +145,11 @@ function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshC
     if (isRefreshing) return;
 
     await refreshContract(contractId);
-    onRefresh();
     pushToast({
       message: 'Successfully refreshed your collection',
       withoutNavbar: true,
     });
-  }, [isRefreshing, contractId, onRefresh, pushToast, refreshContract]);
+  }, [isRefreshing, contractId, pushToast, refreshContract]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 
