@@ -56,6 +56,7 @@ export function SomeoneMentionedYou({
           }
           ... on Comment {
             __typename
+            dbid
             commenter {
               username
               ...NotificationSkeletonResponsibleUsersFragment
@@ -101,29 +102,32 @@ export function SomeoneMentionedYou({
     }
 
     if (notification?.mentionSource?.__typename === 'Comment') {
-      return {
-        author: notification.mentionSource?.commenter?.username ?? 'Someone',
-        message: notification?.mentionSource?.comment ?? '',
-        usersMentioned: removeNullValues([notification.mentionSource?.commenter]),
-        onPress: () => {
-          let postId = '';
+      const { mentionSource } = notification;
+      const author = mentionSource?.commenter?.username ?? 'Someone';
+      const message = mentionSource?.comment ?? '';
+      const usersMentioned = removeNullValues([mentionSource?.commenter]);
 
-          const { mentionSource } = notification;
+      const onPress = () => {
+        let postId = '';
+        let commentId = '';
 
-          if (mentionSource.__typename === 'Post') {
-            postId = mentionSource.dbid;
-          } else if (mentionSource.__typename === 'Comment') {
-            if (mentionSource.source?.__typename === 'Post') {
-              postId = mentionSource.source.dbid;
-            } else if (mentionSource.source?.__typename === 'FeedEvent') {
-              postId = mentionSource.source.dbid;
-            }
+        if (mentionSource.__typename === 'Comment') {
+          commentId = mentionSource.dbid;
+          if (
+            mentionSource.source?.__typename === 'Post' ||
+            mentionSource.source?.__typename === 'FeedEvent'
+          ) {
+            postId = mentionSource.source.dbid;
           }
+        }
 
-          navigation.navigate('Post', { postId: postId ?? ' ' });
-        },
-        type: 'comment',
+        navigation.navigate('Post', {
+          postId: postId || ' ',
+          commentId: commentId || '',
+        });
       };
+
+      return { author, message, usersMentioned, onPress, type: 'comment' };
     }
 
     return {
