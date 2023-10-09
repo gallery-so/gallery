@@ -15,10 +15,11 @@ import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
 const MARKDOWN_LINK_REGEX = /\[([^\]]+)]\((https?:\/\/[^\s]+)\)/g;
 
 type LinkProps = {
+  value?: string;
   url: string;
 };
 
-const LinkComponent = ({ url }: LinkProps) => {
+const LinkComponent = ({ url, value }: LinkProps) => {
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleLinkPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -27,7 +28,7 @@ const LinkComponent = ({ url }: LinkProps) => {
   return (
     <>
       <Text className="text-shadow" onPress={handleLinkPress}>
-        {url}
+        {value ?? url}
       </Text>
       <WarningLinkBottomSheet redirectUrl={url} ref={bottomSheetRef} />
     </>
@@ -157,12 +158,13 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
     // Identify markdown-style links and add them to the elements array
     const markdownLinkMatches = comment.matchAll(MARKDOWN_LINK_REGEX);
     for (const match of markdownLinkMatches) {
-      const [fullMatch, linkUrl] = match;
-      const startIndex = comment.indexOf(fullMatch);
+      const [fullMatch, linkText, linkUrl] = match;
+      const startIndex = match.index ?? 0;
 
       elements.push({
         type: 'markdown-link',
-        value: fullMatch,
+        // If there's no link text, then we use the link URL as the value
+        value: linkText ?? linkUrl ?? '',
         start: startIndex,
         end: startIndex + fullMatch.length,
         url: linkUrl,
@@ -170,11 +172,14 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
     }
 
     // Identify URLs and add them to the elements array
-    const urlMatches = comment.match(VALID_URL);
-    urlMatches?.forEach((match) => {
-      const startIndex = comment.indexOf(match);
+    const URL_REGEX = new RegExp(VALID_URL, 'g'); // Make sure the URL regex has the 'g' flag
+    let urlMatch;
+    while ((urlMatch = URL_REGEX.exec(comment)) !== null) {
+      const [match] = urlMatch;
+      const startIndex = urlMatch.index;
       const endIndex = startIndex + match.length;
 
+      // Before pushing a URL to the elements array, we check if it's within a markdown link. If it's not, then we push it.
       if (!isWithinMarkdownLink(startIndex, endIndex, elements)) {
         elements.push({
           type: 'url',
@@ -183,7 +188,7 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
           end: endIndex,
         });
       }
-    });
+    }
 
     // Sort elements based on their start index
     elements.sort((a, b) => a.start - b.start);
@@ -211,7 +216,9 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
       } else if (element.type === 'url') {
         result.push(<LinkComponent key={`link-${index}`} url={element.value} />);
       } else if (element.type === 'markdown-link' && element.url) {
-        result.push(<LinkComponent key={`link-${index}`} url={element.url} />);
+        result.push(
+          <LinkComponent key={`link-${index}`} url={element.url} value={element.value} />
+        );
       }
 
       lastEndIndex = element.end;
