@@ -72,7 +72,9 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedCommentText comment={comment.comment} />
+        <View className="flex mr-5">
+          <ProcessedCommentText comment={comment.comment} />
+        </View>
       </View>
     </GalleryTouchableOpacity>
   );
