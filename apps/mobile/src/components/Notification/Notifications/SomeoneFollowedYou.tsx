@@ -117,25 +117,34 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
       notificationRef={notification}
     >
       <View className="flex flex-row w-full justify-between items-center">
-        <Text className={shouldShowFollowBackButton ? 'max-w-70' : ''}>
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-sm"
-          >
-            {count > 1 ? (
-              `${count} collectors`
-            ) : (
-              <>{lastFollower ? lastFollower.username : 'Someone'}</>
-            )}
-          </Typography>{' '}
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            followed you
-          </Typography>
-        </Text>
-        {shouldShowFollowBackButton && <FollowButton queryRef={query} userRef={lastFollower} />}
+        <View className="max-w-[180px]">
+          <Text>
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Bold',
+              }}
+              className="text-sm"
+            >
+              {count > 1 ? (
+                `${count} collectors`
+              ) : (
+                <>{lastFollower ? lastFollower.username : 'Someone'}</>
+              )}
+            </Typography>{' '}
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              followed
+            </Typography>{' '}
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              you
+            </Typography>
+          </Text>
+        </View>
+        {shouldShowFollowBackButton && (
+          <View className="pl-1">
+            <FollowButton queryRef={query} userRef={lastFollower} />
+          </View>
+        )}
       </View>
       <NotificationBottomSheetUserList
         ref={bottomSheetRef}
