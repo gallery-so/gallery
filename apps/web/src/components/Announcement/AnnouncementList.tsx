@@ -6,15 +6,16 @@ import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { HTTPS_URL } from '~/shared/utils/regex';
 import { useOptimisticallyDismissExperience } from '~/utils/graphql/experiences/useUpdateUserExperience';
 
-import { Chip } from '../core/Chip/Chip';
+import { GalleryChip } from '../core/Chip/Chip';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
-import useAnnouncement, { AnnouncementType } from './useAnnouncement';
+import useAnnouncement, { DecoratedAnnouncementType } from './useAnnouncement';
 
 type Props = {
   queryRef: AnnouncementListFragment$key;
@@ -38,7 +39,7 @@ export default function AnnouncementList({ queryRef }: Props) {
   const { hideDrawer } = useDrawerActions();
 
   const handleClick = useCallback(
-    (announcement: AnnouncementType) => {
+    (announcement: DecoratedAnnouncementType) => {
       track('Announcement click', { type: announcement.key });
 
       // if there is a link, open it
@@ -97,7 +98,13 @@ export default function AnnouncementList({ queryRef }: Props) {
             <HStack gap={12}>
               {announcement.ctaText && (
                 <StyledCTAContainer>
-                  <StyledChip>Download</StyledChip>
+                  <StyledChip
+                    eventElementId={announcement.eventElementId}
+                    eventName={announcement.eventName}
+                    eventContext={contexts.Notifications}
+                  >
+                    {announcement.ctaText}
+                  </StyledChip>
                 </StyledCTAContainer>
               )}
               <StyledTimeContainer gap={8} align="center" justify="flex-end">
@@ -134,7 +141,7 @@ const StyledAnnouncementDescriptionContainer = styled(VStack)`
 
 const StyledCTAContainer = styled(HStack)``;
 
-const StyledChip = styled(Chip)`
+const StyledChip = styled(GalleryChip)`
   background-color: ${colors.black['800']};
   color: ${colors.offWhite};
   width: 88px;

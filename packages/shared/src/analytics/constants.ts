@@ -2,6 +2,7 @@ export const contexts = {
   Posts: 'Posts',
   Feed: 'Feed',
   Editor: 'Editor',
+  Social: 'Social',
   Notifications: 'Notifications',
   Authentication: 'Authentication',
   'Manage Wallets': 'Manage Wallets',
