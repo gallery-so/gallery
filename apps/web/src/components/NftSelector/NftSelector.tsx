@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
-import { useRefreshContract } from '~/hooks/api/tokens/useRefreshContract';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 

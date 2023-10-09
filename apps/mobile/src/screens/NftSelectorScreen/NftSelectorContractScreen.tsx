@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
+import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
@@ -11,6 +11,10 @@ import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractS
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
+import { useToastActions } from '~/contexts/ToastContext';
+import { IconContainer } from '~/components/IconContainer';
+import { RefreshIcon } from 'src/icons/RefreshIcon';
 
 export function NftSelectorContractScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
@@ -95,10 +99,11 @@ export function NftSelectorContractScreen() {
         paddingTop: isFullscreen ? top : 16,
       }}
     >
-      <View className="flex flex-col space-y-8 flex-1 ">
-        <View className="px-4 relative">
-          <BackButton />
-
+      <View className="flex flex-col space-y-8 flex-1">
+        <View className="px-4 relative flex flex-row justify-between items-center">
+          <View>
+            <BackButton />
+          </View>
           <View
             className="absolute inset-0 flex flex-row justify-center items-center"
             pointerEvents="none"
@@ -112,11 +117,82 @@ export function NftSelectorContractScreen() {
               {contractName}
             </Typography>
           </View>
+          <View>
+            <AnimatedRefreshContractIcon
+              contractId={route.params.contractAddress}
+              onRefresh={() => {}}
+            />
+          </View>
         </View>
         <View className="flex-1 w-full">
           <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
         </View>
       </View>
     </View>
+  );
+}
+
+type AnimatedRefreshContractIconProps = {
+  contractId: string;
+  onRefresh: () => void;
+};
+
+function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshContractIconProps) {
+  const [refreshContract, isRefreshing] = useRefreshContract();
+
+  const { pushToast } = useToastActions();
+
+  const handleRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+
+    await refreshContract(contractId);
+    onRefresh();
+    pushToast({
+      message: 'Successfully refreshed your collection',
+      withoutNavbar: true,
+    });
+  }, [isRefreshing, contractId, onRefresh, pushToast, refreshContract]);
+
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+  const spin = useCallback(() => {
+    spinValue.setValue(0);
+    Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
+      if (finished && isRefreshing) {
+        spin();
+      }
+    });
+  }, [isRefreshing, spinValue]);
+
+  const spinAnimation = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  useEffect(() => {
+    if (isRefreshing) {
+      spin();
+    } else {
+      spinValue.stopAnimation();
+    }
+  }, [isRefreshing, spin, spinValue]);
+
+  return (
+    <IconContainer
+      size="sm"
+      onPress={handleRefresh}
+      icon={
+        <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
+          <RefreshIcon />
+        </Animated.View>
+      }
+      eventElementId="NftSelectorSelectorRefreshContractButton"
+      eventName="NftSelectoreSelectorRefreshContractButton pressed"
+    />
   );
 }

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import IconContainer from '~/components/core/IconContainer';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { useRefreshContract } from '~/hooks/api/tokens/useRefreshContract';
+import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { CollectionTitleRow } from './SidebarList';
 

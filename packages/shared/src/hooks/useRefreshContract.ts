@@ -1,10 +1,10 @@
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-import { useRefreshContractMutation } from '~/generated/useRefreshContractMutation.graphql';
-import { useToastActions } from '~/contexts/toast/ToastContext';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
+import { useRefreshContractMutation } from '~/generated/useRefreshContractMutation.graphql';
+
+import { useReportError } from '../contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 export function useRefreshContract(): [(contractId: string) => Promise<void>, boolean] {
   const [refreshContractMutate, isContractRefreshing] =
@@ -22,7 +22,6 @@ export function useRefreshContract(): [(contractId: string) => Promise<void>, bo
     `);
 
   const reportError = useReportError();
-  const { pushToast } = useToastActions();
 
   const refreshContract = useCallback(
     async (contractId: string) => {
@@ -35,21 +34,12 @@ export function useRefreshContract(): [(contractId: string) => Promise<void>, bo
               contractId: contractId,
             },
           });
-
-          pushToast({
-            message: error.message,
-            autoClose: true,
-          });
         } else {
           reportError('Error while refreshing collection, unknown error');
-
-          pushToast({
-            message: "Something went wrong, we're looking into it now.",
-          });
         }
       }
     },
-    [pushToast, refreshContractMutate, reportError]
+    [refreshContractMutate, reportError]
   );
 
   return [refreshContract, isContractRefreshing];
