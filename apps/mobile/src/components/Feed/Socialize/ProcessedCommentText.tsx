@@ -12,6 +12,8 @@ import { VALID_URL } from '~/shared/utils/regex';
 
 import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
 
+const MARKDOWN_LINK_REGEX = /\[([^\]]+)]\((https?:\/\/[^\s]+)\)/g;
+
 type LinkProps = {
   url: string;
 };
@@ -93,11 +95,12 @@ type CommentProps = {
 };
 
 type CommentElement = {
-  type: 'mention' | 'url';
+  type: 'mention' | 'url' | 'markdown-link';
   value: string;
   start: number;
   end: number;
   mentionRef?: ProcessedCommentTextMentionFragment$key;
+  url?: string;
 };
 
 // Makes a raw comment value display-ready by converting urls to link components
@@ -151,16 +154,35 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
       });
     });
 
+    // Identify markdown-style links and add them to the elements array
+    const markdownLinkMatches = comment.matchAll(MARKDOWN_LINK_REGEX);
+    for (const match of markdownLinkMatches) {
+      const [fullMatch, linkUrl] = match;
+      const startIndex = comment.indexOf(fullMatch);
+
+      elements.push({
+        type: 'markdown-link',
+        value: fullMatch,
+        start: startIndex,
+        end: startIndex + fullMatch.length,
+        url: linkUrl,
+      });
+    }
+
     // Identify URLs and add them to the elements array
     const urlMatches = comment.match(VALID_URL);
     urlMatches?.forEach((match) => {
       const startIndex = comment.indexOf(match);
-      elements.push({
-        type: 'url',
-        value: match,
-        start: startIndex,
-        end: startIndex + match.length,
-      });
+      const endIndex = startIndex + match.length;
+
+      if (!isWithinMarkdownLink(startIndex, endIndex, elements)) {
+        elements.push({
+          type: 'url',
+          value: match,
+          start: startIndex,
+          end: endIndex,
+        });
+      }
     });
 
     // Sort elements based on their start index
@@ -186,8 +208,10 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
             mentionRef={element.mentionRef}
           />
         );
-      } else {
+      } else if (element.type === 'url') {
         result.push(<LinkComponent key={`link-${index}`} url={element.value} />);
+      } else if (element.type === 'markdown-link' && element.url) {
+        result.push(<LinkComponent key={`link-${index}`} url={element.url} />);
       }
 
       lastEndIndex = element.end;
@@ -211,4 +235,13 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
       {processedText}
     </Typography>
   );
+}
+
+function isWithinMarkdownLink(start: number, end: number, elements: CommentElement[]) {
+  for (const element of elements) {
+    if (element.type === 'markdown-link' && start >= element.start && end <= element.end) {
+      return true;
+    }
+  }
+  return false;
 }
