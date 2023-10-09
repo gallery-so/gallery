@@ -3,13 +3,13 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useReplaceMentionsWithMarkdownFormat } from 'src/utils/useReplaceMentionsWithMarkdownFormat';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
 import ProcessedCommentText from '../Socialize/ProcessedCommentText';
@@ -31,7 +31,7 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
           ...ProfilePictureFragment
         }
         mentions {
-          ...useReplaceMentionsWithMarkdownFormatFragment
+          ...ProcessedCommentTextFragment
         }
       }
     `,
@@ -76,7 +76,10 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedCommentText comment={comment.comment} />
+        <ProcessedCommentText
+          comment={comment.comment}
+          mentionsRef={removeNullValues(comment.mentions)}
+        />
       </View>
     </GalleryTouchableOpacity>
   );
