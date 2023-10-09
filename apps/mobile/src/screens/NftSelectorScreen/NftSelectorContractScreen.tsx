@@ -46,6 +46,7 @@ export function NftSelectorContractScreen() {
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const isFullscreen = route.params.fullScreen;
+  const isCreator = route.params.filter === 'Created';
 
   const handleSelectNft = useCallback(() => {
     navigation.pop(2);
@@ -117,12 +118,14 @@ export function NftSelectorContractScreen() {
               {contractName}
             </Typography>
           </View>
-          <View>
-            <AnimatedRefreshContractIcon
-              contractId={route.params.contractAddress}
-              onRefresh={() => {}}
-            />
-          </View>
+          {isCreator ? (
+            <View>
+              <AnimatedRefreshContractIcon
+                contractId={route.params.contractAddress}
+                onRefresh={() => {}}
+              />
+            </View>
+          ) : null}
         </View>
         <View className="flex-1 w-full">
           <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
