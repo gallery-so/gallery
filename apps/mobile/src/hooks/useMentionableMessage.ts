@@ -67,26 +67,35 @@ export function useMentionableMessage() {
     [message, setMessage]
   );
 
-  const handleSetMessage = useCallback((text: string) => {
-    const splitText = text.split(' ');
+  const handleSetMessage = useCallback(
+    (text: string) => {
+      const splitText = text.split(' ');
 
-    const lastWord = splitText[splitText.length - 1] || '';
+      const lastWord = splitText[splitText.length - 1] || '';
 
-    if (lastWord[0] === '@' && lastWord.length > 1) {
-      setAliasKeyword(lastWord);
-      setIsSelectingMentions(true);
-    } else {
-      setAliasKeyword('');
-      setIsSelectingMentions(false);
-    }
+      if (lastWord[0] === '@' && lastWord.length > 1) {
+        setAliasKeyword(lastWord);
+        setIsSelectingMentions(true);
+      } else {
+        setAliasKeyword('');
+        setIsSelectingMentions(false);
+      }
 
-    // Check if there is a mention inside it, if not, delete the mentions
-    if (text.indexOf('@') === -1) {
-      setMentions([]);
-    }
+      // Loop through the mentions and check if they still exist in the updated message
+      const updatedMentions = mentions.filter((mention) => {
+        const mentionText = message.substring(
+          mention.interval.start,
+          mention.interval.start + mention.interval.length
+        );
+        return text.includes(mentionText);
+      });
 
-    setMessage(text);
-  }, []);
+      setMentions(updatedMentions);
+
+      setMessage(text);
+    },
+    [mentions, message]
+  );
 
   const resetMentions = useCallback(() => {
     setMentions([]);
