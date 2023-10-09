@@ -14,8 +14,8 @@ import {
 import { v4 as uuid } from 'uuid';
 
 import useKeyDown from '~/hooks/useKeyDown';
+import { noop } from '~/shared/utils/noop';
 import { getScrollBarWidth } from '~/utils/getScrollbarWidth';
-import noop from '~/utils/noop';
 
 import useStabilizedRouteTransitionKey from '../globalLayout/useStabilizedRouteTransitionKey';
 import AnimatedModal, { AnimatedModalProps } from './AnimatedModal';

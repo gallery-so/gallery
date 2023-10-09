@@ -11,7 +11,7 @@ import ColumnAdjuster from '~/components/GalleryEditor/CollectionEditor/ColumnAd
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 interface Props {
   id: string;

@@ -21,6 +21,7 @@ import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
@@ -29,7 +30,6 @@ import {
   PendingState,
   PROMPT_SIGNATURE,
 } from '~/types/Wallet';
-import noop from '~/utils/noop';
 
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';

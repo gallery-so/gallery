@@ -2,7 +2,7 @@ import { ChangeEventHandler, HTMLInputTypeAttribute } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 import breakpoints from '../breakpoints';
 import { VStack } from '../Spacer/Stack';

@@ -9,8 +9,8 @@ import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { noop } from '~/shared/utils/noop';
 import { truncateAddress } from '~/shared/utils/wallet';
-import noop from '~/utils/noop';
 
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';

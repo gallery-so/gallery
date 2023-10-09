@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { noop } from '~/shared/utils/noop';
 import { isFirefox } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
-import noop from '~/utils/noop';
 
 type ContentHeightType =
   | 'maxHeightMinScreen' // fill up to 80vh of screen or 100% of container

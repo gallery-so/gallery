@@ -4,11 +4,11 @@ import { graphql } from 'relay-runtime';
 
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
+import { noop } from '~/shared/utils/noop';
 import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
-import noop from '~/utils/noop';
 
 function Fixture() {
   const query = useLazyLoadQuery<SomeoneViewedYourGalleryTestQuery>(
