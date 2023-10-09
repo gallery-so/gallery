@@ -9,7 +9,7 @@ import colors from '~/shared/theme/colors';
 
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
-import NavigateConfirmation from './NavigateConfirmation';
+import VerifyNavigationPopover from './VerifyNavigationPopover';
 
 export type InteractiveLinkProps = {
   to?: Route;
@@ -117,7 +117,7 @@ export function InteractiveLinkNeedsVerification({
       });
 
       showModal({
-        content: <NavigateConfirmation href={href} />,
+        content: <VerifyNavigationPopover href={href} />,
         isFullPage: false,
         headerText: 'Leaving gallery.so?',
       });

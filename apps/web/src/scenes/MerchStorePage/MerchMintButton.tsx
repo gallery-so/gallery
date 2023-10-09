@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { TransactionStatus } from '~/constants/transaction';
@@ -76,9 +76,9 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
                 ? 'Transaction successful!'
                 : 'Transaction submitted. This may take several minutes.'}
             </BaseM>
-            <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+            <InteractiveLink href={`https://etherscan.io/tx/${transactionHash}`}>
               <BaseM>View on Etherscan</BaseM>
-            </GalleryLink>
+            </InteractiveLink>
           </>
         )}
         {transactionStatus === TransactionStatus.SUCCESS && (

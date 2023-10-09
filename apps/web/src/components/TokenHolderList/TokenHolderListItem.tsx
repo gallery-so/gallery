@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseM } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
@@ -16,6 +15,7 @@ import colors from '~/shared/theme/colors';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack } from '../core/Spacer/Stack';
 import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -106,18 +106,13 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {owner.user.universal ? (
-          <StyledGalleryLink
-            href={openseaProfileLink}
-            underlined={false}
-            fadeUsernames={fadeUsernames}
-          >
+          <StyledGalleryLink href={openseaProfileLink} fadeUsernames={fadeUsernames}>
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
           <UserHoverCard userRef={owner.user}>
             <StyledGalleryLink
               to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-              underlined={false}
               fadeUsernames={fadeUsernames}
             >
               <HStack gap={4} align="center">
@@ -165,7 +160,7 @@ const StyledUsernameWrapper = styled.div`
   max-width: 100%;
 `;
 
-const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
+const StyledGalleryLink = styled(InteractiveLink)<{ fadeUsernames: boolean }>`
   transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
   color: ${colors.black['800']};
   opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};

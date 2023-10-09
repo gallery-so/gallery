@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import useSWR from 'swr';
 
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM } from '~/components/core/Text/Text';
 import { TransactionStatus } from '~/constants/transaction';
@@ -78,9 +78,9 @@ export default function MintButton({ onMintSuccess }: Props) {
               : 'Transaction submitted. This may take several minutes.'}
           </BaseM>
           {/* MintButton is currently only used for Mementos, which is now on Base. */}
-          <GalleryLink href={`https://basescan.org/tx/${transactionHash}`}>
+          <InteractiveLink href={`https://basescan.org/tx/${transactionHash}`}>
             <BaseM>View on Basescan</BaseM>
-          </GalleryLink>
+          </InteractiveLink>
         </>
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (

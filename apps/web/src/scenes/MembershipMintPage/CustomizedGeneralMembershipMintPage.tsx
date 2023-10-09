@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
@@ -253,17 +252,17 @@ export function CustomizedGeneralMembershipMintPage({
                     ? 'Transaction successful!'
                     : 'Transaction submitted. This may take several minutes.'}
                 </BaseM>
-                <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+                <InteractiveLink href={`https://etherscan.io/tx/${transactionHash}`}>
                   <BaseM>View on Etherscan</BaseM>
-                </GalleryLink>
+                </InteractiveLink>
               </VStack>
             )}
             {transactionStatus === TransactionStatus.SUCCESS && (
               <VStack>
                 <BaseM>You can now sign up for Gallery.</BaseM>
-                <GalleryLink href={route({ pathname: '/auth' })}>
+                <InteractiveLink href={route({ pathname: '/auth' })}>
                   <BaseM>Proceed to Onboarding</BaseM>
-                </GalleryLink>
+                </InteractiveLink>
               </VStack>
             )}
             {error && <ErrorText message={error} />}
