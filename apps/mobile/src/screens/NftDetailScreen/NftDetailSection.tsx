@@ -158,7 +158,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-6 px-4 pb-4">
+      <View className="flex flex-col space-y-3 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <TokenViewEmitter
@@ -185,7 +185,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         </View>
 
-        <View className="flex flex-col space-y-4">
+        <View className="flex flex-col space-y-2 pt-3">
           <Typography
             className="text-2xl"
             font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
