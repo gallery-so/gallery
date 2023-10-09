@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useEffect,useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
