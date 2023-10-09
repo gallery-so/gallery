@@ -83,6 +83,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
             ownerIsCreator
 
             contract {
+              dbid
               name
             }
 
@@ -100,7 +101,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-
+  const contractId = useMemo(() => (tokens ? tokens[0]?.contract?.dbid : ''), [tokens]);
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
   >({
@@ -222,13 +223,13 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
 
   const handleCreatorRefreshContract = useCallback(async () => {
-    if (!selectedContract) {
+    if (!contractId) {
       return;
     }
 
     track('NFT Selector: Clicked Creator Contract Refresh');
-    await refreshContract(selectedContract.address);
-  }, [selectedContract, track, refreshContract]);
+    await refreshContract(contractId);
+  }, [contractId, track, refreshContract]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({

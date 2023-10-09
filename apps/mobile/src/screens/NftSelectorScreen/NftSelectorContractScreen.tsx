@@ -27,6 +27,7 @@ export function NftSelectorContractScreen() {
               tokens {
                 dbid
                 contract {
+                  dbid
                   name
                   contractAddress {
                     address
@@ -61,6 +62,7 @@ export function NftSelectorContractScreen() {
   }, [query.viewer?.user?.tokens, route.params.contractAddress]);
 
   const contractName = tokens[0]?.contract?.name;
+  const contractId = tokens[0]?.contract?.dbid;
 
   const rows = useMemo(() => {
     const rows = [];
@@ -120,7 +122,7 @@ export function NftSelectorContractScreen() {
           </View>
           {isCreator ? (
             <View>
-              <AnimatedRefreshContractIcon contractId={route.params.contractAddress} />
+              <AnimatedRefreshContractIcon contractId={contractId ?? ""} />
             </View>
           ) : null}
         </View>
