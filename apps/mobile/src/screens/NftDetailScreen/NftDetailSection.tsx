@@ -174,7 +174,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             />
           </View>
 
-          <View className="w-full mb-2">
+          <View className="w-full mb-3">
             <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
