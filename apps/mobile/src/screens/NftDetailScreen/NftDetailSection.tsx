@@ -174,7 +174,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             />
           </View>
 
-          <View className="w-full">
+          <View className="w-full mb-2">
             <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
@@ -185,7 +185,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         </View>
 
-        <View className="flex flex-col space-y-2 pt-3">
+        <View className="flex flex-col space-y-2">
           <Typography
             className="text-2xl"
             font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
