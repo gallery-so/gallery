@@ -217,7 +217,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         <View className="flex-row">
           {token.owner && (
-            <View className="w-1/2">
+            <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
                 font={{ family: 'ABCDiatype', weight: 'Medium' }}
