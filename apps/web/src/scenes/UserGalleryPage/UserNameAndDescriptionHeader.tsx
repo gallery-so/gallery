@@ -114,7 +114,9 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
           <HStack align="center" gap={0}>
             {userBadges.map((badge) =>
-              badge ? <Badge key={badge.name} badgeRef={badge} /> : null
+              badge ? (
+                <Badge key={badge.name} badgeRef={badge} eventContext={contexts.UserGallery} />
+              ) : null
             )}
           </HStack>
         </HStack>

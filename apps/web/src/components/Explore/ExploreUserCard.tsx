@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
 import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
@@ -119,7 +120,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
                 </Username>
                 <HStack align="center" gap={0}>
                   {userBadges.map((badge) => (
-                    <Badge key={badge.name} badgeRef={badge} />
+                    <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Explore']} />
                   ))}
                 </HStack>
               </HStack>

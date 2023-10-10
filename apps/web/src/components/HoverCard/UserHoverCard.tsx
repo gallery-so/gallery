@@ -16,6 +16,7 @@ import { UserHoverCardFragment$key } from '~/generated/UserHoverCardFragment.gra
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
@@ -167,7 +168,7 @@ function UserHoverCardContent({
             <HStack align="center" gap={0}>
               {userBadges.map((badge) => (
                 // Might need to rethink this layout when we have more badges
-                <Badge key={badge.name} badgeRef={badge} />
+                <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Hover Card']} />
               ))}
             </HStack>
           </StyledUsernameAndBadge>
