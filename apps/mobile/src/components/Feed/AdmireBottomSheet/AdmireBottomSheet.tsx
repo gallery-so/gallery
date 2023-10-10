@@ -18,6 +18,9 @@ import { AdmireBottomSheetConnectedAdmireListQuery } from '~/generated/AdmireBot
 import { AdmireBottomSheetConnectedPostAdmireListFragment$key } from '~/generated/AdmireBottomSheetConnectedPostAdmireListFragment.graphql';
 import { AdmireBottomSheetConnectedPostAdmireListFragmentQuery } from '~/generated/AdmireBottomSheetConnectedPostAdmireListFragmentQuery.graphql';
 import { AdmireBottomSheetConnectedPostAdmireListQuery } from '~/generated/AdmireBottomSheetConnectedPostAdmireListQuery.graphql';
+import { AdmireBottomSheetConnectedTokenAdmireListFragment$key } from '~/generated/AdmireBottomSheetConnectedTokenAdmireListFragment.graphql';
+import { AdmireBottomSheetConnectedTokenAdmireListFragmentQuery } from '~/generated/AdmireBottomSheetConnectedTokenAdmireListFragmentQuery.graphql';
+import { AdmireBottomSheetConnectedTokenAdmireListQuery } from '~/generated/AdmireBottomSheetConnectedTokenAdmireListQuery.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -26,15 +29,15 @@ import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 const SNAP_POINTS = [350];
 
 type AdmireBottomSheetProps = {
-  feedId: string;
+  feedId?: string;
+  tokenId?: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType | null>;
-  type: FeedItemTypes;
+  type: FeedItemTypes | 'Token';
 };
 
-export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottomSheetProps) {
+export function AdmireBottomSheet({ bottomSheetRef, feedId, tokenId, type }: AdmireBottomSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
-
   const { bottom } = useSafeAreaPadding();
 
   return (
@@ -59,7 +62,7 @@ export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottom
 
         <View className="flex-grow">
           <Suspense fallback={<UserFollowListFallback />}>
-            {isOpen && <ConnectedAdmireList type={type} feedId={feedId} />}
+            {isOpen && <ConnectedAdmireList type={type} feedId={feedId} tokenId={tokenId} />}
           </Suspense>
         </View>
       </View>
@@ -67,15 +70,18 @@ export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottom
   );
 }
 type ConnectedAdmireListProps = {
-  type: FeedItemTypes;
-  feedId: string;
+  type: FeedItemTypes | 'Token';
+  feedId?: string;
+  tokenId?: string;
 };
-function ConnectedAdmireList({ type, feedId }: ConnectedAdmireListProps) {
-  if (type === 'Post') {
+function ConnectedAdmireList({ type, feedId, tokenId }: ConnectedAdmireListProps) {
+  if (type === 'Token' && tokenId) {
+    return <ConnectedTokenAdmireList tokenId={tokenId} />;
+  }
+  if (type === 'Post' && feedId) {
     return <ConnectedPostAdmireList feedId={feedId} />;
   }
-
-  return <ConnectedEventAdmireList feedId={feedId} />;
+  return <ConnectedEventAdmireList feedId={feedId ?? ""} />;
 }
 
 export function ConnectedEventAdmireList({ feedId }: { feedId: string }) {
@@ -203,6 +209,80 @@ export function ConnectedPostAdmireList({ feedId }: { feedId: string }) {
   const admirers = useMemo(() => {
     return removeNullValues(query.postById?.admires?.edges?.map((edge) => edge?.node?.admirer));
   }, [query.postById?.admires?.edges]);
+
+  const handleLoadMore = useCallback(() => {
+    if (hasPrevious) {
+      loadPrevious(10);
+    }
+  }, [hasPrevious, loadPrevious]);
+
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleUserPress = useCallback(
+    (username: string) => {
+      navigation.push('Profile', { username: username });
+    },
+    [navigation]
+  );
+
+  return (
+    <UserFollowList
+      onLoadMore={handleLoadMore}
+      userRefs={admirers}
+      queryRef={query}
+      onUserPress={handleUserPress}
+    />
+  );
+}
+
+export function ConnectedTokenAdmireList({ tokenId }: { tokenId: string }) {
+  const queryRef = useLazyLoadQuery<AdmireBottomSheetConnectedTokenAdmireListQuery>(
+    graphql`
+      query AdmireBottomSheetConnectedTokenAdmireListQuery(
+        $tokenId: DBID!
+        $last: Int!
+        $before: String
+      ) {
+        ...AdmireBottomSheetConnectedTokenAdmireListFragment
+      }
+    `,
+    { tokenId: tokenId, last: 10 }
+  );
+
+  const {
+    data: query,
+    hasPrevious,
+    loadPrevious,
+  } = usePaginationFragment<
+    AdmireBottomSheetConnectedTokenAdmireListFragmentQuery,
+    AdmireBottomSheetConnectedTokenAdmireListFragment$key
+  >(
+    graphql`
+      fragment AdmireBottomSheetConnectedTokenAdmireListFragment on Query
+      @refetchable(queryName: "AdmireBottomSheetConnectedTokenAdmireListFragmentQuery") {
+        tokenById(id: $tokenId) {
+          ... on Token {
+            admires(last: $last, before: $before) @connection(key: "AdmireBottomSheet_admires") {
+              edges {
+                node {
+                  admirer {
+                    ...UserFollowListFragment
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        ...UserFollowListQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const admirers = useMemo(() => {
+    return removeNullValues(query.tokenById?.admires?.edges?.map((edge) => edge?.node?.admirer));
+  }, [query.tokenById?.admires?.edges]);
 
   const handleLoadMore = useCallback(() => {
     if (hasPrevious) {

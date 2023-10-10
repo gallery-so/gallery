@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
@@ -10,6 +10,7 @@ import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { BackButton } from '~/components/BackButton';
+import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
 import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
@@ -27,6 +28,7 @@ import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { NftAdditionalDetails } from './NftAdditionalDetails';
@@ -78,8 +80,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 node {
                   dbid
                   __typename
-                  creationTime
-                  lastUpdated
                   admirer {
                     username
                     ...ProfileViewSharedFollowersBubblesFragment
@@ -212,6 +212,12 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   console.log('nonNullAdmires', nonNullAdmires);
   console.log('totalAdmires', totalAdmires);
 
+  const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const handleSeeAllAdmires = useCallback(() => {
+    admiresBottomSheetRef.current?.present();
+  }, []);
+
   const { contractName } = extractRelevantMetadataFromToken(token);
 
   return (
@@ -258,7 +264,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 <ProfilePictureBubblesWithCount
                   eventName="Feed Event Admire Bubbles Pressed"
                   eventElementId="Feed Event Admire Bubbles"
-                  onPress={() => {}}
+                  onPress={handleSeeAllAdmires}
                   userRefs={admireUsers}
                   totalCount={totalAdmires}
                 />
@@ -365,6 +371,12 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           <NftAdditionalDetails tokenRef={token} />
         </View>
       </View>
+
+      <AdmireBottomSheet
+        type="Token"
+        tokenId={token.dbid ?? ''}
+        bottomSheetRef={admiresBottomSheetRef}
+      />
     </ScrollView>
   );
 }
