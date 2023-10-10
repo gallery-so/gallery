@@ -356,16 +356,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           />
         )}
 
-        {!isTokenOwner && (
-          <Button
-            variant="secondary"
-            icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
-            eventElementId={null}
-            eventName={null}
-            onPress={toggleTokenAdmire}
-            text="admire"
-          />
-        )}
+        <Button
+          variant="secondary"
+          icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
+          eventElementId={null}
+          eventName={null}
+          onPress={toggleTokenAdmire}
+          text="admire"
+        />
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
