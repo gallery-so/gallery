@@ -1,23 +1,22 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
 
+import InteractiveLink from '../InteractiveLink/InteractiveLink';
+
 type DropdownLinkProps = { href: Route; children: ReactNode; onClick?: () => void };
 
 export function DropdownLink({ href, children, onClick }: DropdownLinkProps) {
   return (
-    <Link href={href} legacyBehavior>
-      <StyledDropdownLink href={route(href)} onClick={onClick}>
-        {children}
-      </StyledDropdownLink>
-    </Link>
+    <StyledDropdownItem to={href} onClick={onClick}>
+      {children}
+    </StyledDropdownItem>
   );
 }
 
-const StyledDropdownLink = styled.a`
+const StyledDropdownItem = styled(InteractiveLink)`
   padding: 8px;
 
   font-family: 'Helvetica Neue';
