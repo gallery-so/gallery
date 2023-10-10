@@ -40,6 +40,7 @@ import { CommentListFallback } from './CommentListFallback';
 const SNAP_POINTS = [400];
 
 type CommentsBottomSheetProps = {
+  activeCommentId?: string;
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
@@ -47,6 +48,7 @@ type CommentsBottomSheetProps = {
 };
 
 export function CommentsBottomSheet({
+  activeCommentId,
   bottomSheetRef,
   feedId,
   type,
@@ -147,7 +149,7 @@ export function CommentsBottomSheet({
       onDismiss={resetMentions}
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
-        <View className="flex-grow px-1">
+        <View className="flex-grow">
           {isSelectingMentions ? (
             <View className="flex-grow">
               <Suspense fallback={<SearchResultsFallback />}>
@@ -169,7 +171,13 @@ export function CommentsBottomSheet({
               </Typography>
               <View className="flex-grow">
                 <Suspense fallback={<CommentListFallback />}>
-                  {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
+                  {isOpen && (
+                    <ConnectedCommentsList
+                      type={type}
+                      feedId={feedId}
+                      activeCommentId={activeCommentId}
+                    />
+                  )}
                 </Suspense>
               </View>
             </View>
@@ -191,17 +199,23 @@ export function CommentsBottomSheet({
 type ConnectedCommentsListProps = {
   type: FeedItemTypes;
   feedId: string;
+  activeCommentId?: string;
 };
 
-function ConnectedCommentsList({ type, feedId }: ConnectedCommentsListProps) {
+function ConnectedCommentsList({ type, feedId, activeCommentId }: ConnectedCommentsListProps) {
   if (type === 'Post') {
-    return <ConnectedPostCommentsList feedId={feedId} />;
+    return <ConnectedPostCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
   }
 
-  return <ConnectedEventCommentsList feedId={feedId} />;
+  return <ConnectedEventCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
 }
 
-function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
+type ConnectedCommentsProps = {
+  activeCommentId?: string;
+  feedId: string;
+};
+
+function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedCommentsListQuery(
@@ -258,7 +272,11 @@ function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
   return (
     <View className="flex-1">
       {comments.length > 0 ? (
-        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+        <CommentsBottomSheetList
+          onLoadMore={handleLoadMore}
+          commentRefs={comments}
+          activeCommentId={activeCommentId}
+        />
       ) : (
         <View className="flex items-center justify-center h-full">
           <Typography
@@ -273,7 +291,7 @@ function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
   );
 }
 
-function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
+function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedPostCommentsListQuery(
@@ -328,7 +346,11 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
   return (
     <View className="flex-1">
       {comments.length > 0 ? (
-        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+        <CommentsBottomSheetList
+          onLoadMore={handleLoadMore}
+          commentRefs={comments}
+          activeCommentId={activeCommentId}
+        />
       ) : (
         <View className="flex items-center justify-center h-full">
           <Typography

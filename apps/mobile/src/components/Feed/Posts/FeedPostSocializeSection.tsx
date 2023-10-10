@@ -149,6 +149,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
         feedId={post.dbid}
         bottomSheetRef={commentsBottomSheetRef}
         queryRef={query}
+        activeCommentId={route.params?.commentId}
       />
     </>
   );

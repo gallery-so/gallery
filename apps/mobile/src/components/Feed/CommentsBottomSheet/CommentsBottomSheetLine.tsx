@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import clsx from 'clsx';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -15,14 +16,16 @@ import { getTimeSince } from '~/shared/utils/time';
 import ProcessedCommentText from '../Socialize/ProcessedCommentText';
 
 type CommentLineProps = {
+  activeCommentId?: string;
   commentRef: CommentsBottomSheetLineFragment$key;
 };
 
-export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
+export function CommentsBottomSheetLine({ activeCommentId, commentRef }: CommentLineProps) {
   const comment = useFragment(
     graphql`
       fragment CommentsBottomSheetLineFragment on Comment {
         __typename
+        dbid
         comment
         creationTime
         commenter {
@@ -54,7 +57,9 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
 
   return (
     <GalleryTouchableOpacity
-      className="flex flex-row space-x-2 px-2"
+      className={clsx('flex flex-row space-x-2 px-3 py-2', {
+        'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
+      })}
       onPress={handleUserPress}
       eventElementId={'CommentsBottomSheetLine Single User'}
       eventName={'CommentsBottomSheetLine Single User'}
