@@ -42,5 +42,13 @@ type RawLinkableAddressProps = {
 };
 
 export function RawLinkableAddress({ link, truncatedAddress, address }: RawLinkableAddressProps) {
-  return <InteractiveLink href={link}>{truncatedAddress || address}</InteractiveLink>;
+  return (
+    <InteractiveLink
+      eventElementId="Linkable Crypto Address"
+      eventName="Click Linkable Crypto Address"
+      href={link}
+    >
+      {truncatedAddress || address}
+    </InteractiveLink>
+  );
 }
