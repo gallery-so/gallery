@@ -51,8 +51,12 @@ function BaseMarkdown({
             }
             if (isInternalLink) {
               return (
-                // @ts-expect-error href is a dynamic route and therefore needs to be passed as a string
-                <InteractiveLink inheritLinkStyling={inheritLinkStyling} to={href}>
+                <InteractiveLink
+                  inheritLinkStyling={inheritLinkStyling}
+                  // @ts-expect-error convert to an internal redirect. typescript complains because
+                  // this is a dynamic route that we haven't explicitly defined
+                  to={{ pathname: href.replace('https://gallery.so', '') }}
+                >
                   {children}
                 </InteractiveLink>
               );
