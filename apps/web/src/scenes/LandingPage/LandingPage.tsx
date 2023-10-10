@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ButtonLink } from '~/components/core/Button/Button';
+import { DeprecatedButtonLink } from '~/components/core/Button/Button';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, BlueLabel, TitleM } from '~/components/core/Text/Text';
@@ -20,20 +20,20 @@ export default function LandingPage() {
       <VStack gap={12} justify="center" align="center">
         <GalleryIntro />
         <HStack gap={12}>
-          <ButtonLink
+          <DeprecatedButtonLink
             href={{ pathname: '/auth' }}
             onClick={() => track('Landing page Sign In button click')}
             data-testid="sign-in-button"
           >
             Sign In
-          </ButtonLink>
-          <ButtonLink
+          </DeprecatedButtonLink>
+          <DeprecatedButtonLink
             href={{ pathname: '/home' }}
             onClick={() => track('Landing page Explore button click')}
             variant="secondary"
           >
             Explore
-          </ButtonLink>
+          </DeprecatedButtonLink>
         </HStack>
       </VStack>
       <StyledBottomContainer gap={12}>

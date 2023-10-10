@@ -185,18 +185,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
-type ButtonLinkProps = InternalAnchorElementProps &
+type DeprecatedButtonLinkProps = InternalAnchorElementProps &
   StyledButtonProps & {
     pending?: boolean;
   };
 
-export const ButtonLink = ({
+export const DeprecatedButtonLink = ({
   href,
   pending,
   disabled,
   children,
   ...otherProps
-}: ButtonLinkProps) => (
+}: DeprecatedButtonLinkProps) => (
   <Link href={href} passHref legacyBehavior>
     <StyledButton
       as="a"
