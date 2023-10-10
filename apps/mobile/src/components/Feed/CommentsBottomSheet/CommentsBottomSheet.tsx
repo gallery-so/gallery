@@ -22,6 +22,7 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
@@ -133,7 +134,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         <View className="flex-grow px-1">
           {isSelectingMentions ? (
             <View className="flex-grow">
-              <Suspense fallback={<CommentListFallback />}>
+              <Suspense fallback={<SearchResultsFallback />}>
                 <SearchResults
                   keyword={aliasKeyword}
                   activeFilter="top"

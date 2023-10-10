@@ -11,6 +11,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
+import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
@@ -176,7 +177,7 @@ function PostComposerScreenInner() {
         <PostInput value={message} onChange={setMessage} tokenRef={token} />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
-            <Suspense fallback={<PostComposerNftFallback />}>
+            <Suspense fallback={<SearchResultsFallback />}>
               <SearchResults
                 keyword={aliasKeyword}
                 activeFilter="top"
