@@ -63,12 +63,23 @@ export default function InteractiveLink({
         name: eventName,
         context: eventContext,
         flow: eventFlow,
+        type: to ? 'internal' : 'external',
         ...properties,
       });
 
       onClick?.(event);
     },
-    [eventContext, eventElementId, eventFlow, eventName, normalizedUrl, onClick, properties, track]
+    [
+      eventContext,
+      eventElementId,
+      eventFlow,
+      eventName,
+      normalizedUrl,
+      onClick,
+      properties,
+      to,
+      track,
+    ]
   );
 
   if (to) {
