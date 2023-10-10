@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -14,6 +13,7 @@ import unescape from '~/shared/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';
@@ -103,8 +103,12 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   }, [unescapedBio]);
 
   return (
-    // @ts-expect-error This is the future next/link version
-    <StyledExploreUserCard legacyBehavior={false} href={`/${user.username}`}>
+    <StyledExploreUserCard
+      to={{
+        pathname: '/[username]',
+        query: { username: user?.username ?? '' },
+      }}
+    >
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
@@ -145,7 +149,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   );
 }
 
-const StyledExploreUserCard = styled(Link)`
+const StyledExploreUserCard = styled(InteractiveLink)`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;
