@@ -1,10 +1,11 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Markdown from 'react-native-markdown-display';
 import { graphql, useFragment } from 'react-relay';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
@@ -17,6 +18,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -26,7 +28,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
@@ -81,6 +82,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                   lastUpdated
                   admirer {
                     username
+                    ...ProfileViewSharedFollowersBubblesFragment
                   }
                 }
               }
@@ -182,12 +184,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     queryRef: query,
   });
 
-  const handleToggleAdmireToken = useCallback(() => {
-    if (hasViewerAdmiredEvent) return;
-
-    toggleTokenAdmire();
-  }, [hasViewerAdmiredEvent, toggleTokenAdmire]);
-
   const nonNullAdmires = useMemo(() => {
     const admires = [];
 
@@ -202,11 +198,19 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     return admires;
   }, [token.admires?.edges]);
 
+  const admireUsers = useMemo(() => {
+    const users = [];
+    for (const admire of nonNullAdmires) {
+      if (admire?.admirer) {
+        users.push(admire.admirer);
+      }
+    }
+    return users;
+  }, [nonNullAdmires]);
+
   const totalAdmires = token.admires?.pageInfo?.total ?? 0;
   console.log('nonNullAdmires', nonNullAdmires);
   console.log('totalAdmires', totalAdmires);
-
-  const [isAdmired, setIsAdmired] = useState(false);
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
@@ -240,14 +244,27 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         </View>
 
         <View className="flex flex-col space-y-4">
-          <View className="flex space-x-2">
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Typography
               className="text-2xl"
               font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
             >
               {token.name}
             </Typography>
-            <AdmireIcon active={isAdmired} />
+            <View className="flex flex-row space-x-1 items-center">
+              {admireUsers.length > 0 && (
+                <ProfilePictureBubblesWithCount
+                  eventName="Feed Event Admire Bubbles Pressed"
+                  eventElementId="Feed Event Admire Bubbles"
+                  onPress={() => {}}
+                  userRefs={admireUsers}
+                  totalCount={totalAdmires}
+                />
+              )}
+              <AdmireIcon active={hasViewerAdmiredEvent} />
+            </View>
           </View>
           <GalleryTouchableOpacity
             eventElementId="NFT Detail Contract Name Pill"
@@ -335,10 +352,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         {!isTokenOwner && (
           <Button
-            icon={<AdmireIcon active={isAdmired} />}
+            variant="secondary"
+            icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
             eventElementId={null}
             eventName={null}
-            onPress={handleToggleAdmireToken}
+            onPress={toggleTokenAdmire}
             text="admire"
           />
         )}

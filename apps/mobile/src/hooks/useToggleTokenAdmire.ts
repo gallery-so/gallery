@@ -60,8 +60,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         ... on AdmireTokenPayload {
           __typename
           token {
-            viewerAdmire
-              @appendNode(edgeTypeName: "TokenAdmireEdge", connections: $connections) {
+            viewerAdmire @appendNode(edgeTypeName: "TokenAdmireEdge", connections: $connections) {
               dbid
               __typename
               creationTime
@@ -100,6 +99,8 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   );
 
   const handleRemoveAdmire = useCallback(async () => {
+    console.log("we're in business!!");
+
     if (!token.viewerAdmire?.dbid) {
       return;
     }
@@ -127,7 +128,6 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       }
     };
 
-
     try {
       const response = await removeAdmire({
         updater,
@@ -148,12 +148,9 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         // We can silently fail if the post was already not admired
         response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
       ) {
-        reportError(
-          `Could not unadmire token, typename was ${response.removeAdmire?.__typename}`,
-          {
-            tags: errorMetadata,
-          }
-        );
+        reportError(`Could not unadmire token, typename was ${response.removeAdmire?.__typename}`, {
+          tags: errorMetadata,
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -220,7 +217,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       });
 
       if (response.admireToken?.__typename !== 'AdmireTokenPayload') {
-        reportError(`Could not admire post, typename was ${response.admireToken?.__typename}`, {
+        reportError(`Could not admire token, typename was ${response.admireToken?.__typename}`, {
           tags: errorMetadata,
         });
       }
@@ -238,7 +235,9 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   const hasViewerAdmiredEvent = Boolean(token.viewerAdmire);
 
   const toggleTokenAdmire = useCallback(() => {
+    console.log('hasViewerAdmiredEvent', hasViewerAdmiredEvent);
     if (hasViewerAdmiredEvent) {
+      console.log('right function hitting');
       handleRemoveAdmire();
     } else {
       handleAdmire();
