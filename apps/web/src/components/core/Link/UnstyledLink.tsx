@@ -1,15 +1,13 @@
-import Link from 'next/link';
 import styled from 'styled-components';
 
 import { InternalAnchorElementProps } from '~/types/Elements';
 
-// TODO:
-// - handle rel="noopener noreferrer" for target="_blank" links
+import InteractiveLink from '../InteractiveLink/InteractiveLink';
 
-export const UnstyledLink = ({ href, ...props }: InternalAnchorElementProps) => (
-  <Link href={href} passHref legacyBehavior>
-    <UnstyledAnchor {...props} />
-  </Link>
+export const UnstyledLink = ({ href, children, ...props }: InternalAnchorElementProps) => (
+  <InteractiveLink to={href} {...props}>
+    {children}
+  </InteractiveLink>
 );
 
 export const UnstyledAnchor = styled.a`
