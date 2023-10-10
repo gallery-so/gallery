@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import ProcessedText from '~/components/Feed/Socialize/ProcessedText';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
@@ -176,9 +177,7 @@ export function SomeoneMentionedYou({
         </Text>
 
         <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
-          <Text className="dark:text-white" numberOfLines={3}>
-            {message ?? ''}
-          </Text>
+          <ProcessedText text={message ?? ''} numberOfLines={3} />
         </View>
       </View>
     </NotificationSkeleton>

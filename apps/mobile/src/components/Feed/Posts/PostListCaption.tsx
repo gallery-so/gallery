@@ -31,7 +31,7 @@ export function PostListCaption({ feedPostRef }: Props) {
   return (
     <View className="px-4 pb-4">
       <ProcessedText
-        comment={captionWithMarkdownLinks}
+        text={captionWithMarkdownLinks}
         mentionsRef={removeNullValues(feedPost.mentions)}
       />
     </View>

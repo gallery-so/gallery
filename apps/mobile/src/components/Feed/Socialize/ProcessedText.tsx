@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
-import { Text } from 'react-native';
+import { Text, TextProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -91,9 +91,9 @@ const MentionComponent = ({ mention, mentionRef }: MentionProps) => {
 };
 
 type CommentProps = {
-  comment: string;
-  mentionsRef: ProcessedTextFragment$key;
-};
+  text: string;
+  mentionsRef?: ProcessedTextFragment$key;
+} & TextProps;
 
 type CommentElement = {
   type: 'mention' | 'url' | 'markdown-link';
@@ -104,8 +104,8 @@ type CommentElement = {
   url?: string;
 };
 
-// Makes a raw comment value display-ready by converting urls to link components
-export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
+// Makes a raw text value display-ready by converting urls to link components
+export default function ProcessedText({ text, mentionsRef = [], ...props }: CommentProps) {
   const mentions = useFragment(
     graphql`
       fragment ProcessedTextFragment on Mention @relay(plural: true) {
@@ -144,7 +144,7 @@ export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
       if (!mention?.entity || !mention?.interval) return;
 
       const { start, length } = mention.interval;
-      const mentionText = comment.substring(start, start + length);
+      const mentionText = text.substring(start, start + length);
 
       elements.push({
         type: 'mention',
@@ -156,7 +156,7 @@ export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
     });
 
     // Identify markdown-style links and add them to the elements array
-    const markdownLinkMatches = comment.matchAll(MARKDOWN_LINK_REGEX);
+    const markdownLinkMatches = text.matchAll(MARKDOWN_LINK_REGEX);
     for (const match of markdownLinkMatches) {
       const [fullMatch, linkText, linkUrl] = match;
       const startIndex = match.index ?? 0;
@@ -174,7 +174,7 @@ export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
     // Identify URLs and add them to the elements array
     const URL_REGEX = new RegExp(VALID_URL, 'g'); // Make sure the URL regex has the 'g' flag
     let urlMatch;
-    while ((urlMatch = URL_REGEX.exec(comment)) !== null) {
+    while ((urlMatch = URL_REGEX.exec(text)) !== null) {
       const [match] = urlMatch;
       const startIndex = urlMatch.index;
       const endIndex = startIndex + match.length;
@@ -199,7 +199,7 @@ export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
 
     elements.forEach((element, index) => {
       // Add text before this element (if any)
-      const beforeText = comment.substring(lastEndIndex, element.start);
+      const beforeText = text.substring(lastEndIndex, element.start);
       if (beforeText) {
         result.push(<Text key={`text-before-${index}`}>{beforeText}</Text>);
       }
@@ -225,19 +225,20 @@ export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
     });
 
     // Add any remaining text after the last element
-    const afterText = comment.substring(lastEndIndex);
+    const afterText = text.substring(lastEndIndex);
     if (afterText) {
       result.push(<Text key="text-after">{afterText}</Text>);
     }
 
     return result;
-  }, [comment, mentions]);
+  }, [text, mentions]);
 
   return (
     <Typography
       className="text-sm"
       font={{ family: 'ABCDiatype', weight: 'Regular' }}
       style={{ fontSize: 14, lineHeight: 18, paddingVertical: 2 }}
+      {...props}
     >
       {processedText}
     </Typography>

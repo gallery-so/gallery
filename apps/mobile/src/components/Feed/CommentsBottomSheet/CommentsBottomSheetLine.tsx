@@ -81,7 +81,7 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedText comment={comment.comment} mentionsRef={removeNullValues(comment.mentions)} />
+        <ProcessedText text={comment.comment} mentionsRef={removeNullValues(comment.mentions)} />
       </View>
     </GalleryTouchableOpacity>
   );

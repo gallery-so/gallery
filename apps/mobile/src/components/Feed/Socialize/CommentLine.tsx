@@ -40,10 +40,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
       >
         <Text numberOfLines={2}>
           <UsernameDisplay userRef={comment.commenter} size="sm" style={{ marginRight: 4 }} />{' '}
-          <ProcessedText
-            comment={comment.comment}
-            mentionsRef={removeNullValues(comment.mentions)}
-          />
+          <ProcessedText text={comment.comment} mentionsRef={removeNullValues(comment.mentions)} />
         </Text>
       </GalleryTouchableOpacity>
     </View>
