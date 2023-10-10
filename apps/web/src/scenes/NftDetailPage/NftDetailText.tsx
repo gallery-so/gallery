@@ -198,15 +198,10 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             <UserHoverCard userRef={token.owner}>
               <VStack gap={2}>
                 <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
-                <StyledInteractiveLink
-                  to={{ pathname: '/[username]', query: { username: token.owner.username } }}
-                  onClick={handleCollectorNameClick}
-                >
-                  <HStack align="center" gap={4}>
-                    <ProfilePicture size="sm" userRef={token.owner} />
-                    <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
-                  </HStack>
-                </StyledInteractiveLink>
+                <HStack align="center" gap={4}>
+                  <ProfilePicture size="sm" userRef={token.owner} />
+                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
+                </HStack>
               </VStack>
             </UserHoverCard>
           )}
