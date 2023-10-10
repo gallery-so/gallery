@@ -151,7 +151,7 @@ export function CommentsBottomSheet({
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
         <View className="flex-grow">
           {isSelectingMentions ? (
-            <View className="flex-grow">
+            <View className="flex-1 overflow-hidden">
               <Suspense fallback={<SearchResultsFallback />}>
                 <SearchResults
                   keyword={aliasKeyword}

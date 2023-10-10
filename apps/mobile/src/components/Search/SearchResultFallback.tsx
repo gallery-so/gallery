@@ -13,6 +13,10 @@ export function SearchResultsFallback() {
       <SearchResultFallback />
 
       <SearchTitleFallback />
+      <SearchResultFallback />
+      <SearchResultFallback />
+      <SearchResultFallback />
+      <SearchResultFallback />
     </View>
   );
 }
