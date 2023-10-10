@@ -1,11 +1,10 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { ReactNode, useCallback } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
+import InteractiveLink from '../InteractiveLink/InteractiveLink';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 
@@ -18,52 +17,15 @@ type Props = {
   onClick?: () => void;
 };
 
-export default function NavLink({ to, href, children, dataTestId, className, onClick }: Props) {
-  const track = useTrack();
-
-  const handleClick = useCallback(() => {
-    track('Link Click', {
-      to: to || href,
-    });
-
-    if (onClick) {
-      onClick();
-    }
-  }, [href, to, track, onClick]);
-
-  if (!to && !href) {
-    console.error('no link provided for NavLink');
-  }
-
-  if (to) {
-    return (
-      <Link href={to} passHref legacyBehavior>
-        <StyledAnchor onClick={handleClick} data-testid={dataTestId} className={className}>
-          {children}
-        </StyledAnchor>
-      </Link>
-    );
-  }
-
-  if (href) {
-    return (
-      <StyledAnchor
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        onClick={handleClick}
-        data-testid={dataTestId}
-        className={className}
-      >
-        {children}
-      </StyledAnchor>
-    );
-  }
-
-  return null;
+export default function NavLink({ to, href, children, className, onClick }: Props) {
+  return (
+    <StyledNavLink className={className} to={to} href={href} onClick={onClick}>
+      {children}
+    </StyledNavLink>
+  );
 }
 
-const StyledAnchor = styled.a`
+const StyledNavLink = styled(InteractiveLink)`
   color: inherit;
   text-decoration: none;
   font-family: ${BODY_FONT_FAMILY};
@@ -71,7 +33,6 @@ const StyledAnchor = styled.a`
   line-height: 16px;
   color: ${colors.shadow};
   transition: color ${transitions.cubic};
-  text-transform: uppercase;
 
   &:hover {
     color: ${colors.black['800']};
