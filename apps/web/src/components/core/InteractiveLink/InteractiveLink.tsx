@@ -4,7 +4,7 @@ import { MouseEvent, MouseEventHandler, ReactNode, useCallback, useMemo } from '
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { normalizeUrl } from '~/utils/normalizeUrl';
 
@@ -22,7 +22,13 @@ export type InteractiveLinkProps = {
   inheritLinkStyling?: boolean;
   // open the link in a new tab or not
   target?: HTMLAnchorElement['target'];
-};
+} & {
+  // make tracking props optional given `InteractiveLink` often has
+  // a parent element with embedded tracking, and we auto-track links
+  eventElementId?: GalleryElementTrackingProps['eventElementId'];
+  eventName?: GalleryElementTrackingProps['eventName'];
+  eventContext?: GalleryElementTrackingProps['eventContext'];
+} & Omit<GalleryElementTrackingProps, 'eventElementId' | 'eventName' | 'eventContext'>;
 
 export default function InteractiveLink({
   to,
@@ -32,6 +38,11 @@ export default function InteractiveLink({
   onClick,
   inheritLinkStyling = false,
   target = '_blank',
+  eventElementId = 'Unlabeled Link',
+  eventName = 'Unlabeled Link Click',
+  eventContext,
+  eventFlow,
+  properties,
 }: InteractiveLinkProps) {
   const track = useTrack();
 
@@ -48,13 +59,16 @@ export default function InteractiveLink({
       track('Link Click', {
         to: normalizedUrl,
         needsVerification: false,
+        id: eventElementId,
+        name: eventName,
+        context: eventContext,
+        flow: eventFlow,
+        ...properties,
       });
 
-      if (onClick) {
-        onClick(event);
-      }
+      onClick?.(event);
     },
-    [normalizedUrl, onClick, track]
+    [eventContext, eventElementId, eventFlow, eventName, normalizedUrl, onClick, properties, track]
   );
 
   if (to) {
