@@ -1,5 +1,8 @@
 import { useCallback, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
+import { useMentionableMessageQueryFragment$key } from '~/generated/useMentionableMessageQueryFragment.graphql';
 import useDebounce from '~/shared/hooks/useDebounce';
 
 type MentionDataType = {
@@ -26,7 +29,16 @@ type Mention = {
   communityId?: string;
 };
 
-export function useMentionableMessage() {
+export function useMentionableMessage(queryRef: useMentionableMessageQueryFragment$key) {
+  const query = useFragment(
+    graphql`
+      fragment useMentionableMessageQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const [message, setMessage] = useState('');
   const [mentions, setMentions] = useState<MentionDataType[]>([]);
 
@@ -34,6 +46,8 @@ export function useMentionableMessage() {
 
   const [aliasKeyword, setAliasKeyword] = useState('');
   const debouncedAliasKeyword = useDebounce(aliasKeyword, 100);
+
+  const isMentionEnabled = isFeatureEnabled(FeatureFlag.MENTIONS, query);
 
   const handleSetMention = useCallback(
     (mention: MentionType) => {
@@ -69,6 +83,11 @@ export function useMentionableMessage() {
 
   const handleSetMessage = useCallback(
     (text: string) => {
+      if (!isMentionEnabled) {
+        setMessage(text);
+        return;
+      }
+
       const splitText = text.split(' ');
 
       const lastWord = splitText[splitText.length - 1] || '';
@@ -94,7 +113,7 @@ export function useMentionableMessage() {
 
       setMessage(text);
     },
-    [mentions, message]
+    [isMentionEnabled, mentions, message]
   );
 
   const resetMentions = useCallback(() => {

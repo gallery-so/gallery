@@ -10,7 +10,7 @@ import {
 import { View } from 'react-native';
 import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
 import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 import { usePostComment } from 'src/hooks/usePostComment';
@@ -30,6 +30,7 @@ import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/gener
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
+import { CommentsBottomSheetQueryFragment$key } from '~/generated/CommentsBottomSheetQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
@@ -42,9 +43,24 @@ type CommentsBottomSheetProps = {
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
+  queryRef: CommentsBottomSheetQueryFragment$key;
 };
 
-export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBottomSheetProps) {
+export function CommentsBottomSheet({
+  bottomSheetRef,
+  feedId,
+  type,
+  queryRef,
+}: CommentsBottomSheetProps) {
+  const query = useFragment(
+    graphql`
+      fragment CommentsBottomSheetQueryFragment on Query {
+        ...useMentionableMessageQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +85,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
     setMessage,
     message,
     resetMentions,
-  } = useMentionableMessage();
+  } = useMentionableMessage(query);
 
   const handleSubmit = useCallback(
     (value: string) => {
