@@ -5,7 +5,7 @@ import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
-import ProcessedCommentText from '../Socialize/ProcessedCommentText';
+import ProcessedText from '../Socialize/ProcessedText';
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
@@ -18,7 +18,7 @@ export function PostListCaption({ feedPostRef }: Props) {
         __typename
         caption
         mentions {
-          ...ProcessedCommentTextFragment
+          ...ProcessedTextFragment
         }
       }
     `,
@@ -30,7 +30,7 @@ export function PostListCaption({ feedPostRef }: Props) {
 
   return (
     <View className="px-4 pb-4">
-      <ProcessedCommentText
+      <ProcessedText
         comment={captionWithMarkdownLinks}
         mentionsRef={removeNullValues(feedPost.mentions)}
       />

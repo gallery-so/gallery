@@ -13,7 +13,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
-import ProcessedCommentText from '../Socialize/ProcessedCommentText';
+import ProcessedText from '../Socialize/ProcessedText';
 
 type CommentLineProps = {
   activeCommentId?: string;
@@ -34,7 +34,7 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
           ...ProfilePictureFragment
         }
         mentions {
-          ...ProcessedCommentTextFragment
+          ...ProcessedTextFragment
         }
       }
     `,
@@ -81,10 +81,7 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedCommentText
-          comment={comment.comment}
-          mentionsRef={removeNullValues(comment.mentions)}
-        />
+        <ProcessedText comment={comment.comment} mentionsRef={removeNullValues(comment.mentions)} />
       </View>
     </GalleryTouchableOpacity>
   );

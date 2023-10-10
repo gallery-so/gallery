@@ -5,8 +5,8 @@ import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from '~/components/Typography';
-import { ProcessedCommentTextFragment$key } from '~/generated/ProcessedCommentTextFragment.graphql';
-import { ProcessedCommentTextMentionFragment$key } from '~/generated/ProcessedCommentTextMentionFragment.graphql';
+import { ProcessedTextFragment$key } from '~/generated/ProcessedTextFragment.graphql';
+import { ProcessedTextMentionFragment$key } from '~/generated/ProcessedTextMentionFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { VALID_URL } from '~/shared/utils/regex';
 
@@ -37,13 +37,13 @@ const LinkComponent = ({ url, value }: LinkProps) => {
 
 type MentionProps = {
   mention: string;
-  mentionRef: ProcessedCommentTextMentionFragment$key;
+  mentionRef: ProcessedTextMentionFragment$key;
 };
 
 const MentionComponent = ({ mention, mentionRef }: MentionProps) => {
   const mentionData = useFragment(
     graphql`
-      fragment ProcessedCommentTextMentionFragment on Mention {
+      fragment ProcessedTextMentionFragment on Mention {
         __typename
         entity {
           __typename
@@ -92,7 +92,7 @@ const MentionComponent = ({ mention, mentionRef }: MentionProps) => {
 
 type CommentProps = {
   comment: string;
-  mentionsRef: ProcessedCommentTextFragment$key;
+  mentionsRef: ProcessedTextFragment$key;
 };
 
 type CommentElement = {
@@ -100,15 +100,15 @@ type CommentElement = {
   value: string;
   start: number;
   end: number;
-  mentionRef?: ProcessedCommentTextMentionFragment$key;
+  mentionRef?: ProcessedTextMentionFragment$key;
   url?: string;
 };
 
 // Makes a raw comment value display-ready by converting urls to link components
-export default function ProcessedCommentText({ comment, mentionsRef }: CommentProps) {
+export default function ProcessedText({ comment, mentionsRef }: CommentProps) {
   const mentions = useFragment(
     graphql`
-      fragment ProcessedCommentTextFragment on Mention @relay(plural: true) {
+      fragment ProcessedTextFragment on Mention @relay(plural: true) {
         __typename
         interval {
           __typename
@@ -130,7 +130,7 @@ export default function ProcessedCommentText({ comment, mentionsRef }: CommentPr
             }
           }
         }
-        ...ProcessedCommentTextMentionFragment
+        ...ProcessedTextMentionFragment
       }
     `,
     mentionsRef

@@ -6,7 +6,7 @@ import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import ProcessedCommentText from './ProcessedCommentText';
+import ProcessedText from './ProcessedText';
 
 type Props = {
   commentRef: CommentLineFragment$key;
@@ -23,7 +23,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
           ...UsernameDisplayFragment
         }
         mentions {
-          ...ProcessedCommentTextFragment
+          ...ProcessedTextFragment
         }
       }
     `,
@@ -40,7 +40,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
       >
         <Text numberOfLines={2}>
           <UsernameDisplay userRef={comment.commenter} size="sm" style={{ marginRight: 4 }} />{' '}
-          <ProcessedCommentText
+          <ProcessedText
             comment={comment.comment}
             mentionsRef={removeNullValues(comment.mentions)}
           />
