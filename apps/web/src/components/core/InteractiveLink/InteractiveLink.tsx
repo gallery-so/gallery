@@ -1,22 +1,22 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { MouseEvent, MouseEventHandler, ReactNode, useCallback } from 'react';
+import { MouseEvent, MouseEventHandler, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { normalizeUrl } from '~/utils/normalizeUrl';
 
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 import VerifyNavigationPopover from './VerifyNavigationPopover';
 
 export type InteractiveLinkProps = {
+  children: ReactNode;
+  className?: string;
   to?: Route;
   href?: string;
-  children: ReactNode;
-  size?: string; // 'M', 'L', 'XL'
-  className?: string;
   onClick?: MouseEventHandler;
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
@@ -35,12 +35,18 @@ export default function InteractiveLink({
 }: InteractiveLinkProps) {
   const track = useTrack();
 
+  if (!to && !href && !onClick) {
+    console.error('no link provided for InteractiveLink');
+  }
+
+  const normalizedUrl = useMemo(() => normalizeUrl({ to, href }), [href, to]);
+
   const handleClick = useCallback<MouseEventHandler>(
     (event) => {
       event.stopPropagation();
 
       track('Link Click', {
-        to: to || href,
+        to: normalizedUrl,
         needsVerification: false,
       });
 
@@ -48,12 +54,8 @@ export default function InteractiveLink({
         onClick(event);
       }
     },
-    [href, onClick, to, track]
+    [normalizedUrl, onClick, track]
   );
-
-  if (!to && !href && !onClick) {
-    console.error('no link provided for InteractiveLink');
-  }
 
   if (to) {
     return (
