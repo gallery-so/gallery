@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { AdmireModal } from '~/components/Feed/Socialize/AdmireModal/AdmireModal';
-//import { AdmireTokenModalFragment$key } from '~/generated/AdmireTokenModalFragment.graphql';
-// import { AdmireTokenModalQueryFragment$key } from '~/generated/AdmireTokenModalQueryFragment.graphql';
+import { AdmireTokenModalFragment$key } from '~/generated/AdmireTokenModalFragment.graphql';
+import { AdmireTokenModalQueryFragment$key } from '~/generated/AdmireTokenModalQueryFragment.graphql';
 
 type Props = {
   fullscreen: boolean;

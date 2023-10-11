@@ -52,6 +52,7 @@ function NftDetailPage({
           }
         }
 
+        ...NftDetailViewQueryFragment
         ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
@@ -208,6 +209,7 @@ function NftDetailPage({
       {mountedNfts.map(({ token, visibility }) => (
         <_DirectionalFade key={token.token.dbid} visibility={visibility}>
           <NftDetailView
+            queryRef={query}
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
           />
