@@ -90,12 +90,12 @@ const MentionComponent = ({ mention, mentionRef }: MentionProps) => {
   );
 };
 
-type CommentProps = {
+type ProcessedTextProps = {
   text: string;
   mentionsRef?: ProcessedTextFragment$key;
 } & TextProps;
 
-type CommentElement = {
+type TextElement = {
   type: 'mention' | 'url' | 'markdown-link';
   value: string;
   start: number;
@@ -105,7 +105,7 @@ type CommentElement = {
 };
 
 // Makes a raw text value display-ready by converting urls to link components
-export default function ProcessedText({ text, mentionsRef = [], ...props }: CommentProps) {
+export default function ProcessedText({ text, mentionsRef = [], ...props }: ProcessedTextProps) {
   const mentions = useFragment(
     graphql`
       fragment ProcessedTextFragment on Mention @relay(plural: true) {
@@ -137,7 +137,7 @@ export default function ProcessedText({ text, mentionsRef = [], ...props }: Comm
   );
 
   const processedText = useMemo(() => {
-    const elements: CommentElement[] = [];
+    const elements: TextElement[] = [];
 
     // Add mentions from the Relay fragment to the elements array
     mentions?.forEach((mention) => {
@@ -245,7 +245,7 @@ export default function ProcessedText({ text, mentionsRef = [], ...props }: Comm
   );
 }
 
-function isWithinMarkdownLink(start: number, end: number, elements: CommentElement[]) {
+function isWithinMarkdownLink(start: number, end: number, elements: TextElement[]) {
   for (const element of elements) {
     if (element.type === 'markdown-link' && start >= element.start && end <= element.end) {
       return true;
