@@ -10,7 +10,7 @@ import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUser
 import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import FollowButton from './FollowButton';
 
 type Props = {
@@ -50,14 +50,14 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <HStack gap={8} align="center">
-      <InteractiveLink to={usernameRoute}>
+      <GalleryLink to={usernameRoute}>
         <UsernameBreadcrumbLink
           href={route(usernameRoute)}
           mainGalleryPage={pathname === '/[username]'}
         >
           {displayName}
         </UsernameBreadcrumbLink>
-      </InteractiveLink>
+      </GalleryLink>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} source="navbar desktop" />
     </HStack>
   );

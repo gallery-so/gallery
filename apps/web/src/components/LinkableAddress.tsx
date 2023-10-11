@@ -1,7 +1,7 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseM } from '~/components/core/Text/Text';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
@@ -43,12 +43,12 @@ type RawLinkableAddressProps = {
 
 export function RawLinkableAddress({ link, truncatedAddress, address }: RawLinkableAddressProps) {
   return (
-    <InteractiveLink
+    <GalleryLink
       eventElementId="Linkable Crypto Address"
       eventName="Click Linkable Crypto Address"
       href={link}
     >
       {truncatedAddress || address}
-    </InteractiveLink>
+    </GalleryLink>
   );
 }

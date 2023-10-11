@@ -7,7 +7,7 @@ import Badge from '~/components/Badge/Badge';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import IconContainer from '~/components/core/IconContainer';
-import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
+import { StyledAnchor } from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';

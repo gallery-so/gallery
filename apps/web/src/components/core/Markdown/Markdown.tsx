@@ -2,9 +2,7 @@ import { PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
-import InteractiveLink, {
-  InteractiveLinkNeedsVerification,
-} from '../InteractiveLink/InteractiveLink';
+import GalleryLink, { GalleryLinkNeedsVerification } from '../GalleryLink/GalleryLink';
 import { BaseXL } from '../Text/Text';
 
 type PublicProps = {
@@ -51,20 +49,20 @@ function BaseMarkdown({
             }
             if (isInternalLink) {
               return (
-                <InteractiveLink
+                <GalleryLink
                   inheritLinkStyling={inheritLinkStyling}
                   // @ts-expect-error convert to an internal redirect. typescript complains because
                   // this is a dynamic route that we haven't explicitly defined
                   to={{ pathname: href.replace('https://gallery.so', '') }}
                 >
                   {children}
-                </InteractiveLink>
+                </GalleryLink>
               );
             }
             return (
-              <InteractiveLinkNeedsVerification inheritLinkStyling={inheritLinkStyling} href={href}>
+              <GalleryLinkNeedsVerification inheritLinkStyling={inheritLinkStyling} href={href}>
                 {children}
-              </InteractiveLinkNeedsVerification>
+              </GalleryLinkNeedsVerification>
             );
           }
           // if href is blank, we must render the empty string this way;

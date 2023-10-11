@@ -4,7 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
 import {
@@ -52,11 +52,11 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
 
       return (
         <HStack gap={4} align="center">
-          <InteractiveLink to={usernameRoute}>
+          <GalleryLink to={usernameRoute}>
             <UsernameBreadcrumbLink href={route(usernameRoute)}>
               {query.userByUsername?.username}
             </UsernameBreadcrumbLink>
-          </InteractiveLink>
+          </GalleryLink>
           <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>
       );

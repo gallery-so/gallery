@@ -4,7 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
@@ -93,9 +93,9 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
             <SlashText>/</SlashText>
 
-            <InteractiveLink to={galleryRoute}>
+            <GalleryLink to={galleryRoute}>
               <BreadcrumbLink>{galleryName}</BreadcrumbLink>
-            </InteractiveLink>
+            </GalleryLink>
 
             <SlashText>/</SlashText>
 

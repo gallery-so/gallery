@@ -78,11 +78,7 @@ function GalleryNameDescriptionHeader({
     <Container gap={2}>
       <HStack align="flex-start" justify="space-between">
         <Link href={galleryRoute} legacyBehavior>
-          {noLink ? (
-            galleryName
-          ) : (
-            <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>
-          )}
+          {noLink ? galleryName : <StyledLink href={route(galleryRoute)}>{galleryName}</StyledLink>}
         </Link>
         {showMobileLayoutToggle && (
           <StyledButtonsWrapper gap={8} align="center" justify="space-between">
@@ -120,7 +116,7 @@ const Container = styled(VStack)`
   width: 100%;
 `;
 
-const GalleryLink = styled.a`
+const StyledLink = styled.a`
   all: unset;
   cursor: pointer;
 `;

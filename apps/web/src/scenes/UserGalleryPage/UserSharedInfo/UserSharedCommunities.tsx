@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { CommunityProfilePictureStack } from '~/components/ProfilePicture/CommunityProfilePictureStack';
@@ -91,9 +91,9 @@ export default function UserSharedCommunities({ userRef }: Props) {
 
         if (url) {
           return (
-            <StyledInteractiveLink to={url} key={community.name}>
+            <StyledGalleryLink to={url} key={community.name}>
               {community.name}
-            </StyledInteractiveLink>
+            </StyledGalleryLink>
           );
         }
       }
@@ -103,9 +103,9 @@ export default function UserSharedCommunities({ userRef }: Props) {
     // If there are more than 3 communities, add a link to show all in a popover
     if (totalSharedCommunities > 3) {
       result.push(
-        <StyledInteractiveLink onClick={handleShowAllClick}>
+        <StyledGalleryLink onClick={handleShowAllClick}>
           {totalSharedCommunities - 2} others
-        </StyledInteractiveLink>
+        </StyledGalleryLink>
       );
     }
 
@@ -139,7 +139,7 @@ export default function UserSharedCommunities({ userRef }: Props) {
   );
 }
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

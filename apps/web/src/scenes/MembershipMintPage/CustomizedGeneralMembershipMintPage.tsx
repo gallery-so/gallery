@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -136,9 +136,9 @@ export function CustomizedGeneralMembershipMintPage({
         <VStack gap={24}>
           <HStack gap={4} align="center">
             <BaseXL>You are ineligible for this mint.</BaseXL>
-            <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+            <GalleryLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
               <InfoCircleIcon />
-            </InteractiveLink>
+            </GalleryLink>
           </HStack>
           <StyledSecondaryLink href={membershipNft.secondaryUrl} target="_blank">
             <TitleXS color={colors.white}>View on Secondary</TitleXS>
@@ -156,9 +156,9 @@ export function CustomizedGeneralMembershipMintPage({
               <b>Early Access Allowlist</b> can still create a Gallery account.
             </BaseM>
 
-            <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+            <GalleryLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
               <InfoCircleIcon />
-            </InteractiveLink>
+            </GalleryLink>
           </HStack>
           <StyledSecondaryLink href={route({ pathname: '/auth' })}>
             <Button eventElementId={null} eventName={null} eventContext={null}>
@@ -252,17 +252,17 @@ export function CustomizedGeneralMembershipMintPage({
                     ? 'Transaction successful!'
                     : 'Transaction submitted. This may take several minutes.'}
                 </BaseM>
-                <InteractiveLink href={`https://etherscan.io/tx/${transactionHash}`}>
+                <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
                   <BaseM>View on Etherscan</BaseM>
-                </InteractiveLink>
+                </GalleryLink>
               </VStack>
             )}
             {transactionStatus === TransactionStatus.SUCCESS && (
               <VStack>
                 <BaseM>You can now sign up for Gallery.</BaseM>
-                <InteractiveLink href={route({ pathname: '/auth' })}>
+                <GalleryLink href={route({ pathname: '/auth' })}>
                   <BaseM>Proceed to Onboarding</BaseM>
-                </InteractiveLink>
+                </GalleryLink>
               </VStack>
             )}
             {error && <ErrorText message={error} />}

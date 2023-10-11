@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
@@ -65,7 +65,7 @@ export default function Badge({ badgeRef, eventContext }: Props) {
   }
 
   return (
-    <StyledInteractiveLink
+    <StyledGalleryLink
       eventElementId="Badge"
       eventName="Badge Click"
       eventContext={eventContext}
@@ -83,7 +83,7 @@ export default function Badge({ badgeRef, eventContext }: Props) {
           />
         }
       />
-    </StyledInteractiveLink>
+    </StyledGalleryLink>
   );
 }
 
@@ -92,7 +92,7 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   position: relative;
   line-height: 1;
   outline: none;

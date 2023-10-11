@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
@@ -134,21 +134,21 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />
-          <InteractiveLink to={creatorRoute}>
+          <GalleryLink to={creatorRoute}>
             <BaseM color={colors.shadow}>{creatorUsername}</BaseM>
-          </InteractiveLink>
+          </GalleryLink>
         </HStack>
       );
     }
     if (creatorExternalLink) {
       return (
-        <InteractiveLink href={creatorExternalLink}>
+        <GalleryLink href={creatorExternalLink}>
           <HStack gap={4}>
             <RawProfilePicture size="xs" default inheritBorderColor />
 
             <StyledBaseM>{truncateAddress(creatorAddress || '')}</StyledBaseM>
           </HStack>
-        </InteractiveLink>
+        </GalleryLink>
       );
     }
     return null;

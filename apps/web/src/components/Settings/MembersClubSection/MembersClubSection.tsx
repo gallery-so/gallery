@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD } from '~/constants/urls';
@@ -42,12 +42,12 @@ export default function MembersClubSection({ queryRef }: Props) {
       <HStack justify="space-between" align="center" gap={8}>
         <SettingsRowDescription>
           Unlock early access to features, a profile badge, and the members-only{' '}
-          <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding a{' '}
-          <InteractiveLink
+          <GalleryLink href={GALLERY_DISCORD}>Discord channel</GalleryLink> by holding a{' '}
+          <GalleryLink
             href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
           >
             Premium Gallery Membership Card
-          </InteractiveLink>{' '}
+          </GalleryLink>{' '}
           and verifying your email address.
         </SettingsRowDescription>
         <HStack align="center" gap={4} shrink={false}>

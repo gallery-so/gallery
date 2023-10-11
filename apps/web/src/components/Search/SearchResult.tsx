@@ -6,7 +6,7 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -97,7 +97,7 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(InteractiveLink)<{ className: string }>`
+const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
   color: ${colors.black['800']};
   padding: 16px 12px;
   cursor: pointer;

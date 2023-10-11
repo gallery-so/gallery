@@ -11,7 +11,7 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 
 type UserListItemProps = {
   userRef: UserListItemFragment$key;
@@ -37,12 +37,12 @@ export function UserListItem({ userRef }: UserListItemProps) {
   }, [hideDrawer]);
 
   return (
-    <InteractiveLink onClick={handleLinkClick} to={userRoute}>
+    <GalleryLink onClick={handleLinkClick} to={userRoute}>
       <Container>
         <TitleDiatypeM>{user.username}</TitleDiatypeM>
         {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
       </Container>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }
 

@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi';
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
@@ -78,13 +78,13 @@ export default function MementosPage() {
             <BaseM>
               Introducing the <b>Gallery x Base</b> memento, a collectible in celebration of Gallery
               rolling out support for{' '}
-              <InteractiveLink href="https://base.org/ecosystem">Base Chain</InteractiveLink>.
+              <GalleryLink href="https://base.org/ecosystem">Base Chain</GalleryLink>.
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
-              <InteractiveLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
+              <GalleryLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
                 here
-              </InteractiveLink>
+              </GalleryLink>
               .
             </BaseM>
             <VStack>
@@ -93,7 +93,7 @@ export default function MementosPage() {
                 <StyledUl>
                   {/* <li>
                     Follow{' '}
-                    <InteractiveLink href="https://twitter.com/GALLERY">@GALLERY</InteractiveLink>{' '}
+                    <GalleryLink href="https://twitter.com/GALLERY">@GALLERY</GalleryLink>{' '}
                     on Twitter.
                   </li> */}
 

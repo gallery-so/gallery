@@ -15,7 +15,7 @@ import colors from '~/shared/theme/colors';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack } from '../core/Spacer/Stack';
 import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -160,7 +160,7 @@ const StyledUsernameWrapper = styled.div`
   max-width: 100%;
 `;
 
-const StyledGalleryLink = styled(InteractiveLink)<{ fadeUsernames: boolean }>`
+const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
   transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
   color: ${colors.black['800']};
   opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};

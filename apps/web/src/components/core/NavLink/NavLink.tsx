@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../InteractiveLink/InteractiveLink';
+import GalleryLink from '../GalleryLink/GalleryLink';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 
@@ -25,7 +25,7 @@ export default function NavLink({ to, href, children, className, onClick }: Prop
   );
 }
 
-const StyledNavLink = styled(InteractiveLink)`
+const StyledNavLink = styled(GalleryLink)`
   color: inherit;
   text-decoration: none;
   font-family: ${BODY_FONT_FAMILY};

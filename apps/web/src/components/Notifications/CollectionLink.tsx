@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { CollectionLinkFragment$key } from '~/generated/CollectionLinkFragment.graphql';
 
 type CollectionLinkProps = {
@@ -42,8 +42,6 @@ export function CollectionLink({ collectionRef }: CollectionLinkProps) {
   }
 
   return (
-    <InteractiveLink href={route(collectionRoute)}>
-      {collection.name || 'your collection'}
-    </InteractiveLink>
+    <GalleryLink href={route(collectionRoute)}>{collection.name || 'your collection'}</GalleryLink>
   );
 }

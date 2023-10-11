@@ -3,7 +3,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
@@ -78,9 +78,7 @@ export default function FeaturedCollectorCard({
   }
 
   return (
-    <InteractiveLink
-      to={{ pathname: '/[username]', query: { username: owner.username as string } }}
-    >
+    <GalleryLink to={{ pathname: '/[username]', query: { username: owner.username as string } }}>
       <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
         <FeaturedCollectorHeader gap={8}>
           <DescriptionText>{owner.username}</DescriptionText>
@@ -94,7 +92,7 @@ export default function FeaturedCollectorCard({
           ))}
         </FeaturedCollectorBody>
       </FeaturedCollectorContainer>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }
 

@@ -4,7 +4,7 @@ import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import useKeyDown from '~/hooks/useKeyDown';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import { MetaTagProps } from '~/pages/_app';
@@ -45,9 +45,9 @@ export default function TokenDetailPage({ username, tokenId }: TokenDetailPagePr
 
   return (
     <>
-      <InteractiveLink to={userRoute}>
+      <GalleryLink to={userRoute}>
         <StyledDecoratedCloseIcon />
-      </InteractiveLink>
+      </GalleryLink>
       <GalleryRoute
         element={<TokenDetailPageScene tokenId={tokenId} />}
         navbar={false}

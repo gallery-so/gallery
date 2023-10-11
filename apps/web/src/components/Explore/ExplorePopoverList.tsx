@@ -7,7 +7,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';
@@ -83,7 +83,7 @@ const StyledHeading = styled(TitleDiatypeL)`
   padding: 0px 8px;
 `;
 
-const StyledRow = styled(InteractiveLink)`
+const StyledRow = styled(GalleryLink)`
   padding: 8px;
   text-decoration: none;
   min-height: 56px;

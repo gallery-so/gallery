@@ -13,7 +13,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
@@ -138,7 +138,7 @@ const StyledTwitterSettingContainer = styled(VStack)`
   background-color: ${colors.faint};
 `;
 
-const StyledConnectLink = styled(InteractiveLink)`
+const StyledConnectLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 

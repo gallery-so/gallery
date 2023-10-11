@@ -2,7 +2,7 @@ import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -91,9 +91,9 @@ export default function GalleryUpdatedFeedEvent({
               <UserHoverCard userRef={event.owner} />
             </HStack>
             <BaseM>updated</BaseM>
-            <InteractiveLink to={galleryPagePath}>
+            <GalleryLink to={galleryPagePath}>
               <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
-            </InteractiveLink>
+            </GalleryLink>
             <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>

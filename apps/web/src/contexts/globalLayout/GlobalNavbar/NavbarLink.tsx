@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import colors from '~/shared/theme/colors';
 
 // legacyBehavior: false ensures these styles are applied to the link element
-export const NavbarLink = styled(InteractiveLink).attrs({ legacyBehavior: false })<{
+export const NavbarLink = styled(GalleryLink).attrs({ legacyBehavior: false })<{
   active: boolean;
 }>`
   font-family: ${BODY_FONT_FAMILY};

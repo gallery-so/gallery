@@ -6,7 +6,7 @@ import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.g
 import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
@@ -53,22 +53,22 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (profileImage && profileImage.previewURLs?.medium) {
     return (
-      <InteractiveLink to={userProfileLink}>
+      <GalleryLink to={userProfileLink}>
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
-      </InteractiveLink>
+      </GalleryLink>
     );
   }
 
   if (!token) {
     return (
-      <InteractiveLink to={userProfileLink}>
+      <GalleryLink to={userProfileLink}>
         <RawProfilePicture letter={firstLetter} {...rest} />
-      </InteractiveLink>
+      </GalleryLink>
     );
   }
 
   return (
-    <InteractiveLink to={userProfileLink}>
+    <GalleryLink to={userProfileLink}>
       <NftFailureBoundary
         tokenId={token.dbid}
         fallback={<RawProfilePicture letter={firstLetter} {...rest} />}
@@ -76,7 +76,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
       >
         <ValidProfilePicture tokenRef={token} {...rest} />
       </NftFailureBoundary>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }
 

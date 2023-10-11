@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -81,13 +81,13 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   return (
     <VStack gap={8}>
-      <StyledInteractiveLink onClick={handleClick}>
+      <StyledGalleryLink onClick={handleClick}>
         <StyledNftImage src={imageUrl} />
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
-          <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
+          <GalleryLink href={openseaProfileLink}>{usernameWithFallback}</GalleryLink>
         ) : (
           <UserHoverCard userRef={token.owner} />
         )}
@@ -111,6 +111,6 @@ const StyledNftDetailViewPopover = styled(VStack)`
   }
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;

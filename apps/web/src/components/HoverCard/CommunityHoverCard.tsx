@@ -12,7 +12,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS, TitleM } from '../core/Text/Text';
@@ -156,7 +156,7 @@ function CommunityHoverCardContent({
 
   const content = useMemo(() => {
     const result = ownersToDisplay.map((owner) => (
-      <StyledInteractiveLink
+      <StyledGalleryLink
         to={{
           pathname: `/[username]`,
           query: { username: owner.username ?? '' },
@@ -164,7 +164,7 @@ function CommunityHoverCardContent({
         key={owner.username}
       >
         {loggedInUserId === owner.id ? 'You' : owner.username}
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
     ));
 
     if (totalOwners > 3) {
@@ -258,7 +258,7 @@ const StyledCardDescription = styled.div`
   }
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../InteractiveLink/InteractiveLink';
+import GalleryLink from '../GalleryLink/GalleryLink';
 
 type DropdownLinkProps = { href: Route; children: ReactNode; onClick?: () => void };
 
@@ -16,7 +16,7 @@ export function DropdownLink({ href, children, onClick }: DropdownLinkProps) {
   );
 }
 
-const StyledDropdownItem = styled(InteractiveLink)`
+const StyledDropdownItem = styled(GalleryLink)`
   padding: 8px;
 
   font-family: 'Helvetica Neue';

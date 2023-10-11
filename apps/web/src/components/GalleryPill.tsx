@@ -1,9 +1,7 @@
 import { ButtonHTMLAttributes, MouseEventHandler, useCallback } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink, {
-  InteractiveLinkProps,
-} from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink, { GalleryLinkProps } from '~/components/core/GalleryLink/GalleryLink';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -11,12 +9,12 @@ type GalleryPillProps = {
   active?: boolean;
   className?: string;
   disabled?: boolean;
-} & InteractiveLinkProps &
+} & GalleryLinkProps &
   ButtonHTMLAttributes<HTMLButtonElement> &
   GalleryElementTrackingProps;
 
 /**
- * This component will either render an InteractiveLink for redirects,
+ * This component will either render an GalleryLink for redirects,
  * or a simple Button
  */
 export function GalleryPill(props: GalleryPillProps) {
@@ -73,7 +71,7 @@ const sharedStyles = ({ active, disabled }: StyledComponentProps) => `
   ${active ? `border-color: ${colors.black['800']};` : ''}
 `;
 
-const GalleryPillLink = styled(InteractiveLink)<StyledComponentProps>`
+const GalleryPillLink = styled(GalleryLink)<StyledComponentProps>`
   ${(props) => sharedStyles(props)}
 `;
 

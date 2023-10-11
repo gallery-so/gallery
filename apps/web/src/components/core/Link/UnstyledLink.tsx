@@ -2,12 +2,12 @@ import styled from 'styled-components';
 
 import { InternalAnchorElementProps } from '~/types/Elements';
 
-import InteractiveLink from '../InteractiveLink/InteractiveLink';
+import GalleryLink from '../GalleryLink/GalleryLink';
 
 export const UnstyledLink = ({ href, children, ...props }: InternalAnchorElementProps) => (
-  <InteractiveLink to={href} {...props}>
+  <GalleryLink to={href} {...props}>
     {children}
-  </InteractiveLink>
+  </GalleryLink>
 );
 
 export const UnstyledAnchor = styled.a`

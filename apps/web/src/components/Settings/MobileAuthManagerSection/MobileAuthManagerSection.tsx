@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import QRCode from '~/components/QRCode/QRCode';
@@ -41,7 +41,7 @@ export default function MobileAuthManagerSection() {
         >
           View QR Code
         </Button>
-        <InteractiveLink to={{ pathname: '/mobile' }}>Learn more about the app</InteractiveLink>
+        <GalleryLink to={{ pathname: '/mobile' }}>Learn more about the app</GalleryLink>
       </VStack>
     </VStack>
   );

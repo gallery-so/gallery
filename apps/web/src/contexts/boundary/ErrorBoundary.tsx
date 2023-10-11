@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL } from '~/components/core/Text/Text';
 import formatError from '~/shared/errors/formatError';
@@ -19,7 +19,7 @@ function DefaultFallback({ error }: ReportingErrorBoundaryFallbackProps) {
         <BaseXL>{errorMessage}</BaseXL>
         <StyledReachOut>
           If you&apos;re continuing to see this error, reach out to us on{' '}
-          <InteractiveLink href="https://discord.gg/QcJjCDucwK">Discord</InteractiveLink>.
+          <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
         </StyledReachOut>
       </VStack>
     </StyledErrorBoundary>

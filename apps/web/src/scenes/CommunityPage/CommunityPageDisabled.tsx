@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
@@ -19,11 +19,11 @@ export default function CommunityPageDisabled({ name }: Props) {
       </BaseM>
       <BaseM>
         Be the first to know when it's available by joining us on{' '}
-        <InteractiveLink href={GALLERY_DISCORD}>Discord</InteractiveLink> or{' '}
-        <InteractiveLink href={GALLERY_TWITTER}>Twitter</InteractiveLink>.
+        <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink> or{' '}
+        <GalleryLink href={GALLERY_TWITTER}>Twitter</GalleryLink>.
       </BaseM>
       <BaseM>
-        <InteractiveLink to={{ pathname: '/home' }}>Back to home</InteractiveLink>
+        <GalleryLink to={{ pathname: '/home' }}>Back to home</GalleryLink>
       </BaseM>
     </StyledDisabledSection>
   );

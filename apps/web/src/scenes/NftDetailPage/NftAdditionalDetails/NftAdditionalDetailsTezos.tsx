@@ -2,7 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
@@ -82,9 +82,9 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
-        {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
-        {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
-        {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
+        {fxhashUrl && <GalleryLink href={fxhashUrl}>View on fx(hash)</GalleryLink>}
+        {objktUrl && <GalleryLink href={objktUrl}>View on objkt</GalleryLink>}
+        {projectUrl && <GalleryLink href={projectUrl}>More Info</GalleryLink>}
       </StyledLinkContainer>
       <GalleryPill
         eventElementId="Refresh Single NFT Pill"

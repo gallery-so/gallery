@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';
@@ -58,11 +58,11 @@ export function CollectionSidebar({ queryRef }: Props) {
       <TitleSection />
       <CollectionSearch queryRef={query} />
       <StyledIconsContainer justify="space-between">
-        <InteractiveLink href={NOTION_DOCS_URL}>
+        <GalleryLink href={NOTION_DOCS_URL}>
           <a>
             <HelpIconContainer />
           </a>
-        </InteractiveLink>
+        </GalleryLink>
         <AutoGalleryToggle />
       </StyledIconsContainer>
     </CollectionSidebarWrapper>

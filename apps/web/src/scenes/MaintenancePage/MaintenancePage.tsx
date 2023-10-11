@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
@@ -54,7 +54,7 @@ const StyledBaseM = styled(BaseM)`
   text-align: center;
 `;
 
-const StyledFooterLink = styled(InteractiveLink)`
+const StyledFooterLink = styled(GalleryLink)`
   text-transform: capitalize;
   font-size: 14px;
 `;

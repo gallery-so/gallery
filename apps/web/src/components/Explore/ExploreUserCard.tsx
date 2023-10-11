@@ -13,7 +13,7 @@ import unescape from '~/shared/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';
@@ -149,7 +149,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   );
 }
 
-const StyledExploreUserCard = styled(InteractiveLink)`
+const StyledExploreUserCard = styled(GalleryLink)`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;

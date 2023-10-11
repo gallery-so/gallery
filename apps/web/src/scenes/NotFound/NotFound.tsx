@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { DeprecatedButtonLink } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
@@ -17,8 +17,8 @@ function NotFound({ resource = 'user' }: Props) {
         <TitleL>404</TitleL>
         <StyledBody>
           The {resource} doesn&apos;t exist. If you think this is a bug, tag us on{' '}
-          <InteractiveLink href={GALLERY_TWITTER}>@GALLERY</InteractiveLink> or find us on{' '}
-          <InteractiveLink href={GALLERY_DISCORD}>Discord</InteractiveLink>.
+          <GalleryLink href={GALLERY_TWITTER}>@GALLERY</GalleryLink> or find us on{' '}
+          <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
         </StyledBody>
       </VStack>
       <DeprecatedButtonLink href={{ pathname: '/' }}>Take me back</DeprecatedButtonLink>

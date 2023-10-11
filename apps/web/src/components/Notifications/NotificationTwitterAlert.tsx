@@ -11,7 +11,7 @@ import InfoCircleIcon from '~/icons/InfoCircleIcon';
 import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
@@ -73,9 +73,9 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Connect Twitter to find friends and display your handle.</BaseM>
         <HStack align="center" gap={8}>
-          <InteractiveLink onClick={handleConnect} href={TWITTER_AUTH_URL} target="_self">
+          <GalleryLink onClick={handleConnect} href={TWITTER_AUTH_URL} target="_self">
             Connect
-          </InteractiveLink>
+          </GalleryLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
         </HStack>
       </StyledAlert>

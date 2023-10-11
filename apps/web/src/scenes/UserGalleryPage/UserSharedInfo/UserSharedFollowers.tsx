@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
@@ -77,7 +77,7 @@ export default function UserSharedFollowers({ userRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 usernames
     const result = followersToDisplay.map((user) => (
-      <StyledInteractiveLink
+      <StyledGalleryLink
         to={{
           pathname: `/[username]`,
           query: { username: user.username ?? '' },
@@ -85,15 +85,15 @@ export default function UserSharedFollowers({ userRef }: Props) {
         key={user.username}
       >
         {user.username}
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
     ));
 
     // If there are more than 3 usernames, add a link to show all in a popover
     if (totalSharedFollowers > 3) {
       result.push(
-        <StyledInteractiveLink onClick={handleShowAllFollowersClick}>
+        <StyledGalleryLink onClick={handleShowAllFollowersClick}>
           {totalSharedFollowers - 2} others
-        </StyledInteractiveLink>
+        </StyledGalleryLink>
       );
     }
 
@@ -127,7 +127,7 @@ export default function UserSharedFollowers({ userRef }: Props) {
   );
 }
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

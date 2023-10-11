@@ -4,7 +4,7 @@ import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import useKeyDown from '~/hooks/useKeyDown';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import { MetaTagProps } from '~/pages/_app';
@@ -45,9 +45,9 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   return (
     <>
-      <InteractiveLink to={collectionRoute}>
+      <GalleryLink to={collectionRoute}>
         <StyledDecoratedCloseIcon />
-      </InteractiveLink>
+      </GalleryLink>
       <GalleryRoute
         element={
           <NftDetailPageScene username={username} collectionId={collectionId} tokenId={tokenId} />

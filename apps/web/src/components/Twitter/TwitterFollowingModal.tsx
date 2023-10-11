@@ -16,7 +16,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '../core/Text/Text';
@@ -203,7 +203,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
       return (
         <StyledFollowing align="center" justify="space-between" style={style} key={key} gap={4}>
           <VStack>
-            <InteractiveLink
+            <GalleryLink
               to={{
                 pathname: '/[username]',
                 query: {
@@ -214,7 +214,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
               <BaseM>
                 <strong>{user.username}</strong>
               </BaseM>
-            </InteractiveLink>
+            </GalleryLink>
             <BioText>
               <Markdown text={user.bio ?? ''} />
             </BioText>

@@ -12,7 +12,7 @@ import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 import VerifyNavigationPopover from './VerifyNavigationPopover';
 
-export type InteractiveLinkProps = {
+export type GalleryLinkProps = {
   children: ReactNode;
   className?: string;
   to?: Route;
@@ -23,14 +23,14 @@ export type InteractiveLinkProps = {
   // open the link in a new tab or not
   target?: HTMLAnchorElement['target'];
 } & {
-  // make tracking props optional given `InteractiveLink` often has
+  // make tracking props optional given `GalleryLink` often has
   // a parent element with embedded tracking, and we auto-track links
   eventElementId?: GalleryElementTrackingProps['eventElementId'];
   eventName?: GalleryElementTrackingProps['eventName'];
   eventContext?: GalleryElementTrackingProps['eventContext'];
 } & Omit<GalleryElementTrackingProps, 'eventElementId' | 'eventName' | 'eventContext'>;
 
-export default function InteractiveLink({
+export default function GalleryLink({
   to,
   href,
   children,
@@ -43,11 +43,11 @@ export default function InteractiveLink({
   eventContext,
   eventFlow,
   properties,
-}: InteractiveLinkProps) {
+}: GalleryLinkProps) {
   const track = useTrack();
 
   if (!to && !href && !onClick) {
-    console.error('no link provided for InteractiveLink');
+    console.error('no link provided for GalleryLink');
   }
 
   const normalizedUrl = useMemo(() => normalizeUrl({ to, href }), [href, to]);
@@ -122,7 +122,7 @@ export default function InteractiveLink({
   return null;
 }
 
-export function InteractiveLinkNeedsVerification({
+export function GalleryLinkNeedsVerification({
   inheritLinkStyling = false,
   href,
   children,
@@ -152,14 +152,14 @@ export function InteractiveLinkNeedsVerification({
     [showModal, track]
   );
   return (
-    <InteractiveLink
+    <GalleryLink
       inheritLinkStyling={inheritLinkStyling}
       onClick={(e) => {
         handleClick(e, href);
       }}
     >
       {children}
-    </InteractiveLink>
+    </GalleryLink>
   );
 }
 

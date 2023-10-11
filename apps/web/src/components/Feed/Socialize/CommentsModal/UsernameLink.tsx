@@ -1,6 +1,6 @@
 import { Route } from 'nextjs-routes';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { TitleS } from '~/components/core/Text/Text';
 
 type UsernameLinkProps = { username: string | null };
@@ -11,8 +11,8 @@ export function UsernameLink({ username }: UsernameLinkProps) {
     : { pathname: '/' };
 
   return (
-    <InteractiveLink to={link}>
+    <GalleryLink to={link}>
       <TitleS as="span">{username ?? '<unknown>'}</TitleS>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }

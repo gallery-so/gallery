@@ -2,7 +2,7 @@ import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -55,7 +55,7 @@ const StyledRowNonLink = styled.div`
   }
 `;
 
-const StyledRowLink = styled(InteractiveLink)`
+const StyledRowLink = styled(GalleryLink)`
   padding: 8px 12px;
   text-decoration: none;
   max-height: 56px;

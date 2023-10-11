@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
 import useTimer from '~/hooks/useTimer';
@@ -62,9 +62,9 @@ export default function Countdown() {
                 <StyledCountdownLabel>{seconds === '1' ? 'sec' : 'secs'}</StyledCountdownLabel>
               </StyledCountdownText>
             </StyledCountdown>
-            <StyledInteractiveLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
+            <StyledGalleryLink href="https://gallery.mirror.xyz/Yw-Stzpz0PTtrPMw-P-XKnSQn8eDC1o_WnP-c19r8V0#drop-schedule">
               See mint schedule
-            </StyledInteractiveLink>
+            </StyledGalleryLink>
           </VStack>
         </StyledContainer>
       )}
@@ -106,6 +106,6 @@ const StyledCountdownLabel = styled(BaseS)`
   font-style: normal;
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   color: ${colors.metal};
 `;

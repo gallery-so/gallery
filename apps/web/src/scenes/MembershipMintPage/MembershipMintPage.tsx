@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -222,9 +222,9 @@ export function MembershipMintPage({
               <StyledIneligibleText>
                 <HStack gap={4} align="center">
                   <BaseXL>You are ineligible for this mint.</BaseXL>
-                  <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+                  <GalleryLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
                     <InfoCircleIcon />
-                  </InteractiveLink>
+                  </GalleryLink>
                 </HStack>
               </StyledIneligibleText>
             )}
@@ -239,18 +239,18 @@ export function MembershipMintPage({
                       ? 'Transaction successful!'
                       : 'Transaction submitted. This may take several minutes.'}
                   </BaseM>
-                  <InteractiveLink href={`https://etherscan.io/tx/${transactionHash}`}>
+                  <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
                     <BaseM>View on Etherscan</BaseM>
-                  </InteractiveLink>
+                  </GalleryLink>
                 </div>
               </>
             )}
             {transactionStatus === TransactionStatus.SUCCESS && (
               <>
                 <BaseM>You can now sign up for Gallery.</BaseM>
-                <InteractiveLink href={route({ pathname: '/auth' })}>
+                <GalleryLink href={route({ pathname: '/auth' })}>
                   <BaseM>Proceed to Onboarding</BaseM>
-                </InteractiveLink>
+                </GalleryLink>
               </>
             )}
             {error && <ErrorText message={error} />}
