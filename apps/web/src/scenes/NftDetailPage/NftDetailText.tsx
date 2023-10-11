@@ -126,8 +126,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     queryRef
   );
 
-  // const openAdmireModal = useAdmireModal({ queryRef: query });
-
   const [showDetails, setShowDetails] = useState(false);
   const track = useTrack();
   const { showModal } = useModalActions();
@@ -136,8 +134,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const [removeTokenAdmire] = useRemoveTokenAdmire();
 
   const info = useOptimisticUserInfo(query);
-  // console.log('queryReffff', queryRef);
-  //  console.log('query', query);
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
