@@ -11,6 +11,7 @@ import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQue
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
 import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 
 import TokenDetailAsset from './TokenDetailAsset';
 
@@ -77,6 +78,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
             }
           }
         }
+        ...NftDetailTextQueryFragment
       }
     `,
     queryRef
@@ -108,7 +110,11 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
+        <NftDetailText
+          queryRef={query}
+          tokenRef={token}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+        />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>

@@ -22,6 +22,7 @@ function Fixture() {
             ...NftDetailViewFragment
           }
         }
+        ...NftDetailViewQueryFragment
       }
     `,
     { collectionId: 'testCollectionId', tokenId: 'testTokenId' }
@@ -33,6 +34,7 @@ function Fixture() {
 
   return (
     <NftDetailView
+      queryRef={query}
       authenticatedUserOwnsAsset={false}
       collectionTokenRef={query.collectionTokenById}
     />
