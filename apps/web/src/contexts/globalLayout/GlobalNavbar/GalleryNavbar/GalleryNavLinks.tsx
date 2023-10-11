@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
@@ -60,43 +60,27 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
   return (
     <HStack gap={8}>
-      <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(featuredRoute)}
-        active={pathname === featuredRoute.pathname}
-      >
+      <NavbarLink to={featuredRoute} active={pathname === featuredRoute.pathname}>
         <HStack gap={4} align="baseline">
           <span>Featured</span>
         </HStack>
       </NavbarLink>
 
-      <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(galleriesRoute)}
-        active={pathname === galleriesRoute.pathname}
-      >
+      <NavbarLink to={galleriesRoute} active={pathname === galleriesRoute.pathname}>
         <HStack gap={4} align="baseline">
           <span>Galleries</span>
           {totalGalleries > 0 && <BaseS>{totalGalleries}</BaseS>}
         </HStack>
       </NavbarLink>
 
-      <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(postsRoute)}
-        active={pathname === postsRoute.pathname}
-      >
+      <NavbarLink to={postsRoute} active={pathname === postsRoute.pathname}>
         <HStack gap={4} align="baseline">
           <span>Posts</span>
           {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
         </HStack>
       </NavbarLink>
 
-      <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(followersRoute)}
-        active={pathname === followersRoute.pathname}
-      >
+      <NavbarLink to={followersRoute} active={pathname === followersRoute.pathname}>
         <HStack gap={4} align="baseline">
           Followers
           {totalFollowers > 0 && <BaseS>{totalFollowers}</BaseS>}

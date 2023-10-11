@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -88,7 +87,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
                   </HStack>
                 )}{' '}
                 made updates to {collectionName ? ' ' : 'their collection'}
-                <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                {collectionName}
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>

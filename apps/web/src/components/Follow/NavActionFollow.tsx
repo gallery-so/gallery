@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
@@ -11,6 +10,7 @@ import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUser
 import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import FollowButton from './FollowButton';
 
 type Props = {
@@ -50,14 +50,14 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <HStack gap={8} align="center">
-      <Link href={usernameRoute} legacyBehavior>
+      <InteractiveLink to={usernameRoute}>
         <UsernameBreadcrumbLink
           href={route(usernameRoute)}
           mainGalleryPage={pathname === '/[username]'}
         >
           {displayName}
         </UsernameBreadcrumbLink>
-      </Link>
+      </InteractiveLink>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} source="navbar desktop" />
     </HStack>
   );

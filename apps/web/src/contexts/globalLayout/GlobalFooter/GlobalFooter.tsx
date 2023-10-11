@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { route } from 'nextjs-routes';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, TitleM } from '~/components/core/Text/Text';
@@ -28,9 +28,9 @@ function GlobalFooter() {
       {isMobile && <StyledHr />}
       <VStack gap={4}>
         <HStack gap={4}>
-          <Link href={{ pathname: '/' }} legacyBehavior>
+          <InteractiveLink to={{ pathname: '/' }}>
             <StyledLogo />
-          </Link>
+          </InteractiveLink>
         </HStack>
         <HStack gap={8} wrap="wrap">
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>

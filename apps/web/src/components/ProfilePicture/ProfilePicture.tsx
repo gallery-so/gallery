@@ -1,13 +1,12 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
@@ -54,22 +53,22 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (profileImage && profileImage.previewURLs?.medium) {
     return (
-      <StyledLink href={userProfileLink}>
+      <InteractiveLink to={userProfileLink}>
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
-      </StyledLink>
+      </InteractiveLink>
     );
   }
 
   if (!token) {
     return (
-      <StyledLink href={userProfileLink}>
+      <InteractiveLink to={userProfileLink}>
         <RawProfilePicture letter={firstLetter} {...rest} />
-      </StyledLink>
+      </InteractiveLink>
     );
   }
 
   return (
-    <StyledLink href={userProfileLink}>
+    <InteractiveLink to={userProfileLink}>
       <NftFailureBoundary
         tokenId={token.dbid}
         fallback={<RawProfilePicture letter={firstLetter} {...rest} />}
@@ -77,7 +76,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
       >
         <ValidProfilePicture tokenRef={token} {...rest} />
       </NftFailureBoundary>
-    </StyledLink>
+    </InteractiveLink>
   );
 }
 
@@ -99,8 +98,3 @@ function ValidProfilePicture({ tokenRef, ...rest }: ValidProfilePictureProps) {
 
   return <RawProfilePicture imageUrl={imageUrl} {...rest} />;
 }
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  cursor: pointer;
-`;

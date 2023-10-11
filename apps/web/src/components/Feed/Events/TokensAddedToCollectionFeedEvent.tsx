@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -113,9 +112,7 @@ export default function TokensAddedToCollectionFeedEvent({
                   to
                   {collectionName ? ' ' : ' their collection'}
                 </BaseM>
-                <Link href={collectionPagePath} passHref legacyBehavior>
-                  <StyledEventLabel>{collectionName}</StyledEventLabel>
-                </Link>
+                <StyledEventLabel>{collectionName}</StyledEventLabel>
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>

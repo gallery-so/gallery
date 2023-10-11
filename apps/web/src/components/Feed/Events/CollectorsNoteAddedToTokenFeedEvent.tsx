@@ -105,20 +105,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                 </HStack>
               )}
               <BaseM>add a collector's note to</BaseM>
-              <Link
-                href={{
-                  pathname: '/[username]/[collectionId]/[tokenId]',
-                  query: {
-                    username: event.owner.username as string,
-                    collectionId: event.token.collection?.dbid as string,
-                    tokenId: event.token.token?.dbid,
-                  },
-                }}
-                onClick={handleEventClick}
-                legacyBehavior
-              >
-                <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
-              </Link>
+              <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
             </StyledEventText>
             {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -96,18 +95,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
                   {collectionName ? `, ` : ' '}
                 </BaseM>
                 {collectionName && (
-                  <Link
-                    href={{
-                      pathname: '/[username]/[collectionId]',
-                      query: {
-                        username: event.owner.username as string,
-                        collectionId: event.collection.dbid,
-                      },
-                    }}
-                    legacyBehavior
-                  >
-                    <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
-                  </Link>
+                  <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
                 )}
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </StyledEventText>

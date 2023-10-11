@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import IconContainer from '~/components/core/IconContainer';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import colors from '~/shared/theme/colors';
@@ -62,7 +62,7 @@ export default function SidebarIcon({
   if (href) {
     return (
       <IconWrapper onClick={handleClick}>
-        <Link href={href}>{content}</Link>
+        <InteractiveLink to={href}>{content}</InteractiveLink>
       </IconWrapper>
     );
   }

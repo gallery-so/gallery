@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
@@ -93,9 +93,9 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
             <SlashText>/</SlashText>
 
-            <Link href={galleryRoute} legacyBehavior>
-              <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
-            </Link>
+            <InteractiveLink to={galleryRoute}>
+              <BreadcrumbLink>{galleryName}</BreadcrumbLink>
+            </InteractiveLink>
 
             <SlashText>/</SlashText>
 

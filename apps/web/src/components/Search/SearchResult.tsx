@@ -1,4 +1,3 @@
-import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
@@ -7,6 +6,7 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -77,7 +77,7 @@ export default function SearchResult({
   }, [keyword, description]);
 
   return (
-    <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" to={path} onClick={handleClick}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
@@ -97,7 +97,7 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(Link)<LinkProps & { className: string }>`
+const StyledSearchResult = styled(InteractiveLink)<{ className: string }>`
   color: ${colors.black['800']};
   padding: 16px 12px;
   cursor: pointer;

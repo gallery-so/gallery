@@ -104,9 +104,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                 </HStack>
               )}
               <BaseM>added a description to {collectionName ? ' ' : ' their collection'}</BaseM>
-              <Link href={collectionPagePath} passHref legacyBehavior>
-                <StyledEventLabel>{collectionName}</StyledEventLabel>
-              </Link>
+              <StyledEventLabel>{collectionName}</StyledEventLabel>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </StyledEventText>
           </StyledEventHeader>

@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
@@ -78,33 +78,25 @@ export default function FeaturedCollectorCard({
   }
 
   return (
-    <Link
-      href={{ pathname: '/[username]', query: { username: owner.username as string } }}
-      passHref
-      legacyBehavior
+    <InteractiveLink
+      to={{ pathname: '/[username]', query: { username: owner.username as string } }}
     >
-      <StyledAnchor target="_blank" rel="noopener noreferrer">
-        <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
-          <FeaturedCollectorHeader gap={8}>
-            <DescriptionText>{owner.username}</DescriptionText>
-            <FollowButton queryRef={query} userRef={owner} source="featured curator card" />
-          </FeaturedCollectorHeader>
-          <FeaturedCollectorBody>
-            {imageUrls.map((url) => (
-              <FeaturedCollectorImageContainer key={url}>
-                <FeaturedCollectorImage src={url} />
-              </FeaturedCollectorImageContainer>
-            ))}
-          </FeaturedCollectorBody>
-        </FeaturedCollectorContainer>
-      </StyledAnchor>
-    </Link>
+      <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
+        <FeaturedCollectorHeader gap={8}>
+          <DescriptionText>{owner.username}</DescriptionText>
+          <FollowButton queryRef={query} userRef={owner} source="featured curator card" />
+        </FeaturedCollectorHeader>
+        <FeaturedCollectorBody>
+          {imageUrls.map((url) => (
+            <FeaturedCollectorImageContainer key={url}>
+              <FeaturedCollectorImage src={url} />
+            </FeaturedCollectorImageContainer>
+          ))}
+        </FeaturedCollectorBody>
+      </FeaturedCollectorContainer>
+    </InteractiveLink>
   );
 }
-
-const StyledAnchor = styled.a`
-  text-decoration: none;
-`;
 
 const FeaturedCollectorContainer = styled(VStack)`
   background: ${colors.offWhite};

@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -11,6 +10,8 @@ import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
 import colors from '~/shared/theme/colors';
+
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 
 type UserListItemProps = {
   userRef: UserListItemFragment$key;
@@ -36,14 +37,12 @@ export function UserListItem({ userRef }: UserListItemProps) {
   }, [hideDrawer]);
 
   return (
-    <Link href={userRoute} legacyBehavior>
-      <StyledLink onClick={handleLinkClick} href={route(userRoute)}>
-        <Container>
-          <TitleDiatypeM>{user.username}</TitleDiatypeM>
-          {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
-        </Container>
-      </StyledLink>
-    </Link>
+    <InteractiveLink onClick={handleLinkClick} to={userRoute}>
+      <Container>
+        <TitleDiatypeM>{user.username}</TitleDiatypeM>
+        {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
+      </Container>
+    </InteractiveLink>
   );
 }
 
@@ -56,10 +55,6 @@ const BioText = styled(BaseM)`
   p {
     padding-bottom: 0;
   }
-`;
-
-const StyledLink = styled.a`
-  text-decoration: none;
 `;
 
 const Container = styled(VStack)`

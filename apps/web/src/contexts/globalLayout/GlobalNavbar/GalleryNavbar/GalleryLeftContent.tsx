@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
 import {
@@ -52,11 +52,11 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
 
       return (
         <HStack gap={4} align="center">
-          <Link href={usernameRoute} legacyBehavior>
+          <InteractiveLink to={usernameRoute}>
             <UsernameBreadcrumbLink href={route(usernameRoute)}>
               {query.userByUsername?.username}
             </UsernameBreadcrumbLink>
-          </Link>
+          </InteractiveLink>
           <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>
       );

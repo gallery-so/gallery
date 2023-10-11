@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import {
   BreadcrumbLink,
@@ -46,24 +47,19 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
     <HStack>
       {!isHome && (
         <>
-          <Link href={userGalleryRoute} legacyBehavior>
-            <StyledBreadcrumbLink href={route(userGalleryRoute)} isActive={false}>
-              {username}
-            </StyledBreadcrumbLink>
-          </Link>
+          <InteractiveLink to={userGalleryRoute}>
+            <StyledBreadcrumbLink isActive={false}>{username}</StyledBreadcrumbLink>
+          </InteractiveLink>
           <StyledBreadcrumbText>&nbsp;/</StyledBreadcrumbText>
         </>
       )}
 
       {gallery.name && (
-        <Link href={galleryRoute} legacyBehavior>
-          <StyledBreadcrumbLink
-            href={route(galleryRoute)}
-            isActive={pathname === galleryRoute.pathname || isHome}
-          >
+        <InteractiveLink to={galleryRoute}>
+          <StyledBreadcrumbLink isActive={pathname === galleryRoute.pathname || isHome}>
             {gallery.name}
           </StyledBreadcrumbLink>
-        </Link>
+        </InteractiveLink>
       )}
     </HStack>
   );

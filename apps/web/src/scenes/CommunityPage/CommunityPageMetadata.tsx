@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -135,9 +134,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />
-          <StyledLink href={creatorRoute}>
+          <InteractiveLink to={creatorRoute}>
             <BaseM color={colors.shadow}>{creatorUsername}</BaseM>
-          </StyledLink>
+          </InteractiveLink>
         </HStack>
       );
     }
@@ -225,10 +224,6 @@ const StyledNetworkIcon = styled.img`
 
 const StyledBaseM = styled(BaseM)`
   color: inherit;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
 `;
 
 const StyledPostButton = styled(Button)`

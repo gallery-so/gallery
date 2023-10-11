@@ -18,9 +18,10 @@ export const BreadcrumbText = styled(Paragraph)`
   overflow: hidden;
 
   font-size: 18px;
+  cursor: pointer;
 `;
 
-export const BreadcrumbLink = styled.a`
+export const BreadcrumbLink = styled.span`
   font-family: ${TITLE_FONT_FAMILY};
   font-weight: 400;
   line-height: 21px;
