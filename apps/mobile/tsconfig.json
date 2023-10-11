@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.options.json",
-  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__", "env"],
+  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__", "env", "__mocks__"],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
@@ -14,7 +14,8 @@
       "~/env/*": ["env/*"],
       "~/screens/*": ["src/screens/*"],
       "~/components/*": ["src/components/*"],
-      "~/shared/*": ["../../packages/shared/src/*"],
+      "~/tests/*": ["src/tests/*"],
+      "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
   },
