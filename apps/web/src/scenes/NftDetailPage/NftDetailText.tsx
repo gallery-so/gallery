@@ -34,6 +34,7 @@ import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevant
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
+import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 
 // import { AdmireTokenModal } from './AdmireTokenModal';
 
@@ -278,7 +279,10 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
                 usersRef={nonNullAdmires}
                 total={totalAdmires}
               />
-              <AdmireIcon active={hasViewerAdmiredToken} />
+              <AdmireIcon
+                active={hasViewerAdmiredToken}
+                onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
+              />
             </HStack>
           </HStack>
           <HStack align="center" gap={4}>
@@ -343,16 +347,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </BaseM>
         )}
 
-        <StyledAdmireButton
-          onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
-          variant="secondary"
-        >
-          <HStack gap={3} align="center">
-            <AdmireIcon active={hasViewerAdmiredToken} />
-            Admire
-          </HStack>
-        </StyledAdmireButton>
-
         {showDetails || SHOW_BUY_NOW_BUTTON ? (
           <VStack gap={16}>
             {showDetails && <NftAdditionalDetails tokenRef={token} />}
@@ -368,8 +362,25 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </VStack>
         ) : null}
 
-        {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
-
+        <HStack gap={12}>
+          <StyledInteractionButton
+            onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
+            variant="secondary"
+          >
+            <HStack gap={3} align="center">
+              <AdmireIcon active={hasViewerAdmiredToken} />
+              Admire
+            </HStack>
+          </StyledInteractionButton>
+          {authenticatedUserOwnsAsset && (
+            <StyledInteractionButton onClick={handleCreatePostClick}>
+              <HStack gap={3} align="center">
+                <PlusSquareIcon stroke="#FFFFFF" />
+                Create Post
+              </HStack>
+            </StyledInteractionButton>
+          )}
+        </HStack>
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>
             {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
@@ -406,14 +417,13 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
       ? `
     max-height: calc(100vh - ${navbarHeight * 2}px);
     overflow: auto;
-    padding-right: 16px;
     `
       : `
       margin: 32px 0px;
     `}
 
   @media only screen and ${breakpoints.tablet} {
-    margin-left: 72px;
+    margin-left: 56px;
     margin-top: 0;
   }
 `;
@@ -422,13 +432,14 @@ const StyledInteractiveLink = styled(InteractiveLink)`
   text-decoration: none;
 `;
 
-const StyledButton = styled(Button)`
-  width: 100%;
+const StyledInteractionButton = styled(Button)`
+  display: flex;
+  flex-grow: 1;
+  min-width: 202px;
 `;
 
-const StyledAdmireButton = styled(Button)`
+const StyledButton = styled(Button)`
   display: flex;
-  flex-direction: column;
 `;
 
 const StyledPillContent = styled(HStack)`
