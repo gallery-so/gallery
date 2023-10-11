@@ -40,7 +40,7 @@ export function LoadableNftDetailView({
         ...NftDetailViewQueryFragment
       }
     `,
-    { tokenId: tokenId, collectionId: collectionId, interactionsFirst: NOTES_PER_PAGE }
+    { tokenId: tokenId, collectionId: collectionId }
   );
 
   if (!query.collectionTokenById) {

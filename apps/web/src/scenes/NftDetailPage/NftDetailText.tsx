@@ -267,6 +267,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     });
   }, [isMobile, showModal, token, track]);
 
+  const [isAdmireHovered, setIsAdmireHovered] = useState(false);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
@@ -363,18 +365,25 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         ) : null}
 
         <HStack gap={12}>
-          <StyledInteractionButton
+          <StyledAdmireButton
+            active={hasViewerAdmiredToken}
             onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
-            variant="secondary"
+            variant="admire"
+            onMouseEnter={() => setIsAdmireHovered(true)}
+            onMouseLeave={() => setIsAdmireHovered(false)}
           >
-            <HStack gap={3} align="center">
-              <AdmireIcon active={hasViewerAdmiredToken} />
+            <HStack gap={8} align="center">
+              <AdmireIcon
+                active={
+                  (!hasViewerAdmiredToken && isAdmireHovered) || (hasViewerAdmiredToken && !isAdmireHovered)
+                }
+              />
               Admire
             </HStack>
-          </StyledInteractionButton>
+          </StyledAdmireButton>
           {authenticatedUserOwnsAsset && (
             <StyledInteractionButton onClick={handleCreatePostClick}>
-              <HStack gap={3} align="center">
+              <HStack gap={8} align="center">
                 <PlusSquareIcon stroke="#FFFFFF" />
                 Create Post
               </HStack>
@@ -430,6 +439,21 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   text-decoration: none;
+`;
+
+const StyledAdmireButton = styled(Button)<{ active: boolean }>`
+  display: flex;
+  flex-grow: 1;
+  min-width: 202px;
+
+  ${({ active }) =>
+    active
+      ? `
+    border: 1px solid #001CC1;
+  `
+      : `
+      margin: 0px;
+  `}
 `;
 
 const StyledInteractionButton = styled(Button)`
