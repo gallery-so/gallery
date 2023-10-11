@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -28,12 +29,11 @@ export function PostListCaption({ feedPostRef }: Props) {
   const { caption } = feedPost;
   const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(caption ?? '');
 
+  const nonNullMentions = useMemo(() => removeNullValues(feedPost.mentions), [feedPost.mentions]);
+
   return (
     <View className="px-4 pb-4">
-      <ProcessedText
-        text={captionWithMarkdownLinks}
-        mentionsRef={removeNullValues(feedPost.mentions)}
-      />
+      <ProcessedText text={captionWithMarkdownLinks} mentionsRef={nonNullMentions} />
     </View>
   );
 }

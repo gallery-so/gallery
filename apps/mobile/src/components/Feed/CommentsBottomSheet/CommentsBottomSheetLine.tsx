@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -51,6 +51,8 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
     }
   }, [comment?.commenter?.username, navigation]);
 
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
+
   if (!comment.comment) {
     return null;
   }
@@ -81,7 +83,7 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedText text={comment.comment} mentionsRef={removeNullValues(comment.mentions)} />
+        <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
       </View>
     </GalleryTouchableOpacity>
   );
