@@ -20,6 +20,7 @@ import NotFound from '~/scenes/NotFound/NotFound';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 
 import NavigationHandle from './NavigationHandle';
 import NftDetailView from './NftDetailView';
@@ -226,7 +227,13 @@ type NftDetailPageWrapperProps = {
 function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPageWrapperProps) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!, $username: String!) {
+      query NftDetailPageQuery(
+        $tokenId: DBID!
+        $collectionId: DBID!
+        $username: String!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ... on ErrTokenNotFound {
             __typename
@@ -262,7 +269,7 @@ function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPage
         ...NftDetailPageQueryFragment
       }
     `,
-    { tokenId, collectionId, username }
+    { tokenId, collectionId, username, interactionsFirst: NOTES_PER_PAGE }
   );
 
   const collectionHasToken = useMemo(() => {

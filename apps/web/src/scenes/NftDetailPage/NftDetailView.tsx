@@ -33,14 +33,19 @@ export function LoadableNftDetailView({
 }: LoadableNftDetailViewProps) {
   const query = useLazyLoadQuery<NftDetailViewQuery>(
     graphql`
-      query NftDetailViewQuery($tokenId: DBID!, $collectionId: DBID!) {
+      query NftDetailViewQuery(
+        $tokenId: DBID!
+        $collectionId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ...NftDetailViewFragment
         }
         ...NftDetailViewQueryFragment
       }
     `,
-    { tokenId: tokenId, collectionId: collectionId }
+    { tokenId: tokenId, collectionId: collectionId, interactionsFirst: NOTES_PER_PAGE }
   );
 
   if (!query.collectionTokenById) {

@@ -36,7 +36,7 @@ import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 
-// import { AdmireTokenModal } from './AdmireTokenModal';
+import { AdmireTokenModal } from './AdmireTokenModal';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -101,6 +101,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
         ...extractRelevantMetadataFromTokenFragment
+        ...AdmireTokenModalFragment
       }
     `,
     tokenRef
@@ -119,6 +120,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         }
         ...useOptimisticUserInfoFragment
         ...useAuthModalFragment
+        ...AdmireTokenModalQueryFragment
       }
     `,
     queryRef
@@ -178,7 +180,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const totalAdmires = token?.previewAdmires?.pageInfo?.total ?? 0;
   const isMobile = useIsMobileWindowWidth();
 
-  /*
   const openAdmireModal = () =>
     showModal({
       content: <AdmireTokenModal queryRef={query} tokenRef={token} fullscreen={isMobile} />,
@@ -186,7 +187,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-*/
 
   const handleToggleClick = useCallback(() => {
     setShowDetails((previous) => !previous);
@@ -277,7 +277,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             {token.name && <TitleM>{decodedTokenName}</TitleM>}
             <HStack gap={8}>
               <ProfilePictureStack
-                onClick={() => {}}
+                onClick={openAdmireModal}
                 usersRef={nonNullAdmires}
                 total={totalAdmires}
               />
@@ -375,7 +375,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             <HStack gap={8} align="center">
               <AdmireIcon
                 active={
-                  (!hasViewerAdmiredToken && isAdmireHovered) || (hasViewerAdmiredToken && !isAdmireHovered)
+                  (!hasViewerAdmiredToken && isAdmireHovered) ||
+                  (hasViewerAdmiredToken && !isAdmireHovered)
                 }
               />
               Admire

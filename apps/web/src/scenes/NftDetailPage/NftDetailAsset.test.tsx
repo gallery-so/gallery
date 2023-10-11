@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
   Chain,
@@ -15,7 +16,12 @@ import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 function Fixture() {
   const query = useLazyLoadQuery<NftDetailAssetTestQuery>(
     graphql`
-      query NftDetailAssetTestQuery($collectionId: DBID!, $tokenId: DBID!) {
+      query NftDetailAssetTestQuery(
+        $collectionId: DBID!
+        $tokenId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         collectionTokenById(collectionId: $collectionId, tokenId: $tokenId) {
           ... on CollectionToken {
             __typename
@@ -25,7 +31,7 @@ function Fixture() {
         ...NftDetailViewQueryFragment
       }
     `,
-    { collectionId: 'testCollectionId', tokenId: 'testTokenId' }
+    { collectionId: 'testCollectionId', tokenId: 'testTokenId', interactionsFirst: NOTES_PER_PAGE }
   );
 
   if (query.collectionTokenById?.__typename !== 'CollectionToken') {
