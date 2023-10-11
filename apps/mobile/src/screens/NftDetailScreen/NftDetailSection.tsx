@@ -209,9 +209,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   }, [nonNullAdmires]);
 
   const totalAdmires = token.admires?.pageInfo?.total ?? 0;
-  console.log('nonNullAdmires', nonNullAdmires);
-  console.log('totalAdmires', totalAdmires);
-
   const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleSeeAllAdmires = useCallback(() => {
@@ -259,7 +256,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             >
               {token.name}
             </Typography>
-            <View className="flex flex-row space-x-1 items-center">
+            <View className="flex flex-row space-x-2 items-center">
               {admireUsers.length > 0 && (
                 <ProfilePictureBubblesWithCount
                   eventName="Feed Event Admire Bubbles Pressed"

@@ -99,8 +99,6 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   );
 
   const handleRemoveAdmire = useCallback(async () => {
-    console.log("we're in business!!");
-
     if (!token.viewerAdmire?.dbid) {
       return;
     }
@@ -235,9 +233,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   const hasViewerAdmiredEvent = Boolean(token.viewerAdmire);
 
   const toggleTokenAdmire = useCallback(() => {
-    console.log('hasViewerAdmiredEvent', hasViewerAdmiredEvent);
     if (hasViewerAdmiredEvent) {
-      console.log('right function hitting');
       handleRemoveAdmire();
     } else {
       handleAdmire();

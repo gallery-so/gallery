@@ -9,6 +9,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { NewTokens } from './Notifications/NewTokens';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
+import { SomeoneAdmiredYourToken } from './Notifications/SomeoneAdmiredYourToken';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
 import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
@@ -30,6 +31,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneCommentedOnYourFeedEventQueryFragment
         ...SomeoneViewedYourGalleryQueryFragment
         ...SomeoneAdmiredYourPostQueryFragment
+        ...SomeoneAdmiredYourTokenQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
       }
     `,
@@ -73,6 +75,14 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           ...SomeoneAdmiredYourPostFragment
         }
 
+        ... on SomeoneAdmiredYourTokenNotification {
+          __typename
+          token {
+            __typename
+          }
+          ...SomeoneAdmiredYourTokenFragment
+        }
+
         ... on SomeoneCommentedOnYourPostNotification {
           __typename
           post {
@@ -104,6 +114,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
       return notification.post ? (
         <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />
+      ) : null;
+    } else if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
+      return notification.token ? (
+        <SomeoneAdmiredYourToken queryRef={query} notificationRef={notification} />
       ) : null;
     } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
       return notification.post ? (
