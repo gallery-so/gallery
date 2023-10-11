@@ -56,7 +56,10 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       const lastWord = splitText[splitText.length - 1] || '';
 
       // replace the last word with the mention
-      const newMessage = message.replace(lastWord, `@${mention.label} `);
+      const mentionStartPos = message.length - lastWord.length;
+      const newMessage = `${message.substring(0, mentionStartPos)}@${
+        mention.label
+      } ${message.substring(mentionStartPos + lastWord.length)}`;
 
       // update the message
       setMessage(newMessage);
@@ -75,8 +78,20 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
         newMention.communityId = mention.value;
       }
 
+      const isOverlapping = (mention: Mention) => {
+        return mentions.some((existingMention) => {
+          return (
+            mention.interval.start >= existingMention.interval.start &&
+            mention.interval.start <=
+              existingMention.interval.start + existingMention.interval.length
+          );
+        });
+      };
+
       // add the mention to the list
-      setMentions((prevMentions) => [...prevMentions, newMention]);
+      if (!isOverlapping(newMention)) {
+        setMentions((prevMentions) => [...prevMentions, newMention]);
+      }
     },
     [message, setMessage]
   );
@@ -106,7 +121,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
           mention.interval.start,
           mention.interval.start + mention.interval.length
         );
-        return text.includes(mentionText);
+        return text.includes(mentionText) && text.indexOf(mentionText) === mention.interval.start;
       });
 
       setMentions(updatedMentions);
