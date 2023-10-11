@@ -272,7 +272,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         <VStack gap={8}>
           <HStack justify="space-between">
             {token.name && <TitleM>{decodedTokenName}</TitleM>}
-            <HStack gap={2}>
+            <HStack gap={8}>
               <ProfilePictureStack
                 onClick={() => {}}
                 usersRef={nonNullAdmires}
@@ -397,8 +397,8 @@ const StyledBadge = styled.img`
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
   display: block;
-  max-width: 296px;
-  min-width: 296px;
+  max-width: 420px;
+  min-width: 420px;
   word-wrap: break-word;
 
   ${({ horizontalLayout, navbarHeight }) =>
