@@ -78,6 +78,7 @@ function PostComposerScreenInner() {
     setMessage,
     message,
     resetMentions,
+    handleSelectionChange,
   } = useMentionableMessage(query);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -175,7 +176,12 @@ function PostComposerScreenInner() {
       </View>
 
       <View className="px-4 flex flex-col flex-grow space-y-2">
-        <PostInput value={message} onChange={setMessage} tokenRef={token} />
+        <PostInput
+          value={message}
+          onChange={setMessage}
+          tokenRef={token}
+          onSelectionChange={handleSelectionChange}
+        />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <Suspense fallback={<SearchResultsFallback />}>

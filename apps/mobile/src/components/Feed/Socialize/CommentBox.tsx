@@ -1,7 +1,7 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { NativeSyntheticEvent, Text, TextInputSelectionChangeEventData, View } from 'react-native';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
@@ -13,6 +13,7 @@ import { SendIcon } from './SendIcon';
 type Props = {
   value: string;
   onChangeText: (value: string) => void;
+  onSelectionChange: (selection: { start: number; end: number }) => void;
 
   onClose: () => void;
   autoFocus?: boolean;
@@ -27,6 +28,7 @@ type Props = {
 export function CommentBox({
   value,
   onChangeText,
+  onSelectionChange,
   autoFocus,
   onClose,
   isNotesModal = false,
@@ -88,6 +90,9 @@ export function CommentBox({
         <BottomSheetTextInput
           value={value}
           onChangeText={onChangeText}
+          onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+            onSelectionChange(e.nativeEvent.selection);
+          }}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"

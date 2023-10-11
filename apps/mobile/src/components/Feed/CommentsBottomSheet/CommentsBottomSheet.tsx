@@ -87,6 +87,7 @@ export function CommentsBottomSheet({
     setMessage,
     message,
     resetMentions,
+    handleSelectionChange,
   } = useMentionableMessage(query);
 
   const handleSubmit = useCallback(
@@ -187,6 +188,7 @@ export function CommentsBottomSheet({
         <CommentBox
           value={message}
           onChangeText={setMessage}
+          onSelectionChange={handleSelectionChange}
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
           onClose={() => {}}

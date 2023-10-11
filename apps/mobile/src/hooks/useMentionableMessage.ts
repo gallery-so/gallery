@@ -47,27 +47,26 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
   const [aliasKeyword, setAliasKeyword] = useState('');
   const debouncedAliasKeyword = useDebounce(aliasKeyword, 100);
 
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
+
   const isMentionEnabled = isFeatureEnabled(FeatureFlag.MENTIONS, query);
 
   const handleSetMention = useCallback(
     (mention: MentionType) => {
-      // get the last word
-      const splitText = message.split(' ');
-      const lastWord = splitText[splitText.length - 1] || '';
+      // Use substring to only look up to the current cursor position
+      const upToCursor = message.substring(0, selection.start);
+      const mentionStartPos = upToCursor.lastIndexOf(aliasKeyword);
+      const mentionEndPos = mentionStartPos + aliasKeyword.length;
 
-      // replace the last word with the mention
-      const mentionStartPos = message.length - lastWord.length;
       const newMessage = `${message.substring(0, mentionStartPos)}@${
         mention.label
-      } ${message.substring(mentionStartPos + lastWord.length)}`;
+      } ${message.substring(mentionEndPos)}`;
 
-      // update the message
       setMessage(newMessage);
-      setIsSelectingMentions(false);
 
       const newMention: Mention = {
         interval: {
-          start: message.length - lastWord.length,
+          start: mentionStartPos,
           length: mention.label.length + 1, // +1 for the @
         },
       };
@@ -78,22 +77,28 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
         newMention.communityId = mention.value;
       }
 
-      const isOverlapping = (mention: Mention) => {
-        return mentions.some((existingMention) => {
-          return (
-            mention.interval.start >= existingMention.interval.start &&
-            mention.interval.start <=
-              existingMention.interval.start + existingMention.interval.length
-          );
-        });
-      };
+      // Calculate the length difference between the old alias and the new mention
+      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +1 for the @
 
-      // add the mention to the list
-      if (!isOverlapping(newMention)) {
-        setMentions((prevMentions) => [...prevMentions, newMention]);
-      }
+      // Adjust the positions of mentions that come after the newly added mention
+      const adjustedMentions = mentions.map((existingMention) => {
+        if (existingMention.interval.start >= mentionStartPos) {
+          return {
+            ...existingMention,
+            interval: {
+              start: existingMention.interval.start + lengthDifference,
+              length: existingMention.interval.length,
+            },
+          };
+        }
+        return existingMention;
+      });
+
+      setIsSelectingMentions(false);
+
+      setMentions([...adjustedMentions, newMention]);
     },
-    [message, setMessage]
+    [mentions, message, setMessage, aliasKeyword, selection.start]
   );
 
   const handleSetMessage = useCallback(
@@ -103,38 +108,61 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
         return;
       }
 
-      const splitText = text.split(' ');
+      // Check the word where the cursor is (or was last placed)
+      const wordAtCursor = text
+        .slice(0, selection.start + 1)
+        .split(' ')
+        .pop();
 
-      const lastWord = splitText[splitText.length - 1] || '';
-
-      if (lastWord[0] === '@' && lastWord.length > 1) {
-        setAliasKeyword(lastWord);
+      if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 1) {
+        setAliasKeyword(wordAtCursor);
         setIsSelectingMentions(true);
       } else {
         setAliasKeyword('');
         setIsSelectingMentions(false);
       }
 
-      // Loop through the mentions and check if they still exist in the updated message
-      const updatedMentions = mentions.filter((mention) => {
-        const mentionText = message.substring(
-          mention.interval.start,
-          mention.interval.start + mention.interval.length
+      // Determine how many characters were added or removed
+      const diff = message.length - text.length;
+
+      // Update the positions of the mentions based on the added/removed characters
+      let updatedMentions = mentions.map((mention) => {
+        // If the change occurred before a mention, adjust its position
+        if (mention.interval.start >= selection.start) {
+          return {
+            ...mention,
+            interval: {
+              ...mention.interval,
+              start: mention.interval.start - diff,
+            },
+          };
+        }
+        return mention;
+      });
+
+      // Remove any mentions that were deleted
+      updatedMentions = updatedMentions.filter((mention) => {
+        // if start < 0, it means the mention was deleted
+        return (
+          mention.interval.start >= 0 &&
+          mention.interval.start + mention.interval.length <= text.length
         );
-        return text.includes(mentionText) && text.indexOf(mentionText) === mention.interval.start;
       });
 
       setMentions(updatedMentions);
-
       setMessage(text);
     },
-    [isMentionEnabled, mentions, message]
+    [isMentionEnabled, mentions, message, selection]
   );
 
   const resetMentions = useCallback(() => {
     setMentions([]);
     setIsSelectingMentions(false);
     setMessage('');
+  }, []);
+
+  const handleSelectionChange = useCallback((selection: { start: number; end: number }) => {
+    setSelection(selection);
   }, []);
 
   return {
@@ -145,5 +173,6 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
     selectMention: handleSetMention,
     mentions: mentions || [],
     resetMentions,
+    handleSelectionChange,
   };
 }
