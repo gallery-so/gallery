@@ -11,7 +11,6 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { MouseEventHandler, Suspense, useCallback, useEffect, useId, useState } from 'react';
 import { PreloadedQuery } from 'react-relay';
@@ -22,6 +21,7 @@ import colors from '~/shared/theme/colors';
 import noop from '~/utils/noop';
 
 import breakpoints, { pageGutter } from '../core/breakpoints';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { SelfCenteredSpinner } from '../core/Spinner/Spinner';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
@@ -81,9 +81,9 @@ export default function HoverCard<T extends OperationType>({
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <StyledLink href={hoverableElementHref} onClick={handleClick}>
+        <GalleryLink to={hoverableElementHref} onClick={handleClick}>
           {HoverableElement}
-        </StyledLink>
+        </GalleryLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
@@ -131,11 +131,6 @@ const StyledContainer = styled.span`
 
 const StyledLinkContainer = styled.div`
   display: inline-flex;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  width: 100%;
 `;
 
 const StyledCardContainer = styled.div`

@@ -1,5 +1,4 @@
 import unescape from 'lodash/unescape';
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
@@ -22,6 +21,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import Badge from '../Badge/Badge';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM } from '../core/Text/Text';
@@ -158,12 +158,12 @@ function UserHoverCardContent({
       <StyledCardHeaderContainer gap={8}>
         <StyledCardHeader gap={2} align="center" justify="space-between">
           <StyledUsernameAndBadge align="center" gap={4}>
-            <StyledLink href={userProfileLink}>
+            <GalleryLink to={userProfileLink}>
               <HStack align="center" gap={4}>
                 <ProfilePicture userRef={user} size="md" />
                 <StyledCardTitle>{displayName}</StyledCardTitle>
               </HStack>
-            </StyledLink>
+            </GalleryLink>
 
             <HStack align="center" gap={0}>
               {userBadges.map((badge) => (
@@ -207,12 +207,6 @@ const StyledCardHeader = styled(HStack)`
 const StyledCardHeaderContainer = styled(VStack)`
   padding-top: 6px;
   padding-bottom: 12px;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  outline: none;
-  min-width: 0;
 `;
 
 const StyledUsernameAndBadge = styled(HStack)`

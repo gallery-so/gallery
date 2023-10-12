@@ -202,13 +202,13 @@ function CommunityHoverCardContent({
   return (
     <VStack gap={6}>
       <HStack gap={8} align={`${hasDescription ? '' : 'center'}`}>
-        <StyledLink href={communityProfileLink}>
+        <GalleryLink to={communityProfileLink}>
           <CommunityProfilePicture communityRef={community} size={64} />
-        </StyledLink>
+        </GalleryLink>
         <Section gap={2}>
-          <StyledLink href={communityProfileLink}>
+          <GalleryLink to={communityProfileLink}>
             <StyledCardTitle>{communityName}</StyledCardTitle>
-          </StyledLink>
+          </GalleryLink>
           {community.description && (
             <StyledCardDescription>
               <BaseM>
@@ -228,12 +228,6 @@ function CommunityHoverCardContent({
     </VStack>
   );
 }
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  outline: none;
-  min-width: 0;
-`;
 
 const Section = styled(VStack)`
   max-width: 250px;
