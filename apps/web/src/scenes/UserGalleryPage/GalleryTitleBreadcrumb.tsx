@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';

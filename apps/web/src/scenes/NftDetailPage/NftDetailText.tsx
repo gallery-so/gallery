@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
-import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
@@ -106,21 +106,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const handleCreatorNameClick = useCallback(() => {
     // TODO: Update this to track the creator name click
     track('NFT Detail Creator Name Click', {
-      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
-      contractAddress: token.contract?.contractAddress?.address,
-      tokenId: token.tokenId,
-      externaUrl: openseaUrl,
-    });
-  }, [
-    track,
-    token.owner?.username,
-    token.contract?.contractAddress?.address,
-    token.tokenId,
-    openseaUrl,
-  ]);
-
-  const handleCollectorNameClick = useCallback(() => {
-    track('NFT Detail Collector Name Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,

@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { TitleDiatypeM } from '~/components/core/Text/Text';

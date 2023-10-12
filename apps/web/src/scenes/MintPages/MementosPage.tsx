@@ -6,8 +6,8 @@ import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
-import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';

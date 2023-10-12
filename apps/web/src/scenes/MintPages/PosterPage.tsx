@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
-import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';

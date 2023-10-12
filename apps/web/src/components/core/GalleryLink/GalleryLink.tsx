@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { MouseEvent, MouseEventHandler, ReactNode, useCallback, useMemo } from 'react';

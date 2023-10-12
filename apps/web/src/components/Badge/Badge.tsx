@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import IconContainer from '~/components/core/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';

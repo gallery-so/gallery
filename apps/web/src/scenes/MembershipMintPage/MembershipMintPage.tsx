@@ -6,8 +6,8 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';

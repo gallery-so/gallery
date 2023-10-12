@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
