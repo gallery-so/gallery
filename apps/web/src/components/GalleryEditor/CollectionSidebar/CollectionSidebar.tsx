@@ -59,9 +59,7 @@ export function CollectionSidebar({ queryRef }: Props) {
       <CollectionSearch queryRef={query} />
       <StyledIconsContainer justify="space-between">
         <GalleryLink href={NOTION_DOCS_URL}>
-          <a>
-            <HelpIconContainer />
-          </a>
+          <HelpIconContainer />
         </GalleryLink>
         <AutoGalleryToggle />
       </StyledIconsContainer>
