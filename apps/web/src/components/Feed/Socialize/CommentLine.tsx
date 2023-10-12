@@ -76,7 +76,7 @@ const StyledUsernameWrapper = styled.div`
   height: fit-content;
 `;
 
-const CommenterName = styled.a`
+const CommenterName = styled.span`
   font-family: ${BODY_FONT_FAMILY};
   vertical-align: bottom;
   font-size: 14px;

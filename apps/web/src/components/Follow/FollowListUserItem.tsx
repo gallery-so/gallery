@@ -13,6 +13,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/shared/utils/regex';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
@@ -103,7 +104,7 @@ export default function FollowListUserItem({
   );
 }
 
-const StyledListItem = styled.a<{ fadeUsernames: boolean }>`
+const StyledListItem = styled(GalleryLink)<{ fadeUsernames: boolean }>`
   text-decoration: none;
   display: flex;
   justify-content: space-between;

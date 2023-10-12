@@ -1,7 +1,14 @@
 // eslint-disable-next-line no-restricted-imports
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { MouseEvent, MouseEventHandler, ReactNode, useCallback, useMemo } from 'react';
+import {
+  ComponentProps,
+  MouseEvent,
+  MouseEventHandler,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -13,7 +20,7 @@ import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 import VerifyNavigationPopover from './VerifyNavigationPopover';
 
-export type GalleryLinkProps = {
+export type GalleryLinkProps = ComponentProps<'a'> & {
   children: ReactNode;
   className?: string;
   to?: Route;
