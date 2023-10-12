@@ -1,3 +1,4 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { PropsWithChildren, useState } from 'react';
 import { RelayEnvironmentProvider } from 'react-relay';
 
@@ -9,7 +10,9 @@ export function AppTestContext({ children }: PropsWithChildren) {
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
-      <MobileAnalyticsProvider>{children}</MobileAnalyticsProvider>
+      <NavigationContainer>
+        <MobileAnalyticsProvider>{children}</MobileAnalyticsProvider>
+      </NavigationContainer>
     </RelayEnvironmentProvider>
   );
 }

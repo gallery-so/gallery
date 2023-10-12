@@ -26,6 +26,7 @@ module.exports = {
     '^.+\\.tsx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleDirectories: ['<rootDir>/node_modules', '../../node_modules'],
   moduleNameMapper: {
     // Ensure all ouf our aliases from tsconfig work in jext
     ...pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
