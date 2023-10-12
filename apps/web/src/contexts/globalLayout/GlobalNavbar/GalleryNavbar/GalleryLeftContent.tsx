@@ -1,4 +1,4 @@
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -53,9 +53,7 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
       return (
         <HStack gap={4} align="center">
           <GalleryLink to={usernameRoute}>
-            <UsernameBreadcrumbLink href={route(usernameRoute)}>
-              {query.userByUsername?.username}
-            </UsernameBreadcrumbLink>
+            <UsernameBreadcrumbLink>{query.userByUsername?.username}</UsernameBreadcrumbLink>
           </GalleryLink>
           <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>

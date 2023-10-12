@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -51,10 +51,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
   return (
     <HStack gap={8} align="center">
       <GalleryLink to={usernameRoute}>
-        <UsernameBreadcrumbLink
-          href={route(usernameRoute)}
-          mainGalleryPage={pathname === '/[username]'}
-        >
+        <UsernameBreadcrumbLink mainGalleryPage={pathname === '/[username]'}>
           {displayName}
         </UsernameBreadcrumbLink>
       </GalleryLink>

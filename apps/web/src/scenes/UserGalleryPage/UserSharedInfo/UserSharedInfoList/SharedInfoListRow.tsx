@@ -42,7 +42,7 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
   }
 
   return (
-    <StyledRowLink onClick={handlePressUserLink} href={href}>
+    <StyledRowLink onClick={handlePressUserLink} to={href}>
       {rowContent}
     </StyledRowLink>
   );

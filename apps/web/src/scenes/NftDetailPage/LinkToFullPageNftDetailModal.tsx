@@ -86,7 +86,7 @@ export default function LinkToFullPageNftDetailModal({
       context: eventContext,
       type: 'internal',
     });
-  }, [asRoute, track]);
+  }, [asRoute, eventContext, track]);
 
   return (
     <Link

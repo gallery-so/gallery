@@ -195,7 +195,12 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   }
 
   return (
-    <LinkToFullPageNftDetailModal username={username} collectionId={collectionId} tokenId={tokenId}>
+    <LinkToFullPageNftDetailModal
+      username={username}
+      collectionId={collectionId}
+      tokenId={tokenId}
+      eventContext={contexts.UserGallery}
+    >
       <StyledAnchor>{children}</StyledAnchor>
     </LinkToFullPageNftDetailModal>
   );

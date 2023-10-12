@@ -97,6 +97,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
             <LinkToFullPageNftDetailModal
               username={token?.owner?.username ?? ''}
               tokenId={token?.dbid}
+              eventContext={contexts.Posts}
             >
               <DropdownItem>
                 <BaseM>View Item Detail</BaseM>
