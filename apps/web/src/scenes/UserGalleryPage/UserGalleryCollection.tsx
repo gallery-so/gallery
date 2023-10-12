@@ -177,7 +177,7 @@ function UserGalleryCollection({
         {unescapedCollectorsNote && (
           <>
             <StyledCollectorsNote>
-              <Markdown text={unescapedCollectorsNote} />
+              <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserCollection} />
             </StyledCollectorsNote>
           </>
         )}

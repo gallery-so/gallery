@@ -84,12 +84,12 @@ export default function SearchResult({
         {profilePicture}
         <VStack>
           <BaseM>
-            <Markdown text={highlightedName} />
+            <Markdown text={highlightedName} eventContext={contexts.Search} />
           </BaseM>
           {highlightedDescription && (
             <StyledDescription>
               <BaseM>
-                <Markdown text={highlightedDescription} />
+                <Markdown text={highlightedDescription} eventContext={contexts.Search} />
               </BaseM>
             </StyledDescription>
           )}

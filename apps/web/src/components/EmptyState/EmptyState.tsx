@@ -18,7 +18,7 @@ export function EmptyState({ title, description, children }: Props) {
           <StyledTitle>{title}</StyledTitle>
           {description && (
             <StyledBody>
-              <Markdown text={description} />
+              <Markdown text={description} eventContext={null} />
             </StyledBody>
           )}
         </VStack>

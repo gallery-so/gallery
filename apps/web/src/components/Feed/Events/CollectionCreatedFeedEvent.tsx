@@ -9,6 +9,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -110,7 +111,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
           {event.newCollectorsNote && (
             <StyledCaptionContainer gap={8} align="center">
               <BaseM>
-                <Markdown text={event.newCollectorsNote} />
+                <Markdown text={event.newCollectorsNote} eventContext={contexts.Feed} />
               </BaseM>
             </StyledCaptionContainer>
           )}

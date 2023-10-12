@@ -12,6 +12,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -114,7 +115,11 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             isSubEvent={isSubEvent}
           >
             <StyledQuote>
-              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+              <Markdown
+                text={unescape(event.newCollectorsNote ?? '')}
+                inheritLinkStyling
+                eventContext={contexts.Feed}
+              />
             </StyledQuote>
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote)}

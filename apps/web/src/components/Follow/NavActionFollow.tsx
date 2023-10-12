@@ -7,6 +7,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -50,7 +51,12 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <HStack gap={8} align="center">
-      <GalleryLink to={usernameRoute}>
+      <GalleryLink
+        to={usernameRoute}
+        eventElementId="Nav Follow Button"
+        eventName="Follow User"
+        eventContext={contexts.Social}
+      >
         <UsernameBreadcrumbLink mainGalleryPage={pathname === '/[username]'}>
           {displayName}
         </UsernameBreadcrumbLink>

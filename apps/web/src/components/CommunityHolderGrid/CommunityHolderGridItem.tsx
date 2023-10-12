@@ -10,6 +10,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
+import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
@@ -81,7 +82,12 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   return (
     <VStack gap={8}>
-      <StyledGalleryLink onClick={handleClick}>
+      <StyledGalleryLink
+        onClick={handleClick}
+        eventElementId="Community Holder Grid Item"
+        eventName="Click Community Holder Grid Item"
+        eventContext={contexts['Community']}
+      >
         <StyledNftImage src={imageUrl} />
       </StyledGalleryLink>
       <VStack>

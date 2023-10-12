@@ -12,6 +12,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
@@ -117,7 +118,11 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
               {event.newCollectorsNote && (
                 <StyledNoteWrapper>
                   <StyledNote>
-                    <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+                    <Markdown
+                      text={unescape(event.newCollectorsNote ?? '')}
+                      inheritLinkStyling
+                      eventContext={contexts.Feed}
+                    />
                   </StyledNote>
                 </StyledNoteWrapper>
               )}

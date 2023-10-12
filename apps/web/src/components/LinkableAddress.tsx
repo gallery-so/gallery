@@ -4,13 +4,15 @@ import { graphql } from 'relay-runtime';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseM } from '~/components/core/Text/Text';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
+export function LinkableAddress({ chainAddressRef, eventContext }: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
@@ -31,7 +33,12 @@ export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
   }
 
   return (
-    <RawLinkableAddress link={link} truncatedAddress={truncatedAddress} address={address.address} />
+    <RawLinkableAddress
+      link={link}
+      truncatedAddress={truncatedAddress}
+      address={address.address}
+      eventContext={eventContext}
+    />
   );
 }
 
@@ -39,13 +46,20 @@ type RawLinkableAddressProps = {
   link: string;
   address: string;
   truncatedAddress: string | null;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export function RawLinkableAddress({ link, truncatedAddress, address }: RawLinkableAddressProps) {
+export function RawLinkableAddress({
+  link,
+  truncatedAddress,
+  address,
+  eventContext,
+}: RawLinkableAddressProps) {
   return (
     <GalleryLink
       eventElementId="Linkable Crypto Address"
       eventName="Click Linkable Crypto Address"
+      eventContext={eventContext}
       href={link}
     >
       {truncatedAddress || address}

@@ -53,7 +53,13 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (profileImage && profileImage.previewURLs?.medium) {
     return (
-      <GalleryLink to={userProfileLink}>
+      <GalleryLink
+        to={userProfileLink}
+        eventElementId="User Profile Picture"
+        eventName="User Profile Picture Click"
+        // TODO: analytics prop drill
+        eventContext={null}
+      >
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
       </GalleryLink>
     );
@@ -61,14 +67,26 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (!token) {
     return (
-      <GalleryLink to={userProfileLink}>
+      <GalleryLink
+        to={userProfileLink}
+        eventElementId="User Profile Picture"
+        eventName="User Profile Picture Click"
+        // TODO: analytics prop drill
+        eventContext={null}
+      >
         <RawProfilePicture letter={firstLetter} {...rest} />
       </GalleryLink>
     );
   }
 
   return (
-    <GalleryLink to={userProfileLink}>
+    <GalleryLink
+      to={userProfileLink}
+      eventElementId="User Profile Picture"
+      eventName="User Profile Picture Click"
+      // TODO: analytics prop drill
+      eventContext={null}
+    >
       <NftFailureBoundary
         tokenId={token.dbid}
         fallback={<RawProfilePicture letter={firstLetter} {...rest} />}

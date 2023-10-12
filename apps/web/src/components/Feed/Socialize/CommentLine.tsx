@@ -8,6 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
@@ -56,7 +57,10 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         </StyledUsernameWrapper>
       )}
       <CommentText>
-        <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
+        <Markdown
+          text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+          eventContext={contexts.Posts}
+        />
       </CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>

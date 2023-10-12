@@ -63,14 +63,20 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {token.contract?.creatorAddress?.address && (
         <div>
           <TitleXS>Creator</TitleXS>
-          <TezosDomainOrAddress chainAddressRef={token.contract.creatorAddress} />
+          <TezosDomainOrAddress
+            chainAddressRef={token.contract.creatorAddress}
+            eventContext={contexts['NFT Detail']}
+          />
         </div>
       )}
 
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <LinkableAddress chainAddressRef={contract.contractAddress} />
+          <LinkableAddress
+            chainAddressRef={contract.contractAddress}
+            eventContext={contexts['NFT Detail']}
+          />
         </div>
       )}
 

@@ -5,6 +5,7 @@ import { graphql } from 'relay-runtime';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { CollectionLinkFragment$key } from '~/generated/CollectionLinkFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 type CollectionLinkProps = {
   collectionRef: CollectionLinkFragment$key;
@@ -42,6 +43,13 @@ export function CollectionLink({ collectionRef }: CollectionLinkProps) {
   }
 
   return (
-    <GalleryLink href={route(collectionRoute)}>{collection.name || 'your collection'}</GalleryLink>
+    <GalleryLink
+      href={route(collectionRoute)}
+      eventElementId="Collection Name"
+      eventName="Collection Name Click"
+      eventContext={contexts.Notifications}
+    >
+      {collection.name || 'your collection'}
+    </GalleryLink>
   );
 }

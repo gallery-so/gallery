@@ -12,6 +12,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { GalleryNameDescriptionHeaderFragment$key } from '~/generated/GalleryNameDescriptionHeaderFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
@@ -89,7 +90,7 @@ function GalleryNameDescriptionHeader({
         <HStack align="center" gap={8} grow>
           <StyledUserDetails>
             <StyledBioWrapper>
-              <Markdown text={unescapedDescription} />
+              <Markdown text={unescapedDescription} eventContext={contexts.UserGallery} />
             </StyledBioWrapper>
           </StyledUserDetails>
         </HStack>

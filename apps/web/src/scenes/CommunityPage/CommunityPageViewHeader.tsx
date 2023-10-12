@@ -139,7 +139,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     return (
       <StyledDescriptionWrapper gap={8}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-          <Markdown text={formattedDescription} />
+          <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
         {isLineClampEnabled && (
           <TextButton

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
@@ -37,7 +38,14 @@ export default function SearchSection({
         <StyledTitle>{title}</StyledTitle>
 
         {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-          <StyledGalleryLink onClick={onShowAll}>Show all</StyledGalleryLink>
+          <StyledGalleryLink
+            onClick={onShowAll}
+            eventElementId="Search Show All"
+            eventName="Search Show All Click"
+            eventContext={contexts.Search}
+          >
+            Show all
+          </StyledGalleryLink>
         )}
       </StyledResultHeader>
       <VStack>{children}</VStack>

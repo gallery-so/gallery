@@ -210,13 +210,16 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
                   username: user.username as string,
                 },
               }}
+              eventElementId="Username Link"
+              eventName="Username Click"
+              eventContext={contexts['External Social']}
             >
               <BaseM>
                 <strong>{user.username}</strong>
               </BaseM>
             </GalleryLink>
             <BioText>
-              <Markdown text={user.bio ?? ''} />
+              <Markdown text={user.bio ?? ''} eventContext={contexts['External Social']} />
             </BioText>
           </VStack>
           <FollowButton queryRef={query} userRef={user} />

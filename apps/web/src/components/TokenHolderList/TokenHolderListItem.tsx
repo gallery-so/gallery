@@ -9,6 +9,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -106,7 +107,13 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
     <StyledOwner>
       <StyledUsernameWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         {owner.user.universal ? (
-          <StyledGalleryLink href={openseaProfileLink} fadeUsernames={fadeUsernames}>
+          <StyledGalleryLink
+            href={openseaProfileLink}
+            fadeUsernames={fadeUsernames}
+            eventElementId="Username Link"
+            eventName="Username Click"
+            eventContext={contexts.Community}
+          >
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
@@ -114,6 +121,9 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
             <StyledGalleryLink
               to={{ pathname: '/[username]', query: { username: owner.user.username } }}
               fadeUsernames={fadeUsernames}
+              eventElementId="Username Link"
+              eventName="Username Click"
+              eventContext={contexts.Community}
             >
               <HStack gap={4} align="center">
                 <ProfilePicture size="sm" userRef={owner.user} />

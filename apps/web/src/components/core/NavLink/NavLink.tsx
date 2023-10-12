@@ -19,7 +19,16 @@ type Props = {
 
 export default function NavLink({ to, href, children, className, onClick }: Props) {
   return (
-    <StyledNavLink className={className} to={to} href={href} onClick={onClick}>
+    <StyledNavLink
+      className={className}
+      to={to}
+      href={href}
+      onClick={onClick}
+      // TODO: analytics - forget about the landing page, just instrument from footer and prop drill
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
+    >
       {children}
     </StyledNavLink>
   );

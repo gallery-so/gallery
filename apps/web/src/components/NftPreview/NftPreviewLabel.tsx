@@ -7,6 +7,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -94,7 +95,13 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
-      <StyledGalleryLink to={communityUrl}>
+      <StyledGalleryLink
+        to={communityUrl}
+        eventElementId="NFT Preview Label"
+        eventName="NFT Preview Label Click"
+        // TODO: analytics
+        eventContext={null}
+      >
         <POAPWrapperHStack gap={4} align="center">
           <POAPLogo />
           <POAPTitle color={colors.white}>{collectionName}</POAPTitle>

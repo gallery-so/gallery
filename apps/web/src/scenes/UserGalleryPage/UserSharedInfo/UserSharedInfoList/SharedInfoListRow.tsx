@@ -7,6 +7,7 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -26,7 +27,11 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
           <TitleDiatypeM>{title}</TitleDiatypeM>
           {subTitle && (
             <StyledUserBio>
-              <Markdown text={subTitle} />
+              <Markdown
+                text={subTitle}
+                // TODO: analytics should get prop drilled
+                eventContext={null}
+              />
             </StyledUserBio>
           )}
         </StyledVStack>

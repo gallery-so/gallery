@@ -158,7 +158,12 @@ function UserHoverCardContent({
       <StyledCardHeaderContainer gap={8}>
         <StyledCardHeader gap={2} align="center" justify="space-between">
           <StyledUsernameAndBadge align="center" gap={4}>
-            <GalleryLink to={userProfileLink}>
+            <GalleryLink
+              to={userProfileLink}
+              eventElementId="User PFP"
+              eventName="User PFP Click"
+              eventContext={contexts['Hover Card']}
+            >
               <HStack align="center" gap={4}>
                 <ProfilePicture userRef={user} size="md" />
                 <StyledCardTitle>{displayName}</StyledCardTitle>
@@ -183,7 +188,7 @@ function UserHoverCardContent({
         {user.bio && (
           <StyledCardDescription>
             <BaseM>
-              <Markdown text={unescape(user.bio)}></Markdown>
+              <Markdown text={unescape(user.bio)} eventContext={contexts['Hover Card']} />
             </BaseM>
           </StyledCardDescription>
         )}

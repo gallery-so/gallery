@@ -216,7 +216,7 @@ export function CustomizedGeneralMembershipMintPage({
           <VStack gap={16}>
             <TitleM>{membershipNft.title}</TitleM>
             <StyledNftDescription>
-              <Markdown text={membershipNft.description} />
+              <Markdown text={membershipNft.description} eventContext={null} />
             </StyledNftDescription>
           </VStack>
           {Number(price) > 0 && (

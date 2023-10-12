@@ -127,7 +127,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
               <ExpandableBio text={unescapedBio} />
             ) : (
               <StyledBioWrapper>
-                <Markdown text={unescapedBio} />
+                <Markdown text={unescapedBio} eventContext={contexts.UserGallery} />
               </StyledBioWrapper>
             )}
           </StyledUserDetails>
@@ -163,6 +163,7 @@ const ExpandableBio = ({ text }: { text: string }) => {
         <Markdown
           text={isExpanded ? text : truncated}
           CustomInternalLinkComponent={NftDetailViewer}
+          eventContext={contexts.UserGallery}
         />
       </BaseM>
       {isExpanded ? null : (

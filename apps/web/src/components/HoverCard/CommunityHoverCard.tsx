@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { CommunityHoverCardFragment$key } from '~/generated/CommunityHoverCardFragment.graphql';
 import { Chain, CommunityHoverCardQuery } from '~/generated/CommunityHoverCardQuery.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -201,7 +202,12 @@ function CommunityHoverCardContent({
   return (
     <VStack gap={6}>
       <HStack gap={8} align={`${hasDescription ? '' : 'center'}`}>
-        <GalleryLink to={communityProfileLink}>
+        <GalleryLink
+          to={communityProfileLink}
+          eventElementId="Community PFP"
+          eventName="Community PFP Click"
+          eventContext={contexts['Hover Card']}
+        >
           <CommunityProfilePicture communityRef={community} size={64} />
         </GalleryLink>
         <Section gap={2}>
@@ -211,7 +217,10 @@ function CommunityHoverCardContent({
           {community.description && (
             <StyledCardDescription>
               <BaseM>
-                <Markdown text={unescape(community.description)}></Markdown>
+                <Markdown
+                  text={unescape(community.description)}
+                  eventContext={contexts['Hover Card']}
+                />
               </BaseM>
             </StyledCardDescription>
           )}

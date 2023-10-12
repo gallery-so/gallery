@@ -12,6 +12,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -93,7 +94,11 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
             </HStack>
           </StyledEventHeader>
           <StyledQuote>
-            <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+            <Markdown
+              text={unescape(event.newCollectorsNote ?? '')}
+              inheritLinkStyling
+              eventContext={contexts.Feed}
+            />
           </StyledQuote>
           <VStack gap={8}>
             <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />

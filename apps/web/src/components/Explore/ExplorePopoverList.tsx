@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ExplorePopoverListFragment$key } from '~/generated/ExplorePopoverListFragment.graphql';
 import { ExplorePopoverListQueryFragment$key } from '~/generated/ExplorePopoverListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -53,11 +54,16 @@ export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props)
               pathname: '/[username]',
               query: { username: user?.username ?? '' },
             }}
+            eventElementId="Explore Popover List Row"
+            eventName="Explore Popover List Row Click"
+            eventContext={contexts.Explore}
           >
             <StyledHStack justify="space-between" align="center" gap={8}>
               <StyledVStack justify="center">
                 <TitleDiatypeM>{user.username}</TitleDiatypeM>
-                <StyledBio>{user.bio && <Markdown text={user.bio} />}</StyledBio>
+                <StyledBio>
+                  {user.bio && <Markdown text={user.bio} eventContext={contexts.Explore} />}
+                </StyledBio>
               </StyledVStack>
               <StyledFollowButton
                 userRef={user}

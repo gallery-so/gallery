@@ -15,6 +15,7 @@ import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSideba
 import { PaintbrushIcon } from '~/icons/PaintbrushIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import { UndoIcon } from '~/icons/UndoIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -58,7 +59,12 @@ export function CollectionSidebar({ queryRef }: Props) {
       <TitleSection />
       <CollectionSearch queryRef={query} />
       <StyledIconsContainer justify="space-between">
-        <GalleryLink href={NOTION_DOCS_URL}>
+        <GalleryLink
+          href={NOTION_DOCS_URL}
+          eventElementId="Editor Help Icon"
+          eventName="Help Icon Click"
+          eventContext={contexts.Editor}
+        >
           <HelpIconContainer />
         </GalleryLink>
         <AutoGalleryToggle />

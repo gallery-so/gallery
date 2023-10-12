@@ -8,6 +8,7 @@ import { TWITTER_AUTH_URL, TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter
 import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTwitterAlertFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
@@ -73,7 +74,14 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Connect Twitter to find friends and display your handle.</BaseM>
         <HStack align="center" gap={8}>
-          <GalleryLink onClick={handleConnect} href={TWITTER_AUTH_URL} target="_self">
+          <GalleryLink
+            onClick={handleConnect}
+            href={TWITTER_AUTH_URL}
+            target="_self"
+            eventElementId="Connect Twitter"
+            eventName="Connect Twitter Click"
+            eventContext={contexts['External Social']}
+          >
             Connect
           </GalleryLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />

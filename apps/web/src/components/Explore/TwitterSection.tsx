@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
 import TwitterIcon from '~/icons/TwitterIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
@@ -92,7 +93,14 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
           <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
         </VStack>
 
-        <StyledGalleryLink onClick={handleSeeAllClick}>See all</StyledGalleryLink>
+        <StyledGalleryLink
+          onClick={handleSeeAllClick}
+          eventElementId="See More Suggested Users"
+          eventName="See More Suggested Users Click"
+          eventContext={contexts.Explore}
+        >
+          See all
+        </StyledGalleryLink>
       </HStack>
       <ExploreList exploreUsersRef={nonNullUsers} queryRef={query} rowSize={1} />
     </StyledSuggestedSection>

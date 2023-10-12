@@ -9,6 +9,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
@@ -37,10 +38,20 @@ export function UserListItem({ userRef }: UserListItemProps) {
   }, [hideDrawer]);
 
   return (
-    <GalleryLink onClick={handleLinkClick} to={userRoute}>
+    <GalleryLink
+      onClick={handleLinkClick}
+      to={userRoute}
+      eventElementId="User List Item"
+      eventName="User List Item Click"
+      eventContext={contexts.Notifications}
+    >
       <Container>
         <TitleDiatypeM>{user.username}</TitleDiatypeM>
-        {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
+        {user.bio && (
+          <BioText>
+            {user.bio && <Markdown text={user.bio} eventContext={contexts.Notifications} />}
+          </BioText>
+        )}
       </Container>
     </GalleryLink>
   );

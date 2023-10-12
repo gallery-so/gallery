@@ -108,6 +108,9 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
         pathname: '/[username]',
         query: { username: user?.username ?? '' },
       }}
+      eventElementId="Explore User Card"
+      eventName="Explore User Card Click"
+      eventContext={contexts.Explore}
     >
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
@@ -137,7 +140,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
               )}
             </HStack>
             <StyledUserBio>
-              <Markdown text={bioFirstLine} />
+              <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
             </StyledUserBio>
           </UserDetailsText>
         </UserDetailsContainer>

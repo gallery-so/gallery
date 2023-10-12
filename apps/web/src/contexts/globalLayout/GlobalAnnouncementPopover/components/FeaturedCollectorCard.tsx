@@ -78,7 +78,13 @@ export default function FeaturedCollectorCard({
   }
 
   return (
-    <GalleryLink to={{ pathname: '/[username]', query: { username: owner.username as string } }}>
+    <GalleryLink
+      to={{ pathname: '/[username]', query: { username: owner.username as string } }}
+      // TODO: analytics
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
+    >
       <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
         <FeaturedCollectorHeader gap={8}>
           <DescriptionText>{owner.username}</DescriptionText>

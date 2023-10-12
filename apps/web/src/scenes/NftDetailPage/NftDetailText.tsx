@@ -212,7 +212,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
 
         {token.description && (
           <BaseM>
-            <Markdown text={token.description} />
+            <Markdown text={token.description} eventContext={contexts['NFT Detail']} />
           </BaseM>
         )}
 

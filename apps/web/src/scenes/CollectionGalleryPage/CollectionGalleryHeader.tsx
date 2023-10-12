@@ -141,7 +141,7 @@ function CollectionGalleryHeader({
               </StyledBreadcrumbsWrapper>
               {unescapedCollectorsNote ? (
                 <StyledCollectionNote>
-                  <Markdown text={unescapedCollectorsNote} />
+                  <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserCollection} />
                 </StyledCollectionNote>
               ) : (
                 <div />
@@ -168,7 +168,7 @@ function CollectionGalleryHeader({
           </StyledBreadcrumbsWrapper>
           {unescapedCollectorsNote && (
             <StyledCollectionNote clamp={2}>
-              <Markdown text={unescapedCollectorsNote} />
+              <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserCollection} />
             </StyledCollectionNote>
           )}
         </VStack>

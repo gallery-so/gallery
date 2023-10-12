@@ -7,6 +7,7 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
+import { contexts } from '~/shared/analytics/constants';
 
 import { walletIconMap } from './WalletButton';
 
@@ -25,8 +26,15 @@ export default function DelegateCashMessage({ reset }: Props) {
         <VStack align="flex-start">
           <TitleS>What is it?</TitleS>
           <StyledText>
-            <GalleryLink href={'https://delegate.cash'}>Delegate Cash</GalleryLink> is a
-            decentralized service that allows you to designate a hot wallet to act and sign on
+            <GalleryLink
+              href={'https://delegate.cash'}
+              eventElementId="Delegate Cash Link"
+              eventName="Delegate Cash Link Click"
+              eventContext={contexts.Authentication}
+            >
+              Delegate Cash
+            </GalleryLink>{' '}
+            is a decentralized service that allows you to designate a hot wallet to act and sign on
             behalf of your cold wallet.
           </StyledText>
         </VStack>
@@ -34,16 +42,50 @@ export default function DelegateCashMessage({ reset }: Props) {
           <TitleS>New users</TitleS>
           <StyledText>
             Please create a Gallery account with your delegated hot wallet, then reach out to our
-            team via <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink> or{' '}
-            <GalleryLink href={GALLERY_TWITTER}>Twitter</GalleryLink> for next steps.
+            team via{' '}
+            <GalleryLink
+              href={GALLERY_DISCORD}
+              eventElementId="Discord Link"
+              eventName="Discord Link Click"
+              eventContext={contexts.Authentication}
+            >
+              Discord
+            </GalleryLink>{' '}
+            or{' '}
+            <GalleryLink
+              href={GALLERY_TWITTER}
+              eventElementId="Twitter Link"
+              eventName="Twitter Link Click"
+              eventContext={contexts.Authentication}
+            >
+              Twitter
+            </GalleryLink>{' '}
+            for next steps.
           </StyledText>
         </VStack>
         <VStack align="flex-start">
           <TitleS>Existing users</TitleS>
           <StyledText>
             If you’d like to connect your cold wallet to an existing Gallery account, please reach
-            out to the Gallery team via <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink> or{' '}
-            <GalleryLink href={GALLERY_TWITTER}>Twitter</GalleryLink>.
+            out to the Gallery team via{' '}
+            <GalleryLink
+              href={GALLERY_DISCORD}
+              eventElementId="Discord Link"
+              eventName="Discord Link Click"
+              eventContext={contexts.Authentication}
+            >
+              Discord
+            </GalleryLink>{' '}
+            or{' '}
+            <GalleryLink
+              href={GALLERY_TWITTER}
+              eventElementId="Twitter Link"
+              eventName="Twitter Link Click"
+              eventContext={contexts.Authentication}
+            >
+              Twitter
+            </GalleryLink>
+            .
           </StyledText>
         </VStack>
         <Button

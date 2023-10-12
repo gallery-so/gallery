@@ -41,7 +41,14 @@ export default function MobileAuthManagerSection() {
         >
           View QR Code
         </Button>
-        <GalleryLink to={{ pathname: '/mobile' }}>Learn more about the app</GalleryLink>
+        <GalleryLink
+          to={{ pathname: '/mobile' }}
+          eventElementId="Learn More Mobile App"
+          eventName="Learn More Mobile App Click"
+          eventContext={contexts.Authentication}
+        >
+          Learn more about the app
+        </GalleryLink>
       </VStack>
     </VStack>
   );

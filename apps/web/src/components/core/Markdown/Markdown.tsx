@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+
 import GalleryLink, { GalleryLinkNeedsVerification } from '../GalleryLink/GalleryLink';
 import { BaseXL } from '../Text/Text';
 
@@ -9,6 +11,7 @@ type PublicProps = {
   text: string;
   inheritLinkStyling?: boolean;
   CustomInternalLinkComponent?: React.FunctionComponent<PropsWithChildren<{ href: string }>>;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
 // Strict Markdown component for rendering user-provided content because we want to limit the allowed elements. To be used as the default markdown parser in our app
@@ -35,6 +38,7 @@ function BaseMarkdown({
   CustomInternalLinkComponent,
   allowedElements,
   inheritLinkStyling = false,
+  eventContext,
 }: BaseProps) {
   return (
     <ReactMarkdown
@@ -54,6 +58,9 @@ function BaseMarkdown({
                   // @ts-expect-error convert to an internal redirect. typescript complains because
                   // this is a dynamic route that we haven't explicitly defined
                   to={{ pathname: href.replace('https://gallery.so', '') }}
+                  eventElementId="Markdown Link"
+                  eventName="Markdown Link Click"
+                  eventContext={eventContext}
                 >
                   {children}
                 </GalleryLink>

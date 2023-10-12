@@ -17,6 +17,7 @@ import { PreloadedQuery } from 'react-relay';
 import { OperationType } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import noop from '~/utils/noop';
 
@@ -81,7 +82,13 @@ export default function HoverCard<T extends OperationType>({
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <GalleryLink to={hoverableElementHref} onClick={handleClick}>
+        <GalleryLink
+          to={hoverableElementHref}
+          onClick={handleClick}
+          eventElementId="Hover Card Hoverable Element"
+          eventName="Hover Card Hoverable Element Click"
+          eventContext={contexts['Hover Card']}
+        >
           {HoverableElement}
         </GalleryLink>
       </StyledLinkContainer>
