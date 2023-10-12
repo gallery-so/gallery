@@ -23,7 +23,7 @@ export function GalleryPill(props: GalleryPillProps) {
   const { to, href, eventElementId, eventName, eventContext, eventFlow, properties, onClick } =
     props;
 
-  const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+  const handleClick = useCallback<MouseEventHandler<HTMLElement>>(
     (event) => {
       track('Pill Click', {
         id: eventElementId,
@@ -39,9 +39,11 @@ export function GalleryPill(props: GalleryPillProps) {
   );
 
   if (to || href) {
+    // @ts-expect-error fix this later. the problem is we're overloading both anchor props and button props into GalleryPillProps. might need to split up this component into GalleryPillLink and GalleryPillButton
     return <GalleryPillLink {...props} onClick={handleClick} />;
   }
 
+  // @ts-expect-error fix this later. the problem is we're overloading both anchor props and button props into GalleryPillProps. might need to split up this component into GalleryPillLink and GalleryPillButton
   return <GalleryPillButton {...props} onClick={handleClick} />;
 }
 

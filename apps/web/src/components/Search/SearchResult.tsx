@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -45,6 +46,7 @@ export default function SearchResult({
       searchQuery: keyword,
       pathname: fullLink,
       resultType: type,
+      context: contexts.Search,
     });
   }, [hideDrawer, keyword, path, track, type]);
 
