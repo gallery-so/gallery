@@ -152,6 +152,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
       (event) => {
+        event.stopPropagation();
+
         track('Button Click', {
           id: eventElementId,
           name: eventName,

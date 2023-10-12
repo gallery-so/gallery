@@ -25,6 +25,8 @@ export function GalleryPill(props: GalleryPillProps) {
 
   const handleClick = useCallback<MouseEventHandler<HTMLElement>>(
     (event) => {
+      event.stopPropagation();
+
       track('Pill Click', {
         id: eventElementId,
         name: eventName,
