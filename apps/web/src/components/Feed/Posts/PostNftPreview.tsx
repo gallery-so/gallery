@@ -9,6 +9,7 @@ import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { PostNftPreviewFragment$key } from '~/generated/PostNftPreviewFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   tokenRef: PostNftPreviewFragment$key;
@@ -33,7 +34,12 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   return (
     <StyledPostNftPreview>
       <ShimmerProvider>
-        <NftPreview tokenRef={token} shouldLiveRender={!isMobile} onLoad={onNftLoad} />
+        <NftPreview
+          tokenRef={token}
+          shouldLiveRender={!isMobile}
+          onLoad={onNftLoad}
+          eventContext={contexts.Posts}
+        />
       </ShimmerProvider>
     </StyledPostNftPreview>
   );

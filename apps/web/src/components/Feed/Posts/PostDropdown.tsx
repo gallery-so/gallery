@@ -10,6 +10,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
@@ -126,6 +127,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
           <LinkToFullPageNftDetailModal
             username={token?.owner?.username ?? ''}
             tokenId={token?.dbid}
+            eventContext={contexts.Posts}
           >
             <DropdownItem>
               <BaseM>View Item Detail</BaseM>
