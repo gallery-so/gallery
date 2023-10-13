@@ -141,7 +141,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
           </Text>
         </View>
         {shouldShowFollowBackButton && (
-          <View className="pl-1">
+          <View className="ml-5">
             <FollowButton queryRef={query} userRef={lastFollower} />
           </View>
         )}
