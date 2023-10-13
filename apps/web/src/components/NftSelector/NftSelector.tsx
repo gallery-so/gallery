@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -101,9 +101,9 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-  const contractId = useMemo(() => (tokens ? tokens[0]?.contract?.dbid : ''), [tokens]);
+  const [collectionContractId, setCollectionContractId] = useState("");
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
-    (typeof tokens)[0]
+  (typeof tokens)[0]
   >({
     tokensRef: tokens,
     rawTokensToDisplay: tokens,
@@ -223,13 +223,13 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
 
   const handleCreatorRefreshContract = useCallback(async () => {
-    if (!contractId) {
+    if (!collectionContractId) {
       return;
     }
 
     track('NFT Selector: Clicked Creator Contract Refresh');
-    await refreshContract(contractId);
-  }, [contractId, track, refreshContract]);
+    await refreshContract(collectionContractId);
+  }, [collectionContractId, track, refreshContract]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -337,6 +337,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
           tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
+          onSetCollectionContractId={setCollectionContractId}
           selectedNetworkView={network}
           hasSearchKeyword={isSearching}
           handleRefresh={handleRefresh}

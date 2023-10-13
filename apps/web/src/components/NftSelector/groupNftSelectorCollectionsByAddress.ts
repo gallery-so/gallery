@@ -36,6 +36,9 @@ export function groupNftSelectorCollectionsByAddress({
           isSpamByProvider
           isSpamByUser
           contract {
+            # dbid is used by NftSelector.tsx
+            # eslint-disable-next-line relay/unused-fields
+            dbid
             chain
             name
             contractAddress {
