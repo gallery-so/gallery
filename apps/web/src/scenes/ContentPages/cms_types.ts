@@ -1,3 +1,5 @@
+// Types that represent the content models in our CMS. These should be manually updated whenever we update the CMS model schema.
+
 interface Block {
   _type: 'block';
   style: string;
