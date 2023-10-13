@@ -32,7 +32,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
         tokens {
           dbid
           community {
-            name
             contractAddress {
               address
               chain

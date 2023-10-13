@@ -3,6 +3,7 @@ import { Suspense, useCallback, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -10,6 +11,8 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
+import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
+import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
 import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
@@ -43,6 +46,7 @@ function PostComposerScreenInner() {
             ...usePostTokenFragment
           }
         }
+        ...useMentionableMessageQueryFragment
       }
     `,
     {
@@ -60,23 +64,33 @@ function PostComposerScreenInner() {
     tokenRef: token,
   });
 
-  const [caption, setCaption] = useState('');
   const [isPosting, setIsPosting] = useState(false);
 
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
   const navigation = useNavigation();
 
+  const {
+    aliasKeyword,
+    isSelectingMentions,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    resetMentions,
+    handleSelectionChange,
+  } = useMentionableMessage(query);
+
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBackPress = useCallback(() => {
-    if (!caption) {
+    if (!message) {
       navigation.goBack();
       return;
     }
     Keyboard.dismiss();
 
     bottomSheetRef.current?.present();
-  }, [caption, navigation]);
+  }, [message, navigation]);
 
   const { pushToast } = useToastActions();
 
@@ -91,7 +105,8 @@ function PostComposerScreenInner() {
 
     await post({
       tokenId,
-      caption,
+      caption: message,
+      mentions,
     });
 
     mainTabNavigation.reset({
@@ -114,16 +129,19 @@ function PostComposerScreenInner() {
     }
 
     setIsPosting(false);
+    resetMentions();
     pushToast({
       children: <ToastMessage tokenRef={token} />,
     });
   }, [
-    caption,
+    message,
     feedTabNavigation,
     isPosting,
     mainTabNavigation,
+    mentions,
     post,
     pushToast,
+    resetMentions,
     route.params.redirectTo,
     token,
   ]);
@@ -158,11 +176,30 @@ function PostComposerScreenInner() {
       </View>
 
       <View className="px-4 flex flex-col flex-grow space-y-2">
-        <PostInput value={caption} onChange={setCaption} tokenRef={token} />
-        <View className="py-4">
-          <Suspense fallback={<PostComposerNftFallback />}>
-            <PostTokenPreview />
-          </Suspense>
+        <PostInput
+          value={message}
+          onChange={setMessage}
+          tokenRef={token}
+          onSelectionChange={handleSelectionChange}
+        />
+        <View className="py-4 flex-grow">
+          {isSelectingMentions ? (
+            <Suspense fallback={<SearchResultsFallback />}>
+              <SearchResults
+                keyword={aliasKeyword}
+                activeFilter="top"
+                onChangeFilter={() => {}}
+                blurInputFocus={() => {}}
+                onSelect={selectMention}
+                onlyShowTopResults
+                isMentionSearch
+              />
+            </Suspense>
+          ) : (
+            <Suspense fallback={<PostComposerNftFallback />}>
+              <PostTokenPreview />
+            </Suspense>
+          )}
         </View>
       </View>
       <WarningPostBottomSheet ref={bottomSheetRef} />

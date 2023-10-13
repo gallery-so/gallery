@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
@@ -10,11 +11,13 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
+  onSelect?: (item: MentionType) => void;
 };
-export function CommunitySearchResult({ communityRef }: Props) {
+export function CommunitySearchResult({ communityRef, onSelect = () => {} }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
+        dbid
         name
         description
         contractAddress {
@@ -32,6 +35,15 @@ export function CommunitySearchResult({ communityRef }: Props) {
     const contractAddress = community.contractAddress;
     const { address, chain } = contractAddress ?? {};
 
+    if (onSelect) {
+      onSelect({
+        type: 'Community',
+        label: community.name ?? '',
+        value: community.dbid,
+      });
+      return;
+    }
+
     if (!address || !chain) {
       return;
     }
@@ -40,7 +52,7 @@ export function CommunitySearchResult({ communityRef }: Props) {
       contractAddress: address,
       chain,
     });
-  }, [community, navigation]);
+  }, [community, navigation, onSelect]);
 
   return (
     <SearchResult

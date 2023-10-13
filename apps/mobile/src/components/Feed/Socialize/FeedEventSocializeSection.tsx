@@ -67,6 +67,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...useToggleAdmireQueryFragment
+        ...CommentsBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -147,6 +148,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         type="FeedEvent"
         feedId={event.dbid}
         bottomSheetRef={commentsBottomSheetRef}
+        queryRef={query}
       />
     </>
   );

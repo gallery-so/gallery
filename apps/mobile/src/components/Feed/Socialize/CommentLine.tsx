@@ -1,11 +1,12 @@
+import { useMemo } from 'react';
 import { Text, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
-
-import ProcessedCommentText from './ProcessedCommentText';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   commentRef: CommentLineFragment$key;
@@ -21,10 +22,15 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         commenter @required(action: THROW) {
           ...UsernameDisplayFragment
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     commentRef
   );
+
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
@@ -36,7 +42,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
       >
         <Text numberOfLines={2}>
           <UsernameDisplay userRef={comment.commenter} size="sm" style={{ marginRight: 4 }} />{' '}
-          <ProcessedCommentText comment={comment.comment} />
+          <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
         </Text>
       </GalleryTouchableOpacity>
     </View>
