@@ -88,9 +88,36 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
-        {fxhashUrl && <GalleryLink href={fxhashUrl}>View on fx(hash)</GalleryLink>}
-        {objktUrl && <GalleryLink href={objktUrl}>View on objkt</GalleryLink>}
-        {projectUrl && <GalleryLink href={projectUrl}>More Info</GalleryLink>}
+        {fxhashUrl && (
+          <GalleryLink
+            href={fxhashUrl}
+            eventElementId="fxhash Link"
+            eventName="fxhash Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on fx(hash)
+          </GalleryLink>
+        )}
+        {objktUrl && (
+          <GalleryLink
+            href={objktUrl}
+            eventElementId="objkt Link"
+            eventName="objkt Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on objkt
+          </GalleryLink>
+        )}
+        {projectUrl && (
+          <GalleryLink
+            href={projectUrl}
+            eventElementId="External Link"
+            eventName="External Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            More Info
+          </GalleryLink>
+        )}
       </StyledLinkContainer>
       <GalleryPill
         eventElementId="Refresh Single NFT Pill"

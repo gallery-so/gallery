@@ -11,6 +11,7 @@ import {
   BreadcrumbText,
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { GalleryTitleBreadcrumbFragment$key } from '~/generated/GalleryTitleBreadcrumbFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -46,7 +47,12 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
     <HStack>
       {!isHome && (
         <>
-          <GalleryLink to={userGalleryRoute}>
+          <GalleryLink
+            to={userGalleryRoute}
+            eventElementId="Username Link"
+            eventName="Username Link Click"
+            eventContext={contexts.UserGallery}
+          >
             <StyledBreadcrumbLink isActive={false}>{username}</StyledBreadcrumbLink>
           </GalleryLink>
           <StyledBreadcrumbText>&nbsp;/</StyledBreadcrumbText>
@@ -54,7 +60,12 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
       )}
 
       {gallery.name && (
-        <GalleryLink to={galleryRoute}>
+        <GalleryLink
+          to={galleryRoute}
+          eventElementId="Gallery Name Link"
+          eventName="Gallery Name Link Click"
+          eventContext={contexts.UserGallery}
+        >
           <StyledBreadcrumbLink isActive={pathname === galleryRoute.pathname || isHome}>
             {gallery.name}
           </StyledBreadcrumbLink>

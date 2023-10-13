@@ -14,6 +14,7 @@ import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/op
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import isProduction from '~/utils/isProduction';
 
@@ -78,11 +79,24 @@ export default function MementosPage() {
             <BaseM>
               Introducing the <b>Gallery x Base</b> memento, a collectible in celebration of Gallery
               rolling out support for{' '}
-              <GalleryLink href="https://base.org/ecosystem">Base Chain</GalleryLink>.
+              <GalleryLink
+                href="https://base.org/ecosystem"
+                eventElementId="Base Chain Link"
+                eventName="Base Chain Link Click"
+                eventContext={contexts.Mementos}
+              >
+                Base Chain
+              </GalleryLink>
+              .
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
-              <GalleryLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
+              <GalleryLink
+                href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY"
+                eventElementId="Mementos Mirror Link"
+                eventName="Mementos Mirror Link Click"
+                eventContext={contexts.Mementos}
+              >
                 here
               </GalleryLink>
               .

@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
@@ -73,6 +74,9 @@ export function HomeNavbar({ queryRef }: Props) {
             active={pathname === curatedRoute.pathname}
             to={curatedRoute}
             onClick={handleTrendingClick}
+            eventElementId="Home Navbar Link"
+            eventName="Home Navbar Link Click"
+            eventContext={contexts.Feed}
           >
             {isLoggedIn ? 'For You' : 'Trending'}
           </NavbarLink>
@@ -82,6 +86,9 @@ export function HomeNavbar({ queryRef }: Props) {
               active={pathname === followingRoute.pathname}
               to={followingRoute}
               onClick={handleFollowingTabClick}
+              eventElementId="Home Navbar Link"
+              eventName="Home Navbar Link Click"
+              eventContext={contexts.Feed}
             >
               Following
             </NavbarLink>
@@ -92,6 +99,9 @@ export function HomeNavbar({ queryRef }: Props) {
               active={pathname === latestRoute.pathname}
               to={latestRoute}
               onClick={handleLatestTabClick}
+              eventElementId="Home Navbar Link"
+              eventName="Home Navbar Link Click"
+              eventContext={contexts.Feed}
             >
               Latest
             </NavbarLink>
@@ -101,6 +111,9 @@ export function HomeNavbar({ queryRef }: Props) {
             active={pathname === exploreRoute.pathname}
             to={exploreRoute}
             onClick={handleFeaturedModeClick}
+            eventElementId="Home Navbar Link"
+            eventName="Home Navbar Link Click"
+            eventContext={contexts.Feed}
           >
             Explore
           </NavbarLink>

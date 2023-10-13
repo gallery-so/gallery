@@ -7,7 +7,6 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -47,7 +46,14 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
   }
 
   return (
-    <StyledRowLink onClick={handlePressUserLink} to={href}>
+    <StyledRowLink
+      onClick={handlePressUserLink}
+      to={href}
+      // TODO analytics - this will be variable by user or community
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
+    >
       {rowContent}
     </StyledRowLink>
   );

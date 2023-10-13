@@ -84,7 +84,7 @@ export const TezosDomainOrAddress = ({
       <ReportingErrorBoundary
         fallback={<LinkableAddress chainAddressRef={address} eventContext={eventContext} />}
       >
-        <TezosDomain chainAddressRef={address} />
+        <TezosDomain chainAddressRef={address} eventContext={eventContext} />
       </ReportingErrorBoundary>
     </Suspense>
   );

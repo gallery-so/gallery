@@ -9,6 +9,7 @@ import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureS
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -83,6 +84,10 @@ export default function UserSharedFollowers({ userRef }: Props) {
           query: { username: user.username ?? '' },
         }}
         key={user.username}
+        eventElementId="Shared Follower Link"
+        eventName="Shared Follower Link Click"
+        // TODO analytics - this will be variable
+        eventContext={contexts.UserGallery}
       >
         {user.username}
       </StyledGalleryLink>
@@ -91,7 +96,13 @@ export default function UserSharedFollowers({ userRef }: Props) {
     // If there are more than 3 usernames, add a link to show all in a popover
     if (totalSharedFollowers > 3) {
       result.push(
-        <StyledGalleryLink onClick={handleShowAllFollowersClick}>
+        <StyledGalleryLink
+          onClick={handleShowAllFollowersClick}
+          eventElementId="Shared Followers Remaining Link"
+          eventName="Shared Followers Remaining Link Click"
+          // TODO analytics - this will be variable
+          eventContext={contexts.UserGallery}
+        >
           {totalSharedFollowers - 2} others
         </StyledGalleryLink>
       );

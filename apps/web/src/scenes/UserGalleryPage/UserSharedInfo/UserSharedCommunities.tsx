@@ -9,6 +9,7 @@ import { CommunityProfilePictureStack } from '~/components/ProfilePicture/Commun
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { LowercaseChain } from '~/shared/utils/chains';
@@ -91,7 +92,14 @@ export default function UserSharedCommunities({ userRef }: Props) {
 
         if (url) {
           return (
-            <StyledGalleryLink to={url} key={community.name}>
+            <StyledGalleryLink
+              to={url}
+              key={community.name}
+              eventElementId="Shared Community Name Link"
+              eventName="Shared Community Name Link Click"
+              // TODO analytics - this will be variable
+              eventContext={contexts.Community}
+            >
               {community.name}
             </StyledGalleryLink>
           );
@@ -103,7 +111,13 @@ export default function UserSharedCommunities({ userRef }: Props) {
     // If there are more than 3 communities, add a link to show all in a popover
     if (totalSharedCommunities > 3) {
       result.push(
-        <StyledGalleryLink onClick={handleShowAllClick}>
+        <StyledGalleryLink
+          onClick={handleShowAllClick}
+          eventElementId="Shared Communites Remaining Link"
+          eventName="Shared Communites Remaining Link Click"
+          // TODO analytics - this will be variable
+          eventContext={contexts.Community}
+        >
           {totalSharedCommunities - 2} others
         </StyledGalleryLink>
       );

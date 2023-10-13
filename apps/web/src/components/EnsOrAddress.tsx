@@ -74,7 +74,7 @@ export const EnsOrAddress = ({ chainAddressRef, eventContext }: EnsOrAddressProp
       <ReportingErrorBoundary
         fallback={<LinkableAddress chainAddressRef={address} eventContext={eventContext} />}
       >
-        <EnsName chainAddressRef={address} />
+        <EnsName chainAddressRef={address} eventContext={eventContext} />
       </ReportingErrorBoundary>
     </Suspense>
   );

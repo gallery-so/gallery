@@ -42,11 +42,36 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
 
   return (
     <StyledExternalLinks gap={14}>
-      {mirrorUrl && <GalleryLink href={mirrorUrl}>View on Mirror</GalleryLink>}
-      {prohibitionUrl && <GalleryLink href={prohibitionUrl}>View on Prohibition</GalleryLink>}
+      {mirrorUrl && (
+        <GalleryLink
+          href={mirrorUrl}
+          eventElementId="Mirror Link"
+          eventName="Mirror Link Click"
+          eventContext={contexts['NFT Detail']}
+        >
+          View on Mirror
+        </GalleryLink>
+      )}
+      {prohibitionUrl && (
+        <GalleryLink
+          href={prohibitionUrl}
+          eventElementId="Prohibition Link"
+          eventName="Prohibition Link Click"
+          eventContext={contexts['NFT Detail']}
+        >
+          View on Prohibition
+        </GalleryLink>
+      )}
       {openseaUrl && (
         <VStack gap={14}>
-          <GalleryLink href={openseaUrl}>View on OpenSea</GalleryLink>
+          <GalleryLink
+            href={openseaUrl}
+            eventElementId="Opensea Link"
+            eventName="Opensea Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on OpenSea
+          </GalleryLink>
           <GalleryPill
             eventElementId="Refresh Single NFT Pill"
             eventName="Refresh Single NFT"

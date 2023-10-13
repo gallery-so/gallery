@@ -13,6 +13,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -52,7 +53,12 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
 
       return (
         <HStack gap={4} align="center">
-          <GalleryLink to={usernameRoute}>
+          <GalleryLink
+            to={usernameRoute}
+            eventElementId="Username Nav Link"
+            eventName="Username Nav Link Click"
+            eventContext={contexts.UserGallery}
+          >
             <UsernameBreadcrumbLink>{query.userByUsername?.username}</UsernameBreadcrumbLink>
           </GalleryLink>
           <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>

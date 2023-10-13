@@ -7,7 +7,6 @@ import { BaseM } from '~/components/core/Text/Text';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
-import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';

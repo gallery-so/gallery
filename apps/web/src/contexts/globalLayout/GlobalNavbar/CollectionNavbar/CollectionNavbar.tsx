@@ -16,6 +16,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
@@ -93,7 +94,12 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
             <SlashText>/</SlashText>
 
-            <GalleryLink to={galleryRoute}>
+            <GalleryLink
+              to={galleryRoute}
+              eventElementId="Gallery Name Link"
+              eventName="Gallery Name Link Click"
+              eventContext={contexts.UserGallery}
+            >
               <BreadcrumbLink>{galleryName}</BreadcrumbLink>
             </GalleryLink>
 

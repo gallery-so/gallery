@@ -108,7 +108,12 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     return (
       <HStack justify="flex-end">
         {externalAddressLink && (
-          <GalleryLink href={externalAddressLink}>
+          <GalleryLink
+            href={externalAddressLink}
+            eventElementId="External Address Link"
+            eventName="External Address Link Click"
+            eventContext={contexts.Community}
+          >
             <IconContainer
               variant="default"
               tooltipLabel="View on explorer"

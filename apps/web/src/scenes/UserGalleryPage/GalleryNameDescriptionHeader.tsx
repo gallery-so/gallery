@@ -78,7 +78,18 @@ function GalleryNameDescriptionHeader({
   return (
     <Container gap={2}>
       <HStack align="flex-start" justify="space-between">
-        {noLink ? galleryName : <GalleryLink to={galleryRoute}>{galleryName}</GalleryLink>}
+        {noLink ? (
+          galleryName
+        ) : (
+          <GalleryLink
+            to={galleryRoute}
+            eventElementId="Gallery Name Link"
+            eventName="Gallery Name Link Click"
+            eventContext={contexts.UserGallery}
+          >
+            {galleryName}
+          </GalleryLink>
+        )}
         {showMobileLayoutToggle && (
           <StyledButtonsWrapper gap={8} align="center" justify="space-between">
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />

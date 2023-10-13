@@ -76,7 +76,12 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
                 ? 'Transaction successful!'
                 : 'Transaction submitted. This may take several minutes.'}
             </BaseM>
-            <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+            <GalleryLink
+              href={`https://etherscan.io/tx/${transactionHash}`}
+              eventElementId="View on Etherscan Link"
+              eventName="View on Etherscan"
+              eventContext={contexts['Merch Store']}
+            >
               <BaseM>View on Etherscan</BaseM>
             </GalleryLink>
           </>

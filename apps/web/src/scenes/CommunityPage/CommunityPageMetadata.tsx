@@ -134,7 +134,12 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />
-          <GalleryLink to={creatorRoute}>
+          <GalleryLink
+            to={creatorRoute}
+            eventElementId="Creator Username Link"
+            eventName="Creator Username Link Click"
+            eventContext={contexts.Community}
+          >
             <BaseM color={colors.shadow}>{creatorUsername}</BaseM>
           </GalleryLink>
         </HStack>
@@ -142,7 +147,12 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     }
     if (creatorExternalLink) {
       return (
-        <GalleryLink href={creatorExternalLink}>
+        <GalleryLink
+          href={creatorExternalLink}
+          eventElementId="Creator External Link"
+          eventName="Creator External Link Click"
+          eventContext={contexts.Community}
+        >
           <HStack gap={4}>
             <RawProfilePicture size="xs" default inheritBorderColor />
 

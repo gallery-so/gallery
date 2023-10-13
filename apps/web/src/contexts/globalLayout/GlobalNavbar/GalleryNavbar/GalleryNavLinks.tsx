@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NavbarLink } from '../NavbarLink';
@@ -60,27 +61,51 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
   return (
     <HStack gap={8}>
-      <NavbarLink to={featuredRoute} active={pathname === featuredRoute.pathname}>
+      <NavbarLink
+        to={featuredRoute}
+        active={pathname === featuredRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
+      >
         <HStack gap={4} align="baseline">
           <span>Featured</span>
         </HStack>
       </NavbarLink>
 
-      <NavbarLink to={galleriesRoute} active={pathname === galleriesRoute.pathname}>
+      <NavbarLink
+        to={galleriesRoute}
+        active={pathname === galleriesRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
+      >
         <HStack gap={4} align="baseline">
           <span>Galleries</span>
           {totalGalleries > 0 && <BaseS>{totalGalleries}</BaseS>}
         </HStack>
       </NavbarLink>
 
-      <NavbarLink to={postsRoute} active={pathname === postsRoute.pathname}>
+      <NavbarLink
+        to={postsRoute}
+        active={pathname === postsRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
+      >
         <HStack gap={4} align="baseline">
           <span>Posts</span>
           {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
         </HStack>
       </NavbarLink>
 
-      <NavbarLink to={followersRoute} active={pathname === followersRoute.pathname}>
+      <NavbarLink
+        to={followersRoute}
+        active={pathname === followersRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
+      >
         <HStack gap={4} align="baseline">
           Followers
           {totalFollowers > 0 && <BaseS>{totalFollowers}</BaseS>}

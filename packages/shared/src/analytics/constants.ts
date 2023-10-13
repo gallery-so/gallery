@@ -24,6 +24,7 @@ export const contexts = {
   'Hover Card': 'Hover Card',
   Changelog: 'Changelog',
   Error: 'Error',
+  Maintenance: 'Maintenance',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;
