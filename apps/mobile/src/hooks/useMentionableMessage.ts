@@ -78,7 +78,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       }
 
       // Calculate the length difference between the old alias and the new mention
-      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +1 for the @
+      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +2 for the @ and space after the mention
 
       // Adjust the positions of mentions that come after the newly added mention
       const adjustedMentions = mentions.map((existingMention) => {
