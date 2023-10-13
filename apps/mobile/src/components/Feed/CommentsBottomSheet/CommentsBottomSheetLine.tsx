@@ -6,14 +6,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
-
-import ProcessedText from '../Socialize/ProcessedText';
 
 type CommentLineProps = {
   activeCommentId?: string;

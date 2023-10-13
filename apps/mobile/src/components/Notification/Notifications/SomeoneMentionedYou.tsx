@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import ProcessedText from '~/components/Feed/Socialize/ProcessedText';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { Typography } from '~/components/Typography';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { SomeoneMentionedYouFragment$key } from '~/generated/SomeoneMentionedYouFragment.graphql';

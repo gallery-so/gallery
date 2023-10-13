@@ -2,11 +2,10 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-
-import ProcessedText from '../Socialize/ProcessedText';
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;

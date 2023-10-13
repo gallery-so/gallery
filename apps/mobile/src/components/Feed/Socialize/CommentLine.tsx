@@ -3,11 +3,10 @@ import { Text, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-
-import ProcessedText from './ProcessedText';
 
 type Props = {
   commentRef: CommentLineFragment$key;
