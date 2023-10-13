@@ -5,17 +5,18 @@ import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseM } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack } from '../core/Spacer/Stack';
 import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -108,8 +109,10 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
         {owner.user.universal ? (
           <StyledGalleryLink
             href={openseaProfileLink}
-            underlined={false}
             fadeUsernames={fadeUsernames}
+            eventElementId="Username Link"
+            eventName="Username Click"
+            eventContext={contexts.Community}
           >
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
@@ -117,8 +120,10 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
           <UserHoverCard userRef={owner.user}>
             <StyledGalleryLink
               to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-              underlined={false}
               fadeUsernames={fadeUsernames}
+              eventElementId="Username Link"
+              eventName="Username Click"
+              eventContext={contexts.Community}
             >
               <HStack gap={4} align="center">
                 <ProfilePicture size="sm" userRef={owner.user} />

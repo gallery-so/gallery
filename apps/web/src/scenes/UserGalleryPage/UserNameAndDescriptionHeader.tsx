@@ -6,8 +6,8 @@ import styled, { css } from 'styled-components';
 import Badge from '~/components/Badge/Badge';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
+import { StyledAnchor } from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
@@ -114,7 +114,9 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
           <HStack align="center" gap={0}>
             {userBadges.map((badge) =>
-              badge ? <Badge key={badge.name} badgeRef={badge} /> : null
+              badge ? (
+                <Badge key={badge.name} badgeRef={badge} eventContext={contexts.UserGallery} />
+              ) : null
             )}
           </HStack>
         </HStack>
@@ -125,7 +127,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
               <ExpandableBio text={unescapedBio} />
             ) : (
               <StyledBioWrapper>
-                <Markdown text={unescapedBio} />
+                <Markdown text={unescapedBio} eventContext={contexts.UserGallery} />
               </StyledBioWrapper>
             )}
           </StyledUserDetails>
@@ -161,6 +163,7 @@ const ExpandableBio = ({ text }: { text: string }) => {
         <Markdown
           text={isExpanded ? text : truncated}
           CustomInternalLinkComponent={NftDetailViewer}
+          eventContext={contexts.UserGallery}
         />
       </BaseM>
       {isExpanded ? null : (
@@ -193,7 +196,12 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   }
 
   return (
-    <LinkToFullPageNftDetailModal username={username} collectionId={collectionId} tokenId={tokenId}>
+    <LinkToFullPageNftDetailModal
+      username={username}
+      collectionId={collectionId}
+      tokenId={tokenId}
+      eventContext={contexts.UserGallery}
+    >
       <StyledAnchor>{children}</StyledAnchor>
     </LinkToFullPageNftDetailModal>
   );

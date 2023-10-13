@@ -1,5 +1,4 @@
 import unescape from 'lodash/unescape';
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
@@ -16,11 +15,13 @@ import { UserHoverCardFragment$key } from '~/generated/UserHoverCardFragment.gra
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import Badge from '../Badge/Badge';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM } from '../core/Text/Text';
@@ -157,17 +158,22 @@ function UserHoverCardContent({
       <StyledCardHeaderContainer gap={8}>
         <StyledCardHeader gap={2} align="center" justify="space-between">
           <StyledUsernameAndBadge align="center" gap={4}>
-            <StyledLink href={userProfileLink}>
+            <GalleryLink
+              to={userProfileLink}
+              eventElementId="User PFP"
+              eventName="User PFP Click"
+              eventContext={contexts['Hover Card']}
+            >
               <HStack align="center" gap={4}>
                 <ProfilePicture userRef={user} size="md" />
                 <StyledCardTitle>{displayName}</StyledCardTitle>
               </HStack>
-            </StyledLink>
+            </GalleryLink>
 
             <HStack align="center" gap={0}>
               {userBadges.map((badge) => (
                 // Might need to rethink this layout when we have more badges
-                <Badge key={badge.name} badgeRef={badge} />
+                <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Hover Card']} />
               ))}
             </HStack>
           </StyledUsernameAndBadge>
@@ -182,7 +188,7 @@ function UserHoverCardContent({
         {user.bio && (
           <StyledCardDescription>
             <BaseM>
-              <Markdown text={unescape(user.bio)}></Markdown>
+              <Markdown text={unescape(user.bio)} eventContext={contexts['Hover Card']} />
             </BaseM>
           </StyledCardDescription>
         )}
@@ -206,12 +212,6 @@ const StyledCardHeader = styled(HStack)`
 const StyledCardHeaderContainer = styled(VStack)`
   padding-top: 6px;
   padding-bottom: 12px;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  outline: none;
-  min-width: 0;
 `;
 
 const StyledUsernameAndBadge = styled(HStack)`

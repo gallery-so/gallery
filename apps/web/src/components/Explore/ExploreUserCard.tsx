@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -6,6 +5,7 @@ import styled from 'styled-components';
 import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
 import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
@@ -13,6 +13,7 @@ import unescape from '~/shared/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';
@@ -102,8 +103,15 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   }, [unescapedBio]);
 
   return (
-    // @ts-expect-error This is the future next/link version
-    <StyledExploreUserCard legacyBehavior={false} href={`/${user.username}`}>
+    <StyledExploreUserCard
+      to={{
+        pathname: '/[username]',
+        query: { username: user?.username ?? '' },
+      }}
+      eventElementId="Explore User Card"
+      eventName="Explore User Card Click"
+      eventContext={contexts.Explore}
+    >
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
@@ -119,7 +127,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
                 </Username>
                 <HStack align="center" gap={0}>
                   {userBadges.map((badge) => (
-                    <Badge key={badge.name} badgeRef={badge} />
+                    <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Explore']} />
                   ))}
                 </HStack>
               </HStack>
@@ -132,7 +140,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
               )}
             </HStack>
             <StyledUserBio>
-              <Markdown text={bioFirstLine} />
+              <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
             </StyledUserBio>
           </UserDetailsText>
         </UserDetailsContainer>
@@ -144,7 +152,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   );
 }
 
-const StyledExploreUserCard = styled(Link)`
+const StyledExploreUserCard = styled(GalleryLink)`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;

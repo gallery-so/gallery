@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
@@ -63,14 +63,20 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {token.contract?.creatorAddress?.address && (
         <div>
           <TitleXS>Creator</TitleXS>
-          <TezosDomainOrAddress chainAddressRef={token.contract.creatorAddress} />
+          <TezosDomainOrAddress
+            chainAddressRef={token.contract.creatorAddress}
+            eventContext={contexts['NFT Detail']}
+          />
         </div>
       )}
 
       {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
-          <LinkableAddress chainAddressRef={contract.contractAddress} />
+          <LinkableAddress
+            chainAddressRef={contract.contractAddress}
+            eventContext={contexts['NFT Detail']}
+          />
         </div>
       )}
 
@@ -82,9 +88,36 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
-        {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
-        {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
-        {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
+        {fxhashUrl && (
+          <GalleryLink
+            href={fxhashUrl}
+            eventElementId="fxhash Link"
+            eventName="fxhash Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on fx(hash)
+          </GalleryLink>
+        )}
+        {objktUrl && (
+          <GalleryLink
+            href={objktUrl}
+            eventElementId="objkt Link"
+            eventName="objkt Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on objkt
+          </GalleryLink>
+        )}
+        {projectUrl && (
+          <GalleryLink
+            href={projectUrl}
+            eventElementId="External Link"
+            eventName="External Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            More Info
+          </GalleryLink>
+        )}
       </StyledLinkContainer>
       <GalleryPill
         eventElementId="Refresh Single NFT Pill"

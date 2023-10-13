@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -6,7 +5,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
@@ -135,21 +134,31 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />
-          <StyledLink href={creatorRoute}>
+          <GalleryLink
+            to={creatorRoute}
+            eventElementId="Creator Username Link"
+            eventName="Creator Username Link Click"
+            eventContext={contexts.Community}
+          >
             <BaseM color={colors.shadow}>{creatorUsername}</BaseM>
-          </StyledLink>
+          </GalleryLink>
         </HStack>
       );
     }
     if (creatorExternalLink) {
       return (
-        <InteractiveLink href={creatorExternalLink}>
+        <GalleryLink
+          href={creatorExternalLink}
+          eventElementId="Creator External Link"
+          eventName="Creator External Link Click"
+          eventContext={contexts.Community}
+        >
           <HStack gap={4}>
             <RawProfilePicture size="xs" default inheritBorderColor />
 
             <StyledBaseM>{truncateAddress(creatorAddress || '')}</StyledBaseM>
           </HStack>
-        </InteractiveLink>
+        </GalleryLink>
       );
     }
     return null;
@@ -225,10 +234,6 @@ const StyledNetworkIcon = styled.img`
 
 const StyledBaseM = styled(BaseM)`
   color: inherit;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
 `;
 
 const StyledPostButton = styled(Button)`

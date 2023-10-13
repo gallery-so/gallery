@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Link from 'next/link';
 import { ButtonHTMLAttributes, forwardRef, MouseEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
@@ -151,6 +152,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
       (event) => {
+        event.stopPropagation();
+
         track('Button Click', {
           id: eventElementId,
           name: eventName,
@@ -185,18 +188,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
-type ButtonLinkProps = InternalAnchorElementProps &
+type DeprecatedButtonLinkProps = InternalAnchorElementProps &
   StyledButtonProps & {
     pending?: boolean;
   };
 
-export const ButtonLink = ({
+export const DeprecatedButtonLink = ({
   href,
   pending,
   disabled,
   children,
   ...otherProps
-}: ButtonLinkProps) => (
+}: DeprecatedButtonLinkProps) => (
   <Link href={href} passHref legacyBehavior>
     <StyledButton
       as="a"

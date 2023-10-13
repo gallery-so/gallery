@@ -100,7 +100,11 @@ function Toast({ message, onClose, variant }: Props) {
           </StyledAlertIcon>
         )}
         <StyledMessage>
-          <Markdown text={message} />
+          <Markdown
+            text={message}
+            // we wouldn't render a link in a toast
+            eventContext={null}
+          />
         </StyledMessage>
         <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>

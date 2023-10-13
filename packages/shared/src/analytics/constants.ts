@@ -1,6 +1,7 @@
 export const contexts = {
   Posts: 'Posts',
   Feed: 'Feed',
+  Explore: 'Explore',
   Editor: 'Editor',
   Social: 'Social',
   Notifications: 'Notifications',
@@ -20,6 +21,10 @@ export const contexts = {
   'Mobile App Upsell': 'Mobile App Upsell',
   Mementos: 'Mementos',
   'Merch Store': 'Merch Store',
+  'Hover Card': 'Hover Card',
+  Changelog: 'Changelog',
+  Error: 'Error',
+  Maintenance: 'Maintenance',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;

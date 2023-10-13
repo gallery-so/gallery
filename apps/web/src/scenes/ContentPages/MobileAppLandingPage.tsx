@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
@@ -78,7 +79,7 @@ const GiantTitle = styled(TitleL)`
   }
 `;
 
-const StyledLink = styled.a`
+const StyledLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 

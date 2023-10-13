@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';
@@ -15,6 +15,7 @@ import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSideba
 import { PaintbrushIcon } from '~/icons/PaintbrushIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import { UndoIcon } from '~/icons/UndoIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -58,11 +59,14 @@ export function CollectionSidebar({ queryRef }: Props) {
       <TitleSection />
       <CollectionSearch queryRef={query} />
       <StyledIconsContainer justify="space-between">
-        <InteractiveLink href={NOTION_DOCS_URL}>
-          <a>
-            <HelpIconContainer />
-          </a>
-        </InteractiveLink>
+        <GalleryLink
+          href={NOTION_DOCS_URL}
+          eventElementId="Editor Help Icon"
+          eventName="Help Icon Click"
+          eventContext={contexts.Editor}
+        >
+          <HelpIconContainer />
+        </GalleryLink>
         <AutoGalleryToggle />
       </StyledIconsContainer>
     </CollectionSidebarWrapper>

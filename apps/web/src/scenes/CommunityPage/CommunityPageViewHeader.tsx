@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
@@ -108,14 +108,19 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     return (
       <HStack justify="flex-end">
         {externalAddressLink && (
-          <InteractiveLink href={externalAddressLink}>
+          <GalleryLink
+            href={externalAddressLink}
+            eventElementId="External Address Link"
+            eventName="External Address Link Click"
+            eventContext={contexts.Community}
+          >
             <IconContainer
               variant="default"
               tooltipLabel="View on explorer"
               icon={<GlobeIcon />}
               onClick={handleExternalLinkClick}
             />
-          </InteractiveLink>
+          </GalleryLink>
         )}
         <CopyToClipboard textToCopy={currentUrl}>
           <IconContainer
@@ -139,7 +144,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     return (
       <StyledDescriptionWrapper gap={8}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-          <Markdown text={formattedDescription} />
+          <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
         {isLineClampEnabled && (
           <TextButton

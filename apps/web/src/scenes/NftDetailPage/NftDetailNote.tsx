@@ -124,7 +124,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
           footerHeight={GLOBAL_FOOTER_HEIGHT}
           onDoubleClick={handleEditCollectorsNote}
         >
-          <Markdown text={collectorsNote} />
+          <Markdown text={collectorsNote} eventContext={contexts['NFT Detail']} />
         </StyledCollectorsNote>
       )}
       {generalError && <StyledErrorText message={generalError} />}
@@ -178,7 +178,7 @@ export function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
     <VStack gap={8}>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
-        <Markdown text={nftCollectorsNote} />
+        <Markdown text={nftCollectorsNote} eventContext={contexts['NFT Detail']} />
       </StyledCollectorsNote>
     </VStack>
   );

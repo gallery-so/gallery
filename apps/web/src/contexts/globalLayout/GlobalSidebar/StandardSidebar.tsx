@@ -317,11 +317,7 @@ export function StandardSidebar({ queryRef }: Props) {
           />
           {isLoggedIn && query.viewer.user && (
             <VStack gap={12}>
-              <SidebarPfp
-                userRef={query.viewer.user}
-                href={userGalleryRoute}
-                onClick={handleProfileClick}
-              />
+              <SidebarPfp userRef={query.viewer.user} onClick={handleProfileClick} />
               <SidebarIcon
                 tooltipLabel="Create a post"
                 onClick={handleCreatePostClick}

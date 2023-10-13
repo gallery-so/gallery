@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
@@ -42,13 +42,36 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
 
   return (
     <StyledExternalLinks gap={14}>
-      {mirrorUrl && <InteractiveLink href={mirrorUrl}>View on Mirror</InteractiveLink>}
+      {mirrorUrl && (
+        <GalleryLink
+          href={mirrorUrl}
+          eventElementId="Mirror Link"
+          eventName="Mirror Link Click"
+          eventContext={contexts['NFT Detail']}
+        >
+          View on Mirror
+        </GalleryLink>
+      )}
       {prohibitionUrl && (
-        <InteractiveLink href={prohibitionUrl}>View on Prohibition</InteractiveLink>
+        <GalleryLink
+          href={prohibitionUrl}
+          eventElementId="Prohibition Link"
+          eventName="Prohibition Link Click"
+          eventContext={contexts['NFT Detail']}
+        >
+          View on Prohibition
+        </GalleryLink>
       )}
       {openseaUrl && (
         <VStack gap={14}>
-          <InteractiveLink href={openseaUrl}>View on OpenSea</InteractiveLink>
+          <GalleryLink
+            href={openseaUrl}
+            eventElementId="Opensea Link"
+            eventName="Opensea Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            View on OpenSea
+          </GalleryLink>
           <GalleryPill
             eventElementId="Refresh Single NFT Pill"
             eventName="Refresh Single NFT"
@@ -70,7 +93,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           </GalleryPill>
         </VStack>
       )}
-      {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
+      {projectUrl && <GalleryLink href={projectUrl}>More Info</GalleryLink>}
     </StyledExternalLinks>
   );
 }

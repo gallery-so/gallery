@@ -10,5 +10,20 @@
         "@typescript-eslint/no-var-requires": "off"
       }
     }
-  ]
+  ],
+
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "next/link",
+            // "importNames": ["Link"],
+            "message": "Please use the GalleryLink component instead."
+          }
+        ]
+      }
+    ]
+  }
 }

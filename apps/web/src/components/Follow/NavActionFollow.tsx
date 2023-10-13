@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,9 +7,11 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import FollowButton from './FollowButton';
 
 type Props = {
@@ -50,14 +51,16 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <HStack gap={8} align="center">
-      <Link href={usernameRoute} legacyBehavior>
-        <UsernameBreadcrumbLink
-          href={route(usernameRoute)}
-          mainGalleryPage={pathname === '/[username]'}
-        >
+      <GalleryLink
+        to={usernameRoute}
+        eventElementId="Nav Follow Button"
+        eventName="Follow User"
+        eventContext={contexts.Social}
+      >
+        <UsernameBreadcrumbLink mainGalleryPage={pathname === '/[username]'}>
           {displayName}
         </UsernameBreadcrumbLink>
-      </Link>
+      </GalleryLink>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} source="navbar desktop" />
     </HStack>
   );

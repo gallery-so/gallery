@@ -14,6 +14,7 @@ import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
@@ -32,6 +33,7 @@ type Props = {
   shouldLiveRender?: boolean;
   collectionId?: string;
   onLoad?: () => void;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
 const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
@@ -46,6 +48,7 @@ function NftPreview({
   shouldLiveRender,
   collectionId,
   onLoad,
+  eventContext,
 }: Props) {
   const token = useFragment(
     graphql`
@@ -175,6 +178,7 @@ function NftPreview({
         username={ownerUsername ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
+        eventContext={eventContext}
       >
         <StyledNftPreview
           backgroundColorOverride={backgroundColorOverride}

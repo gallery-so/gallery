@@ -1,4 +1,3 @@
-import Link, { LinkProps } from 'next/link';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
@@ -17,6 +16,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '../core/Text/Text';
@@ -203,20 +203,23 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
       return (
         <StyledFollowing align="center" justify="space-between" style={style} key={key} gap={4}>
           <VStack>
-            <StyledLink
-              href={{
+            <GalleryLink
+              to={{
                 pathname: '/[username]',
                 query: {
                   username: user.username as string,
                 },
               }}
+              eventElementId="Username Link"
+              eventName="Username Click"
+              eventContext={contexts['External Social']}
             >
               <BaseM>
                 <strong>{user.username}</strong>
               </BaseM>
-            </StyledLink>
+            </GalleryLink>
             <BioText>
-              <Markdown text={user.bio ?? ''} />
+              <Markdown text={user.bio ?? ''} eventContext={contexts['External Social']} />
             </BioText>
           </VStack>
           <FollowButton queryRef={query} userRef={user} />
@@ -325,10 +328,6 @@ const StyledFollowingContainer = styled(VStack)`
 
 const StyledFollowing = styled(HStack)`
   padding-right: 8px;
-`;
-
-const StyledLink = styled(Link)<LinkProps>`
-  text-decoration: none;
 `;
 
 const BioText = styled(BaseM)`

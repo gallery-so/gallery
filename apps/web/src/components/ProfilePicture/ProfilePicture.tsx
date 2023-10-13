@@ -1,13 +1,12 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
@@ -54,22 +53,40 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (profileImage && profileImage.previewURLs?.medium) {
     return (
-      <StyledLink href={userProfileLink}>
+      <GalleryLink
+        to={userProfileLink}
+        eventElementId="User Profile Picture"
+        eventName="User Profile Picture Click"
+        // TODO: analytics prop drill
+        eventContext={null}
+      >
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
-      </StyledLink>
+      </GalleryLink>
     );
   }
 
   if (!token) {
     return (
-      <StyledLink href={userProfileLink}>
+      <GalleryLink
+        to={userProfileLink}
+        eventElementId="User Profile Picture"
+        eventName="User Profile Picture Click"
+        // TODO: analytics prop drill
+        eventContext={null}
+      >
         <RawProfilePicture letter={firstLetter} {...rest} />
-      </StyledLink>
+      </GalleryLink>
     );
   }
 
   return (
-    <StyledLink href={userProfileLink}>
+    <GalleryLink
+      to={userProfileLink}
+      eventElementId="User Profile Picture"
+      eventName="User Profile Picture Click"
+      // TODO: analytics prop drill
+      eventContext={null}
+    >
       <NftFailureBoundary
         tokenId={token.dbid}
         fallback={<RawProfilePicture letter={firstLetter} {...rest} />}
@@ -77,7 +94,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
       >
         <ValidProfilePicture tokenRef={token} {...rest} />
       </NftFailureBoundary>
-    </StyledLink>
+    </GalleryLink>
   );
 }
 
@@ -99,8 +116,3 @@ function ValidProfilePicture({ tokenRef, ...rest }: ValidProfilePictureProps) {
 
   return <RawProfilePicture imageUrl={imageUrl} {...rest} />;
 }
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  cursor: pointer;
-`;
