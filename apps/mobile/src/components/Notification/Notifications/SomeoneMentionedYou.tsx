@@ -84,7 +84,7 @@ export function SomeoneMentionedYou({
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const noficationData: NotificationDataType = useMemo(() => {
+  const notificationData: NotificationDataType = useMemo(() => {
     if (notification?.mentionSource?.__typename === 'Post') {
       return {
         author: notification.mentionSource?.author?.username ?? 'Someone',
@@ -144,7 +144,7 @@ export function SomeoneMentionedYou({
     return null;
   }
 
-  const { author, message, usersMentioned, onPress, type } = noficationData;
+  const { author, message, usersMentioned, onPress, type } = notificationData;
 
   return (
     <NotificationSkeleton
