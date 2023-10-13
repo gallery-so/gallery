@@ -13,7 +13,7 @@ type FeatureHighlightBulletsProps = {
 
 function FeatureHighlightBullets({ bullets }: FeatureHighlightBulletsProps) {
   const textList = useMemo(
-    () => bullets.map((bullet) => bullet.children[0] && bullet.children[0].text),
+    () => bullets.map((bullet) => bullet.children[0] && bullet.children[0]?.text),
     [bullets]
   );
   return (

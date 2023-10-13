@@ -15,6 +15,7 @@ type FaqPairProps = {
   onClick: () => void;
 };
 
+// A pair of question + answer for the FAQ section
 function FaqPair({ content, isOpen, onClick }: FaqPairProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [contentHeight, setContentHeight] = useState(0);
@@ -119,11 +120,12 @@ type Props = {
   content: CmsTypes.FaqModule;
 };
 
+// The FAQ section which contains a list of FaqPairs.
 export default function Faq({ content }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handleClick = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex(index);
   };
 
   return (
