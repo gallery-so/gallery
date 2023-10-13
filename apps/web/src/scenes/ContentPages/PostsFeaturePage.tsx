@@ -80,7 +80,6 @@ const StyledPage = styled(VStack)`
   align-items: flex-start;
   min-height: 100vh;
   margin-top: 32px;
-  background-color: ${colors.offWhite};
 
   @media only screen and ${breakpoints.desktop} {
     align-items: center;
