@@ -82,7 +82,9 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
             {timeAgo}
           </Typography>
         </View>
-        <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+        <View className="flex mr-5">
+          <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+        </View>
       </View>
     </GalleryTouchableOpacity>
   );
