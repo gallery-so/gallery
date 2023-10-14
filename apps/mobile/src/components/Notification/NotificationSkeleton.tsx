@@ -138,18 +138,24 @@ export function NotificationSkeleton({
       eventName="Notification Row Clicked"
     >
       <View className="flex-1 flex-row space-x-1 items-center">
-        <ProfilePictureBubblesWithCount
-          eventElementId="Notification Row PFP Bubbles"
-          eventName="Notification Row PFP Bubbles Pressed"
-          onPress={handleBubblesPress}
-          userRefs={responsibleUsers}
-          totalCount={responsibleUserRefs.length}
-          size="md"
-        />
-
+        <View className="mr-1">
+          <ProfilePictureBubblesWithCount
+            eventElementId="Notification Row PFP Bubbles"
+            eventName="Notification Row PFP Bubbles Pressed"
+            onPress={handleBubblesPress}
+            userRefs={responsibleUsers}
+            totalCount={responsibleUserRefs.length}
+            size="md"
+          />
+        </View>
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
-      <View className="flex flex-row items-center justify-between space-x-2">
+      {shouldShowFollowBackButton && lastFollower && (
+        <View className="flex justify-center">
+          <FollowButton queryRef={query} userRef={lastFollower} />
+        </View>
+      )}
+      <View className="flex flex-row items-center justify-between ${postToken ? 'space-x-2' : ''}">
         {postToken ? (
           <View className="w-[56px] h-[56px]">
             <NotificationPostPreviewWithBoundary tokenRef={postToken} />
@@ -157,15 +163,9 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-        {shouldShowFollowBackButton && lastFollower && (
-          <View>
-            <FollowButton queryRef={query} userRef={lastFollower} />
-          </View>
-        )}
-
         <View
-          className={`w-[35px] flex-row items-center ${
-            !notification.seen ? 'justify-between' : 'space-x-2 justify-end'
+          className={`w-[35px] flex-row space-x-2 items-center ${
+            !notification.seen ? 'justify-between' : 'justify-end'
           }`}
         >
           <Typography
