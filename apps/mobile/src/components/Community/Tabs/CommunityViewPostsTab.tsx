@@ -20,6 +20,7 @@ import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPost
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
+import { noop } from '~/shared/utils/noop';
 
 import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
 
@@ -116,7 +117,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         itemId = item.eventId;
       }
 
-      const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
+      const markFailure = () => (itemId ? markEventAsFailure(itemId) : noop);
 
       return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },
@@ -174,7 +175,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
           <CommunityPostBottomSheet
             ref={bottomSheetRef}
             communityRef={community}
-            onRefresh={() => {}}
+            onRefresh={noop}
           />
         </View>
       </View>

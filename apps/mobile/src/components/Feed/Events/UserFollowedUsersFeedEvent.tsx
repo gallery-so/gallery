@@ -17,6 +17,7 @@ import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowed
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { noop } from '~/shared/utils/noop';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { Typography } from '../../Typography';
@@ -172,5 +173,5 @@ function FollowList({ userRefs }: FollowListProps) {
     userRefs
   );
 
-  return <UserFollowList userRefs={users} queryRef={query} onUserPress={() => {}} />;
+  return <UserFollowList userRefs={users} queryRef={query} onUserPress={noop} />;
 }

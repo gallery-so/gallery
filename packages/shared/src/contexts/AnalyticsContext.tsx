@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
+import { noop } from 'src/utils/noop';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
@@ -45,7 +46,7 @@ export const useTrack = () => {
   const track = useContext(AnalyticsContext);
 
   if (!track) {
-    return () => {};
+    return noop;
   }
 
   return track;
