@@ -191,6 +191,7 @@ function PfpBottomSheet(
           size="md"
           eventName={null}
           eventElementId={null}
+          eventContext={contexts.PFP}
           imageUrl={potentialEnsProfileImageUrl ?? ensFallback ?? undefined}
         />
       }

@@ -250,10 +250,22 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 CREATOR
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+              <InteractiveLink
+                onPress={handleUsernamePress}
+                // TODO analytics whenever we enable this component
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              >
                 riley.eth
               </InteractiveLink>
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+              <InteractiveLink
+                onPress={handleUsernamePress}
+                // TODO analytics whenever we enable this component
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              >
                 riley.eth
               </InteractiveLink>
             </View>

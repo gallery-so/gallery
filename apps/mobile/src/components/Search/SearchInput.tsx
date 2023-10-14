@@ -3,7 +3,6 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
 import { TextInput, TextInputProps, View } from 'react-native';
 
-import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { XMarkIcon } from '../../icons/XMarkIcon';

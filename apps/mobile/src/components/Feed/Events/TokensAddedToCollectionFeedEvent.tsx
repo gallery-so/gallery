@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
@@ -76,6 +77,7 @@ export function TokensAddedToCollectionFeedEvent({
           onPress={handleCollectionNamePress}
           eventElementId="Feed Collection Button"
           eventName="Feed Collection Name Clicked"
+          eventContext={contexts.Feed}
         >
           <Typography
             numberOfLines={1}

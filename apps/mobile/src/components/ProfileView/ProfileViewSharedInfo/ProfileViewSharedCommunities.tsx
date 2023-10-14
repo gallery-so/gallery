@@ -162,11 +162,13 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              type="Shared Communities Name"
               textStyle={{
                 fontSize: 12,
                 color: colorScheme === 'dark' ? colors.white : colors.black['800'],
               }}
+              eventElementId="Shared Communities Name"
+              eventName="Shared Communities Name Press"
+              eventContext={contexts.Community}
             >
               {community.name}
             </InteractiveLink>
@@ -188,11 +190,13 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
           <InteractiveLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            type="Shared Communities See All"
             textStyle={{
               fontSize: 12,
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
+            eventElementId="Shared Communities See All"
+            eventName="Shared Communities See All Press"
+            eventContext={contexts.Community}
           >
             {totalCount - communitiesToShow.length} others
           </InteractiveLink>

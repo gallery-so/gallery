@@ -27,6 +27,7 @@ export const contexts = {
   Maintenance: 'Maintenance',
   PFP: 'PFP',
   Toast: 'Toast',
+  Navigation: 'Navigation',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;

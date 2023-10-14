@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
@@ -52,8 +53,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             <LinkableAddress
               textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
               chainAddressRef={token.contract.creatorAddress}
-              type="NFT Detail Creator Address"
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              eventElementId="NFT Detail Creator Address"
+              eventName="NFT Detail Creator Address Press"
+              eventContext={contexts['NFT Detail']}
             />
           </DetailSection>
         )}
@@ -66,8 +69,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <LinkableAddress
                   textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
                   chainAddressRef={contract.contractAddress}
-                  type="NFT Detail Contract Address"
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  eventElementId="NFT Detail Contract Address"
+                  eventName="NFT Detail Contract Address Press"
+                  eventContext={contexts['NFT Detail']}
                 />
               </DetailSection>
             )}
@@ -75,7 +80,12 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             {tokenId && projectUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink href={projectUrl} type="NFT Detail Token ID">
+                <InteractiveLink
+                  href={projectUrl}
+                  eventElementId="NFT Detail Token ID"
+                  eventName="NFT Detail Token ID Press"
+                  eventContext={contexts['NFT Detail']}
+                >
                   {tokenId}
                 </InteractiveLink>
               </DetailSection>
@@ -96,7 +106,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                   <DetailExternalLink
                     link={fxhashUrl}
                     label="fx(hash)"
-                    trackingLabel="NFT Detail View on fxhashUrl"
                     showExternalLinkIcon={true}
                     font={{ family: 'ABCDiatype', weight: 'Bold' }}
                   />
@@ -110,7 +119,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                   <DetailExternalLink
                     link={objktUrl}
                     label="objkt"
-                    trackingLabel="NFT Detail View on objktUrl"
                     showExternalLinkIcon={true}
                     font={{ family: 'ABCDiatype', weight: 'Bold' }}
                   />
@@ -124,7 +132,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                   <DetailExternalLink
                     link={projectUrl}
                     label="Visit Site"
-                    trackingLabel="NFT Detail View on External Link"
                     showExternalLinkIcon={true}
                     font={{ family: 'ABCDiatype', weight: 'Bold' }}
                   />

@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
@@ -9,10 +11,7 @@ type TabItemProps = {
   route: string;
   counter?: number;
   onRouteChange: (route: string) => void;
-
-  eventElementId?: string;
-  eventName?: string;
-};
+} & GalleryElementTrackingProps;
 
 function TabItem({
   activeRoute,
@@ -21,6 +20,8 @@ function TabItem({
   onRouteChange,
   eventElementId,
   eventName,
+  eventContext,
+  eventFlow,
 }: TabItemProps) {
   const isFocused = activeRoute === route;
 
@@ -34,8 +35,10 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
-      eventElementId={eventElementId ?? null}
-      eventName={eventName ?? null}
+      eventElementId={eventElementId}
+      eventName={eventName}
+      eventContext={eventContext}
+      eventFlow={eventFlow}
       properties={{ variant: route }}
     >
       <Typography
@@ -58,13 +61,13 @@ type Props = {
   activeRoute: string;
   onRouteChange: (route: string) => void;
   routes: TabRoutes[];
-  eventElementId?: string;
-  eventName?: string;
-};
+} & GalleryElementTrackingProps;
 
 export function GalleryTabBar({
   eventElementId,
   eventName,
+  eventContext,
+  eventFlow,
   routes,
   activeRoute,
   onRouteChange,
@@ -81,6 +84,8 @@ export function GalleryTabBar({
             counter={route.counter}
             eventElementId={eventElementId}
             eventName={eventName}
+            eventContext={eventContext}
+            eventFlow={eventFlow}
           />
         );
       })}

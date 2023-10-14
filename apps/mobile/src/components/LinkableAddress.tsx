@@ -3,25 +3,28 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
-import { InteractiveLink, InteractiveLinkProps } from './InteractiveLink';
+import { InteractiveLink } from './InteractiveLink';
 import { Typography, TypographyProps } from './Typography';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
-  type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
   font?: TypographyProps['font'];
-};
+} & GalleryElementTrackingProps;
 
 export function LinkableAddress({
   chainAddressRef,
-  type,
   style,
   textStyle,
   font,
+  eventElementId,
+  eventName,
+  eventContext,
+  eventFlow,
 }: LinkableAddressProps) {
   const address = useFragment(
     graphql`
@@ -51,13 +54,16 @@ export function LinkableAddress({
   } else if (truncatedAddress) {
     return (
       <RawLinkableAddress
-        type={type}
         link={link}
         truncatedAddress={truncatedAddress}
         address={address.address}
         style={style}
         textStyle={textStyle}
         font={font}
+        eventElementId={eventElementId}
+        eventName={eventName}
+        eventContext={eventContext}
+        eventFlow={eventFlow}
       />
     );
   } else {
@@ -69,23 +75,34 @@ type RawLinkableAddressProps = {
   link: string;
   address: string;
   truncatedAddress: string | null;
-  type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
   font?: TypographyProps['font'];
-};
+} & GalleryElementTrackingProps;
 
 export function RawLinkableAddress({
   link,
   truncatedAddress,
   address,
-  type,
   style,
   textStyle,
   font,
+  eventElementId,
+  eventName,
+  eventContext,
+  eventFlow,
 }: RawLinkableAddressProps) {
   return (
-    <InteractiveLink href={link} type={type} style={style} textStyle={textStyle} font={font}>
+    <InteractiveLink
+      href={link}
+      style={style}
+      textStyle={textStyle}
+      font={font}
+      eventElementId={eventElementId}
+      eventName={eventName}
+      eventContext={eventContext}
+      eventFlow={eventFlow}
+    >
       {truncatedAddress || address}
     </InteractiveLink>
   );

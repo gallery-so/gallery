@@ -6,7 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { UpsellBannerFragment$key } from '~/generated/UpsellBannerFragment.graphql';
+import { ConnectWalletUpsellBannerFragment$key } from '~/generated/ConnectWalletUpsellBannerFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
@@ -15,13 +15,13 @@ import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
 type Props = {
-  queryRef: UpsellBannerFragment$key;
+  queryRef: ConnectWalletUpsellBannerFragment$key;
 };
 
 export function ConnectWalletUpsellBanner({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment UpsellBannerFragment on Query {
+      fragment ConnectWalletUpsellBannerFragment on Query {
         viewer {
           ... on Viewer {
             user {

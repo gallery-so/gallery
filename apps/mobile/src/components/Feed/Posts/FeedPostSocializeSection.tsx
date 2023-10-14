@@ -8,6 +8,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';
@@ -134,8 +135,9 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
         {isEmptyComments && (
           <GalleryTouchableOpacity
             onPress={handleOpenCommentBottomSheet}
-            eventElementId={null}
-            eventName={null}
+            eventElementId="Add Comment Button"
+            eventName="Add Comment"
+            eventContext={contexts.Posts}
           >
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}

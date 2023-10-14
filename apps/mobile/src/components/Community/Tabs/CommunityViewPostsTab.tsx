@@ -19,6 +19,7 @@ import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
 
@@ -165,8 +166,9 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
           <Button
             text={'CREATE A POST'}
             onPress={handleCreatePost}
-            eventElementId={null}
-            eventName={null}
+            eventElementId="Empty View Create Post Button"
+            eventName="Empty View Create Post Button Press"
+            eventContext={contexts.Posts}
           />
 
           <CommunityPostBottomSheet

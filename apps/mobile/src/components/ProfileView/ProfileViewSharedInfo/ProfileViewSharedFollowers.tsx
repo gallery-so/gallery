@@ -15,6 +15,7 @@ import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/Profi
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
 import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewSharedFollowersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -76,6 +77,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         totalCount={totalSharedFollowers}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
+        eventContext={contexts.Social}
         userRefs={sharedFollowers}
       />
 
@@ -136,11 +138,13 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
                 }
               }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              type="Shared Followers Username"
               textStyle={{
                 fontSize: 12,
                 color: colorScheme === 'dark' ? colors.white : colors.black['800'],
               }}
+              eventElementId="Shared Followers Username"
+              eventName="Shared Followers Username Press"
+              eventContext={contexts.Social}
             >
               {user.username}
             </InteractiveLink>
@@ -162,11 +166,13 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
           <InteractiveLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            type="Shared Followers See All"
             textStyle={{
               fontSize: 12,
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
+            eventElementId="Shared Followers See All"
+            eventName="Shared Followers See All Press"
+            eventContext={contexts.Social}
           >
             {totalCount - usersToShow.length} others
           </InteractiveLink>

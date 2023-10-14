@@ -156,10 +156,20 @@ export function SettingsScreen() {
             </Typography>
           )}
 
-          <InteractiveLink href="https://gallery.so/terms" type={null}>
+          <InteractiveLink
+            href="https://gallery.so/terms"
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          >
             TERMS
           </InteractiveLink>
-          <InteractiveLink href="https://gallery.so/privacy" type={null}>
+          <InteractiveLink
+            href="https://gallery.so/privacy"
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          >
             PRIVACY POLICY
           </InteractiveLink>
           {isAdminUser && (

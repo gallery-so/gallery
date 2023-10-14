@@ -115,6 +115,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 letter="F"
                 hasInset
                 size="sm"
@@ -122,6 +123,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 letter="F"
                 hasInset
                 size="md"
@@ -129,6 +131,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 letter="F"
                 hasInset
                 size="lg"
@@ -136,106 +139,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
-                letter="F"
-                hasInset
-                size="xl"
-              />
-            </ProfilePictureSection>
-
-            <ProfilePictureSection>
-              <RawProfilePicture eventElementId={null} eventName={null} letter="F" size="sm" />
-              <RawProfilePicture eventElementId={null} eventName={null} letter="F" size="md" />
-              <RawProfilePicture eventElementId={null} eventName={null} letter="F" size="lg" />
-              <RawProfilePicture eventElementId={null} eventName={null} letter="F" size="xl" />
-            </ProfilePictureSection>
-
-            <ProfilePictureSection>
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                imageUrl={avatarUrl}
-                size="sm"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                imageUrl={avatarUrl}
-                size="md"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                imageUrl={avatarUrl}
-                size="lg"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                imageUrl={avatarUrl}
-                size="xl"
-              />
-            </ProfilePictureSection>
-
-            <ProfilePictureSection>
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                hasInset
-                imageUrl={avatarUrl}
-                size="sm"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                hasInset
-                imageUrl={avatarUrl}
-                size="md"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                hasInset
-                imageUrl={avatarUrl}
-                size="lg"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                hasInset
-                imageUrl={avatarUrl}
-                size="xl"
-              />
-            </ProfilePictureSection>
-
-            <ProfilePictureSection>
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                isEditable
-                letter="F"
-                hasInset
-                size="sm"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                isEditable
-                letter="F"
-                hasInset
-                size="md"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                isEditable
-                letter="F"
-                hasInset
-                size="lg"
-              />
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                isEditable
+                eventContext={null}
                 letter="F"
                 hasInset
                 size="xl"
@@ -246,6 +150,143 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
+                letter="F"
+                size="sm"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                letter="F"
+                size="md"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                letter="F"
+                size="lg"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                letter="F"
+                size="xl"
+              />
+            </ProfilePictureSection>
+
+            <ProfilePictureSection>
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                imageUrl={avatarUrl}
+                size="sm"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                imageUrl={avatarUrl}
+                size="md"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                imageUrl={avatarUrl}
+                size="lg"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                imageUrl={avatarUrl}
+                size="xl"
+              />
+            </ProfilePictureSection>
+
+            <ProfilePictureSection>
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                hasInset
+                imageUrl={avatarUrl}
+                size="sm"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                hasInset
+                imageUrl={avatarUrl}
+                size="md"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                hasInset
+                imageUrl={avatarUrl}
+                size="lg"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                hasInset
+                imageUrl={avatarUrl}
+                size="xl"
+              />
+            </ProfilePictureSection>
+
+            <ProfilePictureSection>
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                isEditable
+                letter="F"
+                hasInset
+                size="sm"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                isEditable
+                letter="F"
+                hasInset
+                size="md"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                isEditable
+                letter="F"
+                hasInset
+                size="lg"
+              />
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                isEditable
+                letter="F"
+                hasInset
+                size="xl"
+              />
+            </ProfilePictureSection>
+
+            <ProfilePictureSection>
+              <RawProfilePicture
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
                 isEditable
                 letter="F"
                 size="sm"
@@ -253,6 +294,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 letter="F"
                 size="md"
@@ -260,6 +302,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 letter="F"
                 size="lg"
@@ -267,6 +310,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 letter="F"
                 size="xl"
@@ -277,6 +321,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 imageUrl={avatarUrl}
                 size="sm"
@@ -284,6 +329,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 imageUrl={avatarUrl}
                 size="md"
@@ -291,6 +337,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 imageUrl={avatarUrl}
                 size="lg"
@@ -298,6 +345,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 imageUrl={avatarUrl}
                 size="xl"
@@ -308,6 +356,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 hasInset
                 imageUrl={avatarUrl}
@@ -316,6 +365,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 hasInset
                 imageUrl={avatarUrl}
@@ -324,6 +374,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 hasInset
                 imageUrl={avatarUrl}
@@ -332,6 +383,7 @@ export function DesignSystemButtonsScreen() {
               <RawProfilePicture
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
                 isEditable
                 hasInset
                 imageUrl={avatarUrl}

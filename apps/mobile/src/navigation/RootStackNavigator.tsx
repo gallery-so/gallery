@@ -106,7 +106,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
   const query = useFragment(
     graphql`
       fragment RootStackNavigatorFragment on Query {
-        ...UpsellBannerFragment
+        ...ConnectWalletUpsellBannerFragment
       }
     `,
     queryRef

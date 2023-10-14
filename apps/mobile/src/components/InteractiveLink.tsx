@@ -1,8 +1,9 @@
+import { useNavigationState } from '@react-navigation/native';
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback } from 'react';
-import { Linking, TextProps, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, Linking, TextProps, TouchableOpacityProps } from 'react-native';
 
-import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography, TypographyProps } from './Typography';
@@ -12,12 +13,11 @@ export type InteractiveLinkProps = PropsWithChildren<{
   showUnderline?: boolean;
   onPress?: () => void;
   style?: TouchableOpacityProps['style'];
-  // for tracking
-  type: string | null;
   textStyle?: TextProps['style'];
   font?: TypographyProps['font'];
-  trackingProps?: GalleryElementTrackingProps['properties'];
-}>;
+}> &
+  GalleryElementTrackingProps &
+  TouchableOpacityProps;
 
 export function InteractiveLink({
   href,
@@ -25,30 +25,67 @@ export function InteractiveLink({
   onPress,
   showUnderline = false,
   children,
-  type,
   textStyle,
   font,
-  trackingProps = {},
+  eventElementId,
+  eventName,
+  eventContext,
+  eventFlow,
+  properties = {},
 }: InteractiveLinkProps) {
-  const handlePress = useCallback(() => {
-    if (href) {
-      Linking.openURL(href);
-    } else if (onPress) {
-      onPress();
-    }
-  }, [href, onPress]);
+  const _handlePress = useCallback(
+    (event: GestureResponderEvent) => {
+      if (href) {
+        Linking.openURL(href);
+      } else if (onPress) {
+        onPress(event);
+      }
+    },
+    [href, onPress]
+  );
+
+  const track = useTrack();
+
+  const currentScreen = useNavigationState((state) => {
+    return state?.routes[state.index]?.name;
+  });
+
+  const handlePress = useCallback(
+    (event: GestureResponderEvent) => {
+      if (eventElementId) {
+        track('Interactive Link Press', {
+          id: eventElementId,
+          name: eventName,
+          context: eventContext,
+          flow: eventFlow,
+          screen: currentScreen,
+          ...properties,
+        });
+      }
+
+      _handlePress(event);
+    },
+    [
+      _handlePress,
+      currentScreen,
+      eventContext,
+      eventElementId,
+      eventFlow,
+      eventName,
+      properties,
+      track,
+    ]
+  );
 
   return (
     <GalleryTouchableOpacity
       style={style}
       onPress={handlePress}
-      eventElementId="Interactive Link"
-      eventName="Link Clicked"
-      properties={{
-        ...trackingProps,
-        href: href ?? 'undefined',
-        type: type ?? 'undefined',
-      }}
+      // we track within this component, so no need to pass down
+      // to GalleryTouchableOpacity
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
     >
       <Typography
         className={clsx(`text-shadow dark:text-white text-sm`, {
