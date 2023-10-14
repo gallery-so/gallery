@@ -22,7 +22,11 @@ type LoadableTokenDetailViewProps = {
 export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDetailViewProps) {
   const query = useLazyLoadQuery<TokenDetailViewQuery>(
     graphql`
-      query TokenDetailViewQuery($tokenId: DBID!, $interactionsFirst: Int!, $interactionsAfter: String) {
+      query TokenDetailViewQuery(
+        $tokenId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         token: tokenById(id: $tokenId) {
           ... on ErrTokenNotFound {
             __typename

@@ -18,7 +18,7 @@ const alphaHex = (percentage: number) => {
 };
 
 type StyledButtonProps = {
-  variant?: 'primary' | 'secondary' | 'warning' | 'admire';
+  variant?: 'primary' | 'secondary' | 'warning' | 'blue';
   disabled?: boolean;
   active?: boolean;
 };
@@ -107,7 +107,7 @@ const StyledButton = styled.button<StyledButtonProps>`
       `;
     }
 
-    if (variant === 'admire') {
+    if (variant === 'blue') {
       return css`
         background: ${colors.white};
         color: ${colors.black['800']};
@@ -116,7 +116,7 @@ const StyledButton = styled.button<StyledButtonProps>`
 
         &:hover:not(:disabled) {
           color: ${colors.black['800']};
-          border: 1px solid ${!active ? colors.hyperBlue :  colors.porcelain};
+          border: 1px solid ${!active ? colors.hyperBlue : colors.porcelain};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things

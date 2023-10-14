@@ -65,6 +65,5 @@ export function AdmireTokenModal({ tokenRef, queryRef, fullscreen }: Props) {
       loadPrevious={loadPrevious}
       hasPrevious={hasPrevious}
     />
-
   );
 }

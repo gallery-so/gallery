@@ -8,7 +8,7 @@ import colors from '~/shared/theme/colors';
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'admire';
+type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
 
@@ -87,7 +87,7 @@ const buttonVariants: ButtonVariants = {
         loadingColor: 'black',
       },
     },
-    admire: {
+    blue: {
       inactive: {
         containerClassName: 'bg-white',
         textClassName: 'text-black-800',
@@ -149,7 +149,7 @@ const buttonVariants: ButtonVariants = {
         loadingColor: colors.shadow,
       },
     },
-    admire: {
+    blue: {
       inactive: {
         containerClassName: 'bg-black-900',
         textClassName: 'text-white',
