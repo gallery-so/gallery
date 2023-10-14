@@ -9,11 +9,11 @@ import {
 } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
-import { noop } from 'src/utils/noop';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
 import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
+import { noop } from '../utils/noop';
 
 type EventProps = Record<string, unknown>;
 
