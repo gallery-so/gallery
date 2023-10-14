@@ -51,6 +51,7 @@ export function SearchScreen() {
         {keyword ? (
           <View className="flex-grow">
             <SearchResults
+              keyword={keyword}
               activeFilter={filter}
               onChangeFilter={setFilter}
               blurInputFocus={blurInputFocus}

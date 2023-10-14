@@ -13,6 +13,7 @@ import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommente
 import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
+import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 
 type NotificationInnerProps = {
@@ -31,6 +32,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneViewedYourGalleryQueryFragment
         ...SomeoneAdmiredYourPostQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
+        ...SomeoneMentionedYouQueryFragment
       }
     `,
     queryRef
@@ -85,6 +87,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...NewTokensFragment
         }
+
+        ... on SomeoneMentionedYouNotification {
+          __typename
+          ...SomeoneMentionedYouFragment
+        }
       }
     `,
     notificationRef
@@ -111,6 +118,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       ) : null;
     } else if (notification.__typename === 'NewTokensNotification') {
       return <NewTokens notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
+      return <SomeoneMentionedYou queryRef={query} notificationRef={notification} />;
     }
     return <View />;
   }, [notification, query]);

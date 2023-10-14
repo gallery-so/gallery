@@ -159,7 +159,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-6 px-4 pb-4">
+      <View className="flex flex-col space-y-3 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <TokenViewEmitter
@@ -176,7 +176,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             />
           </View>
 
-          <View className="w-full">
+          <View className="w-full mb-3">
             <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
@@ -187,7 +187,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         </View>
 
-        <View className="flex flex-col space-y-4">
+        <View className="flex flex-col space-y-2">
           <Typography
             className="text-2xl"
             font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
@@ -221,7 +221,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         <View className="flex-row">
           {token.owner && (
-            <View className="w-1/2">
+            <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
                 font={{ family: 'ABCDiatype', weight: 'Medium' }}

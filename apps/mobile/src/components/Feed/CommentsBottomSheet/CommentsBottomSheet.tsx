@@ -10,8 +10,9 @@ import {
 import { View } from 'react-native';
 import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
+import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
@@ -21,12 +22,15 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
+import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListPaginationQuery.graphql';
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
+import { CommentsBottomSheetQueryFragment$key } from '~/generated/CommentsBottomSheetQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
@@ -36,12 +40,29 @@ import { CommentListFallback } from './CommentListFallback';
 const SNAP_POINTS = [400];
 
 type CommentsBottomSheetProps = {
+  activeCommentId?: string;
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
+  queryRef: CommentsBottomSheetQueryFragment$key;
 };
 
-export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBottomSheetProps) {
+export function CommentsBottomSheet({
+  activeCommentId,
+  bottomSheetRef,
+  feedId,
+  type,
+  queryRef,
+}: CommentsBottomSheetProps) {
+  const query = useFragment(
+    graphql`
+      fragment CommentsBottomSheetQueryFragment on Query {
+        ...useMentionableMessageQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,16 +79,30 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
 
+  const {
+    aliasKeyword,
+    isSelectingMentions,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    resetMentions,
+    handleSelectionChange,
+  } = useMentionableMessage(query);
+
   const handleSubmit = useCallback(
     (value: string) => {
       if (type === 'Post') {
         postComment({
           feedId,
           value,
+          mentions,
           onSuccess: () => {
             Keyboard.dismiss();
           },
         });
+
+        resetMentions();
         return;
       }
 
@@ -79,7 +114,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         },
       });
     },
-    [feedId, type, submitComment, postComment]
+    [feedId, type, mentions, submitComment, postComment, resetMentions]
   );
 
   const isSubmitting = useMemo(() => {
@@ -112,19 +147,52 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       onChange={() => setIsOpen(true)}
       android_keyboardInputMode="adjustResize"
       keyboardBlurBehavior="restore"
+      onDismiss={resetMentions}
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
-        <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Comments
-        </Typography>
-
-        <View className="flex-grow px-1">
-          <Suspense fallback={<CommentListFallback />}>
-            {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
-          </Suspense>
+        <View className="flex-grow">
+          {isSelectingMentions ? (
+            <View className="flex-1 overflow-hidden">
+              <Suspense fallback={<SearchResultsFallback />}>
+                <SearchResults
+                  keyword={aliasKeyword}
+                  activeFilter="top"
+                  onChangeFilter={() => {}}
+                  blurInputFocus={() => {}}
+                  onSelect={selectMention}
+                  onlyShowTopResults
+                  isMentionSearch
+                />
+              </Suspense>
+            </View>
+          ) : (
+            <View className="flex-1 space-y-2">
+              <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Comments
+              </Typography>
+              <View className="flex-grow">
+                <Suspense fallback={<CommentListFallback />}>
+                  {isOpen && (
+                    <ConnectedCommentsList
+                      type={type}
+                      feedId={feedId}
+                      activeCommentId={activeCommentId}
+                    />
+                  )}
+                </Suspense>
+              </View>
+            </View>
+          )}
         </View>
 
-        <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />
+        <CommentBox
+          value={message}
+          onChangeText={setMessage}
+          onSelectionChange={handleSelectionChange}
+          onSubmit={handleSubmit}
+          isSubmittingComment={isSubmitting}
+          onClose={() => {}}
+        />
       </Animated.View>
     </GalleryBottomSheetModal>
   );
@@ -133,17 +201,23 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
 type ConnectedCommentsListProps = {
   type: FeedItemTypes;
   feedId: string;
+  activeCommentId?: string;
 };
 
-function ConnectedCommentsList({ type, feedId }: ConnectedCommentsListProps) {
+function ConnectedCommentsList({ type, feedId, activeCommentId }: ConnectedCommentsListProps) {
   if (type === 'Post') {
-    return <ConnectedPostCommentsList feedId={feedId} />;
+    return <ConnectedPostCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
   }
 
-  return <ConnectedEventCommentsList feedId={feedId} />;
+  return <ConnectedEventCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
 }
 
-function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
+type ConnectedCommentsProps = {
+  activeCommentId?: string;
+  feedId: string;
+};
+
+function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedCommentsListQuery(
@@ -200,7 +274,11 @@ function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
   return (
     <View className="flex-1">
       {comments.length > 0 ? (
-        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+        <CommentsBottomSheetList
+          onLoadMore={handleLoadMore}
+          commentRefs={comments}
+          activeCommentId={activeCommentId}
+        />
       ) : (
         <View className="flex items-center justify-center h-full">
           <Typography
@@ -215,7 +293,7 @@ function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
   );
 }
 
-function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
+function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedPostCommentsListQuery(
@@ -270,7 +348,11 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
   return (
     <View className="flex-1">
       {comments.length > 0 ? (
-        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+        <CommentsBottomSheetList
+          onLoadMore={handleLoadMore}
+          commentRefs={comments}
+          activeCommentId={activeCommentId}
+        />
       ) : (
         <View className="flex items-center justify-center h-full">
           <Typography

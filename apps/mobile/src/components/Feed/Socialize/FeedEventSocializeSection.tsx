@@ -4,16 +4,14 @@ import { graphql, useFragment } from 'react-relay';
 import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { Typography } from '~/components/Typography';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
-import { contexts } from '~/shared/analytics/constants';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from './AdmireButton';
+import { Admires } from './Admires';
 import { CommentButton } from './CommentButton';
-import { Interactions } from './Interactions';
+import Comments from './Comments';
 
 type Props = {
   feedEventRef: FeedEventSocializeSectionFragment$key;
@@ -41,7 +39,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           edges {
             node {
               dbid
-              ...InteractionsAdmiresFragment
+              ...AdmiresFragment
             }
           }
         }
@@ -54,7 +52,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           }
           edges {
             node {
-              ...InteractionsCommentsFragment
+              ...CommentsFragment
             }
           }
         }
@@ -69,6 +67,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...useToggleAdmireQueryFragment
+        ...CommentsBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -92,7 +91,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   }, [event.comments?.edges]);
 
   const totalComments = event.comments?.pageInfo?.total ?? 0;
-  const isEmptyComments = totalComments === 0;
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -125,12 +123,10 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
       <View className="px-3 pb-8 pt-5">
         <View className="flex flex-row justify-between">
           <View className="flex-1 pr-4 pt-1">
-            <Interactions
+            <Admires
               type="FeedEvent"
               feedId={event.dbid}
-              commentRefs={nonNullComments}
               admireRefs={nonNullAdmires}
-              totalComments={totalComments}
               totalAdmires={totalAdmires}
               onAdmirePress={toggleAdmire}
               openCommentBottomSheet={handleOpenCommentBottomSheet}
@@ -142,26 +138,17 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
             <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
           </View>
         </View>
-        {isEmptyComments && (
-          <GalleryTouchableOpacity
-            onPress={handleOpenCommentBottomSheet}
-            eventElementId="Add Comment Button"
-            eventName="Add Comment"
-            eventContext={contexts.Posts}
-          >
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow"
-            >
-              Add a comment
-            </Typography>
-          </GalleryTouchableOpacity>
-        )}
+        <Comments
+          commentRefs={nonNullComments}
+          totalComments={totalComments}
+          onCommentPress={handleOpenCommentBottomSheet}
+        />
       </View>
       <CommentsBottomSheet
         type="FeedEvent"
         feedId={event.dbid}
         bottomSheetRef={commentsBottomSheetRef}
+        queryRef={query}
       />
     </>
   );

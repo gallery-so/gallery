@@ -19,7 +19,7 @@ import styled from 'styled-components';
 
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 import breakpoints, { pageGutter } from '../core/breakpoints';
 import GalleryLink from '../core/GalleryLink/GalleryLink';

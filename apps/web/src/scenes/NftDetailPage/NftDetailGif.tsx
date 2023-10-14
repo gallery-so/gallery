@@ -7,7 +7,7 @@ import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import { NftDetailGifFragment$key } from '~/generated/NftDetailGifFragment.graphql';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 
 type Props = {

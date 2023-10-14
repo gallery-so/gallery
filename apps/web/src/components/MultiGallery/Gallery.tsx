@@ -18,7 +18,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';

@@ -74,6 +74,25 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneMentionedYouNotification {
+          mentionSource {
+            __typename
+            ... on Post {
+              tokens {
+                ...NotificationPostPreviewWithBoundaryFragment
+              }
+            }
+            ... on Comment {
+              source {
+                ... on Post {
+                  tokens {
+                    ...NotificationPostPreviewWithBoundaryFragment
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     `,
     notificationRef
@@ -113,6 +132,17 @@ export function NotificationSkeleton({
     ) {
       return notification.post?.tokens?.[0];
     }
+
+    if (notification.__typename === 'SomeoneMentionedYouNotification') {
+      if (notification.mentionSource?.__typename === 'Post') {
+        return notification.mentionSource.tokens?.[0];
+      }
+
+      if (notification.mentionSource?.__typename === 'Comment') {
+        return notification.mentionSource.source?.tokens?.[0];
+      }
+    }
+
     return null;
   }, [notification]);
 

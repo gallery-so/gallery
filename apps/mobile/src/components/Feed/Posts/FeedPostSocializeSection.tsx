@@ -1,19 +1,20 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { Typography } from '~/components/Typography';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';
+import { Admires } from '../Socialize/Admires';
 import { CommentButton } from '../Socialize/CommentButton';
-import { Interactions } from '../Socialize/Interactions';
+import Comments from '../Socialize/Comments';
 
 type Props = {
   feedPostRef: FeedPostSocializeSectionFragment$key;
@@ -36,7 +37,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           edges {
             node {
               dbid
-              ...InteractionsAdmiresFragment
+              ...AdmiresFragment
             }
           }
         }
@@ -49,7 +50,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           }
           edges {
             node {
-              ...InteractionsCommentsFragment
+              ...CommentsFragment
             }
           }
         }
@@ -64,10 +65,13 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     graphql`
       fragment FeedPostSocializeSectionQueryFragment on Query {
         ...useTogglePostAdmireQueryFragment
+        ...CommentsBottomSheetQueryFragment
       }
     `,
     queryRef
   );
+
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Post'>>();
 
   const { toggleAdmire, hasViewerAdmiredEvent } = useTogglePostAdmire({
     postRef: post,
@@ -87,7 +91,6 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
   }, [post.comments?.edges]);
 
   const totalComments = post.comments?.pageInfo?.total ?? 0;
-  const isEmptyComments = totalComments === 0;
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -110,17 +113,21 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     commentsBottomSheetRef.current?.present();
   }, []);
 
+  useEffect(() => {
+    if (route.params?.commentId) {
+      handleOpenCommentBottomSheet();
+    }
+  }, [route.params, handleOpenCommentBottomSheet]);
+
   return (
     <>
       <View className="px-3 pb-8 pt-2">
         <View className="flex flex-row justify-between">
           <View className="flex-1 pr-4 pt-1">
-            <Interactions
+            <Admires
               type="Post"
               feedId={post.dbid}
-              commentRefs={nonNullComments}
               admireRefs={nonNullAdmires}
-              totalComments={totalComments}
               totalAdmires={totalAdmires}
               onAdmirePress={toggleAdmire}
               openCommentBottomSheet={handleOpenCommentBottomSheet}
@@ -132,23 +139,19 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
             <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
           </View>
         </View>
-        {isEmptyComments && (
-          <GalleryTouchableOpacity
-            onPress={handleOpenCommentBottomSheet}
-            eventElementId="Add Comment Button"
-            eventName="Add Comment"
-            eventContext={contexts.Posts}
-          >
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow"
-            >
-              Add a comment
-            </Typography>
-          </GalleryTouchableOpacity>
-        )}
+        <Comments
+          commentRefs={nonNullComments}
+          totalComments={totalComments}
+          onCommentPress={handleOpenCommentBottomSheet}
+        />
       </View>
-      <CommentsBottomSheet type="Post" feedId={post.dbid} bottomSheetRef={commentsBottomSheetRef} />
+      <CommentsBottomSheet
+        type="Post"
+        feedId={post.dbid}
+        bottomSheetRef={commentsBottomSheetRef}
+        queryRef={query}
+        activeCommentId={route.params?.commentId}
+      />
     </>
   );
 }

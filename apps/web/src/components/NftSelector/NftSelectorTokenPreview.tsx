@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';

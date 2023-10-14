@@ -13,11 +13,10 @@ type Props = {
   userRef: UsernameDisplayFragment$key;
   style?: GalleryTouchableOpacityProps['style'];
   size?: 'xs' | 'sm';
-  text?: string;
   eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export function UsernameDisplay({ userRef, style, size = 'xs', text, eventContext }: Props) {
+export function UsernameDisplay({ userRef, style, size = 'xs', eventContext }: Props) {
   const user = useFragment(
     graphql`
       fragment UsernameDisplayFragment on GalleryUser {
@@ -45,7 +44,7 @@ export function UsernameDisplay({ userRef, style, size = 'xs', text, eventContex
       eventContext={eventContext}
     >
       <Typography className={`text-${size}`} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-        {text ? text : user.username}
+        {user.username}
       </Typography>
     </GalleryTouchableOpacity>
   );

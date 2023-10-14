@@ -1,15 +1,13 @@
-import { useCallback, useRef, useState } from 'react';
-import { StyleSheet, View, ViewProps } from 'react-native';
+import { useMemo } from 'react';
+import { Text, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { Markdown } from '~/components/Markdown';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   commentRef: CommentLineFragment$key;
@@ -25,22 +23,18 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         commenter @required(action: THROW) {
           ...UsernameDisplayFragment
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     commentRef
   );
-  const [redirectUrl, setRedirectUrl] = useState('');
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(comment.comment ?? '');
 
-  const handleLinkPress = useCallback((url: string) => {
-    bottomSheetRef.current?.present();
-    setRedirectUrl(url);
-  }, []);
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
-      <UsernameDisplay userRef={comment.commenter} size="sm" eventContext={contexts.Posts} />
       <GalleryTouchableOpacity
         onPress={onCommentPress}
         eventElementId="Comment Line"
@@ -48,20 +42,16 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         eventContext={contexts.Posts}
         className="flex flex-row wrap"
       >
-        <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
-          {captionWithMarkdownLinks}
-        </Markdown>
-        <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
+        <Text numberOfLines={2}>
+          <UsernameDisplay
+            userRef={comment.commenter}
+            size="sm"
+            style={{ marginRight: 4 }}
+            eventContext={contexts.Posts}
+          />{' '}
+          <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+        </Text>
       </GalleryTouchableOpacity>
     </View>
   );
 }
-
-const markdownStyles = StyleSheet.create({
-  body: {
-    fontSize: 14,
-  },
-  paragraph: {
-    marginBottom: 0,
-  },
-});

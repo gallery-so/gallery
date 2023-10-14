@@ -9,15 +9,18 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
-import { TabBarQuery } from '~/generated/TabBarQuery.graphql';
+import { TabBarLazyPostIconQuery } from '~/generated/TabBarLazyPostIconQuery.graphql';
+import { TabBarLazyProfilePictureQuery } from '~/generated/TabBarLazyProfilePictureQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
@@ -28,23 +31,28 @@ type TabItemProps = {
   route: NavigationRoute;
   activeRoute: keyof MainTabNavigatorParamList;
   navigation: MaterialTopTabBarProps['navigation'];
-
-  hasWallet?: boolean;
+  onPressOverride?: () => void;
+  ignoreActiveState?: boolean;
 };
 
-function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemProps) {
+function TabItem({
+  navigation,
+  route,
+  icon,
+  activeRoute,
+  onPressOverride,
+  ignoreActiveState = false,
+}: TabItemProps) {
   const [isPressed, setIsPressed] = useState(false);
 
   const isFocused = activeRoute === route.name;
 
-  const { openManageWallet } = useManageWalletActions();
-
   const handleOnPressIn = useCallback(() => {
-    if (route.name === 'PostTab') {
+    if (ignoreActiveState) {
       return;
     }
     setIsPressed(true);
-  }, [route.name]);
+  }, [ignoreActiveState]);
 
   const handleOnPressOut = useCallback(() => {
     setIsPressed(false);
@@ -57,27 +65,12 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
       canPreventDefault: true,
     });
 
-    if (route.name === 'PostTab') {
-      hasWallet
-        ? navigation.navigate('PostNftSelector', {
-            screen: 'Post',
-            fullScreen: true,
-          })
-        : openManageWallet({
-            title: 'You need to connect a wallet to post',
-            onSuccess: () => {
-              navigation.navigate('PostNftSelector', {
-                screen: 'Post',
-                fullScreen: true,
-              });
-            },
-          });
-    } else {
-      if (!isFocused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
-      }
+    if (onPressOverride) {
+      onPressOverride();
+    } else if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(route.name);
     }
-  }, [hasWallet, isFocused, openManageWallet, navigation, route]);
+  }, [navigation, route.key, route.name, onPressOverride, isFocused]);
 
   return (
     <GalleryTouchableOpacity
@@ -123,7 +116,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
       {state.routes.map((route) => {
         let icon = null;
         if (route.name === 'AccountTab') {
-          icon = <AccountIcon />;
+          icon = <LazyAccountTabItem />;
         } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
         } else if (route.name === 'NotificationsTab') {
@@ -213,18 +206,57 @@ function LazyNotificationIcon() {
   );
 }
 
+function LazyAccountTabItem() {
+  return (
+    <Suspense fallback={<AccountIcon />}>
+      <LazyAccountIcon />
+    </Suspense>
+  );
+}
+
+function LazyAccountIcon() {
+  const query = useLazyLoadQuery<TabBarLazyProfilePictureQuery>(
+    graphql`
+      query TabBarLazyProfilePictureQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              ...ProfilePictureFragment
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const user = query.viewer?.user;
+
+  return user ? <ProfilePicture userRef={user} size="sm" /> : null;
+}
+
 function LazyPostTabItem(props: TabItemProps) {
   return (
-    <Suspense fallback={null}>
+    <Suspense
+      fallback={
+        <TabItem
+          {...props}
+          // we don't immediately know the callback handler for the Post icon;
+          // this will be lazily determined
+          onPressOverride={noop}
+          ignoreActiveState
+        />
+      }
+    >
       <LazyPostIcon {...props} />
     </Suspense>
   );
 }
 
 function LazyPostIcon(props: TabItemProps) {
-  const query = useLazyLoadQuery<TabBarQuery>(
+  const query = useLazyLoadQuery<TabBarLazyPostIconQuery>(
     graphql`
-      query TabBarQuery {
+      query TabBarLazyPostIconQuery {
         viewer {
           ... on Viewer {
             user {
@@ -242,5 +274,27 @@ function LazyPostIcon(props: TabItemProps) {
 
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
-  return <TabItem {...props} hasWallet={userHasWallet} />;
+  const { openManageWallet } = useManageWalletActions();
+
+  const handlePressOverride = useCallback(() => {
+    if (userHasWallet) {
+      props.navigation.navigate('PostNftSelector', {
+        screen: 'Post',
+        fullScreen: true,
+      });
+      return;
+    }
+
+    openManageWallet({
+      title: 'You need to connect a wallet to post',
+      onSuccess: () => {
+        props.navigation.navigate('PostNftSelector', {
+          screen: 'Post',
+          fullScreen: true,
+        });
+      },
+    });
+  }, [openManageWallet, props.navigation, userHasWallet]);
+
+  return <TabItem {...props} onPressOverride={handlePressOverride} ignoreActiveState />;
 }

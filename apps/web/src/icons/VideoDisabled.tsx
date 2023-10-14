@@ -1,5 +1,5 @@
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 type Props = {
   className?: string;

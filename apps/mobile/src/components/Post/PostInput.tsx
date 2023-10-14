@@ -1,7 +1,12 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
-import { TextInput, View } from 'react-native';
+import {
+  NativeSyntheticEvent,
+  TextInput,
+  TextInputSelectionChangeEventData,
+  View,
+} from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { PostInputTokenFragment$key } from '~/generated/PostInputTokenFragment.graphql';
@@ -14,9 +19,10 @@ type Props = {
   value: string;
   onChange: (newText: string) => void;
   tokenRef: PostInputTokenFragment$key;
+  onSelectionChange: (selection: { start: number; end: number }) => void;
 };
 
-export function PostInput({ value, onChange, tokenRef }: Props) {
+export function PostInput({ value, onChange, tokenRef, onSelectionChange }: Props) {
   const token = useFragment(
     graphql`
       fragment PostInputTokenFragment on Token {
@@ -49,6 +55,9 @@ export function PostInput({ value, onChange, tokenRef }: Props) {
         selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
         placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
         multiline
+        onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+          onSelectionChange(e.nativeEvent.selection);
+        }}
         maxLength={MAX_LENGTH}
         autoCapitalize="none"
         autoComplete="off"

@@ -15,7 +15,7 @@ import { addUserInfoQuery } from '~/generated/addUserInfoQuery.graphql';
 import { Chain } from '~/generated/enums';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import noop from '~/utils/noop';
+import { noop } from '~/shared/utils/noop';
 
 function AddUserInfo() {
   const query = useLazyLoadQuery<addUserInfoQuery>(
