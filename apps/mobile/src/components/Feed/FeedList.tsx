@@ -13,6 +13,7 @@ import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
+import { noop } from '~/shared/utils/noop';
 
 type FeedListProps = {
   queryRef: FeedListQueryFragment$key;
@@ -82,7 +83,7 @@ export function FeedList({
         itemId = item.eventId;
       }
 
-      const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
+      const markFailure = () => (itemId ? markEventAsFailure(itemId) : noop);
 
       return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },

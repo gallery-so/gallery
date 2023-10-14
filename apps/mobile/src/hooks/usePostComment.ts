@@ -6,6 +6,7 @@ import { MentionInput, usePostCommentMutation } from '~/generated/usePostComment
 import { usePostCommentQuery } from '~/generated/usePostCommentQuery.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import { noop } from '~/shared/utils/noop';
 
 type submitCommentProps = {
   feedId: string;
@@ -64,7 +65,7 @@ export function usePostComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedId, value, onSuccess = () => {}, mentions = [] }: submitCommentProps) => {
+    async ({ feedId, value, onSuccess = noop, mentions = [] }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }

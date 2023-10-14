@@ -13,6 +13,7 @@ import transitions, {
 import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 type Props = {
   message: string;
@@ -20,8 +21,6 @@ type Props = {
   autoClose?: boolean;
   variant?: 'success' | 'error';
 };
-
-const noop = () => {};
 
 export function AnimatedToast({
   message,

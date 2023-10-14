@@ -12,6 +12,7 @@ import { SomeoneMentionedYouFragment$key } from '~/generated/SomeoneMentionedYou
 import { SomeoneMentionedYouQueryFragment$key } from '~/generated/SomeoneMentionedYouQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { noop } from '~/shared/utils/noop';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneMentionedYouQueryFragment$key;
@@ -135,7 +136,7 @@ export function SomeoneMentionedYou({
       author: 'Someone',
       message: '',
       usersMentioned: [],
-      onPress: () => {},
+      onPress: noop,
       type: 'post',
     };
   }, [navigation, notification]);

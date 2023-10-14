@@ -23,6 +23,7 @@ import {
   PostStackNavigatorParamList,
 } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
+import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
 import { usePost } from './usePost';
@@ -190,8 +191,8 @@ function PostComposerScreenInner() {
               <SearchResults
                 keyword={aliasKeyword}
                 activeFilter="top"
-                onChangeFilter={() => {}}
-                blurInputFocus={() => {}}
+                onChangeFilter={noop}
+                blurInputFocus={noop}
                 onSelect={selectMention}
                 onlyShowTopResults
                 isMentionSearch

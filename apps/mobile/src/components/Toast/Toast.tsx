@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { contexts } from '~/shared/analytics/constants';
+import { noop } from '~/shared/utils/noop';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
@@ -23,7 +24,7 @@ type Props = {
 
 export function AnimatedToast({
   message,
-  onClose = () => {},
+  onClose = noop,
   autoClose = true,
   children,
   withoutNavbar,

@@ -13,6 +13,7 @@ import { fetchQuery, graphql } from 'relay-runtime';
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
 import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
+import { noop } from '../utils/noop';
 
 type EventProps = Record<string, unknown>;
 
@@ -45,7 +46,7 @@ export const useTrack = () => {
   const track = useContext(AnalyticsContext);
 
   if (!track) {
-    return () => {};
+    return noop;
   }
 
   return track;
