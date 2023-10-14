@@ -14,6 +14,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowDownIcon from '~/icons/ArrowDownIcon';
 import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
@@ -308,26 +309,44 @@ export default function Gallery({
                   <HStack>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
-                        <DropdownItem onClick={handleEditGalleryName}>
-                          <BaseM>Edit Name & Description</BaseM>
-                        </DropdownItem>
+                        <DropdownItem
+                          onClick={handleEditGalleryName}
+                          name="Manage Gallery"
+                          eventContext={contexts.Editor}
+                          label="Edit Name & Description"
+                        />
                         {hidden ? (
-                          <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                          <DropdownItem
+                            onClick={handleUpdateGalleryHidden}
+                            name="Manage Gallery"
+                            eventContext={contexts.Editor}
+                            label="Unhide"
+                          />
                         ) : (
                           <>
                             {!isFeatured && (
-                              <DropdownItem onClick={handleSetFeaturedGallery}>
-                                <BaseM>Feature on Profile</BaseM>
-                              </DropdownItem>
+                              <DropdownItem
+                                onClick={handleSetFeaturedGallery}
+                                name="Manage Gallery"
+                                eventContext={contexts.Editor}
+                                label="Feature on Profile"
+                              />
                             )}
-                            <DropdownItem onClick={handleUpdateGalleryHidden}>
-                              <BaseM>Hide</BaseM>
-                            </DropdownItem>
+                            <DropdownItem
+                              onClick={handleUpdateGalleryHidden}
+                              name="Manage Gallery"
+                              eventContext={contexts.Editor}
+                              label="Hide"
+                            />
                           </>
                         )}
-                        <DropdownItem onClick={handleDeleteGallery}>
-                          <BaseM color={colors.error}>Delete</BaseM>
-                        </DropdownItem>
+                        <DropdownItem
+                          onClick={handleDeleteGallery}
+                          name="Manage Gallery"
+                          eventContext={contexts.Editor}
+                          label="Delete"
+                          variant="delete"
+                        />
                       </DropdownSection>
                     </SettingsDropdown>
                   </HStack>

@@ -7,6 +7,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorFilterNetworkFragment$key } from '~/generated/NftSelectorFilterNetworkFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { Chain, ChainMetadata, chains } from '~/shared/utils/chains';
@@ -107,6 +108,9 @@ export function NftSelectorFilterNetwork({
                   onSelectChain(chain);
                 }}
                 disabled={isChainDisabled}
+                name="NFT Selector Filter Network"
+                eventContext={contexts.Posts}
+                eventSelection={chain.name}
               >
                 <NetworkDropdownByNetwork chain={chain} />
               </DropdownItem>

@@ -161,8 +161,20 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     return (
       <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
         <DropdownSection>
-          {editGalleryUrl && <DropdownLink href={editGalleryUrl}>EDIT GALLERY</DropdownLink>}
-          <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+          {editGalleryUrl && (
+            <DropdownLink
+              href={editGalleryUrl}
+              name="Gallery Nav"
+              eventContext={contexts.UserGallery}
+              label="Edit Gallery"
+            />
+          )}
+          <DropdownItem
+            onClick={handleNameAndBioClick}
+            name="Gallery Nav"
+            eventContext={contexts.UserGallery}
+            label="Name & Bio"
+          />
         </DropdownSection>
       </Dropdown>
     );
@@ -223,4 +235,5 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
 
 const EditLinkWrapper = styled.div`
   position: relative;
+  cursor: pointer;
 `;

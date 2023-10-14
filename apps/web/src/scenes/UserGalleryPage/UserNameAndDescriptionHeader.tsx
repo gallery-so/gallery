@@ -108,7 +108,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       <Container gap={4}>
         <HStack align="center" gap={4}>
           <HStack gap={8} align="center">
-            <ProfilePicture userRef={user} size="md" />
+            <ProfilePicture userRef={user} size="md" clickDisabled />
             <StyledUsername>{displayName}</StyledUsername>
           </HStack>
 

@@ -17,6 +17,7 @@ import { CollectionRightContentFragment$key } from '~/generated/CollectionRightC
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
+import { contexts } from '~/shared/analytics/constants';
 
 import { SignUpButton } from '../SignUpButton';
 
@@ -118,9 +119,19 @@ export function CollectionRightContent({
       <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
         <DropdownSection>
           {editCollectionUrl && (
-            <DropdownLink href={editCollectionUrl}>EDIT COLLECTION</DropdownLink>
+            <DropdownLink
+              href={editCollectionUrl}
+              name="Collection Nav"
+              eventContext={contexts.UserCollection}
+              label="Edit Collection"
+            />
           )}
-          <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+          <DropdownItem
+            onClick={handleNameAndBioClick}
+            name="Collection Nav"
+            eventContext={contexts.UserCollection}
+            label="Name & Bio"
+          />
         </DropdownSection>
       </Dropdown>
     );
@@ -159,4 +170,5 @@ export function CollectionRightContent({
 
 const EditLinkWrapper = styled.div`
   position: relative;
+  cursor: pointer;
 `;
