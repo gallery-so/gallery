@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { Chain, chains } from '~/shared/utils/chains';
@@ -58,15 +59,19 @@ export function NftSelectorViewSelector({
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectView('Collected')}>
-            <BaseM>Collected</BaseM>
-          </DropdownItem>
+          <DropdownItem
+            onClick={() => onSelectView('Collected')}
+            name="NFT Selector Filter Type"
+            eventContext={contexts.Posts}
+            label="Collected"
+          />
           <DropdownItem
             onClick={() => onSelectView('Created')}
             disabled={!isCreatorSupportEnabledForChain}
-          >
-            <BaseM>Created</BaseM>
-          </DropdownItem>
+            name="NFT Selector Filter Type"
+            eventContext={contexts.Posts}
+            label="Created"
+          />
         </DropdownSection>
       </Dropdown>
     </Container>

@@ -1,5 +1,5 @@
 import { Route } from 'nextjs-routes';
-import { useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
@@ -12,9 +12,24 @@ import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureFragment$key;
+  clickDisabled?: boolean;
 } & Omit<RawProfilePictureProps, 'imageUrl'>;
 
-export function ProfilePicture({ userRef, ...rest }: Props) {
+function PfpLinkWrapper({ userRoute, children }: PropsWithChildren<{ userRoute: Route }>) {
+  return (
+    <GalleryLink
+      to={userRoute}
+      eventElementId="User Profile Picture"
+      eventName="User Profile Picture Click"
+      // TODO: analytics prop drill
+      eventContext={null}
+    >
+      {children}
+    </GalleryLink>
+  );
+}
+
+export function ProfilePicture({ userRef, clickDisabled = false, ...rest }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureFragment on GalleryUser {
@@ -45,48 +60,18 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
     return { pathname: '/[username]', query: { username: user.username as string } };
   }, [user]);
 
-  if (!user) return null;
-
-  const { token, profileImage } = user.profileImage ?? {};
+  const { token, profileImage } = user?.profileImage ?? {};
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
-  if (profileImage && profileImage.previewURLs?.medium) {
+  const renderedPfp = useMemo(() => {
+    if (profileImage?.previewURLs?.medium) {
+      return <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />;
+    }
+    if (!token) {
+      return <RawProfilePicture letter={firstLetter} {...rest} />;
+    }
     return (
-      <GalleryLink
-        to={userProfileLink}
-        eventElementId="User Profile Picture"
-        eventName="User Profile Picture Click"
-        // TODO: analytics prop drill
-        eventContext={null}
-      >
-        <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
-      </GalleryLink>
-    );
-  }
-
-  if (!token) {
-    return (
-      <GalleryLink
-        to={userProfileLink}
-        eventElementId="User Profile Picture"
-        eventName="User Profile Picture Click"
-        // TODO: analytics prop drill
-        eventContext={null}
-      >
-        <RawProfilePicture letter={firstLetter} {...rest} />
-      </GalleryLink>
-    );
-  }
-
-  return (
-    <GalleryLink
-      to={userProfileLink}
-      eventElementId="User Profile Picture"
-      eventName="User Profile Picture Click"
-      // TODO: analytics prop drill
-      eventContext={null}
-    >
       <NftFailureBoundary
         tokenId={token.dbid}
         fallback={<RawProfilePicture letter={firstLetter} {...rest} />}
@@ -94,8 +79,18 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
       >
         <ValidProfilePicture tokenRef={token} {...rest} />
       </NftFailureBoundary>
-    </GalleryLink>
-  );
+    );
+  }, [firstLetter, profileImage, rest, token]);
+
+  if (!user) {
+    return null;
+  }
+
+  if (clickDisabled) {
+    return renderedPfp;
+  }
+
+  return <PfpLinkWrapper userRoute={userProfileLink}>{renderedPfp}</PfpLinkWrapper>;
 }
 
 type ValidProfilePictureProps = {

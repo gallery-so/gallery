@@ -21,7 +21,6 @@ import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollection
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import unescape from '~/shared/utils/unescape';
 
 import GalleryTitleBreadcrumb from '../UserGalleryPage/GalleryTitleBreadcrumb';
@@ -89,8 +88,6 @@ function CollectionGalleryHeader({
     () => (collection.collectorsNote ? unescape(collection.collectorsNote || '') : null),
     [collection.collectorsNote]
   );
-
-  const track = useTrack();
 
   const {
     dbid: collectionId,
@@ -189,9 +186,12 @@ function CollectionGalleryHeader({
               {/* On mobile, we show these options in the navbar, not in header */}
               <SettingsDropdown iconVariant="default">
                 <DropdownSection>
-                  <DropdownItem onClick={handleEditNameClick}>
-                    <BaseM>Edit Name & Description</BaseM>
-                  </DropdownItem>
+                  <DropdownItem
+                    onClick={handleEditNameClick}
+                    name="Manage Collection"
+                    eventContext={contexts.UserCollection}
+                    label="Edit Name & Description"
+                  />
 
                   {!shouldDisplayMobileLayoutToggle && (
                     <DropdownLink
@@ -199,12 +199,10 @@ function CollectionGalleryHeader({
                         pathname: '/gallery/[galleryId]/edit',
                         query: { galleryId, collectionId },
                       }}
-                      onClick={() => {
-                        track('Update existing collection');
-                      }}
-                    >
-                      <BaseM>Edit Collection</BaseM>
-                    </DropdownLink>
+                      name="Manage Collection"
+                      eventContext={contexts.UserCollection}
+                      label="Edit Collection"
+                    />
                   )}
                 </DropdownSection>
               </SettingsDropdown>

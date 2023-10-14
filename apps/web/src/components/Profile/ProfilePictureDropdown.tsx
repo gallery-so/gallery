@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { ProfilePictureDropdownQueryFragment$key } from '~/generated/ProfilePictureDropdownQueryFragment.graphql';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
-import { TrashIconNew } from '~/icons/TrashIconNew';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -108,7 +108,11 @@ export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
   return (
     <Dropdown position="left" active={open} onClose={onClose}>
       <DropdownSection>
-        <StyledDropdownItem onClick={handleSetEnsProfilePicture}>
+        <StyledDropdownItem
+          onClick={handleSetEnsProfilePicture}
+          name="Profile Picture"
+          eventContext={contexts.PFP}
+        >
           <StyledDropdownItemContainer gap={8}>
             {ensProfileImage ? (
               <StyledEnsImage src={ensProfileImage} />
@@ -118,19 +122,24 @@ export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
             <BaseS>Use ENS Avatar</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
-        <StyledDropdownItem onClick={handleShowNftSelector}>
+        <StyledDropdownItem
+          onClick={handleShowNftSelector}
+          name="Profile Picture"
+          eventContext={contexts.PFP}
+        >
           <StyledDropdownItemContainer gap={8}>
             <AllGalleriesIcon color={colors.black[800]} />
             <BaseS>Choose from collection</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
         {user.profileImage && (
-          <StyledDropdownItem onClick={handleRemoveProfileImage}>
-            <StyledDropdownItemContainer gap={8}>
-              <TrashIconNew color="#E12E16" />
-              <StyledRemoveText>Remove current profile picture</StyledRemoveText>
-            </StyledDropdownItemContainer>
-          </StyledDropdownItem>
+          <StyledDropdownItem
+            onClick={handleRemoveProfileImage}
+            name="Profile Picture"
+            eventContext={contexts.PFP}
+            label="Remove current profile picture"
+            variant="error"
+          />
         )}
       </DropdownSection>
     </Dropdown>
