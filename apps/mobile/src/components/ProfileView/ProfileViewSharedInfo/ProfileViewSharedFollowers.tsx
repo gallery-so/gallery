@@ -6,8 +6,8 @@ import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { GalleryLink } from '~/components/GalleryLink';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
