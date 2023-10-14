@@ -76,36 +76,58 @@ export function CommunityView({ queryRef }: Props) {
 
   const TabBar = useCallback(() => {
     return (
-      <CommunityTabsHeader
-        communityRef={community}
-        selectedRoute={selectedRoute}
-        onRouteChange={setSelectedRoute}
-      />
+      <View>
+        <View className="px-4">
+          <CommunityMeta communityRef={community} queryRef={query} />
+        </View>
+        <CommunityTabsHeader
+          communityRef={community}
+          selectedRoute={selectedRoute}
+          onRouteChange={setSelectedRoute}
+        />
+      </View>
     );
-  }, [community, setSelectedRoute, selectedRoute]);
+  }, [community, query, selectedRoute]);
 
-  return (
-    <View className="flex-1">
-      <View className="flex flex-col px-4 py-4 z-10">
-        <View className="flex flex-row justify-between">
-          <BackButton />
+  const Header = useCallback(() => {
+    return (
+      <View>
+        <View className="flex flex-col px-4 py-4 z-10 bg-white dark:bg-black-900">
+          <View className="flex flex-row justify-between">
+            <BackButton />
 
-          <IconContainer
-            eventElementId="Community Share Icon"
-            eventName="Community Share Icon Clicked"
-            icon={<ShareIcon />}
-            onPress={handleShare}
+            <IconContainer
+              eventElementId="Community Share Icon"
+              eventName="Community Share Icon Clicked"
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+          </View>
+        </View>
+        <CommunityHeader communityRef={community} />
+        <View>
+          <View className="px-4">
+            <CommunityMeta communityRef={community} queryRef={query} />
+          </View>
+          <CommunityTabsHeader
+            communityRef={community}
+            selectedRoute={selectedRoute}
+            onRouteChange={setSelectedRoute}
           />
         </View>
       </View>
+    );
+  }, [community, query, selectedRoute]);
 
-      <View className="px-4">
-        <CommunityHeader communityRef={community} />
-        <CommunityMeta communityRef={community} queryRef={query} />
-      </View>
-
+  return (
+    <View className="flex-1">
       <View className="flex-grow">
-        <GalleryTabsContainer TabBar={TabBar} ref={containerRef} initialTabName={selectedRoute}>
+        <GalleryTabsContainer
+          // TabBar={TabBar}
+          Header={Header}
+          ref={containerRef}
+          initialTabName={selectedRoute}
+        >
           <Tabs.Tab name="Posts">
             <CommunityViewPostsTab communityRef={community} queryRef={query} />
           </Tabs.Tab>

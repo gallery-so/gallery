@@ -1,5 +1,6 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { View } from 'react-native';
+import { useCurrentTabScrollY } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
@@ -30,6 +31,12 @@ export function CommunityHeader({ communityRef }: Props) {
     `,
     communityRef
   );
+
+  const scrollY = useCurrentTabScrollY();
+
+  useEffect(() => {
+    console.log({ scrollY });
+  }, [scrollY]);
 
   const hasCommunityDescription = Boolean(community.description);
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);

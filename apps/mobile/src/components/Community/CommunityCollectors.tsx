@@ -1,4 +1,3 @@
-import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityCollectorsFragment$key } from '~/generated/CommunityCollectorsFragment.graphql';
@@ -30,9 +29,5 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  return (
-    <View className="flex-1 pt-16">
-      <CommunityCollectorsList queryRef={query} communityRef={community} />
-    </View>
-  );
+  return <CommunityCollectorsList queryRef={query} communityRef={community} />;
 }
