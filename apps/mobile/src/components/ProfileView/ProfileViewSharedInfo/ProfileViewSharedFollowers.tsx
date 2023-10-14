@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
@@ -131,7 +131,7 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
 
         return (
           <View key={user.dbid} className="flex flex-row">
-            <InteractiveLink
+            <GalleryLink
               onPress={() => {
                 if (user.username) {
                   navigation.push('Profile', { username: user.username });
@@ -147,7 +147,7 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
               eventContext={contexts.Social}
             >
               {user.username}
-            </InteractiveLink>
+            </GalleryLink>
             {(!isLast || hasMore) && (
               <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
@@ -163,7 +163,7 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
             and{' '}
           </Typography>
 
-          <InteractiveLink
+          <GalleryLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             textStyle={{
@@ -175,7 +175,7 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
             eventContext={contexts.Social}
           >
             {totalCount - usersToShow.length} others
-          </InteractiveLink>
+          </GalleryLink>
         </View>
       )}
     </View>

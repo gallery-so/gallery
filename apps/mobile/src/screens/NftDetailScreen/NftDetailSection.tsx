@@ -13,7 +13,7 @@ import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBounda
 import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
@@ -250,7 +250,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 CREATOR
               </Typography>
 
-              <InteractiveLink
+              <GalleryLink
                 onPress={handleUsernamePress}
                 // TODO analytics whenever we enable this component
                 eventElementId={null}
@@ -258,8 +258,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 eventContext={null}
               >
                 riley.eth
-              </InteractiveLink>
-              <InteractiveLink
+              </GalleryLink>
+              <GalleryLink
                 onPress={handleUsernamePress}
                 // TODO analytics whenever we enable this component
                 eventElementId={null}
@@ -267,7 +267,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 eventContext={null}
               >
                 riley.eth
-              </InteractiveLink>
+              </GalleryLink>
             </View>
           )}
         </View>

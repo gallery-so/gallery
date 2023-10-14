@@ -6,7 +6,7 @@ import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
-import { InteractiveLink } from './InteractiveLink';
+import { GalleryLink } from './GalleryLink';
 import { Typography, TypographyProps } from './Typography';
 
 type LinkableAddressProps = {
@@ -93,7 +93,7 @@ export function RawLinkableAddress({
   eventFlow,
 }: RawLinkableAddressProps) {
   return (
-    <InteractiveLink
+    <GalleryLink
       href={link}
       style={style}
       textStyle={textStyle}
@@ -104,6 +104,6 @@ export function RawLinkableAddress({
       eventFlow={eventFlow}
     >
       {truncatedAddress || address}
-    </InteractiveLink>
+    </GalleryLink>
   );
 }

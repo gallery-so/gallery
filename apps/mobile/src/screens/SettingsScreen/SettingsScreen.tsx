@@ -9,7 +9,7 @@ import { Button } from '~/components/Button';
 import { FeedbackBottomSheet } from '~/components/FeedbackBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
 import { Typography } from '~/components/Typography';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
@@ -156,22 +156,22 @@ export function SettingsScreen() {
             </Typography>
           )}
 
-          <InteractiveLink
+          <GalleryLink
             href="https://gallery.so/terms"
             eventElementId={null}
             eventName={null}
             eventContext={null}
           >
             TERMS
-          </InteractiveLink>
-          <InteractiveLink
+          </GalleryLink>
+          <GalleryLink
             href="https://gallery.so/privacy"
             eventElementId={null}
             eventName={null}
             eventContext={null}
           >
             PRIVACY POLICY
-          </InteractiveLink>
+          </GalleryLink>
           {isAdminUser && (
             <GalleryTouchableOpacity
               onPress={handleDebugPress}

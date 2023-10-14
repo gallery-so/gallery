@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
 
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
 import { contexts } from '~/shared/analytics/constants';
 
 import { Typography, TypographyProps } from '../../components/Typography';
@@ -56,7 +56,7 @@ export function DetailExternalLink({
   showExternalLinkIcon = false,
 }: DetailExternalLinkProps) {
   return (
-    <InteractiveLink
+    <GalleryLink
       href={link}
       eventElementId="Project External Link"
       eventName="Project External Link Press"
@@ -78,6 +78,6 @@ export function DetailExternalLink({
           </View>
         )}
       </View>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }

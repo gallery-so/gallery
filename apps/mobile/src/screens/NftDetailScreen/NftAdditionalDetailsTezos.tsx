@@ -7,7 +7,7 @@ import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
-import { InteractiveLink } from '../../components/InteractiveLink';
+import { GalleryLink } from '../../components/GalleryLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
 import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
@@ -80,14 +80,14 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             {tokenId && projectUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink
+                <GalleryLink
                   href={projectUrl}
                   eventElementId="NFT Detail Token ID"
                   eventName="NFT Detail Token ID Press"
                   eventContext={contexts['NFT Detail']}
                 >
                   {tokenId}
-                </InteractiveLink>
+                </GalleryLink>
               </DetailSection>
             )}
           </View>

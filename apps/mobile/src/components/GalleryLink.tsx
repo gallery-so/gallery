@@ -8,7 +8,7 @@ import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/Analyti
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography, TypographyProps } from './Typography';
 
-export type InteractiveLinkProps = PropsWithChildren<{
+export type GalleryLinkProps = PropsWithChildren<{
   href?: string;
   showUnderline?: boolean;
   onPress?: () => void;
@@ -19,7 +19,7 @@ export type InteractiveLinkProps = PropsWithChildren<{
   GalleryElementTrackingProps &
   TouchableOpacityProps;
 
-export function InteractiveLink({
+export function GalleryLink({
   href,
   style,
   onPress,
@@ -32,7 +32,7 @@ export function InteractiveLink({
   eventContext,
   eventFlow,
   properties = {},
-}: InteractiveLinkProps) {
+}: GalleryLinkProps) {
   const _handlePress = useCallback(
     (event: GestureResponderEvent) => {
       if (href) {

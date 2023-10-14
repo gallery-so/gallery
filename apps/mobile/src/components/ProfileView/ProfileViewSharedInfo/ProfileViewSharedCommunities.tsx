@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
@@ -157,7 +157,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
 
         return (
           <View key={community.dbid} className="flex flex-row items-center">
-            <InteractiveLink
+            <GalleryLink
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
@@ -171,7 +171,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
               eventContext={contexts.Community}
             >
               {community.name}
-            </InteractiveLink>
+            </GalleryLink>
             {(!isLast || hasMore) && (
               <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
@@ -187,7 +187,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
             and{' '}
           </Typography>
 
-          <InteractiveLink
+          <GalleryLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             textStyle={{
@@ -199,7 +199,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
             eventContext={contexts.Community}
           >
             {totalCount - communitiesToShow.length} others
-          </InteractiveLink>
+          </GalleryLink>
         </View>
       )}
     </View>
