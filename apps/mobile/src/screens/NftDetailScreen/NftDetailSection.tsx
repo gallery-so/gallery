@@ -361,7 +361,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         <Button
           className={hasViewerAdmiredEvent ? 'border border-[#001CC1]' : 'border border-faint'}
-          variant="admire"
+          variant="blue"
           icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
           eventElementId={'NFT Detail Token Admire'}
           eventName={'NFT Detail Token Admire Clicked'}

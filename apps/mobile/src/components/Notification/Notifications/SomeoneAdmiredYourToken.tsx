@@ -57,9 +57,10 @@ export function SomeoneAdmiredYourToken({
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
 
-  /*
-   const { token } = notification;
+/*
   TODO: add navigation to token from notification
+
+  const { token } = notification;
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     if (token?.dbid) {
@@ -70,8 +71,8 @@ export function SomeoneAdmiredYourToken({
         });
     }
   }, [navigation, token?.dbid]);
-
 */
+
   return (
     <NotificationSkeleton
       queryRef={query}

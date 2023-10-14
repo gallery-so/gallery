@@ -34,6 +34,7 @@ type AdmireBottomSheetProps = {
 export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottomSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
+
   const { bottom } = useSafeAreaPadding();
 
   return (
@@ -73,6 +74,7 @@ function ConnectedAdmireList({ type, feedId }: ConnectedAdmireListProps) {
   if (type === 'Post') {
     return <ConnectedPostAdmireList feedId={feedId} />;
   }
+
   return <ConnectedEventAdmireList feedId={feedId} />;
 }
 

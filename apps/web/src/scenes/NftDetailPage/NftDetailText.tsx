@@ -357,7 +357,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           <StyledAdmireButton
             active={hasViewerAdmiredToken}
             onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
-            variant="admire"
+            variant="blue"
             onMouseEnter={() => setIsAdmireHovered(true)}
             onMouseLeave={() => setIsAdmireHovered(false)}
           >
