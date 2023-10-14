@@ -90,6 +90,7 @@ export function MarfaCheckInSheet({ viewerRef }: Props) {
               text="Close"
               eventElementId="Marfa Check In: Already Submitted View Close Button"
               eventName="Pressed Marfa Check In: Already Submitted View Close Button"
+              eventContext={null}
             />
           </View>
         ) : (

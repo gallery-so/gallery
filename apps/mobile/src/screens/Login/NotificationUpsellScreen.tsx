@@ -8,6 +8,7 @@ import { registerNotificationToken } from '~/components/Notification/registerNot
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { markAsShown } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Typography } from '../../components/Typography';
 
@@ -77,6 +78,7 @@ export function NotificationUpsellScreen() {
         <Button
           eventElementId="Skip Enable Notification Upsell Button"
           eventName="Toggle Mobile Notification"
+          eventContext={contexts.Onboarding}
           properties={{ variant: 'disable' }}
           onPress={handleSkip}
           className="flex-1"
@@ -86,6 +88,7 @@ export function NotificationUpsellScreen() {
         <Button
           eventElementId="Skip Enable Notification Upsell Button"
           eventName="Toggle Mobile Notification"
+          eventContext={contexts.Onboarding}
           properties={{ variant: 'enable' }}
           onPress={handleTurnOn}
           className="flex-1"

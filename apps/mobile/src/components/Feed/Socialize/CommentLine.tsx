@@ -8,6 +8,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Markdown } from '~/components/Markdown';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type Props = {
@@ -39,11 +40,12 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
-      <UsernameDisplay userRef={comment.commenter} size="sm" />
+      <UsernameDisplay userRef={comment.commenter} size="sm" eventContext={contexts.Posts} />
       <GalleryTouchableOpacity
         onPress={onCommentPress}
-        eventElementId={null}
-        eventName={null}
+        eventElementId="Comment Line"
+        eventName="Comment Line Press"
+        eventContext={contexts.Posts}
         className="flex flex-row wrap"
       >
         <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>

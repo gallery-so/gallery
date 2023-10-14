@@ -92,6 +92,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
           text="Confirm"
           eventElementId="Marfa Check In: Wallet Confirm Button"
           eventName="Pressed Marfa Check In: Wallet Confirm Button"
+          eventContext={null}
         />
       </>
     );
@@ -130,6 +131,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
           disabled={!isCustomAddressValid}
           eventElementId="Marfa Check In: Wallet Custom Address Next Button"
           eventName="Pressed Marfa Check In: Wallet Custom Address Next Button"
+          eventContext={null}
         />
       </>
     );
@@ -158,6 +160,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
                   className="mb-2 bg-offWhite dark:bg-black-700 p-3"
                   eventElementId="Marfa Check In: Wallet Selection Wallet Button"
                   eventName="Pressed Marfa Check In: Wallet Selection Wallet Button"
+                  eventContext={null}
                 >
                   <Typography
                     className="dark:text-white text-sm"
@@ -174,6 +177,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
           className="mb-2 bg-offWhite dark:bg-black-700 p-3"
           eventElementId="Marfa Check In: Wallet Selection Custom Wallet Button"
           eventName="Pressed Marfa Check In: Wallet Selection Custom Wallet Button"
+          eventContext={null}
         >
           <Typography
             className="dark:text-white text-sm"

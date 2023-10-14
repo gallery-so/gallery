@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { truncateAddress } from '~/shared/utils/wallet';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
@@ -53,8 +54,9 @@ export function CommunityHeader({ communityRef }: Props) {
         <GalleryTouchableOpacity
           className="flex-1"
           onPress={handlePress}
-          eventElementId={null}
-          eventName={null}
+          eventElementId="Community Header"
+          eventName="Community Header Press"
+          eventContext={contexts.Community}
           disabled={!hasCommunityDescription}
         >
           <View>

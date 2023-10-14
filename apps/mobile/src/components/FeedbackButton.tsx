@@ -17,7 +17,12 @@ export function FeedbackButton() {
   return (
     <>
       <View className="flex flex-row space-x-4 h-full items-center">
-        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleOpenSheet}>
+        <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
+          onPress={handleOpenSheet}
+        >
           <BugReportIcon width={24} height={24} />
         </GalleryTouchableOpacity>
 

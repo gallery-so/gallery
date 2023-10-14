@@ -6,6 +6,7 @@ import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useVerifyEmailMagicLink } from '~/screens/Login/useVerifyEmailMagicLink';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
@@ -110,6 +111,7 @@ export function EnterEmailScreen() {
         <IconContainer
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           className="px-6 py-2"
           icon={<BackIcon />}
           onPress={navigation.goBack}
@@ -149,6 +151,7 @@ export function EnterEmailScreen() {
             <Button
               eventElementId="Submit Email Button"
               eventName="Sign In Attempt"
+              eventContext={contexts.Authentication}
               loading={isLoggingIn}
               onPress={handleContinue}
               text="Continue"

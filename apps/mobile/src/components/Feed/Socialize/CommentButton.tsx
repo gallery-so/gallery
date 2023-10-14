@@ -1,6 +1,7 @@
 import { ViewProps } from 'react-native';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { contexts } from '~/shared/analytics/constants';
 
 import { CommentIcon } from './CommentIcon';
 
@@ -17,6 +18,7 @@ export function CommentButton({ style, openCommentBottomSheet }: Props) {
       style={style}
       eventElementId="Toggle Comment Box"
       eventName="Toggle Comment Box Clicked"
+      eventContext={contexts.Posts}
     >
       <CommentIcon className="h-[20]" />
     </GalleryTouchableOpacity>

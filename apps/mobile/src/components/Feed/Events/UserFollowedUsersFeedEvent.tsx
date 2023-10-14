@@ -15,6 +15,7 @@ import { UserFollowedUsersFeedEventFollowersFragment$key } from '~/generated/Use
 import { UserFollowedUsersFeedEventFollowListQuery } from '~/generated/UserFollowedUsersFeedEventFollowListQuery.graphql';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -89,6 +90,7 @@ export function UserFollowedUsersFeedEvent({
           onPress={handleFollowerPress}
           eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
+          eventContext={contexts.Feed}
           properties={{ variant: 'Follower' }}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -104,6 +106,7 @@ export function UserFollowedUsersFeedEvent({
           onPress={handleFolloweePress}
           eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
+          eventContext={contexts.Feed}
           properties={{ variant: 'Followee' }}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -121,6 +124,7 @@ export function UserFollowedUsersFeedEvent({
               onPress={handleOthersPress}
               eventElementId="User Followed Users See All"
               eventName="User Followed Users See All Pressed"
+              eventContext={contexts.Feed}
             >
               <Typography
                 className="text-sm underline"

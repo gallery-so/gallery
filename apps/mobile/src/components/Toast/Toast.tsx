@@ -3,6 +3,8 @@ import { Animated, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import {
@@ -95,6 +97,7 @@ export function AnimatedToast({
           onPress={handleClose}
           eventElementId="Toast"
           eventName="Toast closed clicked"
+          eventContext={contexts.Toast}
         >
           <XMarkIcon />
         </GalleryTouchableOpacity>

@@ -8,6 +8,7 @@ import { BackButton } from '~/components/BackButton';
 import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
@@ -146,6 +147,7 @@ export function OnboardingEmailScreen() {
             <Button
               eventElementId="Submit Email Button"
               eventName="Sign In Attempt"
+              eventContext={contexts.Onboarding}
               className={clsx(
                 'w-full',
                 email.length > 0 && 'opacity-100',

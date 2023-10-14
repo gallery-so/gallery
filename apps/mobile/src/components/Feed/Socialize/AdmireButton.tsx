@@ -1,6 +1,7 @@
 import { TouchableOpacityProps } from 'react-native';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { contexts } from '~/shared/analytics/constants';
 
 import { AdmireIcon } from './AdmireIcon';
 
@@ -19,6 +20,7 @@ export function AdmireButton({ isAdmired, onPress, style }: Props) {
       style={style}
       eventElementId="Admire Button"
       eventName="Admire Button Clicked"
+      eventContext={contexts.Posts}
     >
       <AdmireIcon active={isAdmired} />
     </GalleryTouchableOpacity>

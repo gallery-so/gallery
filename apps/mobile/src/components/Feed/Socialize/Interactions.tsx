@@ -8,6 +8,7 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { InteractionsAdmiresFragment$key } from '~/generated/InteractionsAdmiresFragment.graphql';
 import { InteractionsCommentsFragment$key } from '~/generated/InteractionsCommentsFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentLine } from './CommentLine';
@@ -85,6 +86,7 @@ export function Interactions({
           <ProfilePictureBubblesWithCount
             eventName="Feed Event Admire Bubbles Pressed"
             eventElementId="Feed Event Admire Bubbles"
+            eventContext={contexts.Posts}
             onPress={handleSeeAllAdmires}
             userRefs={admireUsers}
             totalCount={totalAdmires}

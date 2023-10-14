@@ -16,6 +16,7 @@ import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { AccountIcon } from '../../icons/AccountIcon';
@@ -87,6 +88,7 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
       className="pt-3 px-4 flex items-center justify-center"
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
+      eventContext={contexts.Navigation}
       properties={{ variant: 'Main', route: route.name }}
       onPressIn={handleOnPressIn}
       onPressOut={handleOnPressOut}

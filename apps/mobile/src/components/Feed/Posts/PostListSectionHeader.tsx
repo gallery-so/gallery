@@ -12,6 +12,7 @@ import { Typography } from '~/components/Typography';
 import { PostListSectionHeaderFragment$key } from '~/generated/PostListSectionHeaderFragment.graphql';
 import { PostListSectionHeaderQueryFragment$key } from '~/generated/PostListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -77,6 +78,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
             onPress={handleUsernamePress}
             eventElementId="Feed Profile Picture Button"
             eventName="Feed Profile Picture Clicked"
+            eventContext={contexts.Posts}
             properties={{ variant: 'Feed event author' }}
           >
             <ProfilePicture userRef={feedPost.author} size="md" />
@@ -87,6 +89,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
               onPress={handleUsernamePress}
               eventElementId="Feed Username Button"
               eventName="Feed Username Clicked"
+              eventContext={contexts.Posts}
               properties={{ variant: 'Feed event author' }}
             >
               <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -103,7 +106,12 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           >
             {getTimeSince(feedPost.creationTime)}
           </Typography>
-          <GalleryTouchableOpacity onPress={handleMenuPress} eventElementId={null} eventName={null}>
+          <GalleryTouchableOpacity
+            onPress={handleMenuPress}
+            eventElementId="Open Menu Button"
+            eventName="Open Menu Button Press"
+            eventContext={contexts.Posts}
+          >
             <OptionIcon />
           </GalleryTouchableOpacity>
         </View>
