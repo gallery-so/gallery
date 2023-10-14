@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FollowButton } from '~/components/FollowButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
@@ -23,7 +22,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
   const query = useFragment(
     graphql`
       fragment SomeoneFollowedYouQueryFragment on Query {
-        ...FollowButtonQueryFragment
         viewer {
           ... on Viewer {
             user {
@@ -51,7 +49,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
             node {
               username
 
-              ...FollowButtonUserFragment
               ...NotificationSkeletonResponsibleUsersFragment
               ... on GalleryUser {
                 dbid
@@ -113,6 +110,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
     <NotificationSkeleton
       queryRef={query}
       onPress={handlePress}
+      shouldShowFollowBackButton={shouldShowFollowBackButton ?? false}
       responsibleUserRefs={followers}
       notificationRef={notification}
     >
@@ -140,11 +138,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
             </Typography>
           </Text>
         </View>
-        {shouldShowFollowBackButton && (
-          <View className="ml-5">
-            <FollowButton queryRef={query} userRef={lastFollower} />
-          </View>
-        )}
       </View>
       <NotificationBottomSheetUserList
         ref={bottomSheetRef}
