@@ -137,8 +137,8 @@ export function NotificationSkeleton({
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
     >
-      <View className="flex-1 flex-row space-x-1 items-center">
-        <View className="mr-1">
+      <View className="flex-1 flex-row items-center">
+        <View className="mr-2">
           <ProfilePictureBubblesWithCount
             eventElementId="Notification Row PFP Bubbles"
             eventName="Notification Row PFP Bubbles Pressed"
@@ -150,11 +150,13 @@ export function NotificationSkeleton({
         </View>
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
+
       {shouldShowFollowBackButton && lastFollower && (
         <View className="flex justify-center">
           <FollowButton queryRef={query} userRef={lastFollower} />
         </View>
       )}
+
       <View className="flex flex-row items-center justify-between ${postToken ? 'space-x-2' : ''}">
         {postToken ? (
           <View className="w-[56px] h-[56px]">
