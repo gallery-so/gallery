@@ -13,6 +13,7 @@ import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { DeletePostBottomSheetFragment$key } from '~/generated/DeletePostBottomSheetFragment.graphql';
 import { usePost } from '~/screens/PostScreen/usePost';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
@@ -112,17 +113,17 @@ function DeletePostBottomSheet(
           <Button
             onPress={handleDelete}
             text="DELETE"
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
+            eventElementId="Delete Post Button"
+            eventName="Delete Post"
+            eventContext={contexts.Posts}
           />
           <Button
             onPress={handleBack}
             variant="secondary"
             text="CANCEL"
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
+            eventElementId="Cancel Delete Post Button"
+            eventName="Cancel Delete Post"
+            eventContext={contexts.Posts}
           />
         </View>
       </View>

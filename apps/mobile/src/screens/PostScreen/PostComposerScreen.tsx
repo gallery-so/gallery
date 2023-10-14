@@ -182,7 +182,7 @@ export function PostComposerScreen() {
       accessible={false}
       eventElementId={null}
       eventName={null}
-      eventContext={contexts.Posts}
+      eventContext={null}
     >
       <View className="flex-1 bg-offWhite dark:bg-black-900" style={{ paddingTop: top }}>
         <Suspense fallback={null}>

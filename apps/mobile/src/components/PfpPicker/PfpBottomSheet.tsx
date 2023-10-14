@@ -189,8 +189,8 @@ function PfpBottomSheet(
       icon={
         <RawProfilePicture
           size="md"
-          eventName={null}
-          eventElementId={null}
+          eventElementId="ENS Profile Picture"
+          eventName="ENS Profile Picture Press"
           eventContext={contexts.PFP}
           imageUrl={potentialEnsProfileImageUrl ?? ensFallback ?? undefined}
         />

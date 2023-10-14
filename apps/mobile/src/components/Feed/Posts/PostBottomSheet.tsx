@@ -1,22 +1,21 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { BottomSheetRow } from '~/components/BottomSheetRow';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { Typography } from '~/components/Typography';
 import { PostBottomSheetFragment$key } from '~/generated/PostBottomSheetFragment.graphql';
 import { PostBottomSheetQueryFragment$key } from '~/generated/PostBottomSheetQueryFragment.graphql';
 import { PostBottomSheetUserFragment$key } from '~/generated/PostBottomSheetUserFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
@@ -154,9 +153,18 @@ function PostBottomSheet(
     if (isOwnPost) {
       return (
         <>
-          <BottomSheetRow text="Share" onPress={handleShare} />
-          <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
-          <BottomSheetRow text="Delete" isConfirmationRow onPress={handleDeletePost} />
+          <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
+          <BottomSheetRow
+            text="View item detail"
+            onPress={handleViewNftDetail}
+            eventContext={contexts.Posts}
+          />
+          <BottomSheetRow
+            text="Delete"
+            isConfirmationRow
+            onPress={handleDeletePost}
+            eventContext={contexts.Posts}
+          />
         </>
       );
     }
@@ -164,18 +172,34 @@ function PostBottomSheet(
     if (isFollowing) {
       return (
         <>
-          <BottomSheetRow text="Share" onPress={handleShare} />
-          <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
-          <BottomSheetRow text={`Unfollow ${username}`} onPress={handleFollowUser} />
+          <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
+          <BottomSheetRow
+            text="View item detail"
+            onPress={handleViewNftDetail}
+            eventContext={contexts.Posts}
+          />
+          <BottomSheetRow
+            text={`Unfollow ${username}`}
+            onPress={handleFollowUser}
+            eventContext={contexts.Posts}
+          />
         </>
       );
     }
 
     return (
       <>
-        <BottomSheetRow text="Share" onPress={handleShare} />
-        <BottomSheetRow text={`Follow ${username}`} onPress={handleFollowUser} />
-        <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
+        <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
+        <BottomSheetRow
+          text={`Follow ${username}`}
+          onPress={handleFollowUser}
+          eventContext={contexts.Posts}
+        />
+        <BottomSheetRow
+          text="View item detail"
+          onPress={handleViewNftDetail}
+          eventContext={contexts.Posts}
+        />
       </>
     );
   }, [
@@ -227,47 +251,3 @@ function PostBottomSheet(
 const ForwardedPostBottomSheet = forwardRef(PostBottomSheet);
 
 export { ForwardedPostBottomSheet as PostBottomSheet };
-
-type BottomSheetRowProps = {
-  icon?: React.ReactNode;
-  text: string;
-  onPress: () => void;
-  style?: React.ComponentProps<typeof GalleryTouchableOpacity>['style'];
-  isConfirmationRow?: boolean;
-  fontWeight?: 'Regular' | 'Bold';
-  rightIcon?: React.ReactNode;
-};
-
-export function BottomSheetRow({
-  icon,
-  text,
-  onPress,
-  style,
-  isConfirmationRow,
-  fontWeight = 'Regular',
-  rightIcon,
-}: BottomSheetRowProps) {
-  return (
-    <GalleryTouchableOpacity
-      onPress={onPress}
-      eventElementId={null}
-      eventName={null}
-      eventContext={null}
-      style={style}
-    >
-      <View className="bg-offWhite dark:bg-black-800 p-3 flex-row items-center">
-        {icon && <View className="mr-2">{icon}</View>}
-        <Typography
-          font={{ family: 'ABCDiatype', weight: fontWeight }}
-          className={clsx(
-            'text-sm',
-            isConfirmationRow ? 'text-red' : 'text-black-900 dark:text-offWhite'
-          )}
-        >
-          {text}
-        </Typography>
-        {rightIcon && <View className="ml-auto">{rightIcon}</View>}
-      </View>
-    </GalleryTouchableOpacity>
-  );
-}
