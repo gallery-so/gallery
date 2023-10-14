@@ -8,7 +8,6 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
-import { contexts } from '~/shared/analytics/constants';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';

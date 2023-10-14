@@ -10,8 +10,8 @@ import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graph
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import { contexts } from '~/shared/analytics/constants';
+import { noop } from '~/shared/utils/noop';
 import { getBaseUrl } from '~/utils/getBaseUrl';
-import noop from '~/utils/noop';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
 
