@@ -14,7 +14,7 @@ export type DropdownEventProps = {
   eventSelection?: string;
   // if provided, will render a label using default styling
   label?: string;
-  variant?: 'default' | 'error';
+  variant?: 'default' | 'delete';
 } & Omit<GalleryElementTrackingProps, 'eventElementId' | 'eventName'>;
 
 type DropdownItemProps = {
@@ -58,8 +58,8 @@ export function DropdownItem({
     return (
       <StyledDropdownItem disabled={disabled} onClick={handleClick}>
         <HStack gap={4} align="center">
-          {variant === 'error' ? <TrashIconNew color={colors.error} /> : null}
-          <BaseM color={variant === 'error' ? colors.error : undefined}>{label}</BaseM>
+          {variant === 'delete' ? <TrashIconNew color={colors.error} /> : null}
+          <BaseM color={variant === 'delete' ? colors.error : undefined}>{label}</BaseM>
         </HStack>
       </StyledDropdownItem>
     );

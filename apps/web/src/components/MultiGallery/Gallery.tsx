@@ -345,7 +345,7 @@ export default function Gallery({
                           name="Manage Gallery"
                           eventContext={contexts.Editor}
                           label="Delete"
-                          variant="error"
+                          variant="delete"
                         />
                       </DropdownSection>
                     </SettingsDropdown>

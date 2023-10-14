@@ -108,7 +108,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
             name="Feed Post"
             eventContext={contexts.Posts}
             label="Delete"
-            variant="error"
+            variant="delete"
           />
         </DropdownSection>
       </SettingsDropdown>

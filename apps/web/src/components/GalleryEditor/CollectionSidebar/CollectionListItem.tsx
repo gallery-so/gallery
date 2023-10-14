@@ -159,7 +159,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
                 name="Collection List Item"
                 eventContext={contexts.Editor}
                 label="Delete"
-                variant="error"
+                variant="delete"
               />
             </DropdownSection>
           </SettingsDropdown>

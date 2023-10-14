@@ -138,7 +138,7 @@ export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
             name="Profile Picture"
             eventContext={contexts.PFP}
             label="Remove current profile picture"
-            variant="error"
+            variant="delete"
           />
         )}
       </DropdownSection>
