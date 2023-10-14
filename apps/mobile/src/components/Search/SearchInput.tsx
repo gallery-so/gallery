@@ -3,6 +3,7 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
 import { TextInput, TextInputProps, View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { XMarkIcon } from '../../icons/XMarkIcon';
@@ -90,6 +91,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         <GalleryTouchableOpacity
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           accessibilityRole="button"
           onPress={handleClear}
           className="-m-4 p-4"
@@ -103,6 +105,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         <GalleryTouchableOpacity
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           accessibilityRole="button"
           onPress={handleCancel}
           className="-m-4 p-4"

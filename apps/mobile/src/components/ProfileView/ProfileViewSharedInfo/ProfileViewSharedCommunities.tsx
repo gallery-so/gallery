@@ -14,6 +14,7 @@ import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/Pro
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -83,6 +84,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         totalCount={totalSharedCommunities}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
+        eventContext={contexts.Social}
         userRefs={sharedCommunities}
       />
 

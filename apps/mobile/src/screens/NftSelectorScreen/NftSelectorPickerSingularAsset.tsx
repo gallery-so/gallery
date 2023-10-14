@@ -12,6 +12,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
 import { NftSelectorPickerSingularAssetFragment$key } from '~/generated/NftSelectorPickerSingularAssetFragment.graphql';
 import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { useProfilePicture } from './useProfilePicture';
@@ -80,6 +81,7 @@ export function NftSelectorPickerSingularAsset({
         onPress={handlePress}
         eventElementId="NftSelectorPickerImage"
         eventName="NftSelectorPickerImage pressed"
+        eventContext={contexts.Posts}
         properties={{ tokenId: token.dbid }}
       >
         <TokenFailureBoundary tokenRef={token} variant="small">

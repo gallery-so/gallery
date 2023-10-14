@@ -248,7 +248,13 @@ export function BottomSheetRow({
   rightIcon,
 }: BottomSheetRowProps) {
   return (
-    <GalleryTouchableOpacity onPress={onPress} eventElementId={null} eventName={null} style={style}>
+    <GalleryTouchableOpacity
+      onPress={onPress}
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
+      style={style}
+    >
       <View className="bg-offWhite dark:bg-black-800 p-3 flex-row items-center">
         {icon && <View className="mr-2">{icon}</View>}
         <Typography

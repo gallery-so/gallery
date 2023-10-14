@@ -25,9 +25,27 @@ export function DesignSystemButtonsScreen() {
             </Typography>
 
             <View className="flex flex-row space-x-2">
-              <Button text="SCAN" variant="primary" eventElementId={null} eventName={null} />
-              <Button text="SCAN" variant="secondary" eventElementId={null} eventName={null} />
-              <Button text="SCAN" variant="danger" eventElementId={null} eventName={null} />
+              <Button
+                text="SCAN"
+                variant="primary"
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              />
+              <Button
+                text="SCAN"
+                variant="secondary"
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              />
+              <Button
+                text="SCAN"
+                variant="danger"
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              />
             </View>
 
             <View className="flex flex-row space-x-2">
@@ -38,6 +56,7 @@ export function DesignSystemButtonsScreen() {
                 variant="primary"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
               <Button
                 loading
@@ -46,6 +65,7 @@ export function DesignSystemButtonsScreen() {
                 variant="secondary"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
               <Button
                 text="SCAN"
@@ -54,6 +74,7 @@ export function DesignSystemButtonsScreen() {
                 variant="danger"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
             </View>
 
@@ -64,6 +85,7 @@ export function DesignSystemButtonsScreen() {
                 variant="primary"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
               <Button
                 text="SCAN"
@@ -71,6 +93,7 @@ export function DesignSystemButtonsScreen() {
                 variant="secondary"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
               <Button
                 text="SCAN"
@@ -78,6 +101,7 @@ export function DesignSystemButtonsScreen() {
                 variant="danger"
                 eventElementId={null}
                 eventName={null}
+                eventContext={null}
               />
             </View>
           </View>

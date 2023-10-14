@@ -16,6 +16,7 @@ import {
 } from '~/generated/PfpBottomSheetRemoveProfileImageMutation.graphql';
 import { PfpBottomSheetSetEnsProfileImageMutation } from '~/generated/PfpBottomSheetSetEnsProfileImageMutation.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
@@ -268,6 +269,7 @@ function SettingsRow({
       onPress={onPress}
       eventElementId="settings-row"
       eventName="settings-row-clicked"
+      eventContext={contexts.PFP}
       properties={{ text }}
       style={style}
       className={clsx(

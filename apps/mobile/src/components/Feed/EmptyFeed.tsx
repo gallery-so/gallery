@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FeedTabNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../Button';
 import { Typography } from '../Typography';
@@ -45,6 +46,7 @@ export function EmptyFeed({ onChangeFeedMode }: Props) {
         <Button
           eventElementId="Empty Feed Explore Button"
           eventName="Empty Feed Explore Button Clicked"
+          eventContext={contexts.Feed}
           onPress={handleNavigation}
           text="Explore"
           size="sm"

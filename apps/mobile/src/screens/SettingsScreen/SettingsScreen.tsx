@@ -14,6 +14,7 @@ import { Typography } from '~/components/Typography';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { useLogout } from '../../hooks/useLogout';
 import { BugReportIcon } from '../../icons/BugReportIcon';
@@ -142,6 +143,7 @@ export function SettingsScreen() {
           text="SIGN OUT"
           eventElementId="sign-out-button"
           eventName="sign-out-button-pressed"
+          eventContext={contexts.Settings}
         />
 
         <View className="flex flex-col space-y-2 items-center">
@@ -165,6 +167,7 @@ export function SettingsScreen() {
               onPress={handleDebugPress}
               eventElementId={null}
               eventName={null}
+              eventContext={null}
             >
               <Text className="text-shadow dark:text-white">DEBUG</Text>
             </GalleryTouchableOpacity>
@@ -199,6 +202,7 @@ function SettingsRow({ style, icon, text, onPress }: SettingsRowProps) {
       onPress={onPress}
       eventElementId="settings-row"
       eventName="settings-row-clicked"
+      eventContext={contexts.Settings}
       properties={{ text }}
       style={style}
       className="flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12"

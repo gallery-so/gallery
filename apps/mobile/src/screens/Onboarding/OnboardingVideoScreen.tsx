@@ -9,6 +9,7 @@ import { ChevronRightIcon } from 'src/icons/ChevronRightIcon';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { useCacheIntroVideo } from './useCacheIntroVideo';
 
@@ -36,6 +37,7 @@ export function OnboardingVideoScreen() {
           onPress={handleRedirectToLandingScreen}
           eventElementId="Press Skip Onboarding Video"
           eventName="Press Skip Onboarding Video"
+          eventContext={contexts.Onboarding}
         >
           <Typography
             className="text-sm text-metal"

@@ -109,13 +109,20 @@ function DeletePostBottomSheet(
         </View>
 
         <View className="space-y-2">
-          <Button onPress={handleDelete} text="DELETE" eventElementId={null} eventName={null} />
+          <Button
+            onPress={handleDelete}
+            text="DELETE"
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          />
           <Button
             onPress={handleBack}
             variant="secondary"
             text="CANCEL"
             eventElementId={null}
             eventName={null}
+            eventContext={null}
           />
         </View>
       </View>

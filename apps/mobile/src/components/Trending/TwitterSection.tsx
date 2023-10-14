@@ -96,7 +96,12 @@ export function TwitterSection({ title, description, queryRef }: Props) {
             {description}
           </Typography>
         </View>
-        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleSeeAll}>
+        <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
+          onPress={handleSeeAll}
+        >
           <Typography
             font={{
               family: 'ABCDiatype',

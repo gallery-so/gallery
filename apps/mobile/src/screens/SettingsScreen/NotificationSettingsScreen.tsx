@@ -8,6 +8,7 @@ import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { Typography } from '~/components/Typography';
+import { contexts } from '~/shared/analytics/constants';
 
 export function NotificationSettingsScreen() {
   const relayEnvironment = useRelayEnvironment();
@@ -67,6 +68,7 @@ export function NotificationSettingsScreen() {
           <Button
             eventElementId="Enable Push Notifications Button (Disabled) in Settings Screen"
             eventName={null}
+            eventContext={contexts.Settings}
             variant="disabled"
             text="Push notifications are enabled"
           />
@@ -74,6 +76,7 @@ export function NotificationSettingsScreen() {
           <Button
             eventElementId="Enable Push Notifications Button in Settings Screen"
             eventName="Enable Push Notifications Button in Settings Screen Pressed"
+            eventContext={contexts.Settings}
             text="Enable Push Notifications"
             onPress={handleResyncPushNotifications}
           />

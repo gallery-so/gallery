@@ -7,6 +7,7 @@ import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { UpsellBannerFragment$key } from '~/generated/UpsellBannerFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { Button } from './Button';
@@ -17,7 +18,7 @@ type Props = {
   queryRef: UpsellBannerFragment$key;
 };
 
-export function UpsellBanner({ queryRef }: Props) {
+export function ConnectWalletUpsellBanner({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UpsellBannerFragment on Query {
@@ -103,11 +104,13 @@ export function UpsellBanner({ queryRef }: Props) {
           fontWeight="Bold"
           eventElementId="Press Connect Wallet Upsell Banner"
           eventName="Press Connect Wallet Upsell Banner"
+          eventContext={contexts.Authentication}
         />
         <GalleryTouchableOpacity
           className="p-2"
           eventElementId="Close Connect Wallet Upsell Banner"
           eventName="Close Connect Wallet Upsell Banner"
+          eventContext={contexts.Authentication}
           onPress={handleDismissUpsellBanner}
         >
           <XMarkIcon color={colors.offWhite} />
