@@ -11,6 +11,7 @@ import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from '~/components/core/transitions';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailPageFragment$key } from '~/generated/NftDetailPageFragment.graphql';
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
@@ -20,7 +21,6 @@ import NotFound from '~/scenes/NotFound/NotFound';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 
 import NavigationHandle from './NavigationHandle';
 import NftDetailView from './NftDetailView';

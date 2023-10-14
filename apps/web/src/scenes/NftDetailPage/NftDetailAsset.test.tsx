@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
+import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
   Chain,
@@ -119,6 +119,105 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
       },
+      viewerAdmire: {
+        dbid: 'testAdmireId',
+        __typename: 'Admire',
+        id: 'Admire:someAdmireId',
+      },
+      admires: {
+        edges: [
+          {
+            node: {
+              __typename: 'Admire',
+              id: 'Admire:someAdmireId',
+              admirer: {
+                dbid: 'testOwnerId',
+                id: 'GalleryUser:TestOwnerId',
+                username: 'Test Username',
+                profileImage: {
+                  token: {
+                    dbid: 'testTokenId',
+                    id: 'Token:testTokenId',
+                    media: {
+                      __typename: 'ImageMedia',
+                      previewURLs: {
+                        small: 'http://someurl.com',
+                        medium: 'http://someurl.com',
+                        large: 'http://someurl.com',
+                      },
+                      fallbackMedia: {
+                        mediaURL: 'http://someurl.com',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+      previewAdmires: {
+        edges: [
+          {
+            node: {
+              __typename: 'Admire',
+              id: 'Admire:someAdmireId',
+              admirer: {
+                __typename: 'GalleryUser',
+                dbid: 'testOwnerId',
+                id: 'GalleryUser:TestOwnerId',
+                username: 'Test Username',
+                profileImage: {
+                  __typename: 'TokenProfileImage',
+                  token: {
+                    dbid: 'testTokenId',
+                    id: 'Token:testTokenId',
+                    media: {
+                      __typename: 'ImageMedia',
+                      previewURLs: {
+                        small: 'http://someurl.com',
+                        medium: 'http://someurl.com',
+                        large: 'http://someurl.com',
+                      },
+                      fallbackMedia: {
+                        mediaURL: 'http://someurl.com',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+        pageInfo: {
+          total: 1,
+        },
+      },
+    },
+  },
+  viewer: {
+    __typename: 'Viewer',
+    id: 'Viewer:id',
+    user: {
+      __typename: 'GalleryUser',
+      dbid: 'testOwnerId',
+      id: 'GalleryUser:TestOwnerId',
+      username: 'Test Username',
+      profileImage: {
+        __typename: 'EnsProfileImage',
+      },
+      wallets: [],
+      following: [],
+      primaryWallet: {
+        id: 'Token:testWalletId',
+        dbid: 'testWalletId',
+        chainAddress: {
+          __typename: 'ChainAddress',
+          chain: Chain.Ethereum,
+          address: 'someAddress',
+        },
+      },
+      followers: [],
     },
   },
 };

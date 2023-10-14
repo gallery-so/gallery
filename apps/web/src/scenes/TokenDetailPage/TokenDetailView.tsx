@@ -3,6 +3,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
@@ -11,7 +12,6 @@ import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQue
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
 import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 
 import TokenDetailAsset from './TokenDetailAsset';
 

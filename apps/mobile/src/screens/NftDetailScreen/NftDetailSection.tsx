@@ -10,10 +10,10 @@ import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { BackButton } from '~/components/BackButton';
-import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
 import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { InteractiveLink } from '~/components/InteractiveLink';
@@ -28,9 +28,9 @@ import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
+import { AdmireBottomSheet } from './AdmireBottomSheet';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
@@ -71,7 +71,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             description
 
             # We only show 1 but in case the user deletes something
-            # we want to be sure that we can show another comment beneath
+            # we want to be sure that we can show another admire beneath
             admires(last: 5) @connection(key: "Interactions_token_admires") {
               pageInfo {
                 total
@@ -259,14 +259,20 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             <View className="flex flex-row space-x-2 items-center">
               {admireUsers.length > 0 && (
                 <ProfilePictureBubblesWithCount
-                  eventName="Feed Event Admire Bubbles Pressed"
-                  eventElementId="Feed Event Admire Bubbles"
+                  eventName="Nft Detail Screen Admire Bubbles Pressed"
+                  eventElementId="Nft Detail Screen Admire Bubbles"
                   onPress={handleSeeAllAdmires}
                   userRefs={admireUsers}
                   totalCount={totalAdmires}
                 />
               )}
-              <AdmireIcon active={hasViewerAdmiredEvent} />
+              <GalleryTouchableOpacity
+                eventElementId={'NFT Detail Token Admire'}
+                eventName={'NFT Detail Token Admire Clicked'}
+                onPress={toggleTokenAdmire}
+              >
+                <AdmireIcon active={hasViewerAdmiredEvent} />
+              </GalleryTouchableOpacity>
             </View>
           </View>
           <GalleryTouchableOpacity
@@ -354,11 +360,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         )}
 
         <Button
-          className={hasViewerAdmiredEvent ? "border border-[#001CC1]" : "border border-faint"}
+          className={hasViewerAdmiredEvent ? 'border border-[#001CC1]' : 'border border-faint'}
           variant="admire"
           icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
-          eventElementId={null}
-          eventName={null}
+          eventElementId={'NFT Detail Token Admire'}
+          eventName={'NFT Detail Token Admire Clicked'}
           onPress={toggleTokenAdmire}
           text="admire"
         />
@@ -368,11 +374,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         </View>
       </View>
 
-      <AdmireBottomSheet
-        type="Token"
-        tokenId={token.dbid ?? ''}
-        bottomSheetRef={admiresBottomSheetRef}
-      />
+      <AdmireBottomSheet tokenId={token.dbid ?? ''} bottomSheetRef={admiresBottomSheetRef} />
     </ScrollView>
   );
 }

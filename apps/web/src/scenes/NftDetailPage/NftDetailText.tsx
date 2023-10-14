@@ -25,6 +25,7 @@ import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { AdmireIcon } from '~/icons/SocializeIcons';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -34,7 +35,6 @@ import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevant
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
-import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 
 import { AdmireTokenModal } from './AdmireTokenModal';
 
@@ -113,9 +113,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         viewer {
           ... on Viewer {
             __typename
-            user {
-              dbid
-            }
           }
         }
         ...useOptimisticUserInfoFragment
@@ -127,14 +124,13 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   );
 
   const [showDetails, setShowDetails] = useState(false);
-  const track = useTrack();
+  const [isAdmireHovered, setIsAdmireHovered] = useState(false);
   const { showModal } = useModalActions();
-
-  const [admireToken] = useAdmireToken();
-  const [removeTokenAdmire] = useRemoveTokenAdmire();
-
+  const track = useTrack();
   const info = useOptimisticUserInfo(query);
 
+  const hasViewerAdmiredToken = Boolean(token.viewerAdmire);
+  const totalAdmires = token?.previewAdmires?.pageInfo?.total ?? 0;
   const nonNullAdmires = useMemo(() => {
     const admires = [];
 
@@ -149,7 +145,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     return removeNullValues(admires);
   }, [token.previewAdmires?.edges]);
 
-  const [admire] = nonNullAdmires;
+  const [admireToken] = useAdmireToken();
+  const [removeTokenAdmire] = useRemoveTokenAdmire();
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -172,8 +169,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     removeTokenAdmire(token.id, token.dbid, token.viewerAdmire.dbid);
   }, [removeTokenAdmire, token.dbid, token.id, token.viewerAdmire?.dbid]);
 
-  const hasViewerAdmiredToken = Boolean(token.viewerAdmire);
-  const totalAdmires = token?.previewAdmires?.pageInfo?.total ?? 0;
   const isMobile = useIsMobileWindowWidth();
 
   const openAdmireModal = () =>
@@ -262,8 +257,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       isFullPage: isMobile,
     });
   }, [isMobile, showModal, token, track]);
-
-  const [isAdmireHovered, setIsAdmireHovered] = useState(false);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
@@ -442,15 +435,7 @@ const StyledAdmireButton = styled(Button)<{ active: boolean }>`
   display: flex;
   flex-grow: 1;
   min-width: 202px;
-
-  ${({ active }) =>
-    active
-      ? `
-    border: 1px solid #001CC1;
-  `
-      : `
-      margin: 0px;
-  `}
+  border: ${({ active }) => (active ? `1px solid ${colors.hyperBlue}` : 'none')};
 `;
 
 const StyledInteractionButton = styled(Button)`
@@ -460,7 +445,7 @@ const StyledInteractionButton = styled(Button)`
 `;
 
 const StyledButton = styled(Button)`
-  display: flex;
+  widht: 100%;
 `;
 
 const StyledPillContent = styled(HStack)`

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { trigger } from 'react-native-haptic-feedback';
+import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToggleAdmireRemoveMutation } from '~/generated/useToggleAdmireRemoveMutation.graphql';
@@ -143,7 +143,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
 
       if (
         response.removeAdmire?.__typename !== 'RemoveAdmirePayload' &&
-        // We can silently fail if the post was already not admired
+        // We can silently fail if the token was already not admired
         response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
       ) {
         reportError(`Could not unadmire token, typename was ${response.removeAdmire?.__typename}`, {

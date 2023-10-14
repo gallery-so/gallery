@@ -11,6 +11,7 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
+import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -30,6 +31,7 @@ import {
 
 type Props = {
   isSubEvent?: boolean;
+  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
 };
 
@@ -39,9 +41,19 @@ const MIDDLE_GAP = 24;
 const IMAGE_SPACE_SIZE = 269;
 
 export default function CollectorsNoteAddedToTokenFeedEvent({
+  queryRef,
   eventDataRef,
   isSubEvent = false,
 }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
+        ...NftDetailViewQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
@@ -83,13 +95,17 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
+            <NftDetailView
+              queryRef={query}
+              authenticatedUserOwnsAsset={false}
+              collectionTokenRef={event.token}
+            />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [event.token, showModal, track]
+    [query, event.token, showModal, track]
   );
 
   return (

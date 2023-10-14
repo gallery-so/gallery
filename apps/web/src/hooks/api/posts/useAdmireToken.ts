@@ -1,11 +1,11 @@
-import { ConnectionHandler, graphql } from 'react-relay';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { useCallback } from 'react';
+import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useAdmireTokenMutation } from '~/generated/useAdmireTokenMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
 
 export default function useAdmireToken() {

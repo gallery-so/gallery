@@ -75,7 +75,7 @@ export default function useRemoveTokenAdmire() {
 
         if (
           response.removeAdmire?.__typename !== 'RemoveAdmirePayload' &&
-          // We can silently fail if the post was already not admired
+          // We can silently fail if the token was already not admired
           response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
         ) {
           pushErrorToast();

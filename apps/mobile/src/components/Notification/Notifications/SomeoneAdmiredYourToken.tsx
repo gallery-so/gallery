@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+// import { useNavigation } from '@react-navigation/native';
+import { useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,7 +8,7 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourTokenFragment$key } from '~/generated/SomeoneAdmiredYourTokenFragment.graphql';
 import { SomeoneAdmiredYourTokenQueryFragment$key } from '~/generated/SomeoneAdmiredYourTokenQueryFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+// import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourTokenProps = {
@@ -44,17 +44,11 @@ export function SomeoneAdmiredYourToken({
             }
           }
         }
-        token {
-          dbid
-        }
-
         ...NotificationSkeletonFragment
       }
     `,
     notificationRef
   );
-
-  const { token } = notification;
 
   const admirers = useMemo(() => {
     return removeNullValues(notification.admirers?.edges?.map((edge) => edge?.node));
@@ -63,7 +57,9 @@ export function SomeoneAdmiredYourToken({
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
 
-/*
+  /*
+   const { token } = notification;
+  TODO: add navigation to token from notification
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     if (token?.dbid) {

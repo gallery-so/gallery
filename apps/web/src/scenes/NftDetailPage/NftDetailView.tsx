@@ -52,9 +52,7 @@ export function LoadableNftDetailView({
     return null;
   }
 
-  return (
-    <NftDetailView queryRef={query} collectionTokenRef={query.collectionTokenById} {...props} />
-  );
+  return <NftDetailView collectionTokenRef={query.collectionTokenById} {...props} />;
 }
 
 export default function NftDetailView({
