@@ -1,6 +1,6 @@
 // import { useNavigation } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { useCallback,useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
