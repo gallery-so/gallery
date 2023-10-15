@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { PostComposerAssetFragment$key } from '~/generated/PostComposerAssetFragment.graphql';
 
-import breakpoints from '../core/breakpoints';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftSelectorPreviewAsset } from '../NftSelector/NftSelectorPreviewAsset';
 
@@ -26,7 +25,7 @@ export default function PostComposerAsset({ tokenRef }: Props) {
   return (
     <StyledPostComposerAsset>
       <NftFailureBoundary tokenId={token.dbid}>
-        <NftSelectorPreviewAsset tokenRef={token} resizeToSquare={false} />
+        <NftSelectorPreviewAsset tokenRef={token} enforceSquareAspectRatio={false} />
       </NftFailureBoundary>
     </StyledPostComposerAsset>
   );

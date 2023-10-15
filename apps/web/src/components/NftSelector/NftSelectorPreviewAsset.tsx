@@ -9,12 +9,12 @@ import transitions from '../core/transitions';
 
 type NftSelectorPreviewAssetProps = {
   tokenRef: NftSelectorPreviewAssetFragment$key;
-  resizeToSquare?: boolean;
+  enforceSquareAspectRatio?: boolean;
 };
 
 export function NftSelectorPreviewAsset({
   tokenRef,
-  resizeToSquare = true,
+  enforceSquareAspectRatio = true,
 }: NftSelectorPreviewAssetProps) {
   const token = useFragment(
     graphql`
@@ -35,7 +35,7 @@ export function NftSelectorPreviewAsset({
       src={imageUrl}
       alt="token"
       onLoad={handleNftLoaded}
-      enforceSquareAspectRatio={resizeToSquare}
+      enforceSquareAspectRatio={enforceSquareAspectRatio}
     />
   );
 }
