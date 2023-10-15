@@ -3,11 +3,11 @@ import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { FollowButton } from '~/components/FollowButton';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { FollowButton } from '~/components/FollowButton';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
