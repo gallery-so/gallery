@@ -40,11 +40,4 @@ const StyledPostComposerAsset = styled.div`
   height: 100%;
   min-width: 100%;
   min-height: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    width: 180px;
-    height: 180px;
-    min-width: 180px;
-    min-height: 180px;
-  }
 `;

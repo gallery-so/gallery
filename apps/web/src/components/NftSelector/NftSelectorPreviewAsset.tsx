@@ -29,15 +29,20 @@ export function NftSelectorPreviewAsset({
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'medium' }) ?? '';
 
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
-  return resizeToSquare ? (
-    <StyledSquareImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
-  ) : (
-    <StyledImage isSelected={false} src={imageUrl} alt="token" onLoad={handleNftLoaded} />
+  return (
+    <StyledImage
+      isSelected={false}
+      src={imageUrl}
+      alt="token"
+      onLoad={handleNftLoaded}
+      enforceSquareAspectRatio={resizeToSquare}
+    />
   );
 }
 
 type SelectedProps = {
   isSelected?: boolean;
+  enforceSquareAspectRatio: boolean;
 };
 
 const StyledImage = styled.img<SelectedProps>`
@@ -45,18 +50,14 @@ const StyledImage = styled.img<SelectedProps>`
   max-width: 100%;
   transition: opacity ${transitions.cubic};
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
-
   object-fit: cover;
-`;
 
-const StyledSquareImage = styled.img<SelectedProps>`
-  max-height: 100%;
-  max-width: 100%;
-  transition: opacity ${transitions.cubic};
-  opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
-
-  height: auto;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  ${({ enforceSquareAspectRatio }) =>
+    enforceSquareAspectRatio
+      ? `
+    height: auto;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    `
+      : undefined}
 `;
