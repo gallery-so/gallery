@@ -1,4 +1,3 @@
-// import { useNavigation } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
