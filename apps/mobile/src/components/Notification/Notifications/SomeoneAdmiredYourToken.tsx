@@ -1,5 +1,6 @@
 // import { useNavigation } from '@react-navigation/native';
-import { useMemo } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback,useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,8 +9,9 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourTokenFragment$key } from '~/generated/SomeoneAdmiredYourTokenFragment.graphql';
 import { SomeoneAdmiredYourTokenQueryFragment$key } from '~/generated/SomeoneAdmiredYourTokenQueryFragment.graphql';
-// import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 type SomeoneAdmiredYourTokenProps = {
   queryRef: SomeoneAdmiredYourTokenQueryFragment$key;
@@ -33,6 +35,10 @@ export function SomeoneAdmiredYourToken({
     graphql`
       fragment SomeoneAdmiredYourTokenFragment on SomeoneAdmiredYourTokenNotification {
         count
+        token {
+          dbid
+          ...useGetPreviewImagesSingleFragment
+        }
 
         admirers(last: 1) {
           edges {
@@ -57,26 +63,36 @@ export function SomeoneAdmiredYourToken({
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
 
-/*
-  TODO: add navigation to token from notification
-
+  //  TODO: test navigation to token from notification is working when BE work done
   const { token } = notification;
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handlePress = useCallback(() => {
-    if (token?.dbid) {
-      navigation.navigate('Token', {
-          cachedPreviewAssetUrl: fallbackTokenUrl,
-          tokenId: token.dbid,
-          collectionId: collectionToken?.collection?.dbid ?? null,
-        });
+
+  if (!token) {
+    throw new Error('There is no token in notification');
+  }
+
+  const imageUrl = useGetSinglePreviewImage({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+    size: 'large',
+    // we're simply using the URL for warming the cache;
+    // no need to throw an error if image is invalid
+    shouldThrow: false,
+  });
+
+  const navigateToNftDetail = useCallback(() => {
+    if (token) {
+      navigation.navigate('UniversalNftDetail', {
+        cachedPreviewAssetUrl: imageUrl ?? '',
+        tokenId: token.dbid,
+      });
     }
-  }, [navigation, token?.dbid]);
-*/
+  }, [navigation, imageUrl, token]);
 
   return (
     <NotificationSkeleton
       queryRef={query}
-      onPress={() => {}}
+      onPress={navigateToNftDetail}
       responsibleUserRefs={admirers}
       notificationRef={notification}
     >

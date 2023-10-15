@@ -73,6 +73,11 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneAdmiredYourTokenNotification {
+          token {
+            ...NotificationPostPreviewWithBoundaryFragment
+          }
+        }
       }
     `,
     notificationRef
@@ -115,6 +120,13 @@ export function NotificationSkeleton({
     return null;
   }, [notification]);
 
+  const galleryToken = useMemo(() => {
+    if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
+      return notification?.token;
+    }
+    return null;
+  }, [notification]);
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -138,6 +150,13 @@ export function NotificationSkeleton({
         {postToken ? (
           <View className="w-[56px] h-[56px]">
             <NotificationPostPreviewWithBoundary tokenRef={postToken} />
+          </View>
+        ) : (
+          <View />
+        )}
+        {galleryToken ? (
+          <View className="w-[56px] h-[56px]">
+            <NotificationPostPreviewWithBoundary tokenRef={galleryToken} />
           </View>
         ) : (
           <View />

@@ -24,6 +24,7 @@ import { getTimeSince } from '~/shared/utils/time';
 
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
+import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 
 type NotificationProps = {
@@ -74,6 +75,12 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
         ... on SomeoneCommentedOnYourPostNotification {
           post {
+            dbid
+          }
+        }
+
+        ... on SomeoneAdmiredYourTokenNotification {
+          token {
             dbid
           }
         }
@@ -160,6 +167,19 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.token) {
+      const username = query.viewer?.user?.username;
+      const tokenId = notification.token.dbid;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToNftDetailPage() {
+          if (username && tokenId) {
+            push({ pathname: '/[username]/token/[tokenId]', query: { username, tokenId } });
+          }
+          hideDrawer();
+        },
+      };
     } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
       const count = notification.userViewers?.pageInfo?.total ?? 0;
 
@@ -180,6 +200,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     notification.feedEvent,
     notification.id,
     notification.post,
+    notification.token,
     notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
@@ -210,6 +231,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneViewedYourGalleryNotification',
       'SomeoneAdmiredYourPostNotification',
       'SomeoneCommentedOnYourPostNotification',
+      'SomeoneAdmiredYourTokenNotification',
       'NewTokensNotification',
     ].includes(notification.__typename)
   ) {
@@ -308,6 +330,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           ...SomeoneCommentedOnYourPostFragment
         }
 
+        ... on SomeoneAdmiredYourTokenNotification {
+          __typename
+          ...SomeoneAdmiredYourTokenFragment
+        }
+
         ... on NewTokensNotification {
           __typename
           ...NewTokensFragment
@@ -347,6 +374,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneAdmiredYourPost notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
     return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
+    return <SomeoneAdmiredYourToken notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'NewTokensNotification') {
     return <NewTokens notificationRef={notification} onClose={handleClose} />;
   }
