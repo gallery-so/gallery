@@ -53,9 +53,9 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <UsernameLink username={comment.commenter?.username ?? null} />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span">
+          <StyledBaseM as="span">
             <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
-          </BaseM>
+          </StyledBaseM>
         </VStack>
       </HStack>
     </StyledListItem>
@@ -68,6 +68,16 @@ const StyledProfilePictureWrapper = styled.div`
 
 const StyledListItem = styled(ListItem)`
   padding: 0px 16px 16px;
+  margin-top: 5px;
+`;
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledTimeAgoText = styled(TimeAgoText)`
