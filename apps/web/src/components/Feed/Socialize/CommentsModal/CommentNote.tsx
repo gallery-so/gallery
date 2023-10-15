@@ -68,7 +68,6 @@ const StyledProfilePictureWrapper = styled.div`
 
 const StyledListItem = styled(ListItem)`
   padding: 0px 16px 16px;
-  margin-top: 5px;
 `;
 
 const StyledBaseM = styled(BaseM)`
