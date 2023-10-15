@@ -1,13 +1,11 @@
-import { useCallback, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { Markdown } from '~/components/Markdown';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-
-import { WarningLinkBottomSheet } from './WarningLinkBottomSheet';
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
@@ -19,35 +17,22 @@ export function PostListCaption({ feedPostRef }: Props) {
       fragment PostListCaptionFragment on Post {
         __typename
         caption
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     feedPostRef
   );
 
-  const [redirectUrl, setRedirectUrl] = useState('');
   const { caption } = feedPost;
-
   const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(caption ?? '');
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const handleLinkPress = useCallback((url: string) => {
-    bottomSheetRef.current?.present();
-    setRedirectUrl(url);
-  }, []);
+  const nonNullMentions = useMemo(() => removeNullValues(feedPost.mentions), [feedPost.mentions]);
 
   return (
     <View className="px-4 pb-4">
-      <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
-        {captionWithMarkdownLinks}
-      </Markdown>
-      <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
+      <ProcessedText text={captionWithMarkdownLinks} mentionsRef={nonNullMentions} />
     </View>
   );
 }
-
-const markdownStyles = StyleSheet.create({
-  body: {
-    fontSize: 14,
-  },
-});

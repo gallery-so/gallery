@@ -6,7 +6,6 @@ import { isChainEvm } from './chains';
 import { extractMirrorXyzUrl } from './extractMirrorXyzUrl';
 import { DateFormatOption, getFormattedDate } from './getFormattedDate';
 import { getOpenseaExternalUrlDangerously } from './getOpenseaExternalUrl';
-import { getProhibitionUrlDangerously } from './getProhibitionUrl';
 import {
   getFxHashExternalUrlDangerously,
   getObjktExternalUrlDangerously,
@@ -14,6 +13,7 @@ import {
 } from './getTezosExternalUrl';
 import { hexToDec } from './hexToDec';
 import processProjectUrl from './processProjectUrl';
+import { getProhibitionUrlDangerously } from './prohibition';
 import { truncateAddress } from './wallet';
 
 export function extractRelevantMetadataFromToken(

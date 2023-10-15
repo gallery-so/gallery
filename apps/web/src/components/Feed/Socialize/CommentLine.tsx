@@ -88,6 +88,14 @@ const CommenterName = styled.a`
 `;
 
 const CommentText = styled.div`
+  word-wrap: break-word;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 18px;
