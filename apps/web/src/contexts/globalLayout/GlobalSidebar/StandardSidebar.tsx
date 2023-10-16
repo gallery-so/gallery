@@ -60,7 +60,6 @@ export function StandardSidebar({ queryRef }: Props) {
           }
         }
         ...SettingsFragment
-        ...useExperienceFragment
         ...useAnnouncementFragment
       }
     `,
