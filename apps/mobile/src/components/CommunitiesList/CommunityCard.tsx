@@ -5,6 +5,7 @@ import { graphql } from 'relay-runtime';
 
 import { Typography } from '~/components/Typography';
 import { CommunityCardFragment$key } from '~/generated/CommunityCardFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
@@ -48,6 +49,7 @@ export function CommunityCard({ communityRef, onPress }: CommunityCardProps) {
       className="flex flex-row items-center space-x-4 py-2 px-4"
       eventElementId="Community Name"
       eventName="Community Name Clicked"
+      eventContext={contexts.Community}
     >
       <CommunityProfilePicture communityRef={community} size="md" />
 

@@ -9,6 +9,7 @@ import useSWR from 'swr';
 import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
 import { TezosDomainOrAddressFragment$key } from '~/generated/TezosDomainOrAddressFragment.graphql';
 import { TezosDomainOrAddressWithSuspenseFragment$key } from '~/generated/TezosDomainOrAddressWithSuspenseFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
 
@@ -22,9 +23,10 @@ async function tezosDomainFetcher(address: string): Promise<string | null> {
 
 type TezosDomainProps = {
   chainAddressRef: TezosDomainOrAddressFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
+const TezosDomain = ({ chainAddressRef, eventContext }: TezosDomainProps) => {
   const address = useFragment(
     graphql`
       fragment TezosDomainOrAddressFragment on ChainAddress {
@@ -42,18 +44,29 @@ const TezosDomain = ({ chainAddressRef }: TezosDomainProps) => {
   const link = getExternalAddressLink(address);
 
   if (domain && link) {
-    return <RawLinkableAddress link={link} address={address.address} truncatedAddress={domain} />;
+    return (
+      <RawLinkableAddress
+        link={link}
+        address={address.address}
+        truncatedAddress={domain}
+        eventContext={eventContext}
+      />
+    );
   }
 
   // If we couldn't resolve, let's fallback to the default component
-  return <LinkableAddress chainAddressRef={address} />;
+  return <LinkableAddress chainAddressRef={address} eventContext={eventContext} />;
 };
 
 type TezosDomainOrAddressProps = {
   chainAddressRef: TezosDomainOrAddressWithSuspenseFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export const TezosDomainOrAddress = ({ chainAddressRef }: TezosDomainOrAddressProps) => {
+export const TezosDomainOrAddress = ({
+  chainAddressRef,
+  eventContext,
+}: TezosDomainOrAddressProps) => {
   const address = useFragment(
     graphql`
       fragment TezosDomainOrAddressWithSuspenseFragment on ChainAddress {
@@ -67,9 +80,11 @@ export const TezosDomainOrAddress = ({ chainAddressRef }: TezosDomainOrAddressPr
   );
 
   return (
-    <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
-      <ReportingErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
-        <TezosDomain chainAddressRef={address} />
+    <Suspense fallback={<LinkableAddress chainAddressRef={address} eventContext={eventContext} />}>
+      <ReportingErrorBoundary
+        fallback={<LinkableAddress chainAddressRef={address} eventContext={eventContext} />}
+      >
+        <TezosDomain chainAddressRef={address} eventContext={eventContext} />
       </ReportingErrorBoundary>
     </Suspense>
   );

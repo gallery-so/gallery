@@ -28,7 +28,7 @@ export const SingleOpenGraphPreview = ({
           ))}
           {collectorsNote && (
             <StyledCollectorNotes>
-              <Markdown text={unescape('“' + collectorsNote + ' ”')} />
+              <Markdown text={unescape('“' + collectorsNote + ' ”')} eventContext={null} />
             </StyledCollectorNotes>
           )}
         </StyledGalleryContainer>
@@ -36,7 +36,7 @@ export const SingleOpenGraphPreview = ({
           <TitleL>{unescape(title)}</TitleL>
           {description && (
             <StyledDescription>
-              <Markdown text={unescape(firstLineDescription)} />
+              <Markdown text={unescape(firstLineDescription)} eventContext={null} />
             </StyledDescription>
           )}
         </StyledTitleContainer>

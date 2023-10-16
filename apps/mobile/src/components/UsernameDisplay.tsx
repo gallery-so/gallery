@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { UsernameDisplayFragment$key } from '~/generated/UsernameDisplayFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
@@ -12,9 +13,10 @@ type Props = {
   userRef: UsernameDisplayFragment$key;
   style?: GalleryTouchableOpacityProps['style'];
   size?: 'xs' | 'sm';
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export function UsernameDisplay({ userRef, style, size = 'xs' }: Props) {
+export function UsernameDisplay({ userRef, style, size = 'xs', eventContext }: Props) {
   const user = useFragment(
     graphql`
       fragment UsernameDisplayFragment on GalleryUser {
@@ -39,6 +41,7 @@ export function UsernameDisplay({ userRef, style, size = 'xs' }: Props) {
       style={style}
       eventElementId="Username Interaction"
       eventName="Username Interaction Clicked"
+      eventContext={eventContext}
     >
       <Typography className={`text-${size}`} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         {user.username}

@@ -7,6 +7,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { Chain } from '~/shared/utils/chains';
 
 import breakpoints from '../core/breakpoints';
@@ -172,7 +173,13 @@ export function NftSelectorView({
       <StyledWrapper>
         <StyledEmptyStateContainer align="center" justify="center" gap={24}>
           <StyledEmptyStateText>No NFTs found, try another wallet?</StyledEmptyStateText>
-          <Button variant="primary" onClick={handleManageWalletsClick}>
+          <Button
+            eventElementId="Open Add Wallet Modal Button"
+            eventName="Open Add Wallet Modal"
+            eventContext={contexts.Posts}
+            variant="primary"
+            onClick={handleManageWalletsClick}
+          >
             Connect Wallet
           </Button>
         </StyledEmptyStateContainer>

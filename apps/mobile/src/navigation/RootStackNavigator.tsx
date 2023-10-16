@@ -4,7 +4,7 @@ import { Suspense, useEffect } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
-import { UpsellBanner } from '~/components/UpsellBanner';
+import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
@@ -106,7 +106,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
   const query = useFragment(
     graphql`
       fragment RootStackNavigatorFragment on Query {
-        ...UpsellBannerFragment
+        ...ConnectWalletUpsellBannerFragment
       }
     `,
     queryRef
@@ -115,7 +115,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
-        <UpsellBanner queryRef={query} />
+        <ConnectWalletUpsellBanner queryRef={query} />
       </Suspense>
       <MainTabNavigator />
     </View>

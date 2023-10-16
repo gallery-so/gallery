@@ -11,6 +11,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -64,6 +65,7 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
       onPress={handleUserPress}
       eventElementId={'CommentsBottomSheetLine Single User'}
       eventName={'CommentsBottomSheetLine Single User'}
+      eventContext={contexts.Posts}
     >
       {comment.commenter && (
         <View className="mt-1">

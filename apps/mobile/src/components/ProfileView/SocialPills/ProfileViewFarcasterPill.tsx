@@ -7,6 +7,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { Typography } from '~/components/Typography';
 import { ProfileViewFarcasterPillFragment$key } from '~/generated/ProfileViewFarcasterPillFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   userRef: ProfileViewFarcasterPillFragment$key;
@@ -44,6 +45,7 @@ export default function ProfileViewFarcasterPill({ userRef, maxWidth }: Props) {
       onPress={handlePress}
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
+      eventContext={contexts['External Social']}
       properties={{ variant: 'Farcaster' }}
       className={`ml-2 max-w-[${maxWidth}]`}
     >

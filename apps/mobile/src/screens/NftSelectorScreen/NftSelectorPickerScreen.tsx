@@ -20,6 +20,7 @@ import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScree
 import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { chains } from '~/shared/utils/chains';
 
 import {
@@ -142,6 +143,7 @@ export function NftSelectorPickerScreen() {
                 icon={<SlidersIcon />}
                 eventElementId="NftSelectorSelectorSettingsButton"
                 eventName="NftSelectorSelectorSettingsButton pressed"
+                eventContext={contexts.Posts}
               />
 
               <NftSelectorFilterBottomSheet
@@ -235,6 +237,7 @@ function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconPr
       }
       eventElementId="NftSelectorSelectorRefreshButton"
       eventName="NftSelectoreSelectorRefreshButton pressed"
+      eventContext={contexts.Posts}
     />
   );
 }

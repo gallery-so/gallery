@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -13,6 +12,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
@@ -105,20 +105,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                 </HStack>
               )}
               <BaseM>add a collector's note to</BaseM>
-              <Link
-                href={{
-                  pathname: '/[username]/[collectionId]/[tokenId]',
-                  query: {
-                    username: event.owner.username as string,
-                    collectionId: event.token.collection?.dbid as string,
-                    tokenId: event.token.token?.dbid,
-                  },
-                }}
-                onClick={handleEventClick}
-                legacyBehavior
-              >
-                <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
-              </Link>
+              <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
             </StyledEventText>
             {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>
@@ -131,7 +118,11 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
               {event.newCollectorsNote && (
                 <StyledNoteWrapper>
                   <StyledNote>
-                    <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+                    <Markdown
+                      text={unescape(event.newCollectorsNote ?? '')}
+                      inheritLinkStyling
+                      eventContext={contexts.Feed}
+                    />
                   </StyledNote>
                 </StyledNoteWrapper>
               )}

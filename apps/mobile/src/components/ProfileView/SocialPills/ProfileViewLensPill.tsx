@@ -7,6 +7,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { Typography } from '~/components/Typography';
 import { ProfileViewLensPillFragment$key } from '~/generated/ProfileViewLensPillFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   userRef: ProfileViewLensPillFragment$key;
@@ -49,6 +50,7 @@ export default function ProfileViewLensPill({ userRef, maxWidth }: Props) {
       onPress={handlePress}
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
+      eventContext={contexts['External Social']}
       properties={{ variant: 'Lens' }}
       className={`ml-2 max-w-[${maxWidth}]`}
     >

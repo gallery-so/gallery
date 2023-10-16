@@ -10,6 +10,7 @@ import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoTe
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
@@ -50,11 +51,17 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
         <VStack>
           <HStack gap={4} align="center">
-            <UsernameLink username={comment.commenter?.username ?? null} />
+            <UsernameLink
+              username={comment.commenter?.username ?? null}
+              eventContext={contexts.Posts}
+            />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
           <StyledBaseM as="span">
-            <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
+            <Markdown
+              text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+              eventContext={contexts.Social}
+            />
           </StyledBaseM>
         </VStack>
       </HStack>

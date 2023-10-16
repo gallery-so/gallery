@@ -8,6 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { contexts } from '~/shared/analytics/constants';
 import unescape from '~/shared/utils/unescape';
 
 type Props = {
@@ -98,11 +99,24 @@ export function CollectionCreateOrEditForm({
 
         <ButtonContainer isNewCollection={mode === 'creating'}>
           {mode === 'creating' && (
-            <Button variant="secondary" onClick={handeSkipNameAndDescription}>
+            <Button
+              eventElementId="Skip Collection Title and Description Button"
+              eventName="Skip Collection Title and Dsescription"
+              eventContext={contexts.Editor}
+              variant="secondary"
+              onClick={handeSkipNameAndDescription}
+            >
               skip and add later
             </Button>
           )}
-          <Button onClick={handleClick}>save</Button>
+          <Button
+            eventElementId="Save Collection Title and Description Button"
+            eventName="Save Collection Title and Dsescription"
+            eventContext={contexts.Editor}
+            onClick={handleClick}
+          >
+            save
+          </Button>
         </ButtonContainer>
       </VStack>
     </StyledCollectionEditInfoForm>

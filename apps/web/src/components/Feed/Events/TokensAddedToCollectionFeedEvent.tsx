@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -12,6 +11,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -113,9 +113,7 @@ export default function TokensAddedToCollectionFeedEvent({
                   to
                   {collectionName ? ' ' : ' their collection'}
                 </BaseM>
-                <Link href={collectionPagePath} passHref legacyBehavior>
-                  <StyledEventLabel>{collectionName}</StyledEventLabel>
-                </Link>
+                <StyledEventLabel>{collectionName}</StyledEventLabel>
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
@@ -125,7 +123,7 @@ export default function TokensAddedToCollectionFeedEvent({
           {caption && (
             <StyledCaptionContainer gap={8} align="center">
               <BaseM>
-                <Markdown text={caption} />
+                <Markdown text={caption} eventContext={contexts.Feed} />
               </BaseM>
             </StyledCaptionContainer>
           )}

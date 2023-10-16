@@ -15,6 +15,7 @@ import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkelet
 import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -166,12 +167,14 @@ export function NotificationSkeleton({
       className="flex flex-row justify-between p-4"
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
+      eventContext={contexts.Notifications}
     >
       <View className="flex-1 flex-row items-center">
         <View className="mr-2">
           <ProfilePictureBubblesWithCount
             eventElementId="Notification Row PFP Bubbles"
             eventName="Notification Row PFP Bubbles Pressed"
+            eventContext={contexts.Notifications}
             onPress={handleBubblesPress}
             userRefs={responsibleUsers}
             totalCount={responsibleUserRefs.length}

@@ -19,6 +19,7 @@ export function BackButton({ onPress, size = 'md' }: Props) {
       size={size}
       eventElementId={null}
       eventName={null}
+      eventContext={null}
       icon={<BackIcon />}
       onPress={handlePress}
     />

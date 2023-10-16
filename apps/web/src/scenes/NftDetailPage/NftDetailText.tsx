@@ -5,14 +5,14 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
-import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
@@ -21,6 +21,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
@@ -118,21 +119,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     openseaUrl,
   ]);
 
-  const handleCollectorNameClick = useCallback(() => {
-    track('NFT Detail Collector Name Click', {
-      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
-      contractAddress: token.contract?.contractAddress?.address,
-      tokenId: token.tokenId,
-      externaUrl: openseaUrl,
-    });
-  }, [
-    track,
-    token.owner?.username,
-    token.contract?.contractAddress?.address,
-    token.tokenId,
-    openseaUrl,
-  ]);
-
   const communityUrl = getCommunityUrlForToken(token);
 
   const metadata = JSON.parse(token.tokenMetadata ?? '{}') ?? {};
@@ -151,13 +137,12 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const { showModal } = useModalActions();
 
   const handleCreatePostClick = useCallback(() => {
-    track('NFT Detail: Clicked Create Post');
     showModal({
       content: <PostComposerModal tokenId={token.dbid} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [isMobile, showModal, token, track]);
+  }, [isMobile, showModal, token]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
@@ -167,18 +152,28 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           <HStack align="center" gap={4}>
             {communityUrl && token.community ? (
               <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-                <ClickablePill to={communityUrl}>
+                <GalleryPill
+                  eventElementId="NFT Detail Community Pill"
+                  eventName="NFT Detail Community Pill Click"
+                  eventContext={contexts['NFT Detail']}
+                  to={communityUrl}
+                >
                   <StyledPillContent gap={4} align="center" justify="flex-end">
                     {token.chain === 'POAP' && <PoapLogo />}
                     {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
                     <StyledContractName>{contractName}</StyledContractName>
                   </StyledPillContent>
-                </ClickablePill>
+                </GalleryPill>
               </CommunityHoverCard>
             ) : (
-              <NonclickablePill>
+              <GalleryPill
+                eventElementId="NFT Detail Community Pill"
+                eventName="NFT Detail Community Pill Click"
+                eventContext={contexts['NFT Detail']}
+                disabled
+              >
                 <StyledContractName>{contractName}</StyledContractName>
-              </NonclickablePill>
+              </GalleryPill>
             )}
           </HStack>
         </VStack>
@@ -188,15 +183,10 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             <UserHoverCard userRef={token.owner}>
               <VStack gap={2}>
                 <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
-                <StyledInteractiveLink
-                  to={{ pathname: '/[username]', query: { username: token.owner.username } }}
-                  onClick={handleCollectorNameClick}
-                >
-                  <HStack align="center" gap={4}>
-                    <ProfilePicture size="sm" userRef={token.owner} />
-                    <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
-                  </HStack>
-                </StyledInteractiveLink>
+                <HStack align="center" gap={4}>
+                  <ProfilePicture size="sm" userRef={token.owner} />
+                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
+                </HStack>
               </VStack>
             </UserHoverCard>
           )}
@@ -204,25 +194,25 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             // TODO: Update this to use the creator's username
             <VStack gap={2}>
               <TitleXS>CREATOR</TitleXS>
-              <InteractiveLink
+              <GalleryLink
                 onClick={handleCreatorNameClick}
                 to={{ pathname: '/[username]', query: { username: 'riley' } }}
               >
                 <BaseM color={colors.shadow}>riley.eth</BaseM>
-              </InteractiveLink>
-              <InteractiveLink
+              </GalleryLink>
+              <GalleryLink
                 onClick={handleCreatorNameClick}
                 to={{ pathname: '/[username]', query: { username: 'riley' } }}
               >
                 <BaseM color={colors.shadow}>peterson.eth</BaseM>
-              </InteractiveLink>
+              </GalleryLink>
             </VStack>
           )}
         </HStack>
 
         {token.description && (
           <BaseM>
-            <Markdown text={token.description} />
+            <Markdown text={token.description} eventContext={contexts['NFT Detail']} />
           </BaseM>
         )}
 
@@ -233,25 +223,56 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             {SHOW_BUY_NOW_BUTTON && (
               <VStack gap={24}>
                 <HorizontalBreak />
-                <StyledInteractiveLink href={openseaUrl} onClick={handleBuyNowClick}>
-                  <StyledButton>Buy Now</StyledButton>
-                </StyledInteractiveLink>
+                <StyledGalleryLink href={openseaUrl} onClick={handleBuyNowClick}>
+                  <StyledButton
+                    eventElementId="Buy Now Button"
+                    eventName="Buy Now"
+                    eventContext={contexts['NFT Detail']}
+                  >
+                    Buy Now
+                  </StyledButton>
+                </StyledGalleryLink>
               </VStack>
             )}
           </VStack>
         ) : null}
 
-        {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
+        {authenticatedUserOwnsAsset && (
+          <Button
+            eventElementId="Create Post Button"
+            eventName="Create Post"
+            eventContext={contexts['NFT Detail']}
+            onClick={handleCreatePostClick}
+          >
+            Create Post
+          </Button>
+        )}
 
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>
-            {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
-            {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
+            {poapMoreInfoUrl && <GalleryLink href={poapMoreInfoUrl}>More Info</GalleryLink>}
+            {poapUrl && <GalleryLink href={poapUrl}>View on POAP</GalleryLink>}
           </VStack>
         ) : null}
 
-        {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
-        {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
+        {!showDetails && (
+          <TextButton
+            eventElementId="Show Details Button"
+            eventName="Show Details"
+            eventContext={contexts['NFT Detail']}
+            text="Show Details"
+            onClick={handleToggleClick}
+          />
+        )}
+        {showDetails && (
+          <TextButton
+            eventElementId="Hide Details Button"
+            eventName="Hide Details"
+            eventContext={contexts['NFT Detail']}
+            text="Hide Details"
+            onClick={handleToggleClick}
+          />
+        )}
       </VStack>
     </StyledDetailLabel>
   );
@@ -291,7 +312,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
   }
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 

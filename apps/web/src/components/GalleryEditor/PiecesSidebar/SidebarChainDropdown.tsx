@@ -11,6 +11,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { SidebarChainDropdownFragment$key } from '~/generated/SidebarChainDropdownFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ChainMetadata, chains } from '~/shared/utils/chains';
 import isAdminRole from '~/utils/graphql/isAdminRole';
@@ -90,6 +91,9 @@ export default function SidebarChainDropdown({
                   handleSelectChain(chain);
                 }}
                 disabled={isChainDisabled}
+                name="Sidebar Chain"
+                eventContext={contexts.Editor}
+                eventSelection={chain.name}
               >
                 <HStack align="center" gap={6}>
                   <Image src={chain.icon} width={16} height={16} alt={chain.name} />

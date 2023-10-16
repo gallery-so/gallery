@@ -8,7 +8,6 @@ import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -143,11 +142,24 @@ export function MembershipMintPage({
     }
 
     return active ? (
-      <Button disabled={!isMintButtonEnabled} onClick={handleMintButtonClick}>
+      <Button
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+        disabled={!isMintButtonEnabled}
+        onClick={handleMintButtonClick}
+      >
         {buttonText}
       </Button>
     ) : (
-      <Button onClick={handleConnectWalletButtonClick}>{buttonText}</Button>
+      <Button
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+        onClick={handleConnectWalletButtonClick}
+      >
+        {buttonText}
+      </Button>
     );
   }, [
     active,
@@ -175,7 +187,7 @@ export function MembershipMintPage({
             <VStack gap={16}>
               <TitleM>{membershipNft.title}</TitleM>
               <StyledNftDescription>
-                <Markdown text={membershipNft.description} />
+                <Markdown text={membershipNft.description} eventContext={null} />
               </StyledNftDescription>
             </VStack>
           </StyledDetailHeader>
@@ -210,9 +222,9 @@ export function MembershipMintPage({
               <StyledIneligibleText>
                 <HStack gap={4} align="center">
                   <BaseXL>You are ineligible for this mint.</BaseXL>
-                  <InteractiveLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
+                  <GalleryLink href={`${GALLERY_FAQ}#6fa1bc2983614500a206fc14fcfd61bf`}>
                     <InfoCircleIcon />
-                  </InteractiveLink>
+                  </GalleryLink>
                 </HStack>
               </StyledIneligibleText>
             )}

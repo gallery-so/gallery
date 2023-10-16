@@ -8,6 +8,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ToRedeemPageFragment$key } from '~/generated/ToRedeemPageFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { getObjectName } from '../getObjectName';
 import RedeemItem from './RedeemItem';
@@ -106,7 +107,13 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
           </VStack>
 
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleSubmit} disabled={isRedeemButtonDisabled}>
+            <StyledRedeemSubmitButton
+              eventElementId="Redeem Merch Button"
+              eventName="Redeem Merch"
+              eventContext={contexts['Merch Store']}
+              onClick={handleSubmit}
+              disabled={isRedeemButtonDisabled}
+            >
               Redeem
             </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
@@ -117,7 +124,14 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
             <BaseM>You do not have any merchandise to redeem.</BaseM>
           </StyledRedeemTextContainer>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleClose}>Close</StyledRedeemSubmitButton>
+            <StyledRedeemSubmitButton
+              eventElementId={null}
+              eventName={null}
+              eventContext={null}
+              onClick={handleClose}
+            >
+              Close
+            </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
         </StyledToRedeemPageContainer>
       )}

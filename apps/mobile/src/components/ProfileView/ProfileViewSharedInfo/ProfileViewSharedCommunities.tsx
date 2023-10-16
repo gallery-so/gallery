@@ -6,14 +6,15 @@ import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { InteractiveLink } from '~/components/InteractiveLink';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -83,6 +84,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         totalCount={totalSharedCommunities}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
+        eventContext={contexts.Social}
         userRefs={sharedCommunities}
       />
 
@@ -155,19 +157,21 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
 
         return (
           <View key={community.dbid} className="flex flex-row items-center">
-            <InteractiveLink
+            <GalleryLink
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              type="Shared Communities Name"
               textStyle={{
                 fontSize: 12,
                 color: colorScheme === 'dark' ? colors.white : colors.black['800'],
               }}
+              eventElementId="Shared Communities Name"
+              eventName="Shared Communities Name Press"
+              eventContext={contexts.Community}
             >
               {community.name}
-            </InteractiveLink>
+            </GalleryLink>
             {(!isLast || hasMore) && (
               <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
@@ -183,17 +187,19 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
             and{' '}
           </Typography>
 
-          <InteractiveLink
+          <GalleryLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            type="Shared Communities See All"
             textStyle={{
               fontSize: 12,
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
+            eventElementId="Shared Communities See All"
+            eventName="Shared Communities See All Press"
+            eventContext={contexts.Community}
           >
             {totalCount - communitiesToShow.length} others
-          </InteractiveLink>
+          </GalleryLink>
         </View>
       )}
     </View>

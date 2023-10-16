@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
@@ -17,6 +17,7 @@ import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityP
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ShareIcon from '~/icons/ShareIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -107,14 +108,19 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     return (
       <HStack justify="flex-end">
         {externalAddressLink && (
-          <InteractiveLink href={externalAddressLink}>
+          <GalleryLink
+            href={externalAddressLink}
+            eventElementId="External Address Link"
+            eventName="External Address Link Click"
+            eventContext={contexts.Community}
+          >
             <IconContainer
               variant="default"
               tooltipLabel="View on explorer"
               icon={<GlobeIcon />}
               onClick={handleExternalLinkClick}
             />
-          </InteractiveLink>
+          </GalleryLink>
         )}
         <CopyToClipboard textToCopy={currentUrl}>
           <IconContainer
@@ -132,14 +138,20 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     if (!description) {
       return null;
     }
+
+    const buttonText = showExpandedDescription ? 'Show Less' : 'Show More';
+
     return (
       <StyledDescriptionWrapper gap={8}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-          <Markdown text={formattedDescription} />
+          <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
         {isLineClampEnabled && (
           <TextButton
-            text={showExpandedDescription ? 'Show less' : 'Show More'}
+            eventElementId={`Community Page ${buttonText} Button`}
+            eventName={`Community Page ${buttonText}`}
+            eventContext={contexts.Community}
+            text={buttonText}
             onClick={handleShowMoreClick}
           />
         )}

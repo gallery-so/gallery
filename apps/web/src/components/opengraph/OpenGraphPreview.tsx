@@ -28,7 +28,7 @@ export const OpenGraphPreview = ({ title, description, imageUrls }: Props) => {
         <TitleL>{unescape(title)}</TitleL>
         {description && (
           <StyledDescription>
-            <Markdown text={unescape(firstLineDescription)} />
+            <Markdown text={unescape(firstLineDescription)} eventContext={null} />
           </StyledDescription>
         )}
       </StyledTitleContainer>

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -28,8 +28,7 @@ export default function PosterPage() {
           <VStack gap={16}>
             <BaseM>
               Thank you for being a member of Gallery. Members celebrated our{' '}
-              <InteractiveLink href={BRAND_POST_URL}>new brand</InteractiveLink> by signing our
-              poster.
+              <GalleryLink href={BRAND_POST_URL}>new brand</GalleryLink> by signing our poster.
             </BaseM>
             <BaseM>
               We made the final poster available to mint as a commemorative token for early

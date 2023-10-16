@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { Typography } from '~/components/Typography';
 import { GalleryNameHeaderFragment$key } from '~/generated/GalleryNameHeaderFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
@@ -48,6 +49,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
         onPress={handleUsernamePress}
         eventElementId="Gallery Header"
         eventName="Gallery Header Clicked"
+        eventContext={contexts.UserGallery}
         properties={{ variant: 'username' }}
       >
         <Typography
@@ -67,6 +69,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
         onPress={handleGalleryNamePress}
         eventElementId="Gallery Header"
         eventName="Gallery Header Clicked"
+        eventContext={contexts.UserGallery}
         properties={{ variant: 'gallery title' }}
       >
         <Typography

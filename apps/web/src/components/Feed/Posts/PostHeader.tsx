@@ -9,6 +9,7 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
@@ -70,7 +71,10 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       </HStack>
       <StyledBaseM>
         {post.caption && (
-          <Markdown text={unescape(replaceUrlsWithMarkdownFormat(post.caption))}></Markdown>
+          <Markdown
+            text={unescape(replaceUrlsWithMarkdownFormat(post.caption))}
+            eventContext={contexts.Posts}
+          />
         )}
       </StyledBaseM>
     </VStack>

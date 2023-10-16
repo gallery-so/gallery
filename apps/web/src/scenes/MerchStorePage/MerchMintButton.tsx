@@ -10,6 +10,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { MAX_NFTS_PER_WALLET } from './constants';
@@ -57,7 +58,13 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   return (
     <>
-      <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
+      <StyledButton
+        eventElementId="Mint Merch Button"
+        eventName="Mint Merch"
+        eventContext={contexts['Merch Store']}
+        onClick={handleClick}
+        disabled={isButtonDisabled}
+      >
         {buttonText}
       </StyledButton>
 
@@ -69,7 +76,12 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
                 ? 'Transaction successful!'
                 : 'Transaction submitted. This may take several minutes.'}
             </BaseM>
-            <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
+            <GalleryLink
+              href={`https://etherscan.io/tx/${transactionHash}`}
+              eventElementId="View on Etherscan Link"
+              eventName="View on Etherscan"
+              eventContext={contexts['Merch Store']}
+            >
               <BaseM>View on Etherscan</BaseM>
             </GalleryLink>
           </>

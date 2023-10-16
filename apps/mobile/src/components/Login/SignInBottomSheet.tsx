@@ -6,8 +6,9 @@ import { EmailIcon } from 'src/icons/EmailIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
-import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
+import { BottomSheetRow } from '../BottomSheetRow';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -67,11 +68,17 @@ function SignInBottomSheet(
         </View>
 
         <View className="flex flex-col space-y-2">
-          <BottomSheetRow icon={<EmailIcon />} text="Email" onPress={handleEmailPress} />
+          <BottomSheetRow
+            icon={<EmailIcon />}
+            text="Email"
+            onPress={handleEmailPress}
+            eventContext={contexts.Authentication}
+          />
           <BottomSheetRow
             icon={<QRCodeIcon width={24} height={24} />}
             text="QR Code (Sync with desktop)"
             onPress={onQrCodePress}
+            eventContext={contexts.Authentication}
           />
         </View>
       </View>

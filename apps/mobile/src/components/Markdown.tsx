@@ -129,6 +129,8 @@ export function Markdown({
     <GalleryTouchableOpacity
       eventElementId={null}
       eventName={null}
+      // TODO analytics - prop drill
+      eventContext={null}
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >

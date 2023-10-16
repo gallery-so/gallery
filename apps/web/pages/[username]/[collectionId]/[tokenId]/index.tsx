@@ -1,9 +1,10 @@
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import useKeyDown from '~/hooks/useKeyDown';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import { MetaTagProps } from '~/pages/_app';
@@ -23,7 +24,7 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   // the default "back" behavior from the NFT Detail Page
   // is a redirect to the Collection Page
-  const collectionRoute = useMemo(
+  const collectionRoute: Route = useMemo(
     () => ({
       pathname: '/[username]/[collectionId]',
       query: { username, collectionId },
@@ -44,9 +45,9 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   return (
     <>
-      <Link href={collectionRoute} legacyBehavior>
+      <GalleryLink to={collectionRoute}>
         <StyledDecoratedCloseIcon />
-      </Link>
+      </GalleryLink>
       <GalleryRoute
         element={
           <NftDetailPageScene username={username} collectionId={collectionId} tokenId={tokenId} />

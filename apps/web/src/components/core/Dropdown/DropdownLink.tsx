@@ -1,23 +1,73 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
-import { ReactNode } from 'react';
+import { Route } from 'nextjs-routes';
+import { MouseEventHandler, ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
 
+import { TrashIconNew } from '~/icons/TrashIconNew';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
-type DropdownLinkProps = { href: Route; children: ReactNode; onClick?: () => void };
+import GalleryLink from '../GalleryLink/GalleryLink';
+import { HStack } from '../Spacer/Stack';
+import { BaseM } from '../Text/Text';
+import { DropdownEventProps } from './DropdownItem';
 
-export function DropdownLink({ href, children, onClick }: DropdownLinkProps) {
+type DropdownLinkProps = {
+  href: Route;
+  children?: ReactNode;
+  onClick?: () => void;
+} & DropdownEventProps;
+
+export function DropdownLink({
+  href,
+  children,
+  onClick,
+  label,
+  variant = 'default',
+  name,
+  eventContext,
+  eventFlow,
+  eventSelection,
+  properties,
+}: DropdownLinkProps) {
+  const track = useTrack();
+
+  const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
+    (event) => {
+      event.stopPropagation();
+
+      track('Dropdown Item Click', {
+        id: `${name} Dropdown Item`,
+        name: `${name} Dropdown Item Click`,
+        context: eventContext,
+        flow: eventFlow,
+        selection: eventSelection,
+        ...properties,
+      });
+
+      onClick?.();
+    },
+    [track, name, eventContext, eventFlow, eventSelection, properties, onClick]
+  );
+
+  if (label) {
+    return (
+      <StyledGalleryLink onClick={handleClick}>
+        <HStack gap={4} align="center">
+          {variant === 'delete' ? <TrashIconNew color={colors.error} /> : null}
+          <BaseM color={variant === 'delete' ? colors.error : undefined}>{label}</BaseM>
+        </HStack>
+      </StyledGalleryLink>
+    );
+  }
+
   return (
-    <Link href={href} legacyBehavior>
-      <StyledDropdownLink href={route(href)} onClick={onClick}>
-        {children}
-      </StyledDropdownLink>
-    </Link>
+    <StyledGalleryLink to={href} onClick={handleClick}>
+      {children}
+    </StyledGalleryLink>
   );
 }
 
-const StyledDropdownLink = styled.a`
+const StyledGalleryLink = styled(GalleryLink)`
   padding: 8px;
 
   font-family: 'Helvetica Neue';

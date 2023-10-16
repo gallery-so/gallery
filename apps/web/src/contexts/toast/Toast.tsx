@@ -13,6 +13,7 @@ import transitions, {
 import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 type Props = {
   message: string;
@@ -20,8 +21,6 @@ type Props = {
   autoClose?: boolean;
   variant?: 'success' | 'error';
 };
-
-const noop = () => {};
 
 export function AnimatedToast({
   message,
@@ -100,7 +99,11 @@ function Toast({ message, onClose, variant }: Props) {
           </StyledAlertIcon>
         )}
         <StyledMessage>
-          <Markdown text={message} />
+          <Markdown
+            text={message}
+            // we wouldn't render a link in a toast
+            eventContext={null}
+          />
         </StyledMessage>
         <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>

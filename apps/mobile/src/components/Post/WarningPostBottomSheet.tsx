@@ -3,6 +3,8 @@ import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { Button } from '../Button';
 import {
   GalleryBottomSheetModal,
@@ -66,7 +68,13 @@ function WarningPostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
           </Typography>
         </View>
 
-        <Button onPress={handleBack} text="DISCARD POST" eventElementId={null} eventName={null} />
+        <Button
+          onPress={handleBack}
+          text="DISCARD POST"
+          eventElementId="Discard Post Button"
+          eventName="Discard Post"
+          eventContext={contexts.Posts}
+        />
       </View>
     </GalleryBottomSheetModal>
   );

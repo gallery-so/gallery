@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
 import ExploreList from './ExploreList';
@@ -79,7 +80,14 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
           <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
         </VStack>
 
-        <StyledInteractiveLink onClick={handleSeeAllClick}>See all</StyledInteractiveLink>
+        <StyledGalleryLink
+          onClick={handleSeeAllClick}
+          eventElementId="See More Suggested Users"
+          eventName="See More Suggested Users Click"
+          eventContext={contexts.Explore}
+        >
+          See all
+        </StyledGalleryLink>
       </HStack>
       <ExploreList exploreUsersRef={nonNullUsers} queryRef={query} />
     </StyledSuggestedSection>
@@ -94,6 +102,6 @@ const Title = styled(TitleDiatypeL)`
   font-size: 24px;
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   white-space: nowrap;
 `;

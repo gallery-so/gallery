@@ -16,7 +16,7 @@ export default function BasicTextPage({ title, body }: Props) {
       <StyledContent gap={64}>
         <TitleL>{title}</TitleL>
         <StyledBody>
-          <InternalMarkdown text={body} />
+          <InternalMarkdown text={body} eventContext={null} />
         </StyledBody>
       </StyledContent>
     </StyledPage>

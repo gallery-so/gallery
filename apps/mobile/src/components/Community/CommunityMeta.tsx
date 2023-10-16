@@ -18,6 +18,7 @@ import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFr
 import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
@@ -160,6 +161,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           onPress={handleUsernamePress}
           eventElementId="Community Page Creator Username"
           eventName="Tapped Community Page Creator Username"
+          eventContext={contexts.Community}
         >
           {community.creator.__typename && <ProfilePicture userRef={community.creator} size="xs" />}
 
@@ -174,12 +176,20 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     } else if (community.contractAddress) {
       return (
         <View className="flex flex-row items-center space-x-1">
-          <RawProfilePicture size="xs" default eventElementId={null} eventName={null} />
+          <RawProfilePicture
+            size="xs"
+            default
+            eventElementId="Community PFP"
+            eventName="Community PFP Press"
+            eventContext={contexts.Community}
+          />
           <LinkableAddress
             chainAddressRef={community.contractAddress}
-            type="Community Contract Address"
             textStyle={{ color: colorScheme === 'light' ? colors.black[800] : colors.offWhite }}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            eventElementId="Community Contract Address"
+            eventName="Community Contract Address Press"
+            eventContext={contexts.Community}
           />
         </View>
       );
@@ -228,8 +238,9 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         variant={isMemberOfCommunity ? 'primary' : 'disabled'}
         icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
         onPress={handlePress}
-        eventElementId={null}
-        eventName={null}
+        eventElementId="Attempt Create Post Button"
+        eventName="Attempt Create Post"
+        eventContext={contexts.Community}
       />
       <CommunityPostBottomSheet
         ref={bottomSheetRef}

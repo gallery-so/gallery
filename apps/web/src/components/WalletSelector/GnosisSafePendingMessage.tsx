@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
@@ -94,8 +95,22 @@ function GnosisSafePendingMessage({
       description="We detected that you previously tried signing a message. Would you like to try authenticating again using the same transaction?"
     >
       <StyledButtonWrapper gap={8} align="center" justify="space-around">
-        <Button onClick={manuallyValidateSignature}>Yes, retry</Button>
-        <StyledRestartButton onClick={onRestartClick}>No, sign new message</StyledRestartButton>
+        <Button
+          eventElementId="Retry Gnosis Safe Connect Button"
+          eventName="Retry Gnosis Safe Connect"
+          eventContext={contexts.Authentication}
+          onClick={manuallyValidateSignature}
+        >
+          Yes, retry
+        </Button>
+        <StyledRestartButton
+          eventElementId="Sign New Gnosis Safe Message Button"
+          eventName="Sign New Gnosis Safe Message"
+          eventContext={contexts.Authentication}
+          onClick={onRestartClick}
+        >
+          No, sign new message
+        </StyledRestartButton>
       </StyledButtonWrapper>
     </EmptyState>
   ) : (

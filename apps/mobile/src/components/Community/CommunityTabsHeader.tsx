@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityTabsHeaderFragment$key } from '~/generated/CommunityTabsHeaderFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 
@@ -59,6 +60,7 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
         routes={routes}
         eventElementId="Community Tab"
         eventName="Community Tab Clicked"
+        eventContext={contexts.Community}
       />
     </View>
   );

@@ -13,6 +13,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import FeaturedCollectorCard from './components/FeaturedCollectorCard';
@@ -139,7 +140,14 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
                 <MobileButtonContainer>
                   <VStack gap={16} align="center">
-                    <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+                    <Button
+                      eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
+                      onClick={handlePrimaryButtonClick}
+                    >
+                      {BUTTON_TEXT_1}
+                    </Button>
                   </VStack>
                 </MobileButtonContainer>
               </VStack>
@@ -236,7 +244,14 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </HStack>
                 <BaseM>Share your taste with the world.</BaseM>
               </MobileSecondaryHeaderContainer>
-              <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+              <Button
+                eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
+                eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                eventContext={contexts['Global Announcement Popover']}
+                onClick={handlePrimaryButtonClick}
+              >
+                {BUTTON_TEXT_1}
+              </Button>
             </DesktopFooterContainer>
           </MobilePopoverContainer>
         ) : (
@@ -254,8 +269,21 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </DesktopDescriptionText>
                 <DesktopButtonContainer>
                   <HStack gap={24}>
-                    <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
-                    <Button onClick={handleSecondaryButtonClick} variant="secondary">
+                    <Button
+                      eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
+                      onClick={handlePrimaryButtonClick}
+                    >
+                      {BUTTON_TEXT_1}
+                    </Button>
+                    <Button
+                      eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                      eventContext={contexts['Global Announcement Popover']}
+                      onClick={handleSecondaryButtonClick}
+                      variant="secondary"
+                    >
                       {BUTTON_TEXT_2}
                     </Button>
                   </HStack>
@@ -369,7 +397,14 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   Share your taste with the world.
                 </DesktopSecondaryDescription>
               </DesktopSecondaryHeaderContainer>
-              <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+              <Button
+                eventElementId="TODO WHENVER WE WORK ON THIS NEXT"
+                eventName="TODO WHENVER WE WORK ON THIS NEXT"
+                eventContext={contexts['Global Announcement Popover']}
+                onClick={handlePrimaryButtonClick}
+              >
+                {BUTTON_TEXT_1}
+              </Button>
             </DesktopFooterContainer>
           </DesktopPopoverContainer>
         )

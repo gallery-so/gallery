@@ -124,6 +124,7 @@ export default function CheckInEmailEntry({
           text="Close"
           eventElementId="Marfa Check In: Submission Success Close Button"
           eventName="Pressed Marfa Check In: Submission Success Close Button"
+          eventContext={null}
         />
       </View>
     );
@@ -159,6 +160,7 @@ export default function CheckInEmailEntry({
         disabled={!isEmailValid}
         eventElementId={null}
         eventName={null}
+        eventContext={null}
       />
       {status === 'ERROR' && (
         <Typography

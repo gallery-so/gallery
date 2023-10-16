@@ -7,6 +7,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type EmptyGalleryProps = {
@@ -50,7 +51,14 @@ export function EmptyAuthenticatedUsersGallery({ galleryId }: EmptyAuthenticated
           <strong>Get started below and showcase your collection.</strong>
         </StyledTitle>
       </VStack>
-      <Button onClick={handleSetupGalleryClick}>Create Gallery</Button>
+      <Button
+        eventElementId="Create Gallery Button"
+        eventName="Create Gallery"
+        eventContext={contexts.UserGallery}
+        onClick={handleSetupGalleryClick}
+      >
+        Create Gallery
+      </Button>
     </StyledEmptyGallery>
   );
 }

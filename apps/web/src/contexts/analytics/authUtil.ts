@@ -11,6 +11,7 @@ const useTrackAuthEvent = () => {
       track(eventName, {
         wallet_provider: walletName,
         connection_mode: connectionMode,
+        context: 'Authentication',
         ...(errorMessage && { error: errorMessage }),
       });
     },

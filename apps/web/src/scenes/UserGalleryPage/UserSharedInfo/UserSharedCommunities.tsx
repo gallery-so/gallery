@@ -2,13 +2,14 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { CommunityProfilePictureStack } from '~/components/ProfilePicture/CommunityProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { LowercaseChain } from '~/shared/utils/chains';
@@ -91,9 +92,16 @@ export default function UserSharedCommunities({ userRef }: Props) {
 
         if (url) {
           return (
-            <StyledInteractiveLink to={url} key={community.name}>
+            <StyledGalleryLink
+              to={url}
+              key={community.name}
+              eventElementId="Shared Community Name Link"
+              eventName="Shared Community Name Link Click"
+              // TODO analytics - this will be variable
+              eventContext={contexts.Community}
+            >
               {community.name}
-            </StyledInteractiveLink>
+            </StyledGalleryLink>
           );
         }
       }
@@ -103,9 +111,15 @@ export default function UserSharedCommunities({ userRef }: Props) {
     // If there are more than 3 communities, add a link to show all in a popover
     if (totalSharedCommunities > 3) {
       result.push(
-        <StyledInteractiveLink onClick={handleShowAllClick}>
+        <StyledGalleryLink
+          onClick={handleShowAllClick}
+          eventElementId="Shared Communites Remaining Link"
+          eventName="Shared Communites Remaining Link Click"
+          // TODO analytics - this will be variable
+          eventContext={contexts.Community}
+        >
           {totalSharedCommunities - 2} others
-        </StyledInteractiveLink>
+        </StyledGalleryLink>
       );
     }
 
@@ -139,7 +153,7 @@ export default function UserSharedCommunities({ userRef }: Props) {
   );
 }
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

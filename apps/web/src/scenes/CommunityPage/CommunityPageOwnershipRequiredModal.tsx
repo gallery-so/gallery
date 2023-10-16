@@ -9,6 +9,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageOwnershipRequiredModalFragment$key } from '~/generated/CommunityPageOwnershipRequiredModalFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   communityRef: CommunityPageOwnershipRequiredModalFragment$key;
@@ -53,13 +54,26 @@ export default function CommunityPageOwnershipRequiredModal({
         not displaying try <strong>refreshing your collection</strong>.
       </BaseM>
       <HStack justify="flex-end" gap={8}>
-        <Button variant="secondary" onClick={handleRefreshCollectionClick} disabled={isLocked}>
+        <Button
+          eventElementId="Refresh Tokens Button"
+          eventName="Refresh Tokens"
+          eventContext={contexts.Community}
+          variant="secondary"
+          onClick={handleRefreshCollectionClick}
+          disabled={isLocked}
+        >
           <HStack align="center" gap={4}>
             <RefreshIcon />
             Refresh Collection
           </HStack>
         </Button>
-        <Button variant="primary" onClick={handleOkClick}>
+        <Button
+          eventElementId="Dismiss Button"
+          eventName="Dismiss Modal"
+          eventContext={contexts.Community}
+          variant="primary"
+          onClick={handleOkClick}
+        >
           OK
         </Button>
       </HStack>

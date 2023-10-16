@@ -12,6 +12,7 @@ import {
   useGetSinglePreviewImage,
   useGetSinglePreviewImageProps,
 } from '~/shared/relay/useGetPreviewImages';
+import { noop } from '~/shared/utils/noop';
 
 type RawNftPreviewAssetProps = {
   tokenUrl: string;
@@ -24,7 +25,7 @@ type RawNftPreviewAssetProps = {
 function RawNftPreviewAsset({
   tokenUrl,
   onLoad,
-  onError = () => {},
+  onError = noop,
   priority,
   resizeMode,
 }: RawNftPreviewAssetProps) {

@@ -6,6 +6,7 @@ import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { SendIcon } from './SendIcon';
@@ -109,6 +110,7 @@ export function CommentBox({
         <GalleryTouchableOpacity
           eventElementId="Submit Comment Button"
           eventName="Submit Comment Button Clicked"
+          eventContext={contexts.Posts}
           onPress={handleSubmit}
           disabled={disabledSendButton}
         >

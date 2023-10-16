@@ -6,6 +6,7 @@ import { useEventCommentMutation } from '~/generated/useEventCommentMutation.gra
 import { useEventCommentQuery } from '~/generated/useEventCommentQuery.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import { noop } from '~/shared/utils/noop';
 
 type submitCommentProps = {
   feedEventId: string;
@@ -41,7 +42,7 @@ export function useEventComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedEventId, value, onSuccess = () => {} }: submitCommentProps) => {
+    async ({ feedEventId, value, onSuccess = noop }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
