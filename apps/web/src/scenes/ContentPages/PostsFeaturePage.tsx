@@ -1,13 +1,13 @@
 import Head from 'next/head';
-import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import { ButtonLink } from '~/components/core/Button/Button';
+import { Button } from '~/components/core/Button/Button';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from './cms_types';
@@ -19,11 +19,6 @@ type Props = {
 };
 
 export default function PostsFeaturePage({ pageContent }: Props) {
-  const track = useTrack();
-  const handleGetStartedClick = useCallback(() => {
-    track('Posts Feature Page: Clicked Get Started');
-  }, [track]);
-
   return (
     <>
       <Head>
@@ -41,13 +36,17 @@ export default function PostsFeaturePage({ pageContent }: Props) {
               </VStack>
               <StyledSubheading>{pageContent.introText}</StyledSubheading>
             </VStack>
-            <GetStartedButton
-              href={{ pathname: '/auth' }}
-              onClick={handleGetStartedClick}
-              data-testid="sign-in-button"
+            <GalleryLink
+              to={{ pathname: '/auth' }}
+              eventElementId="Posts Feature Page: Get Started"
+              eventName="Posts Feature Page: Get Started Click"
+              eventContext={contexts.Posts}
+              eventFlow={flows['Posts Beta Announcement']}
             >
-              <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
-            </GetStartedButton>
+              <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
+                <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
+              </GetStartedButton>
+            </GalleryLink>
           </StyledIntro>
           <StyledSplashImage src={pageContent.splashImage.asset.url} />
           <VStack gap={96}>
@@ -58,16 +57,20 @@ export default function PostsFeaturePage({ pageContent }: Props) {
           <VStack align="center" gap={32}>
             {pageContent.externalLink && (
               <StyledSubheading>
-                <Markdown text={pageContent.externalLink} />
+                <Markdown text={pageContent.externalLink} eventContext={contexts.Posts} />
               </StyledSubheading>
             )}
-            <GetStartedButton
-              href={{ pathname: '/auth' }}
-              onClick={handleGetStartedClick}
-              data-testid="sign-in-button"
+            <GalleryLink
+              to={{ pathname: '/auth' }}
+              eventElementId="Posts Feature Page: Get Started"
+              eventName="Posts Feature Page: Get Started Click"
+              eventContext={contexts.Posts}
+              eventFlow={flows['Posts Beta Announcement']}
             >
-              <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
-            </GetStartedButton>
+              <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
+                <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
+              </GetStartedButton>
+            </GalleryLink>
           </VStack>
         </StyledContent>
         <Faq content={pageContent.faqModule} />
@@ -141,7 +144,7 @@ const StyledSubheading = styled(TitleDiatypeL)`
   }
 `;
 
-const GetStartedButton = styled(ButtonLink)`
+const GetStartedButton = styled(Button)`
   text-transform: initial;
   padding: 8px 32px;
   width: fit-content;

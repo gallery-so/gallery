@@ -38,6 +38,7 @@ export const flows = {
   'Web Sign Out Flow': 'Web Sign Out Flow',
   Twitter: 'Twitter',
   'Edit User Info': 'Edit User Info',
+  'Posts Beta Announcement': 'Posts Beta Announcement',
 } as const;
 
 export type AnalyticsEventFlowType = keyof typeof flows;
