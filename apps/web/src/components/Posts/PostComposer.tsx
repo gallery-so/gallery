@@ -21,7 +21,7 @@ import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
-import { TextAreaWithCharCount } from '../core/TextArea/TextArea';
+import { AutoResizingTextAreaWithCharCount } from '../core/TextArea/TextArea';
 import PostComposerNft from './PostComposerNft';
 
 type Props = {
@@ -148,7 +148,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
           <VStack grow>
-            <TextAreaWithCharCount
+            <AutoResizingTextAreaWithCharCount
               defaultValue={caption}
               placeholder={`Say something about ${inputPlaceholderTokenName}`}
               currentCharCount={caption.length}
@@ -161,7 +161,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </VStack>
         </ContentContainer>
       </VStack>
-      <HStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
+      <StyledHStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
         {generalError && (
           <StyledWrapper>
             <AlertTriangleIcon color={colors.red} />
@@ -178,7 +178,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
         >
           POST
         </Button>
-      </HStack>
+      </StyledHStack>
     </StyledPostComposer>
   );
 }
@@ -190,6 +190,10 @@ const StyledPostComposer = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
   }
+`;
+
+const StyledHStack = styled(HStack)`
+  padding-top: 16px;
 `;
 
 const StyledHeader = styled(HStack)`

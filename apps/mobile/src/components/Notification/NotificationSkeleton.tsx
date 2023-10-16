@@ -3,6 +3,7 @@ import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { FollowButton } from '~/components/FollowButton';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -25,6 +26,7 @@ type Props = PropsWithChildren<{
   queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
+  shouldShowFollowBackButton?: boolean;
 }>;
 
 export function NotificationSkeleton({
@@ -32,12 +34,14 @@ export function NotificationSkeleton({
   children,
   queryRef,
   notificationRef,
+  shouldShowFollowBackButton = false,
   responsibleUserRefs = [],
 }: Props) {
   const query = useFragment(
     graphql`
       fragment NotificationSkeletonQueryFragment on Query {
         ...UserFollowListQueryFragment
+        ...FollowButtonQueryFragment
       }
     `,
     queryRef
@@ -71,6 +75,15 @@ export function NotificationSkeleton({
           post {
             tokens {
               ...NotificationPostPreviewWithBoundaryFragment
+            }
+          }
+        }
+        ... on SomeoneFollowedYouNotification {
+          followers(last: 1) {
+            edges {
+              node {
+                ...FollowButtonUserFragment
+              }
             }
           }
         }
@@ -146,6 +159,8 @@ export function NotificationSkeleton({
     return null;
   }, [notification]);
 
+  const lastFollower = useMemo(() => notification.followers?.edges?.[0]?.node, [notification]);
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -154,20 +169,28 @@ export function NotificationSkeleton({
       eventName="Notification Row Clicked"
       eventContext={contexts.Notifications}
     >
-      <View className="flex-1 flex-row space-x-2 items-center">
-        <ProfilePictureBubblesWithCount
-          eventElementId="Notification Row PFP Bubbles"
-          eventName="Notification Row PFP Bubbles Pressed"
-          eventContext={contexts.Notifications}
-          onPress={handleBubblesPress}
-          userRefs={responsibleUsers}
-          totalCount={responsibleUserRefs.length}
-          size="md"
-        />
-
+      <View className="flex-1 flex-row items-center">
+        <View className="mr-2">
+          <ProfilePictureBubblesWithCount
+            eventElementId="Notification Row PFP Bubbles"
+            eventName="Notification Row PFP Bubbles Pressed"
+            eventContext={contexts.Notifications}
+            onPress={handleBubblesPress}
+            userRefs={responsibleUsers}
+            totalCount={responsibleUserRefs.length}
+            size="md"
+          />
+        </View>
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
-      <View className="flex flex-row items-center justify-between space-x-2">
+
+      {shouldShowFollowBackButton && lastFollower && (
+        <View className="flex justify-center">
+          <FollowButton queryRef={query} userRef={lastFollower} />
+        </View>
+      )}
+
+      <View className="flex flex-row items-center justify-between ${postToken ? 'space-x-2' : ''}">
         {postToken ? (
           <View className="w-[56px] h-[56px]">
             <NotificationPostPreviewWithBoundary tokenRef={postToken} />
@@ -175,7 +198,6 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-
         <View
           className={`w-[35px] flex-row space-x-2 items-center ${
             !notification.seen ? 'justify-between' : 'justify-end'

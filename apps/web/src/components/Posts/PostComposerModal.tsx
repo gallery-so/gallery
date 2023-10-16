@@ -101,7 +101,7 @@ const StyledPostComposerModal = styled.div`
   height: 100%;
   @media only screen and ${breakpoints.tablet} {
     min-width: 562px;
-    min-height: 344px;
+    min-height: 274px;
   }
 `;
 
