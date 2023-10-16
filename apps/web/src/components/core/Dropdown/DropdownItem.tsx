@@ -38,8 +38,6 @@ export function DropdownItem({
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
     (event) => {
-      event.stopPropagation();
-
       track('Dropdown Item Click', {
         id: `${name} Dropdown Item`,
         name: `${name} Dropdown Item Click`,
