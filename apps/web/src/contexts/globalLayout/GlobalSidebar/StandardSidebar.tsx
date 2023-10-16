@@ -27,7 +27,6 @@ import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import DrawerHeader from './DrawerHeader';
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
@@ -91,11 +90,6 @@ export function StandardSidebar({ queryRef }: Props) {
     return 0;
   }, [query.viewer, totalUnreadAnnouncements]);
 
-  const [isMerchStoreUpsellExperienced, setMerchStoreUpsellExperienced] = useExperience({
-    type: 'MerchStoreUpsell',
-    queryRef: query,
-  });
-
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
   const { showModal } = useModalActions();
@@ -133,8 +127,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const handleShopIconClick = useCallback(async () => {
     track('Sidebar Shop Click');
-    setMerchStoreUpsellExperienced();
-  }, [setMerchStoreUpsellExperienced, track]);
+  }, [track]);
 
   const handleHomeIconClick = useCallback(() => {
     hideDrawer();
@@ -369,7 +362,6 @@ export function StandardSidebar({ queryRef }: Props) {
             tooltipLabel="(OBJECTS) Shop"
             onClick={handleShopIconClick}
             icon={<ShopIcon />}
-            showUnreadDot={!isMerchStoreUpsellExperienced}
           />
         </VStack>
       </StyledIconContainer>
