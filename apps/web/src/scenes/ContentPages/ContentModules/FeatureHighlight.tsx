@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
 
@@ -18,16 +19,20 @@ function FeatureHighlightBullets({ bullets }: FeatureHighlightBulletsProps) {
   );
   return (
     <VStack>
-      <ul>
+      <StyledList>
         {textList.map((text, index) => (
           <li key={index}>
-            <StyldText>{text}</StyldText>
+            <StyledText>{text}</StyledText>
           </li>
         ))}
-      </ul>
+      </StyledList>
     </VStack>
   );
 }
+
+const StyledList = styled.ul`
+  padding-left: 24px;
+`;
 
 type FeatureHighlightMediaProps = {
   media: CmsTypes.FeatureHighlight['media'];
@@ -52,10 +57,10 @@ type Props = {
 export default function FeatureHighlight({ content }: Props) {
   return (
     <StyledHighlight gap={24} orientation={content.orientation}>
-      <StyledSection align="flex-start">
+      <StyledTextSection align="flex-start">
         <StyledTitle>{content.heading}</StyledTitle>
         <FeatureHighlightBullets bullets={content.body} />
-      </StyledSection>
+      </StyledTextSection>
       {content.media && (
         <StyledMedia>
           <FeatureHighlightMedia media={content.media} />
@@ -78,21 +83,17 @@ const StyledHighlight = styled(VStack)<{ orientation: string }>`
 
 const StyledTitle = styled(TitleCondensed)`
   font-size: 48px;
+  text-align: start;
   @media only screen and ${breakpoints.desktop} {
     font-size: 64px;
   }
 `;
 
-const StyledSection = styled(VStack)`
+const StyledTextSection = styled(VStack)`
   align-items: flex-start;
 
   @media only screen and ${breakpoints.tablet} {
-    align-items: center;
     max-width: 480px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    align-items: flex-start;
   }
 `;
 
@@ -101,6 +102,7 @@ const StyledMedia = styled.div`
   min-height: 326px;
   max-width: 326px;
   max-height: 326px;
+  background-color: ${colors.faint};
 
   @media only screen and ${breakpoints.desktop} {
     min-width: 500px;
@@ -118,7 +120,7 @@ const StyledImage = styled.img`
   height: 100%;
 `;
 
-const StyldText = styled(TitleDiatypeL)`
+const StyledText = styled(TitleDiatypeL)`
   font-weight: 400;
   font-size: 16px;
   line-height: 20px;

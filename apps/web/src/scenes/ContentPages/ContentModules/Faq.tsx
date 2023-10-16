@@ -125,7 +125,7 @@ export default function Faq({ content }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handleClick = (index: number) => {
-    setOpenIndex(index);
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
@@ -151,6 +151,7 @@ const StyledSection = styled(HStack)`
   background-color: ${colors.faint};
   width: 100%;
   padding: 48px 32px;
+  margin-bottom: 96px;
 
   @media only screen and ${breakpoints.desktop} {
     padding: 72px 0;

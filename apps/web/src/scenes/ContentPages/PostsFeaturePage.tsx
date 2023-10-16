@@ -145,6 +145,10 @@ const GetStartedButton = styled(ButtonLink)`
   text-transform: initial;
   padding: 8px 32px;
   width: fit-content;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 const StyledSplashImage = styled.img`
