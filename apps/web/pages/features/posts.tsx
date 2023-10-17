@@ -11,43 +11,44 @@ export default function PostsFeatureRoute({ pageContent }: Props) {
   return <GalleryRoute element={<PostsFeaturePage pageContent={pageContent} />} navbar={false} />;
 }
 
-export const getServerSideProps = async () => {
-  const query = `
-  *[ _type == "featurePage" && id == "posts" ]{
-    ...,
-    "featureHighlights": featureHighlights[]->{
-      heading,
-      orientation,
-      body,
-      externalLink,
-      media{
-        mediaType,
-        image{
-          asset->{
-            url
-          },
-          alt
+export const featurePostsPageContentQuery = `
+*[ _type == "featurePage" && id == "posts" ]{
+  ...,
+  "featureHighlights": featureHighlights[]->{
+    heading,
+    orientation,
+    body,
+    externalLink,
+    media{
+      mediaType,
+      image{
+        asset->{
+          url
         },
-        video{
-          asset->{
-            url
-          }
+        alt
+      },
+      video{
+        asset->{
+          url
         }
       }
-    },
-    "faqModule": faqModule->{
-      title,
-      faqs
-    },
-    "splashImage": {
-      "asset": splashImage.asset->{
-        url
-      },
-      alt
     }
-  } | order(date desc)
+  },
+  "faqModule": faqModule->{
+    title,
+    faqs
+  },
+  "splashImage": {
+    "asset": splashImage.asset->{
+      url
+    },
+    alt
+  }
+} | order(date desc)
 `;
-  const content = await fetchSanityContent(query);
+
+export const getServerSideProps = async () => {
+  const content = await fetchSanityContent(featurePostsPageContentQuery);
 
   return {
     props: {

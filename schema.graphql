@@ -2141,7 +2141,9 @@ enum UserExperienceType {
   MobileBetaUpsell
   UpsellMintMemento5
   UpsellBanner
+  PostsBetaAnnouncement
 }
+
 
 type UserFollowedUsersFeedEventData implements FeedEventData {
   eventTime: Time

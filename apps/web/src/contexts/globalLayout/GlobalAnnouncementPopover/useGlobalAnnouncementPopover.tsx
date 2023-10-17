@@ -1,12 +1,17 @@
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
+import { featurePostsPageContentQuery } from '~/pages/features/posts';
+import { PostsFeaturePageContent } from '~/scenes/ContentPages/PostsFeaturePage';
+import useExperience from '~/utils/graphql/experiences/useExperience';
+import { fetchSanityContent } from '~/utils/sanity';
 
-import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
+// Keeping for future use
+// import GlobalAnnouncementPopover from './GlobalAnnouncementPopover';
 
 type Props = {
   queryRef: useGlobalAnnouncementPopoverFragment$key;
@@ -36,8 +41,8 @@ export default function useGlobalAnnouncementPopover({
             }
           }
         }
-        ...GlobalAnnouncementPopoverFragment
-        # ...useExperienceFragment
+        # ...GlobalAnnouncementPopoverFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
@@ -48,14 +53,14 @@ export default function useGlobalAnnouncementPopover({
   const { asPath, query: urlQuery } = useRouter();
 
   // NOTE: next time we use global announcements, we'll need to set a new flag in the schema
-  const isGlobalAnnouncementExperienced = true;
-  // const [isGlobalAnnouncementExperienced, setGlobalAnnouncementExperienced] = useExperience({
-  //   type: 'YourGlobalAnnouncementFlagHere',
-  //   queryRef: query,
-  // })
-  // const handleDismissGlobalAnnouncement = useCallback(async () => {
-  //   return await setGlobalAnnouncementExperienced()
-  // }, [setGlobalAnnouncementExperienced])
+  // const isGlobalAnnouncementExperienced = true;
+  const [isGlobalAnnouncementExperienced, setGlobalAnnouncementExperienced] = useExperience({
+    type: 'PostsBetaAnnouncement',
+    queryRef: query,
+  });
+  const handleDismissGlobalAnnouncement = useCallback(async () => {
+    return await setGlobalAnnouncementExperienced();
+  }, [setGlobalAnnouncementExperienced]);
 
   // tracks dismissal on session, not persisted across refreshes
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
@@ -94,27 +99,26 @@ export default function useGlobalAnnouncementPopover({
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && isGlobalAnnouncementExperienced) return;
 
-      // TEMPORARY: only display the white rhino launch popover on the homepage
-      if (asPath !== '/') {
-        return;
-      }
-
       if (authRequired && !isAuthenticated) return;
 
       if (shouldHidePopoverOnCurrentPath) return;
 
       // prevent font flicker on popover load
-      await handlePreloadFonts();
+      // await handlePreloadFonts();
+
+      const pageContent = await fetchSanityContent(featurePostsPageContentQuery);
+
+      if (!pageContent || !pageContent[0]) return;
 
       setTimeout(() => {
         showModal({
           id: 'global-announcement-popover',
-          content: <GlobalAnnouncementPopover queryRef={query} />,
+          content: <PostsFeaturePageContent pageContent={pageContent[0]} />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
         setDismissedOnSession(true);
-        // handleDismissGlobalAnnouncement(true);
+        handleDismissGlobalAnnouncement();
       }, popoverDelayMs);
     }
 
@@ -130,6 +134,7 @@ export default function useGlobalAnnouncementPopover({
     dismissVariant,
     dismissedOnSession,
     shouldHidePopoverOnCurrentPath,
+    handleDismissGlobalAnnouncement,
   ]);
 
   useEffect(
@@ -144,26 +149,26 @@ export default function useGlobalAnnouncementPopover({
   );
 }
 
-async function handlePreloadFonts() {
-  const fontLight = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Light.otf)'
-  );
-  const fontLightItalic = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Light-Italic.otf)'
-  );
-  const fontLight2 = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Light.ttf)'
-  );
-  const fontLightItalic2 = new FontFace(
-    'GT Alpina Condensed',
-    'url(/fonts/GT-Alpina-Condensed-Light-Italic.ttf)'
-  );
+// async function handlePreloadFonts() {
+//   const fontLight = new FontFace(
+//     'GT Alpina Condensed',
+//     'url(/fonts/GT-Alpina-Condensed-Light.otf)'
+//   );
+//   const fontLightItalic = new FontFace(
+//     'GT Alpina Condensed',
+//     'url(/fonts/GT-Alpina-Condensed-Light-Italic.otf)'
+//   );
+//   const fontLight2 = new FontFace(
+//     'GT Alpina Condensed',
+//     'url(/fonts/GT-Alpina-Condensed-Light.ttf)'
+//   );
+//   const fontLightItalic2 = new FontFace(
+//     'GT Alpina Condensed',
+//     'url(/fonts/GT-Alpina-Condensed-Light-Italic.ttf)'
+//   );
 
-  await fontLight.load();
-  await fontLightItalic.load();
-  await fontLight2.load();
-  await fontLightItalic2.load();
-}
+//   await fontLight.load();
+//   await fontLightItalic.load();
+//   await fontLight2.load();
+//   await fontLightItalic2.load();
+// }

@@ -8,6 +8,7 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from '~/components/core/transitions';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
@@ -106,7 +107,9 @@ function AnimatedModal({
                 )}
               </StyledModalActions>
             </StyledHeader>
-            <StyledContent padding={padding}>{content}</StyledContent>
+            <ErrorBoundary>
+              <StyledContent padding={padding}>{content}</StyledContent>
+            </ErrorBoundary>
           </StyledContainer>
         </_ToggleTranslate>
       </StyledModal>
