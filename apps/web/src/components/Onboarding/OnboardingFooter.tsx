@@ -30,7 +30,7 @@ export function OnboardingFooter({
       step={step}
       isNextEnabled={isNextEnabled}
       nextText={nextButtonText}
-      previousText={previousTextOverride || (isFirstStep ? 'Cancel' : 'Back')}
+      previousText={isFirstStep ? 'Cancel' : previousTextOverride}
       onNext={onNext}
       onPrevious={onPrevious}
     />
