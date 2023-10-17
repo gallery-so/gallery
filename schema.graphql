@@ -2144,7 +2144,6 @@ enum UserExperienceType {
   PostsBetaAnnouncement
 }
 
-
 type UserFollowedUsersFeedEventData implements FeedEventData {
   eventTime: Time
   owner: GalleryUser
