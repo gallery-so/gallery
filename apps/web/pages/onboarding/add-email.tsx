@@ -63,10 +63,10 @@ export default function AddEmail() {
     push(userProfileRoute);
   }, [push, track, userProfileRoute]);
 
-  const handleSkip = useCallback(() => {
-    track('Onboarding: add-email Skip click');
-    push(userProfileRoute);
-  }, [push, track, userProfileRoute]);
+  // const handleSkip = useCallback(() => {
+  //   track('Onboarding: add-email Skip click');
+  //   push(userProfileRoute);
+  // }, [push, track, userProfileRoute]);
 
   return (
     <VStack>
