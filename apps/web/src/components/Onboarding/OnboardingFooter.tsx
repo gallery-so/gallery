@@ -9,7 +9,7 @@ type Props = {
   step: StepName;
   onNext: () => void | Promise<unknown>;
   isNextEnabled: boolean;
-  onPrevious: () => void;
+  onPrevious?: () => void;
   previousTextOverride?: string;
 };
 

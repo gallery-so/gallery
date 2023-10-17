@@ -88,9 +88,10 @@ export default function AddEmail() {
       <OnboardingFooter
         step={'add-email'}
         onNext={handleNext}
-        previousTextOverride="Skip"
         isNextEnabled={Boolean(savedEmail)}
-        onPrevious={handleSkip}
+        // lightly enforce restriction to add an email
+        // previousTextOverride="Skip"
+        // onPrevious={handleSkip}
       />
     </VStack>
   );
