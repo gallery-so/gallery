@@ -6,7 +6,6 @@ import { MentionType } from 'src/hooks/useMentionableMessage';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { noop } from '~/shared/utils/noop';
 
 import { SearchResult } from '../SearchResult';
 
@@ -14,7 +13,7 @@ type Props = {
   communityRef: CommunitySearchResultFragment$key;
   onSelect?: (item: MentionType) => void;
 };
-export function CommunitySearchResult({ communityRef, onSelect = noop }: Props) {
+export function CommunitySearchResult({ communityRef, onSelect }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
