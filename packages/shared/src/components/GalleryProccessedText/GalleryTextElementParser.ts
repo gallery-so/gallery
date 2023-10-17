@@ -1,30 +1,30 @@
 import { graphql, readInlineData } from 'react-relay';
 
-import { MentionComponentFragment$key } from '~/generated/MentionComponentFragment.graphql';
-import { ProcessedTextFragment$data } from '~/generated/ProcessedTextFragment.graphql';
+import { GalleryProcessedTextFragment$data } from '~/generated/GalleryProcessedTextFragment.graphql';
 import {
-  TextElementParserMentionsFragment$data,
-  TextElementParserMentionsFragment$key,
-} from '~/generated/TextElementParserMentionsFragment.graphql';
-import { MARKDOWN_LINK_REGEX, VALID_URL } from '~/shared/utils/regex';
+  GalleryTextElementParserMentionsFragment$data,
+  GalleryTextElementParserMentionsFragment$key,
+} from '~/generated/GalleryTextElementParserMentionsFragment.graphql';
+
+import { MARKDOWN_LINK_REGEX, VALID_URL } from '../../utils/regex';
 
 export type TextElement = {
   type: 'mention' | 'url' | 'markdown-link';
   value: string;
   start: number;
   end: number;
-  mentionRef?: MentionComponentFragment$key;
   url?: string;
+  mentionData?: GalleryTextElementParserMentionsFragment$data['entity'];
 };
 
 export function getMentionElements(
   text: string,
-  mentionRefs: ProcessedTextFragment$data
+  mentionRefs: GalleryProcessedTextFragment$data
 ): TextElement[] {
-  function fetchMention(mentionRef: TextElementParserMentionsFragment$key) {
+  function fetchMention(mentionRef: GalleryTextElementParserMentionsFragment$key) {
     return readInlineData(
       graphql`
-        fragment TextElementParserMentionsFragment on Mention @inline {
+        fragment GalleryTextElementParserMentionsFragment on Mention @inline {
           interval {
             __typename
             start
@@ -32,15 +32,26 @@ export function getMentionElements(
           }
           entity {
             __typename
+            ... on GalleryUser {
+              __typename
+              username
+            }
+            ... on Community {
+              __typename
+              contractAddress {
+                __typename
+                address
+                chain
+              }
+            }
           }
-          ...MentionComponentFragment
         }
       `,
       mentionRef
     );
   }
 
-  const mentions: TextElementParserMentionsFragment$data[] = [];
+  const mentions: GalleryTextElementParserMentionsFragment$data[] = [];
 
   mentionRefs.forEach((mentionRef) => {
     mentions.push(fetchMention(mentionRef));
@@ -59,7 +70,7 @@ export function getMentionElements(
       value: mentionText,
       start: start,
       end: start + length,
-      mentionRef: mention,
+      mentionData: mention.entity,
     });
   });
 
