@@ -6,8 +6,8 @@ import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { InteractiveLink } from '~/components/InteractiveLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
@@ -15,6 +15,7 @@ import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/Profi
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
 import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewSharedFollowersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -76,6 +77,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         totalCount={totalSharedFollowers}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
+        eventContext={contexts.Social}
         userRefs={sharedFollowers}
       />
 
@@ -129,21 +131,23 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
 
         return (
           <View key={user.dbid} className="flex flex-row">
-            <InteractiveLink
+            <GalleryLink
               onPress={() => {
                 if (user.username) {
                   navigation.push('Profile', { username: user.username });
                 }
               }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              type="Shared Followers Username"
               textStyle={{
                 fontSize: 12,
                 color: colorScheme === 'dark' ? colors.white : colors.black['800'],
               }}
+              eventElementId="Shared Followers Username"
+              eventName="Shared Followers Username Press"
+              eventContext={contexts.Social}
             >
               {user.username}
-            </InteractiveLink>
+            </GalleryLink>
             {(!isLast || hasMore) && (
               <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
@@ -159,17 +163,19 @@ function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextP
             and{' '}
           </Typography>
 
-          <InteractiveLink
+          <GalleryLink
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            type="Shared Followers See All"
             textStyle={{
               fontSize: 12,
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
+            eventElementId="Shared Followers See All"
+            eventName="Shared Followers See All Press"
+            eventContext={contexts.Social}
           >
             {totalCount - usersToShow.length} others
-          </InteractiveLink>
+          </GalleryLink>
         </View>
       )}
     </View>

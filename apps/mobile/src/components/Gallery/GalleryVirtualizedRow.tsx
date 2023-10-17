@@ -6,6 +6,7 @@ import { GalleryListItemType } from '~/components/Gallery/createVirtualizedGalle
 import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import unescape from '~/shared/utils/unescape';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -27,8 +28,9 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
       <View className="flex flex-col px-4">
         <GalleryTouchableOpacity
           onPress={handlePress}
-          eventElementId="Feed Event Descriptor"
-          eventName="Feed Event Descriptor Clicked"
+          eventElementId="Gallery Element"
+          eventName="Gallery Element Clicked"
+          eventContext={contexts.UserGallery}
           properties={{ variant: 'gallery title' }}
         >
           <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
@@ -49,8 +51,9 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
       <View className="flex flex-col bg-white dark:bg-black-900 pt-2 pb-1 px-4">
         <GalleryTouchableOpacity
           onPress={handlePress}
-          eventElementId="Feed Event Descriptor"
-          eventName="Feed Event Descriptor Clicked"
+          eventElementId="Gallery Element"
+          eventName="Gallery Element Clicked"
+          eventContext={contexts.UserGallery}
           properties={{ variant: 'collection title' }}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>

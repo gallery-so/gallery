@@ -2,18 +2,27 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
-import { ClickablePill } from '~/components/Pill';
+import { GalleryPill } from '~/components/GalleryPill';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   url: string;
   icon: React.ReactNode;
   username: string;
   className?: string;
+  platform: 'twitter' | 'lens' | 'farcaster';
 };
 
-export default function UserSocialPill({ url, icon, username, className }: Props) {
+export default function UserSocialPill({ url, icon, username, className, platform }: Props) {
   return (
-    <StyledUserSocialPill href={url} className={className}>
+    <StyledUserSocialPill
+      eventElementId="External Social Pill"
+      eventName="Visit External Social Link"
+      eventContext={contexts['External Social']}
+      properties={{ platform }}
+      href={url}
+      className={className}
+    >
       <StyledPillContent gap={5} align="center">
         <StyledIconContainer>{icon}</StyledIconContainer>
         <StyledHandle>{username}</StyledHandle>
@@ -22,13 +31,14 @@ export default function UserSocialPill({ url, icon, username, className }: Props
   );
 }
 
-export const StyledUserSocialPill = styled(ClickablePill)`
+export const StyledUserSocialPill = styled(GalleryPill)`
   flex-basis: 0;
 `;
 
 const StyledPillContent = styled(HStack)`
   width: 100%;
 `;
+
 const StyledIconContainer = styled.div`
   width: 16px;
   display: flex;

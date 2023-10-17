@@ -32,6 +32,7 @@ import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/gene
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
 import { CommentsBottomSheetQueryFragment$key } from '~/generated/CommentsBottomSheetQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { noop } from '~/shared/utils/noop';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
@@ -157,8 +158,8 @@ export function CommentsBottomSheet({
                 <SearchResults
                   keyword={aliasKeyword}
                   activeFilter="top"
-                  onChangeFilter={() => {}}
-                  blurInputFocus={() => {}}
+                  onChangeFilter={noop}
+                  blurInputFocus={noop}
                   onSelect={selectMention}
                   onlyShowTopResults
                   isMentionSearch
@@ -191,7 +192,7 @@ export function CommentsBottomSheet({
           onSelectionChange={handleSelectionChange}
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
-          onClose={() => {}}
+          onClose={noop}
         />
       </Animated.View>
     </GalleryBottomSheetModal>

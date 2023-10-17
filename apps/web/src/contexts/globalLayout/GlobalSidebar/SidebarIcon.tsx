@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
@@ -62,7 +62,12 @@ export default function SidebarIcon({
   if (href) {
     return (
       <IconWrapper onClick={handleClick}>
-        <Link href={href}>{content}</Link>
+        <GalleryLink
+          to={href}
+          // TODO analytics - move tracking here as opposed to manually doing it on parent StandardSidebar.tsx
+        >
+          {content}
+        </GalleryLink>
       </IconWrapper>
     );
   }

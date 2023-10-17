@@ -2,6 +2,7 @@ import { useColorScheme } from 'nativewind';
 import { useCallback } from 'react';
 
 import { IconContainer } from '~/components/IconContainer';
+import { contexts } from '~/shared/analytics/constants';
 
 import { DarkModeIcon } from '../icons/DarkModeIcon';
 import { LightModeIcon } from '../icons/LightModeIcon';
@@ -17,8 +18,9 @@ export function DarkModeToggle() {
     <IconContainer
       icon={colorScheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
       onPress={handlePress}
-      eventElementId={null}
-      eventName={null}
+      eventElementId="Dark Mode Toggle"
+      eventName="Toggle Dark Mode"
+      eventContext={contexts.Settings}
     />
   );
 }

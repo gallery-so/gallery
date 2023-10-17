@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { HStack } from '../core/Spacer/Stack';
 import { TitleDiatypeM } from '../core/Text/Text';
-import { ButtonPill } from '../Pill';
+import { GalleryPill } from '../GalleryPill';
 import { SearchFilterType } from './Search';
 
 type Props = {
@@ -49,6 +50,9 @@ export default function SearchFilter({ activeFilter, onChangeFilter }: Props) {
     <StyledFilterContainer gap={4}>
       {filters.map((filter) => (
         <StyledButtonPill
+          eventElementId="Search Filter Pill"
+          eventName="Filter Search"
+          eventContext={contexts.Search}
           key={filter.value}
           active={activeFilter === filter.value}
           onClick={() => handleFilterChange(filter.value)}
@@ -64,8 +68,9 @@ const StyledFilterContainer = styled(HStack)`
   padding: 8px 16px;
 `;
 
-const StyledButtonPill = styled(ButtonPill)<{ active?: boolean }>`
-  cursor: pointer;
+const StyledButtonPill = styled(GalleryPill)<{ active?: boolean }>`
+  background: transparent;
+
   ${TitleDiatypeM} {
     color: ${({ active }) => (active ? colors.black['800'] : colors.shadow)};
   }

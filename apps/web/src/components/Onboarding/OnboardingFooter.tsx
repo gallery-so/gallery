@@ -27,6 +27,7 @@ export function OnboardingFooter({
 
   return (
     <WizardFooter
+      step={step}
       isNextEnabled={isNextEnabled}
       nextText={nextButtonText}
       previousText={previousTextOverride || (isFirstStep ? 'Cancel' : 'Back')}

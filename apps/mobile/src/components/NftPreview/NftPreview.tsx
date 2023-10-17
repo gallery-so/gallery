@@ -17,6 +17,7 @@ import {
   useGetSinglePreviewImage,
   useGetSinglePreviewImageProps,
 } from '~/shared/relay/useGetPreviewImages';
+import { noop } from '~/shared/utils/noop';
 
 import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { GallerySkeleton } from '../GallerySkeleton';
@@ -103,7 +104,7 @@ function NftPreviewInner({
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
     >
       {/* https://github.com/dominicstop/react-native-ios-context-menu/issues/9#issuecomment-1047058781 */}
-      <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
+      <Pressable delayLongPress={100} onPress={handlePress} onLongPress={noop}>
         <View className="relative h-full w-full">
           <RawNftPreviewAsset
             key={tokenUrl}

@@ -17,6 +17,7 @@ export function WaitingForConfirmationScreen() {
       <IconContainer
         eventElementId={null}
         eventName={null}
+        eventContext={null}
         className="px-6 py-2"
         icon={<BackIcon />}
         onPress={navigation.goBack}

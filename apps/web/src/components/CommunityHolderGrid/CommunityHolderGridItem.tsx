@@ -3,13 +3,14 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
+import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
@@ -81,13 +82,18 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   return (
     <VStack gap={8}>
-      <StyledInteractiveLink onClick={handleClick}>
+      <StyledGalleryLink
+        onClick={handleClick}
+        eventElementId="Community Holder Grid Item"
+        eventName="Click Community Holder Grid Item"
+        eventContext={contexts['Community']}
+      >
         <StyledNftImage src={imageUrl} />
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
-          <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
+          <GalleryLink href={openseaProfileLink}>{usernameWithFallback}</GalleryLink>
         ) : (
           <UserHoverCard userRef={token.owner} />
         )}
@@ -111,6 +117,6 @@ const StyledNftDetailViewPopover = styled(VStack)`
   }
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;

@@ -47,7 +47,7 @@ export type RawProfilePictureProps = {
       default: boolean;
     }
 ) &
-  Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'onPress'>;
+  Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'eventContext' | 'onPress'>;
 
 export function RawProfilePicture({
   size,
@@ -57,6 +57,7 @@ export function RawProfilePicture({
   style,
   eventElementId,
   eventName,
+  eventContext,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
@@ -77,6 +78,7 @@ export function RawProfilePicture({
       activeOpacity={1}
       eventName={eventName}
       eventElementId={eventElementId}
+      eventContext={eventContext}
       className="flex justify-center items-center relative rounded-full bg-offWhite dark:bg-black-800"
       style={[
         style,

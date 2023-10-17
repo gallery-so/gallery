@@ -8,7 +8,6 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
 import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
@@ -16,6 +15,7 @@ import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionListItemQueryFragment$key } from '~/generated/CollectionListItemQueryFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
@@ -142,15 +142,25 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
           />
           <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
-              <DropdownItem onClick={handleEdit}>
-                <BaseM>Edit Name & Description</BaseM>
-              </DropdownItem>
-              <DropdownItem onClick={handleMoveCollectionModal}>
-                <BaseM>Move To...</BaseM>
-              </DropdownItem>
-              <DropdownItem onClick={handleDelete}>
-                <BaseM color={colors.error}>Delete</BaseM>
-              </DropdownItem>
+              <DropdownItem
+                onClick={handleEdit}
+                name="Collection List Item"
+                eventContext={contexts.Editor}
+                label="Edit Name & Description"
+              />
+              <DropdownItem
+                onClick={handleMoveCollectionModal}
+                name="Collection List Item"
+                eventContext={contexts.Editor}
+                label="Move To..."
+              />
+              <DropdownItem
+                onClick={handleDelete}
+                name="Collection List Item"
+                eventContext={contexts.Editor}
+                label="Delete"
+                variant="delete"
+              />
             </DropdownSection>
           </SettingsDropdown>
         </CollectionListItemActionsContainer>

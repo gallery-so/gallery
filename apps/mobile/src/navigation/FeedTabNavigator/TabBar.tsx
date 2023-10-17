@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { FeedbackButton } from '~/components/FeedbackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Typography } from '../../components/Typography';
 
@@ -42,6 +43,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       onPress={onPress}
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
+      eventContext={contexts.Feed}
       properties={{ variant: 'Feed', route: route.name }}
     >
       <Typography

@@ -11,7 +11,7 @@ import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 
 type Props = {
   className?: string;
@@ -94,12 +94,18 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
-      <StyledInteractiveLink to={communityUrl}>
+      <StyledGalleryLink
+        to={communityUrl}
+        eventElementId="NFT Preview Label"
+        eventName="NFT Preview Label Click"
+        // TODO: analytics
+        eventContext={null}
+      >
         <POAPWrapperHStack gap={4} align="center">
           <POAPLogo />
           <POAPTitle color={colors.white}>{collectionName}</POAPTitle>
         </POAPWrapperHStack>
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
     ) : (
       <POAPWrapperHStack gap={4} align="center">
         <POAPLogo />
@@ -109,7 +115,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   }
 
   return shouldDisplayLinkToCommunityPage ? (
-    <StyledInteractiveLink to={communityUrl}>
+    <StyledGalleryLink to={communityUrl}>
       <HStack gap={4} align="center">
         {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
 
@@ -126,7 +132,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
           )}
         </StyledBaseM>
       </HStack>
-    </StyledInteractiveLink>
+    </StyledGalleryLink>
   ) : (
     <HStack gap={4} align="center">
       <StyledBaseM color={colors.porcelain}>
@@ -167,7 +173,7 @@ const POAPLogo = styled.img.attrs({
   height: 20px;
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 

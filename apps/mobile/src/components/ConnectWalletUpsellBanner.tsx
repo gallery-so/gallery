@@ -6,7 +6,8 @@ import { graphql, useFragment } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { UpsellBannerFragment$key } from '~/generated/UpsellBannerFragment.graphql';
+import { ConnectWalletUpsellBannerFragment$key } from '~/generated/ConnectWalletUpsellBannerFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { Button } from './Button';
@@ -14,13 +15,13 @@ import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
 type Props = {
-  queryRef: UpsellBannerFragment$key;
+  queryRef: ConnectWalletUpsellBannerFragment$key;
 };
 
-export function UpsellBanner({ queryRef }: Props) {
+export function ConnectWalletUpsellBanner({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment UpsellBannerFragment on Query {
+      fragment ConnectWalletUpsellBannerFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -103,11 +104,13 @@ export function UpsellBanner({ queryRef }: Props) {
           fontWeight="Bold"
           eventElementId="Press Connect Wallet Upsell Banner"
           eventName="Press Connect Wallet Upsell Banner"
+          eventContext={contexts.Authentication}
         />
         <GalleryTouchableOpacity
           className="p-2"
           eventElementId="Close Connect Wallet Upsell Banner"
           eventName="Close Connect Wallet Upsell Banner"
+          eventContext={contexts.Authentication}
           onPress={handleDismissUpsellBanner}
         >
           <XMarkIcon color={colors.offWhite} />

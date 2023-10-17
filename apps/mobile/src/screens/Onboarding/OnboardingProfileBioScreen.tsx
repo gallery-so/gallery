@@ -12,6 +12,7 @@ import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
@@ -167,6 +168,7 @@ export function OnboardingProfileBioScreen() {
               className="w-full"
               eventElementId="Next button on onboarding bio screen"
               eventName="Next button on onboarding bio screen"
+              eventContext={contexts.Onboarding}
               disabled={bio.length > BIO_MAX_CHAR_COUNT}
               variant={bio.length > BIO_MAX_CHAR_COUNT ? 'disabled' : 'primary'}
               text="NEXT"
@@ -178,6 +180,7 @@ export function OnboardingProfileBioScreen() {
               className="w-full"
               eventElementId="Skip onboarding bio & profile picture"
               eventName="Skip onboarding bio & profile picture"
+              eventContext={contexts.Onboarding}
               text="SKIP"
             />
           )}

@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
@@ -89,7 +90,12 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
             {description}
           </Typography>
         </View>
-        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleSeeAll}>
+        <GalleryTouchableOpacity
+          eventElementId="Suggested Users See All Button"
+          eventName="See All Suggested Users"
+          eventContext={contexts.Explore}
+          onPress={handleSeeAll}
+        >
           <Typography
             font={{
               family: 'ABCDiatype',

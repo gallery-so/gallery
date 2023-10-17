@@ -132,7 +132,13 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
               <TitleDiatypeM>
                 Tip {step} of {FINAL_STEP}
               </TitleDiatypeM>
-              <StyledButton onClick={handleNext}>
+              <StyledButton
+                // events will be tracked via OnboardingDialogContext
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                onClick={handleNext}
+              >
                 {step === FINAL_STEP ? 'Finish' : 'Next'}{' '}
               </StyledButton>
             </HStack>

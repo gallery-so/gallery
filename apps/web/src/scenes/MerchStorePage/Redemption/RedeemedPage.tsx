@@ -8,6 +8,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { RedeemedPageFragment$key } from '~/generated/RedeemedPageFragment.graphql';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
+import { contexts } from '~/shared/analytics/constants';
 
 import { REDEEMED_STATUS } from '../constants';
 import { getObjectName } from '../getObjectName';
@@ -64,7 +65,12 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
             })}
           </VStack>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleRedeem}>
+            <StyledRedeemSubmitButton
+              eventElementId="Redeem on Shopify Button"
+              eventName="Redeem on Shopify"
+              eventContext={contexts['Merch Store']}
+              onClick={handleRedeem}
+            >
               <HStack gap={4} align="center">
                 Redeem on shopify
                 <ArrowUpRightIcon />
@@ -76,7 +82,12 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
         <StyledRedeemedPageContainer>
           <BaseM>You have not redeemed any items yet.</BaseM>
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleClose}>
+            <StyledRedeemSubmitButton
+              eventElementId={null}
+              eventName={null}
+              eventContext={null}
+              onClick={handleClose}
+            >
               <HStack gap={4} align="center">
                 Close
               </HStack>

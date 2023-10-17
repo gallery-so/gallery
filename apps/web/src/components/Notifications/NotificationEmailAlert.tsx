@@ -10,7 +10,7 @@ import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
@@ -47,7 +47,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Never miss a moment! Enable email notifications in settings.</BaseM>
         <HStack align="center" gap={8}>
-          <InteractiveLink onClick={handleEnableEmails}>Enable</InteractiveLink>
+          <GalleryLink onClick={handleEnableEmails}>Enable</GalleryLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
         </HStack>
       </StyledAlert>

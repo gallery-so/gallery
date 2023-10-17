@@ -11,6 +11,7 @@ import EditUserInfoForm from '~/components/Profile/EditUserInfoForm';
 import useUserInfoForm from '~/components/Profile/useUserInfoForm';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EditUserInfoModalFragment$key } from '~/generated/EditUserInfoModalFragment.graphql';
+import { contexts, flows } from '~/shared/analytics/constants';
 
 type Props = {
   queryRef: EditUserInfoModalFragment$key;
@@ -94,7 +95,15 @@ function EditUserInfoModal({ queryRef }: Props) {
       </VStack>
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
       <StyledButtonContainer justify="flex-end">
-        <Button onClick={handleSubmit} disabled={Boolean(usernameError)} pending={isLoading}>
+        <Button
+          eventElementId="Save User Info Button"
+          eventName="Save User Info"
+          eventContext={contexts.Settings}
+          eventFlow={flows['Edit User Info']}
+          onClick={handleSubmit}
+          disabled={Boolean(usernameError)}
+          pending={isLoading}
+        >
           Save
         </Button>
       </StyledButtonContainer>

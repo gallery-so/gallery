@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
@@ -62,6 +64,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
           }`}
           eventElementId="Search Filter Button"
           eventName="Search Filter Button Clicked"
+          eventContext={contexts.Search}
           properties={{ variant: filter.value }}
         >
           <Typography

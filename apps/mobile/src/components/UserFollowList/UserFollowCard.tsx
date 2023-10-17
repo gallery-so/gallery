@@ -56,6 +56,8 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
         className="flex flex-1 flex-grow flex-col py-2"
         eventElementId="User Follow Username"
         eventName="User Follow Username Clicked"
+        // TODO: analytics prop drill
+        eventContext={null}
       >
         <View className="flex flex-row items-center">
           <ProfilePicture userRef={user} size="md" />

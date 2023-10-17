@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD, GALLERY_TWITTER } from '~/constants/urls';
@@ -11,6 +11,7 @@ import {
   GLOBAL_FOOTER_HEIGHT_MOBILE,
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { LogoLarge } from '~/icons/LogoLarge';
+import { contexts } from '~/shared/analytics/constants';
 
 function MaintenancePage() {
   return (
@@ -24,9 +25,23 @@ function MaintenancePage() {
         </StyledBaseM>
       </VStack>
       <HStack gap={8}>
-        <StyledFooterLink href={GALLERY_TWITTER}>Xwitter</StyledFooterLink>
+        <StyledFooterLink
+          href={GALLERY_TWITTER}
+          eventElementId="Twitter Link"
+          eventName="Twitter Link Click"
+          eventContext={contexts.Maintenance}
+        >
+          Xwitter
+        </StyledFooterLink>
         <BaseM>·</BaseM>
-        <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
+        <StyledFooterLink
+          href={GALLERY_DISCORD}
+          eventElementId="Discord Link"
+          eventName="Discord Link Click"
+          eventContext={contexts.Maintenance}
+        >
+          Discord
+        </StyledFooterLink>
       </HStack>
     </StyledMaintenancePage>
   );
@@ -54,7 +69,7 @@ const StyledBaseM = styled(BaseM)`
   text-align: center;
 `;
 
-const StyledFooterLink = styled(InteractiveLink)`
+const StyledFooterLink = styled(GalleryLink)`
   text-transform: capitalize;
   font-size: 14px;
 `;

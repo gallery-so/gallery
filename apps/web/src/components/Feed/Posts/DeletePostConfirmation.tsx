@@ -6,6 +6,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import useDeletePost from '~/hooks/api/posts/useDeletePost';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   postDbid: string;
@@ -34,7 +35,14 @@ export default function DeletePostConfirmation({ postDbid, communityId }: Props)
         <BaseM>This cannot be undone.</BaseM>
       </VStack>
       <HStack justify="flex-end">
-        <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
+        <StyledButton
+          eventElementId="Delete Post Button"
+          eventName="Delete Post"
+          eventContext={contexts.Posts}
+          onClick={handleConfirmClick}
+          disabled={isLoading}
+          pending={isLoading}
+        >
           Delete
         </StyledButton>
       </HStack>

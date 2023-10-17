@@ -8,6 +8,7 @@ import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchRe
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
+import { noop } from '~/shared/utils/noop';
 
 import { Typography } from '../Typography';
 import { CommunitySearchResult } from './Community/CommunitySearchResult';
@@ -53,7 +54,7 @@ export function SearchResults({
   keyword,
   onChangeFilter,
   blurInputFocus,
-  onSelect = () => {},
+  onSelect = noop,
   onlyShowTopResults = false,
   isMentionSearch = false,
 }: Props) {

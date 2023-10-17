@@ -9,6 +9,7 @@ import SettingsRowDescription from '~/components/Settings/SettingsRowDescription
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { graphqlTruncateAddress, truncateAddress } from '~/shared/utils/wallet';
 
@@ -132,7 +133,14 @@ function ManageWallets({ newAddress, queryRef, onConnectWalletSuccess }: Props) 
         </VStack>
       </VStack>
       <HStack justify="end">
-        <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
+        <StyledButton
+          eventElementId="Open Add Wallet Modal Button"
+          eventName="Open Add Wallet Modal"
+          eventContext={contexts['Manage Wallets']}
+          onClick={handleSubmit}
+          disabled={addWalletDisabled}
+          variant="secondary"
+        >
           Add new wallet
         </StyledButton>
       </HStack>

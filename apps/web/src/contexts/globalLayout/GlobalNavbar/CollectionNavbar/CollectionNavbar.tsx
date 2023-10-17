@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
@@ -16,6 +16,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
@@ -93,9 +94,14 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
             <SlashText>/</SlashText>
 
-            <Link href={galleryRoute} legacyBehavior>
-              <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
-            </Link>
+            <GalleryLink
+              to={galleryRoute}
+              eventElementId="Gallery Name Link"
+              eventName="Gallery Name Link Click"
+              eventContext={contexts.UserGallery}
+            >
+              <BreadcrumbLink>{galleryName}</BreadcrumbLink>
+            </GalleryLink>
 
             <SlashText>/</SlashText>
 

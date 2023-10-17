@@ -16,6 +16,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
 import { UserFollowedUsersFeedEventQueryFragment$key } from '~/generated/UserFollowedUsersFeedEventQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -128,7 +129,9 @@ export default function UserFollowedUsersFeedEvent({
   const handleSeeMoreClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
-      track('Feed: Clicked See more followed users event');
+      track('Clicked See more followed users event', {
+        context: contexts.Feed,
+      });
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
@@ -191,7 +194,14 @@ export default function UserFollowedUsersFeedEvent({
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </StyledEventText>
               </StyledEventHeader>
-              <StyledSecondaryButton>See All</StyledSecondaryButton>
+              <StyledSecondaryButton
+                // already tracked above
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              >
+                See All
+              </StyledSecondaryButton>
             </StyledEventHeaderContainer>
           </StyledEventContent>
         </CustomStyledEvent>

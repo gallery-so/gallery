@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -26,7 +26,11 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
           <TitleDiatypeM>{title}</TitleDiatypeM>
           {subTitle && (
             <StyledUserBio>
-              <Markdown text={subTitle} />
+              <Markdown
+                text={subTitle}
+                // TODO: analytics should get prop drilled
+                eventContext={null}
+              />
             </StyledUserBio>
           )}
         </StyledVStack>
@@ -42,7 +46,14 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
   }
 
   return (
-    <StyledRowLink onClick={handlePressUserLink} href={href}>
+    <StyledRowLink
+      onClick={handlePressUserLink}
+      to={href}
+      // TODO analytics - this will be variable by user or community
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
+    >
       {rowContent}
     </StyledRowLink>
   );
@@ -55,7 +66,7 @@ const StyledRowNonLink = styled.div`
   }
 `;
 
-const StyledRowLink = styled(Link)`
+const StyledRowLink = styled(GalleryLink)`
   padding: 8px 12px;
   text-decoration: none;
   max-height: 56px;

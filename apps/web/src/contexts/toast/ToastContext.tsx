@@ -1,5 +1,7 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
+import { noop } from '~/shared/utils/noop';
+
 import { AnimatedToast } from './Toast';
 
 type DismissToastHandler = () => void;
@@ -28,8 +30,6 @@ export const useToastActions = (): ToastActions => {
 
   return context;
 };
-
-const noop = () => {};
 
 type ToastType = {
   id: string;

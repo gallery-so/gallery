@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
 import {
@@ -13,6 +13,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -52,11 +53,14 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
 
       return (
         <HStack gap={4} align="center">
-          <Link href={usernameRoute} legacyBehavior>
-            <UsernameBreadcrumbLink href={route(usernameRoute)}>
-              {query.userByUsername?.username}
-            </UsernameBreadcrumbLink>
-          </Link>
+          <GalleryLink
+            to={usernameRoute}
+            eventElementId="Username Nav Link"
+            eventName="Username Nav Link Click"
+            eventContext={contexts.UserGallery}
+          >
+            <UsernameBreadcrumbLink>{query.userByUsername?.username}</UsernameBreadcrumbLink>
+          </GalleryLink>
           <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>
       );

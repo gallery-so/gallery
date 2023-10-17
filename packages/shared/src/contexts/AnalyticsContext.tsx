@@ -12,6 +12,9 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
+import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
+import { noop } from '../utils/noop';
+
 type EventProps = Record<string, unknown>;
 
 export type GalleryElementTrackingProps = {
@@ -19,9 +22,17 @@ export type GalleryElementTrackingProps = {
   // this should be unique across the app.
   // e.g. `Feed Username Button`
   eventElementId: string | null;
-  // name of the action. this can be duplicated.
+  // a generalized name of the action. this can be duplicated
+  // across several elements, if several elements can trigger
+  // the same event.
   // e.g. `Follow User`
   eventName: string | null;
+  // a bucket, category, or general location for the event.
+  // e.g. `Authentication`, `Web Editor`
+  eventContext: AnalyticsEventContextType | null;
+  // an explicit user flow that the event falls into
+  // e.g. `Add Wallet Flow` or `Post Flow`
+  eventFlow?: AnalyticsEventFlowType | null;
   // custom metadata.
   // e.g. { variant: 'Worldwide' }
   properties?: EventProps;
@@ -35,7 +46,7 @@ export const useTrack = () => {
   const track = useContext(AnalyticsContext);
 
   if (!track) {
-    return () => {};
+    return noop;
   }
 
   return track;

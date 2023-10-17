@@ -11,6 +11,7 @@ import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFrag
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
@@ -168,6 +169,9 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </StyledWrapper>
         )}
         <Button
+          eventElementId="Submit Post Button"
+          eventName="Submit Post"
+          eventContext={contexts.Posts}
           variant="primary"
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}

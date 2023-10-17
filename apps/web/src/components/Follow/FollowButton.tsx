@@ -7,6 +7,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -14,7 +15,7 @@ import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
-import { Chip } from '../core/Chip/Chip';
+import { GalleryChip } from '../core/Chip/Chip';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -135,10 +136,24 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
       return (
         // return following & hover show unfollow
         <FollowingChipContainer>
-          <FollowingChip className={className}>Following</FollowingChip>
+          <FollowingChip
+            // no need to track this because it gets converted to `UnfollowChip` below on hover
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            className={className}
+          >
+            Following
+          </FollowingChip>
 
           <UnfollowChipContainer>
-            <UnfollowChip onClick={handleUnfollowClick} className={className}>
+            <UnfollowChip
+              eventElementId="Unfollow Chip"
+              eventName="Unfollow"
+              eventContext={contexts.Social}
+              onClick={handleUnfollowClick}
+              className={className}
+            >
               Unfollow
             </UnfollowChip>
           </UnfollowChipContainer>
@@ -146,7 +161,14 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
       );
     } else {
       return (
-        <FollowChip onClick={handleFollowClick} className={className}>
+        <FollowChip
+          eventElementId="Follow Chip"
+          eventName="Follow"
+          eventContext={contexts.Social}
+          properties={{ isFollowBack: followsYou }}
+          onClick={handleFollowClick}
+          className={className}
+        >
           {followsYou ? 'Follow back' : 'Follow'}
         </FollowChip>
       );
@@ -171,7 +193,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   );
 }
 
-const FollowingChip = styled(Chip)`
+const FollowingChip = styled(GalleryChip)`
   background-color: ${colors.faint};
   color: ${colors.black['800']};
 `;
@@ -204,12 +226,12 @@ const FollowingChipContainer = styled.div`
   }
 `;
 
-const FollowChip = styled(Chip)`
+const FollowChip = styled(GalleryChip)`
   background-color: ${colors.black['800']};
   color: ${colors.offWhite};
 `;
 
-const UnfollowChip = styled(Chip)`
+const UnfollowChip = styled(GalleryChip)`
   background-color: ${colors.offWhite};
 
   color: #c72905;

@@ -8,6 +8,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { TokenFailureFallbacksErrorFallbackFragment$key } from '~/generated/TokenFailureFallbacksErrorFallbackFragment.graphql';
 import { TokenFailureFallbacksLoadingFallbackFragment$key } from '~/generated/TokenFailureFallbacksLoadingFallbackFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 export type FallbackProps = {
   fallbackAspectSquare?: boolean;
@@ -80,6 +81,7 @@ export function TokenPreviewErrorFallback({
       onPress={handlePress}
       eventElementId="Refresh Broken Token Button"
       eventName="Refresh Broken Token Pressed"
+      eventContext={contexts.Error}
       activeOpacity={refreshable ? 0.2 : 1}
     >
       <Text

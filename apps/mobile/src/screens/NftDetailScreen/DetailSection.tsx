@@ -1,7 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
 
-import { InteractiveLink } from '~/components/InteractiveLink';
+import { GalleryLink } from '~/components/GalleryLink';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Typography, TypographyProps } from '../../components/Typography';
 import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
@@ -44,19 +45,24 @@ export function DetailValue({ children }: PropsWithChildren) {
 type DetailExternalLinkProps = {
   link: string;
   label: string;
-  trackingLabel: string;
   font?: TypographyProps['font'];
   showExternalLinkIcon?: boolean;
 };
+
 export function DetailExternalLink({
   link,
   label,
-  trackingLabel,
   font,
   showExternalLinkIcon = false,
 }: DetailExternalLinkProps) {
   return (
-    <InteractiveLink href={link} type={trackingLabel}>
+    <GalleryLink
+      href={link}
+      eventElementId="Project External Link"
+      eventName="Project External Link Press"
+      eventContext={contexts['NFT Detail']}
+      properties={{ platform: label }}
+    >
       <View className="flex flex-row">
         <Typography
           numberOfLines={1}
@@ -72,6 +78,6 @@ export function DetailExternalLink({
           </View>
         )}
       </View>
-    </InteractiveLink>
+    </GalleryLink>
   );
 }

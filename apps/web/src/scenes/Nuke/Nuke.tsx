@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { ButtonLink } from '~/components/core/Button/Button';
+import { DeprecatedButtonLink } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL } from '~/components/core/Text/Text';
 import { useLogout } from '~/hooks/useLogout';
@@ -18,7 +18,7 @@ function Nuke() {
   return (
     <StyledNuke gap={32}>
       <BaseXL>Your local cache has been nuked</BaseXL>
-      <ButtonLink href={{ pathname: '/' }}>Take me home</ButtonLink>
+      <DeprecatedButtonLink href={{ pathname: '/' }}>Take me home</DeprecatedButtonLink>
     </StyledNuke>
   );
 }

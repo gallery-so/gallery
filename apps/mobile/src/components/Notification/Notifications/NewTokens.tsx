@@ -7,6 +7,7 @@ import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { UnseenDot } from '../NotificationSkeleton';
@@ -91,8 +92,9 @@ export function NewTokens({ notificationRef }: Props) {
         text="Post"
         size="xs"
         fontWeight="Bold"
-        eventElementId={null}
-        eventName={null}
+        eventElementId="Notifications Post Token Button"
+        eventName="Navigate to Post Token"
+        eventContext={contexts.Notifications}
       />
       <View
         className={`w-[35px] flex-row space-x-2 items-center ${

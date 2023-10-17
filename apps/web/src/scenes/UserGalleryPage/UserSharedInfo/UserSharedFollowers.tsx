@@ -2,13 +2,14 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -77,23 +78,33 @@ export default function UserSharedFollowers({ userRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 usernames
     const result = followersToDisplay.map((user) => (
-      <StyledInteractiveLink
+      <StyledGalleryLink
         to={{
           pathname: `/[username]`,
           query: { username: user.username ?? '' },
         }}
         key={user.username}
+        eventElementId="Shared Follower Link"
+        eventName="Shared Follower Link Click"
+        // TODO analytics - this will be variable
+        eventContext={contexts.UserGallery}
       >
         {user.username}
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
     ));
 
     // If there are more than 3 usernames, add a link to show all in a popover
     if (totalSharedFollowers > 3) {
       result.push(
-        <StyledInteractiveLink onClick={handleShowAllFollowersClick}>
+        <StyledGalleryLink
+          onClick={handleShowAllFollowersClick}
+          eventElementId="Shared Followers Remaining Link"
+          eventName="Shared Followers Remaining Link Click"
+          // TODO analytics - this will be variable
+          eventContext={contexts.UserGallery}
+        >
           {totalSharedFollowers - 2} others
-        </StyledInteractiveLink>
+        </StyledGalleryLink>
       );
     }
 
@@ -127,7 +138,7 @@ export default function UserSharedFollowers({ userRef }: Props) {
   );
 }
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

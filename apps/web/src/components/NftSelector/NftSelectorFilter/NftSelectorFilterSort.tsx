@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -44,15 +45,24 @@ export function NftSelectorFilterSort({
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectView('Recently added')}>
-            <BaseM>Recently added</BaseM>
-          </DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Oldest')}>
-            <BaseM>Oldest</BaseM>
-          </DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Alphabetical')}>
-            <BaseM>Alphabetical</BaseM>
-          </DropdownItem>
+          <DropdownItem
+            onClick={() => onSelectView('Recently added')}
+            name="NFT Selector Filter Sort"
+            eventContext={contexts.Posts}
+            label="Recently added"
+          />
+          <DropdownItem
+            onClick={() => onSelectView('Oldest')}
+            name="NFT Selector Filter Sort"
+            eventContext={contexts.Posts}
+            label="Oldest"
+          />
+          <DropdownItem
+            onClick={() => onSelectView('Alphabetical')}
+            name="NFT Selector Filter Sort"
+            eventContext={contexts.Posts}
+            label="Alphabetical"
+          />
         </DropdownSection>
       </Dropdown>
     </Container>

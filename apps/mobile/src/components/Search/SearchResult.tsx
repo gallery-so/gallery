@@ -3,6 +3,8 @@ import { StyleSheet, TouchableOpacityProps } from 'react-native';
 import { View } from 'react-native';
 import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
 import { useSearchContext } from './SearchContext';
@@ -66,6 +68,7 @@ export function SearchResult({ title, description, variant, profilePicture, ...p
       className="py-2 px-4 max-h-16 flex flex-row items-center space-x-2"
       eventElementId="Search Result Row"
       eventName="Search Result Row Clicked"
+      eventContext={contexts.Search}
       properties={{ variant }}
       {...props}
     >
