@@ -1,6 +1,6 @@
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
-import { TitleDiatypeM } from '~/components/core/Text/Text';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { MentionComponentFragment$key } from '~/generated/MentionComponentFragment.graphql';
@@ -53,7 +53,7 @@ export function MentionComponent({ mention, mentionData, mentionsRef }: Props) {
 
     return (
       <UserHoverCard userRef={user}>
-        <TitleDiatypeM as="span">{mention}</TitleDiatypeM>
+        <StyledMentionText as="span">{mention}</StyledMentionText>
       </UserHoverCard>
     );
   }
@@ -69,10 +69,12 @@ export function MentionComponent({ mention, mentionData, mentionsRef }: Props) {
 
     return (
       <CommunityHoverCard communityRef={community} communityName={community.name ?? ''}>
-        <TitleDiatypeM as="span">{mention}</TitleDiatypeM>
+        <StyledMentionText as="span">{mention}</StyledMentionText>
       </CommunityHoverCard>
     );
   }
 
-  return <TitleDiatypeM as="span">{mention}</TitleDiatypeM>;
+  return <StyledMentionText>{mention}</StyledMentionText>;
 }
+
+const StyledMentionText = styled.span``;
