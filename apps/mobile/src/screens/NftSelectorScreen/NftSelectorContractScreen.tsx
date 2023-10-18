@@ -62,7 +62,7 @@ export function NftSelectorContractScreen() {
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const isFullscreen = route.params.fullScreen;
-  const isCreator = route.params.filter === 'Created';
+  const isCreator = route.params.ownerFilter === 'Created';
 
   const handleSelectNft = useCallback(() => {
     navigation.pop(2);
@@ -182,7 +182,7 @@ function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshC
       duration: 1000,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing and isRefetching is still true
+      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing
       if (finished && isSyncing) {
         spin();
       }

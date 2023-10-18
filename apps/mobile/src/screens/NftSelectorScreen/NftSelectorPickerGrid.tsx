@@ -221,7 +221,7 @@ export function NftSelectorPickerGrid({
                 key={index}
                 tokenRefs={group.tokens}
                 contractAddress={group.address}
-                filter={searchCriteria.ownerFilter}
+                ownerFilter={searchCriteria.ownerFilter}
                 screen={screen}
               />
             );
@@ -296,12 +296,12 @@ function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
 type TokenGridProps = {
   style?: ViewProps['style'];
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
-  filter: 'Created' | 'Collected';
+  ownerFilter: 'Created' | 'Collected';
   contractAddress: string;
   screen: ScreenWithNftSelector;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, screen, style, filter }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -332,7 +332,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, filter }: TokenG
         navigation.navigate('NftSelectorContractScreen', {
           contractAddress: contractAddress,
           page: screen,
-          filter: filter,
+          ownerFilter: ownerFilter,
           fullScreen: isFullscreen,
         });
       }}
@@ -365,13 +365,13 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, filter }: TokenG
 
 type TokenGroupProps = {
   style?: ViewProps['style'];
-  filter: 'Collected' | 'Created';
+  ownerFilter: 'Collected' | 'Created';
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
   screen: ScreenWithNftSelector;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style, filter, screen }: TokenGroupProps) {
+function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
@@ -399,7 +399,7 @@ function TokenGroup({ tokenRefs, contractAddress, style, filter, screen }: Token
         <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={firstToken} />
       ) : (
         <TokenGrid
-          filter={filter}
+          ownerFilter={ownerFilter}
           contractAddress={contractAddress}
           tokenRefs={tokens}
           screen={screen}

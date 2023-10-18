@@ -118,8 +118,6 @@ export function NftSelectorView({
           });
         });
         tokens = selectedCollectionTokens;
-        console.log("tokens", tokens);
-        console.log("tokens[0]?.tokens[0]?.contract?.dbid", tokens[0]?.tokens[0]?.contract?.dbid);
         onSetCollectionContractId(tokens[0]?.tokens[0]?.contract?.dbid ?? '');
       }
     }
