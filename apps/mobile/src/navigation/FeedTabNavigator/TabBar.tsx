@@ -16,10 +16,6 @@ type TabItemProps = {
   route: NavigationRoute;
 };
 
-const TabNameOverrides: Record<string, string> = {
-  Curated: 'For You',
-};
-
 function TabItem({ navigation, route, activeRoute }: TabItemProps) {
   const isFocused = activeRoute === route.name;
 
@@ -52,7 +48,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
         }`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
-        {TabNameOverrides[route.name] ?? route.name}
+        {route.name}
       </Typography>
     </GalleryTouchableOpacity>
   );

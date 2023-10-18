@@ -1,3 +1,4 @@
+// higher level categories
 export const contexts = {
   Posts: 'Posts',
   Feed: 'Feed',
@@ -33,6 +34,8 @@ export const contexts = {
 
 export type AnalyticsEventContextType = keyof typeof contexts;
 
+// the specific feature; the name of the flow should give you
+// an instant visual of the steps for that flow
 export const flows = {
   'Web Signup Flow': 'Web Signup Flow',
   'Mobile Login Flow': 'Mobile Login Flow',

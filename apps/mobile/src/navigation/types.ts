@@ -68,7 +68,7 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: {
+  'For You': {
     // check if new registered user, we show a welcome message
     isNewUser?: boolean;
     showMarfaCheckIn?: boolean;

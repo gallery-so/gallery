@@ -25,7 +25,7 @@ export function NotificationUpsellScreen() {
       routes: [
         {
           name: 'MainTabs',
-          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'Curated' } } },
+          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'For You' } } },
         },
       ],
     });
