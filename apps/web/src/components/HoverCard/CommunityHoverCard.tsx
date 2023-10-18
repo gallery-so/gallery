@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { PreloadedQuery, useFragment, usePreloadedQuery, useQueryLoader } from 'react-relay';
@@ -7,12 +6,13 @@ import styled from 'styled-components';
 
 import { CommunityHoverCardFragment$key } from '~/generated/CommunityHoverCardFragment.graphql';
 import { Chain, CommunityHoverCardQuery } from '~/generated/CommunityHoverCardQuery.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS, TitleM } from '../core/Text/Text';
@@ -156,7 +156,7 @@ function CommunityHoverCardContent({
 
   const content = useMemo(() => {
     const result = ownersToDisplay.map((owner) => (
-      <StyledInteractiveLink
+      <StyledGalleryLink
         to={{
           pathname: `/[username]`,
           query: { username: owner.username ?? '' },
@@ -164,7 +164,7 @@ function CommunityHoverCardContent({
         key={owner.username}
       >
         {loggedInUserId === owner.id ? 'You' : owner.username}
-      </StyledInteractiveLink>
+      </StyledGalleryLink>
     ));
 
     if (totalOwners > 3) {
@@ -202,17 +202,25 @@ function CommunityHoverCardContent({
   return (
     <VStack gap={6}>
       <HStack gap={8} align={`${hasDescription ? '' : 'center'}`}>
-        <StyledLink href={communityProfileLink}>
+        <GalleryLink
+          to={communityProfileLink}
+          eventElementId="Community PFP"
+          eventName="Community PFP Click"
+          eventContext={contexts['Hover Card']}
+        >
           <CommunityProfilePicture communityRef={community} size={64} />
-        </StyledLink>
+        </GalleryLink>
         <Section gap={2}>
-          <StyledLink href={communityProfileLink}>
+          <GalleryLink to={communityProfileLink}>
             <StyledCardTitle>{communityName}</StyledCardTitle>
-          </StyledLink>
+          </GalleryLink>
           {community.description && (
             <StyledCardDescription>
               <BaseM>
-                <Markdown text={unescape(community.description)}></Markdown>
+                <Markdown
+                  text={unescape(community.description)}
+                  eventContext={contexts['Hover Card']}
+                />
               </BaseM>
             </StyledCardDescription>
           )}
@@ -228,12 +236,6 @@ function CommunityHoverCardContent({
     </VStack>
   );
 }
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  outline: none;
-  min-width: 0;
-`;
 
 const Section = styled(VStack)`
   max-width: 250px;
@@ -258,7 +260,7 @@ const StyledCardDescription = styled.div`
   }
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
 `;
 

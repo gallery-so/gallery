@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { FeedbackButton } from '~/components/FeedbackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Typography } from '../../components/Typography';
 
@@ -13,10 +14,6 @@ type TabItemProps = {
   navigation: MaterialTopTabBarProps['navigation'];
   activeRoute: keyof FeedTabNavigatorParamList;
   route: NavigationRoute;
-};
-
-const TabNameOverrides: Record<string, string> = {
-  Curated: 'For You',
 };
 
 function TabItem({ navigation, route, activeRoute }: TabItemProps) {
@@ -42,6 +39,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       onPress={onPress}
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
+      eventContext={contexts.Feed}
       properties={{ variant: 'Feed', route: route.name }}
     >
       <Typography
@@ -50,7 +48,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
         }`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
-        {TabNameOverrides[route.name] ?? route.name}
+        {route.name}
       </Typography>
     </GalleryTouchableOpacity>
   );

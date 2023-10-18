@@ -2,6 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { CollectionTokenPreviewFragment$key } from '~/generated/CollectionTokenPreviewFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 
 import NftPreview from './NftPreview';
 
@@ -50,6 +51,7 @@ export default function CollectionTokenPreview({
       tokenRef={collectionToken.token}
       shouldLiveRender={shouldLiveRender}
       collectionId={collection.dbid}
+      eventContext={contexts.UserCollection}
     />
   );
 }

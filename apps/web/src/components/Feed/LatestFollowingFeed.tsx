@@ -7,6 +7,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { LatestFollowingFeedFragment$key } from '~/generated/LatestFollowingFeedFragment.graphql';
 import { LatestFollowingFeedPaginationQuery } from '~/generated/LatestFollowingFeedPaginationQuery.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -86,7 +87,13 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
         </StyledEmptyFeedBody>
       </VStack>
       <VStack>
-        <Button variant="secondary" onClick={handleSeeForYouClick}>
+        <Button
+          eventElementId="Take Me To For You Feed Button"
+          eventName="Visit For You Feed"
+          eventContext={contexts.Feed}
+          variant="secondary"
+          onClick={handleSeeForYouClick}
+        >
           Take me there
         </Button>
       </VStack>

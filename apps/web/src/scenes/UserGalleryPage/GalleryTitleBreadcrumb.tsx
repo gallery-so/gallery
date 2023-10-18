@@ -1,16 +1,17 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import {
   BreadcrumbLink,
   BreadcrumbText,
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { GalleryTitleBreadcrumbFragment$key } from '~/generated/GalleryTitleBreadcrumbFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -46,24 +47,29 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
     <HStack>
       {!isHome && (
         <>
-          <Link href={userGalleryRoute} legacyBehavior>
-            <StyledBreadcrumbLink href={route(userGalleryRoute)} isActive={false}>
-              {username}
-            </StyledBreadcrumbLink>
-          </Link>
+          <GalleryLink
+            to={userGalleryRoute}
+            eventElementId="Username Link"
+            eventName="Username Link Click"
+            eventContext={contexts.UserGallery}
+          >
+            <StyledBreadcrumbLink isActive={false}>{username}</StyledBreadcrumbLink>
+          </GalleryLink>
           <StyledBreadcrumbText>&nbsp;/</StyledBreadcrumbText>
         </>
       )}
 
       {gallery.name && (
-        <Link href={galleryRoute} legacyBehavior>
-          <StyledBreadcrumbLink
-            href={route(galleryRoute)}
-            isActive={pathname === galleryRoute.pathname || isHome}
-          >
+        <GalleryLink
+          to={galleryRoute}
+          eventElementId="Gallery Name Link"
+          eventName="Gallery Name Link Click"
+          eventContext={contexts.UserGallery}
+        >
+          <StyledBreadcrumbLink isActive={pathname === galleryRoute.pathname || isHome}>
             {gallery.name}
           </StyledBreadcrumbLink>
-        </Link>
+        </GalleryLink>
       )}
     </HStack>
   );

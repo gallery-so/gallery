@@ -6,6 +6,8 @@ import { CommentBoxIconFragment$key } from '~/generated/CommentBoxIconFragment.g
 import { CommentBoxIconQueryFragment$key } from '~/generated/CommentBoxIconQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { CommentIcon } from '~/icons/SocializeIcons';
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { FeedEventsCommentsModal } from '../CommentsModal/FeedEventsCommentsModal';
 import PostCommentsModal from '../CommentsModal/PostCommentsModal';
@@ -50,14 +52,22 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
     return <PostCommentsModal fullscreen={isMobile} postRef={event} queryRef={query} />;
   }, [event, isMobile, query]);
 
+  const track = useTrack();
+
   const handleClick = useCallback(() => {
+    track('Button Click', {
+      id: 'Open Comments Modal Button',
+      name: 'Open Comments Modal',
+      context: contexts.Posts,
+    });
+
     showModal({
       content: ModalContent,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-  }, [ModalContent, isMobile, showModal]);
+  }, [ModalContent, isMobile, showModal, track]);
 
   return <CommentIcon onClick={handleClick} />;
 }

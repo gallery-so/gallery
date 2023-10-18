@@ -9,7 +9,8 @@ import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFrag
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -33,6 +34,7 @@ type Props = {
   onSelectToken: (tokenId: string) => void;
   headerText: string;
   preSelectedContract?: NftSelectorContractType;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
@@ -45,7 +47,7 @@ export function NftSelector(props: Props) {
   );
 }
 
-function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Props) {
+function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, eventFlow }: Props) {
   const query = useLazyLoadQuery<NftSelectorQuery>(
     graphql`
       query NftSelectorQuery {
@@ -119,6 +121,19 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     selectedContract,
     setSelectedContract,
   } = usePostComposerContext();
+
+  const track = useTrack();
+
+  const handleSelectContract = useCallback(
+    (contract: NftSelectorContractType) => {
+      track('Select Contract on Post Composer Modal', {
+        context: contexts.Posts,
+        flow: eventFlow,
+      });
+      setSelectedContract(contract);
+    },
+    [eventFlow, setSelectedContract, track]
+  );
 
   useEffect(() => {
     if (preSelectedContract) {
@@ -200,7 +215,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(network, query);
 
-  const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
@@ -210,14 +224,17 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
       return;
     }
 
-    track('NFT Selector: Clicked Refresh');
+    track('NFT Selector: Clicked Refresh', {
+      context: contexts.Posts,
+      flow: eventFlow,
+    });
 
     if (filterType === 'Hidden') {
       return;
     }
 
     await syncTokens({ type: filterType, chain: network });
-  }, [refreshDisabled, track, filterType, syncTokens, network]);
+  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
 
   const [syncCreatedTokensForExistingContract, isContractRefreshing] =
     useSyncCreatedTokensForExistingContract();
@@ -337,12 +354,13 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
         <NftSelectorView
           tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
-          onSelectContract={setSelectedContract}
           onSetCollectionContractId={setCollectionContractId}
+          onSelectContract={handleSelectContract}
+          onSelectToken={onSelectToken}
+          eventFlow={eventFlow}
           selectedNetworkView={network}
           hasSearchKeyword={isSearching}
           handleRefresh={handleRefresh}
-          onSelectToken={onSelectToken}
         />
       )}
     </StyledNftSelectorModal>

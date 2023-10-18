@@ -8,6 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
@@ -56,7 +57,10 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         </StyledUsernameWrapper>
       )}
       <CommentText>
-        <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
+        <Markdown
+          text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+          eventContext={contexts.Posts}
+        />
       </CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
@@ -76,7 +80,7 @@ const StyledUsernameWrapper = styled.div`
   height: fit-content;
 `;
 
-const CommenterName = styled.a`
+const CommenterName = styled.span`
   font-family: ${BODY_FONT_FAMILY};
   vertical-align: bottom;
   font-size: 14px;
@@ -88,6 +92,14 @@ const CommenterName = styled.a`
 `;
 
 const CommentText = styled.div`
+  word-wrap: break-word;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 18px;

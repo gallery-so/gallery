@@ -12,6 +12,7 @@ import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { ChainMetadata } from '~/shared/utils/chains';
@@ -110,13 +111,20 @@ export default function SidebarWalletSelector({
         onClose={() => setIsDropdownOpen(false)}
       >
         <DropdownSection>
-          <DropdownItem onClick={() => handleSelectWallet('All')}>
-            <BaseM>All</BaseM>
-          </DropdownItem>
+          <DropdownItem
+            onClick={() => handleSelectWallet('All')}
+            name="Select Wallet"
+            eventContext={contexts.Editor}
+            label="All"
+          />
           {userWalletsOnSelectedNetwork.map((wallet, index) => (
-            <DropdownItem key={index} onClick={() => handleSelectWallet(wallet)}>
-              <BaseM>{truncateWalletAddress(wallet)}</BaseM>
-            </DropdownItem>
+            <DropdownItem
+              key={index}
+              onClick={() => handleSelectWallet(wallet)}
+              name="Select Wallet"
+              eventContext={contexts.Editor}
+              label={truncateWalletAddress(wallet)}
+            />
           ))}
           {!addWalletDisabled && (
             <DropdownItem
@@ -124,9 +132,10 @@ export default function SidebarWalletSelector({
                 handleSubmit();
                 handleSelectWallet('All');
               }}
-            >
-              <BaseM>ADD WALLET</BaseM>
-            </DropdownItem>
+              name="Select Wallet"
+              eventContext={contexts.Editor}
+              label="Add Wallet"
+            />
           )}
         </DropdownSection>
       </StyledDropdown>

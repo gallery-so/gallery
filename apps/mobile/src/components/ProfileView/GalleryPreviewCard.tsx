@@ -10,6 +10,7 @@ import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewError
 import { Typography } from '~/components/Typography';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import unescape from '~/shared/utils/unescape';
 
@@ -51,6 +52,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
       className="bg-offWhite dark:bg-black-800 flex w-full flex-col space-y-3 rounded-xl p-3"
       eventElementId="Gallery Preview Card"
       eventName="Gallery Preview Card Clicked"
+      eventContext={contexts.UserGallery}
     >
       <View className="flex flex-row items-center justify-center">
         <View className="flex flex-1 flex-col">

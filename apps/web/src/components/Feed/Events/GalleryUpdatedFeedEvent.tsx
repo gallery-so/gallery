@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -12,6 +12,7 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -91,9 +92,14 @@ export default function GalleryUpdatedFeedEvent({
               <UserHoverCard userRef={event.owner} />
             </HStack>
             <BaseM>updated</BaseM>
-            <Link href={galleryPagePath} passHref legacyBehavior>
+            <GalleryLink
+              to={galleryPagePath}
+              eventElementId="Gallery Name Feed Event"
+              eventName="Gallery Name Feed Event Click"
+              eventContext={contexts.Social}
+            >
               <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
-            </Link>
+            </GalleryLink>
             <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>
@@ -102,7 +108,7 @@ export default function GalleryUpdatedFeedEvent({
             {caption && (
               <StyledCaptionContainer gap={8} align="center">
                 <BaseM>
-                  <Markdown text={caption} />
+                  <Markdown text={caption} eventContext={contexts.Feed} />
                 </BaseM>
               </StyledCaptionContainer>
             )}

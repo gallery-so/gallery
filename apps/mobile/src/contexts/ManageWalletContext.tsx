@@ -21,6 +21,7 @@ import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/naviga
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
+import { noop } from '~/shared/utils/noop';
 
 import { useSyncTokenstActions } from './SyncTokensContext';
 
@@ -79,7 +80,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   );
 
   const openManageWallet = useCallback(
-    ({ title, onSuccess = () => {}, method = 'add-wallet' }: openManageWalletProps) => {
+    ({ title, onSuccess = noop, method = 'add-wallet' }: openManageWalletProps) => {
       if (title) {
         setTitle(title);
       }

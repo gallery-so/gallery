@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { Button } from './Button';
 import {
   GalleryBottomSheetModal,
@@ -46,6 +48,7 @@ export function WelcomeNewUser({ username }: Props) {
           text="continue"
           eventElementId="welcome-bottom-sheet-continue"
           eventName="welcome-bottom-sheet-continue"
+          eventContext={contexts.Onboarding}
         />
       </View>
     </GalleryBottomSheetModal>

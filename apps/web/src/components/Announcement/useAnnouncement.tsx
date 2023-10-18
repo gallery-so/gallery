@@ -1,24 +1,16 @@
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import {
-  useAnnouncementFragment$key,
-  UserExperienceType,
-} from '~/generated/useAnnouncementFragment.graphql';
+import { UserExperienceType } from '~/generated/enums';
+import { useAnnouncementFragment$key } from '~/generated/useAnnouncementFragment.graphql';
 import { getDaysSince, getTimeSince } from '~/shared/utils/time';
 
-import { ANNOUNCEMENT_CONTENT } from './constants';
+import { ANNOUNCEMENT_CONTENT, AnnouncementType } from './constants';
 
-export type AnnouncementType = {
-  key: UserExperienceType;
-  title: string;
-  description: string;
-  date: string;
+export type DecoratedAnnouncementType = {
   time: string | null; // time since date
   experienced: boolean;
-  link?: string;
-  ctaText?: string;
-};
+} & AnnouncementType;
 
 export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
   const query = useFragment(
@@ -37,7 +29,7 @@ export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
     queryRef
   );
 
-  const announcements = useMemo<AnnouncementType[]>(() => {
+  const announcements = useMemo<DecoratedAnnouncementType[]>(() => {
     const userExperiences = query.viewer?.userExperiences ?? [];
     const announcementsLists = ANNOUNCEMENT_CONTENT;
 

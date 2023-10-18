@@ -3,18 +3,20 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
 
 type Props = {
   badgeRef: BadgeFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export default function Badge({ badgeRef }: Props) {
+export default function Badge({ badgeRef, eventContext }: Props) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const badge = useFragment(
@@ -63,7 +65,12 @@ export default function Badge({ badgeRef }: Props) {
   }
 
   return (
-    <StyledInteractiveLink to={communityUrl}>
+    <StyledGalleryLink
+      eventElementId="Badge"
+      eventName="Badge Click"
+      eventContext={eventContext}
+      to={communityUrl}
+    >
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <IconContainer
         size="md"
@@ -76,7 +83,7 @@ export default function Badge({ badgeRef }: Props) {
           />
         }
       />
-    </StyledInteractiveLink>
+    </StyledGalleryLink>
   );
 }
 
@@ -85,7 +92,7 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   position: relative;
   line-height: 1;
   outline: none;

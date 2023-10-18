@@ -7,6 +7,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { Typography } from '~/components/Typography';
 import { ProfileViewTwitterPillFragment$key } from '~/generated/ProfileViewTwitterPillFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   userRef: ProfileViewTwitterPillFragment$key;
@@ -42,6 +43,7 @@ export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
       onPress={handlePress}
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
+      eventContext={contexts['External Social']}
       properties={{ variant: 'Twitter' }}
       className={`ml-2 max-w-[${maxWidth}]`}
     >

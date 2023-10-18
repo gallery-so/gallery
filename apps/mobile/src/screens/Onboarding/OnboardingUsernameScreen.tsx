@@ -12,6 +12,7 @@ import { Typography } from '~/components/Typography';
 import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
@@ -237,6 +238,7 @@ export function OnboardingUsernameScreen() {
               )}
               eventElementId="Onboarding Username Next Pressed"
               eventName="Onboarding Username Next Pressed"
+              eventContext={contexts.Onboarding}
               text="NEXT"
               variant={!isUsernameValid ? 'disabled' : 'primary'}
               disabled={!isUsernameValid}

@@ -1,4 +1,3 @@
-import { route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -21,7 +20,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/Collection
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
 import unescape from '~/shared/utils/unescape';
 
 import GalleryTitleBreadcrumb from '../UserGalleryPage/GalleryTitleBreadcrumb';
@@ -90,21 +89,10 @@ function CollectionGalleryHeader({
     [collection.collectorsNote]
   );
 
-  const track = useTrack();
-
   const {
     dbid: collectionId,
     gallery: { dbid: galleryId },
   } = collection;
-
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', {
-      path: route({
-        pathname: '/[username]/[collectionId]',
-        query: { username: username as string, collectionId },
-      }),
-    });
-  }, [collectionId, username, track]);
 
   const showEditActions = username?.toLowerCase() === query.viewer?.user?.username?.toLowerCase();
 
@@ -150,7 +138,7 @@ function CollectionGalleryHeader({
               </StyledBreadcrumbsWrapper>
               {unescapedCollectorsNote ? (
                 <StyledCollectionNote>
-                  <Markdown text={unescapedCollectorsNote} />
+                  <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserCollection} />
                 </StyledCollectionNote>
               ) : (
                 <div />
@@ -177,7 +165,7 @@ function CollectionGalleryHeader({
           </StyledBreadcrumbsWrapper>
           {unescapedCollectorsNote && (
             <StyledCollectionNote clamp={2}>
-              <Markdown text={unescapedCollectorsNote} />
+              <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserCollection} />
             </StyledCollectionNote>
           )}
         </VStack>
@@ -186,15 +174,24 @@ function CollectionGalleryHeader({
           {showEditActions ? (
             <>
               <CopyToClipboard textToCopy={collectionUrl}>
-                <TextButton text="Share" onClick={handleShareClick} />
+                <TextButton
+                  eventElementId="Share Collection Button"
+                  eventName="Share Collection"
+                  eventContext={contexts.UserCollection}
+                  properties={{ url: collectionUrl }}
+                  text="Share"
+                />
               </CopyToClipboard>
 
               {/* On mobile, we show these options in the navbar, not in header */}
               <SettingsDropdown iconVariant="default">
                 <DropdownSection>
-                  <DropdownItem onClick={handleEditNameClick}>
-                    <BaseM>Edit Name & Description</BaseM>
-                  </DropdownItem>
+                  <DropdownItem
+                    onClick={handleEditNameClick}
+                    name="Manage Collection"
+                    eventContext={contexts.UserCollection}
+                    label="Edit Name & Description"
+                  />
 
                   {!shouldDisplayMobileLayoutToggle && (
                     <DropdownLink
@@ -202,19 +199,23 @@ function CollectionGalleryHeader({
                         pathname: '/gallery/[galleryId]/edit',
                         query: { galleryId, collectionId },
                       }}
-                      onClick={() => {
-                        track('Update existing collection');
-                      }}
-                    >
-                      <BaseM>Edit Collection</BaseM>
-                    </DropdownLink>
+                      name="Manage Collection"
+                      eventContext={contexts.UserCollection}
+                      label="Edit Collection"
+                    />
                   )}
                 </DropdownSection>
               </SettingsDropdown>
             </>
           ) : (
             <CopyToClipboard textToCopy={collectionUrl}>
-              <TextButton text="Share" onClick={handleShareClick} />
+              <TextButton
+                eventElementId="Share Collection Button"
+                eventName="Share Collection"
+                eventContext={contexts.UserCollection}
+                properties={{ url: collectionUrl }}
+                text="Share"
+              />
             </CopyToClipboard>
           )}
         </StyledCollectionActions>

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { graphql, useFragment } from 'react-relay';
 
 import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import isMac from '~/utils/isMac';
 
@@ -58,6 +59,8 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
     queryRef: query,
   });
 
+  const track = useTrack();
+
   const dismissUserExperience = useCallback(async () => {
     // Trick to dismiss the tooltip immediately while waiting for the mutation to finish
     setStep(0);
@@ -65,13 +68,15 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   }, [setUserTooltipsExperienced]);
 
   const nextStep = useCallback(() => {
+    track('Web Editor Onboarding Next Step Click', { step });
+
     if (step === FINAL_STEP) {
       dismissUserExperience();
       return;
     }
 
     setStep(step + 1);
-  }, [dismissUserExperience, step]);
+  }, [dismissUserExperience, step, track]);
 
   const currentStep = useMemo(() => {
     if (isUserTooltipsExperienced) return 0;

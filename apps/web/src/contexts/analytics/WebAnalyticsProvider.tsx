@@ -7,6 +7,7 @@ import AnalyticsProvider, {
   RegisterSuperPropertiesFunction,
   TrackFunction,
 } from '~/shared/contexts/AnalyticsContext';
+import { _log } from '~/utils/logger';
 
 let mixpanelEnabled = false;
 
@@ -24,6 +25,7 @@ export const _track: TrackFunction = (eventName, eventProps) => {
   try {
     // Apparently mixpanel mutates eventProps so we need to clone it to make
     // sure we don't affect downstream code.
+    _log('Track:', eventName, { ...eventProps });
     mixpanel.track(eventName, { ...eventProps });
   } catch (error: unknown) {
     // mixpanel errors shouldn't disrupt app
@@ -33,6 +35,8 @@ export const _track: TrackFunction = (eventName, eventProps) => {
 
 export const _identify: IdentifyFunction = (userId) => {
   if (!mixpanelEnabled) return;
+
+  _log('Identify:', userId);
 
   try {
     mixpanel.identify(userId);

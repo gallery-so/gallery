@@ -7,6 +7,7 @@ import { BaseM, BODY_MONO_FONT_FAMILY } from '~/components/core/Text/Text';
 import { walletIconMap } from '~/components/WalletSelector/multichain/WalletButton';
 import useRemoveWallet from '~/components/WalletSelector/mutations/useRemoveWallet';
 import { ManageWalletsRow$key } from '~/generated/ManageWalletsRow.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { graphqlTruncateAddress } from '~/shared/utils/wallet';
 import { isWeb3Error } from '~/types/Error';
 
@@ -81,6 +82,9 @@ function ManageWalletsRow({
       </HStack>
       <StyledButtonContainer>
         <StyledButton
+          eventElementId="Set Primary Wallet Button"
+          eventName="Set Primary Wallet"
+          eventContext={contexts['Manage Wallets']}
           variant="secondary"
           onClick={handleSetPrimaryClick}
           disabled={isUpdatingPrimaryWallet || isRemovingWallet}
@@ -90,6 +94,9 @@ function ManageWalletsRow({
 
         <div {...getReferenceProps()} ref={reference}>
           <StyledButton
+            eventElementId="Remove Wallet Button"
+            eventName="Remove Wallet"
+            eventContext={contexts['Manage Wallets']}
             variant="warning"
             onClick={handleDisconnectClick}
             data-tip

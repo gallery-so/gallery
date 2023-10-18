@@ -1,13 +1,14 @@
 import React, { PropsWithChildren, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, ButtonLink } from '~/components/core/Button/Button';
+import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import icons from '~/icons/index';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 const avatarUrl =
   'https://s3-alpha-sig.figma.com/img/9a4f/b777/fe4c335512ca4297ad4fd60554e66f18?Expires=1687132800&Signature=I3Q4ovLmvhWUw7EIsyaXhgv6T7hQiKdJHGNL~6c37Y7WLA0pAReuVxFyedUP3RDKemx~IqEg4fNSnqMJl0Y1h7UeQDGIN8Pk9tPn84DW0rHM5DA7himn6yBbbJE0EkEERnmMA4SjQBDoM4axl4-nFVkq~6jNXwjP2ikp7-4ECO-ZOqS0IB8Z-w2ej1bkh2OU6dLZCw4rap2O6zo0egtH6nhHVXMZQnxfHbg2yZzvk3mJflP4vh5g8bFV478Ixxh7gLK-JZV5HvxjKUusvmcWomQpMNE-WasMjp4DapBQijhAyBjl7h03L09Rc0Z2uLRZwt0OoliaIBdzTh8m17NNtw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4';
@@ -41,65 +42,67 @@ export default function DesignPage() {
     }, {});
   }, []);
 
-  const showNftSelector = () => {};
+  const showNftSelector = noop;
 
   return (
     <>
       <Section>
         <TitleM>Button</TitleM>
         <Examples>
-          <Button>primary</Button>
-          <Button pending>primary</Button>
-          <Button disabled>primary</Button>
-          <Button disabled pending>
+          <Button eventElementId={null} eventName={null} eventContext={null}>
+            primary
+          </Button>
+          <Button eventElementId={null} eventName={null} eventContext={null} pending>
+            primary
+          </Button>
+          <Button eventElementId={null} eventName={null} eventContext={null} disabled>
+            primary
+          </Button>
+          <Button eventElementId={null} eventName={null} eventContext={null} disabled pending>
             primary
           </Button>
         </Examples>
         <Examples>
-          <Button variant="secondary">secondary</Button>
-          <Button variant="secondary" pending>
+          <Button eventElementId={null} eventName={null} eventContext={null} variant="secondary">
             secondary
           </Button>
-          <Button disabled variant="secondary">
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            variant="secondary"
+            pending
+          >
             secondary
           </Button>
-          <Button disabled variant="secondary" pending>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            disabled
+            variant="secondary"
+          >
+            secondary
+          </Button>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            disabled
+            variant="secondary"
+            pending
+          >
             secondary
           </Button>
         </Examples>
         <Examples>
-          <PendingButton />
-          <PendingButton variant="secondary" />
-        </Examples>
-      </Section>
-
-      <Section>
-        <TitleM>ButtonLink</TitleM>
-        <Examples>
-          <ButtonLink href={{ pathname: '/' }}>primary</ButtonLink>
-          <ButtonLink href={{ pathname: '/' }} pending>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }}>
-            primary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} pending>
-            primary
-          </ButtonLink>
-        </Examples>
-        <Examples>
-          <ButtonLink href={{ pathname: '/' }} variant="secondary">
-            secondary
-          </ButtonLink>
-          <ButtonLink href={{ pathname: '/' }} variant="secondary" pending>
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary">
-            secondary
-          </ButtonLink>
-          <ButtonLink disabled href={{ pathname: '/' }} variant="secondary" pending>
-            secondary
-          </ButtonLink>
+          <PendingButton eventElementId={null} eventName={null} eventContext={null} />
+          <PendingButton
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            variant="secondary"
+          />
         </Examples>
       </Section>
 
@@ -180,7 +183,14 @@ export default function DesignPage() {
       <Section>
         <TitleM>NFT Selector</TitleM>
         <Examples>
-          <Button onClick={showNftSelector}>Open Nft Selector</Button>
+          <Button
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            onClick={showNftSelector}
+          >
+            Open Nft Selector
+          </Button>
         </Examples>
       </Section>
 

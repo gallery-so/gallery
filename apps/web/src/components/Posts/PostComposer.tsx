@@ -11,7 +11,8 @@ import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFrag
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 
@@ -20,17 +21,18 @@ import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
-import { TextAreaWithCharCount } from '../core/TextArea/TextArea';
+import { AutoResizingTextAreaWithCharCount } from '../core/TextArea/TextArea';
 import PostComposerNft from './PostComposerNft';
 
 type Props = {
   tokenId: string;
   onBackClick?: () => void;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 const DESCRIPTION_MAX_LENGTH = 600;
 
-export default function PostComposer({ onBackClick, tokenId }: Props) {
+export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props) {
   const query = useLazyLoadQuery<PostComposerQuery>(
     graphql`
       query PostComposerQuery($tokenId: DBID!) {
@@ -86,6 +88,8 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
     track('Clicked Post in Post Composer', {
+      context: contexts.Posts,
+      flow: eventFlow,
       added_description: Boolean(captionRef.current),
     });
     try {
@@ -108,6 +112,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
     }
   }, [
     track,
+    eventFlow,
     captionRef,
     createPost,
     token.dbid,
@@ -147,7 +152,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
           <VStack grow>
-            <TextAreaWithCharCount
+            <AutoResizingTextAreaWithCharCount
               defaultValue={caption}
               placeholder={`Say something about ${inputPlaceholderTokenName}`}
               currentCharCount={caption.length}
@@ -160,7 +165,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </VStack>
         </ContentContainer>
       </VStack>
-      <HStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
+      <StyledHStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
         {generalError && (
           <StyledWrapper>
             <AlertTriangleIcon color={colors.red} />
@@ -168,13 +173,17 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </StyledWrapper>
         )}
         <Button
+          // tracked in click handler
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
           variant="primary"
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}
         >
           POST
         </Button>
-      </HStack>
+      </StyledHStack>
     </StyledPostComposer>
   );
 }
@@ -186,6 +195,10 @@ const StyledPostComposer = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
   }
+`;
+
+const StyledHStack = styled(HStack)`
+  padding-top: 16px;
 `;
 
 const StyledHeader = styled(HStack)`

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL } from '~/components/core/Text/Text';
+import { contexts } from '~/shared/analytics/constants';
 import formatError from '~/shared/errors/formatError';
 import {
   ReportingErrorBoundary,
@@ -19,7 +20,15 @@ function DefaultFallback({ error }: ReportingErrorBoundaryFallbackProps) {
         <BaseXL>{errorMessage}</BaseXL>
         <StyledReachOut>
           If you&apos;re continuing to see this error, reach out to us on{' '}
-          <GalleryLink href="https://discord.gg/QcJjCDucwK">Discord</GalleryLink>.
+          <GalleryLink
+            href="https://discord.gg/QcJjCDucwK"
+            eventElementId="Discord Link"
+            eventName="Discord Link Click"
+            eventContext={contexts.Error}
+          >
+            Discord
+          </GalleryLink>
+          .
         </StyledReachOut>
       </VStack>
     </StyledErrorBoundary>

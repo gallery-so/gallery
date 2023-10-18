@@ -7,6 +7,7 @@ import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { AdmiresFragment$key } from '~/generated/AdmiresFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 
@@ -55,6 +56,7 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
           <ProfilePictureBubblesWithCount
             eventName="Feed Event Admire Bubbles Pressed"
             eventElementId="Feed Event Admire Bubbles"
+            eventContext={contexts.Posts}
             onPress={handleSeeAllAdmires}
             userRefs={admireUsers}
             totalCount={totalAdmires}

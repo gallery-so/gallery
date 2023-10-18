@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
@@ -32,12 +33,23 @@ export default function DiscardPostConfirmation({ onSaveDraft, onDiscard }: Prop
     <StyledConfirmation>
       <BaseM>If you go back now, this post will be discarded.</BaseM>
       <HStack justify="flex-end" gap={8}>
-        <StyledButton onClick={handleSaveDraftClick} variant="secondary">
+        <StyledButton
+          eventElementId="Save Draft Post Button"
+          eventName="Save Draft Post"
+          eventContext={contexts.Posts}
+          onClick={handleSaveDraftClick}
+          variant="secondary"
+        >
           <HStack align="center" gap={6}>
             <EditPencilIcon width={12} height={12} /> SAVE DRAFT
           </HStack>
         </StyledButton>
-        <StyledButton onClick={handleDiscardConfirmClick}>
+        <StyledButton
+          eventElementId="Discard Post Button"
+          eventName="Discard Post"
+          eventContext={contexts.Posts}
+          onClick={handleDiscardConfirmClick}
+        >
           <HStack align="center" gap={6}>
             <TrashIconNew color={colors.white} /> DISCARD
           </HStack>

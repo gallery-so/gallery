@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FollowButton } from '~/components/FollowButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
@@ -23,7 +22,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
   const query = useFragment(
     graphql`
       fragment SomeoneFollowedYouQueryFragment on Query {
-        ...FollowButtonQueryFragment
         viewer {
           ... on Viewer {
             user {
@@ -51,7 +49,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
             node {
               username
 
-              ...FollowButtonUserFragment
               ...NotificationSkeletonResponsibleUsersFragment
               ... on GalleryUser {
                 dbid
@@ -113,29 +110,34 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
     <NotificationSkeleton
       queryRef={query}
       onPress={handlePress}
+      shouldShowFollowBackButton={shouldShowFollowBackButton ?? false}
       responsibleUserRefs={followers}
       notificationRef={notification}
     >
       <View className="flex flex-row w-full justify-between items-center">
-        <Text className={shouldShowFollowBackButton ? 'max-w-70' : ''}>
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-sm"
-          >
-            {count > 1 ? (
-              `${count} collectors`
-            ) : (
-              <>{lastFollower ? lastFollower.username : 'Someone'}</>
-            )}
-          </Typography>{' '}
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            followed you
-          </Typography>
-        </Text>
-        {shouldShowFollowBackButton && <FollowButton queryRef={query} userRef={lastFollower} />}
+        <View className="max-w-[180px]">
+          <Text>
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Bold',
+              }}
+              className="text-sm"
+            >
+              {count > 1 ? (
+                `${count} collectors`
+              ) : (
+                <>{lastFollower ? lastFollower.username : 'Someone'}</>
+              )}
+            </Typography>{' '}
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              followed
+            </Typography>{' '}
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              you
+            </Typography>
+          </Text>
+        </View>
       </View>
       <NotificationBottomSheetUserList
         ref={bottomSheetRef}

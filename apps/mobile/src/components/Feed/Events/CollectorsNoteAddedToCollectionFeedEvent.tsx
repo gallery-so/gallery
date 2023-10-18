@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Typography } from '../../Typography';
@@ -68,6 +69,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
           onPress={handleCollectionNamePress}
           eventElementId="Feed Collection Button"
           eventName="Feed Collection Name Clicked"
+          eventContext={contexts.Feed}
         >
           <Typography
             numberOfLines={1}

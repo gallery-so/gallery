@@ -26,6 +26,7 @@ export function CommentListFallback() {
       <CommentCardFallback />
       <CommentCardFallback />
       <CommentCardFallback />
+      <CommentCardFallback />
     </View>
   );
 }

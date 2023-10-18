@@ -1,12 +1,13 @@
-import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -45,6 +46,7 @@ export default function SearchResult({
       searchQuery: keyword,
       pathname: fullLink,
       resultType: type,
+      context: contexts.Search,
     });
   }, [hideDrawer, keyword, path, track, type]);
 
@@ -77,17 +79,17 @@ export default function SearchResult({
   }, [keyword, description]);
 
   return (
-    <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" to={path} onClick={handleClick}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
           <BaseM>
-            <Markdown text={highlightedName} />
+            <Markdown text={highlightedName} eventContext={contexts.Search} />
           </BaseM>
           {highlightedDescription && (
             <StyledDescription>
               <BaseM>
-                <Markdown text={highlightedDescription} />
+                <Markdown text={highlightedDescription} eventContext={contexts.Search} />
               </BaseM>
             </StyledDescription>
           )}
@@ -97,7 +99,7 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(Link)<LinkProps & { className: string }>`
+const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
   color: ${colors.black['800']};
   padding: 16px 12px;
   cursor: pointer;

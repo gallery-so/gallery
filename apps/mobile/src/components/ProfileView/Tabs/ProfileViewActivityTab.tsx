@@ -14,6 +14,7 @@ import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { ProfileViewActivityTabFragment$key } from '~/generated/ProfileViewActivityTabFragment.graphql';
+import { noop } from '~/shared/utils/noop';
 
 type ProfileViewActivityTabProps = {
   queryRef: ProfileViewActivityTabFragment$key;
@@ -82,7 +83,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
         itemId = item.eventId;
       }
 
-      const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
+      const markFailure = () => (itemId ? markEventAsFailure(itemId) : noop);
 
       return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },

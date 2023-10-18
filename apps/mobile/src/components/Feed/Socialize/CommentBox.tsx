@@ -1,16 +1,21 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { useCallback, useLayoutEffect, useMemo } from 'react';
+import { NativeSyntheticEvent, Text, TextInputSelectionChangeEventData, View } from 'react-native';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import { SendIcon } from './SendIcon';
 
 type Props = {
+  value: string;
+  onChangeText: (value: string) => void;
+  onSelectionChange: (selection: { start: number; end: number }) => void;
+
   onClose: () => void;
   autoFocus?: boolean;
 
@@ -22,6 +27,9 @@ type Props = {
 };
 
 export function CommentBox({
+  value,
+  onChangeText,
+  onSelectionChange,
   autoFocus,
   onClose,
   isNotesModal = false,
@@ -29,7 +37,6 @@ export function CommentBox({
   isSubmittingComment,
 }: Props) {
   const { colorScheme } = useColorScheme();
-  const [value, setValue] = useState('');
 
   const characterCount = useMemo(() => 300 - value.length, [value]);
 
@@ -40,8 +47,8 @@ export function CommentBox({
   }, [onClose]);
 
   const resetComment = useCallback(() => {
-    setValue('');
-  }, []);
+    onChangeText('');
+  }, [onChangeText]);
 
   const showXMark = useMemo(() => {
     // If its coming from comment button, show the x mark
@@ -83,7 +90,10 @@ export function CommentBox({
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
         <BottomSheetTextInput
           value={value}
-          onChangeText={setValue}
+          onChangeText={onChangeText}
+          onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+            onSelectionChange(e.nativeEvent.selection);
+          }}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"
@@ -93,6 +103,7 @@ export function CommentBox({
           placeholder="Add a comment..."
           placeholderTextColor={colorScheme === 'dark' ? colors.shadow : colors.metal}
           onSubmitEditing={handleDismiss}
+          keyboardType="twitter"
           keyboardAppearance={colorScheme}
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
         />
@@ -100,6 +111,7 @@ export function CommentBox({
         <GalleryTouchableOpacity
           eventElementId="Submit Comment Button"
           eventName="Submit Comment Button Clicked"
+          eventContext={contexts.Posts}
           onPress={handleSubmit}
           disabled={disabledSendButton}
         >

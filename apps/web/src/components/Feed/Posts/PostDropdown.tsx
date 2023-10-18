@@ -5,12 +5,12 @@ import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
-import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
-import colors from '~/shared/theme/colors';
+import { contexts } from '~/shared/analytics/constants';
+import { noop } from '~/shared/utils/noop';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
@@ -88,23 +88,28 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
       <SettingsDropdown iconVariant="default">
         <DropdownSection>
           <CopyToClipboard textToCopy={postUrl}>
-            <DropdownItem>
-              <BaseM>Share</BaseM>
-            </DropdownItem>
+            <DropdownItem name="Feed Post" eventContext={contexts.Posts} label="Share" />
           </CopyToClipboard>
           {token && (
             <LinkToFullPageNftDetailModal
               username={token?.owner?.username ?? ''}
               tokenId={token?.dbid}
+              eventContext={contexts.Posts}
             >
-              <DropdownItem>
-                <BaseM>View Item Detail</BaseM>
-              </DropdownItem>
+              <DropdownItem
+                name="Feed Post"
+                eventContext={contexts.Posts}
+                label="View Item Detail"
+              />
             </LinkToFullPageNftDetailModal>
           )}
-          <DropdownItem onClick={handleDeletePostClick}>
-            <BaseM color={colors.error}>Delete</BaseM>
-          </DropdownItem>
+          <DropdownItem
+            onClick={handleDeletePostClick}
+            name="Feed Post"
+            eventContext={contexts.Posts}
+            label="Delete"
+            variant="delete"
+          />
         </DropdownSection>
       </SettingsDropdown>
     );
@@ -114,9 +119,12 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
     <SettingsDropdown iconVariant="default">
       <DropdownSection>
         <CopyToClipboard textToCopy={postUrl}>
-          <DropdownItem onClick={() => {}}>
-            <BaseM>Share</BaseM>
-          </DropdownItem>
+          <DropdownItem
+            onClick={noop}
+            name="Feed Post"
+            eventContext={contexts.Posts}
+            label="Share"
+          />
         </CopyToClipboard>
         {/* Follow up: GAL-3862 */}
         {/* <DropdownItem onClick={handleFollowClick}>
@@ -126,10 +134,9 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
           <LinkToFullPageNftDetailModal
             username={token?.owner?.username ?? ''}
             tokenId={token?.dbid}
+            eventContext={contexts.Posts}
           >
-            <DropdownItem>
-              <BaseM>View Item Detail</BaseM>
-            </DropdownItem>
+            <DropdownItem name="Feed Post" eventContext={contexts.Posts} label="View Item Detail" />
           </LinkToFullPageNftDetailModal>
         )}
       </DropdownSection>

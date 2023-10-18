@@ -10,6 +10,7 @@ import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoTe
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
@@ -50,12 +51,18 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
         <VStack>
           <HStack gap={4} align="center">
-            <UsernameLink username={comment.commenter?.username ?? null} />
+            <UsernameLink
+              username={comment.commenter?.username ?? null}
+              eventContext={contexts.Posts}
+            />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span">
-            <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
-          </BaseM>
+          <StyledBaseM as="span">
+            <Markdown
+              text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+              eventContext={contexts.Social}
+            />
+          </StyledBaseM>
         </VStack>
       </HStack>
     </StyledListItem>
@@ -68,6 +75,15 @@ const StyledProfilePictureWrapper = styled.div`
 
 const StyledListItem = styled(ListItem)`
   padding: 0px 16px 16px;
+`;
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledTimeAgoText = styled(TimeAgoText)`

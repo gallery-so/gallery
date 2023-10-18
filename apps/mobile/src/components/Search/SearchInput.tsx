@@ -90,6 +90,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         <GalleryTouchableOpacity
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           accessibilityRole="button"
           onPress={handleClear}
           className="-m-4 p-4"
@@ -103,6 +104,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         <GalleryTouchableOpacity
           eventElementId={null}
           eventName={null}
+          eventContext={null}
           accessibilityRole="button"
           onPress={handleCancel}
           className="-m-4 p-4"

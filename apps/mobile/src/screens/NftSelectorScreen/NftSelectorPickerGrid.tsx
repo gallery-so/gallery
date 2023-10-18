@@ -33,6 +33,7 @@ import {
   NftSelectorSortView,
 } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type NftSelectorPickerGridProps = {
@@ -339,6 +340,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
       style={style}
       eventElementId="NftSelectorPickerContractGroup"
       eventName={'NftSelectorPickerContractGroup pressed'}
+      eventContext={contexts.Posts}
     >
       <View className="flex flex-col space-y-2 p-2">
         {rows.map((row, index) => {

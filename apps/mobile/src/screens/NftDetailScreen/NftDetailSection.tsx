@@ -11,15 +11,16 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
+import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { InteractiveLink } from '~/components/InteractiveLink';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -158,7 +159,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-6 px-4 pb-4">
+      <View className="flex flex-col space-y-3 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <TokenViewEmitter
@@ -169,12 +170,13 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             <IconContainer
               eventElementId="NFT Detail Share Icon"
               eventName="NFT Detail Share Icon Clicked"
+              eventContext={contexts['NFT Detail']}
               icon={<ShareIcon />}
               onPress={onShare}
             />
           </View>
 
-          <View className="w-full">
+          <View className="w-full mb-3">
             <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
@@ -185,7 +187,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         </View>
 
-        <View className="flex flex-col space-y-4">
+        <View className="flex flex-col space-y-2">
           <Typography
             className="text-2xl"
             font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
@@ -196,6 +198,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           <GalleryTouchableOpacity
             eventElementId="NFT Detail Contract Name Pill"
             eventName="NFT Detail Contract Name Pill Clicked"
+            eventContext={contexts['NFT Detail']}
           >
             <Pill className="flex flex-row space-x-1 self-start">
               {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
@@ -206,6 +209,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 onPress={handleOpenCommunityScreen}
                 eventElementId="Community Pill"
                 eventName="Community Pill Clicked"
+                eventContext={contexts['NFT Detail']}
               >
                 <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                   {contractName}
@@ -217,7 +221,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         <View className="flex-row">
           {token.owner && (
-            <View className="w-1/2">
+            <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
                 font={{ family: 'ABCDiatype', weight: 'Medium' }}
@@ -230,6 +234,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 onPress={handleUsernamePress}
                 eventElementId="NFT Detail Token Owner Username"
                 eventName="NFT Detail Token Owner Username"
+                eventContext={contexts['NFT Detail']}
               >
                 {token.owner.username && <ProfilePicture userRef={token.owner} size="xs" />}
 
@@ -245,12 +250,24 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 CREATOR
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+              <GalleryLink
+                onPress={handleUsernamePress}
+                // TODO analytics whenever we enable this component
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              >
                 riley.eth
-              </InteractiveLink>
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+              </GalleryLink>
+              <GalleryLink
+                onPress={handleUsernamePress}
+                // TODO analytics whenever we enable this component
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+              >
                 riley.eth
-              </InteractiveLink>
+              </GalleryLink>
             </View>
           )}
         </View>
@@ -272,6 +289,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             }
             eventElementId={null}
             eventName={null}
+            eventContext={null}
             onPress={handleCreatePost}
             text="create post"
           />

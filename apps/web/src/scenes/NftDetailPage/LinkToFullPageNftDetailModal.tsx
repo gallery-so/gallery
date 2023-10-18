@@ -1,14 +1,19 @@
+// eslint-disable-next-line no-restricted-imports
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { route } from 'nextjs-routes';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
+
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
+import { normalizeUrl } from '~/utils/normalizeUrl';
 
 type Props = {
   username: string;
   tokenId: string;
   children?: ReactNode;
   collectionId?: string;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
 /**
@@ -29,6 +34,7 @@ export default function LinkToFullPageNftDetailModal({
   username,
   tokenId,
   collectionId,
+  eventContext,
 }: Props) {
   const { pathname, query, asPath } = useRouter();
 
@@ -68,6 +74,20 @@ export default function LinkToFullPageNftDetailModal({
     });
   }, [collectionId, isCollectionToken, tokenId, username]);
 
+  const track = useTrack();
+
+  // Use manual tracking that imitates `GalleryLink`
+  const handleClick = useCallback(() => {
+    track('Link Click', {
+      to: normalizeUrl({ to: asRoute }),
+      needsVerification: false,
+      id: 'Full Page NFT Detail Modal',
+      name: 'Open Full Page NFT Detail Modal',
+      context: eventContext,
+      type: 'internal',
+    });
+  }, [asRoute, eventContext, track]);
+
   return (
     <Link
       // path that will be shown in the browser URL bar
@@ -81,7 +101,9 @@ export default function LinkToFullPageNftDetailModal({
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-      <StyledAnchor data-tokenid={tokenId}>{children}</StyledAnchor>
+      <StyledAnchor data-tokenid={tokenId} onClick={handleClick}>
+        {children}
+      </StyledAnchor>
     </Link>
   );
 }

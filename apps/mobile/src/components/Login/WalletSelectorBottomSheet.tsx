@@ -10,7 +10,9 @@ import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { SpinnerIcon } from 'src/icons/SpinnerIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
-import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
+import { contexts } from '~/shared/analytics/constants';
+
+import { BottomSheetRow } from '../BottomSheetRow';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -121,6 +123,7 @@ function WalletSelectorBottomSheet(
                 text="Ethereum and L2s"
                 onPress={handleConnectWallet}
                 rightIcon={<EvmStackedIcons />}
+                eventContext={contexts.Authentication}
               />
             )}
           </View>

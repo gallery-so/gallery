@@ -7,6 +7,8 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { Chain } from '~/shared/utils/chains';
 
 import breakpoints from '../core/breakpoints';
@@ -29,6 +31,7 @@ type Props = {
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
   onSelectToken: (tokenId: string) => void;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 const COLUMN_COUNT_DESKTOP = 4;
 const COLUMN_COUNT_MOBILE = 3;
@@ -37,11 +40,12 @@ export function NftSelectorView({
   selectedContractAddress,
   onSelectContract,
   onSetCollectionContractId,
+  onSelectToken,
   tokenRefs,
   selectedNetworkView,
   hasSearchKeyword,
   handleRefresh,
-  onSelectToken,
+  eventFlow,
 }: Props) {
   const tokens = useFragment(
     graphql`
@@ -180,7 +184,14 @@ export function NftSelectorView({
       <StyledWrapper>
         <StyledEmptyStateContainer align="center" justify="center" gap={24}>
           <StyledEmptyStateText>No NFTs found, try another wallet?</StyledEmptyStateText>
-          <Button variant="primary" onClick={handleManageWalletsClick}>
+          <Button
+            eventElementId="Open Add Wallet Modal Button"
+            eventName="Open Add Wallet Modal"
+            eventContext={contexts.Posts}
+            eventFlow={eventFlow}
+            variant="primary"
+            onClick={handleManageWalletsClick}
+          >
             Connect Wallet
           </Button>
         </StyledEmptyStateContainer>

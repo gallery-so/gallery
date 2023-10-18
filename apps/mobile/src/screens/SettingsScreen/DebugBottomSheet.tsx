@@ -42,6 +42,7 @@ function DebugBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModa
           onPress={handleClearStorage}
           eventElementId={null}
           eventName={null}
+          eventContext={null}
         />
       </View>
     </GalleryBottomSheetModal>

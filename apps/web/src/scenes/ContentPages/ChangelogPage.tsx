@@ -7,6 +7,7 @@ import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
+import { contexts } from '~/shared/analytics/constants';
 
 export type ChangelogSection = {
   header: string;
@@ -46,13 +47,16 @@ export default function ChangelogPage({ sections }: Props) {
                 <VStack gap={16}>
                   {section.summary && (
                     <BaseM>
-                      <Markdown text={section.summary} />
+                      <Markdown text={section.summary} eventContext={contexts.Changelog} />
                     </BaseM>
                   )}
                   <VStack gap={8}>
                     <TitleDiatypeL>Changes and Improvements</TitleDiatypeL>
                     <BaseM>
-                      <Markdown text={section.improvementsAndFixes} />
+                      <Markdown
+                        text={section.improvementsAndFixes}
+                        eventContext={contexts.Changelog}
+                      />
                     </BaseM>
                   </VStack>
                 </VStack>
