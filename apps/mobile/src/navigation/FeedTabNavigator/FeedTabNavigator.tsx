@@ -17,14 +17,14 @@ export function FeedTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Curated"
+      initialRouteName="For You"
       tabBar={TabBar}
       screenOptions={{ lazy: true, swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
         backgroundColor: colorScheme === 'dark' ? colors.black['900'] : colors.white,
       }}
     >
-      <Tab.Screen name="Curated" component={CuratedScreen} />
+      <Tab.Screen name="For You" component={CuratedScreen} />
       <Tab.Screen name="Latest" component={LatestScreen} />
       <Tab.Screen name="Explore" component={ExploreScreen} />
     </Tab.Navigator>

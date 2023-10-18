@@ -14,6 +14,7 @@ import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql
 
 import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
 import { noop } from '../utils/noop';
+import { removeNullishValues } from '../utils/removeNullishValues';
 
 type EventProps = Record<string, unknown>;
 
@@ -78,6 +79,8 @@ type Props = {
 
 const AnalyticsProvider = memo(({ children, identify, track, registerSuperProperties }: Props) => {
   const relayEnvironment = useRelayEnvironment();
+  // @ts-expect-error: not tracking beta tester for now
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isBetaTester, setIsBetaTester] = useState<boolean>(false);
 
   useEffect(() => {
@@ -100,16 +103,17 @@ const AnalyticsProvider = memo(({ children, identify, track, registerSuperProper
 
         if (user.roles?.includes('BETA_TESTER')) {
           setIsBetaTester(true);
-          registerSuperProperties({ isBetaTester: true });
+          // not tracking beta tester for now
+          // registerSuperProperties({ isBetaTester: true });
         }
       });
   }, [identify, registerSuperProperties, relayEnvironment]);
 
   const handleTrack: HookTrackFunction = useCallback(
     (eventName, eventProps = {}) => {
-      track(eventName, { ...eventProps, isBetaTester });
+      track(eventName, removeNullishValues(eventProps));
     },
-    [isBetaTester, track]
+    [track]
   );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;
