@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 
 import { BackButton } from '~/components/BackButton';
 import { IconContainer } from '~/components/IconContainer';
@@ -13,7 +14,6 @@ import { useToastActions } from '~/contexts/ToastContext';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
-import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
@@ -63,6 +63,8 @@ export function NftSelectorContractScreen() {
 
   const contractName = tokens[0]?.contract?.name;
   const contractId = tokens[0]?.contract?.dbid;
+  console.log("contractId", contractId);
+  console.log("contractName", contractName);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -122,7 +124,7 @@ export function NftSelectorContractScreen() {
           </View>
           {isCreator ? (
             <View>
-              <AnimatedRefreshContractIcon contractId={contractId ?? ""} />
+              <AnimatedRefreshContractIcon contractId={contractId ?? ''} />
             </View>
           ) : null}
         </View>
@@ -139,19 +141,12 @@ type AnimatedRefreshContractIconProps = {
 };
 
 function AnimatedRefreshContractIcon({ contractId }: AnimatedRefreshContractIconProps) {
-  const [refreshContract, isRefreshing] = useRefreshContract();
+  const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokenstActions();
 
-  const { pushToast } = useToastActions();
-
-  const handleRefresh = useCallback(async () => {
-    if (isRefreshing) return;
-
-    await refreshContract(contractId);
-    pushToast({
-      message: 'Successfully refreshed your collection',
-      withoutNavbar: true,
-    });
-  }, [isRefreshing, contractId, pushToast, refreshContract]);
+  const handleSyncCreatedTokensForExistingContracts = useCallback(async () => {
+    if (isSyncing) return;
+    syncCreatedTokensForExistingContract(contractId);
+  }, [isSyncing, contractId, syncCreatedTokensForExistingContract]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 
@@ -163,11 +158,11 @@ function AnimatedRefreshContractIcon({ contractId }: AnimatedRefreshContractIcon
       useNativeDriver: true,
     }).start(({ finished }) => {
       // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
-      if (finished && isRefreshing) {
+      if (finished && isSyncing) {
         spin();
       }
     });
-  }, [isRefreshing, spinValue]);
+  }, [isSyncing, spinValue]);
 
   const spinAnimation = spinValue.interpolate({
     inputRange: [0, 1],
@@ -175,17 +170,17 @@ function AnimatedRefreshContractIcon({ contractId }: AnimatedRefreshContractIcon
   });
 
   useEffect(() => {
-    if (isRefreshing) {
+    if (isSyncing) {
       spin();
     } else {
       spinValue.stopAnimation();
     }
-  }, [isRefreshing, spin, spinValue]);
+  }, [isSyncing, spin, spinValue]);
 
   return (
     <IconContainer
       size="sm"
-      onPress={handleRefresh}
+      onPress={handleSyncCreatedTokensForExistingContracts}
       icon={
         <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
           <RefreshIcon />

@@ -2,6 +2,7 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { graphql } from 'react-relay';
 
 import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
+import { SyncTokensContextForExistingContractMutation } from '~/generated/SyncTokensContextForExistingContractMutation.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -10,6 +11,7 @@ import { useTokenStateManagerContext } from './TokenStateManagerContext';
 
 type SyncTokensActions = {
   syncTokens: (chain: Chain) => void;
+  syncCreatedTokensForExistingContract: (contractId: string) => void;
   isSyncing: boolean;
 };
 
@@ -55,6 +57,37 @@ const SyncTokensProvider = memo(({ children }: Props) => {
     `
   );
 
+  const [syncCreatedTokensForExistingContractMutate] =
+    usePromisifiedMutation<SyncTokensContextForExistingContractMutation>(graphql`
+      mutation SyncTokensContextForExistingContractMutation(
+        $input: SyncCreatedTokensForExistingContractInput!
+      ) {
+        syncCreatedTokensForExistingContract(input: $input) {
+          ... on SyncCreatedTokensForExistingContractPayload {
+            __typename
+            viewer {
+              ... on Viewer {
+                user {
+                  tokens(ownershipFilter: [Creator, Holder]) {
+                    dbid
+                    ...NftSelectorPickerSingularAssetFragment
+                  }
+                }
+              }
+            }
+          }
+          ... on ErrNotAuthorized {
+            __typename
+            message
+          }
+          ... on ErrSyncFailed {
+            __typename
+            message
+          }
+        }
+      }
+    `);
+
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { pushToast } = useToastActions();
@@ -96,9 +129,62 @@ const SyncTokensProvider = memo(({ children }: Props) => {
     [clearTokenFailureState, pushToast, syncTokens]
   );
 
+  const syncCreatedTokensForExistingContract = useCallback(
+    async (contractId: string) => {
+      pushToast({
+        message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+        autoClose: true,
+      });
+
+      function showFailure() {
+        pushToast({
+          autoClose: true,
+          message:
+            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+        });
+      }
+
+      try {
+        setIsSyncing(true);
+        const response = await syncCreatedTokensForExistingContractMutate({
+          variables: { input: { contractId } },
+        });
+
+        if (
+          response.syncCreatedTokensForExistingContract?.__typename !==
+          'SyncCreatedTokensForExistingContractPayload'
+        ) {
+          showFailure();
+        } else {
+          const tokenIds = removeNullValues(
+            response.syncCreatedTokensForExistingContract.viewer?.user?.tokens?.map((token) => {
+              return token?.dbid;
+            })
+          );
+
+          clearTokenFailureState(tokenIds);
+        }
+      } catch (error) {
+        showFailure();
+      } finally {
+        pushToast({
+          message: 'Success',
+          autoClose: true,
+        });
+        setIsSyncing(false);
+      }
+    },
+
+    [syncCreatedTokensForExistingContractMutate, clearTokenFailureState, pushToast]
+  );
+
   const value = useMemo(() => {
-    return { syncTokens: sync, isSyncing };
-  }, [isSyncing, sync]);
+    return {
+      syncTokens: sync,
+      isSyncing,
+      syncCreatedTokensForExistingContract: syncCreatedTokensForExistingContract,
+    };
+  }, [isSyncing, sync, syncCreatedTokensForExistingContract]);
 
   return (
     <SyncTokensActionsContext.Provider value={value}>{children}</SyncTokensActionsContext.Provider>
