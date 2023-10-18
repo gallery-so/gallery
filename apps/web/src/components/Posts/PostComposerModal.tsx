@@ -5,6 +5,8 @@ import { NftSelectorLoadingView } from '~/components/NftSelector/NftSelectorLoad
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import breakpoints from '../core/breakpoints';
@@ -17,15 +19,25 @@ import PostComposer from './PostComposer';
 
 type Props = {
   preSelectedContract?: NftSelectorContractType;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 // Modal with multiple steps: the NFT Selector -> then Post Composer
-export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
+export function PostComposerModalWithSelector({ preSelectedContract, eventFlow }: Props) {
   const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
 
-  const onSelectToken = useCallback((tokenId: string) => {
-    setSelectedTokenId(tokenId);
-  }, []);
+  const track = useTrack();
+
+  const onSelectToken = useCallback(
+    (tokenId: string) => {
+      track('Select Token on Post Composer Modal', {
+        context: contexts.Posts,
+        flow: eventFlow,
+      });
+      setSelectedTokenId(tokenId);
+    },
+    [eventFlow, track]
+  );
 
   const returnUserToSelectorStep = useCallback(() => {
     setSelectedTokenId(null);
@@ -38,6 +50,11 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
   const { captionRef, setCaption } = usePostComposerContext();
 
   const onBackClick = useCallback(() => {
+    track('Back Click on Post Composer Modal', {
+      context: contexts.Posts,
+      flow: eventFlow,
+    });
+
     if (!captionRef.current) {
       returnUserToSelectorStep();
       return;
@@ -58,7 +75,7 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
       ),
       isFullPage: false,
     });
-  }, [captionRef, showModal, returnUserToSelectorStep, setCaption]);
+  }, [track, eventFlow, captionRef, showModal, returnUserToSelectorStep, setCaption]);
 
   return (
     <StyledPostComposerModal>
@@ -66,13 +83,18 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
         {selectedTokenId ? (
           // Just in case the PostComposer's token isn't already in the cache, we'll have a fallback
           <Suspense fallback={<NftSelectorLoadingView />}>
-            <PostComposer onBackClick={onBackClick} tokenId={selectedTokenId} />
+            <PostComposer
+              onBackClick={onBackClick}
+              tokenId={selectedTokenId}
+              eventFlow={eventFlow}
+            />
           </Suspense>
         ) : (
           <NftSelector
             onSelectToken={onSelectToken}
             headerText={'Select item to post'}
             preSelectedContract={preSelectedContract}
+            eventFlow={eventFlow}
           />
         )}
       </ErrorBoundary>
@@ -82,15 +104,16 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
 
 type PostComposerModalProps = {
   tokenId: string;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 // Modal with a single step, the Post Composer.
-export function PostComposerModal({ tokenId }: PostComposerModalProps) {
+export function PostComposerModal({ tokenId, eventFlow }: PostComposerModalProps) {
   useClearURLQueryParams('composer');
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
-        <PostComposer tokenId={tokenId} />
+        <PostComposer tokenId={tokenId} eventFlow={eventFlow} />
       </ErrorBoundary>
     </StyledPostComposerModal>
   );

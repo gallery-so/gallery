@@ -168,6 +168,7 @@ export function NotificationSkeleton({
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
       eventContext={contexts.Notifications}
+      properties={{ type: notification.__typename }}
     >
       <View className="flex-1 flex-row items-center">
         <View className="mr-2">

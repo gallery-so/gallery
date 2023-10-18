@@ -92,9 +92,12 @@ export function NewTokens({ notificationRef }: Props) {
         text="Post"
         size="xs"
         fontWeight="Bold"
-        eventElementId="Notifications Post Token Button"
-        eventName="Navigate to Post Token"
+        // manually tracking this to be the same params as `NotificationSkeleton`,
+        // since this component didn't use the NotificationSkeleton component
+        eventElementId="Notification Row"
+        eventName="Notification Row Clicked"
         eventContext={contexts.Notifications}
+        properties={{ type: notification.__typename }}
       />
       <View
         className={`w-[35px] flex-row space-x-2 items-center ${

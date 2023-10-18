@@ -12,7 +12,7 @@ import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 
@@ -27,11 +27,12 @@ import PostComposerNft from './PostComposerNft';
 type Props = {
   tokenId: string;
   onBackClick?: () => void;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 const DESCRIPTION_MAX_LENGTH = 600;
 
-export default function PostComposer({ onBackClick, tokenId }: Props) {
+export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props) {
   const query = useLazyLoadQuery<PostComposerQuery>(
     graphql`
       query PostComposerQuery($tokenId: DBID!) {
@@ -87,6 +88,8 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
     track('Clicked Post in Post Composer', {
+      context: contexts.Posts,
+      flow: eventFlow,
       added_description: Boolean(captionRef.current),
     });
     try {
@@ -109,6 +112,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
     }
   }, [
     track,
+    eventFlow,
     captionRef,
     createPost,
     token.dbid,
@@ -169,9 +173,10 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
           </StyledWrapper>
         )}
         <Button
-          eventElementId="Submit Post Button"
-          eventName="Submit Post"
-          eventContext={contexts.Posts}
+          // tracked in click handler
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
           variant="primary"
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}
