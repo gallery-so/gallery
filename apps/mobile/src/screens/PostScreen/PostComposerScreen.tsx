@@ -187,17 +187,23 @@ function PostComposerScreenInner() {
         />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
-            <Suspense fallback={<SearchResultsFallback />}>
-              <SearchResults
-                keyword={aliasKeyword}
-                activeFilter="top"
-                onChangeFilter={noop}
-                blurInputFocus={noop}
-                onSelect={selectMention}
-                onlyShowTopResults
-                isMentionSearch
-              />
-            </Suspense>
+            <View className="flex-1">
+              {aliasKeyword ? (
+                <Suspense fallback={<SearchResultsFallback />}>
+                  <SearchResults
+                    keyword={aliasKeyword}
+                    activeFilter="top"
+                    onChangeFilter={noop}
+                    blurInputFocus={noop}
+                    onSelect={selectMention}
+                    onlyShowTopResults
+                    isMentionSearch
+                  />
+                </Suspense>
+              ) : (
+                <SearchResultsFallback />
+              )}
+            </View>
           ) : (
             <Suspense fallback={<PostComposerNftFallback />}>
               <PostTokenPreview />
