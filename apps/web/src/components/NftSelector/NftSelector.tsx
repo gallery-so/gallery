@@ -8,7 +8,7 @@ import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFrag
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { contexts, flows } from '~/shared/analytics/constants';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
@@ -224,7 +224,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
     track('NFT Selector: Clicked Refresh', {
       context: contexts.Posts,
-      flow: flows['Share To Gallery'],
+      flow: eventFlow,
     });
 
     if (filterType === 'Hidden') {
@@ -232,7 +232,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     }
 
     await syncTokens({ type: filterType, chain: network });
-  }, [refreshDisabled, track, filterType, syncTokens, network]);
+  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({

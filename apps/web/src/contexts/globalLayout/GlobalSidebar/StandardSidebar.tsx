@@ -27,7 +27,7 @@ import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import DrawerHeader from './DrawerHeader';
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
@@ -136,47 +136,53 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const { captionRef, setCaption } = usePostComposerContext();
 
-  const handleOpenPostComposer = useCallback(() => {
-    showModal({
-      id: 'post-composer',
-      content: <PostComposerModalWithSelector eventFlow={flows['Share To Gallery']} />,
-      headerVariant: 'thicc',
-      isFullPage: isMobile,
-      onCloseOverride: (onClose: () => void) => {
-        if (!captionRef.current) {
-          onClose();
-          return;
-        }
+  const handleOpenPostComposer = useCallback(
+    (eventFlow: GalleryElementTrackingProps['eventFlow']) => {
+      showModal({
+        id: 'post-composer',
+        content: <PostComposerModalWithSelector eventFlow={eventFlow} />,
+        headerVariant: 'thicc',
+        isFullPage: isMobile,
+        onCloseOverride: (onClose: () => void) => {
+          if (!captionRef.current) {
+            onClose();
+            return;
+          }
 
-        showModal({
-          headerText: 'Are you sure?',
-          content: (
-            <DiscardPostConfirmation
-              onSaveDraft={() => {
-                onClose();
-              }}
-              onDiscard={() => {
-                setCaption('');
-                onClose();
-              }}
-            />
-          ),
-          isFullPage: false,
-        });
-      },
-    });
-  }, [captionRef, isMobile, setCaption, showModal]);
+          showModal({
+            headerText: 'Are you sure?',
+            content: (
+              <DiscardPostConfirmation
+                onSaveDraft={() => {
+                  onClose();
+                }}
+                onDiscard={() => {
+                  setCaption('');
+                  onClose();
+                }}
+              />
+            ),
+            isFullPage: false,
+          });
+        },
+      });
+    },
+    [captionRef, isMobile, setCaption, showModal]
+  );
 
   const handleCreatePostClick = useCallback(() => {
+    track('Sidebar Create Post Click', {
+      context: contexts.Posts,
+      flow: flows['Web Sidebar Post Create Flow'],
+    });
+
     hideDrawer();
 
     if (!isLoggedIn) {
       return;
     }
 
-    handleOpenPostComposer();
-
-    track('Sidebar Create Post Click');
+    handleOpenPostComposer(flows['Web Sidebar Post Create Flow']);
   }, [hideDrawer, isLoggedIn, handleOpenPostComposer, track]);
 
   const handleSearchClick = useCallback(() => {
@@ -246,7 +252,7 @@ export function StandardSidebar({ queryRef }: Props) {
         referrer,
       });
       if (isLoggedIn) {
-        handleOpenPostComposer();
+        handleOpenPostComposer(flows['Share To Gallery']);
         return;
       }
       showAuthModal();

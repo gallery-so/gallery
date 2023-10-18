@@ -41,6 +41,10 @@ export const flows = {
   'Edit User Info': 'Edit User Info',
   'Posts Beta Announcement': 'Posts Beta Announcement',
   'Share To Gallery': 'Share To Gallery',
+  'Web Notifications Post Create Flow': 'Web Notifications Post Create Flow',
+  'Web Sidebar Post Create Flow': 'Web Sidebar Post Create Flow',
+  'Community Page Post Create Flow': 'Community Page Post Create Flow',
+  'NFT Detail Page Post Create Flow': 'NFT Detail Page Post Create Flow',
 } as const;
 
 export type AnalyticsEventFlowType = keyof typeof flows;

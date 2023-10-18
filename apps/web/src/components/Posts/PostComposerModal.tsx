@@ -104,15 +104,16 @@ export function PostComposerModalWithSelector({ preSelectedContract, eventFlow }
 
 type PostComposerModalProps = {
   tokenId: string;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 // Modal with a single step, the Post Composer.
-export function PostComposerModal({ tokenId }: PostComposerModalProps) {
+export function PostComposerModal({ tokenId, eventFlow }: PostComposerModalProps) {
   useClearURLQueryParams('composer');
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
-        <PostComposer tokenId={tokenId} />
+        <PostComposer tokenId={tokenId} eventFlow={eventFlow} />
       </ErrorBoundary>
     </StyledPostComposerModal>
   );
