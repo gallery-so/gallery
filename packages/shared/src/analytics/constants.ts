@@ -28,6 +28,7 @@ export const contexts = {
   PFP: 'PFP',
   Toast: 'Toast',
   Navigation: 'Navigation',
+  'Push Notifications': 'Push Notifications',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;
