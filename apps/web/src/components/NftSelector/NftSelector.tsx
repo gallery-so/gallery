@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
@@ -9,7 +10,6 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -101,9 +101,9 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-  const [collectionContractId, setCollectionContractId] = useState("");
+  const [collectionContractId, setCollectionContractId] = useState('');
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
-  (typeof tokens)[0]
+    (typeof tokens)[0]
   >({
     tokensRef: tokens,
     rawTokensToDisplay: tokens,
@@ -219,7 +219,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     await syncTokens({ type: filterType, chain: network });
   }, [refreshDisabled, track, filterType, syncTokens, network]);
 
-  const [refreshContract, isContractRefreshing] = useRefreshContract();
+  const [syncCreatedTokensForExistingContract, isContractRefreshing] =
+    useSyncCreatedTokensForExistingContract();
   const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
 
   const handleCreatorRefreshContract = useCallback(async () => {
@@ -228,8 +229,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     }
 
     track('NFT Selector: Clicked Creator Contract Refresh');
-    await refreshContract(collectionContractId);
-  }, [collectionContractId, track, refreshContract]);
+    await syncCreatedTokensForExistingContract(collectionContractId);
+  }, [collectionContractId, track, syncCreatedTokensForExistingContract]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({

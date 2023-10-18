@@ -74,7 +74,7 @@ export default function CollectionTitle({
             setSpamPreferenceForCollection={setSpamPreferenceForCollection}
           />
         ) : shouldDisplayContractRefreshIcon ? (
-          <RefreshContractIcon row={row} />
+          <RefreshContractIcon contractId={row.contractId} />
         ) : (
           <CollectionCount>{row.count}</CollectionCount>
         )}

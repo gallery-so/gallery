@@ -14,7 +14,7 @@ export function createVirtualizedRowsFromGroups({
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const { title, address, tokens } = group;
+    const { title, address, contractId, tokens } = group;
 
     // Default to expanded
     const expanded = !collapsedCollections.has(address);
@@ -23,6 +23,7 @@ export function createVirtualizedRowsFromGroups({
       type: 'collection-title',
       expanded,
       address: address,
+      contractId: contractId,
       title: title,
       count: tokens.length,
     });

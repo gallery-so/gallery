@@ -1,30 +1,31 @@
 import { useCallback, useState } from 'react';
+import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { useRefreshContract } from '~/shared/hooks/useRefreshContract';
-
-import { CollectionTitleRow } from './SidebarList';
 
 type Props = {
-  row: CollectionTitleRow;
+  contractId: string;
 };
 
-export default function RefreshContractIcon({ row }: Props) {
+export default function RefreshContractIcon({ contractId }: Props) {
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const [refreshContract, isContractRefreshing] = useRefreshContract();
+  const [syncCreatedTokensForExistingContract, isContractRefreshing] =
+    useSyncCreatedTokensForExistingContract();
+
+  console.log('contractId', contractId);
 
   const track = useTrack();
   const handleCreatorRefreshContract = useCallback(
     async (contractId: string) => {
       track('Editor Sidebar: Clicked Creator Contract Refresh');
-      await refreshContract(contractId);
+      await syncCreatedTokensForExistingContract(contractId);
     },
-    [track, refreshContract]
+    [track, syncCreatedTokensForExistingContract]
   );
 
   return (
@@ -34,8 +35,7 @@ export default function RefreshContractIcon({ row }: Props) {
         onMouseLeave={() => setShowTooltip(false)}
         onClick={(e) => {
           e.stopPropagation();
-          console.log('row.address', row.address);
-          handleCreatorRefreshContract(row.address);
+          handleCreatorRefreshContract(contractId);
         }}
       >
         <IconContainer
