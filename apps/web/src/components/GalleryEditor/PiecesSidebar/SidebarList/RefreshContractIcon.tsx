@@ -17,12 +17,10 @@ export default function RefreshContractIcon({ contractId }: Props) {
   const [syncCreatedTokensForExistingContract, isContractRefreshing] =
     useSyncCreatedTokensForExistingContract();
 
-  console.log('contractId', contractId);
-
   const track = useTrack();
   const handleCreatorRefreshContract = useCallback(
     async (contractId: string) => {
-      track('Editor Sidebar: Clicked Creator Contract Refresh');
+      track('Editor Sidebar: Clicked Sync Creator Tokens For Existing Contract');
       await syncCreatedTokensForExistingContract(contractId);
     },
     [track, syncCreatedTokensForExistingContract]

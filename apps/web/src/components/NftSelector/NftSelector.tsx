@@ -227,8 +227,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     if (!collectionContractId) {
       return;
     }
+    track('NFT Selector: Clicked Sync Creator Tokens For Existing Contract');
 
-    track('NFT Selector: Clicked Creator Contract Refresh');
     await syncCreatedTokensForExistingContract(collectionContractId);
   }, [collectionContractId, track, syncCreatedTokensForExistingContract]);
 
