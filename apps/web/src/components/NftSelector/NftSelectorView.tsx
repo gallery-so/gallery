@@ -129,7 +129,13 @@ export function NftSelectorView({
     }
 
     return rows;
-  }, [columnCount, groupedTokens, selectedContractAddress, selectedNetworkView, onSetCollectionContractId]);
+  }, [
+    columnCount,
+    groupedTokens,
+    selectedContractAddress,
+    selectedNetworkView,
+    onSetCollectionContractId,
+  ]);
 
   const { width } = useWindowSize();
   const rowHeight = useMemo(() => {
