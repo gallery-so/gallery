@@ -31,8 +31,8 @@ import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
+import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
-// import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -84,7 +84,7 @@ const GlobalLayoutContextQueryNode = graphql`
   query GlobalLayoutContextQuery {
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
-    # ...useGlobalAnnouncementPopoverFragment
+    ...useGlobalAnnouncementPopoverFragment
   }
 `;
 
@@ -233,7 +233,7 @@ const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) =
   );
 
   // Keeping this around for the next time we want to use it
-  // useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
+  useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   const locationKey = useStabilizedRouteTransitionKey();
 
