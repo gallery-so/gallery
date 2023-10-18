@@ -365,7 +365,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, filter }: TokenG
 
 type TokenGroupProps = {
   style?: ViewProps['style'];
-  filter?: 'Collected' | 'Created';
+  filter: 'Collected' | 'Created';
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
   screen: ScreenWithNftSelector;

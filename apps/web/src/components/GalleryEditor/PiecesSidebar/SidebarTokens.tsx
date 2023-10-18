@@ -132,8 +132,6 @@ export const SidebarTokens = ({
       const collapsed = new Set<string>();
       if (shouldUseCollectionGrouping) {
         const groups = groupCollectionsByAddress({ tokens });
-        console.log("groups", groups);
-        console.log("tokens", tokens);
         for (const group of groups) {
           if (group.tokens.length > DEFAULT_COLLAPSE_TOKEN_COUNT) {
             collapsed.add(group.address);

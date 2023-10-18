@@ -1,8 +1,8 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql } from 'react-relay';
 
-import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
 import { SyncTokensContextForExistingContractMutation } from '~/generated/SyncTokensContextForExistingContractMutation.graphql';
+import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -90,17 +90,16 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { pushToast } = useToastActions();
+  const showFailure = useCallback(() => {
+    pushToast({
+      autoClose: true,
+      message:
+        "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+    });
+  }, [pushToast]);
 
   const sync = useCallback(
     async (chain: Chain) => {
-      function showFailure() {
-        pushToast({
-          autoClose: true,
-          message:
-            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
-        });
-      }
-
       try {
         setIsSyncing(true);
         const response = await syncTokens({
@@ -125,24 +124,11 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncing(false);
       }
     },
-    [clearTokenFailureState, pushToast, syncTokens]
+    [clearTokenFailureState, showFailure, syncTokens]
   );
 
   const syncCreatedTokensForExistingContract = useCallback(
     async (contractId: string) => {
-      pushToast({
-        message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
-        autoClose: true,
-      });
-
-      function showFailure() {
-        pushToast({
-          autoClose: true,
-          message:
-            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
-        });
-      }
-
       try {
         setIsSyncing(true);
         const response = await syncCreatedTokensForExistingContractMutate({
@@ -166,15 +152,11 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       } catch (error) {
         showFailure();
       } finally {
-        pushToast({
-          message: 'Success',
-          autoClose: true,
-        });
         setIsSyncing(false);
       }
     },
 
-    [syncCreatedTokensForExistingContractMutate, clearTokenFailureState, pushToast]
+    [syncCreatedTokensForExistingContractMutate, clearTokenFailureState, showFailure]
   );
 
   const value = useMemo(() => {

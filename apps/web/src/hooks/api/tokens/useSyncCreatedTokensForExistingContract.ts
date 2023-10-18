@@ -70,13 +70,10 @@ export function useSyncCreatedTokensForExistingContract(): [
           variables: { input: { contractId } },
         });
 
-        console.log('why nottttttttt', response);
-
         if (
           response.syncCreatedTokensForExistingContract?.__typename !==
           'SyncCreatedTokensForExistingContractPayload'
         ) {
-          console.log('error, response: ', response.syncCreatedTokensForExistingContract);
           showFailure();
         } else {
           const tokenIds = removeNullValues(
@@ -88,7 +85,6 @@ export function useSyncCreatedTokensForExistingContract(): [
           clearTokenFailureState(tokenIds);
         }
       } catch (error) {
-        console.log('error caught', error);
         showFailure();
       }
     },

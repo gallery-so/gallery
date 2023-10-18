@@ -4,18 +4,18 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
-import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 
 import { BackButton } from '~/components/BackButton';
 import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
+import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
+import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
-import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
-import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
@@ -69,7 +69,6 @@ export function NftSelectorContractScreen() {
   }, [navigation]);
 
   const tokens = useMemo(() => {
-    console.log('refetching new tokens done');
     return removeNullValues(
       data.viewer?.user?.tokens?.filter((token) => {
         return token?.contract?.contractAddress?.address === route.params.contractAddress;
@@ -78,14 +77,11 @@ export function NftSelectorContractScreen() {
   }, [data.viewer?.user?.tokens, route.params.contractAddress]);
 
   const handleRefresh = useCallback(() => {
-    console.log('refresh running');
     refetch({}, { fetchPolicy: 'network-only' });
   }, [refetch]);
 
   const contractName = tokens[0]?.contract?.name;
   const contractId = tokens[0]?.contract?.dbid ?? '';
-  console.log('contractId', contractId);
-  console.log('contractName', contractName);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -164,12 +160,18 @@ type AnimatedRefreshContractIconProps = {
 
 function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshContractIconProps) {
   const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokenstActions();
+  const { pushToast } = useToastActions();
 
   const handleSyncCreatedTokensForExistingContracts = useCallback(async () => {
     if (isSyncing) return;
-    syncCreatedTokensForExistingContract(contractId);
+    await syncCreatedTokensForExistingContract(contractId);
     onRefresh();
-  }, [isSyncing, onRefresh, contractId, syncCreatedTokensForExistingContract]);
+    pushToast({
+      message: 'Successfully refreshed your collection.',
+      withoutNavbar: true,
+      autoClose: true,
+    });
+  }, [isSyncing, onRefresh, contractId, syncCreatedTokensForExistingContract, pushToast]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 
@@ -180,7 +182,7 @@ function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshC
       duration: 1000,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
+      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing and isRefetching is still true
       if (finished && isSyncing) {
         spin();
       }
