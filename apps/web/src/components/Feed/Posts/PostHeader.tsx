@@ -1,4 +1,3 @@
-import unescape from 'lodash/unescape';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -77,7 +76,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       <StyledBaseM>
         {post.caption && (
           <ProcessedText
-            text={unescape(post.caption)}
+            text={post.caption}
             mentionsRef={nonNullMentions}
             eventContext={contexts.Posts}
           />
