@@ -97,6 +97,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       setIsSelectingMentions(false);
 
       setMentions([...adjustedMentions, newMention]);
+      setAliasKeyword('');
     },
     [mentions, message, setMessage, aliasKeyword, selection.start]
   );
@@ -114,12 +115,15 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
         .split(' ')
         .pop();
 
-      if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 1) {
-        setAliasKeyword(wordAtCursor);
+      if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 0) {
         setIsSelectingMentions(true);
       } else {
         setAliasKeyword('');
         setIsSelectingMentions(false);
+      }
+
+      if (wordAtCursor && wordAtCursor?.length > 1) {
+        setAliasKeyword(wordAtCursor);
       }
 
       // Determine how many characters were added or removed
@@ -159,6 +163,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
     setMentions([]);
     setIsSelectingMentions(false);
     setMessage('');
+    setAliasKeyword('');
   }, []);
 
   const handleSelectionChange = useCallback((selection: { start: number; end: number }) => {
