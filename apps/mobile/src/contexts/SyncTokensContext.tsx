@@ -70,7 +70,6 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                 user {
                   tokens(ownershipFilter: [Creator, Holder]) {
                     dbid
-                    ...NftSelectorPickerSingularAssetFragment
                   }
                 }
               }

@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 
@@ -14,6 +14,8 @@ import { useToastActions } from '~/contexts/ToastContext';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
+import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
+import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
@@ -21,6 +23,19 @@ export function NftSelectorContractScreen() {
   const query = useLazyLoadQuery<NftSelectorContractScreenQuery>(
     graphql`
       query NftSelectorContractScreenQuery {
+        ...NftSelectorContractScreenFragment
+      }
+    `,
+    {}
+  );
+
+  const [data, refetch] = useRefetchableFragment<
+    NftSelectorContractScreenRefetchQuery,
+    NftSelectorContractScreenFragment$key
+  >(
+    graphql`
+      fragment NftSelectorContractScreenFragment on Query
+      @refetchable(queryName: "NftSelectorContractScreenRefetchQuery") {
         viewer {
           ... on Viewer {
             user {
@@ -41,7 +56,7 @@ export function NftSelectorContractScreen() {
         }
       }
     `,
-    {}
+    query
   );
 
   const { top } = useSafeAreaPadding();
@@ -54,17 +69,23 @@ export function NftSelectorContractScreen() {
   }, [navigation]);
 
   const tokens = useMemo(() => {
+    console.log('refetching new tokens done');
     return removeNullValues(
-      query.viewer?.user?.tokens?.filter((token) => {
+      data.viewer?.user?.tokens?.filter((token) => {
         return token?.contract?.contractAddress?.address === route.params.contractAddress;
       })
     );
-  }, [query.viewer?.user?.tokens, route.params.contractAddress]);
+  }, [data.viewer?.user?.tokens, route.params.contractAddress]);
+
+  const handleRefresh = useCallback(() => {
+    console.log('refresh running');
+    refetch({}, { fetchPolicy: 'network-only' });
+  }, [refetch]);
 
   const contractName = tokens[0]?.contract?.name;
-  const contractId = tokens[0]?.contract?.dbid;
-  console.log("contractId", contractId);
-  console.log("contractName", contractName);
+  const contractId = tokens[0]?.contract?.dbid ?? '';
+  console.log('contractId', contractId);
+  console.log('contractName', contractName);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -124,7 +145,7 @@ export function NftSelectorContractScreen() {
           </View>
           {isCreator ? (
             <View>
-              <AnimatedRefreshContractIcon contractId={contractId ?? ''} />
+              <AnimatedRefreshContractIcon contractId={contractId} onRefresh={handleRefresh} />
             </View>
           ) : null}
         </View>
@@ -138,15 +159,17 @@ export function NftSelectorContractScreen() {
 
 type AnimatedRefreshContractIconProps = {
   contractId: string;
+  onRefresh: () => void;
 };
 
-function AnimatedRefreshContractIcon({ contractId }: AnimatedRefreshContractIconProps) {
+function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshContractIconProps) {
   const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokenstActions();
 
   const handleSyncCreatedTokensForExistingContracts = useCallback(async () => {
     if (isSyncing) return;
     syncCreatedTokensForExistingContract(contractId);
-  }, [isSyncing, contractId, syncCreatedTokensForExistingContract]);
+    onRefresh();
+  }, [isSyncing, onRefresh, contractId, syncCreatedTokensForExistingContract]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 
