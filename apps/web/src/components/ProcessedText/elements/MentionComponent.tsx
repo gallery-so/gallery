@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
+import { GalleryTextElementParserMentionsFragment$data } from '~/generated/GalleryTextElementParserMentionsFragment.graphql';
 import { MentionComponentFragment$key } from '~/generated/MentionComponentFragment.graphql';
-
-import { GalleryTextElementParserMentionsFragment$data } from '../../../../../../packages/shared/__generated__/relay/GalleryTextElementParserMentionsFragment.graphql';
 
 type Props = {
   mention: string;
