@@ -39,6 +39,7 @@ export const flows = {
   Twitter: 'Twitter',
   'Edit User Info': 'Edit User Info',
   'Posts Beta Announcement': 'Posts Beta Announcement',
+  'Share To Gallery': 'Share To Gallery',
 } as const;
 
 export type AnalyticsEventFlowType = keyof typeof flows;

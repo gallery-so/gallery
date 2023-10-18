@@ -8,6 +8,7 @@ import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { Chain } from '~/shared/utils/chains';
 
 import breakpoints from '../core/breakpoints';
@@ -29,6 +30,7 @@ type Props = {
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
   onSelectToken: (tokenId: string) => void;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 const COLUMN_COUNT_DESKTOP = 4;
 const COLUMN_COUNT_MOBILE = 3;
@@ -36,11 +38,12 @@ const COLUMN_COUNT_MOBILE = 3;
 export function NftSelectorView({
   selectedContractAddress,
   onSelectContract,
+  onSelectToken,
   tokenRefs,
   selectedNetworkView,
   hasSearchKeyword,
   handleRefresh,
-  onSelectToken,
+  eventFlow,
 }: Props) {
   const tokens = useFragment(
     graphql`
@@ -177,6 +180,7 @@ export function NftSelectorView({
             eventElementId="Open Add Wallet Modal Button"
             eventName="Open Add Wallet Modal"
             eventContext={contexts.Posts}
+            eventFlow={eventFlow}
             variant="primary"
             onClick={handleManageWalletsClick}
           >

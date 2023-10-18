@@ -26,6 +26,7 @@ import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import DrawerHeader from './DrawerHeader';
@@ -138,7 +139,7 @@ export function StandardSidebar({ queryRef }: Props) {
   const handleOpenPostComposer = useCallback(() => {
     showModal({
       id: 'post-composer',
-      content: <PostComposerModalWithSelector />,
+      content: <PostComposerModalWithSelector eventFlow={flows['Share To Gallery']} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
       onCloseOverride: (onClose: () => void) => {
@@ -219,7 +220,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   // feels like a hack but if this hook is run multiple times via parent component re-render,
   // the same drawer is opened multiple times
-  const { settings, composer } = routerQuery;
+  const { settings, composer, referrer } = routerQuery;
   const isSettingsOpen = useRef(false);
   const isComposerOpen = useRef(false);
 
@@ -238,13 +239,29 @@ export function StandardSidebar({ queryRef }: Props) {
     }
 
     if (composer === 'true' && !isComposerOpen.current) {
+      track('Arrive On Gallery', {
+        context: contexts.Posts,
+        flow: flows['Share To Gallery'],
+        authenticated: isLoggedIn,
+        referrer,
+      });
       if (isLoggedIn) {
         handleOpenPostComposer();
         return;
       }
       showAuthModal();
     }
-  }, [composer, handleOpenPostComposer, isLoggedIn, query, settings, showAuthModal, showDrawer]);
+  }, [
+    composer,
+    handleOpenPostComposer,
+    isLoggedIn,
+    query,
+    referrer,
+    settings,
+    showAuthModal,
+    showDrawer,
+    track,
+  ]);
 
   if (isMobile) {
     return (
