@@ -204,7 +204,7 @@ export function SearchResults({
     // if there is no active filter, show both curators and galleries
     // but only show a preview of the results
     else if (activeFilter === 'top') {
-      if (hasUsers) {
+      if (hasUsers && searchUsers.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'curator',
@@ -222,7 +222,7 @@ export function SearchResults({
         }
       }
 
-      if (hasGalleries && !isMentionSearch) {
+      if (hasGalleries && !isMentionSearch && searchGalleries.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'gallery',
@@ -241,7 +241,7 @@ export function SearchResults({
         }
       }
 
-      if (hasCommunities) {
+      if (hasCommunities && searchCommunities.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'community',
