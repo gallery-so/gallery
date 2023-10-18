@@ -103,6 +103,7 @@ export function CommentBox({
           placeholder="Add a comment..."
           placeholderTextColor={colorScheme === 'dark' ? colors.shadow : colors.metal}
           onSubmitEditing={handleDismiss}
+          keyboardType="twitter"
           keyboardAppearance={colorScheme}
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
         />
