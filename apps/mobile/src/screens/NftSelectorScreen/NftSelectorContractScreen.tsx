@@ -16,6 +16,7 @@ import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractS
 import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
@@ -211,8 +212,9 @@ function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshC
           <RefreshIcon />
         </Animated.View>
       }
-      eventElementId="NftSelectorSelectorRefreshContractButton"
-      eventName="NftSelectoreSelectorRefreshContractButton pressed"
+      eventElementId="NftSelectorSyncCreatedTokensForContractButton"
+      eventName="Nft Selector SyncCreatedTokensForContractButton pressed"
+      eventContext={contexts.UserCollection}
     />
   );
 }
