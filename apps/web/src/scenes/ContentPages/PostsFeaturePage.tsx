@@ -6,7 +6,7 @@ import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
+import { TitleCondensed, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
@@ -35,11 +35,16 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
       <StyledContent align="center" gap={96}>
         <StyledIntro gap={48} align="center">
           <VStack gap={32}>
-            <VStack>
-              <StyledHeading>Introducing</StyledHeading>
-              <StyledHeading>
-                <strong>Posts</strong>
-              </StyledHeading>
+            <VStack align="center" gap={16}>
+              <VStack>
+                <StyledHeading>Introducing</StyledHeading>
+                <StyledHeading>
+                  <strong>Posts</strong>
+                </StyledHeading>
+              </VStack>
+              <StyledBetaPill>
+                <TitleXS color={colors.activeBlue}>BETA</TitleXS>
+              </StyledBetaPill>
             </VStack>
             <StyledSubheading>{pageContent.introText}</StyledSubheading>
           </VStack>
@@ -124,6 +129,13 @@ const StyledHeading = styled(TitleCondensed)`
     line-height: 96px;
     width: 500px;
   }
+`;
+
+const StyledBetaPill = styled.div`
+  width: fit-content;
+  border-radius: 24px;
+  padding: 4px 12px;
+  border: 1px solid ${colors.activeBlue};
 `;
 
 const StyledSubheading = styled(TitleDiatypeL)`
