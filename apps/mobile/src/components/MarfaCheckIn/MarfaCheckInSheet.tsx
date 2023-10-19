@@ -42,7 +42,7 @@ export function MarfaCheckInSheet({ viewerRef }: Props) {
   const { bottom } = useSafeAreaPadding();
 
   const navigation = useNavigation<FeedTabNavigatorProp>();
-  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
 
   const handleOnDimiss = useCallback(() => {
     // update route param so the sheet can be retrigered by re-scanning the QR code

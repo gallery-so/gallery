@@ -17,7 +17,7 @@ import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMeta
 import { CommunityPageMetadataQueryFragment$key } from '~/generated/CommunityPageMetadataQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
-import { contexts } from '~/shared/analytics/constants';
+import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -108,6 +108,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
+          eventFlow={flows['Community Page Post Create Flow']}
         />
       ),
       headerVariant: 'thicc',

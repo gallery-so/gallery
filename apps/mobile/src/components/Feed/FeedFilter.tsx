@@ -6,7 +6,7 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Pill } from '../Pill';
 import { Typography } from '../Typography';
 
-export type ActiveFeed = 'Worldwide' | 'Following' | 'Profile' | 'Curated';
+export type ActiveFeed = 'Worldwide' | 'Following' | 'Profile' | 'For You';
 
 type Props = {
   activeFeed: ActiveFeed;

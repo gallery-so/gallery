@@ -6,7 +6,6 @@ import { MentionType } from 'src/hooks/useMentionableMessage';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { noop } from '~/shared/utils/noop';
 
 import { SearchResult } from '../SearchResult';
 
@@ -15,7 +14,7 @@ type Props = {
   onSelect?: (item: MentionType) => void;
 };
 
-export function UserSearchResult({ userRef, onSelect = noop }: Props) {
+export function UserSearchResult({ userRef, onSelect }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {

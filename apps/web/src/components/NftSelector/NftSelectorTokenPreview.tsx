@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/shared/theme/colors';
-import { noop } from '~/shared/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -14,7 +13,7 @@ import { NftSelectorToken } from './NftSelectorToken';
 type Props = {
   group: NftSelectorCollectionGroup;
   onSelectToken: (tokenId: string) => void;
-  onSelectContract?: (collection: NftSelectorContractType) => void;
+  onSelectContract: (collection: NftSelectorContractType) => void;
   hasSelectedContract: boolean;
 };
 
@@ -29,7 +28,7 @@ const NftSelectorTokenCollection = ({ title }: { title: string }) => {
 export function NftSelectorTokenPreview({
   group,
   onSelectToken,
-  onSelectContract = noop,
+  onSelectContract,
   hasSelectedContract,
 }: Props) {
   const tokens = group.tokens;

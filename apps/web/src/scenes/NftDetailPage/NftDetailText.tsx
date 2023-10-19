@@ -21,7 +21,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
-import { contexts } from '~/shared/analytics/constants';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
@@ -138,7 +138,12 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
 
   const handleCreatePostClick = useCallback(() => {
     showModal({
-      content: <PostComposerModal tokenId={token.dbid} />,
+      content: (
+        <PostComposerModal
+          tokenId={token.dbid}
+          eventFlow={flows['NFT Detail Page Post Create Flow']}
+        />
+      ),
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });

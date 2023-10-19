@@ -40,7 +40,7 @@ type FeatureHighlightMediaProps = {
 
 function FeatureHighlightMedia({ media }: FeatureHighlightMediaProps) {
   if (media.video) {
-    return <StyledVideo autoPlay loop muted src={media?.video.asset.url} />;
+    return <StyledVideo autoPlay loop muted playsInline src={media?.video.asset.url} />;
   }
 
   if (media.image) {

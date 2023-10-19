@@ -1,3 +1,4 @@
+// higher level categories
 export const contexts = {
   Posts: 'Posts',
   Feed: 'Feed',
@@ -28,10 +29,13 @@ export const contexts = {
   PFP: 'PFP',
   Toast: 'Toast',
   Navigation: 'Navigation',
+  'Push Notifications': 'Push Notifications',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;
 
+// the specific feature; the name of the flow should give you
+// an instant visual of the steps for that flow
 export const flows = {
   'Web Signup Flow': 'Web Signup Flow',
   'Mobile Login Flow': 'Mobile Login Flow',
@@ -39,6 +43,11 @@ export const flows = {
   Twitter: 'Twitter',
   'Edit User Info': 'Edit User Info',
   'Posts Beta Announcement': 'Posts Beta Announcement',
+  'Share To Gallery': 'Share To Gallery',
+  'Web Notifications Post Create Flow': 'Web Notifications Post Create Flow',
+  'Web Sidebar Post Create Flow': 'Web Sidebar Post Create Flow',
+  'Community Page Post Create Flow': 'Community Page Post Create Flow',
+  'NFT Detail Page Post Create Flow': 'NFT Detail Page Post Create Flow',
 } as const;
 
 export type AnalyticsEventFlowType = keyof typeof flows;

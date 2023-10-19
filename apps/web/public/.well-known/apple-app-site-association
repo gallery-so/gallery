@@ -26,6 +26,7 @@
           "NOT /explore",
           "NOT /faq",
           "NOT /featured",
+          "NOT /features/*",
           "NOT /feed",
           "NOT /feeds",
           "NOT /gallery",

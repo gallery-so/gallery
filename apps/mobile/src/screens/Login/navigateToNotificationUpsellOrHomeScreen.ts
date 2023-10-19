@@ -25,7 +25,7 @@ export async function navigateToNotificationUpsellOrHomeScreen(
             screen: 'HomeTab',
             params: {
               screen: 'Home',
-              params: { screen: 'Curated', params: { isNewUser } },
+              params: { screen: 'For You', params: { isNewUser } },
             },
           },
         },

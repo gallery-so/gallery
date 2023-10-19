@@ -6,7 +6,7 @@ import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
+import { TitleCondensed, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
@@ -24,58 +24,69 @@ export default function PostsFeaturePage({ pageContent }: Props) {
       <Head>
         <title>Gallery | Posts</title>
       </Head>
-      <StyledPage gap={96}>
-        <StyledContent align="center" gap={96}>
-          <StyledIntro gap={48} align="center">
-            <VStack gap={32}>
+      <PostsFeaturePageContent pageContent={pageContent} />
+    </>
+  );
+}
+
+export function PostsFeaturePageContent({ pageContent }: Props) {
+  return (
+    <StyledPage gap={96}>
+      <StyledContent align="center" gap={96}>
+        <StyledIntro gap={48} align="center">
+          <VStack gap={32}>
+            <VStack align="center" gap={16}>
               <VStack>
                 <StyledHeading>Introducing</StyledHeading>
                 <StyledHeading>
                   <strong>Posts</strong>
                 </StyledHeading>
               </VStack>
-              <StyledSubheading>{pageContent.introText}</StyledSubheading>
+              <StyledBetaPill>
+                <TitleXS color={colors.activeBlue}>BETA</TitleXS>
+              </StyledBetaPill>
             </VStack>
-            <GalleryLink
-              to={{ pathname: '/auth' }}
-              eventElementId="Posts Feature Page: Get Started"
-              eventName="Posts Feature Page: Get Started Click"
-              eventContext={contexts.Posts}
-              eventFlow={flows['Posts Beta Announcement']}
-            >
-              <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
-                <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
-              </GetStartedButton>
-            </GalleryLink>
-          </StyledIntro>
-          <StyledSplashImage src={pageContent.splashImage.asset.url} />
-          <VStack gap={96}>
-            {pageContent.featureHighlights.map((highlight) => (
-              <FeatureHighlight key={highlight.heading} content={highlight} />
-            ))}
+            <StyledSubheading>{pageContent.introText}</StyledSubheading>
           </VStack>
-          <VStack align="center" gap={32}>
-            {pageContent.externalLink && (
-              <StyledSubheading>
-                <Markdown text={pageContent.externalLink} eventContext={contexts.Posts} />
-              </StyledSubheading>
-            )}
-            <GalleryLink
-              to={{ pathname: '/auth' }}
-              eventElementId="Posts Feature Page: Get Started"
-              eventName="Posts Feature Page: Get Started Click"
-              eventContext={contexts.Posts}
-              eventFlow={flows['Posts Beta Announcement']}
-            >
-              <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
-                <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
-              </GetStartedButton>
-            </GalleryLink>
-          </VStack>
-        </StyledContent>
-        <Faq content={pageContent.faqModule} />
-      </StyledPage>
-    </>
+          <GalleryLink
+            to={{ pathname: '/auth' }}
+            eventElementId="Posts Feature Page: Get Started"
+            eventName="Posts Feature Page: Get Started Click"
+            eventContext={contexts.Posts}
+            eventFlow={flows['Posts Beta Announcement']}
+          >
+            <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
+              <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
+            </GetStartedButton>
+          </GalleryLink>
+        </StyledIntro>
+        <StyledSplashImage src={pageContent.splashImage?.asset.url} />
+        <VStack gap={96}>
+          {pageContent.featureHighlights?.map((highlight) => (
+            <FeatureHighlight key={highlight.heading} content={highlight} />
+          ))}
+        </VStack>
+        <VStack align="center" gap={32}>
+          {pageContent.externalLink && (
+            <StyledSubheading>
+              <Markdown text={pageContent.externalLink} eventContext={contexts.Posts} />
+            </StyledSubheading>
+          )}
+          <GalleryLink
+            to={{ pathname: '/auth' }}
+            eventElementId="Posts Feature Page: Get Started"
+            eventName="Posts Feature Page: Get Started Click"
+            eventContext={contexts.Posts}
+            eventFlow={flows['Posts Beta Announcement']}
+          >
+            <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
+              <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
+            </GetStartedButton>
+          </GalleryLink>
+        </VStack>
+      </StyledContent>
+      <Faq content={pageContent.faqModule} />
+    </StyledPage>
   );
 }
 
@@ -118,6 +129,13 @@ const StyledHeading = styled(TitleCondensed)`
     line-height: 96px;
     width: 500px;
   }
+`;
+
+const StyledBetaPill = styled.div`
+  width: fit-content;
+  border-radius: 24px;
+  padding: 4px 12px;
+  border: 1px solid ${colors.activeBlue};
 `;
 
 const StyledSubheading = styled(TitleDiatypeL)`

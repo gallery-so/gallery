@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import { Mixpanel } from 'mixpanel-react-native';
 import { PropsWithChildren } from 'react';
+import { getTimestamp } from 'swr/_internal';
 
 import { env } from '~/env/runtime';
 import AnalyticsProvider, {
@@ -20,6 +22,7 @@ if (token && apiUrl) {
 
 const track: TrackFunction = (eventName, eventProps) => {
   try {
+    console.log(`[${getTimestamp()}] Track`, eventName, eventProps);
     instance?.track(eventName, eventProps);
   } catch (error: unknown) {
     // Handle error here
@@ -27,6 +30,7 @@ const track: TrackFunction = (eventName, eventProps) => {
 };
 
 const identify: IdentifyFunction = (userId) => {
+  console.log(`[${getTimestamp()}] Identify`, userId);
   instance?.identify(userId);
 };
 
