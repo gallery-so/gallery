@@ -17,7 +17,7 @@ type SyncTokensActions = {
 
 const SyncTokensActionsContext = createContext<SyncTokensActions | undefined>(undefined);
 
-export const useSyncTokenstActions = (): SyncTokensActions => {
+export const useSyncTokensActions = (): SyncTokensActions => {
   const context = useContext(SyncTokensActionsContext);
   if (!context) {
     throw new Error('Attempted to use SyncTokensActionsContext without a provider!');

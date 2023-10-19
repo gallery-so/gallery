@@ -1,22 +1,19 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Animated, View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
-import { RefreshIcon } from 'src/icons/RefreshIcon';
 
+import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
-import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
-import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
-import { useToastActions } from '~/contexts/ToastContext';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
-import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function NftSelectorContractScreen() {
@@ -77,12 +74,18 @@ export function NftSelectorContractScreen() {
     );
   }, [data.viewer?.user?.tokens, route.params.contractAddress]);
 
+  const contractName = tokens[0]?.contract?.name;
+  const contractId = tokens[0]?.contract?.dbid ?? '';
+
+  const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokensActions();
+
+  const handleSyncTokensForContract = useCallback(async () => {
+    await syncCreatedTokensForExistingContract(contractId);
+  }, [syncCreatedTokensForExistingContract, contractId]);
+
   const handleRefresh = useCallback(() => {
     refetch({}, { fetchPolicy: 'network-only' });
   }, [refetch]);
-
-  const contractName = tokens[0]?.contract?.name;
-  const contractId = tokens[0]?.contract?.dbid ?? '';
 
   const rows = useMemo(() => {
     const rows = [];
@@ -142,7 +145,13 @@ export function NftSelectorContractScreen() {
           </View>
           {isCreator ? (
             <View>
-              <AnimatedRefreshContractIcon contractId={contractId} onRefresh={handleRefresh} />
+              <AnimatedRefreshIcon
+                isSyncing={isSyncing}
+                onSync={handleSyncTokensForContract}
+                onRefresh={handleRefresh}
+                eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"
+                eventName="Nft Selector SyncCreatedTokensForExistingContractButton pressed"
+              />
             </View>
           ) : null}
         </View>
@@ -151,70 +160,5 @@ export function NftSelectorContractScreen() {
         </View>
       </View>
     </View>
-  );
-}
-
-type AnimatedRefreshContractIconProps = {
-  contractId: string;
-  onRefresh: () => void;
-};
-
-function AnimatedRefreshContractIcon({ contractId, onRefresh }: AnimatedRefreshContractIconProps) {
-  const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokenstActions();
-  const { pushToast } = useToastActions();
-
-  const handleSyncCreatedTokensForExistingContracts = useCallback(async () => {
-    if (isSyncing) return;
-    await syncCreatedTokensForExistingContract(contractId);
-    onRefresh();
-    pushToast({
-      message: 'Successfully refreshed your collection.',
-      withoutNavbar: true,
-      autoClose: true,
-    });
-  }, [isSyncing, onRefresh, contractId, syncCreatedTokensForExistingContract, pushToast]);
-
-  const spinValue = useRef(new Animated.Value(0)).current;
-
-  const spin = useCallback(() => {
-    spinValue.setValue(0);
-    Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing
-      if (finished && isSyncing) {
-        spin();
-      }
-    });
-  }, [isSyncing, spinValue]);
-
-  const spinAnimation = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
-  useEffect(() => {
-    if (isSyncing) {
-      spin();
-    } else {
-      spinValue.stopAnimation();
-    }
-  }, [isSyncing, spin, spinValue]);
-
-  return (
-    <IconContainer
-      size="sm"
-      onPress={handleSyncCreatedTokensForExistingContracts}
-      icon={
-        <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
-          <RefreshIcon />
-        </Animated.View>
-      }
-      eventElementId="NftSelectorSyncCreatedTokensForContractButton"
-      eventName="Nft Selector SyncCreatedTokensForContractButton pressed"
-      eventContext={contexts.UserCollection}
-    />
   );
 }

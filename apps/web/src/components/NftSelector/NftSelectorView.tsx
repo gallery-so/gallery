@@ -26,7 +26,6 @@ type Props = {
   selectedContractAddress: string | null;
   selectedNetworkView: Chain;
   onSelectContract: (collection: NftSelectorContractType) => void;
-  onSetCollectionContractId: (contractId: string) => void;
   tokenRefs: NftSelectorViewFragment$key;
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
@@ -39,7 +38,6 @@ const COLUMN_COUNT_MOBILE = 3;
 export function NftSelectorView({
   selectedContractAddress,
   onSelectContract,
-  onSetCollectionContractId,
   onSelectToken,
   tokenRefs,
   selectedNetworkView,
@@ -98,6 +96,7 @@ export function NftSelectorView({
 
         groupOfPoapTokens.tokens.forEach((token) => {
           selectedCollectionTokens.push({
+            dbid: groupOfPoapTokens.dbid,
             title: groupOfPoapTokens.title,
             address: groupOfPoapTokens.address,
             tokens: [token],
@@ -116,13 +115,13 @@ export function NftSelectorView({
 
         groupOfTokens.tokens.forEach((token) => {
           selectedCollectionTokens.push({
+            dbid: groupOfTokens.dbid,
             title: groupOfTokens.title,
             address: groupOfTokens.address,
             tokens: [token],
           });
         });
         tokens = selectedCollectionTokens;
-        onSetCollectionContractId(tokens[0]?.tokens[0]?.contract?.dbid ?? '');
       }
     }
 
@@ -133,13 +132,7 @@ export function NftSelectorView({
     }
 
     return rows;
-  }, [
-    columnCount,
-    groupedTokens,
-    selectedContractAddress,
-    selectedNetworkView,
-    onSetCollectionContractId,
-  ]);
+  }, [columnCount, groupedTokens, selectedContractAddress, selectedNetworkView]);
 
   const { width } = useWindowSize();
   const rowHeight = useMemo(() => {

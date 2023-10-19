@@ -35,12 +35,13 @@ export function NftSelectorTokenPreview({
 
   const handleSelectContract = useCallback(() => {
     const collection = {
+      dbid: group.dbid,
       title: group.title,
       address: group.address,
     };
 
     onSelectContract(collection);
-  }, [group.address, group.title, onSelectContract]);
+  }, [group.address, group.title, group.dbid, onSelectContract]);
 
   const singleTokenTitle = useMemo(() => {
     const token = tokens[0];

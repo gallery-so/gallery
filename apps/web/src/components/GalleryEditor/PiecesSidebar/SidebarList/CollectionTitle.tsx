@@ -38,19 +38,21 @@ export default function CollectionTitle({
 
   const [isMouseHovering, setIsMouseHovering] = useState(false);
 
-  const shouldDisplayToggleSpamIcon = useMemo(() => {
-    if (selectedView === 'Created') {
-      return false;
+  const rightContent = useMemo(() => {
+    if (selectedView === 'Created' && isMouseHovering) {
+      return <RefreshContractIcon contractId={row.contractId} />;
     }
-    return isMouseHovering;
-  }, [selectedView, isMouseHovering]);
-
-  const shouldDisplayContractRefreshIcon = useMemo(() => {
-    if (selectedView !== 'Created') {
-      return false;
+    if (selectedView !== 'Created' && isMouseHovering) {
+      return (
+        <ToggleSpamIcon
+          row={row}
+          selectedView={selectedView}
+          setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+        />
+      );
     }
-    return isMouseHovering;
-  }, [selectedView, isMouseHovering]);
+    return <CollectionCount>{row.count}</CollectionCount>;
+  }, [isMouseHovering, row, selectedView, setSpamPreferenceForCollection]);
 
   return (
     <CollectionTitleRow style={style}>
@@ -67,17 +69,7 @@ export default function CollectionTitle({
           <ExpandedIcon expanded={row.expanded} />
           <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
         </LeftContent>
-        {shouldDisplayToggleSpamIcon ? (
-          <ToggleSpamIcon
-            row={row}
-            selectedView={selectedView}
-            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
-          />
-        ) : shouldDisplayContractRefreshIcon ? (
-          <RefreshContractIcon contractId={row.contractId} />
-        ) : (
-          <CollectionCount>{row.count}</CollectionCount>
-        )}
+        {rightContent}
       </CollectionTitleContainer>
 
       {step === 4 && index === 0 && (

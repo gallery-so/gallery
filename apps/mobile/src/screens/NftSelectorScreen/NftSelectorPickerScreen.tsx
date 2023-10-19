@@ -1,11 +1,11 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, View } from 'react-native';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
-import { RefreshIcon } from 'src/icons/RefreshIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
+import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -13,8 +13,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
-import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
-import { useToastActions } from '~/contexts/ToastContext';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
 import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
@@ -87,6 +86,12 @@ export function NftSelectorPickerScreen() {
     refetch({ networkFilter }, { fetchPolicy: 'network-only' });
   }, [networkFilter, refetch]);
 
+  const { isSyncing, syncTokens } = useSyncTokensActions();
+
+  const handleSync = useCallback(async () => {
+    syncTokens(networkFilter);
+  }, [syncTokens, networkFilter]);
+
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
   }, []);
@@ -136,7 +141,14 @@ export function NftSelectorPickerScreen() {
             />
 
             <View className="flex flex-row space-x-1">
-              <AnimatedRefreshIcon networkFilter={networkFilter} onRefresh={handleRefresh} />
+              <AnimatedRefreshIcon
+                onSync={handleSync}
+                onRefresh={handleRefresh}
+                isSyncing={isSyncing}
+                eventElementId="NftSelectorSelectorRefreshButton"
+                eventName="NftSelectorSelectorRefreshButton pressed"
+              />
+
               <IconContainer
                 size="sm"
                 onPress={handleSettingsPress}
@@ -173,71 +185,5 @@ export function NftSelectorPickerScreen() {
         </View>
       </View>
     </View>
-  );
-}
-
-type AnimatedRefreshIconProps = {
-  networkFilter: NetworkChoice;
-  onRefresh: () => void;
-};
-
-function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconProps) {
-  const { isSyncing, syncTokens } = useSyncTokenstActions();
-
-  const { pushToast } = useToastActions();
-
-  const handleSync = useCallback(async () => {
-    if (isSyncing) return;
-
-    await syncTokens(networkFilter);
-    onRefresh();
-    pushToast({
-      message: 'Successfully refreshed your collection',
-      withoutNavbar: true,
-    });
-  }, [isSyncing, networkFilter, onRefresh, pushToast, syncTokens]);
-
-  const spinValue = useRef(new Animated.Value(0)).current;
-
-  const spin = useCallback(() => {
-    spinValue.setValue(0);
-    Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
-      if (finished && isSyncing) {
-        spin();
-      }
-    });
-  }, [isSyncing, spinValue]);
-
-  const spinAnimation = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
-  useEffect(() => {
-    if (isSyncing) {
-      spin();
-    } else {
-      spinValue.stopAnimation();
-    }
-  }, [isSyncing, spin, spinValue]);
-
-  return (
-    <IconContainer
-      size="sm"
-      onPress={handleSync}
-      icon={
-        <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
-          <RefreshIcon />
-        </Animated.View>
-      }
-      eventElementId="NftSelectorSelectorRefreshButton"
-      eventName="NftSelectoreSelectorRefreshButton pressed"
-      eventContext={contexts.Posts}
-    />
   );
 }

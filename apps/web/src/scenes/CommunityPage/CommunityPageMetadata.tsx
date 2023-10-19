@@ -34,6 +34,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     graphql`
       fragment CommunityPageMetadataFragment on Community {
         name
+        contract {
+          dbid
+        }
         contractAddress {
           chain
           address
@@ -105,6 +108,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
+            dbid: community.contract?.dbid ?? '',
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
@@ -114,7 +118,14 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [showModal, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [
+    showModal,
+    query,
+    community.name,
+    community.contractAddress?.address,
+    community.contract?.dbid,
+    isMobile,
+  ]);
 
   const handleDisabledPostButtonClick = useCallback(() => {
     showModal({

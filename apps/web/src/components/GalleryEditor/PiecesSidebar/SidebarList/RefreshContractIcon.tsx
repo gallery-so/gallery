@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import IconContainer from '~/components/core/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type Props = {
@@ -20,7 +21,10 @@ export default function RefreshContractIcon({ contractId }: Props) {
   const track = useTrack();
   const handleCreatorRefreshContract = useCallback(
     async (contractId: string) => {
-      track('Editor Sidebar: Clicked Sync Creator Tokens For Existing Contract');
+      track('Editor Sidebar: Clicked Sync Creator Tokens For Existing Contract', {
+        id: 'Refresh Single Created Contract Button',
+        context: contexts.Editor,
+      });
       await syncCreatedTokensForExistingContract(contractId);
     },
     [track, syncCreatedTokensForExistingContract]

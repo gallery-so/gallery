@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
@@ -103,7 +103,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-  const [collectionContractId, setCollectionContractId] = useState('');
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
   >({
@@ -241,13 +240,16 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
 
   const handleCreatorRefreshContract = useCallback(async () => {
-    if (!collectionContractId) {
+    if (!selectedContract?.dbid) {
       return;
     }
-    track('NFT Selector: Clicked Sync Creator Tokens For Existing Contract');
+    track('NFT Selector: Clicked Sync Creator Tokens For Existing Contract', {
+      id: 'Refresh Single Created Tokens Contract Button',
+      context: contexts.Posts,
+    });
 
-    await syncCreatedTokensForExistingContract(collectionContractId);
-  }, [collectionContractId, track, syncCreatedTokensForExistingContract]);
+    await syncCreatedTokensForExistingContract(selectedContract?.dbid);
+  }, [selectedContract?.dbid, track, syncCreatedTokensForExistingContract]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -354,7 +356,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         <NftSelectorView
           tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
-          onSetCollectionContractId={setCollectionContractId}
           onSelectContract={handleSelectContract}
           onSelectToken={onSelectToken}
           eventFlow={eventFlow}
