@@ -51,7 +51,7 @@ export function DropdownLink({
 
   if (label) {
     return (
-      <StyledGalleryLink onClick={handleClick}>
+      <StyledGalleryLink to={href} onClick={handleClick}>
         <HStack gap={4} align="center">
           {variant === 'delete' ? <TrashIconNew color={colors.error} /> : null}
           <BaseM color={variant === 'delete' ? colors.error : undefined}>{label}</BaseM>
