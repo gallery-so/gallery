@@ -1,4 +1,7 @@
 import Head from 'next/head';
+import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
@@ -7,6 +10,7 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
+import { PostsFeaturePageContentQuery } from '~/generated/PostsFeaturePageContentQuery.graphql';
 import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
@@ -30,6 +34,24 @@ export default function PostsFeaturePage({ pageContent }: Props) {
 }
 
 export function PostsFeaturePageContent({ pageContent }: Props) {
+  const query = useLazyLoadQuery<PostsFeaturePageContentQuery>(
+    graphql`
+      query PostsFeaturePageContentQuery {
+        viewer {
+          __typename
+        }
+      }
+    `,
+    {}
+  );
+
+  const isAuthenticated = query.viewer?.__typename === 'Viewer';
+  const ctaButtonRoute: Route = useMemo(() => {
+    if (!isAuthenticated) return { pathname: '/auth' };
+
+    return { pathname: '/home', query: { composer: 'true' } };
+  }, [isAuthenticated]);
+
   return (
     <StyledPage gap={96}>
       <StyledContent align="center" gap={96}>
@@ -49,7 +71,7 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
             <StyledSubheading>{pageContent.introText}</StyledSubheading>
           </VStack>
           <GalleryLink
-            to={{ pathname: '/auth' }}
+            to={ctaButtonRoute}
             eventElementId="Posts Feature Page: Get Started"
             eventName="Posts Feature Page: Get Started Click"
             eventContext={contexts.Posts}
@@ -73,7 +95,7 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
             </StyledSubheading>
           )}
           <GalleryLink
-            to={{ pathname: '/auth' }}
+            to={ctaButtonRoute}
             eventElementId="Posts Feature Page: Get Started"
             eventName="Posts Feature Page: Get Started Click"
             eventContext={contexts.Posts}
