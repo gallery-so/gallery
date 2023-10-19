@@ -37,9 +37,10 @@ export default function GalleryProcessedText({
 
   const processedText = useMemo(() => {
     const elementsWithBreaks: JSX.Element[] = [];
+    const markdownLinks = getMarkdownLinkElements(text);
     const elements = [
-      ...getMarkdownLinkElements(text),
-      ...getUrlElements(text),
+      ...markdownLinks,
+      ...getUrlElements(text, markdownLinks),
       ...getMentionElements(text, mentions),
     ];
 

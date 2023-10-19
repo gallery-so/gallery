@@ -1,4 +1,4 @@
-import { TextProps, View } from 'react-native';
+import { Text, TextProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProcessedTextFragment$key } from '~/generated/ProcessedTextFragment.graphql';
@@ -33,7 +33,7 @@ export default function ProcessedText({ text, mentionsRef = [] }: ProcessedTextP
       TextComponent={TextComponent}
       LinkComponent={LinkComponent}
       MentionComponent={MentionComponent}
-      BreakComponent={() => <View />}
+      BreakComponent={() => <Text>{'\n'}</Text>}
     />
   );
 }
