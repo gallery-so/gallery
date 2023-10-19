@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
@@ -10,53 +9,51 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
-import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
-import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
-import isProduction from '~/utils/isProduction';
 
-import { MEMENTOS_NFT_TOKEN_ID, MINT_END, MINT_START, pathToImage } from './config';
+import { MINT_END, MINT_START, pathToImage } from './config';
 import MintButton from './MintButton';
 import useMintPhase from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-
-  const { address: rawAddress } = useAccount();
-  const address = rawAddress?.toLowerCase();
   const [isMinted, setIsMinted] = useState(false);
 
-  const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
+  // Keeping logic commented in case we want to re-introduce it
 
-  const detectOwnedPosterNftFromOpensea = useCallback(
-    async (address: string) => {
-      const response = await fetch(
-        `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${MEMENTOS_NFT_TOKEN_ID}`,
-        {}
-      );
-      const responseBody = await response.json();
-      return responseBody.assets.length > 0;
-    },
-    [openseaBaseUrl]
-  );
+  // const { address: rawAddress } = useAccount();
+  // const address = rawAddress?.toLowerCase();
+  // const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
 
-  useEffect(() => {
-    async function checkIfMinted(address: string) {
-      try {
-        const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(address);
-        setIsMinted(hasOwnedPosterNft);
-      } catch (_) {
-        // ignore if ownership check request fails
-      }
-    }
+  // const detectOwnedPosterNftFromOpensea = useCallback(
+  //   async (address: string) => {
+  //     const response = await fetch(
+  //       `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${MEMENTOS_NFT_TOKEN_ID}`,
+  //       {}
+  //     );
+  //     const responseBody = await response.json();
+  //     return responseBody.assets.length > 0;
+  //   },
+  //   [openseaBaseUrl]
+  // );
 
-    if (address) {
-      checkIfMinted(address);
-    }
-  }, [address, detectOwnedPosterNftFromOpensea]);
+  // useEffect(() => {
+  //   async function checkIfMinted(address: string) {
+  //     try {
+  //       const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(address);
+  //       setIsMinted(hasOwnedPosterNft);
+  //     } catch (_) {
+  //       // ignore if ownership check request fails
+  //     }
+  //   }
+
+  //   if (address) {
+  //     checkIfMinted(address);
+  //   }
+  // }, [address, detectOwnedPosterNftFromOpensea]);
 
   const { push } = useRouter();
 
