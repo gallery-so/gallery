@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacityProps } from 'react-native';
 import { View } from 'react-native';
 
 import { contexts } from '~/shared/analytics/constants';
-import { getHighlightedDescription,getHighlightedName } from '~/shared/utils/highlighter';
+import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
