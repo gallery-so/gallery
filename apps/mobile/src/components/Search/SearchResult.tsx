@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react';
 import { StyleSheet, TouchableOpacityProps } from 'react-native';
 import { View } from 'react-native';
-import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
 import { contexts } from '~/shared/analytics/constants';
+import { getHighlightedDescription,getHighlightedName } from '~/shared/utils/highlighter';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
@@ -15,8 +15,6 @@ type Props = {
   profilePicture?: ReactNode;
   keyword: string;
 } & TouchableOpacityProps;
-
-const MAX_DESCRIPTION_CHARACTER = 150;
 
 const markdownStyles = StyleSheet.create({
   paragraph: {
@@ -35,38 +33,12 @@ export function SearchResult({
   profilePicture,
   ...props
 }: Props) {
-  const highlightedName = useMemo(() => {
-    if (!keyword) {
-      return title;
-    }
-    return title.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
-  }, [keyword, title]);
+  const highlightedName = useMemo(() => getHighlightedName(title, keyword), [keyword, title]);
 
-  const highlightedDescription = useMemo(() => {
-    const regex = new RegExp(keyword, 'gi');
-
-    const unformattedDescription = sanitizeMarkdown(description ?? '');
-    if (!keyword) {
-      return unformattedDescription.substring(0, MAX_DESCRIPTION_CHARACTER);
-    }
-
-    const matchIndex = unformattedDescription.search(regex);
-    let truncatedDescription;
-
-    const maxLength = MAX_DESCRIPTION_CHARACTER;
-
-    if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
-      const endIndex = Math.min(unformattedDescription.length, maxLength);
-      truncatedDescription = `...${unformattedDescription.substring(
-        endIndex - maxLength,
-        endIndex
-      )}`;
-    } else {
-      truncatedDescription = unformattedDescription.substring(0, maxLength);
-    }
-    // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`);
-  }, [keyword, description]);
+  const highlightedDescription = useMemo(
+    () => getHighlightedDescription(description, keyword),
+    [keyword, description]
+  );
 
   return (
     <GalleryTouchableOpacity
