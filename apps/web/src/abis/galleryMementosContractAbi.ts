@@ -17,6 +17,11 @@ export const GALLERY_MEMENTOS_CONTRACT_ABI = [
         type: 'address',
       },
       {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
         internalType: 'bytes32[]',
         name: 'merkleProof',
         type: 'bytes32[]',

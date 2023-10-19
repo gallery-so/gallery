@@ -72,20 +72,22 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              <i>Gallery x Base</i>
+              <i>Gallery Mementos: 1K Posts</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
-              Introducing the <b>Gallery x Base</b> memento, a collectible in celebration of Gallery
-              rolling out support for{' '}
+              After months in closed testing, we have crossed 1,000 posts on Gallery and have opened
+              Posts to the public in Open Beta. This release marks the evolution of Gallery into a
+              full social app built to share art. A special thank you to our early users and
+              testers. Learn more about it in our latest{' '}
               <GalleryLink
-                href="https://base.org/ecosystem"
+                href="https://gallery.mirror.xyz/HNEYLQJ6vtTYqqotGjZG7pFFn8IE71_rbZkCU0R-MSk"
                 eventElementId="Base Chain Link"
                 eventName="Base Chain Link Click"
                 eventContext={contexts.Mementos}
               >
-                Base Chain
+                blog post
               </GalleryLink>
               .
             </BaseM>
@@ -113,7 +115,7 @@ export default function MementosPage() {
 
                   <li>
                     Minting will open to all from 
-                    <b>August 22nd 1:00PM through August 31st 11:59PM ET</b>
+                    <b>October 19th 9:00AM ET through November 18th 9:00AM ET</b>
                   </li>
                 </StyledUl>
               </BaseM>
