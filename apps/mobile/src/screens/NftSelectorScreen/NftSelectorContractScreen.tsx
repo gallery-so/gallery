@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
@@ -83,9 +83,16 @@ export function NftSelectorContractScreen() {
     await syncCreatedTokensForExistingContract(contractId);
   }, [syncCreatedTokensForExistingContract, contractId]);
 
-  const handleRefresh = useCallback(() => {
-    refetch({}, { fetchPolicy: 'network-only' });
-  }, [refetch]);
+  const [isRefetching, setIsRefetching] = useState(false);
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefetching(true);
+    try {
+      await refetch({}, { fetchPolicy: 'network-only' });
+    } finally {
+      setIsRefetching(false);
+    }
+  }, [refetch, setIsRefetching]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -146,7 +153,7 @@ export function NftSelectorContractScreen() {
           {isCreator ? (
             <View>
               <AnimatedRefreshIcon
-                isSyncing={isSyncing}
+                isSyncing={isSyncing || isRefetching}
                 onSync={handleSyncTokensForContract}
                 onRefresh={handleRefresh}
                 eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"
