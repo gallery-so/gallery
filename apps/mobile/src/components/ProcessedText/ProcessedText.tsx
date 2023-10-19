@@ -13,8 +13,6 @@ type ProcessedTextProps = {
   mentionsRef?: ProcessedTextFragment$key;
 } & TextProps;
 
-// Makes a raw text value display-ready by converting urls to link components
-// export default function ProcessedText({ text, mentionsRef = [], ...props }: ProcessedTextProps) {
 export default function ProcessedText({ text, mentionsRef = [] }: ProcessedTextProps) {
   const mentions = useFragment(
     graphql`
