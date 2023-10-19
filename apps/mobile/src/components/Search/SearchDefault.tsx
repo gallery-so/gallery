@@ -12,13 +12,14 @@ import { UserSearchResult } from './User/UserSearchResult';
 type Props = {
   queryRef: SearchDefaultFragment$key;
   blurInputFocus: () => void;
+  keyword: string;
 };
 
 type ListItemType =
   | { kind: 'header'; title: string }
   | { kind: 'user'; user: UserSearchResultFragment$key };
 
-export function SearchDefault({ queryRef, blurInputFocus }: Props) {
+export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
   const query = useFragment(
     graphql`
       fragment SearchDefaultFragment on Query {
@@ -35,25 +36,28 @@ export function SearchDefault({ queryRef, blurInputFocus }: Props) {
     queryRef
   );
 
-  const renderItem = useCallback<ListRenderItem<ListItemType>>(({ item }) => {
-    if (item.kind === 'header') {
-      return (
-        <View className="p-4">
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Medium',
-            }}
-            className="text-metal text-xs uppercase"
-          >
-            {item.title}
-          </Typography>
-        </View>
-      );
-    } else {
-      return <UserSearchResult userRef={item.user} />;
-    }
-  }, []);
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(
+    ({ item }) => {
+      if (item.kind === 'header') {
+        return (
+          <View className="p-4">
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Medium',
+              }}
+              className="text-metal text-xs uppercase"
+            >
+              {item.title}
+            </Typography>
+          </View>
+        );
+      } else {
+        return <UserSearchResult userRef={item.user} keyword={keyword} />;
+      }
+    },
+    [keyword]
+  );
 
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];

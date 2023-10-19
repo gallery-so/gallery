@@ -294,16 +294,22 @@ export function SearchResults({
           />
         );
       } else if (item.kind === 'user-search-result') {
-        return <UserSearchResult userRef={item.user} onSelect={onSelect} />;
+        return <UserSearchResult userRef={item.user} onSelect={onSelect} keyword={keyword} />;
       } else if (item.kind === 'gallery-search-result') {
-        return <GallerySearchResult galleryRef={item.gallery} />;
+        return <GallerySearchResult galleryRef={item.gallery} keyword={keyword} />;
       } else if (item.kind === 'community-search-result') {
-        return <CommunitySearchResult communityRef={item.community} onSelect={onSelect} />;
+        return (
+          <CommunitySearchResult
+            communityRef={item.community}
+            onSelect={onSelect}
+            keyword={keyword}
+          />
+        );
       }
 
       return <View />;
     },
-    [onChangeFilter, onSelect, showAllButton]
+    [onChangeFilter, keyword, onSelect, showAllButton]
   );
 
   if (isEmpty) {

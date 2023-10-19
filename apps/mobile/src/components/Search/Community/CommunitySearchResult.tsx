@@ -12,9 +12,10 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
+  keyword: string;
   onSelect?: (item: MentionType) => void;
 };
-export function CommunitySearchResult({ communityRef, onSelect = noop }: Props) {
+export function CommunitySearchResult({ communityRef, keyword, onSelect = noop }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -62,6 +63,7 @@ export function CommunitySearchResult({ communityRef, onSelect = noop }: Props) 
       title={community?.name ?? ''}
       description={community?.description ?? ''}
       variant="Gallery"
+      keyword={keyword}
     />
   );
 }

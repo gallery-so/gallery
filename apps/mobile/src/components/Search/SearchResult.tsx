@@ -7,13 +7,13 @@ import { contexts } from '~/shared/analytics/constants';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
-import { useSearchContext } from './SearchContext';
 
 type Props = {
   title: string;
   description: string;
   variant: 'Gallery' | 'User';
   profilePicture?: ReactNode;
+  keyword: string;
 } & TouchableOpacityProps;
 
 const MAX_DESCRIPTION_CHARACTER = 150;
@@ -27,9 +27,14 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
-export function SearchResult({ title, description, variant, profilePicture, ...props }: Props) {
-  const { keyword } = useSearchContext();
-
+export function SearchResult({
+  title,
+  description,
+  keyword,
+  variant,
+  profilePicture,
+  ...props
+}: Props) {
   const highlightedName = useMemo(() => {
     if (!keyword) {
       return title;
