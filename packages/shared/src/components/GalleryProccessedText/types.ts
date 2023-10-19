@@ -9,7 +9,10 @@ type MentionElement = React.ComponentType<{
 }>;
 type LinkElement = React.ComponentType<{ url: string; value?: string }>;
 
+type BreakElement = React.ComponentType<{}>;
+
 export type SupportedProcessedTextElements = {
+  BreakComponent: BreakElement;
   TextComponent: TextElement;
   MentionComponent: MentionElement;
   LinkComponent: LinkElement;

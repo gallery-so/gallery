@@ -39,6 +39,7 @@ export default function ProcessedText({
       TextComponent={TextComponent}
       LinkComponent={(props) => <LinkComponent {...props} eventContext={eventContext} />}
       MentionComponent={(props) => <MentionComponent {...props} mentionsRef={mentions} />}
+      BreakComponent={() => <br />}
     />
   );
 }

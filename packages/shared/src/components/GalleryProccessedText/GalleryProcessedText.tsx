@@ -20,6 +20,7 @@ type GalleryProcessedTextProps = {
 export default function GalleryProcessedText({
   text,
   mentionsRef = [],
+  BreakComponent,
   TextComponent,
   LinkComponent,
   MentionComponent,
@@ -35,57 +36,58 @@ export default function GalleryProcessedText({
   );
 
   const processedText = useMemo(() => {
-    const markdownElements = getMarkdownLinkElements(text);
-    const urlElements = getUrlElements(text, markdownElements);
-    const mentionElements = getMentionElements(text, mentions);
-
-    const elements = [...markdownElements, ...urlElements, ...mentionElements];
+    const elementsWithBreaks: JSX.Element[] = [];
+    const elements = [
+      ...getMarkdownLinkElements(text),
+      ...getUrlElements(text),
+      ...getMentionElements(text, mentions),
+    ];
 
     // Sort elements based on their start index
     elements.sort((a, b) => a.start - b.start);
 
-    // Construct the final output based on sorted intervals
-    const result: ReactNode[] = [];
     let lastEndIndex = 0;
-
     elements.forEach((element, index) => {
-      // Add text before this element (if any)
-      addTextElement(
-        result,
-        text.substring(lastEndIndex, element.start),
-        'text-before',
-        index,
-        TextComponent
-      );
+      // Split any text containing newlines into parts, inserting BreakComponent between parts
+      const textSegment = text.substring(lastEndIndex, element.start);
+      const textParts = textSegment.split('\n');
+      textParts.forEach((part, partIndex) => {
+        if (part)
+          elementsWithBreaks.push(
+            <TextComponent key={`${index}-part-${partIndex}`}>{part}</TextComponent>
+          );
+        if (partIndex < textParts.length - 1)
+          elementsWithBreaks.push(<BreakComponent key={`${index}-break-${partIndex}`} />);
+      });
+
       // Add the element (either mention, URL, or markdown-link)
-      addLinkElement({ result, element, index, LinkComponent, MentionComponent });
+      addLinkElement({
+        result: elementsWithBreaks,
+        element,
+        index,
+        LinkComponent,
+        MentionComponent,
+      });
       lastEndIndex = element.end;
     });
 
-    // Add any remaining text after the last element
-    addTextElement(
-      result,
-      text.substring(lastEndIndex),
-      'text-after',
-      elements.length,
-      TextComponent
-    );
+    // Handle any remaining text after the last element
+    const remainingText = text.substring(lastEndIndex);
+    const remainingParts = remainingText.split('\n');
+    remainingParts.forEach((part, partIndex) => {
+      if (part)
+        elementsWithBreaks.push(
+          <TextComponent key={`remaining-part-${partIndex}`}>{part}</TextComponent>
+        );
+      if (partIndex < remainingParts.length - 1)
+        elementsWithBreaks.push(<BreakComponent key={`remaining-break-${partIndex}`} />);
+    });
 
-    return result;
-  }, [text, mentions, LinkComponent, TextComponent, MentionComponent]);
+    return elementsWithBreaks;
+  }, [text, mentions, LinkComponent, TextComponent, MentionComponent, BreakComponent]);
 
   return <TextComponent>{processedText}</TextComponent>;
 }
-
-const addTextElement = (
-  result: ReactNode[],
-  value: string,
-  type: 'text-before' | 'text-after',
-  index: number,
-  TextComponent: React.ComponentType<{ children: ReactNode }>
-) => {
-  if (value) result.push(<TextComponent key={`${type}-${index}`}>{value}</TextComponent>);
-};
 
 type addLinkElementProps = {
   result: ReactNode[];
