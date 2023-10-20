@@ -51,7 +51,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
-    <HStack inline key={comment.dbid} gap={4}>
+    <HStack inline key={comment.dbid} gap={4} justify="center">
       {comment.commenter && (
         <StyledUsernameWrapper>
           <UserHoverCard userRef={comment.commenter}>
@@ -95,8 +95,6 @@ const CommenterName = styled.span`
 `;
 
 const CommentText = styled.div`
-  word-wrap: break-word;
-  word-break: break-all;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
