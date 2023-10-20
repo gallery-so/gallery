@@ -1,14 +1,17 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
+import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
@@ -20,7 +23,7 @@ import useMintPhase from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-  const [isMinted, setIsMinted] = useState(false);
+  const [isMinted, setIsMinted] = useState(true);
 
   // Keeping logic commented in case we want to re-introduce it
 
@@ -56,6 +59,22 @@ export default function MementosPage() {
   // }, [address, detectOwnedPosterNftFromOpensea]);
 
   const { push } = useRouter();
+
+  const shareOnGalleryRoute: Route = useMemo(() => {
+    // ~/compose?tokenId=98&contractAddress=0xE480a895DE49B49e37A8f0a8bD7e07FC9844CDb9&chain=Arbitrum&collection_title=Dots&token_title=Dots+%2398&caption=I+just+minted+Dots+%2398+by+wutsit2u+on+Prohibition
+    return {
+      pathname: '/home',
+      query: {
+        composer: 'true',
+        tokenId: '0',
+        contractAddress: GALLERY_MEMENTOS_CONTRACT_ADDRESS,
+        chain: 'Base',
+        collection_title: 'Gallery Mementos',
+        token_title: 'Gallery Mementos: 1K Posts',
+        caption: 'I just minted Gallery Mementos: 1K Posts on Gallery',
+      },
+    };
+  }, []);
 
   return (
     <StyledPage>
@@ -132,7 +151,18 @@ export default function MementosPage() {
           </StyledCallToAction> */}
 
           {isMinted ? (
-            <BaseXL>You've succesfully minted this token.</BaseXL>
+            <VStack gap={16} align="center">
+              <BaseXL>You've succesfully minted this token!</BaseXL>
+              <GalleryLink to={shareOnGalleryRoute}>
+                <Button
+                  eventElementId="Share on Gallery Button"
+                  eventName="Share on Gallery Button Click"
+                  eventContext={contexts.Mementos}
+                >
+                  Share on Gallery
+                </Button>
+              </GalleryLink>
+            </VStack>
           ) : (
             <StyledCallToAction>
               <Countdown />
