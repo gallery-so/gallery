@@ -4,12 +4,22 @@ import {
   isFeatureEnabledFragment$key,
   Role as RelayRole,
 } from '~/generated/isFeatureEnabledFragment.graphql';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { removeNullValues } from '~/relay/removeNullValues';
 
 export enum FeatureFlag {
   KOALA = 'KOALA',
   MENTIONS = 'MENTIONS',
 }
+
+const PROD_FLAGS: Record<FeatureFlag, boolean> = {
+  KOALA: true,
+  MENTIONS: false,
+};
+
+const DEV_FLAGS: Record<FeatureFlag, boolean> = {
+  KOALA: true,
+  MENTIONS: true,
+};
 
 // We need to ignore this fake value from Relay here since we're expecting
 // a caller to pass in a valid value. We are taking extra steps to ensure we're type safe.
@@ -56,6 +66,10 @@ export default function isFeatureEnabled(
     queryRef
   );
 
+  function checkEnvironment() {
+    return isProduction() ? PROD_FLAGS[flag] : DEV_FLAGS[flag];
+  }
+
   function checkRole() {
     const roles = removeNullValues(result.viewer?.user?.roles);
 
@@ -79,7 +93,11 @@ export default function isFeatureEnabled(
     return anyRoleEnablesFeatureFlag;
   }
 
-  const isEnabled = checkRole();
+  const isEnabled = checkEnvironment() || checkRole();
 
   return isEnabled;
+}
+
+function isProduction() {
+  return process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 }
