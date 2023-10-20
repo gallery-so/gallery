@@ -3,7 +3,7 @@ import { useColorScheme } from 'nativewind';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import Markdown from 'react-native-markdown-display';
+
 import { graphql, useFragment } from 'react-relay';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
@@ -30,6 +30,7 @@ import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevant
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
+import { Markdown } from '~/components/Markdown';
 
 type Props = {
   onShare: () => void;
