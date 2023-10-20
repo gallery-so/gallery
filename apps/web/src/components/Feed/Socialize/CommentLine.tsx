@@ -51,7 +51,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
-    <HStack inline key={comment.dbid} gap={4} justify="center">
+    <HStack inline key={comment.dbid} gap={4} >
       {comment.commenter && (
         <StyledUsernameWrapper>
           <UserHoverCard userRef={comment.commenter}>
