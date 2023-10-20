@@ -2,12 +2,12 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useDeferredValue, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { Typography } from '../Typography';
 import { CommunitySearchResult } from './Community/CommunitySearchResult';

@@ -4,7 +4,8 @@ import {
   isFeatureEnabledFragment$key,
   Role as RelayRole,
 } from '~/generated/isFeatureEnabledFragment.graphql';
-import { removeNullValues } from '~/relay/removeNullValues';
+
+import { removeNullValues } from '../relay/removeNullValues';
 
 export enum FeatureFlag {
   KOALA = 'KOALA',

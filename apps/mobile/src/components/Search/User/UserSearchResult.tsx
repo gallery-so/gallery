@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { SearchResult } from '../SearchResult';
 

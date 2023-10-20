@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useMentionableMessageQueryFragment$key } from '~/generated/useMentionableMessageQueryFragment.graphql';
-import useDebounce from '~/shared/hooks/useDebounce';
+
+import isFeatureEnabled, { FeatureFlag } from '../utils/isFeatureEnabled';
+import useDebounce from './useDebounce';
 
 type MentionDataType = {
   interval: {
