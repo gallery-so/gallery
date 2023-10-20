@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/shared/utils/unescape';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -31,6 +30,9 @@ export function CommentLine({ commentRef }: CommentLineProps) {
           username
           ...UserHoverCardFragment
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     commentRef
@@ -46,9 +48,10 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   }, []);
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
-    <HStack key={comment.dbid} gap={4}>
+    <HStack inline key={comment.dbid} gap={4}>
       {comment.commenter && (
         <StyledUsernameWrapper>
           <UserHoverCard userRef={comment.commenter}>
@@ -57,8 +60,9 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         </StyledUsernameWrapper>
       )}
       <CommentText>
-        <Markdown
-          text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+        <ProcessedText
+          text={comment.comment}
+          mentionsRef={nonNullMentions}
           eventContext={contexts.Posts}
         />
       </CommentText>
@@ -84,7 +88,6 @@ const CommenterName = styled.span`
   font-family: ${BODY_FONT_FAMILY};
   vertical-align: bottom;
   font-size: 14px;
-  line-height: 1;
   font-weight: 700;
 
   text-decoration: none;
