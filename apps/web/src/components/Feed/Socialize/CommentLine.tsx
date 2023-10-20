@@ -51,7 +51,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
-    <HStack inline key={comment.dbid} gap={4} >
+    <HStack inline key={comment.dbid} gap={4}>
       {comment.commenter && (
         <StyledUsernameWrapper>
           <UserHoverCard userRef={comment.commenter}>
@@ -70,6 +70,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     </HStack>
   );
 }
+
 const TimeAgoText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 10px;
