@@ -3,7 +3,6 @@ import { useColorScheme } from 'nativewind';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-
 import { graphql, useFragment } from 'react-relay';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
@@ -14,6 +13,7 @@ import { Button } from '~/components/Button';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
+import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
@@ -30,7 +30,6 @@ import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevant
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
-import { Markdown } from '~/components/Markdown';
 
 type Props = {
   onShare: () => void;
