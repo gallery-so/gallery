@@ -23,7 +23,7 @@ import useMintPhase from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-  const [isMinted, setIsMinted] = useState(true);
+  const [isMinted, setIsMinted] = useState(false);
 
   // Keeping logic commented in case we want to re-introduce it
 
