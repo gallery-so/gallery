@@ -23,6 +23,7 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [transactionHash, setTransactionHash] = useState<`0x${string}` | undefined>();
+  const [quantity, setQuantity] = useState(1);
 
   const address = rawAddress?.toLowerCase();
 
@@ -32,9 +33,15 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
     if (contract && address) {
       try {
         const merkleProof = allowlist ? generateMerkleProof(address, Array.from(allowlist)) : [];
-        console.log({ contract: contract.address, tokenId, address, merkleProof });
-        hash = await contract.write.mint([tokenId, address, merkleProof], {
-          value: ethers.utils.parseEther('0.000777'),
+        console.log({
+          contract: contract.address,
+          tokenId,
+          address,
+          amount: quantity,
+          merkleProof,
+        });
+        hash = await contract.write.mint([tokenId, address, quantity, merkleProof], {
+          value: ethers.utils.parseEther(`${quantity * 0.000777}`),
         });
 
         if (hash) {
@@ -86,7 +93,7 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
       setTransactionStatus(TransactionStatus.FAILED);
       setError('The transaction was unsuccesful. Please check Basescan for details.');
     }
-  }, [address, allowlist, contract, onMintSuccess, tokenId]);
+  }, [address, allowlist, contract, onMintSuccess, quantity, tokenId]);
 
   const handleNetworkSwitchError = useCallback(() => {
     setTransactionStatus(TransactionStatus.FAILED);
@@ -167,5 +174,7 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
     error,
     handleClick,
     buttonText,
+    quantity,
+    setQuantity,
   };
 }
