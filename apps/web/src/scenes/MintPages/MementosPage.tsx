@@ -61,7 +61,6 @@ export default function MementosPage() {
   const { push } = useRouter();
 
   const shareOnGalleryRoute: Route = useMemo(() => {
-    // ~/compose?tokenId=98&contractAddress=0xE480a895DE49B49e37A8f0a8bD7e07FC9844CDb9&chain=Arbitrum&collection_title=Dots&token_title=Dots+%2398&caption=I+just+minted+Dots+%2398+by+wutsit2u+on+Prohibition
     return {
       pathname: '/home',
       query: {
