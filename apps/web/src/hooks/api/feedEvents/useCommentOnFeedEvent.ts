@@ -112,6 +112,8 @@ export default function useCommentOnFeedEvent() {
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,
+                // TODO: Add mentions to optimistic response when we implement mentions on web
+                mentions: [],
               },
             },
           },

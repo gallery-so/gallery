@@ -96,7 +96,6 @@ export function CommentBox({
           }}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
-          autoCapitalize="none"
           autoComplete="off"
           autoFocus={autoFocus}
           onBlur={handleDismiss}

@@ -133,10 +133,9 @@ const StyledContainer = styled.span`
   position: relative;
   display: inline-grid;
   cursor: initial;
-  width: 100%;
 `;
 
-const StyledLinkContainer = styled.div`
+const StyledLinkContainer = styled.span`
   display: inline-flex;
 `;
 

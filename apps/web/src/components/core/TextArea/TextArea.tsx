@@ -146,7 +146,6 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   padding: 12px;
   font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
   border: none;
-  border-bottom: 36px solid transparent;
   resize: none;
   font-size: 14px;
   line-height: 20px;

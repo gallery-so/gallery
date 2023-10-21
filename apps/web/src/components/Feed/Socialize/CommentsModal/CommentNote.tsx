@@ -1,20 +1,20 @@
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/shared/utils/unescape';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
@@ -33,12 +33,16 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
           username
           ...ProfilePictureFragment
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     commentRef
   );
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
     <StyledListItem justify="space-between" gap={4}>
@@ -58,8 +62,9 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
           <StyledBaseM as="span">
-            <Markdown
-              text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))}
+            <ProcessedText
+              text={comment.comment ?? ''}
+              mentionsRef={nonNullMentions}
               eventContext={contexts.Social}
             />
           </StyledBaseM>
