@@ -58,7 +58,9 @@ export default function SearchResult({
     const regex = new RegExp(keyword, 'gi');
 
     // Remove bold & link markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
+    const unformattedDescription = description
+      .replace(/\*\*/g, '')
+      .replace(/\[([^[]*)\]\([^)]*\)/g, '$1');
 
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;
