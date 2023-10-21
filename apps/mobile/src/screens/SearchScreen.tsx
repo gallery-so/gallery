@@ -58,7 +58,7 @@ export function SearchScreen() {
             />
           </View>
         ) : (
-          <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} />
+          <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} keyword={keyword} />
         )}
       </GalleryTouchableOpacity>
     </KeyboardAvoidingView>

@@ -203,7 +203,7 @@ export function SearchResults({
     // if there is no active filter, show both curators and galleries
     // but only show a preview of the results
     else if (activeFilter === 'top') {
-      if (hasUsers) {
+      if (hasUsers && searchUsers.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'curator',
@@ -221,7 +221,7 @@ export function SearchResults({
         }
       }
 
-      if (hasGalleries && !isMentionSearch) {
+      if (hasGalleries && !isMentionSearch && searchGalleries.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'gallery',
@@ -240,7 +240,7 @@ export function SearchResults({
         }
       }
 
-      if (hasCommunities) {
+      if (hasCommunities && searchCommunities.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'community',
@@ -293,16 +293,22 @@ export function SearchResults({
           />
         );
       } else if (item.kind === 'user-search-result') {
-        return <UserSearchResult userRef={item.user} onSelect={onSelect} />;
+        return <UserSearchResult userRef={item.user} onSelect={onSelect} keyword={keyword} />;
       } else if (item.kind === 'gallery-search-result') {
-        return <GallerySearchResult galleryRef={item.gallery} />;
+        return <GallerySearchResult galleryRef={item.gallery} keyword={keyword} />;
       } else if (item.kind === 'community-search-result') {
-        return <CommunitySearchResult communityRef={item.community} onSelect={onSelect} />;
+        return (
+          <CommunitySearchResult
+            communityRef={item.community}
+            onSelect={onSelect}
+            keyword={keyword}
+          />
+        );
       }
 
       return <View />;
     },
-    [onChangeFilter, onSelect, showAllButton]
+    [onChangeFilter, keyword, onSelect, showAllButton]
   );
 
   if (isEmpty) {

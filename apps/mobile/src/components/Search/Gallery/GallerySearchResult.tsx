@@ -9,8 +9,9 @@ import { SearchResult } from '../SearchResult';
 
 type Props = {
   galleryRef: GallerySearchResultFragment$key;
+  keyword: string;
 };
-export function GallerySearchResult({ galleryRef }: Props) {
+export function GallerySearchResult({ galleryRef, keyword }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
@@ -35,6 +36,7 @@ export function GallerySearchResult({ galleryRef }: Props) {
       title={gallery?.name ?? ''}
       description={gallery?.owner?.username ?? ''}
       variant="Gallery"
+      keyword={keyword}
     />
   );
 }
