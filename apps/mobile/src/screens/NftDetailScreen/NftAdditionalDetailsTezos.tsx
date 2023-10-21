@@ -131,7 +131,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <View className="flex flex-col pt-4">
                   <DetailExternalLink
                     link={projectUrl}
-                    label="Visit Site"
+                    label="Official Site"
                     showExternalLinkIcon={true}
                     font={{ family: 'ABCDiatype', weight: 'Bold' }}
                   />
