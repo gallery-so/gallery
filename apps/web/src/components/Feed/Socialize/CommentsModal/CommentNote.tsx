@@ -83,6 +83,8 @@ const StyledListItem = styled(ListItem)`
 `;
 
 const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-word;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
