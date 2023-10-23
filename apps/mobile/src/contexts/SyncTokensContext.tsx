@@ -13,6 +13,7 @@ type SyncTokensActions = {
   syncTokens: (chain: Chain) => void;
   syncCreatedTokensForExistingContract: (contractId: string) => void;
   isSyncing: boolean;
+  isSyncingCreatorTokens: boolean;
 };
 
 const SyncTokensActionsContext = createContext<SyncTokensActions | undefined>(undefined);
@@ -88,6 +89,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
     `);
 
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSyncingCreatorTokens, setIsSyncingCreatorTokens] = useState(false);
 
   const { pushToast } = useToastActions();
   const showFailure = useCallback(() => {
@@ -130,7 +132,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const syncCreatedTokensForExistingContract = useCallback(
     async (contractId: string) => {
       try {
-        setIsSyncing(true);
+        setIsSyncingCreatorTokens(true);
         const response = await syncCreatedTokensForExistingContractMutate({
           variables: { input: { contractId } },
         });
@@ -152,7 +154,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       } catch (error) {
         showFailure();
       } finally {
-        setIsSyncing(false);
+        setIsSyncingCreatorTokens(false);
       }
     },
 
@@ -162,10 +164,11 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const value = useMemo(() => {
     return {
       syncTokens: sync,
+      isSyncingCreatorTokens,
       isSyncing,
       syncCreatedTokensForExistingContract: syncCreatedTokensForExistingContract,
     };
-  }, [isSyncing, sync, syncCreatedTokensForExistingContract]);
+  }, [isSyncing, sync, syncCreatedTokensForExistingContract, isSyncingCreatorTokens]);
 
   return (
     <SyncTokensActionsContext.Provider value={value}>{children}</SyncTokensActionsContext.Provider>

@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
@@ -77,22 +77,15 @@ export function NftSelectorContractScreen() {
   const contractName = tokens[0]?.contract?.name;
   const contractId = tokens[0]?.contract?.dbid ?? '';
 
-  const { isSyncing, syncCreatedTokensForExistingContract } = useSyncTokensActions();
+  const { isSyncingCreatorTokens, syncCreatedTokensForExistingContract } = useSyncTokensActions();
 
   const handleSyncTokensForContract = useCallback(async () => {
-    await syncCreatedTokensForExistingContract(contractId);
+    syncCreatedTokensForExistingContract(contractId);
   }, [syncCreatedTokensForExistingContract, contractId]);
 
-  const [isRefetching, setIsRefetching] = useState(false);
-
-  const handleRefresh = useCallback(async () => {
-    setIsRefetching(true);
-    try {
-      await refetch({}, { fetchPolicy: 'network-only' });
-    } finally {
-      setIsRefetching(false);
-    }
-  }, [refetch, setIsRefetching]);
+  const handleRefresh = useCallback(() => {
+    refetch({}, { fetchPolicy: 'network-only' });
+  }, [refetch]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -153,7 +146,7 @@ export function NftSelectorContractScreen() {
           {isCreator ? (
             <View>
               <AnimatedRefreshIcon
-                isSyncing={isSyncing || isRefetching}
+                isSyncing={isSyncingCreatorTokens}
                 onSync={handleSyncTokensForContract}
                 onRefresh={handleRefresh}
                 eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"
