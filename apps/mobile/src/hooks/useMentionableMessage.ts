@@ -123,7 +123,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       }
 
       if (wordAtCursor && wordAtCursor?.length > 1) {
-        setAliasKeyword(wordAtCursor.slice(1)); // Remove the @
+        setAliasKeyword(wordAtCursor);
       }
 
       // Determine how many characters were added or removed
