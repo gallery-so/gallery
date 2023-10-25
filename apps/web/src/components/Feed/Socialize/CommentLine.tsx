@@ -70,6 +70,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     </HStack>
   );
 }
+
 const TimeAgoText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 10px;
@@ -95,8 +96,6 @@ const CommenterName = styled.span`
 `;
 
 const CommentText = styled.div`
-  word-wrap: break-word;
-  word-break: break-all;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
