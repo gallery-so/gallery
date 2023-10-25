@@ -263,6 +263,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 <ProfilePictureBubblesWithCount
                   eventName="Nft Detail Screen Admire Bubbles Pressed"
                   eventElementId="Nft Detail Screen Admire Bubbles"
+                  eventContext={contexts['NFT Detail']}
                   onPress={handleSeeAllAdmires}
                   userRefs={admireUsers}
                   totalCount={totalAdmires}
@@ -271,6 +272,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               <GalleryTouchableOpacity
                 eventElementId={'NFT Detail Token Admire'}
                 eventName={'NFT Detail Token Admire Clicked'}
+                eventContext={contexts['NFT Detail']}
                 onPress={toggleTokenAdmire}
               >
                 <AdmireIcon active={hasViewerAdmiredEvent} />
@@ -383,6 +385,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
           eventElementId={'NFT Detail Token Admire'}
           eventName={'NFT Detail Token Admire Clicked'}
+          eventContext={contexts['NFT Detail']}
           onPress={toggleTokenAdmire}
           text="admire"
         />

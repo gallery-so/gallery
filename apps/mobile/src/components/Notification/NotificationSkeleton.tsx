@@ -81,7 +81,7 @@ export function NotificationSkeleton({
         ... on SomeoneAdmiredYourTokenNotification {
           token {
             ...NotificationPostPreviewWithBoundaryFragment
-           }
+          }
         }
         ... on SomeoneFollowedYouNotification {
           followers(last: 1) {
@@ -170,7 +170,7 @@ export function NotificationSkeleton({
     }
     return null;
   }, [notification]);
-    
+
   const lastFollower = useMemo(() => notification.followers?.edges?.[0]?.node, [notification]);
 
   return (

@@ -358,6 +358,9 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             active={hasViewerAdmiredToken}
             onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
             variant="blue"
+            eventElementId="Nft Detail Admire Token Button"
+            eventName="Nft Detail Admire Token Button Pressed"
+            eventContext={contexts['NFT Detail']}
             onMouseEnter={() => setIsAdmireHovered(true)}
             onMouseLeave={() => setIsAdmireHovered(false)}
           >
@@ -376,7 +379,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
               eventElementId="Create Post Button"
               eventName="Create Post"
               eventContext={contexts['NFT Detail']}
-              onClick={handleCreatePostClick}>
+              onClick={handleCreatePostClick}
+            >
               <HStack gap={8} align="center">
                 <PlusSquareIcon stroke="#FFFFFF" />
                 Create Post

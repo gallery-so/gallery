@@ -156,7 +156,7 @@ const buttonVariants: ButtonVariants = {
         loadingColor: 'white',
       },
       active: {
-        containerClassName: 'bg-black-900 border border-[#001CC1]',
+        containerClassName: 'bg-black-900',
         textClassName: 'text-white',
         loadingColor: 'white',
       },
