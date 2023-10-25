@@ -45,6 +45,7 @@ export type MainTabStackNavigatorParamList = {
   NftSelectorContractScreen: {
     contractAddress: string;
     fullScreen?: boolean;
+    ownerFilter?: 'Collected' | 'Created';
     page: ScreenWithNftSelector;
   };
   SettingsProfile: undefined;

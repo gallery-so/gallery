@@ -42,6 +42,9 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           }
         }
         name
+        contract {
+          dbid
+        }
         contractAddress {
           address
         }
@@ -94,6 +97,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
+            dbid: community.contract?.dbid ?? '',
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
@@ -103,7 +107,14 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [showModal, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [
+    showModal,
+    query,
+    community.name,
+    community.contractAddress?.address,
+    community.contract?.dbid,
+    isMobile,
+  ]);
 
   const { isMemberOfCommunity } = useIsMemberOfCommunity();
 

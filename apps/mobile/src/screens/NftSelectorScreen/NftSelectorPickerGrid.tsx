@@ -222,6 +222,7 @@ export function NftSelectorPickerGrid({
                 key={index}
                 tokenRefs={group.tokens}
                 contractAddress={group.address}
+                ownerFilter={searchCriteria.ownerFilter}
                 screen={screen}
               />
             );
@@ -234,7 +235,7 @@ export function NftSelectorPickerGrid({
         </View>
       );
     },
-    [screen]
+    [screen, searchCriteria.ownerFilter]
   );
 
   if (!rows.length) {
@@ -296,11 +297,12 @@ function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
 type TokenGridProps = {
   style?: ViewProps['style'];
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
+  ownerFilter: 'Created' | 'Collected';
   contractAddress: string;
   screen: ScreenWithNftSelector;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -331,6 +333,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
         navigation.navigate('NftSelectorContractScreen', {
           contractAddress: contractAddress,
           page: screen,
+          ownerFilter: ownerFilter,
           fullScreen: isFullscreen,
         });
       }}
@@ -364,12 +367,13 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
 
 type TokenGroupProps = {
   style?: ViewProps['style'];
+  ownerFilter: 'Collected' | 'Created';
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
   screen: ScreenWithNftSelector;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style, screen }: TokenGroupProps) {
+function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
@@ -396,7 +400,12 @@ function TokenGroup({ tokenRefs, contractAddress, style, screen }: TokenGroupPro
       {tokens.length === 1 ? (
         <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={firstToken} />
       ) : (
-        <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} screen={screen} />
+        <TokenGrid
+          ownerFilter={ownerFilter}
+          contractAddress={contractAddress}
+          tokenRefs={tokens}
+          screen={screen}
+        />
       )}
     </View>
   );
