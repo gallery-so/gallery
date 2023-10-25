@@ -101,7 +101,11 @@ export function AdmireModal({
   const estimatedItemHeight = 50; // assuming each item is around 50px
 
   const estimatedContentHeight = useMemo(() => {
-    return Math.min(admires.length * estimatedItemHeight, 420);
+    if (window.innerWidth <= 768) {
+      return admires.length * estimatedItemHeight;
+    } else {
+      return Math.min(admires.length * estimatedItemHeight, 420);
+    }
   }, [admires.length, estimatedItemHeight]);
 
   return (
