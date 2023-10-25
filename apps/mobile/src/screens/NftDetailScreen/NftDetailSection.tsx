@@ -137,15 +137,13 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   }, [navigation, token.contract?.contractAddress]);
 
   const handleUsernamePress = useCallback(
-    (username: any, contractAddress: any) => {
-      if (username) {
-        track('NFT Detail Collector Name Clicked', {
-          username: username,
-          contractAddress: contractAddress,
-          tokenId: token.tokenId,
-        });
-        navigation.push('Profile', { username: username });
-      }
+    (username: string, contractAddress: string) => {
+      track('NFT Detail Collector Name Clicked', {
+        username: username,
+        contractAddress: contractAddress,
+        tokenId: token.tokenId,
+      });
+      navigation.push('Profile', { username: username });
     },
     [navigation, track, token.tokenId]
   );
@@ -163,15 +161,17 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const creatorAddress =
     token.community?.creator?.__typename === 'ChainAddress' && token.community?.creator?.address;
 
-  const handleOwnerUsernamePress = useCallback(
-    () => handleUsernamePress(token.owner?.username, token.contract?.contractAddress?.address),
-    [handleUsernamePress, token.owner?.username, token.contract?.contractAddress?.address]
-  );
+  const handleOwnerUsernamePress = useCallback(() => {
+    if (token.owner?.username && token.contract?.contractAddress?.address) {
+      handleUsernamePress(token.owner?.username, token.contract?.contractAddress?.address);
+    }
+  }, [handleUsernamePress, token.owner?.username, token.contract?.contractAddress?.address]);
 
-  const handleCreatorUsernamePress = useCallback(
-    () => handleUsernamePress(creatorUsername, creatorAddress),
-    [handleUsernamePress, creatorUsername, creatorAddress]
-  );
+  const handleCreatorUsernamePress = useCallback(() => {
+    if (creatorUsername && creatorAddress) {
+      handleUsernamePress(creatorUsername, creatorAddress);
+    }
+  }, [handleUsernamePress, creatorUsername, creatorAddress]);
 
   const CreatorLink = useMemo(() => {
     const creator = token.community?.creator;
