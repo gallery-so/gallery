@@ -63,10 +63,10 @@ export default function AddEmail() {
     push(userProfileRoute);
   }, [push, track, userProfileRoute]);
 
-  const handleSkip = useCallback(() => {
-    track('Onboarding: add-email Skip click');
-    push(userProfileRoute);
-  }, [push, track, userProfileRoute]);
+  // const handleSkip = useCallback(() => {
+  //   track('Onboarding: add-email Skip click');
+  //   push(userProfileRoute);
+  // }, [push, track, userProfileRoute]);
 
   return (
     <VStack>
@@ -88,9 +88,10 @@ export default function AddEmail() {
       <OnboardingFooter
         step={'add-email'}
         onNext={handleNext}
-        previousTextOverride="Skip"
         isNextEnabled={Boolean(savedEmail)}
-        onPrevious={handleSkip}
+        // lightly enforce restriction to add an email
+        // previousTextOverride="Skip"
+        // onPrevious={handleSkip}
       />
     </VStack>
   );

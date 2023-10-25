@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
+import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
@@ -70,7 +71,14 @@ function Settings({ queryRef, onLogout, header }: Props) {
             <Divider />
 
             <HStack justify="end">
-              <StyledButton variant="warning" onClick={handleSignOutClick}>
+              <StyledButton
+                eventElementId="Sign Out Button"
+                eventName="Sign Out"
+                eventContext={contexts.Authentication}
+                eventFlow={flows['Web Sign Out Flow']}
+                variant="warning"
+                onClick={handleSignOutClick}
+              >
                 Sign Out
               </StyledButton>
             </HStack>

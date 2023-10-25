@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
 
@@ -71,6 +72,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           onPress={handleUsernamePress}
           eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
+          eventContext={contexts.Feed}
           properties={{ variant: 'Feed event author' }}
         >
           {feedEvent.eventData.owner && (
@@ -91,6 +93,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           onPress={handleGalleryNamePress}
           eventElementId="Feed Gallery Name Button"
           eventName="Feed Gallery Name Clicked"
+          eventContext={contexts.Feed}
         >
           <Typography
             className="text-sm"

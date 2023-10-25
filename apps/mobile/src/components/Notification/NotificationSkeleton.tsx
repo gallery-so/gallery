@@ -3,6 +3,7 @@ import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { FollowButton } from '~/components/FollowButton';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -14,6 +15,7 @@ import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkelet
 import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -24,6 +26,7 @@ type Props = PropsWithChildren<{
   queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
+  shouldShowFollowBackButton?: boolean;
 }>;
 
 export function NotificationSkeleton({
@@ -31,12 +34,14 @@ export function NotificationSkeleton({
   children,
   queryRef,
   notificationRef,
+  shouldShowFollowBackButton = false,
   responsibleUserRefs = [],
 }: Props) {
   const query = useFragment(
     graphql`
       fragment NotificationSkeletonQueryFragment on Query {
         ...UserFollowListQueryFragment
+        ...FollowButtonQueryFragment
       }
     `,
     queryRef
@@ -76,6 +81,34 @@ export function NotificationSkeleton({
         ... on SomeoneAdmiredYourTokenNotification {
           token {
             ...NotificationPostPreviewWithBoundaryFragment
+           }
+        }
+        ... on SomeoneFollowedYouNotification {
+          followers(last: 1) {
+            edges {
+              node {
+                ...FollowButtonUserFragment
+              }
+            }
+          }
+        }
+        ... on SomeoneMentionedYouNotification {
+          mentionSource {
+            __typename
+            ... on Post {
+              tokens {
+                ...NotificationPostPreviewWithBoundaryFragment
+              }
+            }
+            ... on Comment {
+              source {
+                ... on Post {
+                  tokens {
+                    ...NotificationPostPreviewWithBoundaryFragment
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -117,6 +150,17 @@ export function NotificationSkeleton({
     ) {
       return notification.post?.tokens?.[0];
     }
+
+    if (notification.__typename === 'SomeoneMentionedYouNotification') {
+      if (notification.mentionSource?.__typename === 'Post') {
+        return notification.mentionSource.tokens?.[0];
+      }
+
+      if (notification.mentionSource?.__typename === 'Comment') {
+        return notification.mentionSource.source?.tokens?.[0];
+      }
+    }
+
     return null;
   }, [notification]);
 
@@ -126,6 +170,8 @@ export function NotificationSkeleton({
     }
     return null;
   }, [notification]);
+    
+  const lastFollower = useMemo(() => notification.followers?.edges?.[0]?.node, [notification]);
 
   return (
     <GalleryTouchableOpacity
@@ -133,20 +179,31 @@ export function NotificationSkeleton({
       className="flex flex-row justify-between p-4"
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
+      eventContext={contexts.Notifications}
+      properties={{ type: notification.__typename }}
     >
-      <View className="flex-1 flex-row space-x-2 items-center">
-        <ProfilePictureBubblesWithCount
-          eventElementId="Notification Row PFP Bubbles"
-          eventName="Notification Row PFP Bubbles Pressed"
-          onPress={handleBubblesPress}
-          userRefs={responsibleUsers}
-          totalCount={responsibleUserRefs.length}
-          size="md"
-        />
-
+      <View className="flex-1 flex-row items-center">
+        <View className="mr-2">
+          <ProfilePictureBubblesWithCount
+            eventElementId="Notification Row PFP Bubbles"
+            eventName="Notification Row PFP Bubbles Pressed"
+            eventContext={contexts.Notifications}
+            onPress={handleBubblesPress}
+            userRefs={responsibleUsers}
+            totalCount={responsibleUserRefs.length}
+            size="md"
+          />
+        </View>
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
-      <View className="flex flex-row items-center justify-between space-x-2">
+
+      {shouldShowFollowBackButton && lastFollower && (
+        <View className="flex justify-center">
+          <FollowButton queryRef={query} userRef={lastFollower} />
+        </View>
+      )}
+
+      <View className="flex flex-row items-center justify-between ${postToken ? 'space-x-2' : ''}">
         {postToken ? (
           <View className="w-[56px] h-[56px]">
             <NotificationPostPreviewWithBoundary tokenRef={postToken} />
@@ -161,7 +218,6 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-
         <View
           className={`w-[35px] flex-row space-x-2 items-center ${
             !notification.seen ? 'justify-between' : 'justify-end'

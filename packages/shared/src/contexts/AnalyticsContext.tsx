@@ -12,6 +12,10 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 
+import { AnalyticsEventContextType, AnalyticsEventFlowType } from '../analytics/constants';
+import { noop } from '../utils/noop';
+import { removeNullishValues } from '../utils/removeNullishValues';
+
 type EventProps = Record<string, unknown>;
 
 export type GalleryElementTrackingProps = {
@@ -19,9 +23,17 @@ export type GalleryElementTrackingProps = {
   // this should be unique across the app.
   // e.g. `Feed Username Button`
   eventElementId: string | null;
-  // name of the action. this can be duplicated.
+  // a generalized name of the action. this can be duplicated
+  // across several elements, if several elements can trigger
+  // the same event.
   // e.g. `Follow User`
   eventName: string | null;
+  // a bucket, category, or general location for the event.
+  // e.g. `Authentication`, `Web Editor`
+  eventContext: AnalyticsEventContextType | null;
+  // an explicit user flow that the event falls into
+  // e.g. `Add Wallet Flow` or `Post Flow`
+  eventFlow?: AnalyticsEventFlowType | null;
   // custom metadata.
   // e.g. { variant: 'Worldwide' }
   properties?: EventProps;
@@ -35,7 +47,7 @@ export const useTrack = () => {
   const track = useContext(AnalyticsContext);
 
   if (!track) {
-    return () => {};
+    return noop;
   }
 
   return track;
@@ -67,6 +79,8 @@ type Props = {
 
 const AnalyticsProvider = memo(({ children, identify, track, registerSuperProperties }: Props) => {
   const relayEnvironment = useRelayEnvironment();
+  // @ts-expect-error: not tracking beta tester for now
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isBetaTester, setIsBetaTester] = useState<boolean>(false);
 
   useEffect(() => {
@@ -89,16 +103,17 @@ const AnalyticsProvider = memo(({ children, identify, track, registerSuperProper
 
         if (user.roles?.includes('BETA_TESTER')) {
           setIsBetaTester(true);
-          registerSuperProperties({ isBetaTester: true });
+          // not tracking beta tester for now
+          // registerSuperProperties({ isBetaTester: true });
         }
       });
   }, [identify, registerSuperProperties, relayEnvironment]);
 
   const handleTrack: HookTrackFunction = useCallback(
     (eventName, eventProps = {}) => {
-      track(eventName, { ...eventProps, isBetaTester });
+      track(eventName, removeNullishValues(eventProps));
     },
-    [isBetaTester, track]
+    [track]
   );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;

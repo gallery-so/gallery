@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { Typography } from '../../components/Typography';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
@@ -28,6 +30,7 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
       onPress={onPress}
       eventElementId="Followers Tab"
       eventName="Followers Tab Clicked"
+      eventContext={contexts.Social}
       properties={{ variant: route }}
     >
       <Typography

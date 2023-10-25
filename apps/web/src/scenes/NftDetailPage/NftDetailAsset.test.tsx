@@ -229,6 +229,7 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
     token: {
       __typename: 'Token',
       id: 'Token:testTokenId',
+      tokenId: 'testTokenId',
       dbid: 'testTokenId',
       name: 'Test Token Name',
       chain: Chain.Ethereum,

@@ -14,6 +14,7 @@ import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { OrderedListItem, Typography } from '~/components/Typography';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../../components/Button';
 import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
@@ -109,6 +110,7 @@ export function LandingScreen() {
           <Button
             eventElementId="Scan QR Code Button"
             eventName="Scan QR Code Button Clicked"
+            eventContext={contexts.Authentication}
             onPress={handleBottomSheetQRCodePress}
             icon={<QRCodeIcon />}
             text="SCAN QR CODE"
@@ -128,8 +130,9 @@ export function LandingScreen() {
               onPress={toggleOption}
               variant="secondary"
               icon={<EllipsesIcon />}
-              eventElementId={null}
-              eventName={null}
+              eventElementId="Secondary Login Options Ellipses"
+              eventName="Display Secondary Login Options"
+              eventContext={contexts.Authentication}
             />
 
             <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} />

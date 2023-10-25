@@ -10,6 +10,7 @@ import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewError
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -99,6 +100,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
       style={[style]}
       eventElementId="Trending User Card"
       eventName="Trending User Card Clicked"
+      eventContext={contexts.Explore}
     >
       <View className="mb-2 flex h-20 flex-row space-x-[2]">
         {tokenPreviews.map((tokenPreview, index) => {

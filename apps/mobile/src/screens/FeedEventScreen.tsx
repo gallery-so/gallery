@@ -9,6 +9,7 @@ import { FeedEventRefetchableFragmentQuery } from '~/generated/FeedEventRefetcha
 import { FeedEventScreenFragment$key } from '~/generated/FeedEventScreenFragment.graphql';
 import { FeedEventScreenQuery } from '~/generated/FeedEventScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { noop } from '~/shared/utils/noop';
 
 import { useRefreshHandle } from '../hooks/useRefreshHandle';
 
@@ -50,7 +51,7 @@ function FeedEventScreenInner() {
       <FeedList
         queryRef={query}
         isLoadingMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={noop}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
         feedEventRefs={[query.feedEventById]}

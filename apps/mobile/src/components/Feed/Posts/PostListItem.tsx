@@ -13,6 +13,7 @@ import { Typography } from '~/components/Typography';
 import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graphql';
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
@@ -32,7 +33,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
         tokens {
           dbid
           community {
-            name
             contractAddress {
               address
               chain
@@ -142,6 +142,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           onPress={handleCommunityPress}
           eventElementId="Post Community Pill"
           eventName="Clicked Post Community Pill"
+          eventContext={contexts.Posts}
           properties={{ communityName: contractName }}
         >
           <Pill className="dark:border-black-500">

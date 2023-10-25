@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
@@ -71,9 +72,11 @@ export function HomeNavbar({ queryRef }: Props) {
         <HStack gap={8}>
           <NavbarLink
             active={pathname === curatedRoute.pathname}
-            // @ts-expect-error We're not using the legacy Link
-            href={route(curatedRoute)}
+            to={curatedRoute}
             onClick={handleTrendingClick}
+            eventElementId="Home Navbar Link"
+            eventName="Home Navbar Link Click"
+            eventContext={contexts.Feed}
           >
             {isLoggedIn ? 'For You' : 'Trending'}
           </NavbarLink>
@@ -81,9 +84,11 @@ export function HomeNavbar({ queryRef }: Props) {
           {isLoggedIn && (
             <NavbarLink
               active={pathname === followingRoute.pathname}
-              // @ts-expect-error We're not using the legacy Link
-              href={route(followingRoute)}
+              to={followingRoute}
               onClick={handleFollowingTabClick}
+              eventElementId="Home Navbar Link"
+              eventName="Home Navbar Link Click"
+              eventContext={contexts.Feed}
             >
               Following
             </NavbarLink>
@@ -92,9 +97,11 @@ export function HomeNavbar({ queryRef }: Props) {
           {(!isLoggedIn || isAdminRole(query)) && (
             <NavbarLink
               active={pathname === latestRoute.pathname}
-              // @ts-expect-error We're not using the legacy Link
-              href={route(latestRoute)}
+              to={latestRoute}
               onClick={handleLatestTabClick}
+              eventElementId="Home Navbar Link"
+              eventName="Home Navbar Link Click"
+              eventContext={contexts.Feed}
             >
               Latest
             </NavbarLink>
@@ -102,9 +109,11 @@ export function HomeNavbar({ queryRef }: Props) {
 
           <NavbarLink
             active={pathname === exploreRoute.pathname}
-            // @ts-expect-error We're not using the legacy Link
-            href={route(exploreRoute)}
+            to={exploreRoute}
             onClick={handleFeaturedModeClick}
+            eventElementId="Home Navbar Link"
+            eventName="Home Navbar Link Click"
+            eventContext={contexts.Feed}
           >
             Explore
           </NavbarLink>

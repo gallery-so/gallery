@@ -6,7 +6,6 @@ import { GlobalBanner } from '~/components/core/GlobalBanner/GlobalBanner';
 import { UserExperienceType } from '~/generated/enums';
 import { MobileBetaUpsellFragment$key } from '~/generated/MobileBetaUpsellFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import isIOS from '~/utils/isIOS';
 
@@ -49,8 +48,6 @@ export default function MobileBetaUpsell({
   const isAuthenticated = Boolean(query.viewer?.user?.id);
   const { push } = useRouter();
 
-  const track = useTrack();
-
   const [isBannerExperienced, setBannerExperienced] = useExperience({
     type: experienceFlag,
     queryRef: query,
@@ -61,19 +58,12 @@ export default function MobileBetaUpsell({
   }, [setBannerExperienced]);
 
   const handleActionClick = useCallback(() => {
-    // TODO: standardize this tracking across all buttons, chips, and icons, like mobile
-    track('Button Click', {
-      id: 'Banner Button',
-      name: 'Global Banner Button Clicked',
-      variant: 'default',
-    });
-
     push('/mobile');
 
     if (dismissOnActionComponentClick) {
       hideBanner();
     }
-  }, [dismissOnActionComponentClick, hideBanner, push, track]);
+  }, [dismissOnActionComponentClick, hideBanner, push]);
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -83,11 +73,14 @@ export default function MobileBetaUpsell({
 
   // TEMPORARY BANNER FOR IOS BETA ANNOUNCEMENT
   if (isIOS() && isMobile) {
-    return <MobileBetaReleaseBanner handleCTAClick={handleActionClick} />;
+    return (
+      <MobileBetaReleaseBanner handleCTAClick={handleActionClick} experienceFlag={experienceFlag} />
+    );
   }
 
   return (
     <GlobalBanner
+      experienceFlag={experienceFlag}
       title={title}
       description={text}
       onClose={hideBanner}

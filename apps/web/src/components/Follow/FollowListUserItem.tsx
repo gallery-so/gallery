@@ -10,9 +10,11 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFragment.graphql';
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/shared/utils/regex';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import UserHoverCard from '../HoverCard/UserHoverCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
@@ -80,6 +82,10 @@ export default function FollowListUserItem({
       href={`/${user.username}`}
       onClick={handleClick}
       fadeUsernames={fadeUsernames}
+      eventElementId="Follow List User Item"
+      eventName="Follow List User Item Click"
+      // TODO: analytics should be more granular
+      eventContext={contexts.Social}
     >
       <HStack gap={8} align="center">
         <ProfilePicture userRef={user} size="md" />
@@ -89,7 +95,11 @@ export default function FollowListUserItem({
             <StyledBaseM>
               {formattedUserBio && (
                 <StyledContainer justify="center">
-                  <Markdown text={formattedUserBio} />
+                  <Markdown
+                    text={formattedUserBio}
+                    // TODO: analytics should be more granular
+                    eventContext={contexts.Social}
+                  />
                 </StyledContainer>
               )}
             </StyledBaseM>
@@ -103,7 +113,7 @@ export default function FollowListUserItem({
   );
 }
 
-const StyledListItem = styled.a<{ fadeUsernames: boolean }>`
+const StyledListItem = styled(GalleryLink)<{ fadeUsernames: boolean }>`
   text-decoration: none;
   display: flex;
   justify-content: space-between;

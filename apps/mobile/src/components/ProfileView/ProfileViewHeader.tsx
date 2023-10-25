@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useIsChristinaFromLens } from '~/shared/hooks/useIsChristinaFromLens';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -154,6 +155,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         routes={routes}
         eventElementId="Profile Tab"
         eventName="Profile Tab Clicked"
+        eventContext={contexts.UserGallery}
       />
     </View>
   );

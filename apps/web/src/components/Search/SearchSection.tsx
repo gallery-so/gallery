@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
@@ -37,7 +38,14 @@ export default function SearchSection({
         <StyledTitle>{title}</StyledTitle>
 
         {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-          <StyledInteractiveLink onClick={onShowAll}>Show all</StyledInteractiveLink>
+          <StyledGalleryLink
+            onClick={onShowAll}
+            eventElementId="Search Show All"
+            eventName="Search Show All Click"
+            eventContext={contexts.Search}
+          >
+            Show all
+          </StyledGalleryLink>
         )}
       </StyledResultHeader>
       <VStack>{children}</VStack>
@@ -54,7 +62,7 @@ const StyledResultHeader = styled(HStack)`
   padding: 0 12px;
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const StyledGalleryLink = styled(GalleryLink)`
   font-size: 12px;
   line-height: 16px;
 `;

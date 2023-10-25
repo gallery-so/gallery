@@ -10,6 +10,7 @@ import { PostRefetchableFragmentQuery } from '~/generated/PostRefetchableFragmen
 import { PostScreenFragment$key } from '~/generated/PostScreenFragment.graphql';
 import { PostScreenQuery } from '~/generated/PostScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { noop } from '~/shared/utils/noop';
 
 function PostScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Post'>>();
@@ -49,7 +50,7 @@ function PostScreenInner() {
       <FeedList
         queryRef={query}
         isLoadingMore={false}
-        onLoadMore={() => {}}
+        onLoadMore={noop}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
         feedEventRefs={[query.postById]}

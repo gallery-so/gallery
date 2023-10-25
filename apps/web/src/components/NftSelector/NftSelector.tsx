@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
@@ -8,7 +9,8 @@ import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFrag
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -32,6 +34,7 @@ type Props = {
   onSelectToken: (tokenId: string) => void;
   headerText: string;
   preSelectedContract?: NftSelectorContractType;
+  eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
@@ -44,7 +47,7 @@ export function NftSelector(props: Props) {
   );
 }
 
-function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Props) {
+function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, eventFlow }: Props) {
   const query = useLazyLoadQuery<NftSelectorQuery>(
     graphql`
       query NftSelectorQuery {
@@ -82,6 +85,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
             ownerIsCreator
 
             contract {
+              dbid
               name
             }
 
@@ -99,7 +103,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
   >({
@@ -117,6 +120,19 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     selectedContract,
     setSelectedContract,
   } = usePostComposerContext();
+
+  const track = useTrack();
+
+  const handleSelectContract = useCallback(
+    (contract: NftSelectorContractType) => {
+      track('Select Contract on Post Composer Modal', {
+        context: contexts.Posts,
+        flow: eventFlow,
+      });
+      setSelectedContract(contract);
+    },
+    [eventFlow, setSelectedContract, track]
+  );
 
   useEffect(() => {
     if (preSelectedContract) {
@@ -198,7 +214,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(network, query);
 
-  const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
@@ -208,14 +223,33 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
       return;
     }
 
-    track('NFT Selector: Clicked Refresh');
+    track('NFT Selector: Clicked Refresh', {
+      context: contexts.Posts,
+      flow: eventFlow,
+    });
 
     if (filterType === 'Hidden') {
       return;
     }
 
     await syncTokens({ type: filterType, chain: network });
-  }, [refreshDisabled, track, filterType, syncTokens, network]);
+  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
+
+  const [syncCreatedTokensForExistingContract, isContractRefreshing] =
+    useSyncCreatedTokensForExistingContract();
+  const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
+
+  const handleCreatorRefreshContract = useCallback(async () => {
+    if (!selectedContract?.dbid) {
+      return;
+    }
+    track('NFT Selector: Clicked Sync Creator Tokens For Existing Contract', {
+      id: 'Refresh Single Created Tokens Contract Button',
+      context: contexts.Posts,
+    });
+
+    await syncCreatedTokensForExistingContract(selectedContract?.dbid);
+  }, [selectedContract?.dbid, track, syncCreatedTokensForExistingContract]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -257,8 +291,26 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
         {selectedContract ? (
           <StyledHeaderContainer justify="space-between" align="center">
             <StyledTitleText>{selectedContract?.title}</StyledTitleText>
+            <HStack align="center">
+              <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <IconContainer
+                disabled={contractRefreshDisabled}
+                onClick={handleCreatorRefreshContract}
+                size="xs"
+                variant="default"
+                icon={<RefreshIcon />}
+                ref={reference}
+                {...getReferenceProps()}
+              />
 
-            <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <NewTooltip
+                {...getFloatingProps()}
+                style={{ ...floatingStyle }}
+                ref={floating}
+                whiteSpace="pre-line"
+                text={`Refresh Collection`}
+              />
+            </HStack>
           </StyledHeaderContainer>
         ) : (
           <DropdownsContainer gap={4} align="center" disabled={isSearching}>
@@ -304,11 +356,12 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
         <NftSelectorView
           tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
-          onSelectContract={setSelectedContract}
+          onSelectContract={handleSelectContract}
+          onSelectToken={onSelectToken}
+          eventFlow={eventFlow}
           selectedNetworkView={network}
           hasSearchKeyword={isSearching}
           handleRefresh={handleRefresh}
-          onSelectToken={onSelectToken}
         />
       )}
     </StyledNftSelectorModal>

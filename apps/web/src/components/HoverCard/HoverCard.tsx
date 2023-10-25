@@ -11,17 +11,18 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { MouseEventHandler, Suspense, useCallback, useEffect, useId, useState } from 'react';
 import { PreloadedQuery } from 'react-relay';
 import { OperationType } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
 
 import breakpoints, { pageGutter } from '../core/breakpoints';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { SelfCenteredSpinner } from '../core/Spinner/Spinner';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
@@ -81,9 +82,15 @@ export default function HoverCard<T extends OperationType>({
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <StyledLink href={hoverableElementHref} onClick={handleClick}>
+        <GalleryLink
+          to={hoverableElementHref}
+          onClick={handleClick}
+          eventElementId="Hover Card Hoverable Element"
+          eventName="Hover Card Hoverable Element Click"
+          eventContext={contexts['Hover Card']}
+        >
           {HoverableElement}
-        </StyledLink>
+        </GalleryLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
@@ -126,16 +133,10 @@ const StyledContainer = styled.span`
   position: relative;
   display: inline-grid;
   cursor: initial;
-  width: 100%;
 `;
 
-const StyledLinkContainer = styled.div`
+const StyledLinkContainer = styled.span`
   display: inline-flex;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  width: 100%;
 `;
 
 const StyledCardContainer = styled.div`

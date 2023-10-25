@@ -54,12 +54,12 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
   const showMarfaCheckIn = routeParams?.showMarfaCheckIn ?? false;
 
   const curatedFeed = query.data.curatedFeed;
 
-  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
   const [showWelcome, setShowWelcome] = useState(false);
 
   const { isNewUser } = route.params ?? {};

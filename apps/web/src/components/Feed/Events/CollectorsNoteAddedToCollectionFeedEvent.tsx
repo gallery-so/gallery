@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -13,6 +12,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -104,9 +104,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                 </HStack>
               )}
               <BaseM>added a description to {collectionName ? ' ' : ' their collection'}</BaseM>
-              <Link href={collectionPagePath} passHref legacyBehavior>
-                <StyledEventLabel>{collectionName}</StyledEventLabel>
-              </Link>
+              <StyledEventLabel>{collectionName}</StyledEventLabel>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </StyledEventText>
           </StyledEventHeader>
@@ -117,7 +115,11 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             isSubEvent={isSubEvent}
           >
             <StyledQuote>
-              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+              <Markdown
+                text={unescape(event.newCollectorsNote ?? '')}
+                inheritLinkStyling
+                eventContext={contexts.Feed}
+              />
             </StyledQuote>
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote)}

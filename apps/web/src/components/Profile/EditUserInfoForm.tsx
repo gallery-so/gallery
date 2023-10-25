@@ -32,7 +32,7 @@ type Props = {
 
 export const BIO_MAX_CHAR_COUNT = 600;
 
-function UserInfoForm({
+function EditUserInfoForm({
   className,
   onSubmit,
   username,
@@ -145,7 +145,7 @@ function UserInfoForm({
       <HStack gap={16} align="center">
         {!mode && (
           <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
-            <ProfilePicture userRef={user} size="xl" isEditable hasInset />
+            <ProfilePicture userRef={user} size="xl" isEditable hasInset clickDisabled />
             <ProfilePictureDropdown
               open={showPfpDropdown}
               onClose={handleClosePfpDropdown}
@@ -196,4 +196,4 @@ const StyledProfilePictureContainer = styled.div`
   position: relative;
 `;
 
-export default UserInfoForm;
+export default EditUserInfoForm;

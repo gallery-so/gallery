@@ -11,7 +11,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { NewTokensTokenPreviewFragment$key } from '~/generated/NewTokensTokenPreviewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 
@@ -41,7 +41,6 @@ export function NewTokens({ notificationRef, onClose }: Props) {
 
   const { token } = notification;
   const isMobile = useIsMobileWindowWidth();
-  const track = useTrack();
   const { showModal } = useModalActions();
 
   if (token?.__typename !== 'Token') {
@@ -51,14 +50,18 @@ export function NewTokens({ notificationRef, onClose }: Props) {
   const quantity = notification.count ?? 1;
 
   const handleCreatePostClick = useCallback(() => {
-    track('NFT Detail: Clicked Create Post');
     showModal({
-      content: <PostComposerModal tokenId={token.dbid} />,
+      content: (
+        <PostComposerModal
+          tokenId={token.dbid}
+          eventFlow={flows['Web Notifications Post Create Flow']}
+        />
+      ),
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
     onClose();
-  }, [isMobile, onClose, showModal, token, track]);
+  }, [isMobile, onClose, showModal, token]);
 
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
@@ -79,7 +82,13 @@ export function NewTokens({ notificationRef, onClose }: Props) {
         </VStack>
       </HStack>
 
-      <StyledPostButton variant="primary" onClick={handleCreatePostClick}>
+      <StyledPostButton
+        eventElementId="Create Post With Minted Token Button"
+        eventName="Create Post With Minted Token"
+        eventContext={contexts.Notifications}
+        variant="primary"
+        onClick={handleCreatePostClick}
+      >
         Post
       </StyledPostButton>
     </StyledNotificationContent>

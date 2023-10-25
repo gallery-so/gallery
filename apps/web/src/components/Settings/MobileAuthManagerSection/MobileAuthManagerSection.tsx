@@ -2,11 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import QRCode from '~/components/QRCode/QRCode';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import SettingsRowDescription from '../SettingsRowDescription';
@@ -31,8 +32,23 @@ export default function MobileAuthManagerSection() {
         </SettingsRowDescription>
       </VStack>
       <VStack justify="center" align="start" gap={8}>
-        <Button onClick={handleDisplayMobileAuthModal}>View QR Code</Button>
-        <InteractiveLink to={{ pathname: '/mobile' }}>Learn more about the app</InteractiveLink>
+        <Button
+          eventElementId="View Mobile Auth QR Code Button"
+          eventName="View Mobile Auth QR Code"
+          eventContext={contexts.Authentication}
+          eventFlow={flows['Mobile Login Flow']}
+          onClick={handleDisplayMobileAuthModal}
+        >
+          View QR Code
+        </Button>
+        <GalleryLink
+          to={{ pathname: '/mobile' }}
+          eventElementId="Learn More Mobile App"
+          eventName="Learn More Mobile App Click"
+          eventContext={contexts.Authentication}
+        >
+          Learn more about the app
+        </GalleryLink>
       </VStack>
     </VStack>
   );

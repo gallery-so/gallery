@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -13,6 +12,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -88,13 +88,17 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
                   </HStack>
                 )}{' '}
                 made updates to {collectionName ? ' ' : 'their collection'}
-                <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                {collectionName}
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
           </StyledEventHeader>
           <StyledQuote>
-            <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+            <Markdown
+              text={unescape(event.newCollectorsNote ?? '')}
+              inheritLinkStyling
+              eventContext={contexts.Feed}
+            />
           </StyledQuote>
           <VStack gap={8}>
             <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />

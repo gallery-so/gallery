@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
@@ -40,7 +41,12 @@ export default function Comments({ commentRefs, totalComments, onCommentPress }:
         <RemainingCommentCount totalCount={totalComments} onPress={onCommentPress} />
       )}
       {totalComments === 0 && (
-        <GalleryTouchableOpacity onPress={onCommentPress} eventElementId={null} eventName={null}>
+        <GalleryTouchableOpacity
+          onPress={onCommentPress}
+          eventElementId="Add Comment Button"
+          eventName="Add Comment"
+          eventContext={contexts.Posts}
+        >
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-sm text-shadow"

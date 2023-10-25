@@ -5,6 +5,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
@@ -55,10 +56,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <DetailLabelText>CONTRACT</DetailLabelText>
               <LinkableAddress
                 chainAddressRef={contract.contractAddress}
-                type="NFT Detail Contract Address"
                 textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
                 style={{ paddingTop: 2 }}
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                eventElementId="NFT Detail Contract Address"
+                eventName="NFT Detail Contract Address Press"
+                eventContext={contexts['NFT Detail']}
               />
             </DetailSection>
           )}
@@ -86,7 +89,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                 <DetailExternalLink
                   link={openseaUrl}
                   label="OpenSea"
-                  trackingLabel="NFT Detail View on Opensea"
                   showExternalLinkIcon={true}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
@@ -101,7 +103,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                 <DetailExternalLink
                   link={mirrorUrl}
                   label="Mirror"
-                  trackingLabel="NFT Detail View on Mirror"
                   showExternalLinkIcon={true}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
@@ -114,8 +115,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <View className="flex flex-col">
                 <DetailExternalLink
                   link={projectUrl}
-                  label="Visit Site"
-                  trackingLabel="NFT Detail View on External Link"
+                  label="Official Site"
                   showExternalLinkIcon={true}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
@@ -129,7 +129,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                 <DetailExternalLink
                   link={prohibitionUrl}
                   label="Prohibition"
-                  trackingLabel="NFT Detail View on Prohibition"
                   showExternalLinkIcon={true}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />

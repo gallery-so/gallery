@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,11 +8,10 @@ import { SidebarPfpFragment$key } from '~/generated/SidebarPfpFragment.graphql';
 
 type Props = {
   userRef: SidebarPfpFragment$key;
-  href: Route;
   onClick: () => void;
 };
 
-export default function SidebarPfp({ userRef, href, onClick }: Props) {
+export default function SidebarPfp({ userRef, onClick }: Props) {
   const user = useFragment(
     graphql`
       fragment SidebarPfpFragment on GalleryUser {
@@ -27,17 +24,10 @@ export default function SidebarPfp({ userRef, href, onClick }: Props) {
     useTooltipHover({ placement: 'right' });
   return (
     <StyledSidebarPfp onClick={onClick}>
-      <Link href={href}>
-        <StyledProfilePictureWrapper {...getReferenceProps()} ref={reference}>
-          <ProfilePicture size="md" userRef={user} />
-        </StyledProfilePictureWrapper>
-        <NewTooltip
-          {...getFloatingProps()}
-          style={floatingStyle}
-          ref={floating}
-          text="My profile"
-        />
-      </Link>
+      <StyledProfilePictureWrapper {...getReferenceProps()} ref={reference}>
+        <ProfilePicture size="md" userRef={user} />
+      </StyledProfilePictureWrapper>
+      <NewTooltip {...getFloatingProps()} style={floatingStyle} ref={floating} text="My profile" />
     </StyledSidebarPfp>
   );
 }

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../core/Button/Button';
 import { HStack } from '../core/Spacer/Stack';
@@ -52,7 +53,14 @@ export default function DeleteGalleryConfirmation({ galleryId, isLastGallery, on
         <BaseM>Are you sure you want to delete this gallery?</BaseM>
       </StyledTextWrapper>
       <HStack justify="flex-end">
-        <StyledButton onClick={handleConfirmClick} disabled={isLoading} pending={isLoading}>
+        <StyledButton
+          eventElementId="Delete Gallery Button"
+          eventName="Delete Gallery"
+          eventContext={contexts.Editor}
+          onClick={handleConfirmClick}
+          disabled={isLoading}
+          pending={isLoading}
+        >
           Delete
         </StyledButton>
       </HStack>

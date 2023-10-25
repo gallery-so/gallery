@@ -53,6 +53,8 @@ export function Select<T extends string>({
       onPress={handlePress}
       eventName={`${eventElementId} opened`}
       eventElementId={eventElementId}
+      // TODO analytics - prop drill
+      eventContext={null}
       className="bg-faint dark:bg-black-500 h-7 py-1 px-2 flex flex-row items-center justify-between"
     >
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
@@ -98,6 +100,8 @@ export function Options<ValueType extends string>({
             key={option.id}
             eventElementId={eventElementId}
             eventName={`${eventElementId} Option Pressed`}
+            // TODO analytics - prop drill
+            eventContext={null}
             properties={{ value: option.id }}
             onPress={() => onChange(option.id)}
             className={clsx('h-12 flex flex-row items-center justify-between', {

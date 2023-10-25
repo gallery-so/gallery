@@ -10,6 +10,7 @@ import EmailManager from '~/components/Email/EmailManager';
 import useUpdateEmailNotificationSettings from '~/components/Email/useUpdateEmailNotificationSettings';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageEmailSectionFragment$key } from '~/generated/ManageEmailSectionFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 
@@ -149,10 +150,16 @@ export default function ManageEmailSection({ queryRef }: Props) {
         </HStack>
       </VStack>
       <StyledButtonContainer gap={12}>
-        {shouldDisplayAddEmailInput && userEmail ? (
+        {shouldDisplayAddEmailInput ? (
           <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
         ) : (
-          <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
+          <StyledButton
+            eventElementId="Begin Add Email Address Button"
+            eventName="Begin Add Email Address"
+            eventContext={contexts.Email}
+            variant="secondary"
+            onClick={handleOpenEmailManager}
+          >
             add email address
           </StyledButton>
         )}

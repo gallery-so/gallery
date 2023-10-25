@@ -4,9 +4,10 @@ import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 
-import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { CommunityPostBottomSheetFragment$key } from '~/generated/CommunityPostBottomSheetFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../Button';
 import {
@@ -38,7 +39,7 @@ function CommunityPostBottomSheet(
   );
 
   const { bottom } = useSafeAreaPadding();
-  const { isSyncing, syncTokens } = useSyncTokenstActions();
+  const { isSyncing, syncTokens } = useSyncTokensActions();
   const { pushToast } = useToastActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -105,15 +106,22 @@ function CommunityPostBottomSheet(
               refreshing your collection.
             </Typography>
           </Text>
-          <Button text="Ok" onPress={closeBottomSheet} eventElementId={null} eventName={null} />
+          <Button
+            text="Ok"
+            onPress={closeBottomSheet}
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          />
           <Button
             text="Refresh collection"
             variant="secondary"
             loading={isSyncing}
             onPress={handleSync}
             icon={<RefreshIcon />}
-            eventElementId={null}
-            eventName={null}
+            eventElementId="Refresh Tokens From Community Screen Button"
+            eventName="Refresh Tokens From Community Screen"
+            eventContext={contexts.Posts}
           />
         </View>
       </View>

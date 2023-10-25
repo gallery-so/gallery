@@ -7,12 +7,13 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import TwitterIcon from '~/icons/TwitterIcon';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
@@ -94,7 +95,14 @@ export default function TwitterSetting({ queryRef }: Props) {
             </BaseM>
           </HStack>
 
-          <Button onClick={handleDisconnectTwitter} variant="secondary">
+          <Button
+            eventElementId="Disconnect Twitter Button"
+            eventName="Disconnect Twitter"
+            eventContext={contexts['External Social']}
+            eventFlow={flows.Twitter}
+            onClick={handleDisconnectTwitter}
+            variant="secondary"
+          >
             DISCONNECT
           </Button>
         </HStack>
@@ -110,7 +118,15 @@ export default function TwitterSetting({ queryRef }: Props) {
         </BaseM>
 
         <StyledConnectLink href={TWITTER_AUTH_URL} target="_self">
-          <StyledConnectButton variant="secondary">CONNECT</StyledConnectButton>
+          <StyledConnectButton
+            eventElementId="Connect Twitter Button"
+            eventName="Connect Twitter"
+            eventContext={contexts['External Social']}
+            eventFlow={flows.Twitter}
+            variant="secondary"
+          >
+            CONNECT
+          </StyledConnectButton>
         </StyledConnectLink>
       </HStack>
     </StyledTwitterSettingContainer>
@@ -122,7 +138,7 @@ const StyledTwitterSettingContainer = styled(VStack)`
   background-color: ${colors.faint};
 `;
 
-const StyledConnectLink = styled(InteractiveLink)`
+const StyledConnectLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 

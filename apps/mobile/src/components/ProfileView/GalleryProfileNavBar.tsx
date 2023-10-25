@@ -12,6 +12,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { GalleryProfileNavBarFragment$key } from '~/generated/GalleryProfileNavBarFragment.graphql';
 import { GalleryProfileNavBarQueryFragment$key } from '~/generated/GalleryProfileNavBarQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
@@ -108,6 +109,7 @@ export function GalleryProfileNavBar({
           <IconContainer
             eventElementId="Profile QR Code Icon"
             eventName="Profile QR Code Icon Clicked"
+            eventContext={contexts.UserGallery}
             icon={<QRCodeIcon />}
             onPress={handleQrCode}
           />
@@ -115,6 +117,7 @@ export function GalleryProfileNavBar({
         <IconContainer
           eventElementId="Profile Share Icon"
           eventName="Profile Share Icon Clicked"
+          eventContext={contexts.UserGallery}
           icon={<ShareIcon />}
           onPress={handleShare}
         />
@@ -122,6 +125,7 @@ export function GalleryProfileNavBar({
         <IconContainer
           eventElementId="Settings Share Icon"
           eventName="Settings Icon Clicked"
+          eventContext={contexts.UserGallery}
           icon={<SettingsIcon />}
           onPress={handleSettings}
         />

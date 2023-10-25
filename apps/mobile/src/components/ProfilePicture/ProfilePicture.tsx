@@ -54,6 +54,8 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
     <RawProfilePicture
       eventElementId="ProfilePicture"
       eventName="ProfilePicture pressed"
+      // TODO analytics prop drill
+      eventContext={null}
       letter={letter ?? '?'}
       style={style}
       {...rest}
@@ -66,6 +68,8 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
         <RawProfilePicture
           eventElementId="ProfilePicture"
           eventName="ProfilePicture pressed"
+          // TODO analytics prop drill
+          eventContext={null}
           imageUrl={imageUrl}
           style={style}
           {...rest}

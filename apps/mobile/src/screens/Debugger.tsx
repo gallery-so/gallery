@@ -111,8 +111,9 @@ export function Debugger() {
       <Button
         text="Submit"
         onPress={handleLogin}
-        eventName="Debugger Login"
-        eventElementId="Submit login"
+        eventName={null}
+        eventElementId={null}
+        eventContext={null}
       />
 
       {errorMessage && (

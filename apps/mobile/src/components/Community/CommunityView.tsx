@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
@@ -93,6 +94,7 @@ export function CommunityView({ queryRef }: Props) {
           <IconContainer
             eventElementId="Community Share Icon"
             eventName="Community Share Icon Clicked"
+            eventContext={contexts.Community}
             icon={<ShareIcon />}
             onPress={handleShare}
           />

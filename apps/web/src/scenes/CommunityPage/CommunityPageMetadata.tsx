@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -6,7 +5,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
@@ -18,7 +17,7 @@ import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMeta
 import { CommunityPageMetadataQueryFragment$key } from '~/generated/CommunityPageMetadataQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -35,6 +34,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     graphql`
       fragment CommunityPageMetadataFragment on Community {
         name
+        contract {
+          dbid
+        }
         contractAddress {
           chain
           address
@@ -94,12 +96,10 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
 
   const { isMemberOfCommunity, refetchIsMemberOfCommunity } = useIsMemberOfCommunity();
 
-  const track = useTrack();
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
 
   const handleCreatePostClick = useCallback(() => {
-    track('Community Page: Clicked Enabled Post Button');
     if (query?.viewer?.__typename !== 'Viewer') {
       return;
     }
@@ -108,18 +108,26 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
+            dbid: community.contract?.dbid ?? '',
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
+          eventFlow={flows['Community Page Post Create Flow']}
         />
       ),
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [track, showModal, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [
+    showModal,
+    query,
+    community.name,
+    community.contractAddress?.address,
+    community.contract?.dbid,
+    isMobile,
+  ]);
 
   const handleDisabledPostButtonClick = useCallback(() => {
-    track('Community Page: Clicked Disabled Post Button');
     showModal({
       content: (
         <CommunityPageOwnershipRequiredModal
@@ -129,7 +137,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       ),
       headerText: 'Ownership required',
     });
-  }, [community, refetchIsMemberOfCommunity, showModal, track]);
+  }, [community, refetchIsMemberOfCommunity, showModal]);
 
   const showPostButton = query.viewer?.__typename === 'Viewer';
 
@@ -138,21 +146,31 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />
-          <StyledLink href={creatorRoute}>
+          <GalleryLink
+            to={creatorRoute}
+            eventElementId="Creator Username Link"
+            eventName="Creator Username Link Click"
+            eventContext={contexts.Community}
+          >
             <BaseM color={colors.shadow}>{creatorUsername}</BaseM>
-          </StyledLink>
+          </GalleryLink>
         </HStack>
       );
     }
     if (creatorExternalLink) {
       return (
-        <InteractiveLink href={creatorExternalLink}>
+        <GalleryLink
+          href={creatorExternalLink}
+          eventElementId="Creator External Link"
+          eventName="Creator External Link Click"
+          eventContext={contexts.Community}
+        >
           <HStack gap={4}>
             <RawProfilePicture size="xs" default inheritBorderColor />
 
             <StyledBaseM>{truncateAddress(creatorAddress || '')}</StyledBaseM>
           </HStack>
-        </InteractiveLink>
+        </GalleryLink>
       );
     }
     return null;
@@ -175,14 +193,24 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       </VStack>
       {showPostButton &&
         (isMemberOfCommunity ? (
-          <StyledPostButton onClick={handleCreatePostClick}>
+          <StyledPostButton
+            eventElementId="Community Page Create Post Button"
+            eventName="Community Page Create Post"
+            eventContext={contexts.Community}
+            onClick={handleCreatePostClick}
+          >
             <HStack align="center" gap={4}>
               <PlusSquareIcon stroke={colors.white} height={16} width={16} />
               Post
             </HStack>
           </StyledPostButton>
         ) : (
-          <StyledDisabledPostButton onClick={handleDisabledPostButtonClick}>
+          <StyledDisabledPostButton
+            eventElementId="Community Page Disabled Post Button"
+            eventName="Community Page Disabled Post Click"
+            eventContext={contexts.Community}
+            onClick={handleDisabledPostButtonClick}
+          >
             <HStack align="center" gap={4}>
               <PlusSquareIcon stroke={colors.metal} height={16} width={16} />
               Post
@@ -218,10 +246,6 @@ const StyledNetworkIcon = styled.img`
 
 const StyledBaseM = styled(BaseM)`
   color: inherit;
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
 `;
 
 const StyledPostButton = styled(Button)`

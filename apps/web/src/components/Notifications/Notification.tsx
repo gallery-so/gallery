@@ -17,6 +17,8 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
@@ -208,8 +210,19 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   ]);
 
   const isClickable = Boolean(handleNotificationClick);
+
+  const track = useTrack();
+
   const handleClick = useCallback(() => {
-    handleNotificationClick?.handleClick();
+    if (handleNotificationClick?.handleClick) {
+      track('Notification Click', {
+        id: 'Notification Row',
+        variant: notification.__typename,
+        context: contexts.Notifications,
+      });
+      handleNotificationClick.handleClick();
+    }
+
     if (!query.viewer?.user?.dbid || !query.viewer.id) {
       return;
     }
@@ -218,7 +231,14 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       ConnectionHandler.getConnectionID(query.viewer.id, 'NotificationsFragment_notifications'),
       ConnectionHandler.getConnectionID(query.viewer.id, 'StandardSidebarFragment_notifications'),
     ]);
-  }, [clearAllNotifications, handleNotificationClick, query.viewer]);
+  }, [
+    clearAllNotifications,
+    handleNotificationClick,
+    notification.__typename,
+    query.viewer?.id,
+    query.viewer?.user?.dbid,
+    track,
+  ]);
 
   const timeAgo = getTimeSince(notification.updatedTime);
 

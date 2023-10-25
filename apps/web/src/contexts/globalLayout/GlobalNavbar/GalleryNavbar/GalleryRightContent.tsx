@@ -25,6 +25,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { SignUpButton } from '../SignUpButton';
@@ -160,8 +161,20 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     return (
       <Dropdown active={showDropdown} onClose={handleCloseDropdown} position="right">
         <DropdownSection>
-          {editGalleryUrl && <DropdownLink href={editGalleryUrl}>EDIT GALLERY</DropdownLink>}
-          <DropdownItem onClick={handleNameAndBioClick}>NAME & BIO</DropdownItem>
+          {editGalleryUrl && (
+            <DropdownLink
+              href={editGalleryUrl}
+              name="Gallery Nav"
+              eventContext={contexts.UserGallery}
+              label="Edit Gallery"
+            />
+          )}
+          <DropdownItem
+            onClick={handleNameAndBioClick}
+            name="Gallery Nav"
+            eventContext={contexts.UserGallery}
+            label="Name & Bio"
+          />
         </DropdownSection>
       </Dropdown>
     );
@@ -194,7 +207,13 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (showShowMultiGalleryButton) {
     return (
       <VStack align="center">
-        <Button variant="primary" onClick={handleCreateGallery}>
+        <Button
+          eventElementId="Add New Gallery Button"
+          eventName="Add New Gallery"
+          eventContext={contexts.Editor}
+          variant="primary"
+          onClick={handleCreateGallery}
+        >
           Add New
         </Button>
       </VStack>
@@ -216,4 +235,5 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
 
 const EditLinkWrapper = styled.div`
   position: relative;
+  cursor: pointer;
 `;

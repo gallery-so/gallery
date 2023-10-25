@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { MembersClubSectionFragment$key } from '~/generated/MembersClubSectionFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { GALLERY_OS_ADDRESS } from '~/shared/utils/getOpenseaExternalUrl';
 
@@ -42,12 +43,23 @@ export default function MembersClubSection({ queryRef }: Props) {
       <HStack justify="space-between" align="center" gap={8}>
         <SettingsRowDescription>
           Unlock early access to features, a profile badge, and the members-only{' '}
-          <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding a{' '}
-          <InteractiveLink
+          <GalleryLink
+            href={GALLERY_DISCORD}
+            eventElementId="Discord Link"
+            eventName="Discord Link Click"
+            eventContext={contexts.Settings}
+          >
+            Discord channel
+          </GalleryLink>{' '}
+          by holding a{' '}
+          <GalleryLink
             href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+            eventElementId="Membership Cards Opensea Link"
+            eventName="Membership Cards Opensea Link Click"
+            eventContext={contexts.Settings}
           >
             Premium Gallery Membership Card
-          </InteractiveLink>{' '}
+          </GalleryLink>{' '}
           and verifying your email address.
         </SettingsRowDescription>
         <HStack align="center" gap={4} shrink={false}>

@@ -98,8 +98,10 @@ export function ButtonChip({
     <GalleryTouchableOpacity
       onPressIn={() => setActive(true)}
       onPressOut={() => setActive(false)}
+      // TODO: analytics this should be prop drilled
       eventElementId="Follow Button"
       eventName="Follow Button Clicked"
+      eventContext={null}
       activeOpacity={1}
       properties={{ variant, ...eventProperties }}
       onPress={onPress}

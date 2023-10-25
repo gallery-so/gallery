@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -7,11 +6,13 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { GalleryNameDescriptionHeaderFragment$key } from '~/generated/GalleryNameDescriptionHeaderFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
@@ -77,13 +78,18 @@ function GalleryNameDescriptionHeader({
   return (
     <Container gap={2}>
       <HStack align="flex-start" justify="space-between">
-        <Link href={galleryRoute} legacyBehavior>
-          {noLink ? (
-            galleryName
-          ) : (
-            <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>
-          )}
-        </Link>
+        {noLink ? (
+          galleryName
+        ) : (
+          <GalleryLink
+            to={galleryRoute}
+            eventElementId="Gallery Name Link"
+            eventName="Gallery Name Link Click"
+            eventContext={contexts.UserGallery}
+          >
+            {galleryName}
+          </GalleryLink>
+        )}
         {showMobileLayoutToggle && (
           <StyledButtonsWrapper gap={8} align="center" justify="space-between">
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
@@ -95,7 +101,7 @@ function GalleryNameDescriptionHeader({
         <HStack align="center" gap={8} grow>
           <StyledUserDetails>
             <StyledBioWrapper>
-              <Markdown text={unescapedDescription} />
+              <Markdown text={unescapedDescription} eventContext={contexts.UserGallery} />
             </StyledBioWrapper>
           </StyledUserDetails>
         </HStack>
@@ -118,11 +124,6 @@ const GalleryName = styled(TitleM)`
 
 const Container = styled(VStack)`
   width: 100%;
-`;
-
-const GalleryLink = styled.a`
-  all: unset;
-  cursor: pointer;
 `;
 
 const StyledButtonsWrapper = styled(HStack)`

@@ -2,6 +2,7 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useDeferredValue, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
@@ -12,7 +13,6 @@ import { Typography } from '../Typography';
 import { CommunitySearchResult } from './Community/CommunitySearchResult';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
 import { GallerySearchResult } from './Gallery/GallerySearchResult';
-import { useSearchContext } from './SearchContext';
 import { SearchFilterType } from './SearchFilter';
 import { SearchSection } from './SearchSection';
 import { UserSearchResult } from './User/UserSearchResult';
@@ -38,13 +38,25 @@ type SearchListItem =
     };
 
 type Props = {
+  keyword: string;
   activeFilter: SearchFilterType;
   onChangeFilter: (filter: SearchFilterType) => void;
   blurInputFocus: () => void;
+  onSelect?: (item: MentionType) => void;
+
+  onlyShowTopResults?: boolean;
+  isMentionSearch?: boolean;
 };
 
-export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: Props) {
-  const { keyword } = useSearchContext();
+export function SearchResults({
+  activeFilter,
+  keyword,
+  onChangeFilter,
+  blurInputFocus,
+  onSelect,
+  onlyShowTopResults = false,
+  isMentionSearch = false,
+}: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
   const query = useLazyLoadQuery<SearchResultsQuery>(
@@ -191,7 +203,7 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
     // if there is no active filter, show both curators and galleries
     // but only show a preview of the results
     else if (activeFilter === 'top') {
-      if (hasUsers) {
+      if (hasUsers && searchUsers.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'curator',
@@ -209,7 +221,7 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
         }
       }
 
-      if (hasGalleries) {
+      if (hasGalleries && !isMentionSearch && searchGalleries.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'gallery',
@@ -228,7 +240,7 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
         }
       }
 
-      if (hasCommunities) {
+      if (hasCommunities && searchCommunities.results.length > 0) {
         items.push({
           kind: 'search-section-header',
           sectionType: 'community',
@@ -254,10 +266,20 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
     hasCommunities,
     hasGalleries,
     hasUsers,
+    isMentionSearch,
     searchCommunities,
     searchGalleries,
     searchUsers,
   ]);
+
+  const showAllButton = useMemo(
+    () => (sectionType: SearchFilterType) => {
+      if (onlyShowTopResults) return true;
+
+      return activeFilter === sectionType;
+    },
+    [activeFilter, onlyShowTopResults]
+  );
 
   const renderItem = useCallback<ListRenderItem<SearchListItem>>(
     ({ item }) => {
@@ -267,20 +289,26 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
             title={item.sectionTitle}
             onShowAll={() => onChangeFilter(item.sectionType)}
             numResults={item.numberOfResults}
-            isShowAll={activeFilter === item.sectionType}
+            isShowAll={showAllButton(item.sectionType)}
           />
         );
       } else if (item.kind === 'user-search-result') {
-        return <UserSearchResult userRef={item.user} />;
+        return <UserSearchResult userRef={item.user} onSelect={onSelect} keyword={keyword} />;
       } else if (item.kind === 'gallery-search-result') {
-        return <GallerySearchResult galleryRef={item.gallery} />;
+        return <GallerySearchResult galleryRef={item.gallery} keyword={keyword} />;
       } else if (item.kind === 'community-search-result') {
-        return <CommunitySearchResult communityRef={item.community} />;
+        return (
+          <CommunitySearchResult
+            communityRef={item.community}
+            onSelect={onSelect}
+            keyword={keyword}
+          />
+        );
       }
 
       return <View />;
     },
-    [activeFilter, onChangeFilter]
+    [onChangeFilter, keyword, onSelect, showAllButton]
   );
 
   if (isEmpty) {

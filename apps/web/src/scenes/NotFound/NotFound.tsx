@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ButtonLink } from '~/components/core/Button/Button';
+import { DeprecatedButtonLink } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL } from '~/components/core/Text/Text';
@@ -21,7 +21,7 @@ function NotFound({ resource = 'user' }: Props) {
           <GalleryLink href={GALLERY_DISCORD}>Discord</GalleryLink>.
         </StyledBody>
       </VStack>
-      <ButtonLink href={{ pathname: '/' }}>Take me back</ButtonLink>
+      <DeprecatedButtonLink href={{ pathname: '/' }}>Take me back</DeprecatedButtonLink>
     </StyledNotFound>
   );
 }

@@ -5,6 +5,7 @@ import useSWR from 'swr';
 
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
 
@@ -13,9 +14,10 @@ import { Typography } from './Typography';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-const EnsName = ({ chainAddressRef }: EnsNameProps) => {
+const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
   const address = useFragment(
     graphql`
       fragment EnsOrAddressFragment on ChainAddress {
@@ -42,20 +44,30 @@ const EnsName = ({ chainAddressRef }: EnsNameProps) => {
         link={link}
         address={data.address}
         truncatedAddress={data.name}
-        type="ENS Name"
+        eventElementId="ENS Name"
+        eventName="ENS Name Press"
+        eventContext={eventContext}
       />
     );
   }
 
   // If we couldn't resolve, let's fallback to the default component
-  return <LinkableAddress chainAddressRef={address} type="ENS Name Fallback" />;
+  return (
+    <LinkableAddress
+      chainAddressRef={address}
+      eventElementId="Wallet Address ENS Name Fallback"
+      eventName="Wallet Address ENS Name Fallback Press"
+      eventContext={eventContext}
+    />
+  );
 };
 
 type EnsOrAddressProps = {
   chainAddressRef: EnsOrAddressWithSuspenseFragment$key;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
-export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
+export const EnsOrAddress = ({ chainAddressRef, eventContext }: EnsOrAddressProps) => {
   const address = useFragment(
     graphql`
       fragment EnsOrAddressWithSuspenseFragment on ChainAddress {
@@ -69,13 +81,22 @@ export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
   );
 
   return (
-    <Suspense fallback={<LinkableAddress chainAddressRef={address} type="ENS Name Fallback" />}>
+    <Suspense
+      fallback={
+        <LinkableAddress
+          chainAddressRef={address}
+          eventElementId="Wallet Address ENS Name Fallback"
+          eventName="Wallet Address ENS Name Fallback Press"
+          eventContext={eventContext}
+        />
+      }
+    >
       <ReportingErrorBoundary
         fallback={
           <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not Found</Typography>
         }
       >
-        <EnsName chainAddressRef={address} />
+        <EnsName chainAddressRef={address} eventContext={eventContext} />
       </ReportingErrorBoundary>
     </Suspense>
   );

@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
@@ -6,6 +7,7 @@ import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';
@@ -62,10 +64,13 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     graphql`
       fragment FeedPostSocializeSectionQueryFragment on Query {
         ...useTogglePostAdmireQueryFragment
+        ...CommentsBottomSheetQueryFragment
       }
     `,
     queryRef
   );
+
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Post'>>();
 
   const { toggleAdmire, hasViewerAdmiredEvent } = useTogglePostAdmire({
     postRef: post,
@@ -107,6 +112,12 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     commentsBottomSheetRef.current?.present();
   }, []);
 
+  useEffect(() => {
+    if (route.params?.commentId) {
+      handleOpenCommentBottomSheet();
+    }
+  }, [route.params, handleOpenCommentBottomSheet]);
+
   return (
     <>
       <View className="px-3 pb-8 pt-2">
@@ -133,7 +144,13 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           onCommentPress={handleOpenCommentBottomSheet}
         />
       </View>
-      <CommentsBottomSheet type="Post" feedId={post.dbid} bottomSheetRef={commentsBottomSheetRef} />
+      <CommentsBottomSheet
+        type="Post"
+        feedId={post.dbid}
+        bottomSheetRef={commentsBottomSheetRef}
+        queryRef={query}
+        activeCommentId={route.params?.commentId}
+      />
     </>
   );
 }

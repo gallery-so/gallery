@@ -17,6 +17,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -86,7 +87,11 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       return;
     }
 
-    track('Save Comment Click');
+    track('Save Comment Click', {
+      id: 'Submit Comment Button',
+      name: 'Submit Comment',
+      context: contexts.Posts,
+    });
 
     try {
       onSubmitComment(value);

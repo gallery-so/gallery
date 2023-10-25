@@ -26,8 +26,8 @@ import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import { contexts, flows } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import DrawerHeader from './DrawerHeader';
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
@@ -61,7 +61,6 @@ export function StandardSidebar({ queryRef }: Props) {
           }
         }
         ...SettingsFragment
-        ...useExperienceFragment
         ...useAnnouncementFragment
       }
     `,
@@ -90,11 +89,6 @@ export function StandardSidebar({ queryRef }: Props) {
 
     return 0;
   }, [query.viewer, totalUnreadAnnouncements]);
-
-  const [isMerchStoreUpsellExperienced, setMerchStoreUpsellExperienced] = useExperience({
-    type: 'MerchStoreUpsell',
-    queryRef: query,
-  });
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
@@ -133,8 +127,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const handleShopIconClick = useCallback(async () => {
     track('Sidebar Shop Click');
-    setMerchStoreUpsellExperienced();
-  }, [setMerchStoreUpsellExperienced, track]);
+  }, [track]);
 
   const handleHomeIconClick = useCallback(() => {
     hideDrawer();
@@ -143,47 +136,53 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const { captionRef, setCaption } = usePostComposerContext();
 
-  const handleOpenPostComposer = useCallback(() => {
-    showModal({
-      id: 'post-composer',
-      content: <PostComposerModalWithSelector />,
-      headerVariant: 'thicc',
-      isFullPage: isMobile,
-      onCloseOverride: (onClose: () => void) => {
-        if (!captionRef.current) {
-          onClose();
-          return;
-        }
+  const handleOpenPostComposer = useCallback(
+    (eventFlow: GalleryElementTrackingProps['eventFlow']) => {
+      showModal({
+        id: 'post-composer',
+        content: <PostComposerModalWithSelector eventFlow={eventFlow} />,
+        headerVariant: 'thicc',
+        isFullPage: isMobile,
+        onCloseOverride: (onClose: () => void) => {
+          if (!captionRef.current) {
+            onClose();
+            return;
+          }
 
-        showModal({
-          headerText: 'Are you sure?',
-          content: (
-            <DiscardPostConfirmation
-              onSaveDraft={() => {
-                onClose();
-              }}
-              onDiscard={() => {
-                setCaption('');
-                onClose();
-              }}
-            />
-          ),
-          isFullPage: false,
-        });
-      },
-    });
-  }, [captionRef, isMobile, setCaption, showModal]);
+          showModal({
+            headerText: 'Are you sure?',
+            content: (
+              <DiscardPostConfirmation
+                onSaveDraft={() => {
+                  onClose();
+                }}
+                onDiscard={() => {
+                  setCaption('');
+                  onClose();
+                }}
+              />
+            ),
+            isFullPage: false,
+          });
+        },
+      });
+    },
+    [captionRef, isMobile, setCaption, showModal]
+  );
 
   const handleCreatePostClick = useCallback(() => {
+    track('Sidebar Create Post Click', {
+      context: contexts.Posts,
+      flow: flows['Web Sidebar Post Create Flow'],
+    });
+
     hideDrawer();
 
     if (!isLoggedIn) {
       return;
     }
 
-    handleOpenPostComposer();
-
-    track('Sidebar Create Post Click');
+    handleOpenPostComposer(flows['Web Sidebar Post Create Flow']);
   }, [hideDrawer, isLoggedIn, handleOpenPostComposer, track]);
 
   const handleSearchClick = useCallback(() => {
@@ -227,7 +226,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   // feels like a hack but if this hook is run multiple times via parent component re-render,
   // the same drawer is opened multiple times
-  const { settings, composer } = routerQuery;
+  const { settings, composer, referrer } = routerQuery;
   const isSettingsOpen = useRef(false);
   const isComposerOpen = useRef(false);
 
@@ -246,13 +245,29 @@ export function StandardSidebar({ queryRef }: Props) {
     }
 
     if (composer === 'true' && !isComposerOpen.current) {
+      track('Arrive On Gallery', {
+        context: contexts.Posts,
+        flow: flows['Share To Gallery'],
+        authenticated: isLoggedIn,
+        referrer,
+      });
       if (isLoggedIn) {
-        handleOpenPostComposer();
+        handleOpenPostComposer(flows['Share To Gallery']);
         return;
       }
       showAuthModal();
     }
-  }, [composer, handleOpenPostComposer, isLoggedIn, query, settings, showAuthModal, showDrawer]);
+  }, [
+    composer,
+    handleOpenPostComposer,
+    isLoggedIn,
+    query,
+    referrer,
+    settings,
+    showAuthModal,
+    showDrawer,
+    track,
+  ]);
 
   if (isMobile) {
     return (
@@ -317,11 +332,7 @@ export function StandardSidebar({ queryRef }: Props) {
           />
           {isLoggedIn && query.viewer.user && (
             <VStack gap={12}>
-              <SidebarPfp
-                userRef={query.viewer.user}
-                href={userGalleryRoute}
-                onClick={handleProfileClick}
-              />
+              <SidebarPfp userRef={query.viewer.user} onClick={handleProfileClick} />
               <SidebarIcon
                 tooltipLabel="Create a post"
                 onClick={handleCreatePostClick}
@@ -373,7 +384,6 @@ export function StandardSidebar({ queryRef }: Props) {
             tooltipLabel="(OBJECTS) Shop"
             onClick={handleShopIconClick}
             icon={<ShopIcon />}
-            showUnreadDot={!isMerchStoreUpsellExperienced}
           />
         </VStack>
       </StyledIconContainer>

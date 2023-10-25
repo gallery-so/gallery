@@ -14,6 +14,7 @@ import { CommunityPagePostsTabFragment$key } from '~/generated/CommunityPagePost
 import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPagePostsTabQueryFragment.graphql';
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts, flows } from '~/shared/analytics/constants';
 
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
@@ -41,6 +42,9 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           }
         }
         name
+        contract {
+          dbid
+        }
         contractAddress {
           address
         }
@@ -93,15 +97,24 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
+            dbid: community.contract?.dbid ?? '',
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
+          eventFlow={flows['Community Page Post Create Flow']}
         />
       ),
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [showModal, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [
+    showModal,
+    query,
+    community.name,
+    community.contractAddress?.address,
+    community.contract?.dbid,
+    isMobile,
+  ]);
 
   const { isMemberOfCommunity } = useIsMemberOfCommunity();
 
@@ -115,7 +128,14 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
               {community.name ? <strong>{community.name}</strong> : 'this community'} and inspire
               others!
             </BaseXL>
-            <StyledButton onClick={handleCreatePostClick}>Create a Post</StyledButton>
+            <StyledButton
+              eventElementId="Community Page Empty Feed Create Post Button"
+              eventName="Community Page Empty Feed Create Post"
+              eventContext={contexts.Community}
+              onClick={handleCreatePostClick}
+            >
+              Create a Post
+            </StyledButton>
           </StyledFirstPostCta>
         ) : (
           <BaseXL>

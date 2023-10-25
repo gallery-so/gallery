@@ -1,63 +1,79 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Route } from 'nextjs-routes';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
-import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
-import isProduction from '~/utils/isProduction';
 
-import { MEMENTOS_NFT_TOKEN_ID, MINT_END, MINT_START, pathToImage } from './config';
+import { MINT_END, MINT_START, pathToImage } from './config';
 import MintButton from './MintButton';
 import useMintPhase from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-
-  const { address: rawAddress } = useAccount();
-  const address = rawAddress?.toLowerCase();
   const [isMinted, setIsMinted] = useState(false);
 
-  const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
+  // Keeping logic commented in case we want to re-introduce it
 
-  const detectOwnedPosterNftFromOpensea = useCallback(
-    async (address: string) => {
-      const response = await fetch(
-        `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${MEMENTOS_NFT_TOKEN_ID}`,
-        {}
-      );
-      const responseBody = await response.json();
-      return responseBody.assets.length > 0;
-    },
-    [openseaBaseUrl]
-  );
+  // const { address: rawAddress } = useAccount();
+  // const address = rawAddress?.toLowerCase();
+  // const openseaBaseUrl = isProduction() ? OPENSEA_API_BASEURL : OPENSEA_TESTNET_API_BASEURL;
 
-  useEffect(() => {
-    async function checkIfMinted(address: string) {
-      try {
-        const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(address);
-        setIsMinted(hasOwnedPosterNft);
-      } catch (_) {
-        // ignore if ownership check request fails
-      }
-    }
+  // const detectOwnedPosterNftFromOpensea = useCallback(
+  //   async (address: string) => {
+  //     const response = await fetch(
+  //       `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${MEMENTOS_NFT_TOKEN_ID}`,
+  //       {}
+  //     );
+  //     const responseBody = await response.json();
+  //     return responseBody.assets.length > 0;
+  //   },
+  //   [openseaBaseUrl]
+  // );
 
-    if (address) {
-      checkIfMinted(address);
-    }
-  }, [address, detectOwnedPosterNftFromOpensea]);
+  // useEffect(() => {
+  //   async function checkIfMinted(address: string) {
+  //     try {
+  //       const hasOwnedPosterNft = await detectOwnedPosterNftFromOpensea(address);
+  //       setIsMinted(hasOwnedPosterNft);
+  //     } catch (_) {
+  //       // ignore if ownership check request fails
+  //     }
+  //   }
+
+  //   if (address) {
+  //     checkIfMinted(address);
+  //   }
+  // }, [address, detectOwnedPosterNftFromOpensea]);
 
   const { push } = useRouter();
+
+  const shareOnGalleryRoute: Route = useMemo(() => {
+    return {
+      pathname: '/home',
+      query: {
+        composer: 'true',
+        tokenId: '0',
+        contractAddress: GALLERY_MEMENTOS_CONTRACT_ADDRESS,
+        chain: 'Base',
+        collection_title: 'Gallery Mementos',
+        token_title: 'Gallery Mementos: 1K Posts',
+        caption: 'I just minted Gallery Mementos: 1K Posts on Gallery',
+      },
+    };
+  }, []);
 
   return (
     <StyledPage>
@@ -71,20 +87,35 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              <i>Gallery x Base</i>
+              <i>Gallery Mementos: 1K Posts</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
-              Introducing the <b>Gallery x Base</b> memento, a collectible in celebration of Gallery
-              rolling out support for{' '}
-              <InteractiveLink href="https://base.org/ecosystem">Base Chain</InteractiveLink>.
+              After months in closed testing, we have crossed 1,000 posts on Gallery and have opened
+              Posts to the public in Open Beta. This release marks the evolution of Gallery into a
+              full social app built to share art. A special thank you to our early users and
+              testers. Learn more about it in our latest{' '}
+              <GalleryLink
+                href="https://gallery.mirror.xyz/HNEYLQJ6vtTYqqotGjZG7pFFn8IE71_rbZkCU0R-MSk"
+                eventElementId="Base Chain Link"
+                eventName="Base Chain Link Click"
+                eventContext={contexts.Mementos}
+              >
+                blog post
+              </GalleryLink>
+              .
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
-              <InteractiveLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
+              <GalleryLink
+                href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY"
+                eventElementId="Mementos Mirror Link"
+                eventName="Mementos Mirror Link Click"
+                eventContext={contexts.Mementos}
+              >
                 here
-              </InteractiveLink>
+              </GalleryLink>
               .
             </BaseM>
             <VStack>
@@ -93,13 +124,13 @@ export default function MementosPage() {
                 <StyledUl>
                   {/* <li>
                     Follow{' '}
-                    <InteractiveLink href="https://twitter.com/GALLERY">@GALLERY</InteractiveLink>{' '}
+                    <GalleryLink href="https://twitter.com/GALLERY">@GALLERY</GalleryLink>{' '}
                     on Twitter.
                   </li> */}
 
                   <li>
                     Minting will open to all from 
-                    <b>August 22nd 1:00PM through August 31st 11:59PM ET</b>
+                    <b>October 19th 9:00AM ET through November 18th 9:00AM ET</b>
                   </li>
                 </StyledUl>
               </BaseM>
@@ -119,7 +150,18 @@ export default function MementosPage() {
           </StyledCallToAction> */}
 
           {isMinted ? (
-            <BaseXL>You've succesfully minted this token.</BaseXL>
+            <VStack gap={16} align="center">
+              <BaseXL>You've succesfully minted this token!</BaseXL>
+              <GalleryLink to={shareOnGalleryRoute}>
+                <Button
+                  eventElementId="Share on Gallery Button"
+                  eventName="Share on Gallery Button Click"
+                  eventContext={contexts.Mementos}
+                >
+                  Share on Gallery
+                </Button>
+              </GalleryLink>
+            </VStack>
           ) : (
             <StyledCallToAction>
               <Countdown />

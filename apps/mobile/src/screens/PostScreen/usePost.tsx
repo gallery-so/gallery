@@ -4,7 +4,7 @@ import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
-import { usePostMutation } from '~/generated/usePostMutation.graphql';
+import { MentionInput, usePostMutation } from '~/generated/usePostMutation.graphql';
 import { usePostTokenFragment$key } from '~/generated/usePostTokenFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
@@ -12,6 +12,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 type PostTokensInput = {
   tokenId: string;
   caption?: string;
+  mentions?: MentionInput[];
 };
 
 type Props = {
@@ -73,7 +74,7 @@ export function usePost({ tokenRef }: Props) {
   );
 
   const handlePost = useCallback(
-    ({ tokenId, caption }: PostTokensInput) => {
+    ({ tokenId, caption, mentions = [] }: PostTokensInput) => {
       const updater: SelectorStoreUpdater<usePostMutation['response']> = (store, response) => {
         if (response.postTokens?.post?.__typename === 'Post') {
           // Get the new post
@@ -126,6 +127,7 @@ export function usePost({ tokenRef }: Props) {
             //   In future, we can use this to post multiple tokens at once
             tokenIds: [tokenId],
             caption,
+            mentions,
           },
         },
       }).catch((error) => {

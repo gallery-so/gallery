@@ -7,6 +7,7 @@ import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { UnseenDot } from '../NotificationSkeleton';
@@ -91,8 +92,12 @@ export function NewTokens({ notificationRef }: Props) {
         text="Post"
         size="xs"
         fontWeight="Bold"
-        eventElementId={null}
-        eventName={null}
+        // manually tracking this to be the same params as `NotificationSkeleton`,
+        // since this component didn't use the NotificationSkeleton component
+        eventElementId="Notification Row"
+        eventName="Notification Row Clicked"
+        eventContext={contexts.Notifications}
+        properties={{ type: notification.__typename }}
       />
       <View
         className={`w-[35px] flex-row space-x-2 items-center ${

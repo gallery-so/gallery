@@ -7,6 +7,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 
 type AdmireLineProps = {
   style?: ViewProps['style'];
@@ -51,6 +52,7 @@ export function AdmireLine({
           onPress={handleUserPress}
           eventElementId={'AdmireLine Single User'}
           eventName={'AdmireLine Single User'}
+          eventContext={contexts.Posts}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {firstUser.username}{' '}
@@ -69,6 +71,7 @@ export function AdmireLine({
           onPress={onMultiUserPress}
           eventElementId={'AdmireLine Single User'}
           eventName={'AdmireLine Single User'}
+          eventContext={contexts.Posts}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {totalAdmires} collectors{' '}
@@ -88,6 +91,7 @@ export function AdmireLine({
         onPress={onAdmirePress}
         eventElementId={'AdmireLine First Admire CTA'}
         eventName={'Tapped AdmireLine First Admire CTA'}
+        eventContext={contexts.Posts}
         className="flex  justify-center h-6"
       >
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>

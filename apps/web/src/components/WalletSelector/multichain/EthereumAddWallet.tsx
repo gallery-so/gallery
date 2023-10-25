@@ -225,7 +225,14 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
               extension and try again.
             </BaseM>
           </VStack>
-          <StyledButton onClick={() => attemptAddWallet(account)} disabled={isConnecting}>
+          <StyledButton
+            // event is tracked in handler above
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            onClick={() => attemptAddWallet(account)}
+            disabled={isConnecting}
+          >
             {isConnecting ? 'Connecting...' : 'Confirm'}
           </StyledButton>
         </VStack>

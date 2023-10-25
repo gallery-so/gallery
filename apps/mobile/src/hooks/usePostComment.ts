@@ -2,23 +2,29 @@ import { useCallback } from 'react';
 import { ConnectionHandler, fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
-import { usePostCommentMutation } from '~/generated/usePostCommentMutation.graphql';
+import { MentionInput, usePostCommentMutation } from '~/generated/usePostCommentMutation.graphql';
 import { usePostCommentQuery } from '~/generated/usePostCommentQuery.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import { noop } from '~/shared/utils/noop';
 
 type submitCommentProps = {
   feedId: string;
   value: string;
+  mentions?: MentionInput[];
   onSuccess?: () => void;
 };
 
 export function usePostComment() {
   const [submitComment, isSubmittingComment] =
     usePromisifiedMutation<usePostCommentMutation>(graphql`
-      mutation usePostCommentMutation($postId: DBID!, $comment: String!, $connections: [ID!]!)
-      @raw_response_type {
-        commentOnPost(comment: $comment, postId: $postId) {
+      mutation usePostCommentMutation(
+        $postId: DBID!
+        $comment: String!
+        $connections: [ID!]!
+        $mentions: [MentionInput!]!
+      ) @raw_response_type {
+        commentOnPost(comment: $comment, postId: $postId, mentions: $mentions) {
           ... on CommentOnPostPayload {
             __typename
 
@@ -31,6 +37,24 @@ export function usePostComment() {
                 id
                 username
               }
+              mentions {
+                interval {
+                  start
+                  length
+                }
+                entity {
+                  ... on GalleryUser {
+                    __typename
+                    id
+                    dbid
+                  }
+                  ... on Community {
+                    __typename
+                    id
+                    dbid
+                  }
+                }
+              }
               creationTime
             }
           }
@@ -41,7 +65,7 @@ export function usePostComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedId, value, onSuccess = () => {} }: submitCommentProps) => {
+    async ({ feedId, value, onSuccess = noop, mentions = [] }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
@@ -93,6 +117,26 @@ export function usePostComment() {
         };
 
         const optimisticId = Math.random().toString();
+
+        const optimisticResponseMentions = mentions.map((mention) => {
+          const mentionOptimisiticResponse = {
+            interval: {
+              start: mention?.interval?.start ?? 0,
+              length: mention?.interval?.length ?? 0,
+            },
+            entity: {
+              __isNode: mention.userId ? 'GalleryUser' : 'Community',
+              __typename: mention.userId ? 'GalleryUser' : 'Community',
+              dbid: mention.userId ?? mention.communityId,
+              id: mention.userId
+                ? `GalleryUser:${mention.userId}`
+                : `Community:${mention.communityId}`,
+            },
+          };
+
+          return mentionOptimisiticResponse;
+        });
+
         const response = await submitComment({
           updater,
           optimisticUpdater: updater,
@@ -107,6 +151,7 @@ export function usePostComment() {
                   id: query?.viewer?.user?.id ?? 'unknown',
                   username: query?.viewer?.user?.username ?? null,
                 },
+                mentions: optimisticResponseMentions,
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,
@@ -117,6 +162,7 @@ export function usePostComment() {
             comment: value,
             postId: feedId,
             connections: [interactionsConnection, commentsBottomSheetConnection],
+            mentions,
           },
         });
 

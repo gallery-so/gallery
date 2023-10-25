@@ -1,13 +1,14 @@
-import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ExplorePopoverListFragment$key } from '~/generated/ExplorePopoverListFragment.graphql';
 import { ExplorePopoverListQueryFragment$key } from '~/generated/ExplorePopoverListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';
@@ -47,12 +48,22 @@ export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props)
       <StyledHeading>Suggested curators for you</StyledHeading>
       <VStack>
         {exploreUsers.map((user) => (
-          // @ts-expect-error This is the future next/link version
-          <StyledRow legacyBehavior={false} key={user.id} href={`/${user.username}`}>
+          <StyledRow
+            key={user.id}
+            to={{
+              pathname: '/[username]',
+              query: { username: user?.username ?? '' },
+            }}
+            eventElementId="Explore Popover List Row"
+            eventName="Explore Popover List Row Click"
+            eventContext={contexts.Explore}
+          >
             <StyledHStack justify="space-between" align="center" gap={8}>
               <StyledVStack justify="center">
                 <TitleDiatypeM>{user.username}</TitleDiatypeM>
-                <StyledBio>{user.bio && <Markdown text={user.bio} />}</StyledBio>
+                <StyledBio>
+                  {user.bio && <Markdown text={user.bio} eventContext={contexts.Explore} />}
+                </StyledBio>
               </StyledVStack>
               <StyledFollowButton
                 userRef={user}
@@ -78,7 +89,7 @@ const StyledHeading = styled(TitleDiatypeL)`
   padding: 0px 8px;
 `;
 
-const StyledRow = styled(Link)`
+const StyledRow = styled(GalleryLink)`
   padding: 8px;
   text-decoration: none;
   min-height: 56px;

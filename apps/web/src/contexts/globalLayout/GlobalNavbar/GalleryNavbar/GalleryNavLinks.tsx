@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NavbarLink } from '../NavbarLink';
@@ -61,9 +62,11 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   return (
     <HStack gap={8}>
       <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(featuredRoute)}
+        to={featuredRoute}
         active={pathname === featuredRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
           <span>Featured</span>
@@ -71,9 +74,11 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
       </NavbarLink>
 
       <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(galleriesRoute)}
+        to={galleriesRoute}
         active={pathname === galleriesRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
           <span>Galleries</span>
@@ -82,9 +87,11 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
       </NavbarLink>
 
       <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(postsRoute)}
+        to={postsRoute}
         active={pathname === postsRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
           <span>Posts</span>
@@ -93,9 +100,11 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
       </NavbarLink>
 
       <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(followersRoute)}
+        to={followersRoute}
         active={pathname === followersRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
           Followers

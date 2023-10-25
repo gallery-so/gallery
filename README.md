@@ -74,3 +74,5 @@ Hit up a member of the core team!
 - `moon run web:typecheck` for checking type validity
 - `moon run web:synpress-run` to run e2e tests
 - `moon run web:synpress-open` to open cypress
+- `yarn fetch-schema` to pull graphql schema from production
+- `yarn fetch-schema-dev` to pull graphql schema from development

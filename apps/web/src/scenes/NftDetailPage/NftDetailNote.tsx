@@ -10,6 +10,7 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { AutoResizingTextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import formatError from '~/shared/errors/formatError';
 import unescape from '~/shared/utils/unescape';
@@ -123,7 +124,7 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
           footerHeight={GLOBAL_FOOTER_HEIGHT}
           onDoubleClick={handleEditCollectorsNote}
         >
-          <Markdown text={collectorsNote} />
+          <Markdown text={collectorsNote} eventContext={contexts['NFT Detail']} />
         </StyledCollectorsNote>
       )}
       {generalError && <StyledErrorText message={generalError} />}
@@ -132,6 +133,9 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
         {isEditing ? (
           <StyledSaveNoteButton justify="flex-end">
             <TextButton
+              eventElementId="Save NFT Note Button"
+              eventName="Save NFT Note"
+              eventContext={contexts['NFT Detail']}
               disabled={unescapedCollectorsNote.length > MAX_CHAR_COUNT}
               text="Save Note"
               onClick={handleSubmitCollectorsNote}
@@ -140,6 +144,9 @@ function NoteEditor({ nftCollectorsNote, tokenId, collectionId }: NoteEditorProp
         ) : (
           <StyledEditNoteButtonContainer hasCollectorsNote={hasCollectorsNote}>
             <EditNoteButton
+              eventElementId="Add Or Edit NFT Note Button"
+              eventName="Add Or Edit NFT Note"
+              eventContext={contexts['NFT Detail']}
               text={hasCollectorsNote ? 'Edit' : 'Add Note'}
               onClick={handleEditCollectorsNote}
             />
@@ -171,7 +178,7 @@ export function NoteViewer({ nftCollectorsNote }: NoteViewerProps) {
     <VStack gap={8}>
       <TitleXS>Collector&rsquo;s Note</TitleXS>
       <StyledCollectorsNote footerHeight={GLOBAL_FOOTER_HEIGHT}>
-        <Markdown text={nftCollectorsNote} />
+        <Markdown text={nftCollectorsNote} eventContext={contexts['NFT Detail']} />
       </StyledCollectorsNote>
     </VStack>
   );

@@ -1,15 +1,16 @@
-import unescape from 'lodash/unescape';
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
+import { contexts } from '~/shared/analytics/constants';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -34,6 +35,9 @@ export default function PostHeader({ postRef, queryRef }: Props) {
             ...UserHoverCardFragment
           }
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
         creationTime
         ...PostDropdownFragment
       }
@@ -51,6 +55,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   );
 
   const displayName = handleCustomDisplayName(post.author?.username ?? '');
+  const nonNullMentions = useMemo(() => removeNullValues(post.mentions), [post.mentions]);
 
   return (
     <VStack gap={6}>
@@ -70,7 +75,11 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       </HStack>
       <StyledBaseM>
         {post.caption && (
-          <Markdown text={unescape(replaceUrlsWithMarkdownFormat(post.caption))}></Markdown>
+          <ProcessedText
+            text={post.caption}
+            mentionsRef={nonNullMentions}
+            eventContext={contexts.Posts}
+          />
         )}
       </StyledBaseM>
     </VStack>

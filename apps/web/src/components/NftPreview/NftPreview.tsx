@@ -14,7 +14,9 @@ import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+import { isKnownComputeIntensiveToken } from '~/shared/utils/prohibition';
 import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -32,6 +34,7 @@ type Props = {
   shouldLiveRender?: boolean;
   collectionId?: string;
   onLoad?: () => void;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 };
 
 const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
@@ -43,14 +46,16 @@ function NftPreview({
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
-  shouldLiveRender,
+  shouldLiveRender: _shouldLiveRender,
   collectionId,
   onLoad,
+  eventContext,
 }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewFragment on Token {
         dbid
+        tokenId
         contract {
           contractAddress {
             address
@@ -88,12 +93,17 @@ function NftPreview({
 
   const ownerUsername = token.owner?.username;
 
+  const tokenId = token.tokenId ?? '';
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(contractAddress),
     [contractAddress]
   );
+
+  const shouldLiveRender = isKnownComputeIntensiveToken(contractAddress, tokenId)
+    ? false
+    : _shouldLiveRender;
 
   const isIFrameLiveDisplay = Boolean(
     (shouldLiveRender && token.media?.__typename === 'HtmlMedia') ||
@@ -175,6 +185,7 @@ function NftPreview({
         username={ownerUsername ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
+        eventContext={eventContext}
       >
         <StyledNftPreview
           backgroundColorOverride={backgroundColorOverride}

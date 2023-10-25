@@ -24,7 +24,7 @@ import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollec
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import useResizeObserver from '~/hooks/useResizeObserver';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import unescape from '~/shared/utils/unescape';
 import { getBaseUrl } from '~/utils/getBaseUrl';
@@ -96,8 +96,6 @@ function UserGalleryCollection({
   };
   const collectionUrl = route(collectionUrlPath);
 
-  const track = useTrack();
-
   // Get height of this component
   const componentRef = useRef<HTMLDivElement>(null);
   const { height: collectionElHeight } = useResizeObserver(componentRef);
@@ -108,10 +106,6 @@ function UserGalleryCollection({
       onLoad();
     }
   }, [collectionElHeight, onLoad, cacheHeight]);
-
-  const handleShareClick = useCallback(() => {
-    track('Share Collection', { path: collectionUrl });
-  }, [track, collectionUrl]);
 
   const [updateCollectionInfo] = useUpdateCollectionInfo();
   const handleEditNameClick = useCallback(() => {
@@ -145,29 +139,40 @@ function UserGalleryCollection({
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${getBaseUrl()}${collectionUrl}`}>
-              <TextButton text="Share" onClick={handleShareClick} />
+              <TextButton
+                eventElementId="Share Collection Button"
+                eventName="Share Collection"
+                eventContext={contexts.UserGallery}
+                text="Share"
+              />
             </StyledCopyToClipboard>
             <SettingsDropdown iconVariant="default">
               <DropdownSection>
                 {showEditActions && (
                   <>
-                    <DropdownItem onClick={handleEditNameClick}>
-                      <BaseM>Edit Name & Description</BaseM>
-                    </DropdownItem>
+                    <DropdownItem
+                      onClick={handleEditNameClick}
+                      name="Manage Collection"
+                      eventContext={contexts.UserGallery}
+                      label="Edit Name & Collection"
+                    />
                     <DropdownLink
                       href={{
                         pathname: '/gallery/[galleryId]/edit',
                         query: { galleryId, collectionId },
                       }}
-                      onClick={() => track('Update existing collection button clicked')}
-                    >
-                      <BaseM>Edit Collection</BaseM>
-                    </DropdownLink>
+                      name="Manage Collection"
+                      eventContext={contexts.UserGallery}
+                      label="Edit Collection"
+                    />
                   </>
                 )}
-                <DropdownLink href={collectionUrlPath}>
-                  <BaseM>View Collection</BaseM>
-                </DropdownLink>
+                <DropdownLink
+                  href={collectionUrlPath}
+                  name="Manage Collection"
+                  eventContext={contexts.UserGallery}
+                  label="View Collection"
+                />
               </DropdownSection>
             </SettingsDropdown>
           </StyledOptionsContainer>
@@ -175,7 +180,7 @@ function UserGalleryCollection({
         {unescapedCollectorsNote && (
           <>
             <StyledCollectorsNote>
-              <Markdown text={unescapedCollectorsNote} />
+              <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserGallery} />
             </StyledCollectorsNote>
           </>
         )}

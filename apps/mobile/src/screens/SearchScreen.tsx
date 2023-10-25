@@ -46,17 +46,19 @@ export function SearchScreen() {
         onPressIn={blurInputFocus}
         eventElementId={null}
         eventName={null}
+        eventContext={null}
       >
         {keyword ? (
           <View className="flex-grow">
             <SearchResults
+              keyword={keyword}
               activeFilter={filter}
               onChangeFilter={setFilter}
               blurInputFocus={blurInputFocus}
             />
           </View>
         ) : (
-          <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} />
+          <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} keyword={keyword} />
         )}
       </GalleryTouchableOpacity>
     </KeyboardAvoidingView>

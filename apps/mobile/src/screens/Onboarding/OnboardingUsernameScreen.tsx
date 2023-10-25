@@ -9,9 +9,10 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
-import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
@@ -54,7 +55,7 @@ export function OnboardingUsernameScreen() {
   const updateUser = useUpdateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
-  const { isSyncing, syncTokens } = useSyncTokenstActions();
+  const { isSyncing, syncTokens } = useSyncTokensActions();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
 
@@ -237,6 +238,7 @@ export function OnboardingUsernameScreen() {
               )}
               eventElementId="Onboarding Username Next Pressed"
               eventName="Onboarding Username Next Pressed"
+              eventContext={contexts.Onboarding}
               text="NEXT"
               variant={!isUsernameValid ? 'disabled' : 'primary'}
               disabled={!isUsernameValid}

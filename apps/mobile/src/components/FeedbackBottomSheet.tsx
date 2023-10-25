@@ -43,6 +43,7 @@ function FeedbackBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetM
           <Button
             eventElementId={null}
             eventName={null}
+            eventContext={null}
             text="Open Feedback Form"
             onPress={handleOpenForm}
           />

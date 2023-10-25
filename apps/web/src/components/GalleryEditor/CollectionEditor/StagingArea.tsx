@@ -33,6 +33,7 @@ import { useCollectionEditorContext } from '~/contexts/collectionEditor/Collecti
 import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
 import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
@@ -242,7 +243,7 @@ function StagingArea({ tokensRef }: Props) {
                   </StyledCollectionName>
 
                   <BaseM>
-                    <Markdown text={collectorsNote}></Markdown>
+                    <Markdown text={collectorsNote} eventContext={contexts.Editor} />
                   </BaseM>
                 </VStack>
               </HStack>

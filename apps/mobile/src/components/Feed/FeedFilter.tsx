@@ -1,10 +1,12 @@
 import { View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Pill } from '../Pill';
 import { Typography } from '../Typography';
 
-export type ActiveFeed = 'Worldwide' | 'Following' | 'Profile' | 'Curated';
+export type ActiveFeed = 'Worldwide' | 'Following' | 'Profile' | 'For You';
 
 type Props = {
   activeFeed: ActiveFeed;
@@ -18,6 +20,7 @@ export function FeedFilter({ activeFeed, onChange }: Props) {
         onPress={() => onChange('Worldwide')}
         eventElementId="Feed Filter Button"
         eventName="Feed Filter Clicked"
+        eventContext={contexts.Feed}
         properties={{ variant: 'Worldwide' }}
       >
         <Pill
@@ -36,6 +39,7 @@ export function FeedFilter({ activeFeed, onChange }: Props) {
         onPress={() => onChange('Following')}
         eventElementId="Feed Filter Button"
         eventName="Feed Filter Clicked"
+        eventContext={contexts.Feed}
         properties={{ variant: 'Following' }}
       >
         <Pill

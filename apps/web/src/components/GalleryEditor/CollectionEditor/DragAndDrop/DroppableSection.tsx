@@ -73,54 +73,52 @@ export default function DroppableSection({ children, columns, id, items, style, 
   useKeyDown('ArrowDown', handleArrowDown);
 
   return (
-    <>
-      <VStack gap={6} align="center" onMouseDown={handleMouseDown}>
-        <VStack gap={12} align="center">
-          <Section
-            id={id}
-            ref={setNodeRef}
-            style={{
-              ...style,
-              transition,
-              transform: CSS.Translate.toString(transform),
-              opacity: isDragging ? 0.5 : undefined,
-            }}
-            draggableAttributes={attributes}
-            draggableListeners={listeners}
-            columns={columns}
-            {...props}
-            isActive={isActive}
-            isEmpty={items.length === 0}
-            handleDeleteSectionClick={handleDeleteSectionClick}
-          >
-            {children}
-          </Section>
-          {isActive && !isDragging && (
-            <HStack gap={8} align="center">
-              <StyledAddSectionButton onClick={handleAddSectionClick}>
-                <StyledPlusIcon />
+    <VStack gap={6} align="center" onMouseDown={handleMouseDown}>
+      <VStack gap={12} align="center">
+        <Section
+          id={id}
+          ref={setNodeRef}
+          style={{
+            ...style,
+            transition,
+            transform: CSS.Translate.toString(transform),
+            opacity: isDragging ? 0.5 : undefined,
+          }}
+          draggableAttributes={attributes}
+          draggableListeners={listeners}
+          columns={columns}
+          {...props}
+          isActive={isActive}
+          isEmpty={items.length === 0}
+          handleDeleteSectionClick={handleDeleteSectionClick}
+        >
+          {children}
+        </Section>
+        {isActive && !isDragging && (
+          <HStack gap={8} align="center">
+            <StyledAddSectionButton onClick={handleAddSectionClick}>
+              <StyledPlusIcon />
 
-                {step === 5 && (
-                  <OnboardingDialog
-                    step={step}
-                    text={dialogMessage}
-                    onNext={nextStep}
-                    onClose={handleClose}
-                    options={{
-                      blinkingPosition: {
-                        left: 30,
-                      },
-                      positionOffset: 20,
-                      placement: 'bottom',
-                    }}
-                  />
-                )}
-              </StyledAddSectionButton>
-            </HStack>
-          )}
-        </VStack>
+              {step === 5 && (
+                <OnboardingDialog
+                  step={step}
+                  text={dialogMessage}
+                  onNext={nextStep}
+                  onClose={handleClose}
+                  options={{
+                    blinkingPosition: {
+                      left: 30,
+                    },
+                    positionOffset: 20,
+                    placement: 'bottom',
+                  }}
+                />
+              )}
+            </StyledAddSectionButton>
+          </HStack>
+        )}
       </VStack>
-    </>
+    </VStack>
   );
 }
 

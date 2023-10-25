@@ -1,12 +1,14 @@
-import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -20,8 +22,6 @@ type Props = {
   type: SearchFilterType;
   profilePicture?: ReactNode;
 };
-
-const MAX_DESCRIPTION_CHARACTER = 150;
 
 export default function SearchResult({
   name,
@@ -45,49 +45,29 @@ export default function SearchResult({
       searchQuery: keyword,
       pathname: fullLink,
       resultType: type,
+      context: contexts.Search,
     });
   }, [hideDrawer, keyword, path, track, type]);
 
-  const highlightedName = useMemo(() => {
-    return name.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
-  }, [keyword, name]);
+  const highlightedName = useMemo(() => getHighlightedName(name, keyword), [keyword, name]);
 
-  const highlightedDescription = useMemo(() => {
-    const regex = new RegExp(keyword, 'gi');
-
-    // Remove bold & link markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
-
-    const matchIndex = unformattedDescription.search(regex);
-    let truncatedDescription;
-
-    const maxLength = MAX_DESCRIPTION_CHARACTER;
-
-    if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
-      const endIndex = Math.min(unformattedDescription.length, maxLength);
-      truncatedDescription = `...${unformattedDescription.substring(
-        endIndex - maxLength,
-        endIndex
-      )}`;
-    } else {
-      truncatedDescription = unformattedDescription.substring(0, maxLength);
-    }
-    // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`);
-  }, [keyword, description]);
+  const highlightedDescription = useMemo(
+    () => getHighlightedDescription(description, keyword),
+    [keyword, description]
+  );
 
   return (
-    <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" to={path} onClick={handleClick}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
           <BaseM>
-            <Markdown text={highlightedName} />
+            <Markdown text={highlightedName} eventContext={contexts.Search} />
           </BaseM>
           {highlightedDescription && (
             <StyledDescription>
               <BaseM>
-                <Markdown text={highlightedDescription} />
+                <Markdown text={highlightedDescription} eventContext={contexts.Search} />
               </BaseM>
             </StyledDescription>
           )}
@@ -97,7 +77,7 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(Link)<LinkProps & { className: string }>`
+const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
   color: ${colors.black['800']};
   padding: 16px 12px;
   cursor: pointer;

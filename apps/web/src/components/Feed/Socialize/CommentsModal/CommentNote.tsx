@@ -1,19 +1,20 @@
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/shared/utils/unescape';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
@@ -32,12 +33,16 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
           username
           ...ProfilePictureFragment
         }
+        mentions {
+          ...ProcessedTextFragment
+        }
       }
     `,
     commentRef
   );
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
+  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
     <StyledListItem justify="space-between" gap={4}>
@@ -50,12 +55,19 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
         <VStack>
           <HStack gap={4} align="center">
-            <UsernameLink username={comment.commenter?.username ?? null} />
+            <UsernameLink
+              username={comment.commenter?.username ?? null}
+              eventContext={contexts.Posts}
+            />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span">
-            <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
-          </BaseM>
+          <StyledBaseM as="span">
+            <ProcessedText
+              text={comment.comment ?? ''}
+              mentionsRef={nonNullMentions}
+              eventContext={contexts.Social}
+            />
+          </StyledBaseM>
         </VStack>
       </HStack>
     </StyledListItem>
@@ -68,6 +80,15 @@ const StyledProfilePictureWrapper = styled.div`
 
 const StyledListItem = styled(ListItem)`
   padding: 0px 16px 16px;
+`;
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledTimeAgoText = styled(TimeAgoText)`

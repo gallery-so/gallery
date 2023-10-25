@@ -2,12 +2,16 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
+import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
+import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
+import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -17,12 +21,26 @@ export function NftSelectorContractScreen() {
   const query = useLazyLoadQuery<NftSelectorContractScreenQuery>(
     graphql`
       query NftSelectorContractScreenQuery {
+        ...NftSelectorContractScreenFragment
+      }
+    `,
+    {}
+  );
+
+  const [data, refetch] = useRefetchableFragment<
+    NftSelectorContractScreenRefetchQuery,
+    NftSelectorContractScreenFragment$key
+  >(
+    graphql`
+      fragment NftSelectorContractScreenFragment on Query
+      @refetchable(queryName: "NftSelectorContractScreenRefetchQuery") {
         viewer {
           ... on Viewer {
             user {
               tokens {
                 dbid
                 contract {
+                  dbid
                   name
                   contractAddress {
                     address
@@ -36,12 +54,13 @@ export function NftSelectorContractScreen() {
         }
       }
     `,
-    {}
+    query
   );
 
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const isFullscreen = route.params.fullScreen;
+  const isCreator = route.params.ownerFilter === 'Created';
 
   const handleSelectNft = useCallback(() => {
     navigation.pop(2);
@@ -49,13 +68,24 @@ export function NftSelectorContractScreen() {
 
   const tokens = useMemo(() => {
     return removeNullValues(
-      query.viewer?.user?.tokens?.filter((token) => {
+      data.viewer?.user?.tokens?.filter((token) => {
         return token?.contract?.contractAddress?.address === route.params.contractAddress;
       })
     );
-  }, [query.viewer?.user?.tokens, route.params.contractAddress]);
+  }, [data.viewer?.user?.tokens, route.params.contractAddress]);
 
   const contractName = tokens[0]?.contract?.name;
+  const contractId = tokens[0]?.contract?.dbid ?? '';
+
+  const { isSyncingCreatorTokens, syncCreatedTokensForExistingContract } = useSyncTokensActions();
+
+  const handleSyncTokensForContract = useCallback(async () => {
+    syncCreatedTokensForExistingContract(contractId);
+  }, [syncCreatedTokensForExistingContract, contractId]);
+
+  const handleRefresh = useCallback(() => {
+    refetch({}, { fetchPolicy: 'network-only' });
+  }, [refetch]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -95,10 +125,11 @@ export function NftSelectorContractScreen() {
         paddingTop: isFullscreen ? top : 16,
       }}
     >
-      <View className="flex flex-col space-y-8 flex-1 ">
-        <View className="px-4 relative">
-          <BackButton />
-
+      <View className="flex flex-col space-y-8 flex-1">
+        <View className="px-4 relative flex flex-row justify-between items-center">
+          <View>
+            <BackButton />
+          </View>
           <View
             className="absolute inset-0 flex flex-row justify-center items-center"
             pointerEvents="none"
@@ -112,6 +143,17 @@ export function NftSelectorContractScreen() {
               {contractName}
             </Typography>
           </View>
+          {isCreator ? (
+            <View>
+              <AnimatedRefreshIcon
+                isSyncing={isSyncingCreatorTokens}
+                onSync={handleSyncTokensForContract}
+                onRefresh={handleRefresh}
+                eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"
+                eventName="Nft Selector SyncCreatedTokensForExistingContractButton pressed"
+              />
+            </View>
+          ) : null}
         </View>
         <View className="flex-1 w-full">
           <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />

@@ -2,6 +2,8 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { Linking, View } from 'react-native';
 
+import { contexts } from '~/shared/analytics/constants';
+
 import { Button } from '../../Button';
 import {
   GalleryBottomSheetModal,
@@ -72,6 +74,7 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
             text="CONTINUE"
             eventElementId="External URL Confirmation Continue Button"
             eventName="Pressed External URL Confirmation Continue Button"
+            eventContext={contexts.Posts}
           />
           <Button
             variant="secondary"
@@ -79,6 +82,7 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
             text="CANCEL"
             eventElementId="External URL Confirmation Cancel Button"
             eventName="Pressed External URL Confirmation Cancel Button"
+            eventContext={contexts.Posts}
           />
         </View>
       </View>

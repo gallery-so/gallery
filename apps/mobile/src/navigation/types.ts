@@ -45,10 +45,11 @@ export type MainTabStackNavigatorParamList = {
   NftSelectorContractScreen: {
     contractAddress: string;
     fullScreen?: boolean;
+    ownerFilter?: 'Collected' | 'Created';
     page: ScreenWithNftSelector;
   };
   SettingsProfile: undefined;
-  Post: { postId: string };
+  Post: { postId: string; commentId?: string };
   NotificationSettingsScreen: undefined;
 
   // The main five tabs
@@ -68,7 +69,7 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: {
+  'For You': {
     // check if new registered user, we show a welcome message
     isNewUser?: boolean;
     showMarfaCheckIn?: boolean;

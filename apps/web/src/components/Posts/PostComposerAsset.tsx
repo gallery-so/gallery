@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { PostComposerAssetFragment$key } from '~/generated/PostComposerAssetFragment.graphql';
 
-import breakpoints from '../core/breakpoints';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftSelectorPreviewAsset } from '../NftSelector/NftSelectorPreviewAsset';
 
@@ -26,22 +25,18 @@ export default function PostComposerAsset({ tokenRef }: Props) {
   return (
     <StyledPostComposerAsset>
       <NftFailureBoundary tokenId={token.dbid}>
-        <NftSelectorPreviewAsset tokenRef={token} />
+        <NftSelectorPreviewAsset tokenRef={token} enforceSquareAspectRatio={false} />
       </NftFailureBoundary>
     </StyledPostComposerAsset>
   );
 }
 
 const StyledPostComposerAsset = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   min-width: 100%;
   min-height: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    width: 180px;
-    height: 180px;
-    min-width: 180px;
-    min-height: 180px;
-  }
 `;
