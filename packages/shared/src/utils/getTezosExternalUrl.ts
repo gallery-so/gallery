@@ -38,13 +38,6 @@ export const getFxHashExternalUrlDangerously = (contractAddress: string, tokenId
   return '';
 };
 
-export const getFxHashExternalUrlDangerouslyForCollection = (contractAddress: string, collectionName: string) => {
-  if (fxHashContractAddresses.has(contractAddress)) {
-    return `https://www.fxhash.xyz/generative/slug/${collectionName})}`;
-  }
-  return '';
-};
-
 /**
  * WARNING: you will rarely want to use this function directly;
  * prefer to use `extractRelevantMetadataFromToken.ts`

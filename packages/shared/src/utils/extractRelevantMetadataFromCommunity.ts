@@ -3,16 +3,9 @@ import { graphql, readInlineData } from 'relay-runtime';
 import { extractRelevantMetadataFromCommunityFragment$key } from '~/generated/extractRelevantMetadataFromCommunityFragment.graphql';
 
 import { isChainEvm } from './chains';
-import { extractMirrorXyzUrl } from './extractMirrorXyzUrl';
 import { getOpenseaExternalUrlDangerouslyForCollection } from './getOpenseaExternalUrl';
-import {
-  getFxHashExternalUrlDangerouslyForCollection,
-  getObjktExternalUrlDangerouslyForCollection,
-  isFxHashContractAddress,
-} from './getTezosExternalUrl';
-import processProjectUrl from './processProjectUrl';
-import { getProhibitionUrlDangerouslyForCollection } from './prohibition';
-import { truncateAddress } from './wallet';
+import { getObjktExternalUrlDangerouslyForCollection } from './getTezosExternalUrl';
+import { getExternalAddressLink } from './wallet';
 
 export function extractRelevantMetadataFromCommunity(
   communityRef: extractRelevantMetadataFromCommunityFragment$key
@@ -27,6 +20,7 @@ export function extractRelevantMetadataFromCommunity(
           name
           contractAddress {
             address
+            ...walletGetExternalAddressLinkFragment
           }
         }
       }
@@ -37,31 +31,23 @@ export function extractRelevantMetadataFromCommunity(
   const { name, contract, chain } = community;
 
   const contractAddress = contract?.contractAddress?.address;
-  console.log('name', name);
   const result = {
     contractAddress,
-    contractName: '',
     openseaUrl: '',
-    mirrorUrl: '',
-    prohibitionUrl: '',
-    fxhashUrl: '',
     objktUrl: '',
-    // the official URL provided by the project, which we'll typically
-    // link to under `More Info`
-    projectUrl: '',
+    externalAddressUrl: '',
   };
 
-  const collectionName = name?.toLocaleLowerCase().replace(' ', '-') ?? '';
+  const collectionName =
+    name
+      ?.replace(/[^a-zA-Z0-9\s]/g, '')
+      .toLocaleLowerCase()
+      .replace(' ', '-') ?? '';
+  console.log('name', name);
+  console.log('collectioName', collectionName);
   if (contractAddress && collectionName) {
-    result.prohibitionUrl = getProhibitionUrlDangerouslyForCollection(
-      contractAddress,
-      collectionName
-    );
-    result.fxhashUrl = getFxHashExternalUrlDangerouslyForCollection(
-      contractAddress,
-      collectionName
-    );
     result.objktUrl = getObjktExternalUrlDangerouslyForCollection(contractAddress);
+    result.externalAddressUrl = getExternalAddressLink(contract?.contractAddress) ?? '';
     if (
       chain &&
       // eslint-disable-next-line relay/no-future-added-value
@@ -72,25 +58,5 @@ export function extractRelevantMetadataFromCommunity(
     }
   }
 
-  if (isFxHashContractAddress(contractAddress)) {
-    result.contractName = 'fx(hash)';
-  } else if (contract?.name) {
-    result.contractName = contract.name;
-  } else if (contractAddress) {
-    result.contractName = truncateAddress(contractAddress);
-  } else {
-    result.contractName = 'Untitled Contract';
-  }
-
-  /*
-  if (tokenMetadata) {
-    result.mirrorUrl = extractMirrorXyzUrl(tokenMetadata);
-  }
-
-  if (externalUrl) {
-    result.projectUrl = processProjectUrl(externalUrl);
-  }
-
-*/
   return result;
 }

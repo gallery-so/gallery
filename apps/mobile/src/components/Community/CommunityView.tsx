@@ -18,6 +18,7 @@ import { CommunityMeta } from './CommunityMeta';
 import { CommunityTabsHeader } from './CommunityTabsHeader';
 import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
+import { GlobeIcon } from 'src/icons/GlobeIcon';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
@@ -89,9 +90,15 @@ export function CommunityView({ queryRef }: Props) {
     );
   }, [community, setSelectedRoute, selectedRoute]);
 
-  const { openseaUrl, objktUrl, contractName } = extractRelevantMetadataFromCommunity(community);
-  const onClickOpenseaUrl = () => Linking.openURL(openseaUrl);
-  const onClickObjktUrl = () => Linking.openURL(objktUrl);
+  const { openseaUrl, objktUrl, externalAddressUrl } =
+    extractRelevantMetadataFromCommunity(community);
+
+  const showOpenseaIcon = community.chain == 'Ethereum' && openseaUrl;
+  const showObjktIcon = community.chain == 'Tezos' && objktUrl;
+
+  const handleClickOpenseaUrl = () => Linking.openURL(openseaUrl);
+  const handleClickObjktUrl = () => Linking.openURL(objktUrl);
+  const handleExternalAddressUrl = () => Linking.openURL(externalAddressUrl);
 
   return (
     <View className="flex-1">
@@ -100,22 +107,31 @@ export function CommunityView({ queryRef }: Props) {
           <BackButton />
 
           <View className="flex flex-row space-x-2">
-            {objktUrl && (
+            {externalAddressUrl && (
               <IconContainer
-                eventElementId="Community Objkt Icon"
-                eventName="Community Ob Icon Clicked"
+                eventElementId="Community Globe Icon"
+                eventName="Community Globe Icon Clicked"
                 eventContext={contexts.Community}
-                icon={<ObjktIcon />}
-                onPress={onClickObjktUrl}
+                icon={<GlobeIcon />}
+                onPress={handleExternalAddressUrl}
               />
             )}
-            {openseaUrl && (
+            {showObjktIcon && (
+              <IconContainer
+                eventElementId="Community Objkt Icon"
+                eventName="Community Objkt Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<ObjktIcon />}
+                onPress={handleClickObjktUrl}
+              />
+            )}
+            {showOpenseaIcon && (
               <IconContainer
                 eventElementId="Community Opensea Icon"
                 eventName="Community Opensea Icon Clicked"
                 eventContext={contexts.Community}
                 icon={<OpenseaIcon />}
-                onPress={onClickOpenseaUrl}
+                onPress={handleClickOpenseaUrl}
               />
             )}
             <IconContainer

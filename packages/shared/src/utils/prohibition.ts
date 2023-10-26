@@ -16,13 +16,6 @@ export function getProhibitionUrlDangerously(contractAddress: string, tokenId: s
   return '';
 }
 
-export function getProhibitionUrlDangerouslyForCollection(contractAddress: string, collectionName: string) {
-  if (PROHIBITION_CONTRACT_ADDRESSES.has(contractAddress)) {
-    return `https://prohibition.art/${collectionName}`;
-  }
-  return '';
-}
-
 function getProhibitionProjectId(tokenId: string) {
   // same formula as art blocks
   return Math.floor(Number(tokenId) / 1000000);
