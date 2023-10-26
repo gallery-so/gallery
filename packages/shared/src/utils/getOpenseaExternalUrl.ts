@@ -16,3 +16,9 @@ export const getOpenseaExternalUrlDangerously = (
 
   return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}?ref=${GALLERY_OS_ADDRESS}`;
 };
+
+export const getOpenseaExternalUrlDangerouslyForCollection = (
+  collectionName: string
+) => {
+  return `https://opensea.io/collection/${collectionName}/`;
+};

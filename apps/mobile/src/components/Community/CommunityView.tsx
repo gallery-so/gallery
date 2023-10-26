@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, View } from 'react-native';
+import { Share, View, Linking } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 import { ShareIcon } from 'src/icons/ShareIcon';
+import { OpenseaIcon } from 'src/icons/OpenseaIcon';
+import { ObjktIcon } from 'src/icons/ObjktIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
@@ -15,6 +17,7 @@ import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
 import { CommunityTabsHeader } from './CommunityTabsHeader';
 import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
@@ -42,6 +45,7 @@ export function CommunityView({ queryRef }: Props) {
               address
             }
           }
+          ...extractRelevantMetadataFromCommunityFragment
         }
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
@@ -85,19 +89,43 @@ export function CommunityView({ queryRef }: Props) {
     );
   }, [community, setSelectedRoute, selectedRoute]);
 
+  const { openseaUrl, objktUrl, contractName } = extractRelevantMetadataFromCommunity(community);
+  const onClickOpenseaUrl = () => Linking.openURL(openseaUrl);
+  const onClickObjktUrl = () => Linking.openURL(objktUrl);
+
   return (
     <View className="flex-1">
       <View className="flex flex-col px-4 py-4 z-10">
         <View className="flex flex-row justify-between">
           <BackButton />
 
-          <IconContainer
-            eventElementId="Community Share Icon"
-            eventName="Community Share Icon Clicked"
-            eventContext={contexts.Community}
-            icon={<ShareIcon />}
-            onPress={handleShare}
-          />
+          <View className="flex flex-row space-x-2">
+            {objktUrl && (
+              <IconContainer
+                eventElementId="Community Objkt Icon"
+                eventName="Community Ob Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<ObjktIcon />}
+                onPress={onClickObjktUrl}
+              />
+            )}
+            {openseaUrl && (
+              <IconContainer
+                eventElementId="Community Opensea Icon"
+                eventName="Community Opensea Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<OpenseaIcon />}
+                onPress={onClickOpenseaUrl}
+              />
+            )}
+            <IconContainer
+              eventElementId="Community Share Icon"
+              eventName="Community Share Icon Clicked"
+              eventContext={contexts.Community}
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+          </View>
         </View>
       </View>
 

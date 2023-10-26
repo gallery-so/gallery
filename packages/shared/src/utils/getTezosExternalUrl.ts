@@ -38,10 +38,21 @@ export const getFxHashExternalUrlDangerously = (contractAddress: string, tokenId
   return '';
 };
 
+export const getFxHashExternalUrlDangerouslyForCollection = (contractAddress: string, collectionName: string) => {
+  if (fxHashContractAddresses.has(contractAddress)) {
+    return `https://www.fxhash.xyz/generative/slug/${collectionName})}`;
+  }
+  return '';
+};
+
 /**
  * WARNING: you will rarely want to use this function directly;
  * prefer to use `extractRelevantMetadataFromToken.ts`
  */
 export const getObjktExternalUrlDangerously = (contractAddress: string, tokenId: string) => {
   return `https://objkt.com/asset/${contractAddress}/${hexToDec(tokenId)}`;
+};
+
+export const getObjktExternalUrlDangerouslyForCollection = (contractAddress: string) => {
+  return `https://objkt.com/collection/${contractAddress}`;
 };
