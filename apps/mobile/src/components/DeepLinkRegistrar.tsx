@@ -66,6 +66,21 @@ export const handleDeepLinkNavigation = (url: string, navigation: RootStackNavig
       });
     }
   } else if (splitBySlash.length === 2) {
+    const [maybeUsername, maybeGalleriesOrPostsOrFollowers] = splitBySlash;
+
+    /**
+     * /:username/galleries/
+     */
+    if (maybeUsername && maybeGalleriesOrPostsOrFollowers) {
+      navigation.navigate('MainTabs', {
+        screen: 'HomeTab',
+        params: {
+          screen: 'Profile',
+          params: { username: maybeUsername, tab: 'Galleries' },
+        },
+      });
+    }
+  } else if (splitBySlash.length === 2) {
     const [maybeUsername, maybeCollectionId] = splitBySlash;
 
     /**

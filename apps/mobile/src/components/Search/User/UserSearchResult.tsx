@@ -41,7 +41,7 @@ export function UserSearchResult({ userRef, keyword, onSelect }: Props) {
     }
 
     if (user.username) {
-      navigation.push('Profile', { username: user.username });
+      navigation.push('Profile', { username: user.username, tab: 'Galleries' });
     }
   }, [onSelect, navigation, user.dbid, user.username]);
 

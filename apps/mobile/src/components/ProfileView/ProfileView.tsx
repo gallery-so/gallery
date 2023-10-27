@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
@@ -20,6 +21,7 @@ import { ProfileViewEditProfileButtonFragment$key } from '~/generated/ProfileVie
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
@@ -51,7 +53,8 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     queryRef
   );
 
-  const [selectedRoute, setSelectedRoute] = useState('Featured');
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
+  const [selectedRoute, setSelectedRoute] = useState<string>('Featured');
 
   const Header = useCallback(() => {
     return (
@@ -69,6 +72,12 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       containerRef.current.jumpToTab(selectedRoute);
     }
   }, [selectedRoute]);
+
+  useEffect(() => {
+    if (route.params.tab) {
+      setSelectedRoute(route.params.tab);
+    }
+  }, [route.params.tab]);
 
   return (
     <View className="flex-1">
