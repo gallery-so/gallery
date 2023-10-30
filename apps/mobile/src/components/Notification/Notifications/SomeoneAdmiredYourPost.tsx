@@ -3,17 +3,17 @@ import { useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { SomeoneAdmiredYourPostQueryFragment$key } from '~/generated/SomeoneAdmiredYourPostQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { contexts } from '~/shared/analytics/constants';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourFeedEventProps = {
   queryRef: SomeoneAdmiredYourPostQueryFragment$key;
