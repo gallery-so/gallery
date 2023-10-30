@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useFollowUserFragment$key } from '~/generated/useFollowUserFragment.graphql';
 import { useFollowUserMutation } from '~/generated/useFollowUserMutation.graphql';
@@ -8,9 +9,10 @@ import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type useFollowUserArgs = {
   queryRef: useFollowUserFragment$key;
+  connectionIds: string[];
 };
 
-export default function useFollowUser({ queryRef }: useFollowUserArgs) {
+export default function useFollowUser({ queryRef, connectionIds }: useFollowUserArgs) {
   const query = useFragment(
     graphql`
       fragment useFollowUserFragment on Query {
@@ -62,9 +64,23 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
     `
   );
 
+  const updater: SelectorStoreUpdater<useFollowUserMutation['response']> = (store, response) => {
+    console.log('store', store);
+    if (response.followUser?.__typename === 'FollowUserPayload') {
+      /*
+      for (const connectionId of connectionIds) {
+        const pageInfo = store.get(connectionId)?.getLinkedRecord('pageInfo');
+
+        pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+      }*/
+    }
+  };
+
   return useCallback(
     async (followeeId: string) => {
       await followUserMutate({
+        updater,
+        optimisticUpdater: updater,
         optimisticResponse: {
           followUser: {
             __typename: 'FollowUserPayload',
@@ -82,6 +98,12 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
         variables: { userId: followeeId },
       });
     },
-    [followUserMutate, query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id]
+    [
+      followUserMutate,
+      query.viewer?.id,
+      query.viewer?.user?.following,
+      query.viewer?.user?.id,
+      updater,
+    ]
   );
 }
