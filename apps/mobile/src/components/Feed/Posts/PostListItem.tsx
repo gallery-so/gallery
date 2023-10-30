@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
@@ -16,6 +16,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
+import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 import { DOUBLE_TAP_WINDOW } from '../constants';
 
@@ -36,6 +37,14 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
             contractAddress {
               address
               chain
+            }
+          }
+          media {
+            ... on Media {
+              dimensions {
+                width
+                height
+              }
             }
           }
           ...useGetPreviewImagesSingleFragment
@@ -120,11 +129,29 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
   const { contractName } = extractRelevantMetadataFromToken(firstToken);
 
+  const resultDimensions = useMemo(() => {
+    const serverSourcedDimensions = firstToken.media?.dimensions;
+    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
+      return fitDimensionsToContainerContain({
+        container: { width: dimensions.width, height: dimensions.width },
+        source: {
+          width: serverSourcedDimensions.width,
+          height: serverSourcedDimensions.height,
+        },
+      });
+    }
+
+    return {
+      height: dimensions.width,
+      width: dimensions.width,
+    };
+  }, [firstToken.media?.dimensions, dimensions.width]);
+
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       <View
         style={{
-          height: dimensions.width,
+          height: resultDimensions.height,
           width: dimensions.width,
         }}
       >
