@@ -199,17 +199,7 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-        <View
-          className={`w-[35px] flex-row space-x-2 items-center ${
-            !notification.seen ? 'justify-between' : 'justify-end'
-          }`}
-        >
-          <Typography
-            className="text-metal text-xs"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {getTimeSince(notification.updatedTime)}
-          </Typography>
+        <View className="w-[22px] flex-row space-x-2 items-center justify-end">
           {!notification.seen && <UnseenDot />}
         </View>
       </View>

@@ -10,6 +10,7 @@ import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/Someone
 import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneCommentedOnYourFeedEventQueryFragment$key;
@@ -33,6 +34,7 @@ export function SomeoneCommentedOnYourFeedEvent({
     graphql`
       fragment SomeoneCommentedOnYourFeedEventFragment on SomeoneCommentedOnYourFeedEventNotification {
         __typename
+        updatedTime
 
         comment {
           commenter {
@@ -116,6 +118,8 @@ export function SomeoneCommentedOnYourFeedEvent({
     }
   }, [navigation, notification.feedEvent?.dbid]);
 
+  console.log("getTimeSince(notification.updatedTime)", getTimeSince(notification.updatedTime));
+
   return (
     <NotificationSkeleton
       queryRef={query}
@@ -148,6 +152,8 @@ export function SomeoneCommentedOnYourFeedEvent({
           ) : (
             <Text>your collection</Text>
           )}
+          {getTimeSince(notification.updatedTime)}
+
         </Text>
 
         <View className="border-l-2 border-[#d9d9d9] pl-2">

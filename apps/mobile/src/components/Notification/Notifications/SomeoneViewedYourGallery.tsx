@@ -11,6 +11,7 @@ import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedY
 import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 
 type Props = {
   queryRef: SomeoneViewedYourGalleryQueryFragment$key;
@@ -33,6 +34,7 @@ export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
         __typename
         id
 
+        updatedTime
         nonUserViewerCount
 
         userViewers(last: 1) {
@@ -83,6 +85,8 @@ export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
     },
     [navigation]
   );
+
+  console.log('getTimeSince(notification.updatedTime)', getTimeSince(notification.updatedTime));
 
   const inner = useMemo(() => {
     if (userViewerCount > 0) {
@@ -136,6 +140,9 @@ export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
       notificationRef={notification}
     >
       {inner}
+      <Typography className="text-metal text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        {getTimeSince(notification.updatedTime)}
+      </Typography>
 
       <NotificationBottomSheetUserList
         ref={bottomSheetRef}
