@@ -10,9 +10,9 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
+import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { LinkableAddress } from '~/components/LinkableAddress';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -70,7 +70,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               badgeURL
               creatorAddress {
                 address
-                ...LinkableAddressFragment
+                ...EnsOrAddressWithSuspenseFragment
               }
               contractAddress {
                 address
@@ -215,17 +215,16 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             eventName="NftDetail Creator PFP"
             eventContext={contexts['NFT Detail']}
           />
-          <LinkableAddress
-            textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
-            chainAddressRef={token.contract.creatorAddress}
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            eventElementId="NFT Detail Creator Address"
-            eventName="NFT Detail Creator Address Press"
-            eventContext={contexts['NFT Detail']}
-          />
+          <View>
+            <EnsOrAddress
+              chainAddressRef={token.contract.creatorAddress}
+              eventContext={contexts['NFT Detail']}
+            />
+          </View>
         </View>
       );
     }
+
     return null;
   }, [
     token.owner,
@@ -234,7 +233,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     token.community?.creator,
     handleOwnerUsernamePress,
     handleCreatorUsernamePress,
-    colorScheme,
   ]);
 
   // const handleCreatorPress = useCallback(() => {
