@@ -11,6 +11,7 @@ import {
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { size } from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/AdmireModal/AdmireNote';
@@ -101,7 +102,7 @@ export function AdmireModal({
   const estimatedItemHeight = 50; // assuming each item is around 50px
 
   const estimatedContentHeight = useMemo(() => {
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= size.tablet) {
       return admires.length * estimatedItemHeight;
     } else {
       return Math.min(admires.length * estimatedItemHeight, 420);
