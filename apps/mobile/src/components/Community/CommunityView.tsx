@@ -93,9 +93,6 @@ export function CommunityView({ queryRef }: Props) {
   const { openseaUrl, objktUrl, externalAddressUrl } =
     extractRelevantMetadataFromCommunity(community);
 
-  const showOpenseaIcon = community.chain == 'Ethereum' && openseaUrl;
-  const showObjktIcon = community.chain == 'Tezos' && objktUrl;
-
   return (
     <View className="flex-1">
       <View className="flex flex-col px-4 py-4 z-10">
@@ -112,7 +109,7 @@ export function CommunityView({ queryRef }: Props) {
                 onPress={() => Linking.openURL(externalAddressUrl)}
               />
             )}
-            {showObjktIcon && (
+            {objktUrl && (
               <IconContainer
                 eventElementId="Community Objkt Icon"
                 eventName="Community Objkt Icon Clicked"
@@ -121,7 +118,7 @@ export function CommunityView({ queryRef }: Props) {
                 onPress={() => Linking.openURL(objktUrl)}
               />
             )}
-            {showOpenseaIcon && (
+            {openseaUrl && (
               <IconContainer
                 eventElementId="Community Opensea Icon"
                 eventName="Community Opensea Icon Clicked"

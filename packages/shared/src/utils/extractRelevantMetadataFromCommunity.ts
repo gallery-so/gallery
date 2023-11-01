@@ -36,7 +36,10 @@ export function extractRelevantMetadataFromCommunity(
   };
 
   if (contractAddress) {
-    result.objktUrl = getObjktExternalUrlDangerouslyForCollection(contractAddress);
+    if (chain === 'Tezos') {
+      result.objktUrl = getObjktExternalUrlDangerouslyForCollection(contractAddress);
+    }
+
     result.externalAddressUrl = getExternalAddressLink(contract?.contractAddress) ?? '';
     if (
       chain &&
