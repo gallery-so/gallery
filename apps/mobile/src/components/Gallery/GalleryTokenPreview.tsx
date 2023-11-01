@@ -6,9 +6,9 @@ import { graphql } from 'relay-runtime';
 
 import { NftPreviewWithBoundary } from '~/components/NftPreview/NftPreview';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
-import { fitDimensionsToContainerContain } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 import { ImageState } from '../NftPreview/UniversalNftPreview';
 
