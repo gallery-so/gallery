@@ -19,7 +19,7 @@ export const getOpenseaExternalUrlDangerously = (
 
 export const getOpenseaExternalUrlDangerouslyForCollection = (
   chainStr: string,
-  contractAddress: string,
+  contractAddress: string
 ) => {
   const chain = chainStr.toLocaleLowerCase();
 
