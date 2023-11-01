@@ -42,7 +42,7 @@ export const chains = [
     shortName: 'ZORA',
     icon: '/icons/zora_logo.svg',
     baseChain: 'Ethereum',
-    hasCreatorSupport: false,
+    hasCreatorSupport: true,
     isEnabled: true,
     shouldAutoRefresh: true,
   },
