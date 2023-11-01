@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { ENABLED_CREATOR } from '~/constants/creator';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
@@ -118,35 +117,12 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
     <StyledGalleryLink to={communityUrl}>
       <HStack gap={4} align="center">
         {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-
-        <StyledBaseM color={colors.porcelain}>
-          {collectionName}
-
-          {ENABLED_CREATOR && (
-            <>
-              {' '}
-              <BaseM color={colors.metal} as="span">
-                by Artist
-              </BaseM>
-            </>
-          )}
-        </StyledBaseM>
+        <StyledBaseM color={colors.porcelain}>{collectionName}</StyledBaseM>
       </HStack>
     </StyledGalleryLink>
   ) : (
     <HStack gap={4} align="center">
-      <StyledBaseM color={colors.porcelain}>
-        {collectionName}
-
-        {ENABLED_CREATOR && (
-          <>
-            {' '}
-            <BaseM color={colors.metal} as="span">
-              by Artist
-            </BaseM>
-          </>
-        )}
-      </StyledBaseM>
+      <StyledBaseM color={colors.porcelain}>{collectionName}</StyledBaseM>
     </HStack>
   );
 }
