@@ -13,11 +13,8 @@ export function extractRelevantMetadataFromCommunity(
   const community = readInlineData(
     graphql`
       fragment extractRelevantMetadataFromCommunityFragment on Community @inline {
-        id
-        name
         chain
         contract {
-          name
           contractAddress {
             address
             ...walletGetExternalAddressLinkFragment
@@ -28,7 +25,7 @@ export function extractRelevantMetadataFromCommunity(
     communityRef
   );
 
-  const { name, contract, chain } = community;
+  const { contract, chain } = community;
 
   const contractAddress = contract?.contractAddress?.address;
   const result = {
@@ -38,14 +35,7 @@ export function extractRelevantMetadataFromCommunity(
     externalAddressUrl: '',
   };
 
-  const collectionName =
-    name
-      ?.replace(/[^a-zA-Z0-9\s]/g, '')
-      .toLocaleLowerCase()
-      .replace(' ', '-') ?? '';
-  console.log('name', name);
-  console.log('collectioName', collectionName);
-  if (contractAddress && collectionName) {
+  if (contractAddress) {
     result.objktUrl = getObjktExternalUrlDangerouslyForCollection(contractAddress);
     result.externalAddressUrl = getExternalAddressLink(contract?.contractAddress) ?? '';
     if (
@@ -54,7 +44,7 @@ export function extractRelevantMetadataFromCommunity(
       chain !== '%future added value' &&
       isChainEvm(chain)
     ) {
-      result.openseaUrl = getOpenseaExternalUrlDangerouslyForCollection(collectionName);
+      result.openseaUrl = getOpenseaExternalUrlDangerouslyForCollection(chain, contractAddress);
     }
   }
 

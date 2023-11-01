@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, View, Linking } from 'react-native';
+import { Linking, Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
-import { ShareIcon } from 'src/icons/ShareIcon';
-import { OpenseaIcon } from 'src/icons/OpenseaIcon';
+import { GlobeIcon } from 'src/icons/GlobeIcon';
 import { ObjktIcon } from 'src/icons/ObjktIcon';
+import { OpenseaIcon } from 'src/icons/OpenseaIcon';
+import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
@@ -17,8 +19,6 @@ import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
 import { CommunityTabsHeader } from './CommunityTabsHeader';
 import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
-import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
-import { GlobeIcon } from 'src/icons/GlobeIcon';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
@@ -59,7 +59,7 @@ export function CommunityView({ queryRef }: Props) {
 
   const { community } = query;
 
-  if (!community || community.__typename !== 'Community') {
+  if (!community) {
     throw new Error(`Unable to fetch the community`);
   }
 
@@ -96,10 +96,6 @@ export function CommunityView({ queryRef }: Props) {
   const showOpenseaIcon = community.chain == 'Ethereum' && openseaUrl;
   const showObjktIcon = community.chain == 'Tezos' && objktUrl;
 
-  const handleClickOpenseaUrl = () => Linking.openURL(openseaUrl);
-  const handleClickObjktUrl = () => Linking.openURL(objktUrl);
-  const handleExternalAddressUrl = () => Linking.openURL(externalAddressUrl);
-
   return (
     <View className="flex-1">
       <View className="flex flex-col px-4 py-4 z-10">
@@ -113,7 +109,7 @@ export function CommunityView({ queryRef }: Props) {
                 eventName="Community Globe Icon Clicked"
                 eventContext={contexts.Community}
                 icon={<GlobeIcon />}
-                onPress={handleExternalAddressUrl}
+                onPress={() => Linking.openURL(externalAddressUrl)}
               />
             )}
             {showObjktIcon && (
@@ -122,7 +118,7 @@ export function CommunityView({ queryRef }: Props) {
                 eventName="Community Objkt Icon Clicked"
                 eventContext={contexts.Community}
                 icon={<ObjktIcon />}
-                onPress={handleClickObjktUrl}
+                onPress={() => Linking.openURL(objktUrl)}
               />
             )}
             {showOpenseaIcon && (
@@ -131,7 +127,7 @@ export function CommunityView({ queryRef }: Props) {
                 eventName="Community Opensea Icon Clicked"
                 eventContext={contexts.Community}
                 icon={<OpenseaIcon />}
-                onPress={handleClickOpenseaUrl}
+                onPress={() => Linking.openURL(openseaUrl)}
               />
             )}
             <IconContainer

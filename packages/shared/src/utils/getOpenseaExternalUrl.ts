@@ -18,7 +18,10 @@ export const getOpenseaExternalUrlDangerously = (
 };
 
 export const getOpenseaExternalUrlDangerouslyForCollection = (
-  collectionName: string
+  chainStr: string,
+  contractAddress: string,
 ) => {
-  return `https://opensea.io/collection/${collectionName}/`;
+  const chain = chainStr.toLocaleLowerCase();
+
+  return `https://opensea.io/assets/${chain}/${contractAddress}`;
 };

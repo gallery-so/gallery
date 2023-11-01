@@ -1,6 +1,6 @@
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import Svg, { Path, SvgProps, G } from 'react-native-svg';
+import Svg, { G,Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
