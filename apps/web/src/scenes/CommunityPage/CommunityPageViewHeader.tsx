@@ -21,12 +21,12 @@ import OpenseaIcon from '~/icons/OpenseaIcon';
 import ShareIcon from '~/icons/ShareIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { truncateAddress } from '~/shared/utils/wallet';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
-import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 type Props = {
   communityRef: CommunityPageViewHeaderFragment$key;
@@ -176,6 +176,8 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     objktUrl,
     openseaUrl,
     handleExternalLinkClick,
+    handleObjktLinkClick,
+    handleOpenseaLinkClick,
     handleShareLinkClick,
   ]);
 
