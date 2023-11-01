@@ -3,22 +3,33 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
 import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
-import { useSearchContext } from './SearchContext';
 import UserSearchResultSection from './User/UserSearchResultSection';
 
+export type SearchResultVariant = 'default' | 'compact';
+
 type Props = {
+  keyword: string;
   activeFilter: SearchFilterType;
+  variant?: SearchResultVariant;
+
   onChangeFilter: (filter: SearchFilterType) => void;
+  onSelect?: (item: MentionType) => void;
 };
 
-export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
-  const { keyword } = useSearchContext();
+export default function SearchResults({
+  activeFilter,
+  keyword,
+  onChangeFilter,
+  onSelect,
+  variant = 'default',
+}: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
   const query = useLazyLoadQuery<SearchResultsQuery>(
@@ -97,6 +108,8 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchUsers?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
+            onSelect={onSelect}
           />
         )}
       </StyledSearchResultContainer>
@@ -112,6 +125,7 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchGalleries?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
           />
         )}
       </StyledSearchResultContainer>
@@ -127,6 +141,7 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchCommunities?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
           />
         )}
       </StyledSearchResultContainer>
@@ -141,13 +156,16 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           title="curators"
           resultRefs={query?.searchUsers?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
+          onSelect={onSelect}
         />
       )}
-      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && variant === 'default' && (
         <GallerySearchResultSection
           title="galleries"
           resultRefs={query?.searchGalleries?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -155,6 +173,7 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           title="communities"
           resultRefs={query?.searchCommunities?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
         />
       )}
     </StyledSearchResultContainer>

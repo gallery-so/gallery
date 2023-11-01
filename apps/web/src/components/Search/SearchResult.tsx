@@ -2,7 +2,6 @@ import { Route, route } from 'nextjs-routes';
 import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
@@ -13,13 +12,17 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { SearchFilterType } from './Search';
 import { useSearchContext } from './SearchContext';
+import { SearchResultVariant } from './SearchResults';
 
 type Props = {
   name: string;
   description: string;
-  path: Route;
   type: SearchFilterType;
   profilePicture?: ReactNode;
+  path: Route;
+
+  variant?: SearchResultVariant;
+  onClick: () => void;
 };
 
 const MAX_DESCRIPTION_CHARACTER = 150;
@@ -31,14 +34,17 @@ export default function SearchResult({
   type,
 
   profilePicture,
+  variant = 'default',
+  onClick,
 }: Props) {
-  const { hideDrawer } = useDrawerActions();
+  // TODO: Turn this on later
+  // const { hideDrawer } = useDrawerActions();
   const { keyword } = useSearchContext();
 
   const track = useTrack();
 
   const handleClick = useCallback(() => {
-    hideDrawer();
+    // hideDrawer();
 
     const fullLink = route(path);
 
@@ -48,7 +54,9 @@ export default function SearchResult({
       resultType: type,
       context: contexts.Search,
     });
-  }, [hideDrawer, keyword, path, track, type]);
+
+    onClick();
+  }, [keyword, onClick, path, track, type]);
 
   const highlightedName = useMemo(() => {
     return name.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
@@ -79,18 +87,18 @@ export default function SearchResult({
   }, [keyword, description]);
 
   return (
-    <StyledSearchResult className="SearchResult" to={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" onClick={handleClick} variant={variant}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
-          <BaseM>
+          <StyledText variant={variant}>
             <Markdown text={highlightedName} eventContext={contexts.Search} />
-          </BaseM>
+          </StyledText>
           {highlightedDescription && (
             <StyledDescription>
-              <BaseM>
+              <StyledText variant={variant}>
                 <Markdown text={highlightedDescription} eventContext={contexts.Search} />
-              </BaseM>
+              </StyledText>
             </StyledDescription>
           )}
         </VStack>
@@ -99,9 +107,11 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
+const StyledSearchResult = styled(GalleryLink)<{
+  className: string;
+  variant: SearchResultVariant;
+}>`
   color: ${colors.black['800']};
-  padding: 16px 12px;
   cursor: pointer;
   text-decoration: none;
 
@@ -111,6 +121,12 @@ const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
     background-color: ${colors.faint};
     border-radius: 4px;
   }
+
+  ${(props) =>
+    props.variant === 'compact'
+      ? 'padding: 8px;'
+      : `padding: 16px 12px;
+  `}
 `;
 
 const StyledDescription = styled.div`
@@ -125,4 +141,11 @@ const StyledDescription = styled.div`
   p {
     display: inline;
   }
+`;
+
+const StyledText = styled(BaseM)<{
+  variant: SearchResultVariant;
+}>`
+  font-size: ${(props) => (props.variant === 'compact' ? '12px' : '14px')};
+  line-height: ${(props) => (props.variant === 'compact' ? '16px' : '20px')};
 `;

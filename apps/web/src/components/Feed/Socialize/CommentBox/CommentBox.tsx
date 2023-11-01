@@ -1,10 +1,21 @@
 import {
+  autoUpdate,
+  flip,
+  FloatingPortal,
+  inline,
+  shift,
+  useFloating,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
   ClipboardEventHandler,
   KeyboardEventHandler,
   useCallback,
   useEffect,
+  useId,
   useRef,
-  useState,
 } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -12,20 +23,28 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import {
+  ANIMATED_COMPONENT_TRANSITION_S,
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+  rawTransitions,
+} from '~/components/core/transitions';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { MentionModal } from '~/components/Mention/MentionModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 300;
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
-  onSubmitComment: (comment: string) => void;
+  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
   isSubmittingComment: boolean;
 };
 
@@ -37,10 +56,35 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
           __typename
         }
         ...useAuthModalFragment
+        ...useMentionableMessageQueryFragment
       }
     `,
     queryRef
   );
+
+  const {
+    isSelectingMentions,
+    aliasKeyword,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    resetMentions,
+    handleSelectionChange,
+  } = useMentionableMessage(query);
+
+  const { x, y, reference, floating, strategy, context } = useFloating({
+    placement: 'bottom-start',
+    open: isSelectingMentions,
+    // onOpenChange: setIs,
+    middleware: [flip(), shift(), inline()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const headingId = useId();
+  const role = useRole(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([role]);
 
   // WARNING: calling `setValue` will not cause the textarea's content to actually change
   // It's simply there as a state value that we can reference to peek into the current state
@@ -49,7 +93,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   // We don't flush the state of `value` back out to the textarea to avoid constantly having
   // to move the user's cursor around while their typing. This would cause a pretty jarring
   // typing experience.
-  const [value, setValue] = useState('');
+  // const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
   const { pushToast } = useToastActions();
@@ -58,13 +102,14 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   const { showModal } = useModalActions();
 
   const resetInputState = useCallback(() => {
-    setValue('');
+    resetMentions();
 
     const textarea = textareaRef.current;
+
     if (textarea) {
       textarea.innerText = '';
     }
-  }, []);
+  }, [resetMentions]);
 
   const pushErrorToast = useCallback(() => {
     pushToast({
@@ -83,7 +128,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       return;
     }
 
-    if (isSubmittingComment || value.length === 0) {
+    if (isSubmittingComment || message.length === 0) {
       return;
     }
 
@@ -94,7 +139,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     });
 
     try {
-      onSubmitComment(value);
+      onSubmitComment(message, mentions);
     } catch (error) {
       pushErrorToast();
       return;
@@ -103,7 +148,8 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   }, [
     query,
     isSubmittingComment,
-    value,
+    mentions,
+    message,
     track,
     resetInputState,
     showModal,
@@ -136,6 +182,17 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       return;
     }
 
+    const selection = window.getSelection();
+    if (!selection) {
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    const start = range.startOffset;
+    const end = range.endOffset;
+
+    handleSelectionChange({ start, end });
+
     const nextValue = textarea.innerText ?? '';
 
     // If the user tried typing / pasting something over 100 characters of length
@@ -167,11 +224,13 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       selection.removeAllRanges();
       selection.addRange(range);
 
-      setValue(nextValueSliced);
+      // setValue(nextValueSliced);
+      setMessage(nextValueSliced);
     } else {
-      setValue(nextValue);
+      // setValue(nextValue);
+      setMessage(nextValue);
     }
-  }, []);
+  }, [handleSelectionChange, setMessage]);
 
   // This prevents someone from pasting a styled element into the textbox
   const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
@@ -191,22 +250,65 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     textareaRef.current?.focus();
   }, []);
 
+  const handleSelectMention = useCallback(
+    (item: MentionType) => {
+      selectMention(item);
+
+      textareaRef.current?.focus();
+    },
+    [selectMention]
+  );
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.textContent = message;
+    }
+  }, [message]);
+
   return (
     <Wrapper>
-      <InputWrapper gap={12}>
+      <InputWrapper gap={12} ref={reference}>
         {/* Purposely not using a controlled input here to avoid cursor jitter */}
         <Textarea
           onPaste={handlePaste}
           onKeyDown={handleInputKeyDown}
           ref={textareaRef}
           onInput={handleInput}
+          {...getReferenceProps()}
         />
 
         <HStack gap={12} align="center">
-          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-          <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
+          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - message.length}</BaseM>
+          <SendButton enabled={message.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
         </HStack>
       </InputWrapper>
+
+      <AnimatePresence>
+        {isSelectingMentions && (
+          <FloatingPortal preserveTabOrder={false}>
+            <StyledCardWrapper
+              className="Popover"
+              aria-labelledby={headingId}
+              ref={floating}
+              style={{
+                position: strategy,
+                top: y ?? 0,
+                left: x ?? 0,
+              }}
+              {...getFloatingProps()}
+              transition={{
+                duration: ANIMATED_COMPONENT_TRANSITION_S,
+                ease: rawTransitions.cubicValues,
+              }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+              exit={{ opacity: 0, y: 0 }}
+            >
+              <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
+            </StyledCardWrapper>
+          </FloatingPortal>
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 }
@@ -260,4 +362,12 @@ const Wrapper = styled.div`
   background: ${colors.white};
 
   padding: 16px;
+`;
+
+const StyledCardWrapper = styled(motion.div)`
+  z-index: 11;
+
+  :focus {
+    outline: none;
+  }
 `;

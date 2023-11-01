@@ -3,6 +3,7 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFragment.graphql';
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
+import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
@@ -67,8 +68,8 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
   const info = useOptimisticUserInfo(query);
 
   const handleSubmitComment = useCallback(
-    (comment: string) => {
-      commentOnPost(post.id, post.dbid, comment, info);
+    (comment: string, mentions: MentionInput[]) => {
+      commentOnPost(post.id, post.dbid, comment, info, mentions);
     },
     [commentOnPost, info, post.dbid, post.id]
   );

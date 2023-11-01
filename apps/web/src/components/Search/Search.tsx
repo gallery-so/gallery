@@ -11,7 +11,7 @@ import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
 
-export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
+export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
 
 export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
@@ -61,7 +61,11 @@ export default function Search() {
           }
         >
           {keyword && (
-            <SearchResults activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
+            <SearchResults
+              activeFilter={selectedFilter}
+              keyword={keyword}
+              onChangeFilter={setSelectedFilter}
+            />
           )}
         </Suspense>
       </StyledSearchContent>

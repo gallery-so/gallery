@@ -1,19 +1,27 @@
+import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import SearchResult from '../SearchResult';
+import { SearchResultVariant } from '../SearchResults';
 
 type Props = {
   userRef: UserSearchResultFragment$key;
+  variant: SearchResultVariant;
+
+  onSelect?: (item: MentionType) => void;
 };
 
-export default function UserSearchResult({ userRef }: Props) {
+export default function UserSearchResult({ userRef, variant, onSelect }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {
+        dbid
         username
         bio
         ...ProfilePictureFragment
@@ -22,10 +30,27 @@ export default function UserSearchResult({ userRef }: Props) {
     userRef
   );
 
-  const route = {
-    pathname: '/[username]',
-    query: { username: user.username as string },
-  } as Route;
+  const router = useRouter();
+
+  const route = useMemo(() => {
+    return {
+      pathname: '/[username]',
+      query: { username: user.username as string },
+    } as Route;
+  }, [user.username]);
+
+  const handleClick = useCallback(() => {
+    if (onSelect) {
+      onSelect({
+        type: 'User',
+        label: user.username ?? '',
+        value: user.dbid,
+      });
+      return;
+    }
+
+    router.push(route);
+  }, [onSelect, route, router, user.dbid, user.username]);
 
   return (
     <SearchResult
@@ -34,6 +59,8 @@ export default function UserSearchResult({ userRef }: Props) {
       path={route}
       type="curator"
       profilePicture={<ProfilePicture userRef={user} size="md" />}
+      variant={variant}
+      onClick={handleClick}
     />
   );
 }

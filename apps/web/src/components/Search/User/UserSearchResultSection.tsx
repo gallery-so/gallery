@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
@@ -12,7 +13,10 @@ type Props = {
   title: string;
   isShowAll?: boolean;
   resultRefs: UserSearchResultSectionFragment$key;
+  variant?: 'default' | 'compact';
+
   onChangeFilter: (filter: SearchFilterType) => void;
+  onSelect?: (item: MentionType) => void;
 };
 
 export default function UserSearchResultSection({
@@ -20,6 +24,8 @@ export default function UserSearchResultSection({
   onChangeFilter,
   title,
   resultRefs,
+  onSelect,
+  variant = 'default',
 }: Props) {
   const results = useFragment(
     graphql`
@@ -44,9 +50,15 @@ export default function UserSearchResultSection({
       isShowAll={isShowAll}
       onShowAll={() => onChangeFilter('curator')}
       numResults={results.length}
+      variant={variant}
     >
       {resultsToShow.map((result) => (
-        <UserSearchResult key={result.user.id} userRef={result.user} />
+        <UserSearchResult
+          key={result.user.id}
+          userRef={result.user}
+          variant={variant}
+          onSelect={onSelect}
+        />
       ))}
     </SearchSection>
   );

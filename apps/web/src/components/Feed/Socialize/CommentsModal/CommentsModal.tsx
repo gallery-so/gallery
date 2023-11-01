@@ -17,6 +17,7 @@ import { CommentNote } from '~/components/Feed/Socialize/CommentsModal/CommentNo
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { CommentsModalFragment$key } from '~/generated/CommentsModalFragment.graphql';
 import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFragment.graphql';
+import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import colors from '~/shared/theme/colors';
 
 import { CommentBox } from '../CommentBox/CommentBox';
@@ -29,7 +30,7 @@ type CommentsModalProps = {
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
   commentsRef: CommentsModalFragment$key;
-  onSubmitComment: (comment: string) => void;
+  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
   isSubmittingComment: boolean;
 };
 
