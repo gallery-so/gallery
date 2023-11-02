@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
+import { noop } from '~/shared/utils/noop';
 
 import SearchResult from '../SearchResult';
 
@@ -37,6 +38,7 @@ export default function GallerySearchResult({ galleryRef }: Props) {
       path={route}
       type="gallery"
       profilePicture={gallery.owner && <ProfilePicture userRef={gallery.owner} size="md" />}
+      onClick={noop}
     />
   );
 }

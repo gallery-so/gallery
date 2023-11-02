@@ -142,6 +142,7 @@ export default function SearchResults({
             onChangeFilter={onChangeFilter}
             isShowAll
             variant={variant}
+            onSelect={onSelect}
           />
         )}
       </StyledSearchResultContainer>
@@ -174,6 +175,7 @@ export default function SearchResults({
           resultRefs={query?.searchCommunities?.results}
           onChangeFilter={onChangeFilter}
           variant={variant}
+          onSelect={onSelect}
         />
       )}
     </StyledSearchResultContainer>
