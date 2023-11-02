@@ -26,7 +26,7 @@ import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
+import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -125,8 +125,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      // setCaption(event.target.value);
-
       const textarea = textareaRef.current;
 
       if (textarea) {
@@ -204,6 +202,18 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     return `"${token.name}"`;
   }, [token.name]);
 
+  const handleSelectMention = useCallback(
+    (item: MentionType) => {
+      selectMention(item);
+
+      // focus on the textarea after selecting a mention
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    },
+    [selectMention]
+  );
+
   return (
     <StyledPostComposer grow justify="space-between">
       <VStack gap={24}>
@@ -257,7 +267,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
                     animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
                     exit={{ opacity: 0, y: 0 }}
                   >
-                    <MentionModal keyword={aliasKeyword} onSelectMention={selectMention} />
+                    <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
                   </StyledCardWrapper>
                 </FloatingPortal>
               )}
