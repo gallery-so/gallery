@@ -199,10 +199,12 @@ export function TextAreaWithCharCount({
   );
 }
 
-export function AutoResizingTextAreaWithCharCount({
-  ...textAreaProps
-}: TextAreaWithCharCountProps) {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+export const AutoResizingTextAreaWithCharCount = forwardRef<
+  HTMLTextAreaElement,
+  TextAreaWithCharCountProps
+>((textAreaProps, ref) => {
+  const internalRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = ref || internalRef;
 
   const DEFAULT_TEXTAREA_HEIGHT = 'auto';
 
@@ -211,24 +213,21 @@ export function AutoResizingTextAreaWithCharCount({
 
   // Update textArea height when text changes
   useEffect(() => {
-    if (textAreaRef.current) {
+    if (typeof textAreaRef === 'object' && textAreaRef.current) {
       setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     }
-  }, [textAreaProps.defaultValue]);
+  }, [textAreaProps.defaultValue, textAreaRef]);
 
   const oldText = useRef(textAreaProps.defaultValue);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (textAreaRef.current) {
-        const textWasDeleted = oldText.current // If oldText.current is null/undefined, we do not need to reduce because textarea height will be 0
+      if (typeof textAreaRef === 'object' && textAreaRef.current) {
+        const textWasDeleted = oldText.current
           ? oldText.current.length > event.target.value.length
           : false;
 
-        // scrollHeight does not decrease when we delete rows of text, so we reset the height to 'auto' whenever text is deleted
-        // The useEffect above triggers immediately after, therefore resetting scrollHeight to the height of the content
-        // See https://medium.com/@lucasalgus/creating-a-custom-auto-resize-textarea-component-for-your-react-web-application-6959c0ad68bc
         if (textWasDeleted) {
           setTextAreaHeight(DEFAULT_TEXTAREA_HEIGHT);
           setParentHeight(`${textAreaRef.current.scrollHeight}px`);
@@ -241,7 +240,7 @@ export function AutoResizingTextAreaWithCharCount({
         textAreaProps.onChange(event);
       }
     },
-    [textAreaProps]
+    [textAreaProps, textAreaRef]
   );
 
   const [isFocused, setFocus] = useState(false);
@@ -282,7 +281,9 @@ export function AutoResizingTextAreaWithCharCount({
       </StyledParentContainer>
     </StyledTextAreaWithCharCount>
   );
-}
+});
+
+AutoResizingTextAreaWithCharCount.displayName = 'AutoResizingTextAreaWithCharCount';
 
 const StyledTextAreaWithCharCount = styled.div<{ hasError: boolean; isFocused: boolean }>`
   position: relative;
