@@ -3,7 +3,6 @@ import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavig
 import { useCallback } from 'react';
 import { View } from 'react-native';
 
-import { FeedbackButton } from '~/components/FeedbackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -69,10 +68,6 @@ export function TabBar({ navigation, state }: MaterialTopTabBarProps) {
           />
         );
       })}
-
-      <View className="absolute right-0 px-4">
-        <FeedbackButton />
-      </View>
     </View>
   );
 }
