@@ -253,14 +253,29 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     (item: MentionType) => {
       selectMention(item);
 
-      textareaRef.current?.focus();
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.focus();
+      }
     },
     [selectMention]
   );
 
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.textContent = message;
+    const textarea = textareaRef.current;
+
+    if (textarea) {
+      textarea.textContent = message;
+
+      const range = document.createRange();
+      const selection = window.getSelection();
+      if (selection) {
+        range.setStart(textarea.childNodes[0] || textarea, message.length);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      textarea.focus();
     }
   }, [message]);
 
