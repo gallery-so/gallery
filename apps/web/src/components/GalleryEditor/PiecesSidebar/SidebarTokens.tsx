@@ -49,7 +49,7 @@ export const SidebarTokens = ({
           # Escape hatch for data processing in util files
           # eslint-disable-next-line relay/unused-fields
           name
-
+          dbid
           contractAddress {
             address
           }

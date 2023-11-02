@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
@@ -84,6 +85,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
             ownerIsCreator
 
             contract {
+              dbid
               name
             }
 
@@ -101,7 +103,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   );
 
   const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
-
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
   >({
@@ -234,6 +235,22 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     await syncTokens({ type: filterType, chain: network });
   }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
 
+  const [syncCreatedTokensForExistingContract, isContractRefreshing] =
+    useSyncCreatedTokensForExistingContract();
+  const contractRefreshDisabled = filterType !== 'Created' || isContractRefreshing;
+
+  const handleCreatorRefreshContract = useCallback(async () => {
+    if (!selectedContract?.dbid) {
+      return;
+    }
+    track('NFT Selector: Clicked Sync Creator Tokens For Existing Contract', {
+      id: 'Refresh Single Created Tokens Contract Button',
+      context: contexts.Posts,
+    });
+
+    await syncCreatedTokensForExistingContract(selectedContract?.dbid);
+  }, [selectedContract?.dbid, track, syncCreatedTokensForExistingContract]);
+
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'bottom-end',
@@ -274,8 +291,26 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         {selectedContract ? (
           <StyledHeaderContainer justify="space-between" align="center">
             <StyledTitleText>{selectedContract?.title}</StyledTitleText>
+            <HStack align="center">
+              <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <IconContainer
+                disabled={contractRefreshDisabled}
+                onClick={handleCreatorRefreshContract}
+                size="xs"
+                variant="default"
+                icon={<RefreshIcon />}
+                ref={reference}
+                {...getReferenceProps()}
+              />
 
-            <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
+              <NewTooltip
+                {...getFloatingProps()}
+                style={{ ...floatingStyle }}
+                ref={floating}
+                whiteSpace="pre-line"
+                text={`Refresh Collection`}
+              />
+            </HStack>
           </StyledHeaderContainer>
         ) : (
           <DropdownsContainer gap={4} align="center" disabled={isSearching}>

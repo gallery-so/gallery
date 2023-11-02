@@ -9,6 +9,7 @@ import { NftSelectorViewFragment$data } from '~/generated/NftSelectorViewFragmen
 export type NftSelectorCollectionGroup = {
   title: string;
   address: string;
+  dbid: string;
   tokens: Array<groupNftSelectorCollectionsByAddressTokenFragment$data>;
 };
 
@@ -36,6 +37,7 @@ export function groupNftSelectorCollectionsByAddress({
           isSpamByProvider
           isSpamByUser
           contract {
+            dbid
             chain
             name
             contractAddress {
@@ -67,6 +69,7 @@ export function groupNftSelectorCollectionsByAddress({
         title,
         tokens: [],
         address: token.contract.contractAddress.address,
+        dbid: token.contract.dbid,
       };
 
       map[address] = group;

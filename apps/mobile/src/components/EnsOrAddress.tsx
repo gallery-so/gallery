@@ -1,20 +1,25 @@
-import { Suspense } from 'react';
+import { useColorScheme } from 'nativewind';
+import { Suspense, useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import useSWR from 'swr';
 
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import colors from '~/shared/theme/colors';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
 
 import { LinkableAddress, RawLinkableAddress } from './LinkableAddress';
-import { Typography } from './Typography';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
   eventContext: GalleryElementTrackingProps['eventContext'];
+};
+
+type Address = {
+  address: string;
+  name: string;
 };
 
 const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
@@ -30,20 +35,43 @@ const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
     chainAddressRef
   );
 
-  const { data } = useSWR(
-    chainAddressRef
-      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address.address.toLowerCase())}`
-      : null
-  );
+  const [addressData, setAddressData] = useState<Address | null>(null);
+  const { colorScheme } = useColorScheme();
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (chainAddressRef) {
+        try {
+          const response = await fetch(
+            `https://api.ensideas.com/ens/resolve/${encodeURIComponent(
+              address.address.toLowerCase()
+            )}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const responseData = await response.json();
+          setAddressData(responseData);
+        } catch (error) {
+          setError(error as Error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [chainAddressRef, address.address]);
 
   const link = getExternalAddressLink(address);
 
-  if (data?.name && link) {
+  if (addressData?.name && link && !error) {
     return (
       <RawLinkableAddress
         link={link}
-        address={data.address}
-        truncatedAddress={data.name}
+        address={addressData?.address}
+        truncatedAddress={addressData?.name}
+        textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+        font={{ family: 'ABCDiatype', weight: 'Bold' }}
         eventElementId="ENS Name"
         eventName="ENS Name Press"
         eventContext={eventContext}
@@ -55,6 +83,8 @@ const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
   return (
     <LinkableAddress
       chainAddressRef={address}
+      textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+      font={{ family: 'ABCDiatype', weight: 'Bold' }}
       eventElementId="Wallet Address ENS Name Fallback"
       eventName="Wallet Address ENS Name Fallback Press"
       eventContext={eventContext}
@@ -80,11 +110,15 @@ export const EnsOrAddress = ({ chainAddressRef, eventContext }: EnsOrAddressProp
     chainAddressRef
   );
 
+  const { colorScheme } = useColorScheme();
+
   return (
     <Suspense
       fallback={
         <LinkableAddress
           chainAddressRef={address}
+          textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
           eventElementId="Wallet Address ENS Name Fallback"
           eventName="Wallet Address ENS Name Fallback Press"
           eventContext={eventContext}
@@ -93,7 +127,14 @@ export const EnsOrAddress = ({ chainAddressRef, eventContext }: EnsOrAddressProp
     >
       <ReportingErrorBoundary
         fallback={
-          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not Found</Typography>
+          <LinkableAddress
+            chainAddressRef={address}
+            textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            eventElementId="Wallet Address ENS Name Fallback"
+            eventName="Wallet Address ENS Name Fallback Press"
+            eventContext={eventContext}
+          />
         }
       >
         <EnsName chainAddressRef={address} eventContext={eventContext} />

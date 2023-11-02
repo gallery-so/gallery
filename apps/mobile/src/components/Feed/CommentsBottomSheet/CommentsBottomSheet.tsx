@@ -154,17 +154,21 @@ export function CommentsBottomSheet({
         <View className="flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1 overflow-hidden">
-              <Suspense fallback={<SearchResultsFallback />}>
-                <SearchResults
-                  keyword={aliasKeyword}
-                  activeFilter="top"
-                  onChangeFilter={noop}
-                  blurInputFocus={noop}
-                  onSelect={selectMention}
-                  onlyShowTopResults
-                  isMentionSearch
-                />
-              </Suspense>
+              {aliasKeyword ? (
+                <Suspense fallback={<SearchResultsFallback />}>
+                  <SearchResults
+                    keyword={aliasKeyword}
+                    activeFilter="top"
+                    onChangeFilter={noop}
+                    blurInputFocus={noop}
+                    onSelect={selectMention}
+                    onlyShowTopResults
+                    isMentionSearch
+                  />
+                </Suspense>
+              ) : (
+                <SearchResultsFallback />
+              )}
             </View>
           ) : (
             <View className="flex-1 space-y-2">

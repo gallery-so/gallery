@@ -22,6 +22,7 @@ export type CollectionTitleRow = {
   type: 'collection-title';
   expanded: boolean;
   address: string;
+  contractId: string;
   title: string;
   count: number;
 };

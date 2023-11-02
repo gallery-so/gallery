@@ -23,7 +23,7 @@ import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { noop } from '~/shared/utils/noop';
 
-import { useSyncTokenstActions } from './SyncTokensContext';
+import { useSyncTokensActions } from './SyncTokensContext';
 
 type openManageWalletProps = {
   title?: string;
@@ -64,7 +64,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const [login] = useLogin();
   const track = useTrack();
 
-  const { isSyncing, syncTokens } = useSyncTokenstActions();
+  const { isSyncing, syncTokens } = useSyncTokensActions();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [title, setTitle] = useState('Network');

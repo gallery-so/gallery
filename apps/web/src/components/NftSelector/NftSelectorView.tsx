@@ -96,6 +96,7 @@ export function NftSelectorView({
 
         groupOfPoapTokens.tokens.forEach((token) => {
           selectedCollectionTokens.push({
+            dbid: groupOfPoapTokens.dbid,
             title: groupOfPoapTokens.title,
             address: groupOfPoapTokens.address,
             tokens: [token],
@@ -114,12 +115,12 @@ export function NftSelectorView({
 
         groupOfTokens.tokens.forEach((token) => {
           selectedCollectionTokens.push({
+            dbid: groupOfTokens.dbid,
             title: groupOfTokens.title,
             address: groupOfTokens.address,
             tokens: [token],
           });
         });
-
         tokens = selectedCollectionTokens;
       }
     }

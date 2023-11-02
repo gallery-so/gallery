@@ -15,7 +15,6 @@ import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -23,7 +22,6 @@ import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -90,22 +88,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
-      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
-      contractAddress: token.contract?.contractAddress?.address,
-      tokenId: token.tokenId,
-      externaUrl: openseaUrl,
-    });
-  }, [
-    track,
-    token.owner?.username,
-    token.contract?.contractAddress?.address,
-    token.tokenId,
-    openseaUrl,
-  ]);
-
-  const handleCreatorNameClick = useCallback(() => {
-    // TODO: Update this to track the creator name click
-    track('NFT Detail Creator Name Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,
@@ -194,24 +176,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
                 </HStack>
               </VStack>
             </UserHoverCard>
-          )}
-          {ENABLED_CREATOR && (
-            // TODO: Update this to use the creator's username
-            <VStack gap={2}>
-              <TitleXS>CREATOR</TitleXS>
-              <GalleryLink
-                onClick={handleCreatorNameClick}
-                to={{ pathname: '/[username]', query: { username: 'riley' } }}
-              >
-                <BaseM color={colors.shadow}>riley.eth</BaseM>
-              </GalleryLink>
-              <GalleryLink
-                onClick={handleCreatorNameClick}
-                to={{ pathname: '/[username]', query: { username: 'riley' } }}
-              >
-                <BaseM color={colors.shadow}>peterson.eth</BaseM>
-              </GalleryLink>
-            </VStack>
           )}
         </HStack>
 

@@ -1,4 +1,4 @@
-import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+export type Dimensions = { width: number; height: number };
 
 type fitDimensionToContainerArgs = {
   container: Dimensions;

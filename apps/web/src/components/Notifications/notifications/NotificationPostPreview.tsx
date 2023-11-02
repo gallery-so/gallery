@@ -28,7 +28,8 @@ function NotificationPostPreview({ tokenRef }: NotificationPostPreviewProps) {
 
 const StyledPostPreview = styled.img`
   height: 100%;
-  width: 100%;
+  width: 56px;
+  object-fit: cover;
 `;
 
 type NotificationPostPreviewWithBoundaryProps = {

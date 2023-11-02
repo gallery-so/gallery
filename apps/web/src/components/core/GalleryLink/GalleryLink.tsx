@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import {
   ComponentProps,
@@ -130,6 +131,8 @@ export default function GalleryLink({
   return null;
 }
 
+const skipVerificationOnTheseRoutes = ['/features/'];
+
 export function GalleryLinkNeedsVerification({
   inheritLinkStyling = false,
   href,
@@ -141,6 +144,11 @@ export function GalleryLinkNeedsVerification({
 }) {
   const { showModal } = useModalActions();
   const track = useTrack();
+  const { pathname } = useRouter();
+
+  const skipVerification = skipVerificationOnTheseRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
   const handleClick = useCallback(
     (e: MouseEvent, href: string) => {
@@ -151,13 +159,19 @@ export function GalleryLinkNeedsVerification({
         needsVerification: true,
       });
 
+      // on certain routes like our content pages, we trust the external links displayed and thefore dont need to show a verification
+      if (skipVerification && typeof window !== 'undefined') {
+        window.open(href, '_blank', 'noopener,noreferrer');
+        return;
+      }
+
       showModal({
         content: <VerifyNavigationPopover href={href} />,
         isFullPage: false,
         headerText: 'Leaving gallery.so?',
       });
     },
-    [showModal, track]
+    [showModal, skipVerification, track]
   );
   return (
     <GalleryLink

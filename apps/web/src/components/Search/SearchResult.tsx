@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
@@ -24,8 +25,6 @@ type Props = {
   variant?: SearchResultVariant;
   onClick: () => void;
 };
-
-const MAX_DESCRIPTION_CHARACTER = 150;
 
 export default function SearchResult({
   name,
@@ -58,33 +57,12 @@ export default function SearchResult({
     onClick();
   }, [keyword, onClick, path, track, type]);
 
-  const highlightedName = useMemo(() => {
-    return name.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
-  }, [keyword, name]);
+  const highlightedName = useMemo(() => getHighlightedName(name, keyword), [keyword, name]);
 
-  const highlightedDescription = useMemo(() => {
-    const regex = new RegExp(keyword, 'gi');
-
-    // Remove bold & link markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
-
-    const matchIndex = unformattedDescription.search(regex);
-    let truncatedDescription;
-
-    const maxLength = MAX_DESCRIPTION_CHARACTER;
-
-    if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
-      const endIndex = Math.min(unformattedDescription.length, maxLength);
-      truncatedDescription = `...${unformattedDescription.substring(
-        endIndex - maxLength,
-        endIndex
-      )}`;
-    } else {
-      truncatedDescription = unformattedDescription.substring(0, maxLength);
-    }
-    // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`);
-  }, [keyword, description]);
+  const highlightedDescription = useMemo(
+    () => getHighlightedDescription(description, keyword),
+    [keyword, description]
+  );
 
   return (
     <StyledSearchResult className="SearchResult" onClick={handleClick} variant={variant}>

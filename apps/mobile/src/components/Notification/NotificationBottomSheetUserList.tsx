@@ -49,6 +49,17 @@ export const NotificationBottomSheetUserListQueryNode = graphql`
           }
         }
       }
+
+      ... on SomeoneAdmiredYourPostNotification {
+        __typename
+        admirers(last: 50) {
+          edges {
+            node {
+              ...UserFollowListFragment
+            }
+          }
+        }
+      }
     }
 
     ...UserFollowListQueryFragment
@@ -77,6 +88,8 @@ function NotificationBottomSheetUserListInner({
     users = removeNullValues(query.node.followers?.edges?.map((edge) => edge?.node));
   } else if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
     users = removeNullValues(query.node.userViewers?.edges?.map((edge) => edge?.node));
+  } else if (query.node?.__typename === 'SomeoneAdmiredYourPostNotification') {
+    users = removeNullValues(query.node.admirers?.edges?.map((edge) => edge?.node));
   }
 
   return (

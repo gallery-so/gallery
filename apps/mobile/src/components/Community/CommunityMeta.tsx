@@ -12,6 +12,7 @@ import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
+import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
@@ -24,7 +25,6 @@ import colors from '~/shared/theme/colors';
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { LinkableAddress } from '../LinkableAddress';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { Typography } from '../Typography';
@@ -44,7 +44,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         contractAddress {
           chain
           address
-          ...LinkableAddressFragment
+          ...EnsOrAddressWithSuspenseFragment
         }
         creator {
           __typename
@@ -183,20 +183,18 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             eventName="Community PFP Press"
             eventContext={contexts.Community}
           />
-          <LinkableAddress
-            chainAddressRef={community.contractAddress}
-            textStyle={{ color: colorScheme === 'light' ? colors.black[800] : colors.offWhite }}
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            eventElementId="Community Contract Address"
-            eventName="Community Contract Address Press"
-            eventContext={contexts.Community}
-          />
+          <View>
+            <EnsOrAddress
+              chainAddressRef={community.contractAddress}
+              eventContext={contexts.Community}
+            />
+          </View>
         </View>
       );
     } else {
       return null;
     }
-  }, [colorScheme, community.creator, community.contractAddress, handleUsernamePress]);
+  }, [community.creator, community.contractAddress, handleUsernamePress]);
 
   return (
     <View className="flex flex-row justify-between">
