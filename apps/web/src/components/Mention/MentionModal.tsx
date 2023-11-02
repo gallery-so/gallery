@@ -6,6 +6,7 @@ import colors from '~/shared/theme/colors';
 
 import SearchProvider from '../Search/SearchContext';
 import SearchResults from '../Search/SearchResults';
+import { MentionResultFallback } from './MentionResultFallback';
 
 type Props = {
   keyword: string;
@@ -13,11 +14,17 @@ type Props = {
 };
 
 export function MentionModal({ keyword, onSelectMention }: Props) {
+  if (!keyword)
+    return (
+      <StyledWrapper>
+        <MentionResultFallback />
+      </StyledWrapper>
+    );
+
   return (
     <StyledWrapper>
       <SearchProvider>
-        {/* TODO: Update fallback */}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<MentionResultFallback />}>
           <SearchResults
             activeFilter="top"
             keyword={keyword}
