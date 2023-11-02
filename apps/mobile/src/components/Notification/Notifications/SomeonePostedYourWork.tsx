@@ -78,7 +78,7 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
       notificationRef={notification}
       responsibleUserRefs={postAuthors}
     >
-      <View className="flex pt-2">
+      <View className="flex pt-1">
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <GalleryTouchableOpacity
             onPress={handleUserPress}
