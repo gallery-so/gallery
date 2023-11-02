@@ -1,4 +1,16 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+  autoUpdate,
+  flip,
+  FloatingPortal,
+  inline,
+  shift,
+  useFloating,
+  useId,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -14,6 +26,7 @@ import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -22,6 +35,12 @@ import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
 import { AutoResizingTextAreaWithCharCount } from '../core/TextArea/TextArea';
+import {
+  ANIMATED_COMPONENT_TRANSITION_S,
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+  rawTransitions,
+} from '../core/transitions';
+import { MentionModal } from '../Mention/MentionModal';
 import PostComposerNft from './PostComposerNft';
 
 type Props = {
@@ -42,6 +61,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             ...PostComposerTokenFragment
           }
         }
+        ...useMentionableMessageQueryFragment
       }
     `,
     { tokenId }
@@ -65,14 +85,59 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     query.tokenById
   );
 
+  const {
+    isSelectingMentions,
+    aliasKeyword,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    // resetMentions,
+    handleSelectionChange,
+  } = useMentionableMessage(query);
+
+  const { x, y, reference, floating, strategy, context } = useFloating({
+    placement: 'bottom-start',
+    open: isSelectingMentions,
+    middleware: [flip(), shift(), inline()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const headingId = useId();
+  const role = useRole(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([role]);
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   const { caption, setCaption, captionRef } = usePostComposerContext();
+
+  const setRefs = useCallback(
+    (node: HTMLTextAreaElement | null) => {
+      // Ref's `current` property accepts a DOM node
+      if (node) {
+        textareaRef.current = node;
+        reference(node);
+      }
+    },
+    [reference]
+  );
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      // setCaption(event.target.value);
+
+      const textarea = textareaRef.current;
+
+      if (textarea) {
+        handleSelectionChange({ start: textarea.selectionStart, end: textarea.selectionEnd });
+      }
+
+      setMessage(event.target.value);
       setCaption(event.target.value);
     },
-    [setCaption]
-  );
+    [handleSelectionChange, setCaption, setMessage]
+  ) as (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
   const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
 
@@ -95,7 +160,9 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     try {
       await createPost({
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
-        caption: captionRef.current,
+        // caption: captionRef.current,
+        caption: message,
+        mentions,
       });
       setIsSubmitting(false);
       hideModal();
@@ -122,6 +189,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     pushToast,
     setCaption,
     reportError,
+    mentions,
+    message,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -151,17 +220,48 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         </StyledHeader>
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
+
           <VStack grow>
             <AutoResizingTextAreaWithCharCount
               defaultValue={caption}
               placeholder={`Say something about ${inputPlaceholderTokenName}`}
-              currentCharCount={caption.length}
+              currentCharCount={message.length}
               maxCharCount={DESCRIPTION_MAX_LENGTH}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus
               hasPadding
+              value={message}
+              ref={setRefs}
+              {...getReferenceProps()}
             />
+
+            <AnimatePresence>
+              {isSelectingMentions && (
+                <FloatingPortal preserveTabOrder={false}>
+                  <StyledCardWrapper
+                    className="Popover"
+                    aria-labelledby={headingId}
+                    ref={floating}
+                    style={{
+                      position: strategy,
+                      top: y ?? 0,
+                      left: x ?? 0,
+                    }}
+                    {...getFloatingProps()}
+                    transition={{
+                      duration: ANIMATED_COMPONENT_TRANSITION_S,
+                      ease: rawTransitions.cubicValues,
+                    }}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+                    exit={{ opacity: 0, y: 0 }}
+                  >
+                    <MentionModal keyword={aliasKeyword} onSelectMention={selectMention} />
+                  </StyledCardWrapper>
+                </FloatingPortal>
+              )}
+            </AnimatePresence>
           </VStack>
         </ContentContainer>
       </VStack>
@@ -181,7 +281,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}
         >
-          POST
+          POST {message}
         </Button>
       </StyledHStack>
     </StyledPostComposer>
@@ -224,4 +324,12 @@ const StyledWrapper = styled(HStack)`
   height: 100%;
   gap: 4px;
   align-items: center;
+`;
+
+const StyledCardWrapper = styled(motion.div)`
+  z-index: 11;
+
+  :focus {
+    outline: none;
+  }
 `;

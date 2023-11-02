@@ -76,7 +76,6 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   const { x, y, reference, floating, strategy, context } = useFloating({
     placement: 'bottom-start',
     open: isSelectingMentions,
-    // onOpenChange: setIs,
     middleware: [flip(), shift(), inline()],
     whileElementsMounted: autoUpdate,
   });
