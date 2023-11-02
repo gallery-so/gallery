@@ -31,14 +31,9 @@ import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
-import { fetchSanityContent } from './utils/sanity';
+import { useSanityMaintenanceCheck } from './utils/useSanityMaintenanceCheck';
 
 SplashScreen.preventAutoHideAsync();
-
-type SanityMaintenanceModeResponse = {
-  isActive: boolean;
-  message: string;
-};
 
 export default function App() {
   const [relayEnvironment] = useState(() => createRelayEnvironment());
@@ -65,9 +60,6 @@ export default function App() {
   const navigationRef = useNavigationContainerRef();
 
   const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
-  const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);
-  const [sanityMaintenanceModeResponse, setSanityMaintenanceModeResponse] =
-    useState<SanityMaintenanceModeResponse | null>(null);
   const { setColorScheme, colorScheme } = useColorScheme();
   const { introVideoLoaded } = useCacheIntroVideo();
 
@@ -119,40 +111,22 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
-  useEffect(() => {
-    const fetchMaintenanceModeFromSanity = async () => {
-      try {
-        const response = await Promise.race([
-          fetchSanityContent('*[_type == "maintenanceMode"][0] { isActive, message }'),
-          new Promise(
-            (_, reject) =>
-              setTimeout(() => reject(new Error('Request timed out after 3 seconds')), 3000) // give Sanity 3 seconds max to respond so we don't block the app from loading if Sanity is down
-          ),
-        ]);
-        setSanityMaintenanceModeResponse(response);
-      } finally {
-        // the app is ready to be shown in these 3 cases: Sanity responded with a valid response, Sanity responded with an error, or Sanity timed out
-        setSanityLoadedOrError(true);
-      }
-    };
-
-    fetchMaintenanceModeFromSanity();
-  }, []);
+  const { maintenanceCheckLoadedOrError, maintenanceModeResponse } = useSanityMaintenanceCheck();
 
   useEffect(
     function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
-      if (fontsLoaded && colorSchemeLoaded && sanityLoadedOrError) {
+      if (fontsLoaded && colorSchemeLoaded && maintenanceCheckLoadedOrError) {
         SplashScreen.hideAsync();
       }
     },
-    [colorSchemeLoaded, fontsLoaded, sanityLoadedOrError]
+    [colorSchemeLoaded, fontsLoaded, maintenanceCheckLoadedOrError]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded || !sanityLoadedOrError || !introVideoLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !maintenanceCheckLoadedOrError || !introVideoLoaded) {
     return null;
   }
 
-  if (sanityMaintenanceModeResponse) {
+  if (maintenanceModeResponse) {
     return (
       <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center m-3">
         <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -162,7 +136,7 @@ export default function App() {
           className="text-l text-center leading-6"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
-          {sanityMaintenanceModeResponse.message}
+          {maintenanceModeResponse.message}
         </Typography>
       </View>
     );
