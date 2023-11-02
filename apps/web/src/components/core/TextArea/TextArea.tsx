@@ -25,6 +25,7 @@ type TextAreaProps = {
   showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
   maxLength?: number;
+  value?: string;
   onFocus?: () => void;
   onBlur?: () => void;
 };
@@ -57,6 +58,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       onChange = noop,
       placeholder,
       defaultValue,
+      value, // Step 1: Add value to the props
       autoFocus = false,
       textAreaHeight,
       showMarkdownShortcuts = false,
@@ -117,6 +119,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           className={className}
           placeholder={placeholder}
           defaultValue={defaultValue}
+          value={value}
           onChange={onChange}
           onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
           autoFocus={autoFocus}
@@ -160,6 +163,7 @@ type TextAreaWithCharCountProps = {
   className?: string;
   currentCharCount: number;
   maxCharCount: number;
+  value?: string;
 } & TextAreaProps;
 
 export function TextAreaWithCharCount({
@@ -202,9 +206,11 @@ export function TextAreaWithCharCount({
 export const AutoResizingTextAreaWithCharCount = forwardRef<
   HTMLTextAreaElement,
   TextAreaWithCharCountProps
->((textAreaProps, ref) => {
+>((textAreaProps: TextAreaWithCharCountProps, ref: React.Ref<HTMLTextAreaElement>) => {
   const internalRef = useRef<HTMLTextAreaElement>(null);
   const textAreaRef = ref || internalRef;
+
+  const { value, onChange } = textAreaProps;
 
   const DEFAULT_TEXTAREA_HEIGHT = 'auto';
 
@@ -217,7 +223,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
       setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     }
-  }, [textAreaProps.defaultValue, textAreaRef]);
+  }, [textAreaProps.defaultValue, textAreaRef, value]);
 
   const oldText = useRef(textAreaProps.defaultValue);
 
@@ -236,11 +242,11 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
 
       oldText.current = event.target.value;
 
-      if (textAreaProps.onChange) {
-        textAreaProps.onChange(event);
+      if (onChange) {
+        onChange(event);
       }
     },
-    [textAreaProps, textAreaRef]
+    [textAreaRef, onChange]
   );
 
   const [isFocused, setFocus] = useState(false);
@@ -268,6 +274,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
           {...textAreaProps}
           ref={textAreaRef}
           textAreaHeight={textAreaHeight}
+          value={value}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
