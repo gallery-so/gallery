@@ -106,6 +106,13 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeonePostedYourWorkNotification {
+          post {
+            tokens {
+              ...NotificationPostPreviewWithBoundaryFragment
+            }
+          }
+        }
       }
     `,
     notificationRef
@@ -141,7 +148,8 @@ export function NotificationSkeleton({
   const postToken = useMemo(() => {
     if (
       notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
-      notification.__typename === 'SomeoneCommentedOnYourPostNotification'
+      notification.__typename === 'SomeoneCommentedOnYourPostNotification' ||
+      notification.__typename === 'SomeonePostedYourWorkNotification'
     ) {
       return notification.post?.tokens?.[0];
     }

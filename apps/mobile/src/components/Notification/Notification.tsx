@@ -15,6 +15,7 @@ import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
+import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
 
 type NotificationInnerProps = {
   queryRef: NotificationQueryFragment$key;
@@ -33,6 +34,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneAdmiredYourPostQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
         ...SomeoneMentionedYouQueryFragment
+        ...SomeonePostedYourWorkQueryFragment
       }
     `,
     queryRef
@@ -92,13 +94,18 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneMentionedYouFragment
         }
+
+        ... on SomeonePostedYourWorkNotification {
+          __typename
+          ...SomeonePostedYourWorkFragment
+        }
       }
     `,
     notificationRef
   );
 
-  const NotificationComponent = useMemo(() => {
-    if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
+    const NotificationComponent = useMemo(() => {
+      if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
       return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
       return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
@@ -120,6 +127,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <NewTokens notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
       return <SomeoneMentionedYou queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
+      return <SomeonePostedYourWork queryRef={query} notificationRef={notification} />;
     }
     return <View />;
   }, [notification, query]);
