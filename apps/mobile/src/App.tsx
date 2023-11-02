@@ -20,6 +20,7 @@ import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
@@ -144,40 +145,42 @@ export default function App() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <RelayEnvironmentProvider environment={relayEnvironment}>
-        <SWRConfig>
-          <Suspense fallback={<LoadingView />}>
-            <MobileAnalyticsProvider>
-              <MobileErrorReportingProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <SafeAreaProvider>
-                    <magic.Relayer />
-                    <SearchProvider>
-                      <NavigationContainer ref={navigationRef}>
-                        <ToastProvider>
-                          <TokenStateManagerProvider>
-                            <BottomSheetModalProvider>
-                              <SyncTokensProvider>
-                                <ManageWalletProvider>
-                                  {/* Register the user's push token if one exists (does not prompt the user) */}
-                                  <NotificationRegistrar />
-                                  <DevMenuItems />
-                                  <DeepLinkRegistrar />
-                                  <RootStackNavigator navigationContainerRef={navigationRef} />
-                                </ManageWalletProvider>
-                              </SyncTokensProvider>
-                            </BottomSheetModalProvider>
-                          </TokenStateManagerProvider>
-                        </ToastProvider>
-                      </NavigationContainer>
-                    </SearchProvider>
-                  </SafeAreaProvider>
-                </GestureHandlerRootView>
-              </MobileErrorReportingProvider>
-            </MobileAnalyticsProvider>
-          </Suspense>
-        </SWRConfig>
-      </RelayEnvironmentProvider>
+      <ReportingErrorBoundary fallback={<LoadingView />}>
+        <RelayEnvironmentProvider environment={relayEnvironment}>
+          <SWRConfig>
+            <Suspense fallback={<LoadingView />}>
+              <MobileAnalyticsProvider>
+                <MobileErrorReportingProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <SafeAreaProvider>
+                      <magic.Relayer />
+                      <SearchProvider>
+                        <NavigationContainer ref={navigationRef}>
+                          <ToastProvider>
+                            <TokenStateManagerProvider>
+                              <BottomSheetModalProvider>
+                                <SyncTokensProvider>
+                                  <ManageWalletProvider>
+                                    {/* Register the user's push token if one exists (does not prompt the user) */}
+                                    <NotificationRegistrar />
+                                    <DevMenuItems />
+                                    <DeepLinkRegistrar />
+                                    <RootStackNavigator navigationContainerRef={navigationRef} />
+                                  </ManageWalletProvider>
+                                </SyncTokensProvider>
+                              </BottomSheetModalProvider>
+                            </TokenStateManagerProvider>
+                          </ToastProvider>
+                        </NavigationContainer>
+                      </SearchProvider>
+                    </SafeAreaProvider>
+                  </GestureHandlerRootView>
+                </MobileErrorReportingProvider>
+              </MobileAnalyticsProvider>
+            </Suspense>
+          </SWRConfig>
+        </RelayEnvironmentProvider>
+      </ReportingErrorBoundary>
     </View>
   );
 }
