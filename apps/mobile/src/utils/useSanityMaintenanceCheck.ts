@@ -22,7 +22,6 @@ export function useSanityMaintenanceCheck() {
             setTimeout(() => reject(new Error('Request timed out after 3 seconds')), 3000) // give Sanity 3 seconds max to respond so we don't block the app from loading if Sanity is down
         ),
       ]);
-      console.log('response', response);
       setSanityMaintenanceModeResponse(response);
     } finally {
       // the app is ready to be shown in these 3 cases: Sanity responded with a valid response, Sanity responded with an error, or Sanity timed out
