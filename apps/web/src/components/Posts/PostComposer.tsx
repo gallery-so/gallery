@@ -281,7 +281,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           onClick={handlePostClick}
           disabled={isSubmitting || descriptionOverLengthLimit}
         >
-          POST {message}
+          POST
         </Button>
       </StyledHStack>
     </StyledPostComposer>
