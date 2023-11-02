@@ -35,6 +35,11 @@ import { fetchSanityContent } from './utils/sanity';
 
 SplashScreen.preventAutoHideAsync();
 
+type SanityMaintenanceModeResponse = {
+  isActive: boolean;
+  message: string;
+};
+
 export default function App() {
   const [relayEnvironment] = useState(() => createRelayEnvironment());
 
@@ -61,7 +66,8 @@ export default function App() {
 
   const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
   const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);
-  const [isMaintainanceActive, setIsMaintainanceActive] = useState(false);
+  const [sanityMaintenanceModeResponse, setSanityMaintenanceModeResponse] =
+    useState<SanityMaintenanceModeResponse | null>(null);
   const { setColorScheme, colorScheme } = useColorScheme();
   const { introVideoLoaded } = useCacheIntroVideo();
 
@@ -123,7 +129,7 @@ export default function App() {
               setTimeout(() => reject(new Error('Request timed out after 3 seconds')), 3000) // give Sanity 3 seconds max to respond so we don't block the app from loading if Sanity is down
           ),
         ]);
-        setIsMaintainanceActive(response.isActive);
+        setSanityMaintenanceModeResponse(response);
       } finally {
         // the app is ready to be shown in these 3 cases: Sanity responded with a valid response, Sanity responded with an error, or Sanity timed out
         setSanityLoadedOrError(true);
@@ -146,7 +152,7 @@ export default function App() {
     return null;
   }
 
-  if (isMaintainanceActive) {
+  if (sanityMaintenanceModeResponse) {
     return (
       <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center m-3">
         <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -156,8 +162,7 @@ export default function App() {
           className="text-l text-center leading-6"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
-          Gallery servers are undergoing scheduled maintaince. We apologize for the inconvenience,
-          we'll be back shortly!
+          {sanityMaintenanceModeResponse.message}
         </Typography>
       </View>
     );
