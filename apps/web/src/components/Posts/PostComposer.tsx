@@ -10,7 +10,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -92,7 +92,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     mentions,
     setMessage,
     message,
-    // resetMentions,
+    resetMentions,
     handleSelectionChange,
   } = useMentionableMessage(query);
 
@@ -110,7 +110,19 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const { caption, setCaption, captionRef } = usePostComposerContext();
+  const { caption } = usePostComposerContext();
+
+  // if there is caption, set it as the default message
+  // for the  share to gallery
+  useEffect(() => {
+    if (caption) {
+      setMessage(caption);
+      // set the cursor at the end of the caption
+      if (textareaRef.current) {
+        textareaRef.current.setSelectionRange(caption.length, caption.length);
+      }
+    }
+  }, [caption, setMessage]);
 
   const setRefs = useCallback(
     (node: HTMLTextAreaElement | null) => {
@@ -132,9 +144,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       }
 
       setMessage(event.target.value);
-      setCaption(event.target.value);
     },
-    [handleSelectionChange, setCaption, setMessage]
+    [handleSelectionChange, setMessage]
   ) as (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
   const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
@@ -153,12 +164,11 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     track('Clicked Post in Post Composer', {
       context: contexts.Posts,
       flow: eventFlow,
-      added_description: Boolean(captionRef.current),
+      added_description: Boolean(message),
     });
     try {
       await createPost({
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
-        // caption: captionRef.current,
         caption: message,
         mentions,
       });
@@ -167,7 +177,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       pushToast({
         message: `Successfully posted ${token.name || 'item'}`,
       });
-      setCaption('');
+      resetMentions();
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -178,17 +188,16 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   }, [
     track,
     eventFlow,
-    captionRef,
     createPost,
     token.dbid,
     token.community?.id,
     token.name,
     hideModal,
     pushToast,
-    setCaption,
     reportError,
     mentions,
     message,
+    resetMentions,
   ]);
 
   const handleBackClick = useCallback(() => {
