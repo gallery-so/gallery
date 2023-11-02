@@ -57,8 +57,6 @@ const StyledTitleFallback = styled(StyledFallback)`
   background-color: ${colors.porcelain};
   height: 16px;
   width: 64px;
-
-  animation: pulse 5s infinite;
 `;
 
 const StyledResultItemFallback = styled(HStack)`
@@ -72,8 +70,6 @@ const StyledResultItemPfpFallback = styled(StyledFallback)`
   width: 32px;
   border-radius: 50%;
   background-color: ${colors.porcelain};
-
-  animation: ${pulseAnimation} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 `;
 
 const StyledResultItemNameFallback = styled(StyledFallback)`
