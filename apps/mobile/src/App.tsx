@@ -24,12 +24,14 @@ import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
+import { Typography } from './components/Typography';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
+import { fetchSanityContent } from './utils/sanity';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,6 +60,8 @@ export default function App() {
   const navigationRef = useNavigationContainerRef();
 
   const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
+  const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);
+  const [isMaintainanceActive, setIsMaintainanceActive] = useState(false);
   const { setColorScheme, colorScheme } = useColorScheme();
   const { introVideoLoaded } = useCacheIntroVideo();
 
@@ -109,17 +113,54 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
+  useEffect(() => {
+    const fetchMaintenanceModeFromSanity = async () => {
+      try {
+        const response = await Promise.race([
+          fetchSanityContent('*[_type == "maintenanceMode"][0] { isActive, message }'),
+          new Promise(
+            (_, reject) =>
+              setTimeout(() => reject(new Error('Request timed out after 3 seconds')), 3000) // give Sanity 3 seconds max to respond so we don't block the app from loading if Sanity is down
+          ),
+        ]);
+        setIsMaintainanceActive(response.isActive);
+      } finally {
+        // the app is ready to be shown in these 3 cases: Sanity responded with a valid response, Sanity responded with an error, or Sanity timed out
+        setSanityLoadedOrError(true);
+      }
+    };
+
+    fetchMaintenanceModeFromSanity();
+  }, []);
+
   useEffect(
     function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
-      if (fontsLoaded && colorSchemeLoaded) {
+      if (fontsLoaded && colorSchemeLoaded && sanityLoadedOrError) {
         SplashScreen.hideAsync();
       }
     },
-    [colorSchemeLoaded, fontsLoaded]
+    [colorSchemeLoaded, fontsLoaded, sanityLoadedOrError]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded || !introVideoLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !sanityLoadedOrError || !introVideoLoaded) {
     return null;
+  }
+
+  if (isMaintainanceActive) {
+    return (
+      <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center m-3">
+        <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          Maintenance in Progress
+        </Typography>
+        <Typography
+          className="text-l text-center leading-6"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          Gallery servers are undergoing scheduled maintaince. We apologize for the inconvenience,
+          we'll be back shortly!
+        </Typography>
+      </View>
+    );
   }
 
   return (

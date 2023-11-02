@@ -9,6 +9,7 @@ const EnvironmentSchema = z.object({
   MIXPANEL_API_URL: z.string(),
   MIXPANEL_TOKEN: z.string(),
   FORMSPREE_ID: z.string(),
+  SANITY_PROJECT_ID: z.string(),
 });
 
 module.exports = {
