@@ -16,11 +16,14 @@ import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageVi
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GlobeIcon from '~/icons/GlobeIcon';
+import ObjktIcon from '~/icons/ObjktIcon';
+import OpenseaIcon from '~/icons/OpenseaIcon';
 import ShareIcon from '~/icons/ShareIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
+import { truncateAddress } from '~/shared/utils/wallet';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
@@ -43,6 +46,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         }
         ...CommunityPageMetadataFragment
         ...CommunityProfilePictureFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -83,12 +87,8 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const formattedDescription = replaceUrlsWithMarkdownFormat(description || '');
 
-  const externalAddressLink = useMemo(() => {
-    if (contractAddress) {
-      return getExternalAddressLink(contractAddress);
-    }
-    return null;
-  }, [contractAddress]);
+  const { openseaUrl, objktUrl, externalAddressUrl } =
+    extractRelevantMetadataFromCommunity(community);
 
   const track = useTrack();
 
@@ -97,8 +97,14 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const currentUrl = useMemo(() => {
     return `${getBaseUrl()}${asPath}`;
   }, [asPath]);
+  const handleOpenseaLinkClick = useCallback(() => {
+    track('Community Page: Clicked Opensea Collection Link');
+  }, [track]);
   const handleExternalLinkClick = useCallback(() => {
     track('Community Page: Clicked External Site Link');
+  }, [track]);
+  const handleObjktLinkClick = useCallback(() => {
+    track('Community Page: Clicked Objkt Link');
   }, [track]);
   const handleShareLinkClick = useCallback(() => {
     track('Community Page: Clicked Copy Share Link');
@@ -107,21 +113,53 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const ExternalLinks = useMemo(() => {
     return (
       <HStack justify="flex-end">
-        {externalAddressLink && (
-          <GalleryLink
-            href={externalAddressLink}
-            eventElementId="External Address Link"
-            eventName="External Address Link Click"
-            eventContext={contexts.Community}
-          >
-            <IconContainer
-              variant="default"
-              tooltipLabel="View on explorer"
-              icon={<GlobeIcon />}
-              onClick={handleExternalLinkClick}
-            />
-          </GalleryLink>
-        )}
+        <HStack gap={2}>
+          {externalAddressUrl && (
+            <GalleryLink
+              href={externalAddressUrl}
+              eventElementId="External Address Link"
+              eventName="External Address Link Click"
+              eventContext={contexts.Community}
+            >
+              <IconContainer
+                variant="default"
+                tooltipLabel="View on explorer"
+                icon={<GlobeIcon />}
+                onClick={handleExternalLinkClick}
+              />
+            </GalleryLink>
+          )}
+          {openseaUrl && (
+            <GalleryLink
+              href={openseaUrl}
+              eventElementId="Opensea Address Link"
+              eventName="Opensea Address Link Click"
+              eventContext={contexts.Community}
+            >
+              <IconContainer
+                variant="default"
+                tooltipLabel="View on explorer"
+                icon={<OpenseaIcon />}
+                onClick={handleOpenseaLinkClick}
+              />
+            </GalleryLink>
+          )}
+          {objktUrl && (
+            <GalleryLink
+              href={objktUrl}
+              eventElementId="Objkt Address Link"
+              eventName="Objkt Address Link Click"
+              eventContext={contexts.Community}
+            >
+              <IconContainer
+                variant="default"
+                tooltipLabel="View on Objkt"
+                icon={<ObjktIcon />}
+                onClick={handleObjktLinkClick}
+              />
+            </GalleryLink>
+          )}
+        </HStack>
         <CopyToClipboard textToCopy={currentUrl}>
           <IconContainer
             variant="default"
@@ -132,7 +170,16 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         </CopyToClipboard>
       </HStack>
     );
-  }, [currentUrl, externalAddressLink, handleExternalLinkClick, handleShareLinkClick]);
+  }, [
+    currentUrl,
+    externalAddressUrl,
+    objktUrl,
+    openseaUrl,
+    handleExternalLinkClick,
+    handleObjktLinkClick,
+    handleOpenseaLinkClick,
+    handleShareLinkClick,
+  ]);
 
   const DescriptionContainer = useMemo(() => {
     if (!description) {

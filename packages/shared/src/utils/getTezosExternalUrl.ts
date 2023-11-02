@@ -45,3 +45,7 @@ export const getFxHashExternalUrlDangerously = (contractAddress: string, tokenId
 export const getObjktExternalUrlDangerously = (contractAddress: string, tokenId: string) => {
   return `https://objkt.com/asset/${contractAddress}/${hexToDec(tokenId)}`;
 };
+
+export const getObjktExternalUrlDangerouslyForCollection = (contractAddress: string) => {
+  return `https://objkt.com/collection/${contractAddress}`;
+};
