@@ -1,18 +1,5 @@
 import { env } from '~/env/runtime';
+// eslint-disable-next-line no-restricted-imports
+import { fetchSanityContent as _fetchSanityContent } from '~/shared/utils/sanity';
 
-export const getSanityUrl = (query: string) => {
-  const sanityProjectId = env.SANITY_PROJECT_ID;
-  if (!sanityProjectId) {
-    throw new Error('Missing CMS project id');
-  }
-
-  return `https://${sanityProjectId}.api.sanity.io/v1/data/query/production?query=${query}`;
-};
-
-export const fetchSanityContent = async (query: string) => {
-  const encodedQuery = encodeURIComponent(query);
-  const url = getSanityUrl(encodedQuery);
-  const response = await fetch(url).then((res) => res.json());
-
-  return response.result;
-};
+export const fetchSanityContent = _fetchSanityContent(env.SANITY_PROJECT_ID);
