@@ -21,6 +21,10 @@
             "name": "next/link",
             // "importNames": ["Link"],
             "message": "Please use the GalleryLink component instead."
+          },
+          {
+            "name": "~/shared/utils/sanity",
+            "message": "Import `fetchSanityContent` from web/utils instead"
           }
         ]
       }

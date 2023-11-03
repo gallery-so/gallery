@@ -22,6 +22,10 @@
             "name": "@gorhom/bottom-sheet",
             "importNames": ["BottomSheetModal"],
             "message": "Please use Bar from GalleryBottomSheetModal instead."
+          },
+          {
+            "name": "~/shared/utils/sanity",
+            "message": "Import `fetchSanityContent` from mobile/utils instead"
           }
         ]
       }
