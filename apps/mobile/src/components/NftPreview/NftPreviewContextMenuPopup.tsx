@@ -12,9 +12,9 @@ import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { fitDimensionsToContainerCover } from '~/shared/utils/fitDimensionsToContainer';
 
 import { shareToken } from '../../utils/shareToken';
 import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';

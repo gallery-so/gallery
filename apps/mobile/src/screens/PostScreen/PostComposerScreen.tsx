@@ -48,7 +48,6 @@ function PostComposerScreenInner() {
             ...usePostTokenFragment
           }
         }
-        ...useMentionableMessageQueryFragment
       }
     `,
     {
@@ -81,7 +80,7 @@ function PostComposerScreenInner() {
     message,
     resetMentions,
     handleSelectionChange,
-  } = useMentionableMessage(query);
+  } = useMentionableMessage();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBackPress = useCallback(() => {

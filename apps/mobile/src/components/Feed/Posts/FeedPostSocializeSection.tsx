@@ -64,7 +64,6 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     graphql`
       fragment FeedPostSocializeSectionQueryFragment on Query {
         ...useTogglePostAdmireQueryFragment
-        ...CommentsBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -148,7 +147,6 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
         type="Post"
         feedId={post.dbid}
         bottomSheetRef={commentsBottomSheetRef}
-        queryRef={query}
         activeCommentId={route.params?.commentId}
       />
     </>

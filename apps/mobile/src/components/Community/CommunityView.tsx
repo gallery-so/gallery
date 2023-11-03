@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, View } from 'react-native';
+import { Linking, Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
+import { GlobeIcon } from 'src/icons/GlobeIcon';
+import { ObjktIcon } from 'src/icons/ObjktIcon';
+import { OpenseaIcon } from 'src/icons/OpenseaIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
@@ -42,6 +46,7 @@ export function CommunityView({ queryRef }: Props) {
               address
             }
           }
+          ...extractRelevantMetadataFromCommunityFragment
         }
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
@@ -54,7 +59,7 @@ export function CommunityView({ queryRef }: Props) {
 
   const { community } = query;
 
-  if (!community || community.__typename !== 'Community') {
+  if (!community) {
     throw new Error(`Unable to fetch the community`);
   }
 
@@ -85,19 +90,51 @@ export function CommunityView({ queryRef }: Props) {
     );
   }, [community, setSelectedRoute, selectedRoute]);
 
+  const { openseaUrl, objktUrl, externalAddressUrl } =
+    extractRelevantMetadataFromCommunity(community);
+
   return (
     <View className="flex-1">
       <View className="flex flex-col px-4 py-4 z-10">
         <View className="flex flex-row justify-between">
           <BackButton />
 
-          <IconContainer
-            eventElementId="Community Share Icon"
-            eventName="Community Share Icon Clicked"
-            eventContext={contexts.Community}
-            icon={<ShareIcon />}
-            onPress={handleShare}
-          />
+          <View className="flex flex-row space-x-2">
+            {externalAddressUrl && (
+              <IconContainer
+                eventElementId="Community Globe Icon"
+                eventName="Community Globe Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<GlobeIcon />}
+                onPress={() => Linking.openURL(externalAddressUrl)}
+              />
+            )}
+            {objktUrl && (
+              <IconContainer
+                eventElementId="Community Objkt Icon"
+                eventName="Community Objkt Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<ObjktIcon />}
+                onPress={() => Linking.openURL(objktUrl)}
+              />
+            )}
+            {openseaUrl && (
+              <IconContainer
+                eventElementId="Community Opensea Icon"
+                eventName="Community Opensea Icon Clicked"
+                eventContext={contexts.Community}
+                icon={<OpenseaIcon />}
+                onPress={() => Linking.openURL(openseaUrl)}
+              />
+            )}
+            <IconContainer
+              eventElementId="Community Share Icon"
+              eventName="Community Share Icon Clicked"
+              eventContext={contexts.Community}
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+          </View>
         </View>
       </View>
 

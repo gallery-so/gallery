@@ -1,8 +1,5 @@
 import { useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
-import { useMentionableMessageQueryFragment$key } from '~/generated/useMentionableMessageQueryFragment.graphql';
 import useDebounce from '~/shared/hooks/useDebounce';
 
 type MentionDataType = {
@@ -29,16 +26,7 @@ type Mention = {
   communityId?: string;
 };
 
-export function useMentionableMessage(queryRef: useMentionableMessageQueryFragment$key) {
-  const query = useFragment(
-    graphql`
-      fragment useMentionableMessageQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
+export function useMentionableMessage() {
   const [message, setMessage] = useState('');
   const [mentions, setMentions] = useState<MentionDataType[]>([]);
 
@@ -48,8 +36,6 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
   const debouncedAliasKeyword = useDebounce(aliasKeyword, 100);
 
   const [selection, setSelection] = useState({ start: 0, end: 0 });
-
-  const isMentionEnabled = isFeatureEnabled(FeatureFlag.MENTIONS, query);
 
   const handleSetMention = useCallback(
     (mention: MentionType) => {
@@ -104,11 +90,6 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
 
   const handleSetMessage = useCallback(
     (text: string) => {
-      if (!isMentionEnabled) {
-        setMessage(text);
-        return;
-      }
-
       // Check the word where the cursor is (or was last placed)
       const wordAtCursor = text
         .slice(0, selection.start + 1)
@@ -156,7 +137,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       setMentions(updatedMentions);
       setMessage(text);
     },
-    [isMentionEnabled, mentions, message, selection]
+    [mentions, message, selection]
   );
 
   const resetMentions = useCallback(() => {

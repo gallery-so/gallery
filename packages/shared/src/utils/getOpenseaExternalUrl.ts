@@ -16,3 +16,12 @@ export const getOpenseaExternalUrlDangerously = (
 
   return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}?ref=${GALLERY_OS_ADDRESS}`;
 };
+
+export const getOpenseaExternalUrlDangerouslyForCollection = (
+  chainStr: string,
+  contractAddress: string
+) => {
+  const chain = chainStr.toLocaleLowerCase();
+
+  return `https://opensea.io/assets/${chain}/${contractAddress}`;
+};

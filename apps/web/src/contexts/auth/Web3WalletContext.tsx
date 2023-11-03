@@ -13,7 +13,7 @@ function getLibrary(provider: any) {
   return library;
 }
 
-const Web3WalletProvider = memo(({ children }: PropsWithChildren) => (
+export const Web3WalletProvider = memo(({ children }: PropsWithChildren) => (
   <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
 ));
 

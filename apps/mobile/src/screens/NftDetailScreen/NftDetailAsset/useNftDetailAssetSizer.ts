@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { LayoutChangeEvent, useWindowDimensions } from 'react-native';
 
-import { fitDimensionsToContainerContain } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 

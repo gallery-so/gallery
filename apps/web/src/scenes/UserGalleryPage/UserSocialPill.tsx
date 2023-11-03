@@ -50,4 +50,5 @@ const StyledHandle = styled(TitleXS)`
   text-overflow: ellipsis;
   font-weight: 700;
   text-transform: initial;
+  white-space: nowrap;
 `;
