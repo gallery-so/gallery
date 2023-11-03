@@ -4,6 +4,7 @@ import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useMentionableMessageQueryFragment$key } from '~/generated/useMentionableMessageQueryFragment.graphql';
 import useDebounce from '~/shared/hooks/useDebounce';
+import { WHITESPACE_REGEX } from '~/shared/utils/regex';
 
 type MentionDataType = {
   interval: {
@@ -112,7 +113,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       // Check the word where the cursor is (or was last placed)
       const wordAtCursor = text
         .slice(0, selection.start + 1)
-        .split(' ')
+        .split(WHITESPACE_REGEX)
         .pop();
 
       if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 0) {
