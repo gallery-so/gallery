@@ -108,16 +108,7 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
               }}
               className="text-sm"
             >
-              shared your
-            </Typography>{' '}
-            <Typography
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
-              className="text-sm"
-            >
-              work
+              shared your work
             </Typography>
           </Text>
         </View>

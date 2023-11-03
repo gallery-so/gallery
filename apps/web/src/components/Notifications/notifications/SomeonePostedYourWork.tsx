@@ -61,9 +61,7 @@ export default function SomeonePostedYourWork({ notificationRef, onClose }: Prop
           <StyledTextWrapper align="center" as="span" wrap="wrap">
             <UserHoverCard userRef={postAuthor} onClick={onClose} />
             &nbsp;
-            <BaseM as="span">
-              shared your <strong>work</strong>
-            </BaseM>
+            <BaseM as="span">shared your work</BaseM>
           </StyledTextWrapper>
           <StyledCaption as="span">
             <strong>{token?.name}</strong>
