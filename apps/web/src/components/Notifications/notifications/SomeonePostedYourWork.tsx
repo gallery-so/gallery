@@ -7,8 +7,6 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeonePostedYourWorkFragment$key } from '~/generated/SomeonePostedYourWorkFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import colors from '~/shared/theme/colors';
-import unescape from '~/shared/utils/unescape';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -26,7 +24,6 @@ export default function SomeonePostedYourWork({ notificationRef, onClose }: Prop
         post {
           dbid
           author {
-            username
             ...UserHoverCardFragment
             ...ProfilePictureFragment
           }
@@ -68,9 +65,9 @@ export default function SomeonePostedYourWork({ notificationRef, onClose }: Prop
               shared your <strong>work</strong>
             </BaseM>
           </StyledTextWrapper>
-          <BaseM as="span">
-            <strong>{token.name}</strong>
-          </BaseM>
+          <StyledCaption as="span">
+            <strong>{token?.name}</strong>
+          </StyledCaption>
         </VStack>
       </HStack>
       <NotificationPostPreviewWithBoundary tokenRef={token} />
@@ -84,4 +81,13 @@ const StyledNotificationContent = styled(HStack)`
 
 const StyledTextWrapper = styled(HStack)`
   display: inline;
+`;
+
+const StyledCaption = styled(BaseM)`
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
 `;

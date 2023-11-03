@@ -14,8 +14,8 @@ import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYo
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
-import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
+import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 
 type NotificationInnerProps = {
   queryRef: NotificationQueryFragment$key;

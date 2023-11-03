@@ -7,8 +7,8 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
-import { SomeonePostedYourWorkFragment$key } from '~/generated/SomeonePostedYourWorkFragment$key.graphql';
-import { SomeonePostedYourWorkQueryFragment$key } from '~/generated/SomeonePostedYourWorkQueryFragment$key.graphql';
+import { SomeonePostedYourWorkFragment$key } from '~/generated/SomeonePostedYourWorkFragment.graphql';
+import { SomeonePostedYourWorkQueryFragment$key } from '~/generated/SomeonePostedYourWorkQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -51,7 +51,8 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
   );
 
   const { post } = notification;
-  const postToken = notification.post?.tokens?.[0];
+  const token = notification.post?.tokens?.[0];
+  const postAuthor = notification.post?.author;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -65,11 +66,11 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
     }
   }, [navigation, post?.dbid]);
 
-  const postAuthor = notification.post.author;
-
   const handleUserPress = useCallback(() => {
-    navigation.navigate('Profile', { username: postAuthor.username });
-  }, [navigation, postAuthor.username]);
+    if (postAuthor?.username) {
+      navigation.navigate('Profile', { username: postAuthor.username });
+    }
+  }, [navigation, postAuthor?.username]);
 
   return (
     <NotificationSkeleton
@@ -121,7 +122,7 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
           </Text>
         </View>
 
-        <Text>
+        <Text numberOfLines={2}>
           <Typography
             font={{
               family: 'ABCDiatype',
@@ -129,7 +130,7 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
             }}
             className="text-sm"
           >
-            {postToken.name}
+            {token?.name}
           </Typography>
         </Text>
       </View>
