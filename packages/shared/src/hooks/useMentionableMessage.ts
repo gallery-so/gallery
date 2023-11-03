@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import useDebounce from './useDebounce';
-
 import { WHITESPACE_REGEX } from '../utils/regex';
+import useDebounce from './useDebounce';
 
 type MentionDataType = {
   interval: {
