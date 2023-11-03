@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
+import { Web3WalletProvider } from '~/contexts/auth/Web3WalletContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
 import { chains } from '~/shared/utils/chains';
@@ -103,7 +104,9 @@ export default function MultichainWalletSelector({
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <WalletSelectorWrapper>
-          <GnosisSafeAddWallet queryRef={query} reset={reset} />
+          <Web3WalletProvider>
+            <GnosisSafeAddWallet queryRef={query} reset={reset} />
+          </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
     }
@@ -111,7 +114,9 @@ export default function MultichainWalletSelector({
     if (connectionMode === AUTH) {
       return (
         <WalletSelectorWrapper>
-          <GnosisSafeAuthenticateWallet reset={reset} />
+          <Web3WalletProvider>
+            <GnosisSafeAuthenticateWallet reset={reset} />
+          </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
     }
@@ -149,6 +154,8 @@ export default function MultichainWalletSelector({
       </WalletSelectorWrapper>
     );
   }
+
+  console.log({ selectedAuthMethod });
 
   return (
     <WalletSelectorWrapper gap={24}>

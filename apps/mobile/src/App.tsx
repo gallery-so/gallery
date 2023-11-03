@@ -20,16 +20,19 @@ import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
+import { Typography } from './components/Typography';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
+import { useSanityMaintenanceCheck } from './utils/useSanityMaintenanceCheck';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -109,55 +112,75 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
+  const { maintenanceCheckLoadedOrError, maintenanceModeResponse } = useSanityMaintenanceCheck();
+
   useEffect(
     function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
-      if (fontsLoaded && colorSchemeLoaded) {
+      if (fontsLoaded && colorSchemeLoaded && maintenanceCheckLoadedOrError) {
         SplashScreen.hideAsync();
       }
     },
-    [colorSchemeLoaded, fontsLoaded]
+    [colorSchemeLoaded, fontsLoaded, maintenanceCheckLoadedOrError]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded || !introVideoLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !maintenanceCheckLoadedOrError || !introVideoLoaded) {
     return null;
+  }
+
+  if (maintenanceModeResponse?.isActive) {
+    return (
+      <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center m-6">
+        <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          Maintenance in Progress
+        </Typography>
+        <Typography
+          className="text-l text-center leading-6"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          {maintenanceModeResponse.message}
+        </Typography>
+      </View>
+    );
   }
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <RelayEnvironmentProvider environment={relayEnvironment}>
-        <SWRConfig>
-          <Suspense fallback={<LoadingView />}>
-            <MobileAnalyticsProvider>
-              <MobileErrorReportingProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <SafeAreaProvider>
-                    <magic.Relayer />
-                    <SearchProvider>
-                      <NavigationContainer ref={navigationRef}>
-                        <ToastProvider>
-                          <TokenStateManagerProvider>
-                            <BottomSheetModalProvider>
-                              <SyncTokensProvider>
-                                <ManageWalletProvider>
-                                  {/* Register the user's push token if one exists (does not prompt the user) */}
-                                  <NotificationRegistrar />
-                                  <DevMenuItems />
-                                  <DeepLinkRegistrar />
-                                  <RootStackNavigator navigationContainerRef={navigationRef} />
-                                </ManageWalletProvider>
-                              </SyncTokensProvider>
-                            </BottomSheetModalProvider>
-                          </TokenStateManagerProvider>
-                        </ToastProvider>
-                      </NavigationContainer>
-                    </SearchProvider>
-                  </SafeAreaProvider>
-                </GestureHandlerRootView>
-              </MobileErrorReportingProvider>
-            </MobileAnalyticsProvider>
-          </Suspense>
-        </SWRConfig>
-      </RelayEnvironmentProvider>
+      <ReportingErrorBoundary fallback={<LoadingView />}>
+        <RelayEnvironmentProvider environment={relayEnvironment}>
+          <SWRConfig>
+            <Suspense fallback={<LoadingView />}>
+              <MobileAnalyticsProvider>
+                <MobileErrorReportingProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <SafeAreaProvider>
+                      <magic.Relayer />
+                      <SearchProvider>
+                        <NavigationContainer ref={navigationRef}>
+                          <ToastProvider>
+                            <TokenStateManagerProvider>
+                              <BottomSheetModalProvider>
+                                <SyncTokensProvider>
+                                  <ManageWalletProvider>
+                                    {/* Register the user's push token if one exists (does not prompt the user) */}
+                                    <NotificationRegistrar />
+                                    <DevMenuItems />
+                                    <DeepLinkRegistrar />
+                                    <RootStackNavigator navigationContainerRef={navigationRef} />
+                                  </ManageWalletProvider>
+                                </SyncTokensProvider>
+                              </BottomSheetModalProvider>
+                            </TokenStateManagerProvider>
+                          </ToastProvider>
+                        </NavigationContainer>
+                      </SearchProvider>
+                    </SafeAreaProvider>
+                  </GestureHandlerRootView>
+                </MobileErrorReportingProvider>
+              </MobileAnalyticsProvider>
+            </Suspense>
+          </SWRConfig>
+        </RelayEnvironmentProvider>
+      </ReportingErrorBoundary>
     </View>
   );
 }

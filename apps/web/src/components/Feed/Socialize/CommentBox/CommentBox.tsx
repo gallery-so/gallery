@@ -56,7 +56,6 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
           __typename
         }
         ...useAuthModalFragment
-        ...useMentionableMessageQueryFragment
       }
     `,
     queryRef
@@ -71,7 +70,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     message,
     resetMentions,
     handleSelectionChange,
-  } = useMentionableMessage(query);
+  } = useMentionableMessage();
 
   const { x, y, reference, floating, strategy, context } = useFloating({
     placement: 'bottom-start',

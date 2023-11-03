@@ -61,7 +61,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             ...PostComposerTokenFragment
           }
         }
-        ...useMentionableMessageQueryFragment
       }
     `,
     { tokenId }
@@ -94,7 +93,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     message,
     resetMentions,
     handleSelectionChange,
-  } = useMentionableMessage(query);
+  } = useMentionableMessage();
 
   const { x, y, reference, floating, strategy, context } = useFloating({
     placement: 'bottom-start',

@@ -27,6 +27,7 @@ import { getTimeSince } from '~/shared/utils/time';
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
+import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -75,6 +76,12 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         }
 
         ... on SomeoneCommentedOnYourPostNotification {
+          post {
+            dbid
+          }
+        }
+
+        ... on SomeonePostedYourWorkNotification {
           post {
             dbid
           }
@@ -231,6 +238,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneAdmiredYourPostNotification',
       'SomeoneCommentedOnYourPostNotification',
       'NewTokensNotification',
+      'SomeonePostedYourWorkNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -252,7 +260,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   if (
     notification.__typename === 'SomeoneCommentedOnYourPostNotification' ||
-    notification.__typename === 'SomeoneAdmiredYourPostNotification'
+    notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
+    notification.__typename === 'SomeonePostedYourWorkNotification'
   ) {
     if (!notification.post) {
       return null;
@@ -332,6 +341,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...NewTokensFragment
         }
+
+        ... on SomeonePostedYourWorkNotification {
+          __typename
+          ...SomeonePostedYourWorkFragment
+        }
       }
     `,
     notificationRef
@@ -369,6 +383,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'NewTokensNotification') {
     return <NewTokens notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
+    return <SomeonePostedYourWork notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;
