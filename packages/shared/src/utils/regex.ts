@@ -25,3 +25,5 @@ export const ETH_ADDRESS = /^0x[a-fA-F0-9]{40}$/;
 
 // check markdown link
 export const MARKDOWN_LINK_REGEX = /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g;
+
+export const WHITESPACE_REGEX = /[\s\n]+/;
