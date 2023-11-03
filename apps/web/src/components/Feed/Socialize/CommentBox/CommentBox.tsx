@@ -1,14 +1,13 @@
 import {
   autoUpdate,
   flip,
-  FloatingPortal,
   inline,
   shift,
   useFloating,
   useInteractions,
   useRole,
 } from '@floating-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import {
   ClipboardEventHandler,
   KeyboardEventHandler,
@@ -23,12 +22,8 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import {
-  ANIMATED_COMPONENT_TRANSITION_S,
-  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-  rawTransitions,
-} from '~/components/core/transitions';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { FloatingCard } from '~/components/Mention/FloatingCard';
 import { MentionModal } from '~/components/Mention/MentionModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -298,28 +293,17 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
 
       <AnimatePresence>
         {isSelectingMentions && (
-          <FloatingPortal preserveTabOrder={false}>
-            <StyledCardWrapper
-              className="Popover"
-              aria-labelledby={headingId}
-              ref={floating}
-              style={{
-                position: strategy,
-                top: y ?? 0,
-                left: x ?? 0,
-              }}
-              {...getFloatingProps()}
-              transition={{
-                duration: ANIMATED_COMPONENT_TRANSITION_S,
-                ease: rawTransitions.cubicValues,
-              }}
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-              exit={{ opacity: 0, y: 0 }}
-            >
-              <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
-            </StyledCardWrapper>
-          </FloatingPortal>
+          <FloatingCard
+            className="Popover"
+            headingId={headingId}
+            floatingRef={floating}
+            strategy={strategy}
+            x={x}
+            y={y}
+            getFloatingProps={getFloatingProps}
+          >
+            <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
+          </FloatingCard>
         )}
       </AnimatePresence>
     </Wrapper>
@@ -375,12 +359,4 @@ const Wrapper = styled.div`
   background: ${colors.white};
 
   padding: 16px;
-`;
-
-const StyledCardWrapper = styled(motion.div)`
-  z-index: 11;
-
-  :focus {
-    outline: none;
-  }
 `;
