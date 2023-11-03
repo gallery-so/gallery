@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
@@ -243,9 +244,15 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
                 usersRef={nonNullAdmires}
                 total={totalAdmires}
               />
-              <AdmireIcon
-                active={hasViewerAdmiredToken}
-                onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
+              <IconContainer
+                size="sm"
+                variant="default"
+                icon={
+                  <AdmireIcon
+                    active={hasViewerAdmiredToken}
+                    onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
+                  />
+                }
               />
             </HStack>
           </HStack>
@@ -425,7 +432,8 @@ const StyledAdmireButton = styled(Button)<{ active: boolean }>`
   display: flex;
   flex-grow: 1;
   min-width: 202px;
-  border: ${({ active }) => (active ? `1px solid ${colors.hyperBlue}` : 'none')};
+  border: ${({ active }) =>
+    active ? `1px solid ${colors.hyperBlue}` : '1px solid ${colors.porcelain}'};
 `;
 
 const StyledInteractionButton = styled(Button)`
