@@ -104,8 +104,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     notificationRef
   );
 
-    const NotificationComponent = useMemo(() => {
-      if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
+  const NotificationComponent = useMemo(() => {
+    if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
       return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
       return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
