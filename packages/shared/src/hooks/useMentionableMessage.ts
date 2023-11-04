@@ -85,6 +85,8 @@ export function useMentionableMessage() {
 
       setMentions([...adjustedMentions, newMention]);
       setAliasKeyword('');
+
+      return newMessage;
     },
     [mentions, message, setMessage, aliasKeyword, selection.start]
   );
@@ -161,5 +163,6 @@ export function useMentionableMessage() {
     mentions: mentions || [],
     resetMentions,
     handleSelectionChange,
+    selection,
   };
 }

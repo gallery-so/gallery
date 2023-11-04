@@ -28,6 +28,7 @@ type TextAreaProps = {
   value?: string;
   onFocus?: () => void;
   onBlur?: () => void;
+  onClick?: () => void;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -66,6 +67,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       maxLength,
       onFocus = noop,
       onBlur = noop,
+      onClick = noop,
     },
     ref
   ) => {
@@ -132,6 +134,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           hasPadding={hasPadding}
           onKeyDown={handleKeyDown}
           maxLength={maxLength}
+          onClick={onClick}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>

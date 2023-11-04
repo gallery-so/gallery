@@ -245,33 +245,27 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
 
   const handleSelectMention = useCallback(
     (item: MentionType) => {
-      selectMention(item);
+      const newMessage = selectMention(item);
 
       const textarea = textareaRef.current;
       if (textarea) {
+        textarea.textContent = newMessage;
         textarea.focus();
+        const range = document.createRange();
+        const selection = window.getSelection();
+        if (selection) {
+          setTimeout(() => {
+            const mentionPosition = newMessage.indexOf(item.label) + item.label.length;
+            range.setStart(textarea.childNodes[0] || textarea, mentionPosition);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }, 0);
+        }
       }
     },
     [selectMention]
   );
-
-  useEffect(() => {
-    const textarea = textareaRef.current;
-
-    if (textarea) {
-      textarea.textContent = message;
-
-      const range = document.createRange();
-      const selection = window.getSelection();
-      if (selection) {
-        range.setStart(textarea.childNodes[0] || textarea, message.length);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      textarea.focus();
-    }
-  }, [message]);
 
   return (
     <Wrapper>
@@ -282,6 +276,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
           onKeyDown={handleInputKeyDown}
           ref={textareaRef}
           onInput={handleInput}
+          onClick={handleInput}
           {...getReferenceProps()}
         />
 

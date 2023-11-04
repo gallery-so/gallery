@@ -142,6 +142,14 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     [handleSelectionChange, setMessage]
   ) as (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
+  const handleOnClick = useCallback(() => {
+    const textarea = textareaRef.current;
+
+    if (textarea) {
+      handleSelectionChange({ start: textarea.selectionStart, end: textarea.selectionEnd });
+    }
+  }, [handleSelectionChange, textareaRef]);
+
   const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
 
   const createPost = useCreatePost();
@@ -246,6 +254,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
               hasPadding
               value={message}
               ref={setRefs}
+              onClick={handleOnClick}
               {...getReferenceProps()}
             />
 
