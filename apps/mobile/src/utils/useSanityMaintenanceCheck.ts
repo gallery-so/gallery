@@ -30,6 +30,7 @@ export function useSanityMaintenanceCheck() {
   }, []);
 
   useEffect(
+    // fetch on app load, runs only once
     function fetchMaintenanceModeOnAppLoad() {
       fetchMaintenanceModeFromSanity();
     },
