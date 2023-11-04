@@ -57,12 +57,7 @@ export function GlobalBanner({
           </StyledButton>
         )}
 
-        <IconContainer
-          variant={bannerVariant === 'blue' ? 'blue' : 'default'}
-          size="sm"
-          icon={<CloseIcon />}
-          onClick={onClose}
-        />
+        <IconContainer variant={bannerVariant} size="sm" icon={<CloseIcon />} onClick={onClose} />
       </StyledButtonWrapper>
     </StyledWrapper>
   );
