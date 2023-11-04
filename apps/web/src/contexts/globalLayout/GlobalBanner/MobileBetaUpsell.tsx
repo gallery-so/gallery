@@ -86,6 +86,7 @@ export default function MobileBetaUpsell({
       onClose={hideBanner}
       onClick={handleActionClick}
       ctaText="Download"
+      bannerVariant="blue"
     />
   );
 }
