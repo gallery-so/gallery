@@ -1,20 +1,15 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GlobalBanner } from '~/components/core/GlobalBanner/GlobalBanner';
 import { UpcomingMaintenanceBannerFragment$key } from '~/generated/UpcomingMaintenanceBannerFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
-import { useSanityMaintenanceCheck } from '~/utils/sanity';
+import { useMaintenanceContext } from '~/shared/contexts/MaintenanceStatusContext';
 
 export function useUpcomingMaintenanceBannerWeb() {
-  const { fetchMaintenanceModeStatus, maintenanceId, upcomingMaintenanceNoticeContent } =
-    useSanityMaintenanceCheck();
+  const { maintenanceId, upcomingMaintenanceNoticeContent } = useMaintenanceContext();
   const [bannerDismissed, setBannerDismissed] = usePersistedState(maintenanceId, false);
-
-  useEffect(() => {
-    fetchMaintenanceModeStatus();
-  }, [fetchMaintenanceModeStatus]);
 
   const shouldDisplayBanner = useMemo(() => {
     if (bannerDismissed) {

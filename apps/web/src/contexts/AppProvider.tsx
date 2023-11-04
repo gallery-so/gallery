@@ -7,6 +7,8 @@ import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigati
 import { NftErrorProvider } from '~/contexts/NftErrorContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
+import MaintenancePage from '~/scenes/MaintenancePage/MaintenancePage';
+import MaintenanceStatusProvider from '~/shared/contexts/MaintenanceStatusContext';
 import isProduction from '~/utils/isProduction';
 
 import AnalyticsProvider from './analytics/WebAnalyticsProvider';
@@ -39,35 +41,40 @@ export default function AppProvider({
   return (
     <Boundary>
       <ToastProvider>
-        <RelayEnvironmentProvider environment={relayEnvironment}>
-          <AnalyticsProvider>
-            <WebErrorReportingProvider>
-              <SwrProvider>
-                <GalleryNavigationProvider>
-                  <NftErrorProvider>
-                    <SyncTokensLockProvider>
-                      <PostComposerProvider>
-                        <ModalProvider>
-                          <SidebarDrawerProvider>
-                            <SearchProvider>
-                              <GlobalLayoutContextProvider
-                                preloadedQuery={globalLayoutContextPreloadedQuery}
-                              >
-                                <FullPageNftDetailModalListener />
-                                {isProd ? null : <Debugger />}
-                                {children}
-                              </GlobalLayoutContextProvider>
-                            </SearchProvider>
-                          </SidebarDrawerProvider>
-                        </ModalProvider>
-                      </PostComposerProvider>
-                    </SyncTokensLockProvider>
-                  </NftErrorProvider>
-                </GalleryNavigationProvider>
-              </SwrProvider>
-            </WebErrorReportingProvider>
-          </AnalyticsProvider>
-        </RelayEnvironmentProvider>
+        <MaintenanceStatusProvider
+          sanityProjectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
+          MaintenancePageComponent={<MaintenancePage />}
+        >
+          <RelayEnvironmentProvider environment={relayEnvironment}>
+            <AnalyticsProvider>
+              <WebErrorReportingProvider>
+                <SwrProvider>
+                  <GalleryNavigationProvider>
+                    <NftErrorProvider>
+                      <SyncTokensLockProvider>
+                        <PostComposerProvider>
+                          <ModalProvider>
+                            <SidebarDrawerProvider>
+                              <SearchProvider>
+                                <GlobalLayoutContextProvider
+                                  preloadedQuery={globalLayoutContextPreloadedQuery}
+                                >
+                                  <FullPageNftDetailModalListener />
+                                  {isProd ? null : <Debugger />}
+                                  {children}
+                                </GlobalLayoutContextProvider>
+                              </SearchProvider>
+                            </SidebarDrawerProvider>
+                          </ModalProvider>
+                        </PostComposerProvider>
+                      </SyncTokensLockProvider>
+                    </NftErrorProvider>
+                  </GalleryNavigationProvider>
+                </SwrProvider>
+              </WebErrorReportingProvider>
+            </AnalyticsProvider>
+          </RelayEnvironmentProvider>
+        </MaintenanceStatusProvider>
       </ToastProvider>
     </Boundary>
   );

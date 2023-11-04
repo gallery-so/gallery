@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -12,15 +12,10 @@ import {
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { LogoLarge } from '~/icons/LogoLarge';
 import { contexts } from '~/shared/analytics/constants';
-import { useSanityMaintenanceCheck } from '~/utils/sanity';
+import { useMaintenanceContext } from '~/shared/contexts/MaintenanceStatusContext';
 
 function MaintenancePage() {
-  const { fetchMaintenanceModeStatus, currentlyActiveMaintenanceNoticeContent } =
-    useSanityMaintenanceCheck();
-
-  useEffect(() => {
-    fetchMaintenanceModeStatus();
-  }, [fetchMaintenanceModeStatus]);
+  const { currentlyActiveMaintenanceNoticeContent } = useMaintenanceContext();
 
   return (
     <StyledMaintenancePage gap={24}>
@@ -77,5 +72,7 @@ const StyledFooterLink = styled(GalleryLink)`
   text-transform: capitalize;
   font-size: 14px;
 `;
+
+MaintenancePage.displayName = 'MaintenancePage';
 
 export default memo(MaintenancePage);
