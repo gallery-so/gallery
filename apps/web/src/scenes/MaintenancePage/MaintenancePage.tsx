@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -12,17 +12,21 @@ import {
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { LogoLarge } from '~/icons/LogoLarge';
 import { contexts } from '~/shared/analytics/constants';
+import { useSanityMaintenanceCheck } from '~/utils/sanity';
 
 function MaintenancePage() {
+  const { fetchMaintenanceModeStatus, currentlyActiveMaintenanceNoticeContent } =
+    useSanityMaintenanceCheck();
+
+  useEffect(() => {
+    fetchMaintenanceModeStatus();
+  }, [fetchMaintenanceModeStatus]);
+
   return (
     <StyledMaintenancePage gap={24}>
       <VStack gap={8}>
         <StyledLogo />
-        <StyledBaseM>
-          Gallery is currently undergoing planned maintenance until{' '}
-          <strong>Wednesday Aug 2nd, 10:00pm EST</strong> and is not usable at this time. Keep up to
-          date on our socials.
-        </StyledBaseM>
+        <StyledBaseM>{currentlyActiveMaintenanceNoticeContent?.message}</StyledBaseM>
       </VStack>
       <HStack gap={8}>
         <StyledFooterLink
