@@ -84,6 +84,7 @@ export function UpcomingMaintenanceBanner({
       experienceFlag={maintenanceId}
       description={message}
       onClose={handleDismissBanner}
+      bannerVariant="default"
     />
   );
 }
