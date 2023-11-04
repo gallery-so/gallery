@@ -32,7 +32,7 @@ import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
-import { useSanityMaintenanceCheck } from './utils/useSanityMaintenanceCheck';
+import { useSanityMaintenanceCheckMobile } from './utils/useSanityMaintenanceCheckMobile';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -112,7 +112,8 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
-  const { maintenanceCheckLoadedOrError, maintenanceModeResponse } = useSanityMaintenanceCheck();
+  const { maintenanceCheckLoadedOrError, maintenanceModeResponse } =
+    useSanityMaintenanceCheckMobile();
 
   useEffect(
     function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
@@ -137,7 +138,7 @@ export default function App() {
           className="text-l text-center leading-6"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
-          {maintenanceModeResponse.message}
+          {maintenanceModeResponse?.message}
         </Typography>
       </View>
     );
