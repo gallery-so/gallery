@@ -112,6 +112,7 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
+  // NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
   const { maintenanceCheckLoadedOrError, maintenanceModeResponse } =
     useSanityMaintenanceCheckMobile();
 

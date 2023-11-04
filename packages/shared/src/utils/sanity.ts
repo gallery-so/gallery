@@ -17,6 +17,7 @@ type SanityMaintenanceModeResponse = {
   message: string;
 };
 
+// NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
 export function useSanityMaintenanceCheck(sanityProjectId: string | undefined) {
   const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);
   // feature flag for maintenance

@@ -4,6 +4,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { useSanityMaintenanceCheck } from './sanity';
 
 export function useSanityMaintenanceCheckMobile() {
+  // NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
   const {
     fetchMaintenanceModeStatus,
     maintenanceCheckLoadedOrError,
