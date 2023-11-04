@@ -215,11 +215,18 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const handleSelectMention = useCallback(
     (item: MentionType) => {
-      selectMention(item);
+      const newMessage = selectMention(item);
 
       // focus on the textarea after selecting a mention
-      if (textareaRef.current) {
-        textareaRef.current.focus();
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.focus();
+        setTimeout(() => {
+          const mentionPosition = newMessage.indexOf(item.label);
+          const cursorPosition = mentionPosition + item.label.length;
+          textarea.selectionStart = cursorPosition;
+          textarea.selectionEnd = cursorPosition;
+        }, 0);
       }
     },
     [selectMention]
