@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "bash -c \"yarn relay-compiler --repersist --project web ../../relay.config.js && yarn graphql-codegen && yarn next build\""
+    "build": "bash -c \"yarn relay-compiler --repersist --project web ../../relay.config.js && yarn graphql-codegen && node ./scripts/upload-persisted-queries.mjs && yarn next build\""
   },
   "devDependencies": {
     "@gallery-so/typescript-operations": "^0.0.7",
