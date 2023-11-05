@@ -19,6 +19,11 @@ describe('getHighlightedName', () => {
     const result = getHighlightedName('Hello, world! This world is amazing.', 'world');
     expect(result).toBe('Hello, **world**! This **world** is amazing.');
   });
+
+  it('should handle @mention tags', () => {
+    const result = getHighlightedName('Hello, world! This world is amazing.', '@world');
+    expect(result).toBe('Hello, **world**! This **world** is amazing.');
+  });
 });
 
 describe('getHighlightedDescription', () => {

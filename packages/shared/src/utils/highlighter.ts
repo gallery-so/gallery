@@ -3,7 +3,9 @@ export function getHighlightedName(text: string, keyword: string) {
     return text;
   }
 
-  return text.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
+  const withoutMentionTag = keyword.replace(/^@/, '');
+
+  return text.replace(new RegExp(withoutMentionTag, 'gi'), (match) => `**${match}**`);
 }
 
 export const MAX_DISPLAYED_DESCRIPTION_CHARS = 150;
