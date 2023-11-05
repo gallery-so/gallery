@@ -1,21 +1,25 @@
-const MAX_DESCRIPTION_CHARACTER = 150;
-
 export function getHighlightedName(text: string, keyword: string) {
+  if (!keyword) {
+    return text;
+  }
+
   return text.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
 }
+
+export const MAX_DISPLAYED_DESCRIPTION_CHARS = 150;
 
 export function getHighlightedDescription(text: string, keyword: string) {
   const regex = new RegExp(keyword, 'gi');
 
   const unformattedDescription = sanitizeMarkdown(text ?? '');
   if (!keyword) {
-    return unformattedDescription.substring(0, MAX_DESCRIPTION_CHARACTER);
+    return unformattedDescription.substring(0, MAX_DISPLAYED_DESCRIPTION_CHARS);
   }
 
   const matchIndex = unformattedDescription.search(regex);
   let truncatedDescription;
 
-  const maxLength = MAX_DESCRIPTION_CHARACTER;
+  const maxLength = MAX_DISPLAYED_DESCRIPTION_CHARS;
 
   if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
     const endIndex = Math.min(unformattedDescription.length, maxLength);
