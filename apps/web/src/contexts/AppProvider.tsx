@@ -45,35 +45,37 @@ export default function AppProvider({
           sanityProjectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
           MaintenancePageComponent={<MaintenancePage />}
         >
-          <RelayEnvironmentProvider environment={relayEnvironment}>
-            <AnalyticsProvider>
-              <WebErrorReportingProvider>
-                <SwrProvider>
-                  <GalleryNavigationProvider>
-                    <NftErrorProvider>
-                      <SyncTokensLockProvider>
-                        <PostComposerProvider>
-                          <ModalProvider>
-                            <SidebarDrawerProvider>
-                              <SearchProvider>
-                                <GlobalLayoutContextProvider
-                                  preloadedQuery={globalLayoutContextPreloadedQuery}
-                                >
-                                  <FullPageNftDetailModalListener />
-                                  {isProd ? null : <Debugger />}
-                                  {children}
-                                </GlobalLayoutContextProvider>
-                              </SearchProvider>
-                            </SidebarDrawerProvider>
-                          </ModalProvider>
-                        </PostComposerProvider>
-                      </SyncTokensLockProvider>
-                    </NftErrorProvider>
-                  </GalleryNavigationProvider>
-                </SwrProvider>
-              </WebErrorReportingProvider>
-            </AnalyticsProvider>
-          </RelayEnvironmentProvider>
+          <Boundary>
+            <RelayEnvironmentProvider environment={relayEnvironment}>
+              <AnalyticsProvider>
+                <WebErrorReportingProvider>
+                  <SwrProvider>
+                    <GalleryNavigationProvider>
+                      <NftErrorProvider>
+                        <SyncTokensLockProvider>
+                          <PostComposerProvider>
+                            <ModalProvider>
+                              <SidebarDrawerProvider>
+                                <SearchProvider>
+                                  <GlobalLayoutContextProvider
+                                    preloadedQuery={globalLayoutContextPreloadedQuery}
+                                  >
+                                    <FullPageNftDetailModalListener />
+                                    {isProd ? null : <Debugger />}
+                                    {children}
+                                  </GlobalLayoutContextProvider>
+                                </SearchProvider>
+                              </SidebarDrawerProvider>
+                            </ModalProvider>
+                          </PostComposerProvider>
+                        </SyncTokensLockProvider>
+                      </NftErrorProvider>
+                    </GalleryNavigationProvider>
+                  </SwrProvider>
+                </WebErrorReportingProvider>
+              </AnalyticsProvider>
+            </RelayEnvironmentProvider>
+          </Boundary>
         </MaintenanceStatusProvider>
       </ToastProvider>
     </Boundary>
