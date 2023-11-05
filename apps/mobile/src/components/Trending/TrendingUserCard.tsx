@@ -13,6 +13,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
@@ -38,6 +39,11 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         username
         badges {
           imageURL
+          contract {
+            contractAddress {
+              address
+            }
+          }
         }
         bio
         galleries {
@@ -68,7 +74,15 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   }, [user.galleries]);
 
   const filteredBadges = useMemo(() => {
-    return badges?.filter((badge) => badge?.imageURL) ?? [];
+    return (
+      badges
+        ?.filter((badge) => badge?.imageURL)
+        ?.filter((badge) => {
+          return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(
+            badge?.contract?.contractAddress?.address ?? ''
+          );
+        }) ?? []
+    );
   }, [badges]);
 
   const tokenPreviews = useMemo(() => {
