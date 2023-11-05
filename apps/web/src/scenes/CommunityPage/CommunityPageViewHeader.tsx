@@ -123,7 +123,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             >
               <IconContainer
                 variant="default"
-                tooltipLabel="View on explorer"
+                tooltipLabel="View official site"
                 icon={<GlobeIcon />}
                 onClick={handleExternalLinkClick}
               />
@@ -138,7 +138,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             >
               <IconContainer
                 variant="default"
-                tooltipLabel="View on explorer"
+                tooltipLabel="View on Opensea"
                 icon={<OpenseaIcon />}
                 onClick={handleOpenseaLinkClick}
               />
