@@ -131,7 +131,7 @@ export default function App() {
 
   if (maintenanceModeResponse?.isActive) {
     return (
-      <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center m-6">
+      <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center p-6">
         <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Maintenance in Progress
         </Typography>
