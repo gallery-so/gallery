@@ -89,7 +89,3 @@ tasks:
     deps:
       - '~:codegen'
     command: jest
-
-  upload-apq:
-    command: node scripts/upload-persisted-queries.mjs
-    local: true
