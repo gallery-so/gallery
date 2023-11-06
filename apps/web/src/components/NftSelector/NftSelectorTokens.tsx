@@ -52,16 +52,15 @@ export default function NftSelectorTokens({
 
   const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = usePersistedState(
     CREATOR_BETA_ANNOUNCEMENT_SEEN,
-    'false'
+    false
   );
 
   const handleContinueCreatorBetaClick = useCallback(() => {
-    setCreatorBetaAnnouncementSeen('true');
+    setCreatorBetaAnnouncementSeen(true);
   }, [setCreatorBetaAnnouncementSeen]);
 
   const showCreatorBetaAnnouncement = useMemo(() => {
-    console.log(selectedFilter, creatorBetaAnnouncementSeen);
-    return selectedFilter === 'Created' && creatorBetaAnnouncementSeen === 'false';
+    return selectedFilter === 'Created' && !creatorBetaAnnouncementSeen;
   }, [creatorBetaAnnouncementSeen, selectedFilter]);
 
   if (showCreatorBetaAnnouncement) {
