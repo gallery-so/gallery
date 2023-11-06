@@ -7,12 +7,13 @@ type Props = {
   pageContent: CmsTypes.FeaturePage;
 };
 
-export default function PostsFeatureRoute({ pageContent }: Props) {
+export default function CreatorSupportFeatureRoute({ pageContent }: Props) {
   return <GalleryRoute element={<PostsFeaturePage pageContent={pageContent} />} navbar={false} />;
 }
 
+// make most of query reusable/shared with Posts page
 export const featurePostsPageContentQuery = `
-*[ _type == "featurePage" && id == "posts" ]{
+*[ _type == "featurePage" && id == "creators" ]{
   ...,
   "featureHighlights": featureHighlights[]->{
     heading,

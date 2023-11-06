@@ -6,7 +6,7 @@ import { graphql } from 'relay-runtime';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
 import { featurePostsPageContentQuery } from '~/pages/features/posts';
-import { PostsFeaturePageContent } from '~/scenes/ContentPages/PostsFeaturePage';
+import { PostsFeaturePageContent } from '~/scenes/ContentPages/FeaturePage/PostsFeaturePage';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import { fetchSanityContent } from '~/utils/sanity';
 
