@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
-import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 type Props = {
   badgeRef: BadgeFragment$key;

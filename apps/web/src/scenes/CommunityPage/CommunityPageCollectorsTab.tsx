@@ -6,9 +6,9 @@ import CommunityHolderList from '~/components/Community/CommunityHolderList';
 import CommunityHolderGrid from '~/components/CommunityHolderGrid/CommunityHolderGrid';
 import { DisplayLayout } from '~/components/core/enums';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
 import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
+import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
