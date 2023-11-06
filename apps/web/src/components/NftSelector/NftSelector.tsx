@@ -28,7 +28,7 @@ import { NftSelectorFilterSort } from './NftSelectorFilter/NftSelectorFilterSort
 import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSelector';
 import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorSearchBar } from './NftSelectorSearchBar';
-import { NftSelectorView } from './NftSelectorView';
+import NftSelectorTokens from './NftSelectorTokens';
 
 type Props = {
   onSelectToken: (tokenId: string) => void;
@@ -90,7 +90,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
             }
 
             ...useTokenSearchResultsFragment
-            ...NftSelectorViewFragment
+            ...NftSelectorTokensFragment
 
             # Needed for when we select a token, we want to have this already in the cache
             # eslint-disable-next-line relay/must-colocate-fragment-spreads
@@ -350,20 +350,18 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         )}
       </StyledActionContainer>
 
-      {isLocked ? (
-        <NftSelectorLoadingView />
-      ) : (
-        <NftSelectorView
-          tokenRefs={tokensToDisplay}
-          selectedContractAddress={selectedContract?.address ?? null}
-          onSelectContract={handleSelectContract}
-          onSelectToken={onSelectToken}
-          eventFlow={eventFlow}
-          selectedNetworkView={network}
-          hasSearchKeyword={isSearching}
-          handleRefresh={handleRefresh}
-        />
-      )}
+      <NftSelectorTokens
+        selectedFilter={filterType}
+        isLocked={isLocked}
+        tokenRefs={tokensToDisplay}
+        selectedContractAddress={selectedContract?.address ?? null}
+        onSelectContract={handleSelectContract}
+        onSelectToken={onSelectToken}
+        eventFlow={eventFlow}
+        selectedNetworkView={network}
+        hasSearchKeyword={isSearching}
+        handleRefresh={handleRefresh}
+      />
     </StyledNftSelectorModal>
   );
 }
