@@ -59,6 +59,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
             ...NftSelectorViewerFragment
           }
         }
+        ...NftSelectorTokensQueryFragment
       }
     `,
     {}
@@ -361,6 +362,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         selectedNetworkView={network}
         hasSearchKeyword={isSearching}
         handleRefresh={handleRefresh}
+        queryRef={query}
       />
     </StyledNftSelectorModal>
   );

@@ -2,12 +2,12 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { CREATOR_BETA_ANNOUNCEMENT_SEEN } from '~/constants/storageKeys';
 import { NftSelectorTokensFragment$key } from '~/generated/NftSelectorTokensFragment.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
+import { NftSelectorTokensQueryFragment$key } from '~/generated/NftSelectorTokensQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { Chain } from '~/shared/utils/chains';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { Button } from '../core/Button/Button';
 import GalleryLink from '../core/GalleryLink/GalleryLink';
@@ -16,6 +16,7 @@ import { BaseM, TitleCondensed } from '../core/Text/Text';
 import { NftSelectorContractType } from './NftSelector';
 import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorView } from './NftSelectorView';
+
 type Props = {
   selectedFilter: string;
   isLocked: boolean;
@@ -27,6 +28,7 @@ type Props = {
   selectedNetworkView: Chain;
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
+  queryRef: NftSelectorTokensQueryFragment$key;
 };
 
 export default function NftSelectorTokens({
@@ -40,6 +42,7 @@ export default function NftSelectorTokens({
   hasSearchKeyword,
   handleRefresh,
   eventFlow,
+  queryRef,
 }: Props) {
   const tokens = useFragment(
     graphql`
@@ -50,13 +53,22 @@ export default function NftSelectorTokens({
     tokenRefs
   );
 
-  const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = usePersistedState(
-    CREATOR_BETA_ANNOUNCEMENT_SEEN,
-    false
+  const query = useFragment(
+    graphql`
+      fragment NftSelectorTokensQueryFragment on Query {
+        ...useExperienceFragment
+      }
+    `,
+    queryRef
   );
 
+  const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = useExperience({
+    type: 'CreatorBetaMicroAnnouncementModal',
+    queryRef: query,
+  });
+
   const handleContinueCreatorBetaClick = useCallback(() => {
-    setCreatorBetaAnnouncementSeen(true);
+    setCreatorBetaAnnouncementSeen();
   }, [setCreatorBetaAnnouncementSeen]);
 
   const showCreatorBetaAnnouncement = useMemo(() => {
