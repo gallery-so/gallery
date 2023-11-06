@@ -81,8 +81,8 @@ export default function NftSelectorTokens({
         <StyledTitle>Gallery for Creators is now in beta</StyledTitle>
         <BaseM>
           Welcome to our new creator support feature, currently in beta. Share and display works
-          you’ve created on Gallery. Learn more about how it works{' '}
-          <GalleryLink href={'https://gallery.so'}>in our FAQ here</GalleryLink>.
+          you’ve created on Gallery. Learn more about how it works in{' '}
+          <GalleryLink href={'https://gallery.so'}>our FAQ here</GalleryLink>.
         </BaseM>
         <Button
           eventElementId="Creator Beta Announcement Continue Button"
