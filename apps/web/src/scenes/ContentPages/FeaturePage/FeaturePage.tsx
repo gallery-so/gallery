@@ -10,7 +10,7 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import { FeaturePageContentQuery } from '~/generated/FeaturePageContentQuery.graphql';
-import { contexts, flows } from '~/shared/analytics/constants';
+import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
