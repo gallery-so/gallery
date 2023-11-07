@@ -111,10 +111,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   useEffect(() => {
     if (caption) {
       setMessage(caption);
-      // set the cursor at the end of the caption
-      if (textareaRef.current) {
-        textareaRef.current.setSelectionRange(caption.length, caption.length);
-      }
     }
   }, [caption, setMessage]);
 
@@ -128,27 +124,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     },
     [reference]
   );
-
-  const handleDescriptionChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const textarea = textareaRef.current;
-
-      if (textarea) {
-        handleSelectionChange({ start: textarea.selectionStart, end: textarea.selectionEnd });
-      }
-
-      setMessage(event.target.value);
-    },
-    [handleSelectionChange, setMessage]
-  ) as (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-
-  const handleOnClick = useCallback(() => {
-    const textarea = textareaRef.current;
-
-    if (textarea) {
-      handleSelectionChange({ start: textarea.selectionStart, end: textarea.selectionEnd });
-    }
-  }, [handleSelectionChange, textareaRef]);
 
   const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
 
@@ -213,23 +188,34 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     return `"${token.name}"`;
   }, [token.name]);
 
+  const handleDescriptionChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(event.target.value);
+    },
+    [setMessage]
+  );
+
   const handleSelectMention = useCallback(
     (item: MentionType) => {
-      const newMessage = selectMention(item);
+      selectMention(item);
 
-      // focus on the textarea after selecting a mention
       const textarea = textareaRef.current;
       if (textarea) {
         textarea.focus();
-        setTimeout(() => {
-          const mentionPosition = newMessage.indexOf(item.label);
-          const cursorPosition = mentionPosition + item.label.length;
-          textarea.selectionStart = cursorPosition;
-          textarea.selectionEnd = cursorPosition;
-        }, 0);
       }
     },
     [selectMention]
+  );
+
+  const handleOnSelect = useCallback(
+    (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+      const target = event.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+
+      handleSelectionChange({ start, end });
+    },
+    [handleSelectionChange]
   );
 
   return (
@@ -261,7 +247,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
               hasPadding
               value={message}
               ref={setRefs}
-              onClick={handleOnClick}
+              onSelect={handleOnSelect}
               {...getReferenceProps()}
             />
 
