@@ -14,6 +14,7 @@ type Props = {
   isShowAll?: boolean;
   resultRefs: UserSearchResultSectionFragment$key;
   variant?: 'default' | 'compact';
+  keyword: string;
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect?: (item: MentionType) => void;
@@ -22,6 +23,7 @@ type Props = {
 export default function UserSearchResultSection({
   isShowAll = false,
   onChangeFilter,
+  keyword,
   title,
   resultRefs,
   onSelect,
@@ -58,6 +60,7 @@ export default function UserSearchResultSection({
           userRef={result.user}
           variant={variant}
           onSelect={onSelect}
+          keyword={keyword}
         />
       ))}
     </SearchSection>

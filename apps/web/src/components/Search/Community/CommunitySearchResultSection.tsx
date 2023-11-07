@@ -15,6 +15,7 @@ type Props = {
   isShowAll?: boolean;
   resultRefs: CommunitySearchResultSectionFragment$key;
   variant: SearchResultVariant;
+  keyword: string;
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect?: (item: MentionType) => void;
@@ -26,6 +27,7 @@ export default function CommunitySearchResultSection({
   title,
   resultRefs,
   onSelect,
+  keyword,
   variant,
 }: Props) {
   const results = useFragment(
@@ -59,6 +61,7 @@ export default function CommunitySearchResultSection({
           communityRef={result.community}
           variant={variant}
           onSelect={onSelect}
+          keyword={keyword}
         />
       ))}
     </SearchSection>

@@ -11,13 +11,14 @@ import SearchResult from '../SearchResult';
 import { SearchResultVariant } from '../SearchResults';
 
 type Props = {
+  keyword: string;
   userRef: UserSearchResultFragment$key;
   variant: SearchResultVariant;
 
   onSelect?: (item: MentionType) => void;
 };
 
-export default function UserSearchResult({ userRef, variant, onSelect }: Props) {
+export default function UserSearchResult({ keyword, userRef, variant, onSelect }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {
@@ -61,6 +62,7 @@ export default function UserSearchResult({ userRef, variant, onSelect }: Props) 
       profilePicture={<ProfilePicture userRef={user} size="md" />}
       variant={variant}
       onClick={handleClick}
+      keyword={keyword}
     />
   );
 }

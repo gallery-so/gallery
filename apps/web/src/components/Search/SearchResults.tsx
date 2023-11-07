@@ -110,6 +110,7 @@ export default function SearchResults({
             isShowAll
             variant={variant}
             onSelect={onSelect}
+            keyword={keyword}
           />
         )}
       </StyledSearchResultContainer>
@@ -126,6 +127,7 @@ export default function SearchResults({
             onChangeFilter={onChangeFilter}
             isShowAll
             variant={variant}
+            keyword={keyword}
           />
         )}
       </StyledSearchResultContainer>
@@ -143,6 +145,7 @@ export default function SearchResults({
             isShowAll
             variant={variant}
             onSelect={onSelect}
+            keyword={keyword}
           />
         )}
       </StyledSearchResultContainer>
@@ -159,6 +162,7 @@ export default function SearchResults({
           onChangeFilter={onChangeFilter}
           variant={variant}
           onSelect={onSelect}
+          keyword={keyword}
         />
       )}
       {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && variant === 'default' && (
@@ -167,6 +171,7 @@ export default function SearchResults({
           resultRefs={query?.searchGalleries?.results}
           onChangeFilter={onChangeFilter}
           variant={variant}
+          keyword={keyword}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -176,6 +181,7 @@ export default function SearchResults({
           onChangeFilter={onChangeFilter}
           variant={variant}
           onSelect={onSelect}
+          keyword={keyword}
         />
       )}
     </StyledSearchResultContainer>

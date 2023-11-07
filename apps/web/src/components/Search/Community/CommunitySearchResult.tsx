@@ -12,13 +12,14 @@ import SearchResult from '../SearchResult';
 import { SearchResultVariant } from '../SearchResults';
 
 type Props = {
+  keyword: string;
   communityRef: CommunitySearchResultFragment$key;
   variant: SearchResultVariant;
 
   onSelect?: (item: MentionType) => void;
 };
 
-export default function CommunitySearchResult({ communityRef, variant, onSelect }: Props) {
+export default function CommunitySearchResult({ communityRef, keyword, variant, onSelect }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -71,6 +72,7 @@ export default function CommunitySearchResult({ communityRef, variant, onSelect 
       profilePicture={<CommunityProfilePicture communityRef={community} size="md" />}
       variant={variant}
       onClick={handleClick}
+      keyword={keyword}
     />
   );
 }

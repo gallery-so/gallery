@@ -12,7 +12,6 @@ import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { SearchFilterType } from './Search';
-import { useSearchContext } from './SearchContext';
 import { SearchResultVariant } from './SearchResults';
 
 type Props = {
@@ -24,6 +23,7 @@ type Props = {
 
   variant?: SearchResultVariant;
   onClick: () => void;
+  keyword: string;
 };
 
 export default function SearchResult({
@@ -31,6 +31,7 @@ export default function SearchResult({
   description,
   path,
   type,
+  keyword,
 
   profilePicture,
   variant = 'default',
@@ -38,7 +39,6 @@ export default function SearchResult({
 }: Props) {
   // TODO: Turn this on later
   // const { hideDrawer } = useDrawerActions();
-  const { keyword } = useSearchContext();
 
   const track = useTrack();
 

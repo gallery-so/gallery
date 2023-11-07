@@ -8,10 +8,11 @@ import { noop } from '~/shared/utils/noop';
 import SearchResult from '../SearchResult';
 
 type Props = {
+  keyword: string;
   galleryRef: GallerySearchResultFragment$key;
 };
 
-export default function GallerySearchResult({ galleryRef }: Props) {
+export default function GallerySearchResult({ keyword, galleryRef }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
@@ -39,6 +40,7 @@ export default function GallerySearchResult({ galleryRef }: Props) {
       type="gallery"
       profilePicture={gallery.owner && <ProfilePicture userRef={gallery.owner} size="md" />}
       onClick={noop}
+      keyword={keyword}
     />
   );
 }
