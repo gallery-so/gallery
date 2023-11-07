@@ -37,14 +37,9 @@ export default function SearchResult({
   variant = 'default',
   onClick,
 }: Props) {
-  // TODO: Turn this on later
-  // const { hideDrawer } = useDrawerActions();
-
   const track = useTrack();
 
   const handleClick = useCallback(() => {
-    // hideDrawer();
-
     const fullLink = route(path);
 
     track('Search result click', {

@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
@@ -32,6 +33,7 @@ export default function UserSearchResult({ keyword, userRef, variant, onSelect }
   );
 
   const router = useRouter();
+  const { hideDrawer } = useDrawerActions();
 
   const route = useMemo(() => {
     return {
@@ -51,7 +53,8 @@ export default function UserSearchResult({ keyword, userRef, variant, onSelect }
     }
 
     router.push(route);
-  }, [onSelect, route, router, user.dbid, user.username]);
+    hideDrawer();
+  }, [onSelect, hideDrawer, route, router, user.dbid, user.username]);
 
   return (
     <SearchResult

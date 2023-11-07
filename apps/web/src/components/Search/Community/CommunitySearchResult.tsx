@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 import { LowercaseChain } from '~/shared/utils/chains';
@@ -37,6 +38,7 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
   );
 
   const router = useRouter();
+  const { hideDrawer } = useDrawerActions();
 
   const route = useMemo<Route>(() => {
     const { address, chain: uppercaseChain } = community.contractAddress;
@@ -61,7 +63,8 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
     }
 
     router.push(route);
-  }, [onSelect, route, router, community.dbid, community.name]);
+    hideDrawer();
+  }, [onSelect, hideDrawer, route, router, community.dbid, community.name]);
 
   return (
     <SearchResult

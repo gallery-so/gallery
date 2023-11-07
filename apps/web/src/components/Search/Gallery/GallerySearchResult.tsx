@@ -1,9 +1,11 @@
+import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
-import { noop } from '~/shared/utils/noop';
 
 import SearchResult from '../SearchResult';
 
@@ -27,10 +29,20 @@ export default function GallerySearchResult({ keyword, galleryRef }: Props) {
     galleryRef
   );
 
-  const route = {
-    pathname: '/[username]/galleries/[galleryId]',
-    query: { username: gallery.owner?.username as string, galleryId: gallery.dbid },
-  } as Route;
+  const router = useRouter();
+  const { hideDrawer } = useDrawerActions();
+
+  const route = useMemo<Route>(() => {
+    return {
+      pathname: '/[username]/galleries/[galleryId]',
+      query: { username: gallery.owner?.username as string, galleryId: gallery.dbid },
+    };
+  }, [gallery.dbid, gallery.owner?.username]);
+
+  const handleClick = useCallback(() => {
+    router.push(route);
+    hideDrawer();
+  }, [hideDrawer, route, router]);
 
   return (
     <SearchResult
@@ -39,7 +51,7 @@ export default function GallerySearchResult({ keyword, galleryRef }: Props) {
       path={route}
       type="gallery"
       profilePicture={gallery.owner && <ProfilePicture userRef={gallery.owner} size="md" />}
-      onClick={noop}
+      onClick={handleClick}
       keyword={keyword}
     />
   );
