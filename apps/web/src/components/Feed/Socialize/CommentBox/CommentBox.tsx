@@ -8,14 +8,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import {
-  ClipboardEventHandler,
-  KeyboardEventHandler,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-} from 'react';
+import { KeyboardEventHandler, useCallback, useEffect, useId, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -79,20 +72,31 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
 
   const { getReferenceProps, getFloatingProps } = useInteractions([role]);
 
-  // WARNING: calling `setValue` will not cause the textarea's content to actually change
-  // It's simply there as a state value that we can reference to peek into the current state
-  // of the textarea.
-  //
-  // We don't flush the state of `value` back out to the textarea to avoid constantly having
-  // to move the user's cursor around while their typing. This would cause a pretty jarring
-  // typing experience.
-  // const [value, setValue] = useState('');
-  const textareaRef = useRef<HTMLParagraphElement | null>(null);
+  // TODO: jakz enable this back
+  // This prevents someone from pasting a styled element into the textbox
+  // const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
+  //   (event) => {
+  //     event.preventDefault();
+  //     const text = event.clipboardData.getData('text/plain');
+
+  //     // This is deprecated but will work forever because browsers
+  //     document.execCommand('insertHTML', false, text);
+
+  //     handleInput();
+  //   },
+  //   [handleInput]
+  // );
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { pushToast } = useToastActions();
 
   const track = useTrack();
   const { showModal } = useModalActions();
+
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
 
   const resetInputState = useCallback(() => {
     resetMentions();
@@ -169,115 +173,47 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     [handleSubmit]
   );
 
-  const handleInput = useCallback(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) {
-      return;
-    }
-
-    const selection = window.getSelection();
-    if (!selection) {
-      return;
-    }
-
-    const range = selection.getRangeAt(0);
-    const start = range.startOffset;
-    const end = range.endOffset;
-
-    handleSelectionChange({ start, end });
-
-    const nextValue = textarea.innerText ?? '';
-
-    // If the user tried typing / pasting something over 100 characters of length
-    // we need to trim the content down, override the text content in the element
-    // and then put their cursor back at the end of the element
-    if (nextValue.length > MAX_TEXT_LENGTH) {
-      const nextValueSliced = nextValue.slice(0, MAX_TEXT_LENGTH);
-      textarea.textContent = nextValueSliced;
-
-      const range = document.createRange();
-      const selection = window.getSelection();
-
-      // Not really sure why `selection` is nullable
-      // Maybe because other browsers don't support this API
-      if (!selection) {
-        return;
-      }
-
-      const childNode = textarea.childNodes[0];
-
-      // There should only ever be a single child node
-      if (!childNode) {
-        return;
-      }
-
-      range.setStart(childNode, MAX_TEXT_LENGTH);
-      range.setEnd(childNode, MAX_TEXT_LENGTH);
-      range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      // setValue(nextValueSliced);
-      setMessage(nextValueSliced);
-    } else {
-      // setValue(nextValue);
-      setMessage(nextValue);
-    }
-  }, [handleSelectionChange, setMessage]);
-
-  // This prevents someone from pasting a styled element into the textbox
-  const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
-    (event) => {
-      event.preventDefault();
-      const text = event.clipboardData.getData('text/plain');
-
-      // This is deprecated but will work forever because browsers
-      document.execCommand('insertHTML', false, text);
-
-      handleInput();
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(event.target.value);
     },
-    [handleInput]
+    [setMessage]
   );
-
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
 
   const handleSelectMention = useCallback(
     (item: MentionType) => {
-      const newMessage = selectMention(item);
+      selectMention(item);
 
       const textarea = textareaRef.current;
       if (textarea) {
-        textarea.textContent = newMessage;
         textarea.focus();
-        const range = document.createRange();
-        const selection = window.getSelection();
-        if (selection) {
-          setTimeout(() => {
-            const mentionPosition = newMessage.indexOf(item.label) + item.label.length;
-            range.setStart(textarea.childNodes[0] || textarea, mentionPosition);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }, 0);
-        }
       }
     },
     [selectMention]
   );
 
+  const handleOnSelect = useCallback(
+    (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+      const target = event.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      handleSelectionChange({ start, end });
+    },
+    [handleSelectionChange]
+  );
+
   return (
     <Wrapper>
       <InputWrapper gap={12} ref={reference}>
-        {/* Purposely not using a controlled input here to avoid cursor jitter */}
-        <Textarea
-          onPaste={handlePaste}
-          onKeyDown={handleInputKeyDown}
+        <StyledTextArea
+          placeholder=""
+          onInput={handleChange}
           ref={textareaRef}
-          onInput={handleInput}
-          onClick={handleInput}
+          value={message}
+          onKeyDown={handleInputKeyDown}
+          onSelect={handleOnSelect}
           {...getReferenceProps()}
+          autoFocus
         />
 
         <HStack gap={12} align="center">
@@ -321,23 +257,21 @@ const InputWrapper = styled(HStack)`
   background-color: ${colors.faint};
 `;
 
-const Textarea = styled(BaseM).attrs({
-  role: 'textbox',
-  contentEditable: 'true',
-})`
-  min-width: 0;
+const StyledTextArea = styled.textarea`
   font-family: ${BODY_FONT_FAMILY};
-
-  cursor: text;
-
-  width: 100%;
-  min-height: 20px;
-
-  resize: both;
 
   color: ${colors.metal};
 
   padding: 8px 64px 8px 0;
+
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  font-size: 14px;
+  line-height: 20px;
+  background: none;
+  color: ${colors.black['800']};
 
   :focus {
     outline: none;
