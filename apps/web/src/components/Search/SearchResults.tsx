@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
+import { noop } from '~/shared/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
@@ -21,6 +22,7 @@ type Props = {
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect?: (item: MentionType) => void;
+  onClose?: () => void;
 };
 
 export default function SearchResults({
@@ -29,6 +31,7 @@ export default function SearchResults({
   onChangeFilter,
   onSelect,
   variant = 'default',
+  onClose = noop,
 }: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -163,6 +166,7 @@ export default function SearchResults({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
+          onClose={onClose}
         />
       )}
       {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && variant === 'default' && (
@@ -172,6 +176,7 @@ export default function SearchResults({
           onChangeFilter={onChangeFilter}
           variant={variant}
           keyword={keyword}
+          onClose={onClose}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -182,6 +187,7 @@ export default function SearchResults({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
+          onClose={onClose}
         />
       )}
     </StyledSearchResultContainer>

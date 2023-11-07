@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 import { LowercaseChain } from '~/shared/utils/chains';
@@ -18,9 +17,16 @@ type Props = {
   variant: SearchResultVariant;
 
   onSelect?: (item: MentionType) => void;
+  onClose?: () => void;
 };
 
-export default function CommunitySearchResult({ communityRef, keyword, variant, onSelect }: Props) {
+export default function CommunitySearchResult({
+  communityRef,
+  keyword,
+  variant,
+  onSelect,
+  onClose,
+}: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -38,7 +44,6 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
   );
 
   const router = useRouter();
-  const { hideDrawer } = useDrawerActions();
 
   const route = useMemo<Route>(() => {
     const { address, chain: uppercaseChain } = community.contractAddress;
@@ -63,8 +68,8 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
     }
 
     router.push(route);
-    hideDrawer();
-  }, [onSelect, hideDrawer, route, router, community.dbid, community.name]);
+    onClose?.();
+  }, [onClose, onSelect, route, router, community.dbid, community.name]);
 
   return (
     <SearchResult

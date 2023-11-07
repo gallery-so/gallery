@@ -3,6 +3,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
@@ -16,6 +17,7 @@ export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | nul
 export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
+  const { hideDrawer } = useDrawerActions();
 
   useHotkeys(
     ['ArrowUp', 'ArrowDown'],
@@ -65,6 +67,7 @@ export default function Search() {
               activeFilter={selectedFilter}
               keyword={keyword}
               onChangeFilter={setSelectedFilter}
+              onClose={hideDrawer}
             />
           )}
         </Suspense>

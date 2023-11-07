@@ -18,6 +18,7 @@ type Props = {
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect?: (item: MentionType) => void;
+  onClose?: () => void;
 };
 
 export default function UserSearchResultSection({
@@ -27,6 +28,7 @@ export default function UserSearchResultSection({
   title,
   resultRefs,
   onSelect,
+  onClose,
   variant = 'default',
 }: Props) {
   const results = useFragment(
@@ -61,6 +63,7 @@ export default function UserSearchResultSection({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
+          onClose={onClose}
         />
       ))}
     </SearchSection>

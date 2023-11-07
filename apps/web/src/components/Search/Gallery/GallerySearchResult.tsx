@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 
 import SearchResult from '../SearchResult';
@@ -12,9 +11,10 @@ import SearchResult from '../SearchResult';
 type Props = {
   keyword: string;
   galleryRef: GallerySearchResultFragment$key;
+  onClose?: () => void;
 };
 
-export default function GallerySearchResult({ keyword, galleryRef }: Props) {
+export default function GallerySearchResult({ keyword, galleryRef, onClose }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
@@ -30,7 +30,6 @@ export default function GallerySearchResult({ keyword, galleryRef }: Props) {
   );
 
   const router = useRouter();
-  const { hideDrawer } = useDrawerActions();
 
   const route = useMemo<Route>(() => {
     return {
@@ -41,8 +40,8 @@ export default function GallerySearchResult({ keyword, galleryRef }: Props) {
 
   const handleClick = useCallback(() => {
     router.push(route);
-    hideDrawer();
-  }, [hideDrawer, route, router]);
+    onClose?.();
+  }, [onClose, route, router]);
 
   return (
     <SearchResult

@@ -19,6 +19,7 @@ type Props = {
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect?: (item: MentionType) => void;
+  onClose?: () => void;
 };
 
 export default function CommunitySearchResultSection({
@@ -29,6 +30,7 @@ export default function CommunitySearchResultSection({
   onSelect,
   keyword,
   variant,
+  onClose,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -62,6 +64,7 @@ export default function CommunitySearchResultSection({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
+          onClose={onClose}
         />
       ))}
     </SearchSection>

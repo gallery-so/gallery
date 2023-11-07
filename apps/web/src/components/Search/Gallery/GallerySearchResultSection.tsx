@@ -16,6 +16,7 @@ type Props = {
   keyword: string;
 
   onChangeFilter: (filter: SearchFilterType) => void;
+  onClose?: () => void;
   variant: SearchResultVariant;
 };
 
@@ -26,6 +27,7 @@ export default function GallerySearchResultSection({
   resultRefs,
   variant,
   keyword,
+  onClose,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -57,6 +59,7 @@ export default function GallerySearchResultSection({
           key={result.gallery.id}
           galleryRef={result.gallery}
           keyword={keyword}
+          onClose={onClose}
         />
       ))}
     </SearchSection>
