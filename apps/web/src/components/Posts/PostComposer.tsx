@@ -108,8 +108,11 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   // if there is caption, set it as the default message
   // for the  share to gallery
+  const prevCaption = useRef<string | null>(null);
+
   useEffect(() => {
-    if (caption) {
+    if (prevCaption.current !== caption) {
+      prevCaption.current = caption;
       setMessage(caption);
       if (textareaRef.current) {
         const length = textareaRef.current.value.length;
@@ -117,7 +120,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         textareaRef.current.setSelectionRange(length, length);
       }
     }
-  }, [caption, setMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caption]);
 
   const setRefs = useCallback(
     (node: HTMLTextAreaElement | null) => {
@@ -195,6 +199,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      console.log('handleDescriptionChange', event.target.value);
       setMessage(event.target.value);
     },
     [setMessage]
