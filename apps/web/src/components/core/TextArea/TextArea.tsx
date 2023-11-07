@@ -29,6 +29,7 @@ type TextAreaProps = {
   onFocus?: () => void;
   onBlur?: () => void;
   onClick?: () => void;
+  onSelect?: (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => void;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -68,6 +69,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       onFocus = noop,
       onBlur = noop,
       onClick = noop,
+      onSelect = noop,
     },
     ref
   ) => {
@@ -135,6 +137,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           onKeyDown={handleKeyDown}
           maxLength={maxLength}
           onClick={onClick}
+          onSelect={onSelect}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
@@ -213,7 +216,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
   const internalRef = useRef<HTMLTextAreaElement>(null);
   const textAreaRef = ref || internalRef;
 
-  const { value, onChange } = textAreaProps;
+  const { value, onChange, onSelect } = textAreaProps;
 
   const DEFAULT_TEXTAREA_HEIGHT = 'auto';
 
@@ -284,6 +287,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onSelect={onSelect}
         />
         <StyledCharacterCounter
           hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
