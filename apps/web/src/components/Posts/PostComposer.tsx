@@ -111,6 +111,11 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   useEffect(() => {
     if (caption) {
       setMessage(caption);
+      if (textareaRef.current) {
+        const length = textareaRef.current.value.length;
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(length, length);
+      }
     }
   }, [caption, setMessage]);
 
