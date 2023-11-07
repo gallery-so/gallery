@@ -265,7 +265,7 @@ const StyledTextArea = styled.textarea`
   padding: 8px 64px 8px 0;
 
   width: 100%;
-  height: 100%;
+  height: 36px;
   border: none;
   resize: none;
   font-size: 14px;
