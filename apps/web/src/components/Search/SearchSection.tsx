@@ -44,9 +44,9 @@ export default function SearchSection({
     );
 
   return (
-    <VStack gap={10}>
+    <VStack gap={variant === 'compact' ? 0 : 10}>
       <StyledResultHeader align="center" justify="space-between">
-        <StyledTitle>{title}</StyledTitle>
+        <StyledTitle variant={variant}>{title}</StyledTitle>
 
         {showAllButton && (
           <StyledGalleryLink
@@ -64,9 +64,11 @@ export default function SearchSection({
   );
 }
 
-const StyledTitle = styled(TitleXS)`
+const StyledTitle = styled(TitleXS)<{ variant?: SearchResultVariant }>`
   text-transform: uppercase;
   color: ${colors.metal};
+
+  ${({ variant }) => variant === 'compact' && 'padding: 4px 0;'}
 `;
 
 const StyledResultHeader = styled(HStack)`

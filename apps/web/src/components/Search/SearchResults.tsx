@@ -157,7 +157,7 @@ export default function SearchResults({
 
   // show all
   return (
-    <StyledSearchResultContainer isLoading={isLoading} gap={10}>
+    <StyledSearchResultContainer isLoading={isLoading} gap={variant === 'compact' ? 0 : 10}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
