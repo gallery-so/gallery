@@ -31,6 +31,7 @@ type Props = {
   setMessage: (message: string) => void;
   message: string;
   handleSelectionChange: (selection: { start: number; end: number }) => void;
+  closeMention: () => void;
 };
 
 export const DESCRIPTION_MAX_LENGTH = 600;
@@ -43,6 +44,7 @@ export function PostComposerTextArea({
   setMessage,
   message,
   handleSelectionChange,
+  closeMention,
 }: Props) {
   const token = useFragment(
     graphql`
@@ -162,7 +164,11 @@ export function PostComposerTextArea({
             y={y}
             getFloatingProps={getFloatingProps}
           >
-            <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
+            <MentionModal
+              keyword={aliasKeyword}
+              onSelectMention={handleSelectMention}
+              onEmptyResultsClose={closeMention}
+            />
           </FloatingCard>
         )}
       </AnimatePresence>

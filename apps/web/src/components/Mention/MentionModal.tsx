@@ -5,6 +5,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 import SearchProvider from '../Search/SearchContext';
 import SearchResults from '../Search/SearchResults';
@@ -14,9 +15,10 @@ import { MentionResultFallback } from './MentionResultFallback';
 type Props = {
   keyword: string;
   onSelectMention: (item: MentionType) => void;
+  onEmptyResultsClose?: () => void;
 };
 
-export function MentionModal({ keyword, onSelectMention }: Props) {
+export function MentionModal({ keyword, onSelectMention, onEmptyResultsClose = noop }: Props) {
   const track = useTrack();
 
   const handleSelectMention = useCallback(
@@ -57,6 +59,7 @@ export function MentionModal({ keyword, onSelectMention }: Props) {
             onChangeFilter={() => {}}
             variant="compact"
             onSelect={handleSelectMention}
+            onEmptyResultsClose={onEmptyResultsClose}
           />
         </Suspense>
       </SearchProvider>

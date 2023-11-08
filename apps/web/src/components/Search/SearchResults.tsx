@@ -19,6 +19,7 @@ type Props = {
 
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect: (item: SearchItemType) => void;
+  onEmptyResultsClose?: () => void;
 };
 
 export default function SearchResults({
@@ -27,6 +28,7 @@ export default function SearchResults({
   onChangeFilter,
   onSelect,
   variant = 'default',
+  onEmptyResultsClose,
 }: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -85,6 +87,11 @@ export default function SearchResults({
 
     return false;
   }, [query]);
+
+  if (isEmpty && onEmptyResultsClose) {
+    onEmptyResultsClose();
+    return null;
+  }
 
   if (isEmpty) {
     return (

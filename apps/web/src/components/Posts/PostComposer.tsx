@@ -73,6 +73,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     message,
     resetMentions,
     handleSelectionChange,
+    closeMention,
   } = useMentionableMessage();
 
   const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
@@ -155,6 +156,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             setMessage={setMessage}
             message={message}
             handleSelectionChange={handleSelectionChange}
+            closeMention={closeMention}
           />
         </ContentContainer>
       </VStack>

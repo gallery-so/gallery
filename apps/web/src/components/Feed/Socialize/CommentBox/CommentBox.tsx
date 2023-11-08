@@ -58,6 +58,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     message,
     resetMentions,
     handleSelectionChange,
+    closeMention,
   } = useMentionableMessage();
 
   const { x, y, reference, floating, strategy, context } = useFloating({
@@ -231,7 +232,11 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
             y={y}
             getFloatingProps={getFloatingProps}
           >
-            <MentionModal keyword={aliasKeyword} onSelectMention={handleSelectMention} />
+            <MentionModal
+              keyword={aliasKeyword}
+              onSelectMention={handleSelectMention}
+              onEmptyResultsClose={closeMention}
+            />
           </FloatingCard>
         )}
       </AnimatePresence>

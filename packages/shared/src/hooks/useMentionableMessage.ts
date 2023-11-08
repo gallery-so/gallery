@@ -154,6 +154,11 @@ export function useMentionableMessage() {
     setSelection(selection);
   }, []);
 
+  const handleClosingMention = useCallback(() => {
+    setIsSelectingMentions(false);
+    setAliasKeyword('');
+  }, []);
+
   return {
     aliasKeyword: debouncedAliasKeyword,
     isSelectingMentions,
@@ -164,5 +169,6 @@ export function useMentionableMessage() {
     resetMentions,
     handleSelectionChange,
     selection,
+    closeMention: handleClosingMention,
   };
 }
