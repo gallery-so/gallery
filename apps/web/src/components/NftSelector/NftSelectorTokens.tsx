@@ -9,10 +9,8 @@ import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext'
 import { Chain } from '~/shared/utils/chains';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
-import { Button } from '../core/Button/Button';
-import GalleryLink from '../core/GalleryLink/GalleryLink';
+import CreatorSupportAnnouncement from '../Announcement/CreatorSupportAnnouncement';
 import { VStack } from '../core/Spacer/Stack';
-import { BaseM, TitleCondensed } from '../core/Text/Text';
 import { NftSelectorContractType } from './NftSelector';
 import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorView } from './NftSelectorView';
@@ -77,24 +75,13 @@ export default function NftSelectorTokens({
 
   if (showCreatorBetaAnnouncement) {
     return (
-      <StyledAnnouncement align="center" justify="center" gap={24}>
-        <StyledTitle>Gallery for Creators is now in beta</StyledTitle>
-        <BaseM>
-          Welcome to our new creator support feature, currently in beta. Share and display works
-          you’ve created on Gallery. Learn more about how it works in{' '}
-          <GalleryLink href={'https://gallery.so'}>our FAQ here</GalleryLink>.
-        </BaseM>
-        <Button
-          eventElementId="Creator Beta Announcement Continue Button"
-          eventName="Clicked Continue on Creator Beta Announcement"
-          eventContext={contexts.Posts}
+      <StyledWrapper justify="center">
+        <CreatorSupportAnnouncement
+          handleContinueCreatorBetaClick={handleContinueCreatorBetaClick}
           eventFlow={eventFlow}
-          variant="primary"
-          onClick={handleContinueCreatorBetaClick}
-        >
-          Continue
-        </Button>
-      </StyledAnnouncement>
+          eventContext={contexts.Posts}
+        />
+      </StyledWrapper>
     );
   }
 
@@ -116,14 +103,7 @@ export default function NftSelectorTokens({
   );
 }
 
-const StyledAnnouncement = styled(VStack)`
-  max-width: 430px;
-  margin: auto;
+const StyledWrapper = styled(VStack)`
   height: 500px;
-  text-align: center;
-`;
-
-const StyledTitle = styled(TitleCondensed)`
-  font-size: 64px;
-  line-height: 60px;
+  margin: auto;
 `;
