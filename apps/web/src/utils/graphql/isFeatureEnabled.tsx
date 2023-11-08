@@ -1,44 +1,31 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
-import {
-  isFeatureEnabledFragment$key,
-  Role as RelayRole,
-} from '~/generated/isFeatureEnabledFragment.graphql';
-
-import { removeNullValues } from '../relay/removeNullValues';
+import type { Role } from '~/generated/enums';
+import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
+import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   KOALA = 'KOALA',
-  MENTIONS = 'MENTIONS',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   KOALA: true,
-  MENTIONS: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   KOALA: true,
-  MENTIONS: true,
 };
 
-// We need to ignore this fake value from Relay here since we're expecting
-// a caller to pass in a valid value. We are taking extra steps to ensure we're type safe.
-// eslint-disable-next-line relay/no-future-added-value
-type Role = Exclude<RelayRole, '%future added value'>;
-
-const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
+export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     KOALA: true,
-    MENTIONS: true,
   },
   BETA_TESTER: {
     KOALA: true,
-    MENTIONS: true,
   },
   EARLY_ACCESS: {
     KOALA: true,
-    MENTIONS: true,
   },
 };
 
@@ -97,8 +84,4 @@ export default function isFeatureEnabled(
   const isEnabled = checkEnvironment() || checkRole();
 
   return isEnabled;
-}
-
-function isProduction() {
-  return process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 }
