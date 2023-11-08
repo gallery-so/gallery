@@ -221,7 +221,8 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 }
+    { feedEventId: feedId, last: 10 },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const {
@@ -297,7 +298,8 @@ function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedComment
         ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 }
+    { feedEventId: feedId, last: 10 },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const {
