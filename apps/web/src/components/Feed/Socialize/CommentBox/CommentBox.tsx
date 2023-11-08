@@ -72,21 +72,6 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
 
   const { getReferenceProps, getFloatingProps } = useInteractions([role]);
 
-  // TODO: jakz enable this back
-  // This prevents someone from pasting a styled element into the textbox
-  // const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
-  //   (event) => {
-  //     event.preventDefault();
-  //     const text = event.clipboardData.getData('text/plain');
-
-  //     // This is deprecated but will work forever because browsers
-  //     document.execCommand('insertHTML', false, text);
-
-  //     handleInput();
-  //   },
-  //   [handleInput]
-  // );
-
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { pushToast } = useToastActions();
@@ -202,6 +187,18 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     [handleSelectionChange]
   );
 
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      event.preventDefault();
+      let pastedText = event.clipboardData.getData('text/plain');
+      if (pastedText.length > MAX_TEXT_LENGTH) {
+        pastedText = pastedText.substring(0, MAX_TEXT_LENGTH);
+      }
+      setMessage(pastedText);
+    },
+    [setMessage]
+  );
+
   return (
     <Wrapper>
       <InputWrapper gap={12} ref={reference}>
@@ -212,6 +209,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
           value={message}
           onKeyDown={handleInputKeyDown}
           onSelect={handleOnSelect}
+          onPaste={handlePaste}
           {...getReferenceProps()}
           autoFocus
         />
