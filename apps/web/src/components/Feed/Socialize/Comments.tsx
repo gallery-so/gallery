@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -101,17 +101,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
       />
     );
   }, [feedItem, isMobile, query, commentId]);
-
-  useEffect(() => {
-    if (commentId) {
-      showModal({
-        content: ModalContent,
-        isFullPage: isMobile,
-        isPaddingDisabled: true,
-        headerVariant: 'standard',
-      });
-    }
-  }, [commentId, ModalContent, isMobile, showModal]);
 
   const handleAddCommentClick = useCallback(() => {
     showModal({
