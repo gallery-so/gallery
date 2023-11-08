@@ -1,6 +1,8 @@
 import { Suspense, useCallback } from 'react';
 import styled from 'styled-components';
 
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
@@ -15,6 +17,8 @@ type Props = {
 };
 
 export function MentionModal({ keyword, onSelectMention }: Props) {
+  const track = useTrack();
+
   const handleSelectMention = useCallback(
     (item: SearchItemType) => {
       if (item.type === 'Gallery') return;
@@ -25,9 +29,15 @@ export function MentionModal({ keyword, onSelectMention }: Props) {
         value: item.value,
       };
 
+      track('Search mention result click', {
+        searchQuery: keyword,
+        resultType: item.type,
+        context: contexts.Mention,
+      });
+
       onSelectMention(mention);
     },
-    [onSelectMention]
+    [keyword, onSelectMention, track]
   );
 
   if (!keyword)
