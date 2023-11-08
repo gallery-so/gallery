@@ -1,6 +1,5 @@
 import {
   autoUpdate,
-  flip,
   inline,
   shift,
   useFloating,
@@ -58,7 +57,7 @@ export function PostComposerTextArea({
   const { x, y, reference, floating, strategy, context } = useFloating({
     placement: 'bottom-start',
     open: isSelectingMentions,
-    middleware: [flip(), shift(), inline()],
+    middleware: [shift(), inline()],
     whileElementsMounted: autoUpdate,
   });
 
