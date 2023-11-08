@@ -1,32 +1,20 @@
-import { useRouter } from 'next/router';
-import { Route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
-import { MentionType } from '~/shared/hooks/useMentionableMessage';
-import { LowercaseChain } from '~/shared/utils/chains';
 
 import SearchResult from '../SearchResult';
-import { SearchResultVariant } from '../SearchResults';
+import { SearchItemType, SearchResultVariant } from '../types';
 
 type Props = {
   keyword: string;
   communityRef: CommunitySearchResultFragment$key;
   variant: SearchResultVariant;
-
-  onSelect?: (item: MentionType) => void;
-  onClose?: () => void;
+  onSelect: (item: SearchItemType) => void;
 };
 
-export default function CommunitySearchResult({
-  communityRef,
-  keyword,
-  variant,
-  onSelect,
-  onClose,
-}: Props) {
+export default function CommunitySearchResult({ communityRef, keyword, variant, onSelect }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -43,40 +31,27 @@ export default function CommunitySearchResult({
     communityRef
   );
 
-  const router = useRouter();
-
-  const route = useMemo<Route>(() => {
-    const { address, chain: uppercaseChain } = community.contractAddress;
-
-    const chain = uppercaseChain?.toLocaleLowerCase() as LowercaseChain;
-    const contractAddress = address as string;
-
-    return {
-      pathname: `/community/[chain]/[contractAddress]`,
-      query: { contractAddress, chain },
-    };
-  }, [community]);
-
   const handleClick = useCallback(() => {
-    if (onSelect) {
-      onSelect({
-        type: 'Community',
-        label: community.name ?? '',
-        value: community.dbid,
-      });
-      return;
-    }
-
-    router.push(route);
-    onClose?.();
-  }, [onClose, onSelect, route, router, community.dbid, community.name]);
+    onSelect({
+      type: 'Community',
+      label: community.name ?? '',
+      value: community.dbid,
+      contractAddress: community.contractAddress.address ?? '',
+      chain: community.contractAddress.chain ?? '',
+    });
+    return;
+  }, [
+    onSelect,
+    community.dbid,
+    community.name,
+    community.contractAddress.address,
+    community.contractAddress.chain,
+  ]);
 
   return (
     <SearchResult
       name={community.name ?? ''}
       description={community.description ?? ''}
-      path={route}
-      type="community"
       profilePicture={<CommunityProfilePicture communityRef={community} size="md" />}
       variant={variant}
       onClick={handleClick}

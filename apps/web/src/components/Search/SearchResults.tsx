@@ -3,17 +3,14 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
-import { MentionType } from '~/shared/hooks/useMentionableMessage';
-import { noop } from '~/shared/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
 import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
+import { SearchItemType, SearchResultVariant } from './types';
 import UserSearchResultSection from './User/UserSearchResultSection';
-
-export type SearchResultVariant = 'default' | 'compact';
 
 type Props = {
   keyword: string;
@@ -21,8 +18,7 @@ type Props = {
   variant?: SearchResultVariant;
 
   onChangeFilter: (filter: SearchFilterType) => void;
-  onSelect?: (item: MentionType) => void;
-  onClose?: () => void;
+  onSelect: (item: SearchItemType) => void;
 };
 
 export default function SearchResults({
@@ -31,7 +27,6 @@ export default function SearchResults({
   onChangeFilter,
   onSelect,
   variant = 'default',
-  onClose = noop,
 }: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -131,6 +126,7 @@ export default function SearchResults({
             isShowAll
             variant={variant}
             keyword={keyword}
+            onSelect={onSelect}
           />
         )}
       </StyledSearchResultContainer>
@@ -166,7 +162,6 @@ export default function SearchResults({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
-          onClose={onClose}
         />
       )}
       {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && variant === 'default' && (
@@ -176,7 +171,7 @@ export default function SearchResults({
           onChangeFilter={onChangeFilter}
           variant={variant}
           keyword={keyword}
-          onClose={onClose}
+          onSelect={onSelect}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -187,7 +182,6 @@ export default function SearchResults({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
-          onClose={onClose}
         />
       )}
     </StyledSearchResultContainer>

@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
@@ -6,6 +6,7 @@ import colors from '~/shared/theme/colors';
 
 import SearchProvider from '../Search/SearchContext';
 import SearchResults from '../Search/SearchResults';
+import { SearchItemType } from '../Search/types';
 import { MentionResultFallback } from './MentionResultFallback';
 
 type Props = {
@@ -14,6 +15,21 @@ type Props = {
 };
 
 export function MentionModal({ keyword, onSelectMention }: Props) {
+  const handleSelectMention = useCallback(
+    (item: SearchItemType) => {
+      if (item.type === 'Gallery') return;
+
+      const mention: MentionType = {
+        type: item.type,
+        label: item.label,
+        value: item.value,
+      };
+
+      onSelectMention(mention);
+    },
+    [onSelectMention]
+  );
+
   if (!keyword)
     return (
       <StyledWrapper>
@@ -30,7 +46,7 @@ export function MentionModal({ keyword, onSelectMention }: Props) {
             keyword={keyword}
             onChangeFilter={() => {}}
             variant="compact"
-            onSelect={onSelectMention}
+            onSelect={handleSelectMention}
           />
         </Suspense>
       </SearchProvider>

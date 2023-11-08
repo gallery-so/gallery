@@ -5,8 +5,8 @@ import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearc
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
-import { SearchResultVariant } from '../SearchResults';
 import SearchSection from '../SearchSection';
+import { SearchItemType, SearchResultVariant } from '../types';
 import GallerySearchResult from './GallerySearchResult';
 
 type Props = {
@@ -14,10 +14,10 @@ type Props = {
   isShowAll?: boolean;
   resultRefs: GallerySearchResultSectionFragment$key;
   keyword: string;
+  variant: SearchResultVariant;
 
   onChangeFilter: (filter: SearchFilterType) => void;
-  onClose?: () => void;
-  variant: SearchResultVariant;
+  onSelect: (item: SearchItemType) => void;
 };
 
 export default function GallerySearchResultSection({
@@ -27,7 +27,7 @@ export default function GallerySearchResultSection({
   resultRefs,
   variant,
   keyword,
-  onClose,
+  onSelect,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -59,7 +59,7 @@ export default function GallerySearchResultSection({
           key={result.gallery.id}
           galleryRef={result.gallery}
           keyword={keyword}
-          onClose={onClose}
+          onSelect={onSelect}
         />
       ))}
     </SearchSection>

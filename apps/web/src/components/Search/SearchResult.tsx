@@ -1,9 +1,7 @@
-import { Route, route } from 'nextjs-routes';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
@@ -11,15 +9,12 @@ import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { SearchFilterType } from './Search';
-import { SearchResultVariant } from './SearchResults';
+import { SearchResultVariant } from './types';
 
 type Props = {
   name: string;
   description: string;
-  type: SearchFilterType;
   profilePicture?: ReactNode;
-  path: Route;
 
   variant?: SearchResultVariant;
   onClick: () => void;
@@ -29,29 +24,12 @@ type Props = {
 export default function SearchResult({
   name,
   description,
-  path,
-  type,
   keyword,
 
   profilePicture,
   variant = 'default',
   onClick,
 }: Props) {
-  const track = useTrack();
-
-  const handleClick = useCallback(() => {
-    const fullLink = route(path);
-
-    track('Search result click', {
-      searchQuery: keyword,
-      pathname: fullLink,
-      resultType: type,
-      context: contexts.Search,
-    });
-
-    onClick();
-  }, [keyword, onClick, path, track, type]);
-
   const highlightedName = useMemo(() => getHighlightedName(name, keyword), [keyword, name]);
 
   const highlightedDescription = useMemo(
@@ -60,7 +38,7 @@ export default function SearchResult({
   );
 
   return (
-    <StyledSearchResult className="SearchResult" onClick={handleClick} variant={variant}>
+    <StyledSearchResult className="SearchResult" onClick={onClick} variant={variant}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>

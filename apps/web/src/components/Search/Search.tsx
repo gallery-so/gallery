@@ -1,9 +1,13 @@
-import { Suspense, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Route, route } from 'nextjs-routes';
+import { Suspense, useCallback, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
@@ -11,6 +15,7 @@ import { useSearchContext } from './SearchContext';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
+import { SearchItemType } from './types';
 
 export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
 
@@ -18,6 +23,8 @@ export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
   const { hideDrawer } = useDrawerActions();
+  const router = useRouter();
+  const track = useTrack();
 
   useHotkeys(
     ['ArrowUp', 'ArrowDown'],
@@ -46,6 +53,50 @@ export default function Search() {
     { enableOnFormTags: true, preventDefault: true }
   );
 
+  const getRoute = useCallback((item: SearchItemType) => {
+    if (item.type === 'User') {
+      return {
+        pathname: '/[username]',
+        query: { username: item.label as string },
+      } as Route;
+    } else if (item.type === 'Community') {
+      const { contractAddress, chain } = item;
+      return {
+        pathname: `/community/[chain]/[contractAddress]`,
+        query: { contractAddress, chain },
+      } as Route;
+    } else if (item.type === 'Gallery') {
+      const { owner, value } = item;
+      return {
+        pathname: '/[username]/galleries/[galleryId]',
+        query: { username: owner, galleryId: value },
+      } as Route;
+    }
+  }, []);
+
+  const handleSelect = useCallback(
+    (item: SearchItemType) => {
+      const path = getRoute(item);
+
+      if (!path) {
+        return;
+      }
+
+      const fullLink = route(path);
+
+      track('Search result click', {
+        searchQuery: keyword,
+        pathname: fullLink,
+        resultType: item.type,
+        context: contexts.Search,
+      });
+
+      router.push(path);
+      hideDrawer();
+    },
+    [getRoute, hideDrawer, keyword, router, track]
+  );
+
   return (
     <>
       <DrawerHeader>
@@ -67,7 +118,7 @@ export default function Search() {
               activeFilter={selectedFilter}
               keyword={keyword}
               onChangeFilter={setSelectedFilter}
-              onClose={hideDrawer}
+              onSelect={handleSelect}
             />
           )}
         </Suspense>

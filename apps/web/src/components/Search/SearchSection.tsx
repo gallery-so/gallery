@@ -8,7 +8,7 @@ import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
-import { SearchResultVariant } from './SearchResults';
+import { SearchResultVariant } from './types';
 
 type Props = {
   children: React.ReactNode;

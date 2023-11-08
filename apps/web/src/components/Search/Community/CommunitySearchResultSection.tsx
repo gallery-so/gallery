@@ -2,12 +2,11 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunitySearchResultSectionFragment$key } from '~/generated/CommunitySearchResultSectionFragment.graphql';
-import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
-import { SearchResultVariant } from '../SearchResults';
 import SearchSection from '../SearchSection';
+import { SearchItemType, SearchResultVariant } from '../types';
 import CommunitySearchResult from './CommunitySearchResult';
 
 type Props = {
@@ -18,8 +17,7 @@ type Props = {
   keyword: string;
 
   onChangeFilter: (filter: SearchFilterType) => void;
-  onSelect?: (item: MentionType) => void;
-  onClose?: () => void;
+  onSelect: (item: SearchItemType) => void;
 };
 
 export default function CommunitySearchResultSection({
@@ -30,7 +28,6 @@ export default function CommunitySearchResultSection({
   onSelect,
   keyword,
   variant,
-  onClose,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -64,7 +61,6 @@ export default function CommunitySearchResultSection({
           variant={variant}
           onSelect={onSelect}
           keyword={keyword}
-          onClose={onClose}
         />
       ))}
     </SearchSection>
