@@ -32,9 +32,11 @@ type CommentsModalProps = {
   commentsRef: CommentsModalFragment$key;
   onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
   isSubmittingComment: boolean;
+  activeCommentId?: string;
 };
 
 export function CommentsModal({
+  activeCommentId,
   commentsRef,
   queryRef,
   fullscreen,
@@ -46,6 +48,7 @@ export function CommentsModal({
   const comments = useFragment(
     graphql`
       fragment CommentsModalFragment on Comment @relay(plural: true) {
+        dbid
         ...CommentNoteFragment
       }
     `,
@@ -62,6 +65,26 @@ export function CommentsModal({
   );
 
   const virtualizedListRef = useRef<List | null>(null);
+
+  const commentRowIndex = useMemo(() => {
+    if (!activeCommentId) {
+      return null;
+    }
+
+    const index = comments.findIndex((comment) => comment.dbid === activeCommentId);
+
+    if (index === -1) {
+      return null;
+    }
+
+    return comments.length - index - 1;
+  }, [activeCommentId, comments]);
+
+  useEffect(() => {
+    if (commentRowIndex !== null && virtualizedListRef.current) {
+      virtualizedListRef.current.scrollToRow(commentRowIndex);
+    }
+  }, [commentRowIndex]);
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
@@ -95,14 +118,14 @@ export function CommentsModal({
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
-                <CommentNote commentRef={interaction} />
+                <CommentNote commentRef={interaction} activeCommentId={activeCommentId} />
               </div>
             );
           }}
         </CellMeasurer>
       );
     },
-    [measurerCache, comments]
+    [activeCommentId, measurerCache, comments]
   );
 
   const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;

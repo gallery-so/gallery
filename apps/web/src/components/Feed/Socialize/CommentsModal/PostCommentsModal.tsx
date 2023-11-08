@@ -12,8 +12,14 @@ type Props = {
   postRef: PostCommentsModalFragment$key;
   queryRef: PostCommentsModalQueryFragment$key;
   fullscreen: boolean;
+  activeCommentId?: string;
 };
-export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Props) {
+export default function PostCommentsModal({
+  activeCommentId,
+  postRef,
+  queryRef,
+  fullscreen,
+}: Props) {
   const {
     data: post,
     loadPrevious,
@@ -76,6 +82,7 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
 
   return (
     <CommentsModal
+      activeCommentId={activeCommentId}
       commentsRef={nonNullInteractions}
       queryRef={query}
       fullscreen={fullscreen}

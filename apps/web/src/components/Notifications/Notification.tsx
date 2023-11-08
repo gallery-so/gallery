@@ -98,6 +98,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
             ... on Comment {
               __typename
+              dbid
               source {
                 ... on Post {
                   __typename
@@ -209,11 +210,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           ? notification.mentionSource?.source?.dbid
           : undefined;
 
+      const commentId =
+        notification.mentionSource?.__typename === 'Comment' && notification.mentionSource?.dbid;
+
       return {
         showCaret: false,
         handleClick: function navigateToPostPage() {
           if (postId) {
-            push({ pathname: '/post/[postId]', query: { postId } });
+            const query: { postId: string; commentId?: string } = { postId };
+            if (commentId) {
+              query.commentId = commentId;
+            }
+            push({ pathname: `/post/[postId]`, query });
           }
           hideDrawer();
         },
