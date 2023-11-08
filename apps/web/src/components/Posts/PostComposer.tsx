@@ -199,7 +199,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      console.log('handleDescriptionChange', event.target.value);
       setMessage(event.target.value);
     },
     [setMessage]
