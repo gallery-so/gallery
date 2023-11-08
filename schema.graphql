@@ -766,7 +766,6 @@ type GalleryUser implements Node {
   roles: [Role]
   socialAccounts: SocialAccounts
   tokens(ownershipFilter: [TokenOwnershipType!]): [Token]
-  tokensByChain(chain: Chain!): ChainTokens
   wallets: [Wallet]
   primaryWallet: Wallet
   featuredGallery: Gallery
@@ -1414,7 +1413,7 @@ type RefreshTokenPayload {
   token: Token
 }
 
-union RefreshTokenPayloadOrError = RefreshTokenPayload | ErrInvalidInput | ErrSyncFailed
+union RefreshTokenPayloadOrError = RefreshTokenPayload | ErrInvalidInput | ErrSyncFailed | ErrTokenNotFound
 
 type RegisterUserPushTokenPayload {
   viewer: Viewer
@@ -1770,30 +1769,31 @@ type Token implements Node {
   creationTime: Time
   lastUpdated: Time
   collectorsNote: String
-  media: MediaSubtype
-  tokenType: TokenType
-  chain: Chain
-  name: String
-  description: String
-  tokenId: String
   quantity: String
   owner: GalleryUser
   ownedByWallets: [Wallet]
-  ownershipHistory: [OwnerAtBlock]
+  ownershipHistory: [OwnerAtBlock] @deprecated
   ownerIsHolder: Boolean
   ownerIsCreator: Boolean
-  tokenMetadata: String
-  contract: Contract
-  community: Community
-  externalUrl: String
-  blockNumber: String
+  definition: TokenDefinition!
   isSpamByUser: Boolean
-  isSpamByProvider: Boolean
   admires(before: String, after: String, first: Int, last: Int, userID: DBID): TokenAdmiresConnection
   viewerAdmire: Admire
-  creatorAddress: ChainAddress
-  openseaCollectionName: String
-  openseaId: Int
+  media: MediaSubtype @deprecated(reason: "Use definition.media instead")
+  tokenType: TokenType @deprecated(reason: "Use definition.tokenType instead")
+  chain: Chain @deprecated(reason: "Use definition.chain instead")
+  name: String @deprecated(reason: "Use definition.name instead")
+  description: String @deprecated(reason: "Use definition.description instead")
+  tokenId: String @deprecated(reason: "Use definition.tokenId instead")
+  tokenMetadata: String @deprecated(reason: "Use definition.tokenMetadata instead")
+  contract: Contract @deprecated(reason: "Use definition.contract instead")
+  community: Community @deprecated(reason: "Use definition.community instead")
+  externalUrl: String @deprecated(reason: "Use definition.externalUrl instead")
+  isSpamByProvider: Boolean @deprecated(reason: "Use definition.community.contract.isSpam instead")
+  creatorAddress: ChainAddress @deprecated(reason: "Use definition.community.creatorAddress instead")
+  openseaCollectionName: String @deprecated
+  blockNumber: String @deprecated
+  openseaId: Int @deprecated
 }
 
 type TokenAdmireEdge {
@@ -1808,6 +1808,22 @@ type TokenAdmiresConnection {
 }
 
 union TokenByIdOrError = Token | ErrTokenNotFound
+
+type TokenDefinition implements Node {
+  id: ID!
+  dbid: DBID!
+  creationTime: Time
+  lastUpdated: Time
+  media: MediaSubtype
+  tokenType: TokenType
+  chain: Chain
+  name: String
+  description: String
+  tokenId: String
+  tokenMetadata: String
+  community: Community
+  externalUrl: String
+}
 
 type TokenEdge {
   node: Token

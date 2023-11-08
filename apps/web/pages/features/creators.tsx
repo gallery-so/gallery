@@ -11,10 +11,10 @@ export default function CreatorSupportFeatureRoute({ pageContent }: Props) {
   return <GalleryRoute element={<PostsFeaturePage pageContent={pageContent} />} navbar={false} />;
 }
 
-export const featurePostsPageContentQuery = getFeaturePageQueryString('creators');
+export const creatorsFeaturePageContentQuery = getFeaturePageQueryString('creators');
 
 export const getServerSideProps = async () => {
-  const content = await fetchSanityContent(featurePostsPageContentQuery);
+  const content = await fetchSanityContent(creatorsFeaturePageContentQuery);
 
   return {
     props: {
