@@ -12,7 +12,6 @@ import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
-import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
@@ -30,6 +29,7 @@ import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/gener
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
+import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { noop } from '~/shared/utils/noop';
 

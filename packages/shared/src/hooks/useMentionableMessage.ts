@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import useDebounce from '~/shared/hooks/useDebounce';
-import { WHITESPACE_REGEX } from '~/shared/utils/regex';
+import { WHITESPACE_REGEX } from '../utils/regex';
+import useDebounce from './useDebounce';
 
 type MentionDataType = {
   interval: {
@@ -47,7 +47,7 @@ export function useMentionableMessage() {
 
       const newMessage = `${message.substring(0, mentionStartPos)}@${
         mention.label
-      } ${message.substring(mentionEndPos)}`;
+      }${message.substring(mentionEndPos)}`;
 
       setMessage(newMessage);
 
@@ -65,7 +65,7 @@ export function useMentionableMessage() {
       }
 
       // Calculate the length difference between the old alias and the new mention
-      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +2 for the @ and space after the mention
+      const lengthDifference = mention.label.length + 1 - aliasKeyword.length; // +1 for the @
 
       // Adjust the positions of mentions that come after the newly added mention
       const adjustedMentions = mentions.map((existingMention) => {
@@ -85,6 +85,8 @@ export function useMentionableMessage() {
 
       setMentions([...adjustedMentions, newMention]);
       setAliasKeyword('');
+
+      return newMessage;
     },
     [mentions, message, setMessage, aliasKeyword, selection.start]
   );
@@ -152,6 +154,11 @@ export function useMentionableMessage() {
     setSelection(selection);
   }, []);
 
+  const handleClosingMention = useCallback(() => {
+    setIsSelectingMentions(false);
+    setAliasKeyword('');
+  }, []);
+
   return {
     aliasKeyword: debouncedAliasKeyword,
     isSelectingMentions,
@@ -161,5 +168,7 @@ export function useMentionableMessage() {
     mentions: mentions || [],
     resetMentions,
     handleSelectionChange,
+    selection,
+    closeMention: handleClosingMention,
   };
 }

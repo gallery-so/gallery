@@ -25,8 +25,11 @@ type TextAreaProps = {
   showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
   maxLength?: number;
+  value?: string;
   onFocus?: () => void;
   onBlur?: () => void;
+  onClick?: () => void;
+  onSelect?: (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => void;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -57,6 +60,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       onChange = noop,
       placeholder,
       defaultValue,
+      value,
       autoFocus = false,
       textAreaHeight,
       showMarkdownShortcuts = false,
@@ -64,6 +68,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       maxLength,
       onFocus = noop,
       onBlur = noop,
+      onClick = noop,
+      onSelect = noop,
     },
     ref
   ) => {
@@ -117,6 +123,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           className={className}
           placeholder={placeholder}
           defaultValue={defaultValue}
+          value={value}
           onChange={onChange}
           onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
           autoFocus={autoFocus}
@@ -129,6 +136,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           hasPadding={hasPadding}
           onKeyDown={handleKeyDown}
           maxLength={maxLength}
+          onClick={onClick}
+          onSelect={onSelect}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
@@ -160,6 +169,7 @@ type TextAreaWithCharCountProps = {
   className?: string;
   currentCharCount: number;
   maxCharCount: number;
+  value?: string;
 } & TextAreaProps;
 
 export function TextAreaWithCharCount({
@@ -199,10 +209,14 @@ export function TextAreaWithCharCount({
   );
 }
 
-export function AutoResizingTextAreaWithCharCount({
-  ...textAreaProps
-}: TextAreaWithCharCountProps) {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+export const AutoResizingTextAreaWithCharCount = forwardRef<
+  HTMLTextAreaElement,
+  TextAreaWithCharCountProps
+>((textAreaProps: TextAreaWithCharCountProps, ref: React.Ref<HTMLTextAreaElement>) => {
+  const internalRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = ref || internalRef;
+
+  const { value, onChange, onSelect } = textAreaProps;
 
   const DEFAULT_TEXTAREA_HEIGHT = 'auto';
 
@@ -211,20 +225,20 @@ export function AutoResizingTextAreaWithCharCount({
 
   // Update textArea height when text changes
   useEffect(() => {
-    if (textAreaRef.current) {
+    if (typeof textAreaRef === 'object' && textAreaRef.current) {
       setTextAreaHeight(`${textAreaRef.current.scrollHeight}px`);
       setParentHeight(`${textAreaRef.current.scrollHeight}px`);
     }
-  }, [textAreaProps.defaultValue]);
+  }, [textAreaProps.defaultValue, textAreaRef, value]);
 
   const oldText = useRef(textAreaProps.defaultValue);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (textAreaRef.current) {
-        const textWasDeleted = oldText.current // If oldText.current is null/undefined, we do not need to reduce because textarea height will be 0
+      if (typeof textAreaRef === 'object' && textAreaRef.current) {
+        const textWasDeleted = oldText.current
           ? oldText.current.length > event.target.value.length
-          : false;
+          : false; // If oldText.current is null/undefined, we do not need to reduce because textarea height will be 0
 
         // scrollHeight does not decrease when we delete rows of text, so we reset the height to 'auto' whenever text is deleted
         // The useEffect above triggers immediately after, therefore resetting scrollHeight to the height of the content
@@ -237,11 +251,11 @@ export function AutoResizingTextAreaWithCharCount({
 
       oldText.current = event.target.value;
 
-      if (textAreaProps.onChange) {
-        textAreaProps.onChange(event);
+      if (onChange) {
+        onChange(event);
       }
     },
-    [textAreaProps]
+    [textAreaRef, onChange]
   );
 
   const [isFocused, setFocus] = useState(false);
@@ -269,9 +283,11 @@ export function AutoResizingTextAreaWithCharCount({
           {...textAreaProps}
           ref={textAreaRef}
           textAreaHeight={textAreaHeight}
+          value={value}
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onSelect={onSelect}
         />
         <StyledCharacterCounter
           hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
@@ -282,7 +298,9 @@ export function AutoResizingTextAreaWithCharCount({
       </StyledParentContainer>
     </StyledTextAreaWithCharCount>
   );
-}
+});
+
+AutoResizingTextAreaWithCharCount.displayName = 'AutoResizingTextAreaWithCharCount';
 
 const StyledTextAreaWithCharCount = styled.div<{ hasError: boolean; isFocused: boolean }>`
   position: relative;

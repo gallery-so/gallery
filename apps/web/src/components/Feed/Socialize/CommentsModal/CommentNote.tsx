@@ -18,14 +18,16 @@ import { getTimeSince } from '~/shared/utils/time';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
+  activeCommentId?: string;
 };
 
-export function CommentNote({ commentRef }: CommentNoteProps) {
+export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
   const comment = useFragment(
     graphql`
       fragment CommentNoteFragment on Comment {
         __typename
 
+        dbid
         comment
         creationTime
 
@@ -44,8 +46,10 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
+  const isCommentActive = activeCommentId === comment.dbid;
+
   return (
-    <StyledListItem justify="space-between" gap={4}>
+    <StyledListItem justify="space-between" gap={4} isHighlighted={isCommentActive}>
       <HStack gap={8}>
         {comment.commenter && (
           <StyledProfilePictureWrapper>
@@ -78,8 +82,14 @@ const StyledProfilePictureWrapper = styled.div`
   margin-top: 4px;
 `;
 
-const StyledListItem = styled(ListItem)`
-  padding: 0px 16px 16px;
+const StyledListItem = styled(ListItem)<{ isHighlighted?: boolean }>`
+  padding: 8px 16px 16px;
+
+  ${({ isHighlighted }) =>
+    isHighlighted &&
+    `
+    background-color: ${colors.faint};
+  `}
 `;
 
 const StyledBaseM = styled(BaseM)`
