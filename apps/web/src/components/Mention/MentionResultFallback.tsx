@@ -9,7 +9,7 @@ import transitions from '../core/transitions';
 export function MentionResultFallback() {
   return (
     <StyledWrapper>
-      <VStack gap={10}>
+      <VStack>
         <StyledTitleFallback />
         <VStack>
           <ResultItemFallback />
@@ -18,7 +18,7 @@ export function MentionResultFallback() {
           <ResultItemFallback />
         </VStack>
       </VStack>
-      <VStack gap={10}>
+      <VStack>
         <StyledTitleFallback />
         <VStack>
           <ResultItemFallback />
