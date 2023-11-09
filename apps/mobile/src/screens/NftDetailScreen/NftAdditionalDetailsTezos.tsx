@@ -22,10 +22,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
         tokenId
         chain
         contract {
-          creatorAddress {
-            address
-            ...LinkableAddressFragment
-          }
           contractAddress {
             address
             ...LinkableAddressFragment
@@ -44,103 +40,83 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
   return (
     <View className="flex flex-col space-y-4">
-      <>
-        {token.contract?.creatorAddress?.address && (
+      <View className="flex flex-row space-x-16">
+        {contract?.contractAddress?.address && (
           <DetailSection>
-            <DetailLabelText>CREATED BY</DetailLabelText>
-
-            {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
+            <DetailLabelText>CONTRACT</DetailLabelText>
             <LinkableAddress
               textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
-              chainAddressRef={token.contract.creatorAddress}
+              chainAddressRef={contract.contractAddress}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              eventElementId="NFT Detail Creator Address"
-              eventName="NFT Detail Creator Address Press"
+              eventElementId="NFT Detail Contract Address"
+              eventName="NFT Detail Contract Address Press"
               eventContext={contexts['NFT Detail']}
             />
           </DetailSection>
         )}
 
-        <View className="flex flex-col space-y-4">
-          <View className="flex flex-row space-x-16">
-            {contract?.contractAddress?.address && (
-              <DetailSection>
-                <DetailLabelText>CONTRACT</DetailLabelText>
-                <LinkableAddress
-                  textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
-                  chainAddressRef={contract.contractAddress}
-                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                  eventElementId="NFT Detail Contract Address"
-                  eventName="NFT Detail Contract Address Press"
-                  eventContext={contexts['NFT Detail']}
-                />
-              </DetailSection>
-            )}
+        {tokenId && projectUrl && (
+          <DetailSection>
+            <DetailLabelText>TOKEN ID</DetailLabelText>
+            <GalleryLink
+              href={projectUrl}
+              eventElementId="NFT Detail Token ID"
+              eventName="NFT Detail Token ID Press"
+              eventContext={contexts['NFT Detail']}
+            >
+              {tokenId}
+            </GalleryLink>
+          </DetailSection>
+        )}
+      </View>
 
-            {tokenId && projectUrl && (
-              <DetailSection>
-                <DetailLabelText>TOKEN ID</DetailLabelText>
-                <GalleryLink
-                  href={projectUrl}
-                  eventElementId="NFT Detail Token ID"
-                  eventName="NFT Detail Token ID Press"
-                  eventContext={contexts['NFT Detail']}
-                >
-                  {tokenId}
-                </GalleryLink>
-              </DetailSection>
-            )}
-          </View>
-
-          <View className="flex flex-row">
-            {token.chain && (
-              <DetailSection>
-                <DetailLabelText>NETWORK</DetailLabelText>
-                <DetailValue>{token.chain}</DetailValue>
-              </DetailSection>
-            )}
-            {fxhashUrl && (
-              <DetailSection>
-                <DetailLabelText>VIEW ON</DetailLabelText>
-                <View className="flex flex-row">
-                  <DetailExternalLink
-                    link={fxhashUrl}
-                    label="fx(hash)"
-                    showExternalLinkIcon={true}
-                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                  />
-                </View>
-              </DetailSection>
-            )}
-            {objktUrl && (
-              <DetailSection>
-                <DetailLabelText>VIEW ON</DetailLabelText>
-                <View className="flex flex-row">
-                  <DetailExternalLink
-                    link={objktUrl}
-                    label="objkt"
-                    showExternalLinkIcon={true}
-                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                  />
-                </View>
-              </DetailSection>
-            )}
-            {projectUrl && (
-              <DetailSection>
-                <DetailLabelText>VIEW ON</DetailLabelText>
-                <View className="flex flex-col pt-4">
-                  <DetailExternalLink
-                    link={projectUrl}
-                    label="Official Site"
-                    showExternalLinkIcon={true}
-                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                  />
-                </View>
-              </DetailSection>
-            )}
-          </View>
-        </View>
-      </>
+      <View className="flex flex-row">
+        {token.chain && (
+          <DetailSection>
+            <DetailLabelText>NETWORK</DetailLabelText>
+            <DetailValue>{token.chain}</DetailValue>
+          </DetailSection>
+        )}
+        {fxhashUrl && (
+          <DetailSection>
+            <DetailLabelText>VIEW ON</DetailLabelText>
+            <View className="flex flex-row">
+              <DetailExternalLink
+                link={fxhashUrl}
+                label="fx(hash)"
+                showExternalLinkIcon={true}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              />
+            </View>
+          </DetailSection>
+        )}
+        {objktUrl && (
+          <DetailSection>
+            <DetailLabelText>VIEW ON</DetailLabelText>
+            <View className="flex flex-row">
+              <DetailExternalLink
+                link={objktUrl}
+                label="objkt"
+                showExternalLinkIcon={true}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              />
+            </View>
+          </DetailSection>
+        )}
+        {projectUrl && (
+          <DetailSection>
+            <DetailLabelText>VIEW ON</DetailLabelText>
+            <View className="flex flex-col pt-4">
+              <DetailExternalLink
+                link={projectUrl}
+                label="Official Site"
+                showExternalLinkIcon={true}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              />
+            </View>
+          </DetailSection>
+        )}
+      </View>
     </View>
   );
 }
