@@ -49,7 +49,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           eventName="Mirror Link Click"
           eventContext={contexts['NFT Detail']}
         >
-          View on Mirror
+          <TitleDiatypeM>View on Mirror</TitleDiatypeM>
         </GalleryLink>
       )}
       {prohibitionUrl && (
@@ -59,7 +59,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           eventName="Prohibition Link Click"
           eventContext={contexts['NFT Detail']}
         >
-          View on Prohibition
+          <TitleDiatypeM>View on Prohibition</TitleDiatypeM>
         </GalleryLink>
       )}
       {openseaUrl && (
@@ -70,7 +70,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
             eventName="Opensea Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            View on OpenSea
+            <TitleDiatypeM>View on OpenSea</TitleDiatypeM>
           </GalleryLink>
           <GalleryPill
             eventElementId="Refresh Single NFT Pill"
@@ -93,7 +93,11 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           </GalleryPill>
         </VStack>
       )}
-      {projectUrl && <GalleryLink href={projectUrl}>More Info</GalleryLink>}
+      {projectUrl && (
+        <GalleryLink href={projectUrl}>
+          <TitleDiatypeM>Official Site</TitleDiatypeM>
+        </GalleryLink>
+      )}
     </StyledExternalLinks>
   );
 }
