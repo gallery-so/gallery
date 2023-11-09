@@ -1,28 +1,19 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { PostItemFragment$key } from '~/generated/PostItemFragment.graphql';
 import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.graphql';
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
-import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import colors from '~/shared/theme/colors';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
-import { BaseS, TitleDiatypeM } from '../core/Text/Text';
-import CommunityHoverCard from '../HoverCard/CommunityHoverCard';
-import UserHoverCard from '../HoverCard/UserHoverCard';
-import {
-  CreatorProfilePictureAndUsernameOrAddress,
-  OwnerProfilePictureAndUsername,
-} from '../ProfilePicture/ProfilePictureAndUserOrAddress';
+import { PostCreatorAndCollectionSection } from './Posts/PostCreatorAndCollectionSection';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
 import PostSocializeSection from './Socialize/PostSocializeSection';
@@ -50,22 +41,7 @@ export function PostItem({
           __typename
         }
         tokens {
-          owner {
-            ...UserHoverCardFragment
-            ...ProfilePictureAndUserOrAddressOwnerFragment
-          }
-          ownerIsCreator
-          community {
-            creator {
-              ... on GalleryUser {
-                __typename
-                ...UserHoverCardFragment
-              }
-              ...ProfilePictureAndUserOrAddressCreatorFragment
-            }
-            ...CommunityHoverCardFragment
-          }
-          ...extractRelevantMetadataFromTokenFragment
+          ...PostCreatorAndCollectionSectionFragment
         }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
@@ -95,34 +71,6 @@ export function PostItem({
     throw new Error('No token provided with post');
   }
 
-  const { contractName } = extractRelevantMetadataFromToken(token);
-
-  const CreatorComponent = useMemo(() => {
-    if (token.owner && token.ownerIsCreator) {
-      return (
-        <UserHoverCard userRef={token.owner}>
-          <OwnerProfilePictureAndUsername
-            userRef={token.owner}
-            eventContext={contexts.Posts}
-            pfpDisabled
-          />
-        </UserHoverCard>
-      );
-    }
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        <UserHoverCard userRef={token.community.creator}>
-          <CreatorProfilePictureAndUsernameOrAddress
-            userOrAddressRef={token.community.creator}
-            eventContext={contexts.Posts}
-            pfpDisabled
-          />
-        </UserHoverCard>;
-      }
-      return null;
-    }
-  }, [token.community?.creator, token.owner, token.ownerIsCreator]);
-
   if (!post.author) {
     throw new ErrorWithSentryMetadata('Post author is undefined', { postId: post.dbid }); // no need to specify `tags`
   }
@@ -133,23 +81,7 @@ export function PostItem({
         <PostHeader postRef={post} queryRef={query} />
         <PostNfts postRef={post} onNftLoad={measure} />
         <VStack gap={8}>
-          <HStack gap={16}>
-            {CreatorComponent && (
-              <StyledCreatorContainer gap={4}>
-                <StyledLabel>Creator</StyledLabel>
-                {CreatorComponent}
-              </StyledCreatorContainer>
-            )}
-
-            {token.community && (
-              <StyledCollectionContainer>
-                <StyledLabel>Collection</StyledLabel>
-                <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-                  <TitleDiatypeM>{contractName}</TitleDiatypeM>
-                </CommunityHoverCard>
-              </StyledCollectionContainer>
-            )}
-          </HStack>
+          <PostCreatorAndCollectionSection tokenRef={token} />
           <ReportingErrorBoundary dontReport fallback={<></>}>
             <PostSocializeSection
               queryRef={query}
@@ -167,23 +99,7 @@ export function PostItem({
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <VStack gap={8}>
-          <HStack gap={16}>
-            {CreatorComponent && (
-              <StyledCreatorContainer gap={4}>
-                <StyledLabel>Creator</StyledLabel>
-                {CreatorComponent}
-              </StyledCreatorContainer>
-            )}
-
-            {token.community && (
-              <StyledCollectionContainer>
-                <StyledLabel>Collection</StyledLabel>
-                <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-                  <TitleDiatypeM>{contractName}</TitleDiatypeM>
-                </CommunityHoverCard>
-              </StyledCollectionContainer>
-            )}
-          </HStack>
+          <PostCreatorAndCollectionSection tokenRef={token} />
           <ReportingErrorBoundary dontReport fallback={<></>}>
             <PostSocializeSection
               queryRef={query}
@@ -196,20 +112,6 @@ export function PostItem({
     </StyledPostItem>
   );
 }
-
-const StyledCreatorContainer = styled(VStack)`
-  width: 50%;
-`;
-
-const StyledCollectionContainer = styled(VStack)`
-  width: 50%;
-`;
-
-const StyledLabel = styled(BaseS)`
-  color: ${colors.metal};
-  text-transform: uppercase;
-  font-size
-`;
 
 const StyledPostItem = styled.div<{ useVerticalLayout: boolean }>`
   max-height: 100%;
