@@ -13,8 +13,9 @@ type Props = {
   communityRef: CommunitySearchResultFragment$key;
   keyword: string;
   onSelect?: (item: MentionType) => void;
+  isMentionSearch?: boolean;
 };
-export function CommunitySearchResult({ communityRef, keyword, onSelect }: Props) {
+export function CommunitySearchResult({ communityRef, keyword, onSelect, isMentionSearch }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -63,6 +64,7 @@ export function CommunitySearchResult({ communityRef, keyword, onSelect }: Props
       description={community?.description ?? ''}
       variant="Gallery"
       keyword={keyword}
+      isMentionSearch={isMentionSearch}
     />
   );
 }

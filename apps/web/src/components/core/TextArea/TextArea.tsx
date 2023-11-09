@@ -125,7 +125,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           defaultValue={defaultValue}
           value={value}
           onChange={onChange}
-          onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
           autoFocus={autoFocus}
           autoComplete="off"
           autoCorrect="off"

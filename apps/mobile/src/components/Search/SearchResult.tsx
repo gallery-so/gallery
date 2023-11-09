@@ -14,6 +14,7 @@ type Props = {
   variant: 'Gallery' | 'User';
   profilePicture?: ReactNode;
   keyword: string;
+  isMentionSearch?: boolean;
 } & TouchableOpacityProps;
 
 const markdownStyles = StyleSheet.create({
@@ -31,6 +32,7 @@ export function SearchResult({
   keyword,
   variant,
   profilePicture,
+  isMentionSearch = false,
   ...props
 }: Props) {
   const highlightedName = useMemo(() => getHighlightedName(title, keyword), [keyword, title]);
@@ -40,12 +42,28 @@ export function SearchResult({
     [keyword, description]
   );
 
+  const trackingContext = useMemo(() => {
+    if (isMentionSearch) {
+      return {
+        eventElementId: 'Mention Search Result Row',
+        eventName: 'Mention Search Result Row Clicked',
+        eventContext: contexts.Mention,
+      };
+    }
+
+    return {
+      eventElementId: 'Search Result Row',
+      eventName: 'Search Result Row Clicked',
+      eventContext: contexts.Search,
+    };
+  }, [isMentionSearch]);
+
   return (
     <GalleryTouchableOpacity
       className="py-2 px-4 max-h-16 flex flex-row items-center space-x-2"
-      eventElementId="Search Result Row"
-      eventName="Search Result Row Clicked"
-      eventContext={contexts.Search}
+      eventElementId={trackingContext.eventElementId}
+      eventName={trackingContext.eventName}
+      eventContext={trackingContext.eventContext}
       properties={{ variant }}
       {...props}
     >

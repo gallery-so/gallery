@@ -293,7 +293,14 @@ export function SearchResults({
           />
         );
       } else if (item.kind === 'user-search-result') {
-        return <UserSearchResult userRef={item.user} onSelect={onSelect} keyword={keyword} />;
+        return (
+          <UserSearchResult
+            userRef={item.user}
+            onSelect={onSelect}
+            keyword={keyword}
+            isMentionSearch={isMentionSearch}
+          />
+        );
       } else if (item.kind === 'gallery-search-result') {
         return <GallerySearchResult galleryRef={item.gallery} keyword={keyword} />;
       } else if (item.kind === 'community-search-result') {
@@ -302,13 +309,14 @@ export function SearchResults({
             communityRef={item.community}
             onSelect={onSelect}
             keyword={keyword}
+            isMentionSearch={isMentionSearch}
           />
         );
       }
 
       return <View />;
     },
-    [onChangeFilter, keyword, onSelect, showAllButton]
+    [onChangeFilter, keyword, onSelect, showAllButton, isMentionSearch]
   );
 
   if (isEmpty) {
