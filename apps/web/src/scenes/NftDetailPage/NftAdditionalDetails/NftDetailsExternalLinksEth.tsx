@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
@@ -41,44 +41,55 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
     });
 
   return (
-    <StyledExternalLinks gap={14}>
-      {mirrorUrl && (
-        <GalleryLink
-          href={mirrorUrl}
-          eventElementId="Mirror Link"
-          eventName="Mirror Link Click"
-          eventContext={contexts['NFT Detail']}
-        >
-          <TitleDiatypeM>View on Mirror</TitleDiatypeM>
-        </GalleryLink>
-      )}
-      {prohibitionUrl && (
-        <GalleryLink
-          href={prohibitionUrl}
-          eventElementId="Prohibition Link"
-          eventName="Prohibition Link Click"
-          eventContext={contexts['NFT Detail']}
-        >
-          <TitleDiatypeM>View on Prohibition</TitleDiatypeM>
-        </GalleryLink>
-      )}
-      {openseaUrl && (
-        <VStack gap={14}>
+    <>
+      <StyledExternalLinks gap={4}>
+        {mirrorUrl && (
           <GalleryLink
-            href={openseaUrl}
-            eventElementId="Opensea Link"
-            eventName="Opensea Link Click"
+            href={mirrorUrl}
+            eventElementId="Mirror Link"
+            eventName="Mirror Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            <TitleDiatypeM>View on OpenSea</TitleDiatypeM>
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>Mirror</TitleDiatypeM>
+            </HStack>
           </GalleryLink>
-        </VStack>
-      )}
-      {projectUrl && (
-        <GalleryLink href={projectUrl}>
-          <TitleDiatypeM>Official Site</TitleDiatypeM>
-        </GalleryLink>
-      )}
+        )}
+        {projectUrl && (
+          <GalleryLink href={projectUrl}>
+            <TitleDiatypeM>Official Site</TitleDiatypeM>
+          </GalleryLink>
+        )}
+        {prohibitionUrl && (
+          <GalleryLink
+            href={prohibitionUrl}
+            eventElementId="Prohibition Link"
+            eventName="Prohibition Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>Prohibition</TitleDiatypeM>
+            </HStack>
+          </GalleryLink>
+        )}
+        {openseaUrl && (
+          <VStack gap={14}>
+            <GalleryLink
+              href={openseaUrl}
+              eventElementId="Opensea Link"
+              eventName="Opensea Link Click"
+              eventContext={contexts['NFT Detail']}
+            >
+              <HStack gap={4}>
+                <BaseM>View on</BaseM>
+                <TitleDiatypeM>OpenSea</TitleDiatypeM>
+              </HStack>
+            </GalleryLink>
+          </VStack>
+        )}
+      </StyledExternalLinks>
       <GalleryPill
         eventElementId="Refresh Single NFT Pill"
         eventName="Refresh Single NFT"
@@ -98,7 +109,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           text={`Last refreshed ${lastUpdated}`}
         />
       </GalleryPill>
-    </StyledExternalLinks>
+    </>
   );
 }
 
