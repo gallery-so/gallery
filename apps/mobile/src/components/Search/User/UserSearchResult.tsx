@@ -13,9 +13,10 @@ type Props = {
   userRef: UserSearchResultFragment$key;
   onSelect?: (item: MentionType) => void;
   keyword: string;
+  isMentionSearch?: boolean;
 };
 
-export function UserSearchResult({ userRef, keyword, onSelect }: Props) {
+export function UserSearchResult({ userRef, keyword, onSelect, isMentionSearch }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {
@@ -53,6 +54,7 @@ export function UserSearchResult({ userRef, keyword, onSelect }: Props) {
       description={user?.bio ?? ''}
       variant="User"
       keyword={keyword}
+      isMentionSearch={isMentionSearch}
     />
   );
 }
