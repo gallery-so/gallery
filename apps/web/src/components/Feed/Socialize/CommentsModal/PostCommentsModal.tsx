@@ -5,6 +5,7 @@ import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFrag
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
 import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { CommentsModal } from './CommentsModal';
@@ -56,6 +57,8 @@ export default function PostCommentsModal({
     `,
     queryRef
   );
+
+  useClearURLQueryParams('commentId');
 
   const [commentOnPost, isSubmittingComment] = useCommentOnPost();
 
