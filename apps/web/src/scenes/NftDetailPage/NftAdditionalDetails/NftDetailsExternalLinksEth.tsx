@@ -72,25 +72,6 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           >
             <TitleDiatypeM>View on OpenSea</TitleDiatypeM>
           </GalleryLink>
-          <GalleryPill
-            eventElementId="Refresh Single NFT Pill"
-            eventName="Refresh Single NFT"
-            eventContext={contexts['NFT Detail']}
-            onClick={refresh}
-            disabled={isRefreshing}
-          >
-            <HStack gap={6} ref={reference} {...getReferenceProps()}>
-              <IconContainer size="xs" variant="default" icon={<RefreshIcon />} />
-              <TitleDiatypeM>Refresh metadata</TitleDiatypeM>
-            </HStack>
-            <NewTooltip
-              {...getFloatingProps()}
-              style={{ ...floatingStyle }}
-              ref={floating}
-              whiteSpace="pre-line"
-              text={`Last refreshed ${lastUpdated}`}
-            />
-          </GalleryPill>
         </VStack>
       )}
       {projectUrl && (
@@ -98,6 +79,25 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           <TitleDiatypeM>Official Site</TitleDiatypeM>
         </GalleryLink>
       )}
+      <GalleryPill
+        eventElementId="Refresh Single NFT Pill"
+        eventName="Refresh Single NFT"
+        eventContext={contexts['NFT Detail']}
+        onClick={refresh}
+        disabled={isRefreshing}
+      >
+        <HStack gap={6} ref={reference} {...getReferenceProps()}>
+          <IconContainer size="xs" variant="default" icon={<RefreshIcon />} />
+          <TitleDiatypeM>Refresh metadata</TitleDiatypeM>
+        </HStack>
+        <NewTooltip
+          {...getFloatingProps()}
+          style={{ ...floatingStyle }}
+          ref={floating}
+          whiteSpace="pre-line"
+          text={`Last refreshed ${lastUpdated}`}
+        />
+      </GalleryPill>
     </StyledExternalLinks>
   );
 }
