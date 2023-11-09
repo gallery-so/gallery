@@ -382,10 +382,6 @@ const StyledNftSelectorModal = styled(VStack)`
 
 const StyledTitle = styled.div`
   padding-bottom: 16px;
-
-  @media only screen and ${breakpoints.desktop} {
-    padding: 16px 0;
-  }
 `;
 const StyledTitleText = styled(BaseM)`
   font-weight: 700;

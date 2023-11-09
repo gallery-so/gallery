@@ -98,7 +98,7 @@ function AnimatedModal({
       <StyledModal isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
-            <StyledHeader isPaddingDisabled={!headerText}>
+            <StyledHeader isPaddingDisabled={isPaddingDisabled}>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
               <StyledModalActions align="center">
                 {headerActions}
