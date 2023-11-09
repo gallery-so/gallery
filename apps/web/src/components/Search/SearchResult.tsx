@@ -5,7 +5,6 @@ import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
-import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -38,7 +37,7 @@ export default function SearchResult({
   );
 
   return (
-    <StyledSearchResult className="SearchResult" onClick={onClick} variant={variant}>
+    <StyledSearchResult className="SearchResult" tabIndex={0} onClick={onClick} variant={variant}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
@@ -58,7 +57,7 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(GalleryLink)<{
+const StyledSearchResult = styled.span<{
   className: string;
   variant: SearchResultVariant;
 }>`
