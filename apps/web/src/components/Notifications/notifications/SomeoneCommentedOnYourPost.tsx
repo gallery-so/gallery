@@ -88,6 +88,7 @@ const StyledCaption = styled(BaseM)`
   font-size: 12px;
   border-left: 2px solid ${colors.porcelain};
   padding-left: 8px;
+  word-break: break-word;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;

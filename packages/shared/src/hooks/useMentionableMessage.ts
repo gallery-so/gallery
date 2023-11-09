@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
-import { useMentionableMessageQueryFragment$key } from '~/generated/useMentionableMessageQueryFragment.graphql';
-import useDebounce from '~/shared/hooks/useDebounce';
+import { WHITESPACE_REGEX } from '../utils/regex';
+import useDebounce from './useDebounce';
 
 type MentionDataType = {
   interval: {
@@ -29,16 +27,7 @@ type Mention = {
   communityId?: string;
 };
 
-export function useMentionableMessage(queryRef: useMentionableMessageQueryFragment$key) {
-  const query = useFragment(
-    graphql`
-      fragment useMentionableMessageQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
+export function useMentionableMessage() {
   const [message, setMessage] = useState('');
   const [mentions, setMentions] = useState<MentionDataType[]>([]);
 
@@ -49,8 +38,6 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
 
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
-  const isMentionEnabled = isFeatureEnabled(FeatureFlag.MENTIONS, query);
-
   const handleSetMention = useCallback(
     (mention: MentionType) => {
       // Use substring to only look up to the current cursor position
@@ -60,7 +47,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
 
       const newMessage = `${message.substring(0, mentionStartPos)}@${
         mention.label
-      } ${message.substring(mentionEndPos)}`;
+      }${message.substring(mentionEndPos)}`;
 
       setMessage(newMessage);
 
@@ -78,7 +65,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       }
 
       // Calculate the length difference between the old alias and the new mention
-      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +2 for the @ and space after the mention
+      const lengthDifference = mention.label.length + 1 - aliasKeyword.length; // +1 for the @
 
       // Adjust the positions of mentions that come after the newly added mention
       const adjustedMentions = mentions.map((existingMention) => {
@@ -97,29 +84,30 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       setIsSelectingMentions(false);
 
       setMentions([...adjustedMentions, newMention]);
+      setAliasKeyword('');
+
+      return newMessage;
     },
     [mentions, message, setMessage, aliasKeyword, selection.start]
   );
 
   const handleSetMessage = useCallback(
     (text: string) => {
-      if (!isMentionEnabled) {
-        setMessage(text);
-        return;
-      }
-
       // Check the word where the cursor is (or was last placed)
       const wordAtCursor = text
         .slice(0, selection.start + 1)
-        .split(' ')
+        .split(WHITESPACE_REGEX)
         .pop();
 
-      if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 1) {
-        setAliasKeyword(wordAtCursor);
+      if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 0) {
         setIsSelectingMentions(true);
       } else {
         setAliasKeyword('');
         setIsSelectingMentions(false);
+      }
+
+      if (wordAtCursor && wordAtCursor?.length > 1) {
+        setAliasKeyword(wordAtCursor);
       }
 
       // Determine how many characters were added or removed
@@ -152,17 +140,23 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
       setMentions(updatedMentions);
       setMessage(text);
     },
-    [isMentionEnabled, mentions, message, selection]
+    [mentions, message, selection]
   );
 
   const resetMentions = useCallback(() => {
     setMentions([]);
     setIsSelectingMentions(false);
     setMessage('');
+    setAliasKeyword('');
   }, []);
 
   const handleSelectionChange = useCallback((selection: { start: number; end: number }) => {
     setSelection(selection);
+  }, []);
+
+  const handleClosingMention = useCallback(() => {
+    setIsSelectingMentions(false);
+    setAliasKeyword('');
   }, []);
 
   return {
@@ -174,5 +168,7 @@ export function useMentionableMessage(queryRef: useMentionableMessageQueryFragme
     mentions: mentions || [],
     resetMentions,
     handleSelectionChange,
+    selection,
+    closeMention: handleClosingMention,
   };
 }

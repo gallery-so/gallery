@@ -74,7 +74,7 @@ export function SomeoneCommentedOnYourPost({
       responsibleUserRefs={commenters}
       notificationRef={notification}
     >
-      <View className="flex space-y-2">
+      <View className="flex space-y-0.5">
         <Text className="dark:text-white">
           <Typography
             font={{

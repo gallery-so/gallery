@@ -23,11 +23,11 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   },
   BETA_TESTER: {
     KOALA: true,
-    MENTIONS: false,
+    MENTIONS: true,
   },
   EARLY_ACCESS: {
     KOALA: true,
-    MENTIONS: false,
+    MENTIONS: true,
   },
 };
 

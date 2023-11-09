@@ -10,9 +10,8 @@ import {
 import { View } from 'react-native';
 import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
-import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
@@ -30,7 +29,7 @@ import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/gener
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
-import { CommentsBottomSheetQueryFragment$key } from '~/generated/CommentsBottomSheetQueryFragment.graphql';
+import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { noop } from '~/shared/utils/noop';
 
@@ -45,7 +44,6 @@ type CommentsBottomSheetProps = {
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
-  queryRef: CommentsBottomSheetQueryFragment$key;
 };
 
 export function CommentsBottomSheet({
@@ -53,17 +51,7 @@ export function CommentsBottomSheet({
   bottomSheetRef,
   feedId,
   type,
-  queryRef,
 }: CommentsBottomSheetProps) {
-  const query = useFragment(
-    graphql`
-      fragment CommentsBottomSheetQueryFragment on Query {
-        ...useMentionableMessageQueryFragment
-      }
-    `,
-    queryRef
-  );
-
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -89,7 +77,7 @@ export function CommentsBottomSheet({
     message,
     resetMentions,
     handleSelectionChange,
-  } = useMentionableMessage(query);
+  } = useMentionableMessage();
 
   const handleSubmit = useCallback(
     (value: string) => {
@@ -154,17 +142,21 @@ export function CommentsBottomSheet({
         <View className="flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1 overflow-hidden">
-              <Suspense fallback={<SearchResultsFallback />}>
-                <SearchResults
-                  keyword={aliasKeyword}
-                  activeFilter="top"
-                  onChangeFilter={noop}
-                  blurInputFocus={noop}
-                  onSelect={selectMention}
-                  onlyShowTopResults
-                  isMentionSearch
-                />
-              </Suspense>
+              {aliasKeyword ? (
+                <Suspense fallback={<SearchResultsFallback />}>
+                  <SearchResults
+                    keyword={aliasKeyword}
+                    activeFilter="top"
+                    onChangeFilter={noop}
+                    blurInputFocus={noop}
+                    onSelect={selectMention}
+                    onlyShowTopResults
+                    isMentionSearch
+                  />
+                </Suspense>
+              ) : (
+                <SearchResultsFallback />
+              )}
             </View>
           ) : (
             <View className="flex-1 space-y-2">
@@ -229,7 +221,8 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 }
+    { feedEventId: feedId, last: 10 },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const {
@@ -305,7 +298,8 @@ function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedComment
         ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 }
+    { feedEventId: feedId, last: 10 },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const {

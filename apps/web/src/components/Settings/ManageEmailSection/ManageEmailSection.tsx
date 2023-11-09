@@ -150,7 +150,7 @@ export default function ManageEmailSection({ queryRef }: Props) {
         </HStack>
       </VStack>
       <StyledButtonContainer gap={12}>
-        {shouldDisplayAddEmailInput && userEmail ? (
+        {shouldDisplayAddEmailInput ? (
           <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
         ) : (
           <StyledButton

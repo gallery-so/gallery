@@ -110,6 +110,9 @@ const IconButton = styled.button<{ refreshing: boolean }>`
   background: none;
 
   cursor: pointer;
+
+  // ensure the refresh icon is clickable over other elements
+  z-index: 2;
 `;
 
 // No support for aspect-ratio trick

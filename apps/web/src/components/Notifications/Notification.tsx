@@ -27,6 +27,8 @@ import { getTimeSince } from '~/shared/utils/time';
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
+import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
+import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -77,6 +79,33 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on SomeoneCommentedOnYourPostNotification {
           post {
             dbid
+          }
+        }
+
+        ... on SomeonePostedYourWorkNotification {
+          post {
+            dbid
+          }
+        }
+
+        ... on SomeoneMentionedYouNotification {
+          __typename
+          mentionSource {
+            __typename
+            ... on Post {
+              __typename
+              dbid
+            }
+            ... on Comment {
+              __typename
+              dbid
+              source {
+                ... on Post {
+                  __typename
+                  dbid
+                }
+              }
+            }
           }
         }
 
@@ -172,21 +201,35 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       return undefined;
     } else if (notification.count && notification.count > 1) {
       return { showCaret: true, handleClick: showUserListModal };
+    } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
+      const postId =
+        notification.mentionSource?.__typename === 'Post'
+          ? notification.mentionSource?.dbid
+          : notification.mentionSource?.__typename === 'Comment' &&
+            notification.mentionSource?.source?.__typename === 'Post'
+          ? notification.mentionSource?.source?.dbid
+          : undefined;
+
+      const commentId =
+        notification.mentionSource?.__typename === 'Comment' && notification.mentionSource?.dbid;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (postId) {
+            const query: { postId: string; commentId?: string } = { postId };
+            if (commentId) {
+              query.commentId = commentId;
+            }
+            push({ pathname: `/post/[postId]`, query });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
-  }, [
-    hideDrawer,
-    notification.__typename,
-    notification.count,
-    notification.feedEvent,
-    notification.id,
-    notification.post,
-    notification.userViewers?.pageInfo?.total,
-    push,
-    query.viewer?.user?.username,
-    toggleSubView,
-  ]);
+  }, [hideDrawer, notification, push, query.viewer?.user?.username, toggleSubView]);
 
   const isClickable = Boolean(handleNotificationClick);
 
@@ -231,6 +274,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneAdmiredYourPostNotification',
       'SomeoneCommentedOnYourPostNotification',
       'NewTokensNotification',
+      'SomeonePostedYourWorkNotification',
+      'SomeoneMentionedYouNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -252,7 +297,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   if (
     notification.__typename === 'SomeoneCommentedOnYourPostNotification' ||
-    notification.__typename === 'SomeoneAdmiredYourPostNotification'
+    notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
+    notification.__typename === 'SomeonePostedYourWorkNotification'
   ) {
     if (!notification.post) {
       return null;
@@ -332,6 +378,16 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...NewTokensFragment
         }
+
+        ... on SomeonePostedYourWorkNotification {
+          __typename
+          ...SomeonePostedYourWorkFragment
+        }
+
+        ... on SomeoneMentionedYouNotification {
+          __typename
+          ...SomeoneMentionedYouFragment
+        }
       }
     `,
     notificationRef
@@ -369,6 +425,10 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'NewTokensNotification') {
     return <NewTokens notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
+    return <SomeonePostedYourWork notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
+    return <SomeoneMentionedYou notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;

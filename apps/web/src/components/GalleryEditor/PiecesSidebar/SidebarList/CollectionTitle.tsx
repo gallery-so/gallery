@@ -13,6 +13,7 @@ import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../../GalleryOnboardingGuide/OnboardingDialogContext';
 import { ExpandedIcon } from '../ExpandedIcon';
 import { TokenFilterType } from '../SidebarViewSelector';
+import RefreshContractIcon from './RefreshContractIcon';
 import { CollectionTitleRow } from './SidebarList';
 import ToggleSpamIcon, { SetSpamFn } from './ToggleSpamIcon';
 
@@ -37,12 +38,21 @@ export default function CollectionTitle({
 
   const [isMouseHovering, setIsMouseHovering] = useState(false);
 
-  const shouldDisplayToggleSpamIcon = useMemo(() => {
-    if (selectedView === 'Created') {
-      return false;
+  const rightContent = useMemo(() => {
+    if (selectedView === 'Created' && isMouseHovering) {
+      return <RefreshContractIcon contractId={row.contractId} />;
     }
-    return isMouseHovering;
-  }, [selectedView, isMouseHovering]);
+    if (selectedView !== 'Created' && isMouseHovering) {
+      return (
+        <ToggleSpamIcon
+          row={row}
+          selectedView={selectedView}
+          setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+        />
+      );
+    }
+    return <CollectionCount>{row.count}</CollectionCount>;
+  }, [isMouseHovering, row, selectedView, setSpamPreferenceForCollection]);
 
   return (
     <CollectionTitleRow style={style}>
@@ -59,15 +69,7 @@ export default function CollectionTitle({
           <ExpandedIcon expanded={row.expanded} />
           <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
         </LeftContent>
-        {shouldDisplayToggleSpamIcon ? (
-          <ToggleSpamIcon
-            row={row}
-            selectedView={selectedView}
-            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
-          />
-        ) : (
-          <CollectionCount>{row.count}</CollectionCount>
-        )}
+        {rightContent}
       </CollectionTitleContainer>
 
       {step === 4 && index === 0 && (

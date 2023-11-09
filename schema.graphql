@@ -621,6 +621,13 @@ type FallbackMedia {
 
 input FarcasterAuth {
   address: Address!
+
+  """
+  withSigner will make a request to authenticate the user with an on chain
+  transaction that can be approved on their warpcast app.
+  the `FarcasterSocialAccount` type will return an `approvalURL` that will link the user to make the on chain transaction.
+  """
+  withSigner: Boolean
 }
 
 type FarcasterSocialAccount implements SocialAccount {
@@ -631,6 +638,8 @@ type FarcasterSocialAccount implements SocialAccount {
   profileImageURL: String!
   bio: String!
   display: Boolean!
+  approvalURL: String
+  signerStatus: String
 }
 
 type FeedConnection {
@@ -896,6 +905,11 @@ type JsonMedia implements Media {
 
 input LensAuth {
   address: Address!
+
+  """
+  signature is the signed challenge provided by a GQL request to the lens endpoint
+  """
+  signature: String
 }
 
 type LensSocialAccount implements SocialAccount {
@@ -906,6 +920,7 @@ type LensSocialAccount implements SocialAccount {
   profileImageURL: String!
   bio: String!
   display: Boolean!
+  signatureApproved: Boolean!
 }
 
 type LoginPayload {
@@ -1648,6 +1663,16 @@ type SomeoneMentionedYourCommunityNotification implements Notification & Node {
   community: Community
 }
 
+type SomeonePostedYourWorkNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  post: Post
+  community: Community
+}
+
 type SomeoneRepliedToYourCommentNotification implements Notification & Node {
   id: ID!
   dbid: DBID!
@@ -1765,6 +1790,7 @@ type Token implements Node {
   isSpamByUser: Boolean
   isSpamByProvider: Boolean
   admires(before: String, after: String, first: Int, last: Int, userID: DBID): TokenAdmiresConnection
+  viewerAdmire: Admire
   creatorAddress: ChainAddress
   openseaCollectionName: String
   openseaId: Int
@@ -1861,6 +1887,7 @@ type TwitterSocialAccount implements SocialAccount {
   username: String!
   profileImageURL: String!
   display: Boolean!
+  scope: String!
 }
 
 type UnbanUserFromFeedPayload {

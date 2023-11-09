@@ -1,16 +1,19 @@
-import { Route } from 'nextjs-routes';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 
 import SearchResult from '../SearchResult';
+import { SearchItemType } from '../types';
 
 type Props = {
+  keyword: string;
   galleryRef: GallerySearchResultFragment$key;
+  onSelect: (item: SearchItemType) => void;
 };
 
-export default function GallerySearchResult({ galleryRef }: Props) {
+export default function GallerySearchResult({ keyword, galleryRef, onSelect }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
@@ -25,18 +28,22 @@ export default function GallerySearchResult({ galleryRef }: Props) {
     galleryRef
   );
 
-  const route = {
-    pathname: '/[username]/galleries/[galleryId]',
-    query: { username: gallery.owner?.username as string, galleryId: gallery.dbid },
-  } as Route;
+  const handleClick = useCallback(() => {
+    onSelect({
+      type: 'Gallery',
+      label: gallery.name ?? '',
+      value: gallery.dbid,
+      owner: gallery.owner?.username as string,
+    });
+  }, [gallery.dbid, gallery.name, gallery.owner?.username, onSelect]);
 
   return (
     <SearchResult
       name={gallery.name ?? ''}
       description={gallery?.owner?.username ?? ''}
-      path={route}
-      type="gallery"
       profilePicture={gallery.owner && <ProfilePicture userRef={gallery.owner} size="md" />}
+      onClick={handleClick}
+      keyword={keyword}
     />
   );
 }

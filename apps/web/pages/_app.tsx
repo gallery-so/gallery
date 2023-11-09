@@ -99,6 +99,9 @@ function Page({ Component, pageProps }: AppProps) {
     [router.events]
   );
 
+  // flip on if we need later
+  const isVercelAnalyticsEnabled = false;
+
   return (
     <RelayResetContext.Provider value={resetRelayEnvironment}>
       <AppProvider
@@ -106,18 +109,24 @@ function Page({ Component, pageProps }: AppProps) {
         globalLayoutContextPreloadedQuery={globalLayoutContextPreloadedQuery}
       >
         <GoogleAnalytics />
-        <Analytics
-          beforeSend={(event) => {
-            // Ignore sending noisy events related to /opengraph previews
-            if (event.url.includes('/opengraph')) {
-              return null;
-            }
-            return event;
-          }}
-        />
+        {isVercelAnalyticsEnabled && <VercelAnalytics />}
         <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
       </AppProvider>
     </RelayResetContext.Provider>
+  );
+}
+
+function VercelAnalytics() {
+  return (
+    <Analytics
+      beforeSend={(event) => {
+        // Ignore sending noisy events related to /opengraph previews
+        if (event.url.includes('/opengraph')) {
+          return null;
+        }
+        return event;
+      }}
+    />
   );
 }
 

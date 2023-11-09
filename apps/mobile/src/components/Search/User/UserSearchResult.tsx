@@ -1,20 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { SearchResult } from '../SearchResult';
 
 type Props = {
   userRef: UserSearchResultFragment$key;
   onSelect?: (item: MentionType) => void;
+  keyword: string;
+  isMentionSearch?: boolean;
 };
 
-export function UserSearchResult({ userRef, onSelect }: Props) {
+export function UserSearchResult({ userRef, keyword, onSelect, isMentionSearch }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSearchResultFragment on GalleryUser {
@@ -51,6 +53,8 @@ export function UserSearchResult({ userRef, onSelect }: Props) {
       title={user?.username ?? ''}
       description={user?.bio ?? ''}
       variant="User"
+      keyword={keyword}
+      isMentionSearch={isMentionSearch}
     />
   );
 }

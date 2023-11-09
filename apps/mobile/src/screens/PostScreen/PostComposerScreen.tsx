@@ -3,7 +3,6 @@ import { Suspense, useCallback, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { useMentionableMessage } from 'src/hooks/useMentionableMessage';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -23,6 +22,7 @@ import {
   PostStackNavigatorParamList,
 } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
+import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
@@ -48,7 +48,6 @@ function PostComposerScreenInner() {
             ...usePostTokenFragment
           }
         }
-        ...useMentionableMessageQueryFragment
       }
     `,
     {
@@ -81,7 +80,7 @@ function PostComposerScreenInner() {
     message,
     resetMentions,
     handleSelectionChange,
-  } = useMentionableMessage(query);
+  } = useMentionableMessage();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBackPress = useCallback(() => {
@@ -187,17 +186,23 @@ function PostComposerScreenInner() {
         />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
-            <Suspense fallback={<SearchResultsFallback />}>
-              <SearchResults
-                keyword={aliasKeyword}
-                activeFilter="top"
-                onChangeFilter={noop}
-                blurInputFocus={noop}
-                onSelect={selectMention}
-                onlyShowTopResults
-                isMentionSearch
-              />
-            </Suspense>
+            <View className="flex-1">
+              {aliasKeyword ? (
+                <Suspense fallback={<SearchResultsFallback />}>
+                  <SearchResults
+                    keyword={aliasKeyword}
+                    activeFilter="top"
+                    onChangeFilter={noop}
+                    blurInputFocus={noop}
+                    onSelect={selectMention}
+                    onlyShowTopResults
+                    isMentionSearch
+                  />
+                </Suspense>
+              ) : (
+                <SearchResultsFallback />
+              )}
+            </View>
           ) : (
             <Suspense fallback={<PostComposerNftFallback />}>
               <PostTokenPreview />

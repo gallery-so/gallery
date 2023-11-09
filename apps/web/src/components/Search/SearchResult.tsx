@@ -1,96 +1,54 @@
-import { Route, route } from 'nextjs-routes';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { getHighlightedDescription, getHighlightedName } from '~/shared/utils/highlighter';
 
-import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { SearchFilterType } from './Search';
-import { useSearchContext } from './SearchContext';
+import { SearchResultVariant } from './types';
 
 type Props = {
   name: string;
   description: string;
-  path: Route;
-  type: SearchFilterType;
   profilePicture?: ReactNode;
-};
 
-const MAX_DESCRIPTION_CHARACTER = 150;
+  variant?: SearchResultVariant;
+  onClick: () => void;
+  keyword: string;
+};
 
 export default function SearchResult({
   name,
   description,
-  path,
-  type,
+  keyword,
 
   profilePicture,
+  variant = 'default',
+  onClick,
 }: Props) {
-  const { hideDrawer } = useDrawerActions();
-  const { keyword } = useSearchContext();
+  const highlightedName = useMemo(() => getHighlightedName(name, keyword), [keyword, name]);
 
-  const track = useTrack();
-
-  const handleClick = useCallback(() => {
-    hideDrawer();
-
-    const fullLink = route(path);
-
-    track('Search result click', {
-      searchQuery: keyword,
-      pathname: fullLink,
-      resultType: type,
-      context: contexts.Search,
-    });
-  }, [hideDrawer, keyword, path, track, type]);
-
-  const highlightedName = useMemo(() => {
-    return name.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
-  }, [keyword, name]);
-
-  const highlightedDescription = useMemo(() => {
-    const regex = new RegExp(keyword, 'gi');
-
-    // Remove bold & link markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
-
-    const matchIndex = unformattedDescription.search(regex);
-    let truncatedDescription;
-
-    const maxLength = MAX_DESCRIPTION_CHARACTER;
-
-    if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
-      const endIndex = Math.min(unformattedDescription.length, maxLength);
-      truncatedDescription = `...${unformattedDescription.substring(
-        endIndex - maxLength,
-        endIndex
-      )}`;
-    } else {
-      truncatedDescription = unformattedDescription.substring(0, maxLength);
-    }
-    // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`);
-  }, [keyword, description]);
+  const highlightedDescription = useMemo(
+    () => getHighlightedDescription(description, keyword),
+    [keyword, description]
+  );
 
   return (
-    <StyledSearchResult className="SearchResult" to={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" tabIndex={0} onClick={onClick} variant={variant}>
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>
-          <BaseM>
+          <StyledText variant={variant}>
             <Markdown text={highlightedName} eventContext={contexts.Search} />
-          </BaseM>
+          </StyledText>
           {highlightedDescription && (
             <StyledDescription>
-              <BaseM>
+              <StyledText variant={variant}>
                 <Markdown text={highlightedDescription} eventContext={contexts.Search} />
-              </BaseM>
+              </StyledText>
             </StyledDescription>
           )}
         </VStack>
@@ -99,9 +57,11 @@ export default function SearchResult({
   );
 }
 
-const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
+const StyledSearchResult = styled.span<{
+  className: string;
+  variant: SearchResultVariant;
+}>`
   color: ${colors.black['800']};
-  padding: 16px 12px;
   cursor: pointer;
   text-decoration: none;
 
@@ -111,6 +71,12 @@ const StyledSearchResult = styled(GalleryLink)<{ className: string }>`
     background-color: ${colors.faint};
     border-radius: 4px;
   }
+
+  ${(props) =>
+    props.variant === 'compact'
+      ? 'padding: 8px;'
+      : `padding: 16px 12px;
+  `}
 `;
 
 const StyledDescription = styled.div`
@@ -125,4 +91,11 @@ const StyledDescription = styled.div`
   p {
     display: inline;
   }
+`;
+
+const StyledText = styled(BaseM)<{
+  variant: SearchResultVariant;
+}>`
+  font-size: ${(props) => (props.variant === 'compact' ? '12px' : '14px')};
+  line-height: ${(props) => (props.variant === 'compact' ? '16px' : '20px')};
 `;

@@ -3,6 +3,7 @@ import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.gr
 export type CollectionGroup = {
   title: string;
   address: string;
+  contractId: string;
   //      Remove the readonly
   tokens: Array<SidebarTokensFragment$data[number]>;
 };
@@ -36,6 +37,7 @@ export function groupCollectionsByAddress({
         title,
         tokens: [],
         address: token.contract.contractAddress.address,
+        contractId: token.contract.dbid,
       };
 
       map[address] = group;
