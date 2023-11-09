@@ -72,6 +72,16 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
+        {projectUrl && (
+          <GalleryLink
+            href={projectUrl}
+            eventElementId="External Link"
+            eventName="External Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            <TitleDiatypeM>Official Site</TitleDiatypeM>
+          </GalleryLink>
+        )}
         {fxhashUrl && (
           <GalleryLink
             href={fxhashUrl}
@@ -79,7 +89,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             eventName="fxhash Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            <TitleDiatypeM>View on fx(hash)</TitleDiatypeM>
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>fx(hash)</TitleDiatypeM>
+            </HStack>
           </GalleryLink>
         )}
         {objktUrl && (
@@ -89,17 +102,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             eventName="objkt Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            <TitleDiatypeM>View on objkt</TitleDiatypeM>
-          </GalleryLink>
-        )}
-        {projectUrl && (
-          <GalleryLink
-            href={projectUrl}
-            eventElementId="External Link"
-            eventName="External Link Click"
-            eventContext={contexts['NFT Detail']}
-          >
-            <TitleDiatypeM>More Info</TitleDiatypeM>
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>objkt</TitleDiatypeM>
+            </HStack>
           </GalleryLink>
         )}
       </StyledLinkContainer>

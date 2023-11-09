@@ -1,7 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
 import extractPoapMetadata from '~/shared/utils/extractPoapMetadata';
@@ -63,12 +63,15 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
       )}
       {projectUrl && (
         <GalleryLink href={projectUrl}>
-          <TitleDiatypeM>More Info</TitleDiatypeM>
+          <TitleDiatypeM>Official Site</TitleDiatypeM>
         </GalleryLink>
       )}
       {poapUrl && (
         <GalleryLink href={poapUrl}>
-          <TitleDiatypeM>View on POAP</TitleDiatypeM>
+          <HStack gap={4}>
+            <BaseM>View on</BaseM>
+            <TitleDiatypeM>POAP</TitleDiatypeM>
+          </HStack>
         </GalleryLink>
       )}
     </VStack>
