@@ -97,13 +97,15 @@ export function PostItem({
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
+  // TODO: might refactor this imminently
   const CreatorComponent = useMemo(() => {
     if (token.owner && token.ownerIsCreator) {
       return (
         <UserHoverCard userRef={token.owner}>
           <OwnerProfilePictureAndUsername
             userRef={token.owner}
-            eventContext={contexts['NFT Detail']}
+            eventContext={contexts.Posts}
+            pfpDisabled
           />
         </UserHoverCard>
       );
@@ -113,14 +115,16 @@ export function PostItem({
         <UserHoverCard userRef={token.community.creator}>
           <CreatorProfilePictureAndUsernameOrAddress
             userOrAddressRef={token.community.creator}
-            eventContext={contexts['NFT Detail']}
+            eventContext={contexts.Posts}
+            pfpDisabled
           />
         </UserHoverCard>;
       }
       return (
         <CreatorProfilePictureAndUsernameOrAddress
           userOrAddressRef={token.community.creator}
-          eventContext={contexts['NFT Detail']}
+          eventContext={contexts.Posts}
+          pfpDisabled
         />
       );
     }
