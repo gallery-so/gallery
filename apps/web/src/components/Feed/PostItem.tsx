@@ -97,7 +97,6 @@ export function PostItem({
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
-  // TODO: might refactor this imminently
   const CreatorComponent = useMemo(() => {
     if (token.owner && token.ownerIsCreator) {
       return (
