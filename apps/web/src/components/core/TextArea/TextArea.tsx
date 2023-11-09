@@ -197,8 +197,6 @@ export function TextAreaWithCharCount({
       >
         <TextArea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} />
 
-        {/* <textarea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} /> */}
-
         <StyledCharacterCounter
           hasError={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
