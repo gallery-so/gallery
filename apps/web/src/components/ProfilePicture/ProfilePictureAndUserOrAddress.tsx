@@ -14,9 +14,10 @@ import { RawProfilePicture } from './RawProfilePicture';
 type Props = {
   userRef: ProfilePictureAndUserOrAddressOwnerFragment$key;
   eventContext: AnalyticsEventContextType;
+  pfpDisabled?: boolean;
 };
 
-export function OwnerProfilePictureAndUsername({ userRef, eventContext }: Props) {
+export function OwnerProfilePictureAndUsername({ userRef, eventContext, pfpDisabled }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureAndUserOrAddressOwnerFragment on GalleryUser {
@@ -39,7 +40,7 @@ export function OwnerProfilePictureAndUsername({ userRef, eventContext }: Props)
   if (user.universal && user.primaryWallet?.chainAddress) {
     return (
       <HStack align="center" gap={4}>
-        <RawProfilePicture size="xs" default inheritBorderColor />
+        {pfpDisabled ? null : <RawProfilePicture size="xs" default inheritBorderColor />}
         <EnsOrAddress
           chainAddressRef={user.primaryWallet.chainAddress}
           eventContext={eventContext}
@@ -51,7 +52,7 @@ export function OwnerProfilePictureAndUsername({ userRef, eventContext }: Props)
   return (
     <UserHoverCard userRef={user}>
       <HStack align="center" gap={4}>
-        <ProfilePicture size="sm" userRef={user} />
+        {pfpDisabled ? null : <ProfilePicture size="sm" userRef={user} />}
         <TitleDiatypeM>{user.username}</TitleDiatypeM>
       </HStack>
     </UserHoverCard>
@@ -61,11 +62,13 @@ export function OwnerProfilePictureAndUsername({ userRef, eventContext }: Props)
 type CreatorProps = {
   userOrAddressRef: ProfilePictureAndUserOrAddressCreatorFragment$key;
   eventContext: AnalyticsEventContextType;
+  pfpDisabled?: boolean;
 };
 
 export function CreatorProfilePictureAndUsernameOrAddress({
   userOrAddressRef,
   eventContext,
+  pfpDisabled = false,
 }: CreatorProps) {
   const creatorOrAddress = useFragment(
     graphql`
@@ -84,12 +87,16 @@ export function CreatorProfilePictureAndUsernameOrAddress({
 
   if (creatorOrAddress.__typename === 'GalleryUser') {
     return (
-      <OwnerProfilePictureAndUsername userRef={creatorOrAddress} eventContext={eventContext} />
+      <OwnerProfilePictureAndUsername
+        userRef={creatorOrAddress}
+        eventContext={eventContext}
+        pfpDisabled={pfpDisabled}
+      />
     );
   } else if (creatorOrAddress.__typename === 'ChainAddress') {
     return (
       <HStack align="center" gap={4}>
-        <RawProfilePicture size="xs" default inheritBorderColor />
+        {pfpDisabled ? null : <RawProfilePicture size="xs" default inheritBorderColor />}
         <EnsOrAddress chainAddressRef={creatorOrAddress} eventContext={eventContext} />
       </HStack>
     );

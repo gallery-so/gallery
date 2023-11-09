@@ -129,6 +129,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     });
   }, [isMobile, showModal, token]);
 
+  // TODO: might refactor this imminently
   const CreatorComponent = useMemo(() => {
     if (token.owner && token.ownerIsCreator) {
       return (
