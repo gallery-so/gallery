@@ -103,7 +103,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
       return escapedCollectionName;
     }
 
-    return 'Untitled collection';
+    return 'Untitled section';
   }, [escapedCollectionName]);
 
   return (

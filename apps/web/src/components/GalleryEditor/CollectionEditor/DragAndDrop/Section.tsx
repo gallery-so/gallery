@@ -110,7 +110,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
         <StyledItemContainer columns={columns}>
           {isEmpty ? (
             <StyledEmptySectionMessage>
-              <TitleDiatypeM>Select the pieces you’d like to add to this section</TitleDiatypeM>
+              <TitleDiatypeM>Select the pieces you’d like to add</TitleDiatypeM>
             </StyledEmptySectionMessage>
           ) : (
             children
@@ -165,7 +165,7 @@ const StyledItemContainer = styled.div<{ columns: number | undefined }>`
 const StyledEmptySectionMessage = styled.div`
   margin: auto;
   padding-bottom: 12px;
-  width: 190px;
+  width: 220px;
   text-align: center;
 `;
 
