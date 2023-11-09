@@ -70,7 +70,6 @@ export function PostItem({
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
-        ...PostCommunityPillFragment
       }
     `,
     eventRef
