@@ -70,23 +70,25 @@ export function TokensAddedToCollectionFeedEvent({
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Added new tokens to
+          Added new pieces{collectionName && ' to '}
         </Typography>
-        <GalleryTouchableOpacity
-          className="flex-1"
-          onPress={handleCollectionNamePress}
-          eventElementId="Feed Collection Button"
-          eventName="Feed Collection Name Clicked"
-          eventContext={contexts.Feed}
-        >
-          <Typography
-            numberOfLines={1}
-            className="text-sm"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        {collectionName && (
+          <GalleryTouchableOpacity
+            className="flex-1"
+            onPress={handleCollectionNamePress}
+            eventElementId="Feed Collection Button"
+            eventName="Feed Collection Name Clicked"
+            eventContext={contexts.Feed}
           >
-            {collectionName || 'their collection'}
-          </Typography>
-        </GalleryTouchableOpacity>
+            <Typography
+              numberOfLines={1}
+              className="text-sm"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              {collectionName}
+            </Typography>
+          </GalleryTouchableOpacity>
+        )}
       </FeedEventCarouselCellHeader>
 
       <View className="flex flex-grow">

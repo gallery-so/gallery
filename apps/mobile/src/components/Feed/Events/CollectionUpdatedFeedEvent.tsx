@@ -76,7 +76,7 @@ export function CollectionUpdatedFeedEvent({
             className="text-sm"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {eventData.collection?.name || 'their collection'}
+            {eventData.collection?.name || 'their section'}
           </Typography>
         </GalleryTouchableOpacity>
       </FeedEventCarouselCellHeader>

@@ -165,7 +165,7 @@ export default function MoveCollectionModal({
     }
     return (
       <BaseM>
-        This will move your collection <strong>{collectionDisplayName}</strong> to another gallery.
+        This will move your section <strong>{collectionDisplayName}</strong> to another gallery.
       </BaseM>
     );
   }, [collectionDisplayName, hasUnsavedChanges]);

@@ -201,7 +201,7 @@ function CollectionGalleryHeader({
                       }}
                       name="Manage Collection"
                       eventContext={contexts.UserCollection}
-                      label="Edit Collection"
+                      label="Edit Section"
                     />
                   )}
                 </DropdownSection>

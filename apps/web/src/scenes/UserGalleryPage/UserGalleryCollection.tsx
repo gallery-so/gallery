@@ -163,7 +163,7 @@ function UserGalleryCollection({
                       }}
                       name="Manage Collection"
                       eventContext={contexts.UserGallery}
-                      label="Edit Collection"
+                      label="Edit Section"
                     />
                   </>
                 )}
@@ -171,7 +171,7 @@ function UserGalleryCollection({
                   href={collectionUrlPath}
                   name="Manage Collection"
                   eventContext={contexts.UserGallery}
-                  label="View Collection"
+                  label="View Section"
                 />
               </DropdownSection>
             </SettingsDropdown>

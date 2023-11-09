@@ -123,7 +123,7 @@ export function CollectionRightContent({
               href={editCollectionUrl}
               name="Collection Nav"
               eventContext={contexts.UserCollection}
-              label="Edit Collection"
+              label="Edit Section"
             />
           )}
           <DropdownItem
