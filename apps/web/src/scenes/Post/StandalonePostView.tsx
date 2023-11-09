@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -45,21 +46,23 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   const router = useRouter();
   const commentId = router.query.commentId as string;
 
-  if (commentId) {
-    showModal({
-      content: (
-        <PostCommentsModal
-          fullscreen={isMobile}
-          postRef={post}
-          queryRef={query}
-          activeCommentId={commentId}
-        />
-      ),
-      isFullPage: isMobile,
-      isPaddingDisabled: true,
-      headerVariant: 'standard',
-    });
-  }
+  useEffect(() => {
+    if (commentId) {
+      showModal({
+        content: (
+          <PostCommentsModal
+            fullscreen={isMobile}
+            postRef={post}
+            queryRef={query}
+            activeCommentId={commentId}
+          />
+        ),
+        isFullPage: isMobile,
+        isPaddingDisabled: true,
+        headerVariant: 'standard',
+      });
+    }
+  }, [commentId, isMobile, post, query, showModal]);
 
   return (
     <ReportingErrorBoundary fallback={<></>}>

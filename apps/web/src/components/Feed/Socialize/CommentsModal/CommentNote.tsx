@@ -43,8 +43,17 @@ export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
     commentRef
   );
 
-  const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
-  const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
+  // TEMPORARY FIX: not sure how this component is even being rendered without a truthy `comment`
+  const timeAgo = comment?.creationTime ? getTimeSince(comment.creationTime) : null;
+  const nonNullMentions = useMemo(
+    () => removeNullValues(comment?.mentions || []),
+    [comment?.mentions]
+  );
+
+  if (!comment) {
+    return null;
+  }
+  // END TEMPORARY FIX
 
   const isCommentActive = activeCommentId === comment.dbid;
 
