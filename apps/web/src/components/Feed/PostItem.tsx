@@ -120,13 +120,7 @@ export function PostItem({
           />
         </UserHoverCard>;
       }
-      return (
-        <CreatorProfilePictureAndUsernameOrAddress
-          userOrAddressRef={token.community.creator}
-          eventContext={contexts.Posts}
-          pfpDisabled
-        />
-      );
+      return null;
     }
   }, [token.community?.creator, token.owner, token.ownerIsCreator]);
 
