@@ -25,11 +25,16 @@ export function MentionModal({ keyword, onSelectMention, onEmptyResultsClose = n
   useHotkeys(
     ['ArrowUp', 'ArrowDown', 'Enter'],
     (event) => {
+      if (!['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
+        return;
+      }
+
       const allResults = Array.from(document.querySelectorAll('.SearchResult'));
       const focused = document.querySelector('.SearchResult:focus');
 
       let nextIndex = 0;
-      if (focused) {
+
+      if (focused && event.key !== 'Enter') {
         const focusedIndex = allResults.indexOf(focused);
         nextIndex = event.key === 'ArrowDown' ? focusedIndex + 1 : focusedIndex - 1;
 
@@ -46,13 +51,18 @@ export function MentionModal({ keyword, onSelectMention, onEmptyResultsClose = n
         if (event.key === 'Enter') {
           if (focused instanceof HTMLElement) {
             focused.click();
+            onEmptyResultsClose();
           }
         } else {
           nextResult.focus();
         }
       }
+
+      event.preventDefault();
     },
-    { enableOnFormTags: true, preventDefault: true }
+    {
+      enableOnFormTags: true,
+    }
   );
 
   const handleSelectMention = useCallback(
