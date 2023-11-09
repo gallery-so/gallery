@@ -125,7 +125,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           defaultValue={defaultValue}
           value={value}
           onChange={onChange}
-          onKeyUp={(e) => e.stopPropagation()} // To prevent keyboard navigation from triggering while in textarea
           autoFocus={autoFocus}
           autoComplete="off"
           autoCorrect="off"
@@ -197,6 +196,8 @@ export function TextAreaWithCharCount({
         isFocused={isFocused}
       >
         <TextArea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} />
+
+        {/* <textarea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} /> */}
 
         <StyledCharacterCounter
           hasError={currentCharCount > maxCharCount}
