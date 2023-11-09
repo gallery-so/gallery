@@ -216,6 +216,17 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           </BaseM>
         )}
 
+        {authenticatedUserOwnsAsset && (
+          <Button
+            eventElementId="Create Post Button"
+            eventName="Create Post"
+            eventContext={contexts['NFT Detail']}
+            onClick={handleCreatePostClick}
+          >
+            Create Post
+          </Button>
+        )}
+
         <VStack gap={16}>
           <NftAdditionalDetails tokenRef={token} />
 
@@ -234,17 +245,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             </VStack>
           )}
         </VStack>
-
-        {authenticatedUserOwnsAsset && (
-          <Button
-            eventElementId="Create Post Button"
-            eventName="Create Post"
-            eventContext={contexts['NFT Detail']}
-            onClick={handleCreatePostClick}
-          >
-            Create Post
-          </Button>
-        )}
       </VStack>
     </StyledDetailLabel>
   );
