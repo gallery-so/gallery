@@ -2,7 +2,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import { BaseM } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
@@ -29,7 +29,7 @@ export function LinkableAddress({ chainAddressRef, eventContext }: LinkableAddre
   const truncatedAddress = graphqlTruncateAddress(address);
 
   if (!link) {
-    return <BaseM>{truncatedAddress || address.address}</BaseM>;
+    return <TitleDiatypeM>{truncatedAddress || address.address}</TitleDiatypeM>;
   }
 
   return (
@@ -62,7 +62,7 @@ export function RawLinkableAddress({
       eventContext={eventContext}
       href={link}
     >
-      {truncatedAddress || address}
+      <TitleDiatypeM>{truncatedAddress || address}</TitleDiatypeM>
     </GalleryLink>
   );
 }

@@ -8,7 +8,7 @@ import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graph
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { getExternalAddressLink } from '~/shared/utils/wallet';
+import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
@@ -23,6 +23,7 @@ const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
 
         ...LinkableAddressFragment
         ...walletGetExternalAddressLinkFragment
+        ...walletTruncateAddressFragment
       }
     `,
     chainAddressRef
@@ -35,13 +36,14 @@ const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
   );
 
   const link = getExternalAddressLink(address);
+  const truncatedAddress = graphqlTruncateAddress(address);
 
   if (data?.name && link) {
     return (
       <RawLinkableAddress
         link={link}
         address={data.address}
-        truncatedAddress={data.name}
+        truncatedAddress={truncatedAddress}
         eventContext={eventContext}
       />
     );
