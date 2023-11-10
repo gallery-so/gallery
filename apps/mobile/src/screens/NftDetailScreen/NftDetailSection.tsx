@@ -145,15 +145,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   }, [token.community?.creator?.username, navigation]);
 
   const CreatorComponent = useMemo(() => {
-    if (token.owner && token.ownerIsCreator) {
-      return (
-        <OwnerProfilePictureAndUsername
-          userRef={token.owner}
-          handlePress={handleOwnerUsernamePress}
-          eventContext={contexts['NFT Detail']}
-        />
-      );
-    }
     if (token.community?.creator) {
       return (
         <CreatorProfilePictureAndUsernameOrAddress
@@ -166,8 +157,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
     return null;
   }, [
-    token.owner,
-    token.ownerIsCreator,
     token.community?.creator,
     handleOwnerUsernamePress,
     handleCreatorUsernamePress,

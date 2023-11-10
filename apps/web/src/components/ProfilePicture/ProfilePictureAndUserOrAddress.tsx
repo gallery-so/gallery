@@ -1,4 +1,5 @@
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { ProfilePictureAndUserOrAddressCreatorFragment$key } from '~/generated/ProfilePictureAndUserOrAddressCreatorFragment.graphql';
 import { ProfilePictureAndUserOrAddressOwnerFragment$key } from '~/generated/ProfilePictureAndUserOrAddressOwnerFragment.graphql';
@@ -53,11 +54,19 @@ export function OwnerProfilePictureAndUsername({ userRef, eventContext, pfpDisab
     <UserHoverCard userRef={user}>
       <HStack align="center" gap={4}>
         {pfpDisabled ? null : <ProfilePicture size="sm" userRef={user} />}
-        <TitleDiatypeM>{user.username}</TitleDiatypeM>
+        <StyledText>{user.username}</StyledText>
       </HStack>
     </UserHoverCard>
   );
 }
+
+const StyledText = styled(TitleDiatypeM)`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+`;
 
 type CreatorProps = {
   userOrAddressRef: ProfilePictureAndUserOrAddressCreatorFragment$key;
