@@ -74,7 +74,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
 
         <VStack>
           <StyledTextWrapper align="center" as="span" wrap="wrap">
-            <BaseM>Minted {quantity > 1 && `${quantity}x`}</BaseM>
+            <BaseM>Collected {quantity > 1 && `${quantity}x`}</BaseM>
             <BaseM as="span">
               <strong>{token?.name ? token.name : 'Unknown'}</strong>
             </BaseM>
