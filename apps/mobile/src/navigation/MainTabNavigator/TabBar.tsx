@@ -2,7 +2,7 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { ReactNode, Suspense, useCallback, useMemo, useState } from 'react';
+import { ReactNode, Suspense, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
@@ -11,7 +11,6 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
 import { TabBarLazyPostIconQuery } from '~/generated/TabBarLazyPostIconQuery.graphql';
 import { TabBarLazyProfilePictureQuery } from '~/generated/TabBarLazyProfilePictureQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
@@ -24,6 +23,7 @@ import { noop } from '~/shared/utils/noop';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
+import { LazyNotificationBlueDot } from './NotificationBlueDot';
 import { PostIcon } from './PostIcon';
 
 type TabItemProps = {
@@ -153,44 +153,6 @@ export function TabBar({ state, navigation }: TabBarProps) {
       })}
     </View>
   );
-}
-
-function LazyNotificationBlueDot() {
-  const query = useLazyLoadQuery<TabBarLazyNotificationBlueDotQuery>(
-    graphql`
-      query TabBarLazyNotificationBlueDotQuery {
-        viewer {
-          ... on Viewer {
-            __typename
-            notifications(last: 1) @connection(key: "TabBarMainTabNavigator_notifications") {
-              unseenCount
-              # Relay requires that we grab the edges field if we use the connection directive
-              # We're selecting __typename since that shouldn't have a cost
-              # eslint-disable-next-line relay/unused-fields
-              edges {
-                __typename
-              }
-            }
-          }
-        }
-      }
-    `,
-    {}
-  );
-
-  const hasUnreadNotifications = useMemo(() => {
-    if (query.viewer && query.viewer.__typename === 'Viewer') {
-      return (query.viewer?.notifications?.unseenCount ?? 0) > 0;
-    }
-
-    return false;
-  }, [query.viewer]);
-
-  if (hasUnreadNotifications) {
-    return <View className="bg-activeBlue absolute right-0 top-0 h-2 w-2 rounded-full" />;
-  }
-
-  return null;
 }
 
 function LazyNotificationIcon() {

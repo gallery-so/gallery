@@ -31,7 +31,7 @@ export function useMobileClearNotifications() {
 
     if (query?.viewer?.id && query.viewer?.user?.dbid) {
       await clearNotifications(environment, query.viewer.user.dbid, [
-        ConnectionHandler.getConnectionID(query.viewer.id, 'TabBarMainTabNavigator_notifications'),
+        ConnectionHandler.getConnectionID(query.viewer.id, 'NotificationBlueDot_notifications'),
         ConnectionHandler.getConnectionID(query.viewer.id, 'NotificationsFragment_notifications'),
       ]);
     }
