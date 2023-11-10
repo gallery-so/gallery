@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
-import { useEffectOnAppForeground } from 'src/utils/useEffectOnAppForeground';
+import { useIntervalEffectOnAppForeground } from 'src/utils/useIntervalEffectOnAppForeground';
 
 import { NotificationBlueDotFragment$key } from '~/generated/NotificationBlueDotFragment.graphql';
 import { NotificationBlueDotQuery } from '~/generated/NotificationBlueDotQuery.graphql';
+import { RefetchableNotificationBlueDotFragmentQuery } from '~/generated/RefetchableNotificationBlueDotFragmentQuery.graphql';
 
 export function LazyNotificationBlueDot() {
   const query = useLazyLoadQuery<NotificationBlueDotQuery>(
@@ -27,7 +28,10 @@ type BlueDotProps = {
 };
 
 function BlueDot({ queryRef }: BlueDotProps) {
-  const [query, refetch] = useRefetchableFragment<any, any>(
+  const [query, refetch] = useRefetchableFragment<
+    RefetchableNotificationBlueDotFragmentQuery,
+    NotificationBlueDotFragment$key
+  >(
     graphql`
       fragment NotificationBlueDotFragment on Query
       @refetchable(queryName: "RefetchableNotificationBlueDotFragmentQuery") {
@@ -55,12 +59,10 @@ function BlueDot({ queryRef }: BlueDotProps) {
     refetch({}, { fetchPolicy: 'network-only' });
   }, [refetch]);
 
-  useEffectOnAppForeground(handleNotificationRefresh);
+  useIntervalEffectOnAppForeground(handleNotificationRefresh);
 
   const hasUnreadNotifications = useMemo(() => {
     if (query.viewer && query.viewer.__typename === 'Viewer') {
-      // 12345
-      console.log('---- unseen count', query.viewer?.notifications?.unseenCount);
       return (query.viewer?.notifications?.unseenCount ?? 0) > 0;
     }
 
