@@ -15,9 +15,15 @@ type Props = {
   userRef: ProfilePictureAndUserOrAddressOwnerFragment$key;
   handlePress: () => void;
   eventContext: AnalyticsEventContextType;
+  pfpDisabled?: boolean;
 };
 
-export function OwnerProfilePictureAndUsername({ userRef, handlePress, eventContext }: Props) {
+export function OwnerProfilePictureAndUsername({
+  userRef,
+  handlePress,
+  eventContext,
+  pfpDisabled,
+}: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureAndUserOrAddressOwnerFragment on GalleryUser {
@@ -45,13 +51,15 @@ export function OwnerProfilePictureAndUsername({ userRef, handlePress, eventCont
         eventName="Token Owner Username"
         eventContext={eventContext}
       >
-        <RawProfilePicture
-          size="xs"
-          default
-          eventElementId="PFP"
-          eventName="PFP Press"
-          eventContext={eventContext}
-        />
+        {pfpDisabled ? null : (
+          <RawProfilePicture
+            size="xs"
+            default
+            eventElementId="PFP"
+            eventName="PFP Press"
+            eventContext={eventContext}
+          />
+        )}
         {/* need to wrap in a View for the parent's space-x-1 padding to work */}
         <View>
           <EnsOrAddress
@@ -71,7 +79,7 @@ export function OwnerProfilePictureAndUsername({ userRef, handlePress, eventCont
       eventName="Token Owner Username"
       eventContext={eventContext}
     >
-      <ProfilePicture userRef={user} size="xs" />
+      {pfpDisabled ? null : <ProfilePicture userRef={user} size="xs" />}
       <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         {user.username}
       </Typography>
@@ -83,12 +91,14 @@ type CreatorProps = {
   userOrAddressRef: ProfilePictureAndUserOrAddressCreatorFragment$key;
   handlePress: () => void;
   eventContext: AnalyticsEventContextType;
+  pfpDisabled?: boolean;
 };
 
 export function CreatorProfilePictureAndUsernameOrAddress({
   userOrAddressRef,
   handlePress,
   eventContext,
+  pfpDisabled,
 }: CreatorProps) {
   const creatorOrAddress = useFragment(
     graphql`
@@ -111,18 +121,21 @@ export function CreatorProfilePictureAndUsernameOrAddress({
         userRef={creatorOrAddress}
         handlePress={handlePress}
         eventContext={eventContext}
+        pfpDisabled={pfpDisabled}
       />
     );
   } else if (creatorOrAddress.__typename === 'ChainAddress') {
     return (
       <View className="flex flex-row items-center space-x-1">
-        <RawProfilePicture
-          size="xs"
-          default
-          eventElementId="NftDetail Creator PFP"
-          eventName="NftDetail Creator PFP"
-          eventContext={eventContext}
-        />
+        {pfpDisabled ? null : (
+          <RawProfilePicture
+            size="xs"
+            default
+            eventElementId="NftDetail Creator PFP"
+            eventName="NftDetail Creator PFP"
+            eventContext={eventContext}
+          />
+        )}
         <View>
           <EnsOrAddress chainAddressRef={creatorOrAddress} eventContext={eventContext} />
         </View>

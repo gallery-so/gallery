@@ -19,6 +19,7 @@ import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevant
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 import { DOUBLE_TAP_WINDOW } from '../constants';
+import { PostCreatorAndCollectionSection } from './PostCreatorAndCollectionSection';
 
 type Props = {
   feedPostRef: PostListItemFragment$key;
@@ -50,6 +51,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           ...useGetPreviewImagesSingleFragment
           ...UniversalNftPreviewWithBoundaryFragment
           ...extractRelevantMetadataFromTokenFragment
+          ...PostCreatorAndCollectionSectionFragment
         }
 
         ...useTogglePostAdmireFragment
@@ -163,26 +165,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           size="large"
         />
       </View>
-      {community && (
-        <GalleryTouchableOpacity
-          className="flex flex-row mt-3 ml-3"
-          onPress={handleCommunityPress}
-          eventElementId="Post Community Pill"
-          eventName="Clicked Post Community Pill"
-          eventContext={contexts.Posts}
-          properties={{ communityName: contractName }}
-        >
-          <Pill className="dark:border-black-500">
-            <Typography
-              numberOfLines={1}
-              className="text-sm "
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              {contractName}
-            </Typography>
-          </Pill>
-        </GalleryTouchableOpacity>
-      )}
+      <PostCreatorAndCollectionSection tokenRef={firstToken}/>
     </View>
   );
 }
