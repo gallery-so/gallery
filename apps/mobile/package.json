@@ -68,7 +68,7 @@
     "text-encoding": "^0.7.0",
     "typescript": "^5.0.0",
     "web-streams-polyfill": "^3.2.1",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
