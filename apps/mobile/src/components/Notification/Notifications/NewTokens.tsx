@@ -71,7 +71,7 @@ export function NewTokens({ notificationRef }: Props) {
             }}
             className="text-sm"
           >
-            Minted
+            Collected
             {quantity > 1 && ` ${quantity}x`}
           </Typography>
           <Typography
