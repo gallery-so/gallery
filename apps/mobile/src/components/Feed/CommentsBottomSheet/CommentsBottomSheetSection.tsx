@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -53,6 +53,13 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
   const handleViewRepliesPress = useCallback(() => {
     setShowReplies(true);
   }, []);
+
+  useEffect(() => {
+    // if the active commentId is in a reply, we want to show the replies
+    if (activeCommentId && replies.find((reply) => reply.dbid === activeCommentId)) {
+      setShowReplies(true);
+    }
+  }, [activeCommentId, replies]);
 
   if (!comment.comment) {
     return null;
