@@ -48,11 +48,10 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return 0;
   }, [token.community?.creator]);
 
-  const LONG_NAME_CHAR_BREAKPOINT = 34;
+  const LONG_NAME_CHAR_BREAKPOINT = 24;
   const containerStyles = useMemo(() => {
     let collectionWidth = 66;
     let creatorWidth = 33;
-    let spaceBetweenStylingOnParent = false;
     if (
       contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT
@@ -60,14 +59,13 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
       collectionWidth = 50;
       creatorWidth = 50;
     } else if (creatorUsernameCharCount === 0) {
-      collectionWidth = 0;
-      creatorWidth = 0;
+      return null;
     } else if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
     ) {
       // space-between styling applied separately on parent container
-      spaceBetweenStylingOnParent = true;
+      return null;
     } else if (contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT) {
       collectionWidth = 33;
       creatorWidth = 66;
@@ -75,7 +73,6 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return {
       collectionWidth: collectionWidth,
       creatorWidth: creatorWidth,
-      spaceBetweenStylingOnParent: spaceBetweenStylingOnParent,
     };
   }, [contractNameCharCount, creatorUsernameCharCount]);
 
@@ -97,7 +94,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   }, [token.community?.creator]);
 
   return (
-    <StyledWrapper spaceBetween={containerStyles.spaceBetweenStylingOnParent} gap={16}>
+    <StyledWrapper spaceBetween={!containerStyles} gap={16}>
       {CreatorComponent && (
         <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
           <StyledLabel>Creator</StyledLabel>
