@@ -33,6 +33,6 @@ git add $FILE
 git commit -m "Incremented version number to $new_version"
 
 # Push the branch to the remote repository
-# git push origin $new_version
+git push origin $new_version
 
 echo "Git operations completed: branch $new_version created and pushed"
