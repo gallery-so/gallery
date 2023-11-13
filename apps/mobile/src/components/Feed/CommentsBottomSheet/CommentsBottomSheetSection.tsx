@@ -45,7 +45,7 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
   const [showReplies, setShowReplies] = useState(false);
 
   const replies = useMemo(() => {
-    return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node)).reverse();
+    return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment.replies?.edges]);
 
   const totalReplies = replies?.length ?? 0;
