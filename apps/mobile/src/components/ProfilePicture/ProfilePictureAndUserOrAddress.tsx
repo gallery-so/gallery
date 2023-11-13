@@ -119,8 +119,8 @@ export function CreatorProfilePictureAndUsernameOrAddress({
         <RawProfilePicture
           size="xs"
           default
-          eventElementId="NftDetail Creator PFP"
-          eventName="NftDetail Creator PFP"
+          eventElementId="Creator PFP"
+          eventName="Creator PFP"
           eventContext={eventContext}
         />
         <View>
