@@ -80,7 +80,11 @@ export function OwnerProfilePictureAndUsername({
       eventContext={eventContext}
     >
       {pfpDisabled ? null : <ProfilePicture userRef={user} size="xs" />}
-      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography
+        numberOfLines={1}
+        className="text-sm"
+        font={{ family: 'ABCDiatype', weight: 'Bold' }}
+      >
         {user.username}
       </Typography>
     </GalleryTouchableOpacity>

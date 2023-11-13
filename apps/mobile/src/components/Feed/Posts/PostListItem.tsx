@@ -6,16 +6,11 @@ import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/UniversalNftPreview';
-import { Pill } from '~/components/Pill';
-import { Typography } from '~/components/Typography';
 import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graphql';
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 import { DOUBLE_TAP_WINDOW } from '../constants';
@@ -34,12 +29,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
         tokens {
           dbid
-          community {
-            contractAddress {
-              address
-              chain
-            }
-          }
           media {
             ... on Media {
               dimensions {
@@ -50,7 +39,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           }
           ...useGetPreviewImagesSingleFragment
           ...UniversalNftPreviewWithBoundaryFragment
-          ...extractRelevantMetadataFromTokenFragment
           ...PostCreatorAndCollectionSectionFragment
         }
 
@@ -80,18 +68,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   });
 
   const firstToken = feedPost.tokens?.[0] || null;
-  const community = firstToken?.community ?? null;
-
-  const handleCommunityPress = useCallback(() => {
-    if (community?.contractAddress?.address && community?.contractAddress?.chain) {
-      navigation.push('Community', {
-        contractAddress: community.contractAddress?.address ?? '',
-        chain: community.contractAddress?.chain ?? '',
-      });
-    }
-
-    return;
-  }, [community, navigation]);
 
   if (!firstToken) {
     throw new Error('There is no token in post');
@@ -128,8 +104,6 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
       }, DOUBLE_TAP_WINDOW);
     }
   }, [hasViewerAdmiredEvent, toggleAdmire, navigation, imageUrl, firstToken.dbid]);
-
-  const { contractName } = extractRelevantMetadataFromToken(firstToken);
 
   const resultDimensions = useMemo(() => {
     const serverSourcedDimensions = firstToken.media?.dimensions;

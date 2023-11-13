@@ -1,20 +1,21 @@
-import { useMemo, useCallback } from 'react';
-import { graphql, useFragment } from 'react-relay';
 import { useNavigation } from '@react-navigation/native';
-
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
+
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CreatorProfilePictureAndUsernameOrAddress } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
-import { PostCreatorAndCollectionSectionFragment$key } from '~/generated/PostCreatorAndCollectionSectionFragment.graphql';
-import { contexts } from '~/shared/analytics/constants';
-import colors from '~/shared/theme/colors';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Typography } from '~/components/Typography';
+import { PostCreatorAndCollectionSectionFragment$key } from '~/generated/PostCreatorAndCollectionSectionFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 type Props = {
   tokenRef: PostCreatorAndCollectionSectionFragment$key;
 };
+
+const LONG_NAME_CHAR_BREAKPOINT = 25;
 
 export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
@@ -50,36 +51,38 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return 0;
   }, [token.community?.creator]);
 
-  const LONG_NAME_CHAR_BREAKPOINT = 34;
-  const containerStyles = useMemo(() => {
-    let collectionWidth = 66;
-    let creatorWidth = 33;
-    let spaceBetweenStylingOnParent = false;
+  const sizeOfNames = useMemo(() => {
     if (
-      contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT &&
-      creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT
-    ) {
-      collectionWidth = 50;
-      creatorWidth = 50;
-    } else if (creatorUsernameCharCount === 0) {
-      collectionWidth = 0;
-      creatorWidth = 0;
-    } else if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
     ) {
-      // space-between styling applied separately on parent container
-      spaceBetweenStylingOnParent = true;
-    } else if (contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT) {
-      collectionWidth = 33;
-      creatorWidth = 66;
+      return null;
     }
+
     return {
-      collectionWidth: collectionWidth,
-      creatorWidth: creatorWidth,
-      spaceBetweenStylingOnParent: spaceBetweenStylingOnParent,
+      contractNameSize: contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'L',
+      creatorNameSize: creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'S',
     };
   }, [contractNameCharCount, creatorUsernameCharCount]);
+
+  // Apply styles based on the size of name
+  const creatorNameContainerStyle = useMemo(() => {
+    if (sizeOfNames) {
+      return {
+        flex: sizeOfNames.creatorNameSize === 'S' ? 1 : 2,
+      };
+    }
+    return null;
+  }, [sizeOfNames]);
+
+  const contractNameContainerStyle = useMemo(() => {
+    if (sizeOfNames) {
+      return {
+        flex: sizeOfNames.contractNameSize === 'S' ? 1 : 2,
+      };
+    }
+    return null;
+  }, [sizeOfNames]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -114,12 +117,12 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
       }
     }
     return null;
-  }, [token.community?.creator]);
+  }, [token.community?.creator, handleUsernamePress]);
 
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
       {CreatorComponent && (
-        <View>
+        <View style={creatorNameContainerStyle}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs"
@@ -132,7 +135,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
       )}
 
       {token.community && (
-        <View className="flex">
+        <View className="flex" style={contractNameContainerStyle}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs"

@@ -73,7 +73,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 chain
               }
             }
-            ownerIsCreator
             owner {
               id
               username
@@ -158,7 +157,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     return null;
   }, [
     token.community?.creator,
-    handleOwnerUsernamePress,
     handleCreatorUsernamePress,
   ]);
 
