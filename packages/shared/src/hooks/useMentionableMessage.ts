@@ -47,7 +47,7 @@ export function useMentionableMessage() {
 
       const newMessage = `${message.substring(0, mentionStartPos)}@${
         mention.label
-      }${message.substring(mentionEndPos)}`;
+      } ${message.substring(mentionEndPos)}`;
 
       setMessage(newMessage);
 
