@@ -155,10 +155,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     }
 
     return null;
-  }, [
-    token.community?.creator,
-    handleCreatorUsernamePress,
-  ]);
+  }, [token.community?.creator, handleCreatorUsernamePress]);
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 

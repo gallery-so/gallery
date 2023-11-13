@@ -139,7 +139,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           size="large"
         />
       </View>
-      <PostCreatorAndCollectionSection tokenRef={firstToken}/>
+      <PostCreatorAndCollectionSection tokenRef={firstToken} />
     </View>
   );
 }
