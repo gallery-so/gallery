@@ -41,7 +41,6 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   );
 
   const { contractName } = extractRelevantMetadataFromToken(token);
-  const contractNameCharCount = contractName.length;
   const creatorUsernameCharCount = useMemo(() => {
     if (token.community?.creator) {
       if (token.community.creator.__typename === 'GalleryUser') {
@@ -52,6 +51,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   }, [token.community?.creator]);
 
   const sizeOfNames = useMemo(() => {
+  const contractNameCharCount = contractName.length;
     if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
@@ -60,10 +60,10 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     }
 
     return {
-      contractNameSize: contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'L',
+      contractNameSize: contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'S',
       creatorNameSize: creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'S',
     };
-  }, [contractNameCharCount, creatorUsernameCharCount]);
+  }, [creatorUsernameCharCount, contractName.length]);
 
   // Apply styles based on the size of name
   const creatorNameContainerStyle = useMemo(() => {
