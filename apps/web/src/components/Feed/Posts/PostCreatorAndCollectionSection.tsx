@@ -16,6 +16,8 @@ type Props = {
   tokenRef: PostCreatorAndCollectionSectionFragment$key;
 };
 
+const LONG_NAME_CHAR_BREAKPOINT = 24;
+
 export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
@@ -48,7 +50,6 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return 0;
   }, [token.community?.creator]);
 
-  const LONG_NAME_CHAR_BREAKPOINT = 24;
   const containerStyles = useMemo(() => {
     let collectionWidth = 66;
     let creatorWidth = 33;

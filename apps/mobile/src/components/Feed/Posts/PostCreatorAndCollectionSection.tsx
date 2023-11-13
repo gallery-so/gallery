@@ -51,7 +51,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   }, [token.community?.creator]);
 
   const sizeOfNames = useMemo(() => {
-  const contractNameCharCount = contractName.length;
+    const contractNameCharCount = contractName.length;
     if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
