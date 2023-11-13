@@ -64,6 +64,10 @@ export function usePostComment() {
               }
               creationTime
             }
+            replyToComment {
+              __typename
+              dbid
+            }
           }
         }
       }
@@ -162,6 +166,11 @@ export function usePostComment() {
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,
+              },
+              replyToComment: {
+                __typename: 'Comment',
+                dbid: replyToId ?? 'unknown',
+                id: `Comment:${replyToId ?? 'unknown'}`,
               },
             },
           },
