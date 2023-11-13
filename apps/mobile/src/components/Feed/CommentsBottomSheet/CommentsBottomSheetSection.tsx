@@ -76,16 +76,17 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
       </View>
 
       {showReplies && (
-        <View className="pl-6">
+        <>
           {replies.map((reply) => (
             <CommentsBottomSheetLine
               key={reply.dbid}
               activeCommentId={activeCommentId}
               commentRef={reply}
               onReplyPress={onReplyPress}
+              isReply
             />
           ))}
-        </View>
+        </>
       )}
     </View>
   );

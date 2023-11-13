@@ -25,6 +25,7 @@ type CommentLineProps = {
   commentRef: CommentsBottomSheetLineFragment$key;
   onReplyPress: (params: OnReplyPressParams) => void;
   footerElement?: React.ReactNode;
+  isReply?: boolean;
 };
 
 export function CommentsBottomSheetLine({
@@ -32,6 +33,7 @@ export function CommentsBottomSheetLine({
   commentRef,
   onReplyPress,
   footerElement,
+  isReply,
 }: CommentLineProps) {
   const comment = useFragment(
     graphql`
@@ -79,6 +81,7 @@ export function CommentsBottomSheetLine({
     <View
       className={clsx('flex flex-row space-x-2 px-4 py-2', {
         'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
+        'pl-12': isReply,
       })}
     >
       {comment.commenter && (
