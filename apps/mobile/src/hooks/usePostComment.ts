@@ -12,6 +12,7 @@ type submitCommentProps = {
   feedId: string;
   value: string;
   mentions?: MentionInput[];
+  replyToId?: string;
   onSuccess?: () => void;
 };
 
@@ -23,8 +24,14 @@ export function usePostComment() {
         $comment: String!
         $connections: [ID!]!
         $mentions: [MentionInput!]!
+        $replyToId: DBID
       ) @raw_response_type {
-        commentOnPost(comment: $comment, postId: $postId, mentions: $mentions) {
+        commentOnPost(
+          comment: $comment
+          postId: $postId
+          mentions: $mentions
+          replyToID: $replyToId
+        ) {
           ... on CommentOnPostPayload {
             __typename
 
@@ -65,7 +72,7 @@ export function usePostComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedId, value, onSuccess = noop, mentions = [] }: submitCommentProps) => {
+    async ({ feedId, value, onSuccess = noop, mentions = [], replyToId }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
@@ -163,6 +170,7 @@ export function usePostComment() {
             postId: feedId,
             connections: [interactionsConnection, commentsBottomSheetConnection],
             mentions,
+            replyToId,
           },
         });
 

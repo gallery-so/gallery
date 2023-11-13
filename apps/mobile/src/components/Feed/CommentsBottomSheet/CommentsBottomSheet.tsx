@@ -36,6 +36,7 @@ import { noop } from '~/shared/utils/noop';
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
+import { OnReplyPressParams } from './CommentsBottomSheetLine';
 
 const SNAP_POINTS = [400];
 
@@ -64,6 +65,7 @@ export function CommentsBottomSheet({
     };
   });
 
+  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>();
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
@@ -79,6 +81,18 @@ export function CommentsBottomSheet({
     handleSelectionChange,
   } = useMentionableMessage();
 
+  const highlightCommentId = useMemo(() => {
+    if (selectedComment?.commentId) {
+      return selectedComment.commentId;
+    }
+
+    if (activeCommentId) {
+      return activeCommentId;
+    }
+
+    return undefined;
+  }, [activeCommentId, selectedComment?.commentId]);
+
   const handleSubmit = useCallback(
     (value: string) => {
       if (type === 'Post') {
@@ -86,6 +100,7 @@ export function CommentsBottomSheet({
           feedId,
           value,
           mentions,
+          replyToId: selectedComment ? selectedComment.commentId : undefined,
           onSuccess: () => {
             Keyboard.dismiss();
           },
@@ -103,7 +118,7 @@ export function CommentsBottomSheet({
         },
       });
     },
-    [feedId, type, mentions, submitComment, postComment, resetMentions]
+    [feedId, type, mentions, submitComment, postComment, resetMentions, selectedComment]
   );
 
   const isSubmitting = useMemo(() => {
@@ -114,6 +129,14 @@ export function CommentsBottomSheet({
     return isSubmittingComment;
   }, [isSubmittingComment, isSubmittingPostComment, type]);
 
+  const handleReplyPress = useCallback((params: OnReplyPressParams) => {
+    setSelectedComment(params);
+  }, []);
+
+  const inputPlaceholder = useMemo(() => {
+    return `Replying to ${selectedComment?.username ?? 'comment'}`;
+  }, [selectedComment?.username]);
+
   useLayoutEffect(() => {
     if (isKeyboardActive) {
       paddingBottomValue.value = withSpring(0, { overshootClamping: true });
@@ -121,6 +144,11 @@ export function CommentsBottomSheet({
       paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
     }
   }, [bottom, isKeyboardActive, paddingBottomValue]);
+
+  const handleDismiss = useCallback(() => {
+    resetMentions();
+    setSelectedComment(null);
+  }, [resetMentions]);
 
   return (
     <GalleryBottomSheetModal
@@ -136,7 +164,7 @@ export function CommentsBottomSheet({
       onChange={() => setIsOpen(true)}
       android_keyboardInputMode="adjustResize"
       keyboardBlurBehavior="restore"
-      onDismiss={resetMentions}
+      onDismiss={handleDismiss}
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
         <View className="flex-grow">
@@ -169,7 +197,8 @@ export function CommentsBottomSheet({
                     <ConnectedCommentsList
                       type={type}
                       feedId={feedId}
-                      activeCommentId={activeCommentId}
+                      activeCommentId={highlightCommentId}
+                      onReplyPress={handleReplyPress}
                     />
                   )}
                 </Suspense>
@@ -185,6 +214,7 @@ export function CommentsBottomSheet({
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
           onClose={noop}
+          placeholder={inputPlaceholder}
         />
       </Animated.View>
     </GalleryBottomSheetModal>
@@ -195,22 +225,45 @@ type ConnectedCommentsListProps = {
   type: FeedItemTypes;
   feedId: string;
   activeCommentId?: string;
+  onReplyPress: (params: OnReplyPressParams) => void;
 };
 
-function ConnectedCommentsList({ type, feedId, activeCommentId }: ConnectedCommentsListProps) {
+function ConnectedCommentsList({
+  type,
+  feedId,
+  activeCommentId,
+  onReplyPress,
+}: ConnectedCommentsListProps) {
   if (type === 'Post') {
-    return <ConnectedPostCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
+    return (
+      <ConnectedPostCommentsList
+        feedId={feedId}
+        activeCommentId={activeCommentId}
+        onReplyPress={onReplyPress}
+      />
+    );
   }
 
-  return <ConnectedEventCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
+  return (
+    <ConnectedEventCommentsList
+      feedId={feedId}
+      activeCommentId={activeCommentId}
+      onReplyPress={onReplyPress}
+    />
+  );
 }
 
 type ConnectedCommentsProps = {
   activeCommentId?: string;
   feedId: string;
+  onReplyPress: (params: OnReplyPressParams) => void;
 };
 
-function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
+function ConnectedEventCommentsList({
+  activeCommentId,
+  feedId,
+  onReplyPress,
+}: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedCommentsListQuery(
@@ -272,6 +325,7 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
           onLoadMore={handleLoadMore}
           commentRefs={comments}
           activeCommentId={activeCommentId}
+          onReply={onReplyPress}
         />
       ) : (
         <View className="flex items-center justify-center h-full">
@@ -287,7 +341,11 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
   );
 }
 
-function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
+function ConnectedPostCommentsList({
+  activeCommentId,
+  feedId,
+  onReplyPress,
+}: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedPostCommentsListQuery(
@@ -347,6 +405,7 @@ function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedComment
           onLoadMore={handleLoadMore}
           commentRefs={comments}
           activeCommentId={activeCommentId}
+          onReply={onReplyPress}
         />
       ) : (
         <View className="flex items-center justify-center h-full">

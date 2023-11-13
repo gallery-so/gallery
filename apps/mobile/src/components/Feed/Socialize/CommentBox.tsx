@@ -22,6 +22,8 @@ type Props = {
   onSubmit: (value: string) => void;
   isSubmittingComment: boolean;
 
+  placeholder?: string;
+
   // If its coming from comment button, show the x mark
   isNotesModal?: boolean;
 };
@@ -35,6 +37,7 @@ export function CommentBox({
   isNotesModal = false,
   onSubmit,
   isSubmittingComment,
+  placeholder = 'Add a comment...',
 }: Props) {
   const { colorScheme } = useColorScheme();
 
@@ -99,7 +102,7 @@ export function CommentBox({
           autoComplete="off"
           autoFocus={autoFocus}
           onBlur={handleDismiss}
-          placeholder="Add a comment..."
+          placeholder={placeholder}
           placeholderTextColor={colorScheme === 'dark' ? colors.shadow : colors.metal}
           onSubmitEditing={handleDismiss}
           keyboardType="twitter"
