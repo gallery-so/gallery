@@ -53,7 +53,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           ...UserHoverCardFragment
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
-        ownerIsCreator
         contract {
           name
           chain
@@ -130,24 +129,16 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   }, [isMobile, showModal, token]);
 
   const CreatorComponent = useMemo(() => {
-    if (token.owner && token.ownerIsCreator) {
-      return (
-        <UserHoverCard userRef={token.owner}>
-          <OwnerProfilePictureAndUsername
-            userRef={token.owner}
-            eventContext={contexts['NFT Detail']}
-          />
-        </UserHoverCard>
-      );
-    }
     if (token.community?.creator) {
       if (token.community.creator.__typename === 'GalleryUser') {
-        <UserHoverCard userRef={token.community.creator}>
-          <CreatorProfilePictureAndUsernameOrAddress
-            userOrAddressRef={token.community.creator}
-            eventContext={contexts['NFT Detail']}
-          />
-        </UserHoverCard>;
+        return (
+          <UserHoverCard userRef={token.community.creator}>
+            <CreatorProfilePictureAndUsernameOrAddress
+              userOrAddressRef={token.community.creator}
+              eventContext={contexts['NFT Detail']}
+            />
+          </UserHoverCard>
+        );
       }
       return (
         <CreatorProfilePictureAndUsernameOrAddress
@@ -156,7 +147,8 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         />
       );
     }
-  }, [token.community?.creator, token.owner, token.ownerIsCreator]);
+    return null;
+  }, [token.community?.creator]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>

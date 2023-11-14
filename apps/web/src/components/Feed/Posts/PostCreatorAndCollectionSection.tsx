@@ -6,10 +6,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
-import {
-  CreatorProfilePictureAndUsernameOrAddress,
-  OwnerProfilePictureAndUsername,
-} from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
+import { CreatorProfilePictureAndUsernameOrAddress } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
 import { PostCreatorAndCollectionSectionFragment$key } from '~/generated/PostCreatorAndCollectionSectionFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
@@ -19,19 +16,17 @@ type Props = {
   tokenRef: PostCreatorAndCollectionSectionFragment$key;
 };
 
+const LONG_NAME_CHAR_BREAKPOINT = 24;
+
 export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment PostCreatorAndCollectionSectionFragment on Token {
-        owner {
-          ...UserHoverCardFragment
-          ...ProfilePictureAndUserOrAddressOwnerFragment
-        }
-        ownerIsCreator
         community {
           creator {
             ... on GalleryUser {
               __typename
+              username
               ...UserHoverCardFragment
             }
             ...ProfilePictureAndUserOrAddressCreatorFragment
@@ -45,23 +40,47 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   );
 
   const { contractName } = extractRelevantMetadataFromToken(token);
-
-  const CreatorComponent = useMemo(() => {
-    if (token.owner && token.ownerIsCreator) {
-      return (
-        <UserHoverCard userRef={token.owner}>
-          <OwnerProfilePictureAndUsername
-            userRef={token.owner}
-            eventContext={contexts.Posts}
-            pfpDisabled
-          />
-        </UserHoverCard>
-      );
+  const contractNameCharCount = contractName.length;
+  const creatorUsernameCharCount = useMemo(() => {
+    if (token.community?.creator?.__typename === 'GalleryUser') {
+      return token.community.creator.username?.length ?? 0;
     }
+    return 0;
+  }, [token.community?.creator]);
 
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return (
+  const containerStyles = useMemo(() => {
+    let collectionWidth = 66;
+    let creatorWidth = 33;
+    if (
+      contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT &&
+      creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT
+    ) {
+      collectionWidth = 50;
+      creatorWidth = 50;
+    } else if (creatorUsernameCharCount === 0) {
+      // use entire row to display collection name
+      return null;
+    } else if (
+      contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
+      creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
+    ) {
+      // space-between styling applied separately on parent container
+      return null;
+    } else if (contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT) {
+      collectionWidth = 33;
+      creatorWidth = 66;
+    }
+    return {
+      collectionWidth: collectionWidth,
+      creatorWidth: creatorWidth,
+    };
+  }, [contractNameCharCount, creatorUsernameCharCount]);
+
+  return (
+    <StyledWrapper spaceBetween={!containerStyles} gap={16}>
+      {token.community?.creator?.__typename === 'GalleryUser' ? (
+        <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
+          <StyledLabel>Creator</StyledLabel>
           <UserHoverCard userRef={token.community.creator}>
             <CreatorProfilePictureAndUsernameOrAddress
               userOrAddressRef={token.community.creator}
@@ -69,39 +88,39 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
               pfpDisabled
             />
           </UserHoverCard>
-        );
-      }
-      return null;
-    }
-  }, [token.community?.creator, token.owner, token.ownerIsCreator]);
-
-  return (
-    <HStack gap={16}>
-      {CreatorComponent && (
-        <StyledCreatorContainer gap={4}>
-          <StyledLabel>Creator</StyledLabel>
-          {CreatorComponent}
         </StyledCreatorContainer>
-      )}
+      ) : null}
 
       {token.community && (
-        <StyledCollectionContainer>
+        <StyledCollectionContainer widthPercentage={containerStyles?.collectionWidth}>
           <StyledLabel>Collection</StyledLabel>
           <CommunityHoverCard communityRef={token.community} communityName={contractName}>
-            <TitleDiatypeM>{contractName}</TitleDiatypeM>
+            <StyledText>{contractName}</StyledText>
           </CommunityHoverCard>
         </StyledCollectionContainer>
       )}
-    </HStack>
+    </StyledWrapper>
   );
 }
 
-const StyledCreatorContainer = styled(VStack)`
-  width: 50%;
+const StyledCreatorContainer = styled(VStack)<{ widthPercentage?: number }>`
+  ${({ widthPercentage }) => (widthPercentage ? `width: ${widthPercentage}%` : null)}
 `;
 
-const StyledCollectionContainer = styled(VStack)`
-  width: 50%;
+const StyledCollectionContainer = styled(VStack)<{ widthPercentage?: number }>`
+  ${({ widthPercentage }) => (widthPercentage ? `width: ${widthPercentage}%` : null)}
+`;
+
+const StyledWrapper = styled(HStack)<{ spaceBetween: boolean }>`
+  ${({ spaceBetween }) => (spaceBetween ? `justify-content: space-between` : null)};
+`;
+
+const StyledText = styled(TitleDiatypeM)`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
 `;
 
 const StyledLabel = styled(BaseS)`
