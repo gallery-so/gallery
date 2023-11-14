@@ -190,13 +190,14 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   const handlePaste = useCallback(
     (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
-      let pastedText = event.clipboardData.getData('text/plain');
-      if (pastedText.length > MAX_TEXT_LENGTH) {
-        pastedText = pastedText.substring(0, MAX_TEXT_LENGTH);
+      const pastedText = event.clipboardData.getData('text/plain');
+      let newMessage = message + pastedText;
+      if (newMessage.length > MAX_TEXT_LENGTH) {
+        newMessage = newMessage.substring(0, MAX_TEXT_LENGTH);
       }
-      setMessage(pastedText);
+      setMessage(newMessage);
     },
-    [setMessage]
+    [setMessage, message]
   );
 
   return (
