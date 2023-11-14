@@ -41,6 +41,8 @@ import { OnReplyPressParams } from './CommentsBottomSheetLine';
 
 const SNAP_POINTS = [400];
 
+export const REPLIES_PER_PAGE = 6;
+
 type CommentsBottomSheetProps = {
   activeCommentId?: string;
   feedId: string;
@@ -275,11 +277,13 @@ function ConnectedEventCommentsList({
         $feedEventId: DBID!
         $last: Int!
         $before: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 },
+    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
     { fetchPolicy: 'store-and-network' }
   );
 
@@ -357,11 +361,13 @@ function ConnectedPostCommentsList({
         $feedEventId: DBID!
         $last: Int!
         $before: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 },
+    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
     { fetchPolicy: 'store-and-network' }
   );
 

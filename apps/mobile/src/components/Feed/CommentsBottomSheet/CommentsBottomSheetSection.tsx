@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 
 import {
   GalleryTouchableOpacity,
@@ -11,6 +11,7 @@ import { CommentsBottomSheetSectionFragment$key } from '~/generated/CommentsBott
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { REPLIES_PER_PAGE } from './CommentsBottomSheet';
 import { CommentsBottomSheetLine, OnReplyPressParams } from './CommentsBottomSheetLine';
 
 type Props = {
@@ -20,13 +21,18 @@ type Props = {
 };
 
 export function CommentsBottomSheetSection({ activeCommentId, commentRef, onReplyPress }: Props) {
-  const comment = useFragment(
+  const {
+    data: comment,
+    hasPrevious,
+    loadPrevious,
+  } = usePaginationFragment(
     graphql`
-      fragment CommentsBottomSheetSectionFragment on Comment {
+      fragment CommentsBottomSheetSectionFragment on Comment
+      @refetchable(queryName: "CommentsBottomSheetSectionFragmentQuery") {
         __typename
         dbid
         comment
-        replies(last: $last, before: $before)
+        replies(last: $replyLast, before: $replyBefore)
           @connection(key: "CommentsBottomSheetSection_replies") {
           edges {
             node {
@@ -34,6 +40,11 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
               dbid
               ...CommentsBottomSheetLineFragment
             }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            total
           }
         }
         ...CommentsBottomSheetLineFragment
@@ -48,11 +59,29 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
     return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment.replies?.edges]);
 
-  const totalReplies = replies?.length ?? 0;
+  const totalReplies = comment.replies?.pageInfo.total ?? 0;
+
+  const totalRepliesShown = useMemo(() => {
+    if (!showReplies) {
+      return totalReplies;
+    }
+
+    return totalReplies - replies.length;
+  }, [replies, showReplies, totalReplies]);
+
+  const loadMore = useCallback(() => {
+    if (hasPrevious) {
+      loadPrevious(REPLIES_PER_PAGE);
+    }
+  }, [hasPrevious, loadPrevious]);
 
   const handleViewRepliesPress = useCallback(() => {
-    setShowReplies(true);
-  }, []);
+    if (!showReplies) {
+      setShowReplies(true);
+    } else {
+      loadMore();
+    }
+  }, [loadMore, showReplies]);
 
   useEffect(() => {
     // if the active commentId is in a reply, we want to show the replies
@@ -73,11 +102,13 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
           commentRef={comment}
           onReplyPress={onReplyPress}
           footerElement={
-            <ViewRepliesButton
-              totalReplies={totalReplies}
-              showReplies={showReplies}
-              handleViewRepliesPress={handleViewRepliesPress}
-            />
+            !showReplies && (
+              <ViewRepliesButton
+                totalReplies={totalRepliesShown}
+                showReplies={showReplies}
+                handleViewRepliesPress={handleViewRepliesPress}
+              />
+            )
           }
         />
       </View>
@@ -93,6 +124,13 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
               isReply
             />
           ))}
+          <View className="pl-12">
+            <ViewRepliesButton
+              totalReplies={totalRepliesShown}
+              showReplies={showReplies}
+              handleViewRepliesPress={handleViewRepliesPress}
+            />
+          </View>
         </>
       )}
     </View>
@@ -112,27 +150,25 @@ function ViewRepliesButton({
   handleViewRepliesPress,
   style,
 }: ViewRepliesButtonProps) {
-  if (totalReplies > 0 && !showReplies) {
-    return (
-      <GalleryTouchableOpacity
-        eventElementId={'CommentsBottomSheetLine View Replies'}
-        eventName={'CommentsBottomSheetLine View Replies'}
-        eventContext={contexts.Posts}
-        onPress={handleViewRepliesPress}
-        style={style}
-      >
-        <View className="flex-row items-center space-x-1">
-          <View className="h-1 w-1 rounded-full bg-shadow" />
-          <Typography
-            className="text-xs text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          >
-            View {totalReplies} {totalReplies === 1 ? 'reply' : 'replies'}
-          </Typography>
-        </View>
-      </GalleryTouchableOpacity>
-    );
+  if (totalReplies < 1) {
+    return null;
   }
 
-  return null;
+  return (
+    <GalleryTouchableOpacity
+      eventElementId={'CommentsBottomSheetLine View Replies'}
+      eventName={'CommentsBottomSheetLine View Replies'}
+      eventContext={contexts.Posts}
+      onPress={handleViewRepliesPress}
+      style={style}
+    >
+      <View className="flex-row items-center space-x-1">
+        <View className="h-1 w-1 rounded-full bg-shadow" />
+        <Typography className="text-xs text-shadow" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          View {totalReplies} {showReplies ? 'more ' : ''}
+          {totalReplies === 1 ? 'reply' : 'replies'}
+        </Typography>
+      </View>
+    </GalleryTouchableOpacity>
+  );
 }
