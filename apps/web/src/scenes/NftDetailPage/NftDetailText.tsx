@@ -125,7 +125,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   );
 
   const [showDetails, setShowDetails] = useState(false);
-  const [isAdmireHovered, setIsAdmireHovered] = useState(false);
   const { showModal } = useModalActions();
   const track = useTrack();
   const info = useOptimisticUserInfo(query);
@@ -333,13 +332,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             eventElementId="Nft Detail Admire Token Button"
             eventName="Nft Detail Admire Token Button Pressed"
             eventContext={contexts['NFT Detail']}
-            onMouseEnter={() => setIsAdmireHovered(true)}
-            onMouseLeave={() => setIsAdmireHovered(false)}
           >
-            <HStack gap={8} align="center">
+            <StyledAdmireContainer active={hasViewerAdmiredToken} gap={8} align="center">
               <AdmireIcon active={hasViewerAdmiredToken} />
-              Admire
-            </HStack>
+              {hasViewerAdmiredToken ? 'Admired' : 'Admire'}
+            </StyledAdmireContainer>
           </StyledAdmireButton>
           {authenticatedUserOwnsAsset && (
             <StyledInteractionButton
@@ -421,6 +418,10 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
 
 const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
+`;
+
+const StyledAdmireContainer = styled(HStack)<{ active: boolean }>`
+  ${({ active }) => (active ? `color: ${colors.hyperBlue}` : null)};
 `;
 
 const StyledAdmireButton = styled(Button)<{ active: boolean }>`
