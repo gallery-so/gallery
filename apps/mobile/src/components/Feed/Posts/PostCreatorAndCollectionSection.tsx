@@ -42,47 +42,35 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
 
   const { contractName } = extractRelevantMetadataFromToken(token);
   const creatorUsernameCharCount = useMemo(() => {
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return token.community.creator.username?.length ?? 0;
-      }
+    if (token.community?.creator?.__typename === 'GalleryUser') {
+      return token.community.creator.username?.length ?? 0;
     }
     return 0;
   }, [token.community?.creator]);
 
-  const sizeOfNames = useMemo(() => {
+  const { contractNameContainerStyle, creatorNameContainerStyle } = useMemo(() => {
     const contractNameCharCount = contractName.length;
+
+    // apply space-between styling separately on parent container
     if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
       creatorUsernameCharCount < LONG_NAME_CHAR_BREAKPOINT
     ) {
-      return null;
+      return {
+        contractNameContainerStyle: null,
+        creatorNameContainerStyle: null,
+      };
+    }
+
+    function computeStyleGivenCharCount(charCount: number) {
+      return { flex: charCount > LONG_NAME_CHAR_BREAKPOINT ? 2 : 1 };
     }
 
     return {
-      contractNameSize: contractNameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'S',
-      creatorNameSize: creatorUsernameCharCount > LONG_NAME_CHAR_BREAKPOINT ? 'L' : 'S',
+      contractNameContainerStyle: computeStyleGivenCharCount(contractNameCharCount),
+      creatorNameContainerStyle: computeStyleGivenCharCount(creatorUsernameCharCount),
     };
-  }, [creatorUsernameCharCount, contractName.length]);
-
-  // Apply styles based on the size of name
-  const creatorNameContainerStyle = useMemo(() => {
-    if (sizeOfNames) {
-      return {
-        flex: sizeOfNames.creatorNameSize === 'S' ? 1 : 2,
-      };
-    }
-    return null;
-  }, [sizeOfNames]);
-
-  const contractNameContainerStyle = useMemo(() => {
-    if (sizeOfNames) {
-      return {
-        flex: sizeOfNames.contractNameSize === 'S' ? 1 : 2,
-      };
-    }
-    return null;
-  }, [sizeOfNames]);
+  }, [contractName.length, creatorUsernameCharCount]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -103,25 +91,9 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return;
   }, [token.community, navigation]);
 
-  const CreatorComponent = useMemo(() => {
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return (
-          <CreatorProfilePictureAndUsernameOrAddress
-            userOrAddressRef={token.community.creator}
-            eventContext={contexts.Posts}
-            handlePress={handleUsernamePress}
-            pfpDisabled
-          />
-        );
-      }
-    }
-    return null;
-  }, [token.community?.creator, handleUsernamePress]);
-
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
-      {CreatorComponent && (
+      {token.community?.creator?.__typename === 'GalleryUser' ? (
         <View style={creatorNameContainerStyle}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -130,9 +102,15 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
           >
             CREATOR
           </Typography>
-          {CreatorComponent}
+
+          <CreatorProfilePictureAndUsernameOrAddress
+            userOrAddressRef={token.community.creator}
+            eventContext={contexts.Posts}
+            handlePress={handleUsernamePress}
+            pfpDisabled
+          />
         </View>
-      )}
+      ) : null}
 
       {token.community && (
         <View className="flex" style={contractNameContainerStyle}>

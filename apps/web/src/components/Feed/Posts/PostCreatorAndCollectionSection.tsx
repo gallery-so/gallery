@@ -60,6 +60,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
       collectionWidth = 50;
       creatorWidth = 50;
     } else if (creatorUsernameCharCount === 0) {
+      // use entire row to display collection name
       return null;
     } else if (
       contractNameCharCount < LONG_NAME_CHAR_BREAKPOINT &&
@@ -77,10 +78,11 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     };
   }, [contractNameCharCount, creatorUsernameCharCount]);
 
-  const CreatorComponent = useMemo(() => {
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return (
+  return (
+    <StyledWrapper spaceBetween={!containerStyles} gap={16}>
+      {token.community?.creator?.__typename === 'GalleryUser' ? (
+        <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
+          <StyledLabel>Creator</StyledLabel>
           <UserHoverCard userRef={token.community.creator}>
             <CreatorProfilePictureAndUsernameOrAddress
               userOrAddressRef={token.community.creator}
@@ -88,20 +90,8 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
               pfpDisabled
             />
           </UserHoverCard>
-        );
-      }
-    }
-    return null;
-  }, [token.community?.creator]);
-
-  return (
-    <StyledWrapper spaceBetween={!containerStyles} gap={16}>
-      {CreatorComponent && (
-        <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
-          <StyledLabel>Creator</StyledLabel>
-          {CreatorComponent}
         </StyledCreatorContainer>
-      )}
+      ) : null}
 
       {token.community && (
         <StyledCollectionContainer widthPercentage={containerStyles?.collectionWidth}>
