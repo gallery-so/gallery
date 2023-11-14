@@ -64,7 +64,7 @@
     "@floating-ui/react": "^0.14.0",
     "@graphql-codegen/cli": "^2.16.5",
     "@rainbow-me/rainbowkit": "^1.0.5",
-    "@sentry/nextjs": "^7.23.0",
+    "@sentry/nextjs": "^7.77.0",
     "@taquito/taquito": "14.0.0",
     "@taquito/tzip16": "14.0.0",
     "@taquito/utils": "^13.0.1",
