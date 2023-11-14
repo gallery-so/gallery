@@ -64,6 +64,19 @@ export function useMentionableMessage() {
         newMention.communityId = mention.value;
       }
 
+      // Check if the mention already exists
+      const mentionExists = mentions.some(
+        (existingMention) =>
+          (existingMention.userId === newMention.userId ||
+            existingMention.communityId === newMention.communityId) &&
+          existingMention.interval.start === newMention.interval.start &&
+          existingMention.interval.length === newMention.interval.length
+      );
+
+      if (mentionExists) {
+        return newMessage; // If the mention already exists, return here
+      }
+
       // Calculate the length difference between the old alias and the new mention
       const lengthDifference = mention.label.length + 1 - aliasKeyword.length; // +1 for the @
 
