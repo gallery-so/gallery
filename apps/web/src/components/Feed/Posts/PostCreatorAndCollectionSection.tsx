@@ -42,10 +42,8 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const { contractName } = extractRelevantMetadataFromToken(token);
   const contractNameCharCount = contractName.length;
   const creatorUsernameCharCount = useMemo(() => {
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return token.community.creator.username?.length ?? 0;
-      }
+    if (token.community?.creator?.__typename === 'GalleryUser') {
+      return token.community.creator.username?.length ?? 0;
     }
     return 0;
   }, [token.community?.creator]);
