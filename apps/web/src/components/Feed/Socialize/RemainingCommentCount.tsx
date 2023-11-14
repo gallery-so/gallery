@@ -3,7 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { RemainingCommentCountFragment$key } from '~/generated/RemainingCommentCountFragment.graphql';
 import { RemainingCommentCountQueryFragment$key } from '~/generated/RemainingCommentCountQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
@@ -56,16 +56,15 @@ export function RemainingCommentCount({
     <StyledViewCommentsText>View all comments in the Gallery App</StyledViewCommentsText>
   ) : (
     <StyledViewCommentsText onClick={openCommentsModal}>
-      View all {totalComments} comments
+      <StyledViewAllText>View all {totalComments} comments</StyledViewAllText>
     </StyledViewCommentsText>
   );
 }
 
 const StyledViewCommentsText = styled.div.attrs({ role: 'button' })`
   cursor: pointer;
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 14px;
-  line-height: 1;
+`;
 
+const StyledViewAllText = styled(TitleDiatypeM)`
   color: ${colors.shadow};
 `;

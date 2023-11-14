@@ -12,7 +12,6 @@ import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
-import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
@@ -24,9 +23,7 @@ import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
+import { CreatorProfilePictureAndUsernameOrAddress } from '../ProfilePicture/ProfilePictureAndUserOrAddress';
 import { Typography } from '../Typography';
 import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
 
@@ -44,17 +41,12 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         contractAddress {
           chain
           address
-          ...EnsOrAddressWithSuspenseFragment
         }
         creator {
+          ...ProfilePictureAndUserOrAddressCreatorFragment
           __typename
           ... on GalleryUser {
             username
-            universal
-            ...ProfilePictureFragment
-          }
-          ... on ChainAddress {
-            chain
           }
         }
         ...CommunityPostBottomSheetFragment
@@ -96,8 +88,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleUsernamePress = useCallback(() => {
-    if (community.creator?.__typename === 'GalleryUser' && community.creator?.username) {
-      navigation.navigate('Profile', { username: community.creator?.username });
+    if (community.creator?.__typename === 'GalleryUser') {
+      navigation.navigate('Profile', { username: community.creator?.username ?? '' });
     }
   }, [community.creator, navigation]);
 
@@ -153,71 +145,35 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     );
   }, [community.dbid, refetch]);
 
-  const showAddressOrGalleryUser = useMemo(() => {
-    if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
-      return (
-        <GalleryTouchableOpacity
-          className="flex flex-row items-center space-x-1"
-          onPress={handleUsernamePress}
-          eventElementId="Community Page Creator Username"
-          eventName="Tapped Community Page Creator Username"
-          eventContext={contexts.Community}
-        >
-          {community.creator.__typename && <ProfilePicture userRef={community.creator} size="xs" />}
-
-          <Typography
-            className="text-sm text-black-800 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          >
-            {community.creator.username}
-          </Typography>
-        </GalleryTouchableOpacity>
-      );
-    } else if (community.contractAddress) {
-      return (
-        <View className="flex flex-row items-center space-x-1">
-          <RawProfilePicture
-            size="xs"
-            default
-            eventElementId="Community PFP"
-            eventName="Community PFP Press"
-            eventContext={contexts.Community}
-          />
-          <View>
-            <EnsOrAddress
-              chainAddressRef={community.contractAddress}
-              eventContext={contexts.Community}
-            />
-          </View>
-        </View>
-      );
-    } else {
-      return null;
-    }
-  }, [community.creator, community.contractAddress, handleUsernamePress]);
-
   return (
     <View className="flex flex-row justify-between">
-      {community?.chain !== 'POAP' && (
+      {community.creator && community?.chain !== 'POAP' ? (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs uppercase"
           >
-            created by
+            CREATED BY
           </Typography>
-          {showAddressOrGalleryUser}
+          <View>
+            <CreatorProfilePictureAndUsernameOrAddress
+              userOrAddressRef={community.creator}
+              handlePress={handleUsernamePress}
+              eventContext={contexts['NFT Detail']}
+            />
+          </View>
         </View>
-      )}
-      <View className="flex flex-column space-y-1">
-        <Typography
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          className="text-xs uppercase"
-        >
-          network
-        </Typography>
+      ) : null}
 
-        {community.chain && (
+      {community.chain && (
+        <View className="flex flex-column space-y-1">
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="text-xs uppercase"
+          >
+            NETWORK
+          </Typography>
+
           <View className="flex flex-row space-x-1 items-center">
             <NetworkIcon chain={community.chain} />
             <Typography
@@ -227,8 +183,9 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
               {community.chain}
             </Typography>
           </View>
-        )}
-      </View>
+        </View>
+      )}
+
       <Button
         size="sm"
         text="Post"

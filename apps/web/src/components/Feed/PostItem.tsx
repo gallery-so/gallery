@@ -13,7 +13,7 @@ import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
-import PostCommunityPill from './Posts/PostCommunityPill';
+import { PostCreatorAndCollectionSection } from './Posts/PostCreatorAndCollectionSection';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
 import PostSocializeSection from './Socialize/PostSocializeSection';
@@ -40,10 +40,12 @@ export function PostItem({
         author {
           __typename
         }
+        tokens {
+          ...PostCreatorAndCollectionSectionFragment
+        }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
-        ...PostCommunityPillFragment
       }
     `,
     eventRef
@@ -63,6 +65,12 @@ export function PostItem({
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
 
+  const token = post.tokens?.[0];
+
+  if (!token) {
+    throw new Error('No token provided with post');
+  }
+
   if (!post.author) {
     throw new ErrorWithSentryMetadata('Post author is undefined', { postId: post.dbid }); // no need to specify `tags`
   }
@@ -73,7 +81,7 @@ export function PostItem({
         <PostHeader postRef={post} queryRef={query} />
         <PostNfts postRef={post} onNftLoad={measure} />
         <VStack gap={8}>
-          <PostCommunityPill postRef={post} />
+          <PostCreatorAndCollectionSection tokenRef={token} />
           <ReportingErrorBoundary dontReport fallback={<></>}>
             <PostSocializeSection
               queryRef={query}
@@ -91,7 +99,7 @@ export function PostItem({
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <VStack gap={8}>
-          <PostCommunityPill postRef={post} />
+          <PostCreatorAndCollectionSection tokenRef={token} />
           <ReportingErrorBoundary dontReport fallback={<></>}>
             <PostSocializeSection
               queryRef={query}
