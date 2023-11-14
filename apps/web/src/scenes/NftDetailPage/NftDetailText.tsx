@@ -337,12 +337,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             onMouseLeave={() => setIsAdmireHovered(false)}
           >
             <HStack gap={8} align="center">
-              <AdmireIcon
-                active={
-                  (!hasViewerAdmiredToken && isAdmireHovered) ||
-                  (hasViewerAdmiredToken && !isAdmireHovered)
-                }
-              />
+              <AdmireIcon active={hasViewerAdmiredToken} />
               Admire
             </HStack>
           </StyledAdmireButton>
