@@ -84,3 +84,6 @@ tasks:
     deps:
       - '~:relay-codegen'
     command: tsc
+
+  version-bump:
+    command: yarn run version-bump

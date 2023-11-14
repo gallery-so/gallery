@@ -89,6 +89,7 @@
     "eas-build-post-install": "node_modules/.bin/moon run mobile:relay-codegen",
     "start": "expo start --dev-client",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "version-bump": "chmod +x ./version-bump.sh && ./version-bump.sh"
   }
 }
