@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { View } from 'react-native';
 import { Keyboard } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
@@ -54,6 +55,8 @@ export function CommentsBottomSheet({
   type,
 }: CommentsBottomSheetProps) {
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const commentBoxRef = useRef<TextInput>(null);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const { bottom } = useSafeAreaPadding();
@@ -131,6 +134,7 @@ export function CommentsBottomSheet({
 
   const handleReplyPress = useCallback((params: OnReplyPressParams) => {
     setSelectedComment(params);
+    commentBoxRef.current?.focus();
   }, []);
 
   const inputPlaceholder = useMemo(() => {
@@ -215,6 +219,7 @@ export function CommentsBottomSheet({
           isSubmittingComment={isSubmitting}
           onClose={noop}
           placeholder={inputPlaceholder}
+          ref={commentBoxRef}
         />
       </Animated.View>
     </GalleryBottomSheetModal>
