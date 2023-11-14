@@ -27,6 +27,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
             ... on GalleryUser {
               __typename
               username
+              universal
               ...UserHoverCardFragment
             }
             ...ProfilePictureAndUserOrAddressCreatorFragment
@@ -76,9 +77,12 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     };
   }, [contractNameCharCount, creatorUsernameCharCount]);
 
+  const isLegitGalleryUser =
+    token.community?.creator?.__typename === 'GalleryUser' && !token.community.creator.universal;
+
   return (
     <StyledWrapper spaceBetween={!containerStyles} gap={16}>
-      {token.community?.creator?.__typename === 'GalleryUser' ? (
+      {isLegitGalleryUser ? (
         <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
           <StyledLabel>Creator</StyledLabel>
           <UserHoverCard userRef={token.community.creator}>

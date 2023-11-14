@@ -26,6 +26,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
             ... on GalleryUser {
               __typename
               username
+              universal
             }
             ...ProfilePictureAndUserOrAddressCreatorFragment
           }
@@ -91,9 +92,12 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     return;
   }, [token.community, navigation]);
 
+  const isLegitGalleryUser =
+    token.community?.creator?.__typename === 'GalleryUser' && !token.community.creator.universal;
+
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
-      {token.community?.creator?.__typename === 'GalleryUser' ? (
+      {isLegitGalleryUser ? (
         <View style={creatorNameContainerStyle}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
