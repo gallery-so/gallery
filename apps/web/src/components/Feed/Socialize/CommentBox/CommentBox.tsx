@@ -191,13 +191,14 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       event.preventDefault();
       const pastedText = event.clipboardData.getData('text/plain');
-      let newMessage = message + pastedText;
-      if (newMessage.length > MAX_TEXT_LENGTH) {
-        newMessage = newMessage.substring(0, MAX_TEXT_LENGTH);
-      }
+      const start = textareaRef.current?.selectionStart || 0;
+      const end = textareaRef.current?.selectionEnd || 0;
+      const newText = message.substring(0, start) + pastedText + message.substring(end);
+      const newMessage =
+        newText.length > MAX_TEXT_LENGTH ? newText.substring(0, MAX_TEXT_LENGTH) : newText;
       setMessage(newMessage);
     },
-    [setMessage, message]
+    [setMessage, message, textareaRef]
   );
 
   return (
