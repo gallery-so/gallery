@@ -14,10 +14,6 @@ node:
   # Accepts "npm" (default), "pnpm", or "yarn".
   packageManager: 'yarn'
 
-  # The version of the package manager (above) to use.
-  yarn:
-    version: '3.4.1'
-
   # Add `node.version` as a constraint in the root `package.json` `engines`.
   addEnginesConstraint: true
 

@@ -69,6 +69,7 @@ tasks:
 
   android:
     command: noop
+    local: true
     deps:
       - ~:android-raw
       - ~:relay-watch
