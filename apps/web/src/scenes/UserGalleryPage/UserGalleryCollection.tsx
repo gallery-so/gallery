@@ -120,7 +120,7 @@ function UserGalleryCollection({
           collectorsNote={collection.collectorsNote ?? ''}
         />
       ),
-      headerText: 'Name and describe your collection',
+      headerText: 'Name and describe your section',
     });
   }, [
     collection.collectorsNote,
@@ -154,7 +154,7 @@ function UserGalleryCollection({
                       onClick={handleEditNameClick}
                       name="Manage Collection"
                       eventContext={contexts.UserGallery}
-                      label="Edit Name & Collection"
+                      label="Edit Name & Description"
                     />
                     <DropdownLink
                       href={{
@@ -163,7 +163,7 @@ function UserGalleryCollection({
                       }}
                       name="Manage Collection"
                       eventContext={contexts.UserGallery}
-                      label="Edit Collection"
+                      label="Edit Section"
                     />
                   </>
                 )}
@@ -171,7 +171,7 @@ function UserGalleryCollection({
                   href={collectionUrlPath}
                   name="Manage Collection"
                   eventContext={contexts.UserGallery}
-                  label="View Collection"
+                  label="View Section"
                 />
               </DropdownSection>
             </SettingsDropdown>

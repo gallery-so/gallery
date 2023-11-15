@@ -6,13 +6,18 @@ import { CommunitySearchResultSectionFragment$key } from '~/generated/CommunityS
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
 import SearchSection from '../SearchSection';
+import { SearchItemType, SearchResultVariant } from '../types';
 import CommunitySearchResult from './CommunitySearchResult';
 
 type Props = {
   title: string;
   isShowAll?: boolean;
   resultRefs: CommunitySearchResultSectionFragment$key;
+  variant: SearchResultVariant;
+  keyword: string;
+
   onChangeFilter: (filter: SearchFilterType) => void;
+  onSelect: (item: SearchItemType) => void;
 };
 
 export default function CommunitySearchResultSection({
@@ -20,6 +25,9 @@ export default function CommunitySearchResultSection({
   onChangeFilter,
   title,
   resultRefs,
+  onSelect,
+  keyword,
+  variant,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -44,9 +52,16 @@ export default function CommunitySearchResultSection({
       isShowAll={isShowAll}
       onShowAll={() => onChangeFilter('community')}
       numResults={results.length}
+      variant={variant}
     >
       {resultsToShow.map((result) => (
-        <CommunitySearchResult key={result.community.dbid} communityRef={result.community} />
+        <CommunitySearchResult
+          key={result.community.dbid}
+          communityRef={result.community}
+          variant={variant}
+          onSelect={onSelect}
+          keyword={keyword}
+        />
       ))}
     </SearchSection>
   );

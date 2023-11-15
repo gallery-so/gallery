@@ -21,7 +21,7 @@ function PostScreenInner() {
       }
     `,
     { postId: route.params.postId },
-    { fetchPolicy: 'store-or-network' }
+    { fetchPolicy: 'store-and-network' }
   );
 
   const [query, refetch] = useRefetchableFragment<

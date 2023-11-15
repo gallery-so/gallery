@@ -80,14 +80,14 @@ export function CollectionCreateOrEditForm({
         <Input
           onChange={handleNameChange}
           defaultValue={unescapedCollectionName}
-          placeholder="Collection name"
+          placeholder="Section title"
           autoFocus
           variant="grande"
         />
         <VStack>
           <StyledTextAreaWithCharCount
             onChange={handleDescriptionChange}
-            placeholder="Tell us about your collection..."
+            placeholder="Tell us about your items..."
             defaultValue={unescapedCollectorsNote}
             currentCharCount={collectorsNote.length}
             maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}

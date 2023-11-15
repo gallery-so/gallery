@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -26,7 +26,7 @@ import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import IconContainer from '../core/IconContainer';
 import { UnstyledLink } from '../core/Link/UnstyledLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
+import { TitleS, TitleXS } from '../core/Text/Text';
 import { GalleryNameAndDescriptionEditForm } from '../GalleryEditor/GalleryNameAndDescriptionEditForm';
 import DeleteGalleryConfirmation from './DeleteGalleryConfirmation';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
@@ -63,10 +63,6 @@ export default function Gallery({
           large
         }
         hidden @required(action: THROW)
-        collections @required(action: THROW) {
-          id
-          hidden
-        }
         owner {
           id
           username @required(action: THROW)
@@ -123,15 +119,9 @@ export default function Gallery({
 
   const { showModal } = useModalActions();
 
-  const { name, collections, tokenPreviews, hidden, dbid } = gallery;
+  const { name, tokenPreviews, hidden, dbid } = gallery;
 
   const { pushToast } = useToastActions();
-
-  const totalCollections = useMemo(() => {
-    const visibleCollections = collections.filter((collection) => !collection?.hidden);
-
-    return visibleCollections.length;
-  }, [collections]);
 
   const reassignFeaturedGallery = useCallback(async () => {
     if (!isFeatured) return;
@@ -293,9 +283,6 @@ export default function Gallery({
                 )}
                 <TitleContainer>
                   <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
-                  <BaseM>
-                    {totalCollections} collection{totalCollections === 1 ? '' : 's'}
-                  </BaseM>
                 </TitleContainer>
               </StyledGalleryTitleWrapper>
             </HStack>

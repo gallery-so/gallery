@@ -1,7 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 
-import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
 import extractPoapMetadata from '~/shared/utils/extractPoapMetadata';
 
@@ -23,7 +24,9 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
     return null;
   }
 
-  const { id, location, createdDate, supply, chain } = extractPoapMetadata(token.tokenMetadata);
+  const { id, location, createdDate, supply, chain, poapUrl, projectUrl } = extractPoapMetadata(
+    token.tokenMetadata
+  );
 
   return (
     <VStack gap={16}>
@@ -57,6 +60,19 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
           <TitleXS>CHAIN</TitleXS>
           <BaseM>{chain}</BaseM>
         </div>
+      )}
+      {projectUrl && (
+        <GalleryLink href={projectUrl}>
+          <TitleDiatypeM>Official Site</TitleDiatypeM>
+        </GalleryLink>
+      )}
+      {poapUrl && (
+        <GalleryLink href={poapUrl}>
+          <HStack gap={4}>
+            <BaseM>View on</BaseM>
+            <TitleDiatypeM>POAP</TitleDiatypeM>
+          </HStack>
+        </GalleryLink>
       )}
     </VStack>
   );

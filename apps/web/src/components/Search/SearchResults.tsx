@@ -9,16 +9,27 @@ import { TitleDiatypeL } from '../core/Text/Text';
 import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
-import { useSearchContext } from './SearchContext';
+import { SearchItemType, SearchResultVariant } from './types';
 import UserSearchResultSection from './User/UserSearchResultSection';
 
 type Props = {
+  keyword: string;
   activeFilter: SearchFilterType;
+  variant?: SearchResultVariant;
+
   onChangeFilter: (filter: SearchFilterType) => void;
+  onSelect: (item: SearchItemType) => void;
+  onEmptyResultsClose?: () => void;
 };
 
-export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
-  const { keyword } = useSearchContext();
+export default function SearchResults({
+  activeFilter,
+  keyword,
+  onChangeFilter,
+  onSelect,
+  variant = 'default',
+  onEmptyResultsClose,
+}: Props) {
   const deferredKeyword = useDeferredValue(keyword);
 
   const query = useLazyLoadQuery<SearchResultsQuery>(
@@ -77,6 +88,11 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
     return false;
   }, [query]);
 
+  if (isEmpty && onEmptyResultsClose) {
+    onEmptyResultsClose();
+    return null;
+  }
+
   if (isEmpty) {
     return (
       <StyledSearchResultContainer isLoading={isLoading}>
@@ -97,6 +113,9 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchUsers?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
+            onSelect={onSelect}
+            keyword={keyword}
           />
         )}
       </StyledSearchResultContainer>
@@ -112,6 +131,9 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchGalleries?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
+            keyword={keyword}
+            onSelect={onSelect}
           />
         )}
       </StyledSearchResultContainer>
@@ -127,6 +149,9 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             resultRefs={query?.searchCommunities?.results}
             onChangeFilter={onChangeFilter}
             isShowAll
+            variant={variant}
+            onSelect={onSelect}
+            keyword={keyword}
           />
         )}
       </StyledSearchResultContainer>
@@ -135,19 +160,25 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   // show all
   return (
-    <StyledSearchResultContainer isLoading={isLoading} gap={10}>
+    <StyledSearchResultContainer isLoading={isLoading} gap={variant === 'compact' ? 0 : 10}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
           resultRefs={query?.searchUsers?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
+          onSelect={onSelect}
+          keyword={keyword}
         />
       )}
-      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && variant === 'default' && (
         <GallerySearchResultSection
           title="galleries"
           resultRefs={query?.searchGalleries?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
+          keyword={keyword}
+          onSelect={onSelect}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -155,6 +186,9 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           title="communities"
           resultRefs={query?.searchCommunities?.results}
           onChangeFilter={onChangeFilter}
+          variant={variant}
+          onSelect={onSelect}
+          keyword={keyword}
         />
       )}
     </StyledSearchResultContainer>

@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { MentionType } from 'src/hooks/useMentionableMessage';
 
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { SearchResult } from '../SearchResult';
 
@@ -13,8 +13,9 @@ type Props = {
   communityRef: CommunitySearchResultFragment$key;
   keyword: string;
   onSelect?: (item: MentionType) => void;
+  isMentionSearch?: boolean;
 };
-export function CommunitySearchResult({ communityRef, keyword, onSelect }: Props) {
+export function CommunitySearchResult({ communityRef, keyword, onSelect, isMentionSearch }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -63,6 +64,7 @@ export function CommunitySearchResult({ communityRef, keyword, onSelect }: Props
       description={community?.description ?? ''}
       variant="Gallery"
       keyword={keyword}
+      isMentionSearch={isMentionSearch}
     />
   );
 }

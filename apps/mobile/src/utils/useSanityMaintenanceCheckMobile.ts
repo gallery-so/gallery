@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { useEffect } from 'react';
 
 import { useSanityMaintenanceCheck } from './sanity';
+import { useEffectOnAppForeground } from './useEffectOnAppForeground';
 
 export function useSanityMaintenanceCheckMobile() {
   // NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
@@ -19,24 +19,7 @@ export function useSanityMaintenanceCheckMobile() {
     [fetchMaintenanceModeStatus]
   );
 
-  const [appState, setAppState] = useState(AppState.currentState);
-
-  useEffect(
-    function fetchMaintenanceModeOnAppForeground() {
-      const handleAppStateChange = (nextAppState: AppStateStatus) => {
-        if ((appState === 'inactive' || appState === 'background') && nextAppState === 'active') {
-          // app has come into the foreground
-          fetchMaintenanceModeStatus();
-        }
-        setAppState(nextAppState);
-      };
-      const listener = AppState.addEventListener('change', handleAppStateChange);
-      return () => {
-        listener.remove();
-      };
-    },
-    [appState, fetchMaintenanceModeStatus]
-  );
+  useEffectOnAppForeground(fetchMaintenanceModeStatus);
 
   return {
     maintenanceCheckLoadedOrError,

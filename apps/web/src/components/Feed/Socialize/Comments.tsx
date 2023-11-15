@@ -5,7 +5,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -80,16 +80,27 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     `,
     queryRef
   );
+
+  const router = useRouter();
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const commentId = router.query.commentId as string;
 
   const ModalContent = useMemo(() => {
     if (feedItem.__typename === 'FeedEvent') {
       return <FeedEventsCommentsModal fullscreen={isMobile} eventRef={feedItem} queryRef={query} />;
     }
 
-    return <PostCommentsModal fullscreen={isMobile} postRef={feedItem} queryRef={query} />;
-  }, [feedItem, isMobile, query]);
+    return (
+      <PostCommentsModal
+        fullscreen={isMobile}
+        postRef={feedItem}
+        queryRef={query}
+        activeCommentId={commentId}
+      />
+    );
+  }, [feedItem, isMobile, query, commentId]);
 
   const handleAddCommentClick = useCallback(() => {
     showModal({
@@ -128,8 +139,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     // These are all the things that might cause the layout to shift
   }, [onPotentialLayoutShift, nonNullComments, totalComments]);
 
-  const { route } = useRouter();
-
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here
    *
@@ -165,7 +174,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
 
     if (lastComment.length > 0) {
       return (
-        <VStack gap={8}>
+        <VStack gap={4}>
           <VStack>
             {lastComment.map((comment) => {
               return <CommentLine key={comment.dbid} commentRef={comment} />;
@@ -186,7 +195,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     );
   }
 
-  return route === '/community/[chain]/[contractAddress]/live' ? (
+  return router.route === '/community/[chain]/[contractAddress]/live' ? (
     <StyledAddCommentCta color={colors.shadow}>
       Join the coversation in the Gallery app
     </StyledAddCommentCta>
@@ -197,6 +206,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   );
 }
 
-const StyledAddCommentCta = styled(BaseM)`
+const StyledAddCommentCta = styled(TitleDiatypeM)`
   cursor: pointer;
 `;

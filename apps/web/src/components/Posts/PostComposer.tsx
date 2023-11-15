@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
 import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
@@ -14,6 +13,7 @@ import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -21,16 +21,14 @@ import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
-import { AutoResizingTextAreaWithCharCount } from '../core/TextArea/TextArea';
 import PostComposerNft from './PostComposerNft';
+import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
 
 type Props = {
   tokenId: string;
   onBackClick?: () => void;
   eventFlow?: GalleryElementTrackingProps['eventFlow'];
 };
-
-const DESCRIPTION_MAX_LENGTH = 600;
 
 export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props) {
   const query = useLazyLoadQuery<PostComposerQuery>(
@@ -60,21 +58,25 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           id
         }
         ...PostComposerNftFragment
+        ...PostComposerTextAreaFragment
       }
     `,
     query.tokenById
   );
 
-  const { caption, setCaption, captionRef } = usePostComposerContext();
+  const {
+    isSelectingMentions,
+    aliasKeyword,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    resetMentions,
+    handleSelectionChange,
+    closeMention,
+  } = useMentionableMessage();
 
-  const handleDescriptionChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setCaption(event.target.value);
-    },
-    [setCaption]
-  );
-
-  const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
+  const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
 
   const createPost = useCreatePost();
 
@@ -90,19 +92,20 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     track('Clicked Post in Post Composer', {
       context: contexts.Posts,
       flow: eventFlow,
-      added_description: Boolean(captionRef.current),
+      added_description: Boolean(message),
     });
     try {
       await createPost({
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
-        caption: captionRef.current,
+        caption: message,
+        mentions,
       });
       setIsSubmitting(false);
       hideModal();
       pushToast({
         message: `Successfully posted ${token.name || 'item'}`,
       });
-      setCaption('');
+      resetMentions();
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -113,27 +116,21 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   }, [
     track,
     eventFlow,
-    captionRef,
     createPost,
     token.dbid,
     token.community?.id,
     token.name,
     hideModal,
     pushToast,
-    setCaption,
     reportError,
+    mentions,
+    message,
+    resetMentions,
   ]);
 
   const handleBackClick = useCallback(() => {
     onBackClick?.();
   }, [onBackClick]);
-
-  const inputPlaceholderTokenName = useMemo(() => {
-    if (!token.name || token.name.length > 30) {
-      return 'this item';
-    }
-    return `"${token.name}"`;
-  }, [token.name]);
 
   return (
     <StyledPostComposer grow justify="space-between">
@@ -151,18 +148,16 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         </StyledHeader>
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
-          <VStack grow>
-            <AutoResizingTextAreaWithCharCount
-              defaultValue={caption}
-              placeholder={`Say something about ${inputPlaceholderTokenName}`}
-              currentCharCount={caption.length}
-              maxCharCount={DESCRIPTION_MAX_LENGTH}
-              textAreaHeight="117px"
-              onChange={handleDescriptionChange}
-              autoFocus
-              hasPadding
-            />
-          </VStack>
+          <PostComposerTextArea
+            tokenRef={token}
+            isSelectingMentions={isSelectingMentions}
+            aliasKeyword={aliasKeyword}
+            selectMention={selectMention}
+            setMessage={setMessage}
+            message={message}
+            handleSelectionChange={handleSelectionChange}
+            closeMention={closeMention}
+          />
         </ContentContainer>
       </VStack>
       <StyledHStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">

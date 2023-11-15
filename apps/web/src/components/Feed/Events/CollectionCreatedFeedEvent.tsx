@@ -92,7 +92,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
                   </HStack>
                 )}{' '}
                 <BaseM>
-                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                  added {tokens.length} {pluralize(tokens.length, 'piece')} to a new section
                   {collectionName ? `, ` : ' '}
                 </BaseM>
                 {collectionName && (

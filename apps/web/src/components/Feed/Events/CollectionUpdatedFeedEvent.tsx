@@ -87,7 +87,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
                     <UserHoverCard userRef={event.owner} />
                   </HStack>
                 )}{' '}
-                made updates to {collectionName ? ' ' : 'their collection'}
+                made updates to {collectionName ? ' ' : 'their section'}
                 {collectionName}
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}

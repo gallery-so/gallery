@@ -45,11 +45,7 @@ export function graphqlTruncateAddress(chainAddressRef: walletTruncateAddressFra
     return address;
   }
 
-  if (chain === 'Tezos') {
-    return `${address.slice(0, 6)}...${address.slice(-6)}`;
-  } else {
-    return `${address.slice(0, 8)}...${address.slice(-4)}`;
-  }
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function graphqlTruncateUniversalUsername(

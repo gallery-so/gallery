@@ -29,7 +29,7 @@ function TitleSection() {
 
   return (
     <TitleSectionWrapper align="center" justify="space-between">
-      <TitleS>Collections</TitleS>
+      <TitleS>Sections</TitleS>
       <IconContainer
         variant="default"
         size="sm"

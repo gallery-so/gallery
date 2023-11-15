@@ -89,7 +89,7 @@ export function NotificationList({ queryRef }: Props) {
   // if user go outside of notifications screen, clear notifications
   useFocusEffect(
     useCallback(() => {
-      refetch({});
+      refetch({}, { fetchPolicy: 'store-and-network' });
 
       clearNotifications();
     }, [clearNotifications, refetch])
