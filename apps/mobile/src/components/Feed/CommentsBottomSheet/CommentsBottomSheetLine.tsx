@@ -18,6 +18,7 @@ import { getTimeSince } from '~/shared/utils/time';
 export type OnReplyPressParams = {
   username?: string;
   commentId?: string;
+  comment?: string;
 } | null;
 
 type CommentLineProps = {
@@ -68,10 +69,11 @@ export function CommentsBottomSheetLine({
 
   const handleReplyPress = useCallback(() => {
     onReplyPress({
-      username: comment?.commenter?.username ?? undefined,
+      username: comment?.commenter?.username ?? '',
+      comment: comment.comment ?? '',
       commentId: comment.dbid,
     });
-  }, [comment?.commenter?.username, comment.dbid, onReplyPress]);
+  }, [comment?.commenter?.username, comment.dbid, comment.comment, onReplyPress]);
 
   if (!comment.comment) {
     return null;

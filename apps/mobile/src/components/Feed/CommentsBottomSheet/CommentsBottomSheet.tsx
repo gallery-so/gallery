@@ -7,8 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { View } from 'react-native';
-import { Keyboard } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -38,6 +37,7 @@ import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
 import { OnReplyPressParams } from './CommentsBottomSheetLine';
+import { CommentsRepliedBanner } from './CommentsRepliedBanner';
 import { REPLIES_PER_PAGE } from './constants';
 
 type CommentsBottomSheetProps = {
@@ -68,7 +68,7 @@ export function CommentsBottomSheet({
   });
 
   const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
-  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>();
+  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(null);
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
@@ -224,6 +224,14 @@ export function CommentsBottomSheet({
             </View>
           )}
         </View>
+
+        <CommentsRepliedBanner
+          username={selectedComment?.username ?? ''}
+          comment={selectedComment?.comment ?? ''}
+          onClose={() => {
+            setSelectedComment(null);
+          }}
+        />
 
         <CommentBox
           value={message}
