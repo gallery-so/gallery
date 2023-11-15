@@ -86,16 +86,16 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
         ... on SomeoneAdmiredYourTokenNotification {
           token {
-              dbid
+            dbid
           }
         }
-        
+
         ... on SomeonePostedYourWorkNotification {
           post {
             dbid
           }
         }
-        
+
         ... on SomeoneMentionedYouNotification {
           __typename
           mentionSource {
@@ -116,7 +116,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
           }
         }
-        
+
         ... on NewTokensNotification {
           __typename
         }

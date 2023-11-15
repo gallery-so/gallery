@@ -219,7 +219,11 @@ export function Button({
 
           <Typography
             font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx('text-xs uppercase text-center', variantClassNames.textClassName, textClassName)}
+            className={clsx(
+              'text-xs uppercase text-center',
+              variantClassNames.textClassName,
+              textClassName
+            )}
           >
             {text}
           </Typography>
