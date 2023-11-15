@@ -88,8 +88,8 @@ export function CommentsBottomSheetLine({
         <View className="mt-1">
           <GalleryTouchableOpacity
             onPress={handleUserPress}
-            eventElementId={'CommentsBottomSheetLine Single User'}
-            eventName={'CommentsBottomSheetLine Single User'}
+            eventElementId={'PFP in comment'}
+            eventName={'PFP in comment Press'}
             eventContext={contexts.Posts}
           >
             <ProfilePicture userRef={comment.commenter} size="sm" />
@@ -112,8 +112,8 @@ export function CommentsBottomSheetLine({
           <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
 
           <GalleryTouchableOpacity
-            eventElementId={'CommentsBottomSheetLine Reply'}
-            eventName={'CommentsBottomSheetLine Reply'}
+            eventElementId={'Reply to Comment'}
+            eventName={'Reply to Comment Press'}
             eventContext={contexts.Posts}
             onPress={handleReplyPress}
           >

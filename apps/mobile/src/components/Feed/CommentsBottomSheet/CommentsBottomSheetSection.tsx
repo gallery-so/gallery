@@ -113,7 +113,7 @@ export function CommentsBottomSheetSection({
               <ViewRepliesButton
                 totalReplies={totalRepliesShown}
                 showReplies={showReplies}
-                handleViewRepliesPress={handleViewRepliesPress}
+                onPress={handleViewRepliesPress}
               />
             )
           }
@@ -135,7 +135,7 @@ export function CommentsBottomSheetSection({
             <ViewRepliesButton
               totalReplies={totalRepliesShown}
               showReplies={showReplies}
-              handleViewRepliesPress={handleViewRepliesPress}
+              onPress={handleViewRepliesPress}
             />
           </View>
         </>
@@ -147,26 +147,21 @@ export function CommentsBottomSheetSection({
 type ViewRepliesButtonProps = {
   totalReplies: number;
   showReplies: boolean;
-  handleViewRepliesPress: () => void;
+  onPress: () => void;
   style?: GalleryTouchableOpacityProps['style'];
 };
 
-function ViewRepliesButton({
-  totalReplies,
-  showReplies,
-  handleViewRepliesPress,
-  style,
-}: ViewRepliesButtonProps) {
+function ViewRepliesButton({ totalReplies, showReplies, onPress, style }: ViewRepliesButtonProps) {
   if (totalReplies < 1) {
     return null;
   }
 
   return (
     <GalleryTouchableOpacity
-      eventElementId={'CommentsBottomSheetLine View Replies'}
-      eventName={'CommentsBottomSheetLine View Replies'}
+      eventElementId={'View Replies Button'}
+      eventName={'View Replies Button Press'}
       eventContext={contexts.Posts}
-      onPress={handleViewRepliesPress}
+      onPress={onPress}
       style={style}
     >
       <View className="flex-row items-center space-x-1">
