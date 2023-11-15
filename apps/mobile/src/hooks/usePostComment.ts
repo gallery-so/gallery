@@ -116,6 +116,20 @@ export function usePostComment() {
           'CommentsBottomSheet_comments'
         );
 
+        const repliesConnection = ConnectionHandler.getConnectionID(
+          `Comment:${replyToId}`,
+          'CommentsBottomSheetSection_replies'
+        );
+
+        const connectionsIdsIncluded = [];
+
+        if (replyToId) {
+          connectionsIdsIncluded.push(repliesConnection);
+        } else {
+          connectionsIdsIncluded.push(commentsBottomSheetConnection);
+          connectionsIdsIncluded.push(interactionsConnection);
+        }
+
         const updater: SelectorStoreUpdater<usePostCommentMutation['response']> = (
           store,
           response
@@ -177,7 +191,7 @@ export function usePostComment() {
           variables: {
             comment: value,
             postId: feedId,
-            connections: [interactionsConnection, commentsBottomSheetConnection],
+            connections: connectionsIdsIncluded,
             mentions,
             replyToId,
           },
