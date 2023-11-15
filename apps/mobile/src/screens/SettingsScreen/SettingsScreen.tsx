@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { QuestionCircleIcon } from 'src/icons/QuestionCircleIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
@@ -19,7 +20,6 @@ import { contexts } from '~/shared/analytics/constants';
 import { useLogout } from '../../hooks/useLogout';
 import { BugReportIcon } from '../../icons/BugReportIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
-import { GLogoIcon } from '../../icons/GLogoIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { DebugBottomSheet } from './DebugBottomSheet';
@@ -62,7 +62,9 @@ export function SettingsScreen() {
   }, []);
 
   const handleFaqPress = useCallback(() => {
-    Linking.openURL('https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba');
+    Linking.openURL(
+      'https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2'
+    );
   }, []);
 
   const handleTwitterPress = useCallback(() => {
@@ -109,15 +111,18 @@ export function SettingsScreen() {
       >
         <SettingsSection>
           <SettingsRow
-            onPress={handleBugReportPress}
-            text="Report a bug"
-            icon={<BugReportIcon width={24} height={24} />}
-          />
-          <SettingsRow
             onPress={handleNotificationsPress}
             text="Notifications"
             icon={<NotificationsIcon width={24} />}
           />
+        </SettingsSection>
+        <SettingsSection>
+          <SettingsRow
+            onPress={handleBugReportPress}
+            text="Report a bug"
+            icon={<BugReportIcon width={24} height={24} />}
+          />
+          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<QuestionCircleIcon />} />
           <SettingsRow
             onPress={handleDiscordPress}
             text="Discord"
@@ -128,7 +133,6 @@ export function SettingsScreen() {
             text="Twitter"
             icon={<TwitterIcon width={24} />}
           />
-          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
         </SettingsSection>
       </ScrollView>
 
