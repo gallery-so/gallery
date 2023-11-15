@@ -10,20 +10,20 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
-import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
+import {
+  CreatorProfilePictureAndUsernameOrAddress,
+  OwnerProfilePictureAndUsername,
+} from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
@@ -68,32 +68,21 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             contract {
               name
               badgeURL
-              creatorAddress {
-                address
-                ...EnsOrAddressWithSuspenseFragment
-              }
               contractAddress {
                 address
                 chain
               }
             }
-            ownerIsCreator
             owner {
               id
               username
-              ...ProfilePictureFragment
+              ...ProfilePictureAndUserOrAddressOwnerFragment
             }
             community {
               creator {
-                __typename
+                ...ProfilePictureAndUserOrAddressCreatorFragment
                 ... on GalleryUser {
                   username
-                  universal
-
-                  ...ProfilePictureFragment
-                }
-                ... on ChainAddress {
-                  address
                 }
               }
             }
@@ -122,8 +111,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const isTokenOwner = loggedInUserId === token.owner?.id;
 
-  const track = useTrack();
-
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleOpenCommunityScreen = useCallback(() => {
@@ -136,18 +123,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     });
   }, [navigation, token.contract?.contractAddress]);
 
-  const handleUsernamePress = useCallback(
-    (username: string, contractAddress: string) => {
-      track('NFT Detail Collector Name Clicked', {
-        username: username,
-        contractAddress: contractAddress,
-        tokenId: token.tokenId,
-      });
-      navigation.push('Profile', { username: username });
-    },
-    [navigation, track, token.tokenId]
-  );
-
   const handleCreatePost = useCallback(() => {
     if (!token.dbid) return;
 
@@ -156,95 +131,31 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     });
   }, [navigation, token.dbid]);
 
-  const creatorUsername =
-    token.community?.creator?.__typename === 'GalleryUser' && token.community?.creator?.username;
-  const creatorAddress =
-    token.community?.creator?.__typename === 'ChainAddress' && token.community?.creator?.address;
-
   const handleOwnerUsernamePress = useCallback(() => {
-    if (token.owner?.username && token.contract?.contractAddress?.address) {
-      handleUsernamePress(token.owner?.username, token.contract?.contractAddress?.address);
+    if (token.owner?.username) {
+      navigation.push('Profile', { username: token.owner.username });
     }
-  }, [handleUsernamePress, token.owner?.username, token.contract?.contractAddress?.address]);
+  }, [navigation, token.owner?.username]);
 
   const handleCreatorUsernamePress = useCallback(() => {
-    if (creatorUsername && creatorAddress) {
-      handleUsernamePress(creatorUsername, creatorAddress);
+    if (token.community?.creator?.username) {
+      navigation.push('Profile', { username: token.community?.creator?.username ?? '' });
     }
-  }, [handleUsernamePress, creatorUsername, creatorAddress]);
+  }, [token.community?.creator?.username, navigation]);
 
-  const CreatorLink = useMemo(() => {
-    const creator = token.community?.creator;
-    if (token.owner && token.ownerIsCreator) {
+  const CreatorComponent = useMemo(() => {
+    if (token.community?.creator) {
       return (
-        <GalleryTouchableOpacity
-          className="flex flex-row items-center space-x-1"
-          onPress={handleOwnerUsernamePress}
-          eventElementId="NFT Detail Token Owner Username"
-          eventName="NFT Detail Token Owner Username"
+        <CreatorProfilePictureAndUsernameOrAddress
+          userOrAddressRef={token.community.creator}
+          handlePress={handleCreatorUsernamePress}
           eventContext={contexts['NFT Detail']}
-        >
-          {token.owner.username && <ProfilePicture userRef={token.owner} size="xs" />}
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {token.owner.username}
-          </Typography>
-        </GalleryTouchableOpacity>
-      );
-    } else if (creator?.__typename === 'GalleryUser' && !creator?.universal) {
-      return (
-        <GalleryTouchableOpacity
-          className="flex flex-row items-center space-x-1"
-          onPress={handleCreatorUsernamePress}
-          eventElementId="NFT Detail Token Owner Username"
-          eventName="NFT Detail Token Owner Username"
-          eventContext={contexts['NFT Detail']}
-        >
-          {creator.username && <ProfilePicture userRef={creator} size="xs" />}
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {creator.username}
-          </Typography>
-        </GalleryTouchableOpacity>
-      );
-    } else if (token.contract?.creatorAddress?.address) {
-      return (
-        <View className="flex flex-row items-center space-x-1">
-          <RawProfilePicture
-            size="xs"
-            default
-            eventElementId="NftDetail Creator PFP"
-            eventName="NftDetail Creator PFP"
-            eventContext={contexts['NFT Detail']}
-          />
-          <View>
-            <EnsOrAddress
-              chainAddressRef={token.contract.creatorAddress}
-              eventContext={contexts['NFT Detail']}
-            />
-          </View>
-        </View>
+        />
       );
     }
 
     return null;
-  }, [
-    token.owner,
-    token.ownerIsCreator,
-    token.contract?.creatorAddress,
-    token.community?.creator,
-    handleOwnerUsernamePress,
-    handleCreatorUsernamePress,
-  ]);
-
-  // const handleCreatorPress = useCallback(() => {
-  //   if (token.creator?.username) {
-  //     track('NFT Detail Creator Name Clicked', {
-  //       username: token.creator.username,
-  //       contractAddress: token.contract?.contractAddress?.address,
-  //       tokenId: token.tokenId,
-  //     });
-  //     navigation.push('Profile', { username: token.creator.username });
-  //   }
-  // }, [navigation, track, token.creator?.username]);
+  }, [token.community?.creator, handleCreatorUsernamePress]);
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
@@ -320,22 +231,16 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 OWNER
               </Typography>
 
-              <GalleryTouchableOpacity
-                className="flex flex-row items-center space-x-1"
-                onPress={handleOwnerUsernamePress}
-                eventElementId="NFT Detail Token Owner Username"
-                eventName="NFT Detail Token Owner Username"
-                eventContext={contexts['NFT Detail']}
-              >
-                {token.owner.username && <ProfilePicture userRef={token.owner} size="xs" />}
-
-                <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                  {token.owner.username}
-                </Typography>
-              </GalleryTouchableOpacity>
+              <View>
+                <OwnerProfilePictureAndUsername
+                  userRef={token.owner}
+                  handlePress={handleOwnerUsernamePress}
+                  eventContext={contexts['NFT Detail']}
+                />
+              </View>
             </View>
           )}
-          {CreatorLink && (
+          {CreatorComponent && (
             <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
@@ -343,7 +248,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               >
                 CREATOR
               </Typography>
-              {CreatorLink}
+
+              <View>{CreatorComponent}</View>
             </View>
           )}
         </View>

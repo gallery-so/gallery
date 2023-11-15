@@ -5,7 +5,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -174,7 +174,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
 
     if (lastComment.length > 0) {
       return (
-        <VStack gap={8}>
+        <VStack gap={4}>
           <VStack>
             {lastComment.map((comment) => {
               return <CommentLine key={comment.dbid} commentRef={comment} />;
@@ -206,6 +206,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   );
 }
 
-const StyledAddCommentCta = styled(BaseM)`
+const StyledAddCommentCta = styled(TitleDiatypeM)`
   cursor: pointer;
 `;

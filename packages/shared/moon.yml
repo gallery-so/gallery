@@ -15,6 +15,11 @@ tasks:
   codegen-watch:
     command: relay-compiler --project shared --repersist --watch ../../relay.config.js
 
+  # Inherited from root task
+  typecheck:
+    deps:
+      - '~:relay-codegen'
+
   test:
     command: jest
 
