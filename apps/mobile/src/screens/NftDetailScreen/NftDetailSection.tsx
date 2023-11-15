@@ -28,7 +28,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
-import { NftAdditionalDetails } from './NftAdditionalDetails';
+// import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
 
@@ -276,9 +276,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           />
         )}
 
-        <View className="flex-1">
+        {/* <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
-        </View>
+        </View> */}
       </View>
     </ScrollView>
   );
