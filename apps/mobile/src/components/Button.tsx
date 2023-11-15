@@ -20,6 +20,7 @@ type ButtonProps = {
   text?: string;
   icon?: ReactNode;
   variant?: Variant;
+  textClassName?: string;
   fontWeight?: FontWeight;
   size?: Size;
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
@@ -171,6 +172,7 @@ export function Button({
   loading,
   disabled,
   style,
+  textClassName,
   size = 'md',
   fontWeight = 'Medium',
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
@@ -217,7 +219,7 @@ export function Button({
 
           <Typography
             font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx('text-xs uppercase text-center', variantClassNames.textClassName)}
+            className={clsx('text-xs uppercase text-center', variantClassNames.textClassName, textClassName)}
           >
             {text}
           </Typography>

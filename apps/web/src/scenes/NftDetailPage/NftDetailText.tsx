@@ -14,12 +14,11 @@ import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
+import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -132,7 +131,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     queryRef
   );
 
-  const [showDetails, setShowDetails] = useState(false);
   const { showModal } = useModalActions();
   const track = useTrack();
   const info = useOptimisticUserInfo(query);
@@ -186,12 +184,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-
-  const handleToggleClick = useCallback(() => {
-    setShowDetails((previous) => !previous);
-  }, []);
-
-  const track = useTrack();
 
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
@@ -336,26 +328,23 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </BaseM>
         )}
 
-        {showDetails || SHOW_BUY_NOW_BUTTON ? (
-          <VStack gap={16}>
-            {showDetails && <NftAdditionalDetails tokenRef={token} />}
-
-            {SHOW_BUY_NOW_BUTTON && (
-              <VStack gap={24}>
-                <HorizontalBreak />
-                <StyledGalleryLink href={openseaUrl} onClick={handleBuyNowClick}>
-                  <StyledButton
-                    eventElementId="Buy Now Button"
-                    eventName="Buy Now"
-                    eventContext={contexts['NFT Detail']}
-                  >
-                    Buy Now
-                  </StyledButton>
-                </StyledGalleryLink>
-              </VStack>
-            )}
-          </VStack>
-        ) : null}
+        <VStack gap={16}>
+          <NftAdditionalDetails tokenRef={token} />
+          {SHOW_BUY_NOW_BUTTON && (
+            <VStack gap={24}>
+              <HorizontalBreak />
+              <StyledGalleryLink href={openseaUrl} onClick={handleBuyNowClick}>
+                <StyledButton
+                  eventElementId="Buy Now Button"
+                  eventName="Buy Now"
+                  eventContext={contexts['NFT Detail']}
+                >
+                  Buy Now
+                </StyledButton>
+              </StyledGalleryLink>
+            </VStack>
+          )}
+        </VStack>
         <HStack gap={12}>
           <StyledAdmireButton
             active={hasViewerAdmiredToken}

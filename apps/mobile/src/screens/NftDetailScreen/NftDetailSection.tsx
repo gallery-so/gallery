@@ -11,20 +11,17 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
-import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
-import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
+import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -371,7 +368,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           eventName={'NFT Detail Token Admire Clicked'}
           eventContext={contexts['NFT Detail']}
           onPress={toggleTokenAdmire}
-          text="admire"
+          text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
+          textClassName={hasViewerAdmiredEvent ? 'text-[#001CC1]' : undefined}
         />
 
         <View className="flex-1">
