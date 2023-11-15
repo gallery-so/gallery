@@ -114,6 +114,12 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           __typename
         }
 
+        ... on SomeoneYouFollowPostedTheirFirstPostNotification {
+          post {
+            dbid
+          }
+        }
+
         ...NotificationInnerFragment
       }
     `,

@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { Typography } from '~/components/Typography';
 import { SomeoneYouFollowPostedTheirFirstPostFragment$key } from '~/generated/SomeoneYouFollowPostedTheirFirstPostFragment.graphql';
 import { SomeoneYouFollowPostedTheirFirstPostQueryFragment$key } from '~/generated/SomeoneYouFollowPostedTheirFirstPostQueryFragment.graphql';
@@ -37,6 +38,7 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
             username
             ...NotificationSkeletonResponsibleUsersFragment
           }
+          caption
         }
         ...NotificationSkeletonFragment
       }
@@ -96,7 +98,7 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
               }}
               className="text-sm"
             >
-              created their first
+              made their first
             </Typography>{' '}
             <Typography
               font={{
@@ -109,6 +111,11 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
             </Typography>
           </Text>
         </View>
+        {post?.caption && (
+          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+            <ProcessedText text={post.caption} numberOfLines={3} />
+          </View>
+        )}
       </View>
     </NotificationSkeleton>
   );

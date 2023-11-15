@@ -6,6 +6,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneYouFollowPostedTheirFirstPostFragment$key } from '~/generated/SomeoneYouFollowPostedTheirFirstPostFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -28,6 +29,7 @@ export function SomeoneYouFollowPostedTheirFirstPost({ notificationRef, onClose 
           tokens {
             ...NotificationPostPreviewWithBoundaryFragment
           }
+          caption
         }
       }
     `,
@@ -53,9 +55,10 @@ export function SomeoneYouFollowPostedTheirFirstPost({ notificationRef, onClose 
             <UserHoverCard userRef={post.author} onClick={onClose} />
             &nbsp;
             <BaseM as="span">
-              created their first <strong>post</strong>
+              made their first <strong>post</strong>
             </BaseM>
           </StyledTextWrapper>
+          {post.caption && <StyledCaption>{post.caption}</StyledCaption>}
         </VStack>
       </HStack>
       {token && <NotificationPostPreviewWithBoundary tokenRef={token} />}
@@ -69,4 +72,16 @@ const StyledNotificationContent = styled(HStack)`
 
 const StyledTextWrapper = styled(HStack)`
   display: inline;
+`;
+
+const StyledCaption = styled(BaseM)`
+  font-size: 12px;
+  border-left: 2px solid ${colors.porcelain};
+  padding-left: 8px;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
 `;
