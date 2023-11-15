@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
@@ -240,7 +241,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               </View>
             </View>
           )}
-          {CreatorComponent && (
+          {/* {CreatorComponent && (
             <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
@@ -251,7 +252,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
               <View>{CreatorComponent}</View>
             </View>
-          )}
+          )} */}
         </View>
         {token.description && (
           <View>
