@@ -25,6 +25,7 @@ import GLogoIcon from '~/icons/GLogoIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import SearchIcon from '~/icons/SearchIcon';
+import UserIcon from '~/icons/UserIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
