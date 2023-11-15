@@ -23,6 +23,7 @@ import { GLogoIcon } from '../../icons/GLogoIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { DebugBottomSheet } from './DebugBottomSheet';
+import { QuestionMarkIcon } from 'src/icons/QuestionMarkIcon';
 
 const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
@@ -62,7 +63,9 @@ export function SettingsScreen() {
   }, []);
 
   const handleFaqPress = useCallback(() => {
-    Linking.openURL('https://gallery-so.notion.site/Gallery-FAQ-b5ee57c1d7f74c6695e42c84cb6964ba');
+    Linking.openURL(
+      'https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2'
+    );
   }, []);
 
   const handleTwitterPress = useCallback(() => {
@@ -109,14 +112,21 @@ export function SettingsScreen() {
       >
         <SettingsSection>
           <SettingsRow
+            onPress={handleNotificationsPress}
+            text="Notifications"
+            icon={<NotificationsIcon width={24} />}
+          />
+        </SettingsSection>
+        <SettingsSection>
+          <SettingsRow
             onPress={handleBugReportPress}
             text="Report a bug"
             icon={<BugReportIcon width={24} height={24} />}
           />
           <SettingsRow
-            onPress={handleNotificationsPress}
-            text="Notifications"
-            icon={<NotificationsIcon width={24} />}
+            onPress={handleFaqPress}
+            text="FAQ"
+            icon={<QuestionMarkIcon height={20} />}
           />
           <SettingsRow
             onPress={handleDiscordPress}
@@ -128,7 +138,6 @@ export function SettingsScreen() {
             text="Twitter"
             icon={<TwitterIcon width={24} />}
           />
-          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
         </SettingsSection>
       </ScrollView>
 

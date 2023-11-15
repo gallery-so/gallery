@@ -23,11 +23,11 @@ import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
+import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import SearchIcon from '~/icons/SearchIcon';
-import ShopIcon from '~/icons/ShopIcon';
-import UserIcon from '~/icons/UserIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
 import DrawerHeader from './DrawerHeader';
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
@@ -125,8 +125,8 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Edit Galleries Click', { username });
   }, [hideDrawer, track, username]);
 
-  const handleShopIconClick = useCallback(async () => {
-    track('Sidebar Shop Click');
+  const handleFaqIconClick = useCallback(async () => {
+    track('Sidebar FAQ Click');
   }, [track]);
 
   const handleHomeIconClick = useCallback(() => {
@@ -274,7 +274,7 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledStandardSidebar>
         <StyledMobileIconContainer align="center" justify="space-around">
           <SidebarIcon
-            href={{ pathname: '/home' }}
+            to={{ pathname: '/home' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
@@ -300,7 +300,7 @@ export function StandardSidebar({ queryRef }: Props) {
                 showUnreadDot={notificationCount > 0}
               />
               <SidebarIcon
-                href={userGalleryRoute}
+                to={userGalleryRoute}
                 tooltipLabel="My Profile"
                 onClick={handleProfileClick}
                 icon={<UserIcon />}
@@ -325,7 +325,7 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
           <SidebarIcon
-            href={{ pathname: '/home' }}
+            to={{ pathname: '/home' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
@@ -344,7 +344,7 @@ export function StandardSidebar({ queryRef }: Props) {
         {isLoggedIn ? (
           <VStack gap={32}>
             <SidebarIcon
-              href={editGalleriesRoute}
+              to={editGalleriesRoute}
               tooltipLabel="Edit galleries"
               onClick={handleEditClick}
               icon={<EditPencilIcon />}
@@ -380,10 +380,10 @@ export function StandardSidebar({ queryRef }: Props) {
         )}
         <VStack>
           <SidebarIcon
-            href={{ pathname: '/shop' }}
-            tooltipLabel="(OBJECTS) Shop"
-            onClick={handleShopIconClick}
-            icon={<ShopIcon />}
+            href="https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2"
+            tooltipLabel="Support/FAQ"
+            onClick={handleFaqIconClick}
+            icon={<QuestionMarkIcon color={colors.black[800]} />}
           />
         </VStack>
       </StyledIconContainer>
