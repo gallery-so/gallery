@@ -1694,6 +1694,15 @@ type SomeoneViewedYourGalleryNotification implements Notification & Node & Group
   gallery: Gallery
 }
 
+type SomeoneYouFollowPostedTheirFirstPostNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  post: Post
+}
+
 type Subscription {
   newNotification: Notification
   notificationUpdated: Notification
@@ -2185,6 +2194,8 @@ enum UserExperienceType {
   UpsellMintMemento5
   UpsellBanner
   PostsBetaAnnouncement
+  CreatorBetaFullscreenAnnouncementModal
+  CreatorBetaMicroAnnouncementModal
 }
 
 type UserFollowedUsersFeedEventData implements FeedEventData {
