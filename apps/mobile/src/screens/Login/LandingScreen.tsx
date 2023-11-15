@@ -1,5 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// [app-store-build] disable onboarding video
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -17,7 +18,8 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../../components/Button';
-import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
+// [app-store-build] disable onboarding video
+// import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
@@ -29,11 +31,12 @@ export function LandingScreen() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    AsyncStorage.getItem(SEEN_ONBOARDING_VIDEO_STORAGE_KEY).then((value) => {
-      if (value !== 'true') {
-        navigation.navigate('OnboardingVideo');
-      }
-    });
+    // [app-store-build] disable onboarding video
+    // AsyncStorage.getItem(SEEN_ONBOARDING_VIDEO_STORAGE_KEY).then((value) => {
+    //   if (value !== 'true') {
+    //     navigation.navigate('OnboardingVideo');
+    //   }
+    // });
   }, [navigation]);
 
   const initialSnapPoints = useMemo(() => ['CONTENT_HEIGHT'], []);
