@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { QuestionCircleIcon } from 'src/icons/QuestionCircleIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
@@ -19,11 +20,9 @@ import { contexts } from '~/shared/analytics/constants';
 import { useLogout } from '../../hooks/useLogout';
 import { BugReportIcon } from '../../icons/BugReportIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
-import { GLogoIcon } from '../../icons/GLogoIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { DebugBottomSheet } from './DebugBottomSheet';
-import { QuestionMarkIcon } from 'src/icons/QuestionMarkIcon';
 
 const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
@@ -123,11 +122,7 @@ export function SettingsScreen() {
             text="Report a bug"
             icon={<BugReportIcon width={24} height={24} />}
           />
-          <SettingsRow
-            onPress={handleFaqPress}
-            text="FAQ"
-            icon={<QuestionMarkIcon height={20} />}
-          />
+          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<QuestionCircleIcon />} />
           <SettingsRow
             onPress={handleDiscordPress}
             text="Discord"
