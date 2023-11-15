@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useRef } from 'react';
 import { Text } from 'react-native';
 
@@ -17,9 +18,7 @@ export function LinkComponent({ url, value }: Props) {
 
   return (
     <>
-      <Text className="text-shadow" onPress={handleLinkPress}>
-        {value ?? url}
-      </Text>
+      <Text>{value ?? url}</Text>
       <WarningLinkBottomSheet redirectUrl={url} ref={bottomSheetRef} />
     </>
   );
