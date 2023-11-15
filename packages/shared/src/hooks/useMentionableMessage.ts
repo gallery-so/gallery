@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import useDebounce from '~/shared/hooks/useDebounce';
+import { WHITESPACE_REGEX } from '../utils/regex';
+import useDebounce from './useDebounce';
 
 type MentionDataType = {
   interval: {
@@ -63,8 +64,21 @@ export function useMentionableMessage() {
         newMention.communityId = mention.value;
       }
 
+      // Check if the mention already exists
+      const mentionExists = mentions.some(
+        (existingMention) =>
+          (existingMention.userId === newMention.userId ||
+            existingMention.communityId === newMention.communityId) &&
+          existingMention.interval.start === newMention.interval.start &&
+          existingMention.interval.length === newMention.interval.length
+      );
+
+      if (mentionExists) {
+        return newMessage; // If the mention already exists, return here
+      }
+
       // Calculate the length difference between the old alias and the new mention
-      const lengthDifference = mention.label.length + 2 - aliasKeyword.length; // +2 for the @ and space after the mention
+      const lengthDifference = mention.label.length + 1 - aliasKeyword.length; // +1 for the @
 
       // Adjust the positions of mentions that come after the newly added mention
       const adjustedMentions = mentions.map((existingMention) => {
@@ -84,6 +98,8 @@ export function useMentionableMessage() {
 
       setMentions([...adjustedMentions, newMention]);
       setAliasKeyword('');
+
+      return newMessage;
     },
     [mentions, message, setMessage, aliasKeyword, selection.start]
   );
@@ -93,7 +109,7 @@ export function useMentionableMessage() {
       // Check the word where the cursor is (or was last placed)
       const wordAtCursor = text
         .slice(0, selection.start + 1)
-        .split(' ')
+        .split(WHITESPACE_REGEX)
         .pop();
 
       if (wordAtCursor && wordAtCursor[0] === '@' && wordAtCursor.length > 0) {
@@ -151,6 +167,11 @@ export function useMentionableMessage() {
     setSelection(selection);
   }, []);
 
+  const handleClosingMention = useCallback(() => {
+    setIsSelectingMentions(false);
+    setAliasKeyword('');
+  }, []);
+
   return {
     aliasKeyword: debouncedAliasKeyword,
     isSelectingMentions,
@@ -160,5 +181,7 @@ export function useMentionableMessage() {
     mentions: mentions || [],
     resetMentions,
     handleSelectionChange,
+    selection,
+    closeMention: handleClosingMention,
   };
 }

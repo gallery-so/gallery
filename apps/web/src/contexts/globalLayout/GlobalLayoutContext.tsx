@@ -33,6 +33,10 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
+import {
+  UpcomingMaintenanceBanner,
+  useUpcomingMaintenanceBannerWeb,
+} from './GlobalBanner/UpcomingMaintenanceBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -368,6 +372,7 @@ function GlobalNavbarWithFadeEnabled({
         }
         ...MobileBetaUpsellFragment
         ...UpsellBannerQuery
+        ...UpcomingMaintenanceBannerFragment
       }
     `,
     queryRef
@@ -376,7 +381,22 @@ function GlobalNavbarWithFadeEnabled({
   const isLoggedInAndDoesNotHaveWallet =
     query.viewer?.__typename === 'Viewer' && !query.viewer.user?.primaryWallet;
 
+  const { shouldDisplayBanner, handleDismissBanner, maintenanceId, message } =
+    useUpcomingMaintenanceBannerWeb();
+
   const displayedBanner = useMemo(() => {
+    // maintenance banner should display over any other type of banner since it's a rare occurrence
+    if (shouldDisplayBanner) {
+      return (
+        <UpcomingMaintenanceBanner
+          queryRef={query}
+          handleDismissBanner={handleDismissBanner}
+          maintenanceId={maintenanceId}
+          message={message}
+        />
+      );
+    }
+
     if (isLoggedInAndDoesNotHaveWallet) {
       return <UpsellBanner queryRef={query} />;
     }
@@ -394,7 +414,15 @@ function GlobalNavbarWithFadeEnabled({
     }
 
     return null;
-  }, [isBannerVisible, isLoggedInAndDoesNotHaveWallet, query]);
+  }, [
+    handleDismissBanner,
+    isBannerVisible,
+    isLoggedInAndDoesNotHaveWallet,
+    maintenanceId,
+    message,
+    query,
+    shouldDisplayBanner,
+  ]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);

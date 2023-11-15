@@ -12,17 +12,16 @@ import {
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { LogoLarge } from '~/icons/LogoLarge';
 import { contexts } from '~/shared/analytics/constants';
+import { useMaintenanceContext } from '~/shared/contexts/MaintenanceStatusContext';
 
 function MaintenancePage() {
+  const { currentlyActiveMaintenanceNoticeContent } = useMaintenanceContext();
+
   return (
     <StyledMaintenancePage gap={24}>
       <VStack gap={8}>
         <StyledLogo />
-        <StyledBaseM>
-          Gallery is currently undergoing planned maintenance until{' '}
-          <strong>Wednesday Aug 2nd, 10:00pm EST</strong> and is not usable at this time. Keep up to
-          date on our socials.
-        </StyledBaseM>
+        <StyledBaseM>{currentlyActiveMaintenanceNoticeContent?.message}</StyledBaseM>
       </VStack>
       <HStack gap={8}>
         <StyledFooterLink
@@ -73,5 +72,7 @@ const StyledFooterLink = styled(GalleryLink)`
   text-transform: capitalize;
   font-size: 14px;
 `;
+
+MaintenancePage.displayName = 'MaintenancePage';
 
 export default memo(MaintenancePage);

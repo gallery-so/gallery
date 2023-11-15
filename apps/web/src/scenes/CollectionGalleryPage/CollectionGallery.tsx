@@ -54,7 +54,7 @@ function CollectionGallery({ queryRef }: Props) {
       </NftGalleryWrapper>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {
-    return <NotFound resource="collection" />;
+    return <NotFound resource="section" />;
   }
 
   // TODO: just throw to an error boundary and have that report to sentry

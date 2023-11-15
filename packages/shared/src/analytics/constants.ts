@@ -30,6 +30,7 @@ export const contexts = {
   Toast: 'Toast',
   Navigation: 'Navigation',
   'Push Notifications': 'Push Notifications',
+  Mention: 'Mention',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;
@@ -48,6 +49,7 @@ export const flows = {
   'Web Sidebar Post Create Flow': 'Web Sidebar Post Create Flow',
   'Community Page Post Create Flow': 'Community Page Post Create Flow',
   'NFT Detail Page Post Create Flow': 'NFT Detail Page Post Create Flow',
+  'Edit Gallery FLow': 'Edit Gallery FLow',
 } as const;
 
 export type AnalyticsEventFlowType = keyof typeof flows;

@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import TextButton from '~/components/core/Button/TextButton';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import IconContainer from '~/components/core/IconContainer';
@@ -17,6 +16,10 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
+import {
+  CreatorProfilePictureAndUsernameOrAddress,
+  OwnerProfilePictureAndUsername,
+} from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -61,13 +64,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         chain
         description
         tokenId
-        tokenMetadata
         owner {
           username
-          ...ProfilePictureFragment
           ...UserHoverCardFragment
+          ...ProfilePictureAndUserOrAddressOwnerFragment
         }
-        ownerIsCreator
         contract {
           name
           chain
@@ -77,6 +78,13 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           badgeURL
         }
         community {
+          creator {
+            ... on GalleryUser {
+              __typename
+              ...UserHoverCardFragment
+            }
+            ...ProfilePictureAndUserOrAddressCreatorFragment
+          }
           ...CommunityHoverCardFragment
         }
         viewerAdmire {
@@ -183,6 +191,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     setShowDetails((previous) => !previous);
   }, []);
 
+  const track = useTrack();
+
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
@@ -205,10 +215,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
 
   const communityUrl = getCommunityUrlForToken(token);
 
-  const metadata = JSON.parse(token.tokenMetadata ?? '{}') ?? {};
-  const poapMoreInfoUrl = token.chain === 'POAP' ? metadata.event_url : null;
-  const poapUrl = metadata.event_id ? `https://poap.gallery/event/${metadata.event_id}` : null;
-
   const navbarHeight = useGlobalNavbarHeight();
   const decodedTokenName = useMemo(() => {
     if (token.name) {
@@ -230,6 +236,28 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       isFullPage: isMobile,
     });
   }, [isMobile, showModal, token]);
+
+  const CreatorComponent = useMemo(() => {
+    if (token.community?.creator) {
+      if (token.community.creator.__typename === 'GalleryUser') {
+        return (
+          <UserHoverCard userRef={token.community.creator}>
+            <CreatorProfilePictureAndUsernameOrAddress
+              userOrAddressRef={token.community.creator}
+              eventContext={contexts['NFT Detail']}
+            />
+          </UserHoverCard>
+        );
+      }
+      return (
+        <CreatorProfilePictureAndUsernameOrAddress
+          userOrAddressRef={token.community.creator}
+          eventContext={contexts['NFT Detail']}
+        />
+      );
+    }
+    return null;
+  }, [token.community?.creator]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
@@ -284,19 +312,23 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </HStack>
         </VStack>
 
-        <HStack justify="space-between">
+        <StyledOwnerAndCreator justify="space-between">
           {token.owner?.username && (
-            <UserHoverCard userRef={token.owner}>
-              <VStack gap={2}>
-                <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
-                <HStack align="center" gap={4}>
-                  <ProfilePicture size="sm" userRef={token.owner} />
-                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
-                </HStack>
-              </VStack>
-            </UserHoverCard>
+            <VStack gap={2}>
+              <TitleXS>OWNER</TitleXS>
+              <OwnerProfilePictureAndUsername
+                userRef={token.owner}
+                eventContext={contexts['NFT Detail']}
+              />
+            </VStack>
           )}
-        </HStack>
+          {CreatorComponent && (
+            <VStack gap={2}>
+              <TitleXS>CREATOR</TitleXS>
+              {CreatorComponent}
+            </VStack>
+          )}
+        </StyledOwnerAndCreator>
 
         {token.description && (
           <BaseM>
@@ -353,31 +385,24 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           )}
         </HStack>
 
-        {poapMoreInfoUrl || poapUrl ? (
-          <VStack gap={16}>
-            {poapMoreInfoUrl && <GalleryLink href={poapMoreInfoUrl}>More Info</GalleryLink>}
-            {poapUrl && <GalleryLink href={poapUrl}>View on POAP</GalleryLink>}
-          </VStack>
-        ) : null}
+        <VStack gap={16}>
+          <NftAdditionalDetails tokenRef={token} />
 
-        {!showDetails && (
-          <TextButton
-            eventElementId="Show Details Button"
-            eventName="Show Details"
-            eventContext={contexts['NFT Detail']}
-            text="Show Details"
-            onClick={handleToggleClick}
-          />
-        )}
-        {showDetails && (
-          <TextButton
-            eventElementId="Hide Details Button"
-            eventName="Hide Details"
-            eventContext={contexts['NFT Detail']}
-            text="Hide Details"
-            onClick={handleToggleClick}
-          />
-        )}
+          {SHOW_BUY_NOW_BUTTON && (
+            <VStack gap={24}>
+              <HorizontalBreak />
+              <StyledGalleryLink href={openseaUrl} onClick={handleBuyNowClick}>
+                <StyledButton
+                  eventElementId="Buy Now Button"
+                  eventName="Buy Now"
+                  eventContext={contexts['NFT Detail']}
+                >
+                  Buy Now
+                </StyledButton>
+              </StyledGalleryLink>
+            </VStack>
+          )}
+        </VStack>
       </VStack>
     </StyledDetailLabel>
   );
@@ -392,6 +417,12 @@ const StyledBadge = styled.img`
   width: 100%;
   max-width: 24px;
   max-height: 24px;
+`;
+
+const StyledOwnerAndCreator = styled(HStack)`
+  > ${VStack} {
+    width: 50%;
+  }
 `;
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`

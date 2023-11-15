@@ -68,6 +68,14 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         dbid: 'testOwnerId',
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
+        universal: false,
+        primaryWallet: {
+          id: 'Wallet:testWalletId',
+          chainAddress: {
+            address: '2',
+            chain: Chain.Ethereum,
+          },
+        },
         profileImage: {
           token: {
             dbid: 'testTokenId',
@@ -101,12 +109,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         id: 'Contract:someContractId',
         name: 'Test Contract Name',
         chain: Chain.Ethereum,
-        creatorAddress: {
-          chain: Chain.Ethereum,
-          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
-        },
         contractAddress: {
-          chain: Chain.Ethereum,
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
         badgeURL: 'http://someurl.com',
@@ -117,6 +120,22 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         contractAddress: {
           chain: Chain.Ethereum,
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+        },
+        // @ts-expect-error creator can be either GalleryUser or ChainAddress, not sure
+        // how to satisfy __typename here
+        creator: {
+          // __typename: 'GalleryUserOrAddress',
+          username: 'Test Username',
+          universal: false,
+          primaryWallet: {
+            id: 'Wallet:testWalletId',
+            chainAddress: {
+              address: '2',
+              chain: Chain.Ethereum,
+            },
+          },
+          address: '2',
+          chain: Chain.Ethereum,
         },
       },
       viewerAdmire: {

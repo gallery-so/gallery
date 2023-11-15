@@ -69,6 +69,7 @@ tasks:
 
   android:
     command: noop
+    local: true
     deps:
       - ~:android-raw
       - ~:relay-watch
@@ -84,3 +85,6 @@ tasks:
     deps:
       - '~:relay-codegen'
     command: tsc
+
+  version-bump:
+    command: yarn run version-bump

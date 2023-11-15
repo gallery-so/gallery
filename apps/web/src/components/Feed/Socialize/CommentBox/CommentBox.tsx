@@ -1,11 +1,13 @@
 import {
-  ClipboardEventHandler,
-  KeyboardEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+  autoUpdate,
+  inline,
+  shift,
+  useFloating,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
+import { AnimatePresence } from 'framer-motion';
+import { KeyboardEventHandler, useCallback, useEffect, useId, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -13,19 +15,23 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { FloatingCard } from '~/components/Mention/FloatingCard';
+import { MentionModal } from '~/components/Mention/MentionModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 300;
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
-  onSubmitComment: (comment: string) => void;
+  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
   isSubmittingComment: boolean;
 };
 
@@ -42,29 +48,50 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     queryRef
   );
 
-  // WARNING: calling `setValue` will not cause the textarea's content to actually change
-  // It's simply there as a state value that we can reference to peek into the current state
-  // of the textarea.
-  //
-  // We don't flush the state of `value` back out to the textarea to avoid constantly having
-  // to move the user's cursor around while their typing. This would cause a pretty jarring
-  // typing experience.
-  const [value, setValue] = useState('');
-  const textareaRef = useRef<HTMLParagraphElement | null>(null);
+  const {
+    isSelectingMentions,
+    aliasKeyword,
+    selectMention,
+    mentions,
+    setMessage,
+    message,
+    resetMentions,
+    handleSelectionChange,
+    closeMention,
+  } = useMentionableMessage();
+
+  const { x, y, reference, floating, strategy, context } = useFloating({
+    placement: 'bottom-start',
+    open: isSelectingMentions,
+    middleware: [shift(), inline()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const headingId = useId();
+  const role = useRole(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([role]);
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { pushToast } = useToastActions();
 
   const track = useTrack();
   const { showModal } = useModalActions();
 
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
   const resetInputState = useCallback(() => {
-    setValue('');
+    resetMentions();
 
     const textarea = textareaRef.current;
+
     if (textarea) {
       textarea.innerText = '';
     }
-  }, []);
+  }, [resetMentions]);
 
   const pushErrorToast = useCallback(() => {
     pushToast({
@@ -83,7 +110,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       return;
     }
 
-    if (isSubmittingComment || value.length === 0) {
+    if (isSubmittingComment || message.length === 0) {
       return;
     }
 
@@ -94,7 +121,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     });
 
     try {
-      onSubmitComment(value);
+      onSubmitComment(message, mentions);
     } catch (error) {
       pushErrorToast();
       return;
@@ -103,7 +130,8 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   }, [
     query,
     isSubmittingComment,
-    value,
+    mentions,
+    message,
     track,
     resetInputState,
     showModal,
@@ -130,83 +158,89 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     [handleSubmit]
   );
 
-  const handleInput = useCallback(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) {
-      return;
-    }
-
-    const nextValue = textarea.innerText ?? '';
-
-    // If the user tried typing / pasting something over 100 characters of length
-    // we need to trim the content down, override the text content in the element
-    // and then put their cursor back at the end of the element
-    if (nextValue.length > MAX_TEXT_LENGTH) {
-      const nextValueSliced = nextValue.slice(0, MAX_TEXT_LENGTH);
-      textarea.textContent = nextValueSliced;
-
-      const range = document.createRange();
-      const selection = window.getSelection();
-
-      // Not really sure why `selection` is nullable
-      // Maybe because other browsers don't support this API
-      if (!selection) {
-        return;
-      }
-
-      const childNode = textarea.childNodes[0];
-
-      // There should only ever be a single child node
-      if (!childNode) {
-        return;
-      }
-
-      range.setStart(childNode, MAX_TEXT_LENGTH);
-      range.setEnd(childNode, MAX_TEXT_LENGTH);
-      range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      setValue(nextValueSliced);
-    } else {
-      setValue(nextValue);
-    }
-  }, []);
-
-  // This prevents someone from pasting a styled element into the textbox
-  const handlePaste = useCallback<ClipboardEventHandler<HTMLParagraphElement>>(
-    (event) => {
-      event.preventDefault();
-      const text = event.clipboardData.getData('text/plain');
-
-      // This is deprecated but will work forever because browsers
-      document.execCommand('insertHTML', false, text);
-
-      handleInput();
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(event.target.value);
     },
-    [handleInput]
+    [setMessage]
   );
 
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+  const handleSelectMention = useCallback(
+    (item: MentionType) => {
+      selectMention(item);
+
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.focus();
+      }
+    },
+    [selectMention]
+  );
+
+  const handleOnSelect = useCallback(
+    (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+      const target = event.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      handleSelectionChange({ start, end });
+    },
+    [handleSelectionChange]
+  );
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      event.preventDefault();
+      const pastedText = event.clipboardData.getData('text/plain');
+      const start = textareaRef.current?.selectionStart || 0;
+      const end = textareaRef.current?.selectionEnd || 0;
+      const newText = message.substring(0, start) + pastedText + message.substring(end);
+      const newMessage =
+        newText.length > MAX_TEXT_LENGTH ? newText.substring(0, MAX_TEXT_LENGTH) : newText;
+      setMessage(newMessage);
+    },
+    [setMessage, message, textareaRef]
+  );
 
   return (
     <Wrapper>
-      <InputWrapper gap={12}>
-        {/* Purposely not using a controlled input here to avoid cursor jitter */}
-        <Textarea
-          onPaste={handlePaste}
-          onKeyDown={handleInputKeyDown}
+      <InputWrapper gap={12} ref={reference}>
+        <StyledTextArea
+          placeholder=""
+          onInput={handleChange}
           ref={textareaRef}
-          onInput={handleInput}
+          value={message}
+          onKeyDown={handleInputKeyDown}
+          onSelect={handleOnSelect}
+          onPaste={handlePaste}
+          {...getReferenceProps()}
+          autoFocus
         />
 
         <HStack gap={12} align="center">
-          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-          <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
+          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - message.length}</BaseM>
+          <SendButton enabled={message.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
         </HStack>
       </InputWrapper>
+
+      <AnimatePresence>
+        {isSelectingMentions && (
+          <FloatingCard
+            className="Popover"
+            headingId={headingId}
+            floatingRef={floating}
+            strategy={strategy}
+            x={x}
+            y={y}
+            getFloatingProps={getFloatingProps}
+          >
+            <MentionModal
+              keyword={aliasKeyword}
+              onSelectMention={handleSelectMention}
+              onEmptyResultsClose={closeMention}
+            />
+          </FloatingCard>
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 }
@@ -227,23 +261,21 @@ const InputWrapper = styled(HStack)`
   background-color: ${colors.faint};
 `;
 
-const Textarea = styled(BaseM).attrs({
-  role: 'textbox',
-  contentEditable: 'true',
-})`
-  min-width: 0;
+const StyledTextArea = styled.textarea`
   font-family: ${BODY_FONT_FAMILY};
-
-  cursor: text;
-
-  width: 100%;
-  min-height: 20px;
-
-  resize: both;
 
   color: ${colors.metal};
 
   padding: 8px 64px 8px 0;
+
+  width: 100%;
+  height: 36px;
+  border: none;
+  resize: none;
+  font-size: 14px;
+  line-height: 20px;
+  background: none;
+  color: ${colors.black['800']};
 
   :focus {
     outline: none;

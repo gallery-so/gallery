@@ -53,6 +53,7 @@ export function UpsellBanner({ queryRef }: Props) {
       onClick={handleConnectWallet}
       ctaText="Connect"
       experienceFlag="UpsellBanner"
+      bannerVariant="blue"
     />
   );
 }

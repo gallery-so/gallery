@@ -1,3 +1,5 @@
+import isEqual from 'lodash/isEqual';
+import uniqWith from 'lodash/uniqWith';
 import { graphql, readInlineData } from 'react-relay';
 
 import { GalleryProcessedTextFragment$data } from '~/generated/GalleryProcessedTextFragment.graphql';
@@ -51,11 +53,14 @@ export function getMentionElements(
     );
   }
 
-  const mentions: GalleryTextElementParserMentionsFragment$data[] = [];
+  let mentions: GalleryTextElementParserMentionsFragment$data[] = [];
 
   mentionRefs.forEach((mentionRef) => {
     mentions.push(fetchMention(mentionRef));
   });
+
+  // Remove duplicate mentions
+  mentions = uniqWith(mentions, isEqual);
 
   const elements: TextElement[] = [];
 

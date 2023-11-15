@@ -109,9 +109,8 @@ export default function TokensAddedToCollectionFeedEvent({
                   </HStack>
                 )}
                 <BaseM>
-                  added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`}{' '}
-                  to
-                  {collectionName ? ' ' : ' their collection'}
+                  added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`}
+                  {collectionName ? ' to ' : ''}
                 </BaseM>
                 <StyledEventLabel>{collectionName}</StyledEventLabel>
               </StyledEventText>

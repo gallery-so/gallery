@@ -114,7 +114,7 @@ function CollectionGalleryHeader({
           collectorsNote={collection.collectorsNote ?? undefined}
         />
       ),
-      headerText: 'Name and describe your collection',
+      headerText: 'Name and describe your section',
     });
   }, [
     collection.collectorsNote,
@@ -201,7 +201,7 @@ function CollectionGalleryHeader({
                       }}
                       name="Manage Collection"
                       eventContext={contexts.UserCollection}
-                      label="Edit Collection"
+                      label="Edit Section"
                     />
                   )}
                 </DropdownSection>

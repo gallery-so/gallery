@@ -89,7 +89,7 @@ export default function MoveCollectionModal({
             galleryId,
           },
         });
-        pushToast({ message: 'Failed to save your changes before moving your collection' });
+        pushToast({ message: 'Failed to save your changes before moving your section' });
         setIsLoading(false);
       }
     }
@@ -103,7 +103,7 @@ export default function MoveCollectionModal({
           onSuccess();
           setIsLoading(false);
           pushToast({
-            message: `Moved **${collection.name || 'Untitled collection'}** to **${
+            message: `Moved **${collection.name || 'Untitled section'}** to **${
               gallery.name || 'Untitled gallery'
             }**`,
           });
@@ -114,20 +114,20 @@ export default function MoveCollectionModal({
 
       setIsLoading(false);
       pushToast({
-        message: `Moved **${collection.name || 'Untitled collection'}** to **${
+        message: `Moved **${collection.name || 'Untitled section'}** to **${
           gallery.name || 'Untitled gallery'
         }**`,
       });
 
       hideModal();
     } catch (error) {
-      reportError('Failed to move collection', {
+      reportError('Failed to move section', {
         tags: {
           collectionId: collection.dbid,
           toGalleryId: selectedGalleryId,
         },
       });
-      pushToast({ message: 'Failed to move your collection' });
+      pushToast({ message: 'Failed to move your section' });
       setIsLoading(false);
     }
   }, [
@@ -150,7 +150,7 @@ export default function MoveCollectionModal({
     setSelectedGalleryId(selectedGalleryId);
   }, []);
 
-  const collectionDisplayName = collection.name || 'Untitled collection';
+  const collectionDisplayName = collection.name || 'Untitled section';
 
   const description = useMemo(() => {
     if (hasUnsavedChanges) {
@@ -165,7 +165,7 @@ export default function MoveCollectionModal({
     }
     return (
       <BaseM>
-        This will move your collection <strong>{collectionDisplayName}</strong> to another gallery.
+        This will move your section <strong>{collectionDisplayName}</strong> to another gallery.
       </BaseM>
     );
   }, [collectionDisplayName, hasUnsavedChanges]);

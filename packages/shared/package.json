@@ -5,7 +5,7 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "fetch-multipart-graphql": "^3.1.1",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "graphql-ws": "^5.11.3",
     "lodash.keyby": "^4.6.0",
     "lodash.unescape": "^4.0.1"
