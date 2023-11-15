@@ -138,6 +138,12 @@ export function usePostComment() {
             const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+            const repliesPageInfo = store.get(repliesConnection)?.getLinkedRecord('pageInfo');
+            repliesPageInfo?.setValue(
+              ((repliesPageInfo?.getValue('total') as number) ?? 0) + 1,
+              'total'
+            );
           }
         };
 
