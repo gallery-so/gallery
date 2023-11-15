@@ -103,7 +103,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                   <UserHoverCard userRef={event.owner} />
                 </HStack>
               )}
-              <BaseM>added a description to {collectionName ? ' ' : ' their collection'}</BaseM>
+              <BaseM>added a description to {collectionName ? ' ' : ' their section'}</BaseM>
               <StyledEventLabel>{collectionName}</StyledEventLabel>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </StyledEventText>

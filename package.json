@@ -7,11 +7,18 @@
     "packages/frames-dls",
     "packages/shared"
   ],
+  "packageManager": "yarn@3.4.1",
   "scripts": {
     "fetch-schema": "get-graphql-schema https://gateway.gallery.so/ > schema.graphql",
     "fetch-schema-dev": "get-graphql-schema https://gateway.dev.gallery.so/ > schema.graphql"
   },
-  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "nextjs-routes": "^1.0.8",
+    "react": "^18.2.0",
+    "react-hotkeys-hook": "^4.3.8",
+    "react-relay": "^15.0.0",
+    "relay-runtime": "^15.0.0"
+  },
   "engines": {
     "node": "20.5.0"
   },
@@ -29,7 +36,7 @@
     "react-native-fast-image@^8.6.3": "patch:react-native-fast-image@npm%3A8.6.3#./.yarn/patches/react-native-fast-image-npm-8.6.3-03ee2d23c0.patch"
   },
   "devDependencies": {
-    "@moonrepo/cli": "^1.6.0",
+    "@moonrepo/cli": "1.13.0",
     "@types/react-relay": "^14.1.3",
     "@types/relay-runtime": "^14.1.8",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
@@ -45,12 +52,5 @@
     "relay-compiler": "^15.0.0",
     "tsconfig-moon": "^1.2.2",
     "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "nextjs-routes": "^1.0.8",
-    "react": "^18.2.0",
-    "react-hotkeys-hook": "^4.3.8",
-    "react-relay": "^15.0.0",
-    "relay-runtime": "^15.0.0"
   }
 }

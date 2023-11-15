@@ -61,7 +61,7 @@ export function CollectionCreatedFeedEvent({
     <View className="flex flex-1">
       <FeedEventCarouselCellHeader>
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Created a new collection
+          Created a new section
         </Typography>
         <GalleryTouchableOpacity
           className="flex-1"

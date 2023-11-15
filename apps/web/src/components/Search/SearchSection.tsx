@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { contexts } from '~/shared/analytics/constants';
@@ -7,6 +8,7 @@ import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
+import { SearchResultVariant } from './types';
 
 type Props = {
   children: React.ReactNode;
@@ -14,6 +16,8 @@ type Props = {
   isShowAll?: boolean;
   onShowAll: () => void;
   numResults: number;
+
+  variant: SearchResultVariant;
 };
 
 export default function SearchSection({
@@ -22,7 +26,14 @@ export default function SearchSection({
   isShowAll = false,
   onShowAll,
   numResults,
+  variant,
 }: Props) {
+  const showAllButton = useMemo(() => {
+    if (variant === 'compact') return false;
+
+    return !isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS;
+  }, [variant, isShowAll, numResults]);
+
   if (!isShowAll && numResults === 0) return null;
 
   if (isShowAll && numResults === 0)
@@ -33,11 +44,11 @@ export default function SearchSection({
     );
 
   return (
-    <VStack gap={10}>
+    <VStack gap={variant === 'compact' ? 0 : 10}>
       <StyledResultHeader align="center" justify="space-between">
-        <StyledTitle>{title}</StyledTitle>
+        <StyledTitle variant={variant}>{title}</StyledTitle>
 
-        {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
+        {showAllButton && (
           <StyledGalleryLink
             onClick={onShowAll}
             eventElementId="Search Show All"
@@ -53,9 +64,11 @@ export default function SearchSection({
   );
 }
 
-const StyledTitle = styled(TitleXS)`
+const StyledTitle = styled(TitleXS)<{ variant?: SearchResultVariant }>`
   text-transform: uppercase;
   color: ${colors.metal};
+
+  ${({ variant }) => variant === 'compact' && 'padding: 4px 0;'}
 `;
 
 const StyledResultHeader = styled(HStack)`

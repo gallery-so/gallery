@@ -3,7 +3,9 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFragment.graphql';
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
+import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { CommentsModal } from './CommentsModal';
@@ -11,8 +13,14 @@ type Props = {
   postRef: PostCommentsModalFragment$key;
   queryRef: PostCommentsModalQueryFragment$key;
   fullscreen: boolean;
+  activeCommentId?: string;
 };
-export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Props) {
+export default function PostCommentsModal({
+  activeCommentId,
+  postRef,
+  queryRef,
+  fullscreen,
+}: Props) {
   const {
     data: post,
     loadPrevious,
@@ -50,6 +58,8 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
     queryRef
   );
 
+  useClearURLQueryParams('commentId');
+
   const [commentOnPost, isSubmittingComment] = useCommentOnPost();
 
   const nonNullInteractions = useMemo(() => {
@@ -67,14 +77,15 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
   const info = useOptimisticUserInfo(query);
 
   const handleSubmitComment = useCallback(
-    (comment: string) => {
-      commentOnPost(post.id, post.dbid, comment, info);
+    (comment: string, mentions: MentionInput[]) => {
+      commentOnPost(post.id, post.dbid, comment, info, mentions);
     },
     [commentOnPost, info, post.dbid, post.id]
   );
 
   return (
     <CommentsModal
+      activeCommentId={activeCommentId}
       commentsRef={nonNullInteractions}
       queryRef={query}
       fullscreen={fullscreen}

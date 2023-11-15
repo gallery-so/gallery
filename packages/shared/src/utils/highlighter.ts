@@ -1,21 +1,32 @@
-const MAX_DESCRIPTION_CHARACTER = 150;
-
 export function getHighlightedName(text: string, keyword: string) {
-  return text.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
+  if (!keyword) {
+    return text;
+  }
+
+  // This line of code is sanitizing the keyword by replacing all instances of a single backslash with double backslashes.
+  // This is done to prevent any issues when the keyword is used in a regular expression, as backslashes are escape characters in regex.
+  const sanitizedKeyword = keyword.replace(/\\/g, '\\\\');
+
+  const withoutMentionTag = sanitizedKeyword.replace(/^@/, '');
+
+  return text.replace(new RegExp(withoutMentionTag, 'gi'), (match) => `**${match}**`);
 }
 
+export const MAX_DISPLAYED_DESCRIPTION_CHARS = 150;
+
 export function getHighlightedDescription(text: string, keyword: string) {
-  const regex = new RegExp(keyword, 'gi');
+  const sanitizedKeyword = keyword.replace(/\\/g, '\\\\');
+  const regex = new RegExp(sanitizedKeyword, 'gi');
 
   const unformattedDescription = sanitizeMarkdown(text ?? '');
   if (!keyword) {
-    return unformattedDescription.substring(0, MAX_DESCRIPTION_CHARACTER);
+    return unformattedDescription.substring(0, MAX_DISPLAYED_DESCRIPTION_CHARS);
   }
 
   const matchIndex = unformattedDescription.search(regex);
   let truncatedDescription;
 
-  const maxLength = MAX_DESCRIPTION_CHARACTER;
+  const maxLength = MAX_DISPLAYED_DESCRIPTION_CHARS;
 
   if (matchIndex > -1 && matchIndex + keyword.length === unformattedDescription.length) {
     const endIndex = Math.min(unformattedDescription.length, maxLength);

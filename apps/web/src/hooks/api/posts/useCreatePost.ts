@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 import { ConnectionHandler, SelectorStoreUpdater } from 'relay-runtime';
 
-import { useCreatePostMutation } from '~/generated/useCreatePostMutation.graphql';
+import { MentionInput, useCreatePostMutation } from '~/generated/useCreatePostMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -15,6 +15,7 @@ type TokenToPost = {
 type InputProps = {
   tokens: TokenToPost[];
   caption?: string;
+  mentions?: MentionInput[];
 };
 
 export default function useCreatePost() {
@@ -116,7 +117,13 @@ export default function useCreatePost() {
       try {
         const response = await createPost({
           updater,
-          variables: { input: { tokenIds: [token.dbid], caption: input.caption } },
+          variables: {
+            input: {
+              tokenIds: [token.dbid],
+              caption: input.caption,
+              mentions: input.mentions ?? [],
+            },
+          },
         });
         if (response.postTokens?.__typename === 'PostTokensPayload') {
           // Upon successful post, redirect the user depending on the current page

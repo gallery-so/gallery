@@ -8,7 +8,6 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
 import { LinkableAddress } from '~/components/LinkableAddress';
-import { TezosDomainOrAddress } from '~/components/TezosDomainOrAddress';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
@@ -28,13 +27,8 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       fragment NftAdditionalDetailsTezosFragment on Token {
         tokenId
         lastUpdated
-        contract {
-          creatorAddress {
-            address
-            ...TezosDomainOrAddressWithSuspenseFragment
-          }
+        community {
           contractAddress {
-            address
             ...LinkableAddressFragment
           }
         }
@@ -51,7 +45,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const { tokenId, lastUpdated, fxhashUrl, objktUrl, projectUrl } =
     extractRelevantMetadataFromToken(token);
 
-  const { contract } = token;
+  const { community } = token;
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -60,21 +54,11 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
   return (
     <VStack gap={16}>
-      {token.contract?.creatorAddress?.address && (
-        <div>
-          <TitleXS>Creator</TitleXS>
-          <TezosDomainOrAddress
-            chainAddressRef={token.contract.creatorAddress}
-            eventContext={contexts['NFT Detail']}
-          />
-        </div>
-      )}
-
-      {contract?.contractAddress?.address && (
+      {community?.contractAddress && (
         <div>
           <TitleXS>Contract address</TitleXS>
           <LinkableAddress
-            chainAddressRef={contract.contractAddress}
+            chainAddressRef={community.contractAddress}
             eventContext={contexts['NFT Detail']}
           />
         </div>
@@ -88,6 +72,16 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       )}
 
       <StyledLinkContainer>
+        {projectUrl && (
+          <GalleryLink
+            href={projectUrl}
+            eventElementId="External Link"
+            eventName="External Link Click"
+            eventContext={contexts['NFT Detail']}
+          >
+            <TitleDiatypeM>Official Site</TitleDiatypeM>
+          </GalleryLink>
+        )}
         {fxhashUrl && (
           <GalleryLink
             href={fxhashUrl}
@@ -95,7 +89,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             eventName="fxhash Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            View on fx(hash)
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>fx(hash)</TitleDiatypeM>
+            </HStack>
           </GalleryLink>
         )}
         {objktUrl && (
@@ -105,17 +102,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             eventName="objkt Link Click"
             eventContext={contexts['NFT Detail']}
           >
-            View on objkt
-          </GalleryLink>
-        )}
-        {projectUrl && (
-          <GalleryLink
-            href={projectUrl}
-            eventElementId="External Link"
-            eventName="External Link Click"
-            eventContext={contexts['NFT Detail']}
-          >
-            More Info
+            <HStack gap={4}>
+              <BaseM>View on</BaseM>
+              <TitleDiatypeM>objkt</TitleDiatypeM>
+            </HStack>
           </GalleryLink>
         )}
       </StyledLinkContainer>

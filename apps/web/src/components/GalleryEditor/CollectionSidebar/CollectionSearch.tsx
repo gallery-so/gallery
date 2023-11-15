@@ -29,7 +29,7 @@ export function CollectionSearch({ queryRef }: Props) {
         <FadedInput
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder="Search all collections"
+          placeholder="Search all sections"
           size="md"
         />
       </CollectionSearchBoxContainer>

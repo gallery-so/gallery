@@ -6,20 +6,28 @@ import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResul
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
 import SearchSection from '../SearchSection';
+import { SearchItemType } from '../types';
 import UserSearchResult from './UserSearchResult';
 
 type Props = {
   title: string;
   isShowAll?: boolean;
   resultRefs: UserSearchResultSectionFragment$key;
+  variant?: 'default' | 'compact';
+  keyword: string;
+
   onChangeFilter: (filter: SearchFilterType) => void;
+  onSelect: (item: SearchItemType) => void;
 };
 
 export default function UserSearchResultSection({
   isShowAll = false,
   onChangeFilter,
+  keyword,
   title,
   resultRefs,
+  onSelect,
+  variant = 'default',
 }: Props) {
   const results = useFragment(
     graphql`
@@ -44,9 +52,16 @@ export default function UserSearchResultSection({
       isShowAll={isShowAll}
       onShowAll={() => onChangeFilter('curator')}
       numResults={results.length}
+      variant={variant}
     >
       {resultsToShow.map((result) => (
-        <UserSearchResult key={result.user.id} userRef={result.user} />
+        <UserSearchResult
+          key={result.user.id}
+          userRef={result.user}
+          variant={variant}
+          onSelect={onSelect}
+          keyword={keyword}
+        />
       ))}
     </SearchSection>
   );

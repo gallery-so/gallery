@@ -3,7 +3,10 @@ import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { useCommentOnPostMutation } from '~/generated/useCommentOnPostMutation.graphql';
+import {
+  MentionInput,
+  useCommentOnPostMutation,
+} from '~/generated/useCommentOnPostMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
@@ -11,9 +14,13 @@ import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
 export default function useCommentOnPost() {
   const [submitComment, isSubmittingComment] =
     usePromisifiedMutation<useCommentOnPostMutation>(graphql`
-      mutation useCommentOnPostMutation($postId: DBID!, $comment: String!, $connections: [ID!]!)
-      @raw_response_type {
-        commentOnPost(comment: $comment, postId: $postId) {
+      mutation useCommentOnPostMutation(
+        $postId: DBID!
+        $comment: String!
+        $mentions: [MentionInput!]
+        $connections: [ID!]!
+      ) @raw_response_type {
+        commentOnPost(comment: $comment, postId: $postId, mentions: $mentions) {
           ... on CommentOnPostPayload {
             __typename
 
@@ -41,7 +48,8 @@ export default function useCommentOnPost() {
       postId: string,
       postDbid: string,
       comment: string,
-      optimisticUserInfo: OptimisticUserInfo
+      optimisticUserInfo: OptimisticUserInfo,
+      mentions: MentionInput[] = []
     ) => {
       try {
         const interactionsConnection = ConnectionHandler.getConnectionID(
@@ -116,6 +124,7 @@ export default function useCommentOnPost() {
           variables: {
             comment,
             postId: postDbid,
+            mentions,
             connections: [interactionsConnection, commentsModalConnection],
           },
         });
