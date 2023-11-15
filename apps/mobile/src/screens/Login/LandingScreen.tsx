@@ -1,16 +1,12 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-// [app-store-build] disable onboarding video
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { EllipsesIcon } from 'src/icons/EllipsesIcon';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { OrderedListItem, Typography } from '~/components/Typography';
@@ -18,8 +14,6 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../../components/Button';
-// [app-store-build] disable onboarding video
-// import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
@@ -127,12 +121,10 @@ export function LandingScreen() {
         </View>
 
         <View className="flex flex-col space-y-4 w-8/12">
-          <View className="w-[160px] space-y-2 self-center">
-            <ConnectWalletButton />
+          <View className="w-[160px] space-y-2 self-center pb-6">
             <Button
               onPress={toggleOption}
-              variant="secondary"
-              icon={<EllipsesIcon />}
+              text="Sign In"
               eventElementId="Secondary Login Options Ellipses"
               eventName="Display Secondary Login Options"
               eventContext={contexts.Authentication}
