@@ -38,10 +38,7 @@ import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
 import { OnReplyPressParams } from './CommentsBottomSheetLine';
-
-const SNAP_POINTS = [400];
-
-export const REPLIES_PER_PAGE = 6;
+import { REPLIES_PER_PAGE } from './constants';
 
 type CommentsBottomSheetProps = {
   activeCommentId?: string;
@@ -70,10 +67,19 @@ export function CommentsBottomSheet({
     };
   });
 
+  const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
   const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>();
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
+
+  const snapPoints = useMemo(() => {
+    if (isBottomSheetExpanded) {
+      return [700];
+    }
+
+    return [400];
+  }, [isBottomSheetExpanded]);
 
   const {
     aliasKeyword,
@@ -154,7 +160,12 @@ export function CommentsBottomSheet({
   const handleDismiss = useCallback(() => {
     resetMentions();
     setSelectedComment(null);
+    setIsBottomSheetExpanded(false);
   }, [resetMentions]);
+
+  const handleExpandReplies = useCallback(() => {
+    setIsBottomSheetExpanded(true);
+  }, []);
 
   return (
     <GalleryBottomSheetModal
@@ -166,7 +177,7 @@ export function CommentsBottomSheet({
           bottomSheetRef.current = value;
         }
       }}
-      snapPoints={SNAP_POINTS}
+      snapPoints={snapPoints}
       onChange={() => setIsOpen(true)}
       android_keyboardInputMode="adjustResize"
       keyboardBlurBehavior="restore"
@@ -205,6 +216,7 @@ export function CommentsBottomSheet({
                       feedId={feedId}
                       activeCommentId={highlightCommentId}
                       onReplyPress={handleReplyPress}
+                      onExpandReplies={handleExpandReplies}
                     />
                   )}
                 </Suspense>
@@ -233,12 +245,14 @@ type ConnectedCommentsListProps = {
   feedId: string;
   activeCommentId?: string;
   onReplyPress: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
 function ConnectedCommentsList({
   type,
   feedId,
   activeCommentId,
+  onExpandReplies,
   onReplyPress,
 }: ConnectedCommentsListProps) {
   if (type === 'Post') {
@@ -247,6 +261,7 @@ function ConnectedCommentsList({
         feedId={feedId}
         activeCommentId={activeCommentId}
         onReplyPress={onReplyPress}
+        onExpandReplies={onExpandReplies}
       />
     );
   }
@@ -256,6 +271,7 @@ function ConnectedCommentsList({
       feedId={feedId}
       activeCommentId={activeCommentId}
       onReplyPress={onReplyPress}
+      onExpandReplies={onExpandReplies}
     />
   );
 }
@@ -264,11 +280,13 @@ type ConnectedCommentsProps = {
   activeCommentId?: string;
   feedId: string;
   onReplyPress: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
 function ConnectedEventCommentsList({
   activeCommentId,
   feedId,
+  onExpandReplies,
   onReplyPress,
 }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
@@ -335,6 +353,7 @@ function ConnectedEventCommentsList({
           commentRefs={comments}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
+          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">
@@ -354,6 +373,7 @@ function ConnectedPostCommentsList({
   activeCommentId,
   feedId,
   onReplyPress,
+  onExpandReplies,
 }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
@@ -417,6 +437,7 @@ function ConnectedPostCommentsList({
           commentRefs={comments}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
+          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">

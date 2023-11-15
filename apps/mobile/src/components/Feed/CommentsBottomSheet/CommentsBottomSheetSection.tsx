@@ -11,16 +11,22 @@ import { CommentsBottomSheetSectionFragment$key } from '~/generated/CommentsBott
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { REPLIES_PER_PAGE } from './CommentsBottomSheet';
 import { CommentsBottomSheetLine, OnReplyPressParams } from './CommentsBottomSheetLine';
+import { REPLIES_PER_PAGE } from './constants';
 
 type Props = {
   activeCommentId?: string;
   commentRef: CommentsBottomSheetSectionFragment$key;
   onReplyPress: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
-export function CommentsBottomSheetSection({ activeCommentId, commentRef, onReplyPress }: Props) {
+export function CommentsBottomSheetSection({
+  activeCommentId,
+  commentRef,
+  onReplyPress,
+  onExpandReplies,
+}: Props) {
   const {
     data: comment,
     hasPrevious,
@@ -78,10 +84,11 @@ export function CommentsBottomSheetSection({ activeCommentId, commentRef, onRepl
   const handleViewRepliesPress = useCallback(() => {
     if (!showReplies) {
       setShowReplies(true);
+      onExpandReplies();
     } else {
       loadMore();
     }
-  }, [loadMore, showReplies]);
+  }, [loadMore, onExpandReplies, showReplies]);
 
   useEffect(() => {
     // if the active commentId is in a reply, we want to show the replies
