@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -43,32 +44,33 @@ export function OwnerProfilePictureAndUsername({
   // NOTE: we don't really have universal users popping up in the app yet,
   //       so this is more for future-proofing
   if (user.universal && user.primaryWallet?.chainAddress) {
-    return (
-      <GalleryTouchableOpacity
-        className="flex flex-row items-center space-x-1"
-        onPress={handlePress}
-        eventElementId="Token Owner Username"
-        eventName="Token Owner Username"
-        eventContext={eventContext}
-      >
-        {pfpDisabled ? null : (
-          <RawProfilePicture
-            size="xs"
-            default
-            eventElementId="PFP"
-            eventName="PFP Press"
-            eventContext={eventContext}
-          />
-        )}
-        {/* need to wrap in a View for the parent's space-x-1 padding to work */}
-        <View>
-          <EnsOrAddress
-            chainAddressRef={user.primaryWallet.chainAddress}
-            eventContext={eventContext}
-          />
-        </View>
-      </GalleryTouchableOpacity>
-    );
+    return null;
+    // return (
+    //   <GalleryTouchableOpacity
+    //     className="flex flex-row items-center space-x-1"
+    //     onPress={handlePress}
+    //     eventElementId="Token Owner Username"
+    //     eventName="Token Owner Username"
+    //     eventContext={eventContext}
+    //   >
+    //     {pfpDisabled ? null : (
+    //       <RawProfilePicture
+    //         size="xs"
+    //         default
+    //         eventElementId="PFP"
+    //         eventName="PFP Press"
+    //         eventContext={eventContext}
+    //       />
+    //     )}
+    //     {/* need to wrap in a View for the parent's space-x-1 padding to work */}
+    //     <View>
+    //       <EnsOrAddress
+    //         chainAddressRef={user.primaryWallet.chainAddress}
+    //         eventContext={eventContext}
+    //       />
+    //     </View>
+    //   </GalleryTouchableOpacity>
+    // );
   }
 
   return (
@@ -129,22 +131,23 @@ export function CreatorProfilePictureAndUsernameOrAddress({
       />
     );
   } else if (creatorOrAddress.__typename === 'ChainAddress') {
-    return (
-      <View className="flex flex-row items-center space-x-1">
-        {pfpDisabled ? null : (
-          <RawProfilePicture
-            size="xs"
-            default
-            eventElementId="NftDetail Creator PFP"
-            eventName="NftDetail Creator PFP"
-            eventContext={eventContext}
-          />
-        )}
-        <View>
-          <EnsOrAddress chainAddressRef={creatorOrAddress} eventContext={eventContext} />
-        </View>
-      </View>
-    );
+    return null;
+    // return (
+    //   <View className="flex flex-row items-center space-x-1">
+    //     {pfpDisabled ? null : (
+    //       <RawProfilePicture
+    //         size="xs"
+    //         default
+    //         eventElementId="NftDetail Creator PFP"
+    //         eventName="NftDetail Creator PFP"
+    //         eventContext={eventContext}
+    //       />
+    //     )}
+    //     <View>
+    //       <EnsOrAddress chainAddressRef={creatorOrAddress} eventContext={eventContext} />
+    //     </View>
+    //   </View>
+    // );
   }
   return null;
 }
