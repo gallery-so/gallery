@@ -165,7 +165,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         </View>
       ) : null}
 
-      {community.chain && (
+      {/* {community.chain && (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -184,7 +184,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             </Typography>
           </View>
         </View>
-      )}
+      )} */}
 
       <Button
         size="sm"
@@ -206,6 +206,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function NetworkIcon({ chain }: { chain: Chain }) {
   if (chain === 'Ethereum') {
     return <EthIcon />;
