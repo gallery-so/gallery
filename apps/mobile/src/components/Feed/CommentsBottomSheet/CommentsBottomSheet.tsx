@@ -114,6 +114,7 @@ export function CommentsBottomSheet({
           replyToId: selectedComment ? selectedComment.commentId : undefined,
           onSuccess: () => {
             Keyboard.dismiss();
+            setSelectedComment(null);
           },
         });
 
@@ -126,6 +127,7 @@ export function CommentsBottomSheet({
         value,
         onSuccess: () => {
           Keyboard.dismiss();
+          setSelectedComment(null);
         },
       });
     },
