@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -130,7 +131,7 @@ export function NftSelectorPickerScreen() {
             />
           </View>
 
-          <View className="px-4 flex flex-row items-center justify-between">
+          {/* <View className="px-4 flex flex-row items-center justify-between">
             <Select
               className="w-32"
               title="Network"
@@ -166,7 +167,7 @@ export function NftSelectorPickerScreen() {
                 onSortViewChange={setSortView}
               />
             </View>
-          </View>
+          </View> */}
 
           <View className="flex-grow flex-1 w-full">
             <Suspense fallback={<NftSelectorScreenFallback />}>
