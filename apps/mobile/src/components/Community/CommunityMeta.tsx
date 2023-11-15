@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
@@ -147,7 +148,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   return (
     <View className="flex flex-row justify-between">
-      {community.creator && community?.chain !== 'POAP' ? (
+      {/* {community.creator && community?.chain !== 'POAP' ? (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -163,7 +164,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             />
           </View>
         </View>
-      ) : null}
+      ) : null} */}
 
       {/* {community.chain && (
         <View className="flex flex-column space-y-1">
