@@ -70,24 +70,22 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
       responsibleUserRefs={postAuthor ? [postAuthor] : []}
     >
       <View className="flex pt-1">
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View className="flex-row items-center">
           <GalleryTouchableOpacity
             onPress={handleUserPress}
             eventName={null}
             eventElementId={null}
             eventContext={contexts['Notifications']}
           >
-            <Text>
-              <Typography
-                font={{
-                  family: 'ABCDiatype',
-                  weight: 'Bold',
-                }}
-                className="text-sm"
-              >
-                {postAuthor ? postAuthor?.username : 'Someone'}
-              </Typography>
-            </Text>
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Bold',
+              }}
+              className="text-sm"
+            >
+              {postAuthor ? postAuthor?.username : 'Someone'}
+            </Typography>
           </GalleryTouchableOpacity>
           <Text>
             {' '}
