@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
@@ -99,7 +100,7 @@ export function CommunityView({ queryRef }: Props) {
         <View className="flex flex-row justify-between">
           <BackButton />
 
-          <View className="flex flex-row space-x-2">
+          {/* <View className="flex flex-row space-x-2">
             {externalAddressUrl && (
               <IconContainer
                 eventElementId="Community Globe Icon"
@@ -134,7 +135,7 @@ export function CommunityView({ queryRef }: Props) {
               icon={<ShareIcon />}
               onPress={handleShare}
             />
-          </View>
+          </View> */}
         </View>
       </View>
 
