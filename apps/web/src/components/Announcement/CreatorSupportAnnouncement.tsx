@@ -24,7 +24,12 @@ export default function CreatorSupportAnnouncement({
       <BaseM>
         Welcome to our new creator support feature, currently in beta. Share and display works
         you’ve created on Gallery. Learn more about how it works in{' '}
-        <GalleryLink href={'https://gallery.so'}>our FAQ here</GalleryLink>.
+        <GalleryLink
+          href={'https://gallery-so.notion.site/Creator-FAQs-22b6a0cd877946efb06f25ce4a70cb5a'}
+        >
+          our FAQ here
+        </GalleryLink>
+        .
       </BaseM>
       <Button
         eventElementId="Creator Beta Announcement Continue Button"
