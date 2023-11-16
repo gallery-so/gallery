@@ -4,8 +4,8 @@ import { NativeSyntheticEvent, Text, TextInputSelectionChangeEventData, View } f
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
+import GalleryBottomSheetMentionTextInput from '~/components/GalleryBottomSheet/GalleryBottomSheetMentionTextInput';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import MentionTextInput from '~/components/MentionTextInput';
 import { contexts } from '~/shared/analytics/constants';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
@@ -91,10 +91,10 @@ export function CommentBox({
   return (
     <View className="p-2 flex flex-row items-center space-x-3 border-t border-porcelain dark:border-black-500">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
-        <MentionTextInput
+        <GalleryBottomSheetMentionTextInput
           value={value}
           placeholder="Add a comment..."
-          className="text-sm h-24"
+          className="text-sm"
           onChangeText={onChangeText}
           onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
             onSelectionChange(e.nativeEvent.selection);
@@ -107,7 +107,11 @@ export function CommentBox({
           onSubmitEditing={handleDismiss}
           keyboardType="twitter"
           keyboardAppearance={colorScheme}
-          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+          style={{
+            flex: 1,
+            color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+            lineHeight: 18,
+          }}
           mentions={mentions}
         />
 
