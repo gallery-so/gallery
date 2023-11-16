@@ -14,6 +14,7 @@ const MentionTextInput = forwardRef<TextInput, MentionTextInputProps>((props, re
   const { value, mentions, ...rest } = props;
 
   return (
+    // This is the trick to make sure the iOS keyboard behaves like native
     <TextInput {...rest} ref={ref} multiline numberOfLines={1}>
       <ProcessedText text={value ?? ''} mentionsInText={mentions} />
     </TextInput>
