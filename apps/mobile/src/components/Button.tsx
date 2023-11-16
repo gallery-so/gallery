@@ -21,6 +21,7 @@ type ButtonProps = {
   icon?: ReactNode;
   variant?: Variant;
   textClassName?: string;
+  containerClassName?: string;
   fontWeight?: FontWeight;
   size?: Size;
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
@@ -95,7 +96,7 @@ const buttonVariants: ButtonVariants = {
         loadingColor: 'black',
       },
       active: {
-        containerClassName: 'bg-white',
+        containerClassName: 'bg-white border border-[#2563ebcc]',
         textClassName: 'text-black-800',
         loadingColor: 'black',
       },
@@ -157,7 +158,7 @@ const buttonVariants: ButtonVariants = {
         loadingColor: 'white',
       },
       active: {
-        containerClassName: 'bg-black-900',
+        containerClassName: 'bg-black-900 border border-[#2563ebcc]',
         textClassName: 'text-white',
         loadingColor: 'white',
       },
@@ -173,6 +174,7 @@ export function Button({
   disabled,
   style,
   textClassName,
+  containerClassName,
   size = 'md',
   fontWeight = 'Medium',
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
@@ -206,6 +208,7 @@ export function Button({
         className={clsx(
           'relative flex h-[36] items-center justify-center px-6 rounded-sm',
           variantClassNames.containerClassName,
+          !active ? containerClassName : null,
           sizeVariants[size]
         )}
       >

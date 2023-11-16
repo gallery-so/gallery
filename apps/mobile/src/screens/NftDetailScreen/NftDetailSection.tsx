@@ -220,6 +220,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
+  const blueToDisplay = useMemo(
+    () => (colorScheme === 'dark' ? colors.darkModeBlue : colors.hyperBlue),
+    [colorScheme]
+  );
+
   return (
     <ScrollView>
       <View className="flex flex-col space-y-3 px-4 pb-4">
@@ -254,12 +259,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
           >
-            <Typography
-              className="text-2xl"
-              font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
-            >
-              {token.name}
-            </Typography>
+            <View className="max-w-[70%]">
+              <Typography
+                className="text-2xl"
+                font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
+              >
+                {token.name}
+              </Typography>
+            </View>
             <View className="flex flex-row space-x-2 items-center">
               {admireUsers.length > 0 && (
                 <ProfilePictureBubblesWithCount
@@ -361,7 +368,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         )}
 
         <Button
-          className={hasViewerAdmiredEvent ? 'border border-[#001CC1]' : 'border border-faint'}
           variant="blue"
           icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
           eventElementId={'NFT Detail Token Admire'}
@@ -369,7 +375,10 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           eventContext={contexts['NFT Detail']}
           onPress={toggleTokenAdmire}
           text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
-          textClassName={hasViewerAdmiredEvent ? 'text-[#001CC1]' : undefined}
+          textClassName={hasViewerAdmiredEvent ? `text-[${blueToDisplay}]` : undefined}
+          containerClassName={
+            hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+          }
         />
 
         <View className="flex-1">
