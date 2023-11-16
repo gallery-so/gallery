@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -90,8 +90,7 @@ export function CommentsModal({
     return new CellMeasurerCache({
       fixedWidth: true,
       minHeight: 0,
-      defaultHeight: 56,
-    });
+    }) as CellMeasurerCache & { _rowHeightCache: Record<number, number> };
   }, []);
 
   const handleLoadMore = useCallback(async () => {
@@ -128,27 +127,28 @@ export function CommentsModal({
     [activeCommentId, measurerCache, comments]
   );
 
+  const [contentHeight, setContentHeight] = useState(0);
+
+  // calculate the height of the list
+  useEffect(() => {
+    let height = 0;
+    for (let i = 0; i < rowCount; i++) {
+      height += measurerCache.rowHeight({ index: i });
+    }
+    const modalMaxHeight = fullscreen ? window.innerHeight : 640;
+    // 121 is the height of the modal header + bottom padding + comment box
+    setContentHeight(Math.min(height, modalMaxHeight - 121));
+    //
+    // limit dependencies. we specifically want to run this effect only when the rowHeightCache changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [measurerCache._rowHeightCache]);
+
   const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
 
   const rowCount = hasPrevious ? comments.length + 1 : comments.length;
 
-  const estimatedContentHeight = useMemo(() => {
-    // 24 is the padding between the comment box and the list
-    let height = 24;
-
-    for (let i = 0; i < rowCount; i++) {
-      height += measurerCache.rowHeight({ index: i });
-    }
-
-    // 420 is the max height of the modal if not full screen
-    const modalMaxHeight = fullscreen ? window.innerHeight : 420;
-
-    // 121 is the height of the modal header + bottom padding + comment box
-    return Math.min(height, modalMaxHeight - 121);
-  }, [measurerCache, rowCount, fullscreen]);
-
   useEffect(
-    function recalculateHeightsWhenEventsChange() {
+    function recalculateHeightsWhenCommentsChange() {
       measurerCache.clearAll();
       virtualizedListRef.current?.recomputeRowHeights();
     },
@@ -166,34 +166,29 @@ export function CommentsModal({
             <BaseM color={colors.metal}>No comments yet</BaseM>
           </EmptyStateVStack>
         ) : (
-          <VStack grow>
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <InfiniteLoader
-                  isRowLoaded={isRowLoaded}
-                  loadMoreRows={handleLoadMore}
-                  rowCount={rowCount}
-                >
-                  {({ onRowsRendered, registerChild }) => (
-                    <div ref={(el) => registerChild(el)}>
-                      <List
-                        ref={virtualizedListRef}
-                        width={width}
-                        height={estimatedContentHeight}
-                        rowRenderer={rowRenderer}
-                        rowCount={comments.length}
-                        rowHeight={measurerCache.rowHeight}
-                        onRowsRendered={onRowsRendered}
-                        style={{
-                          paddingTop: '16px',
-                        }}
-                      />
-                    </div>
-                  )}
-                </InfiniteLoader>
-              )}
-            </AutoSizer>
-          </VStack>
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={handleLoadMore}
+                rowCount={rowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  <div ref={(el) => registerChild(el)}>
+                    <List
+                      ref={virtualizedListRef}
+                      width={width}
+                      height={contentHeight}
+                      rowRenderer={rowRenderer}
+                      rowCount={comments.length}
+                      rowHeight={measurerCache.rowHeight}
+                      onRowsRendered={onRowsRendered}
+                    />
+                  </div>
+                )}
+              </InfiniteLoader>
+            )}
+          </AutoSizer>
         )}
         <CommentBox
           queryRef={query}
@@ -212,6 +207,7 @@ const WrappingVStack = styled(VStack)`
 const EmptyStateVStack = styled(VStack)`
   padding-top: 20px;
   padding-bottom: 36px;
+  height: 100%;
 `;
 
 const StyledHeader = styled.div`
@@ -224,6 +220,6 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 0px 0px;
-  min-height: 170px;
+  min-height: 240px;
   height: 100%;
 `;
