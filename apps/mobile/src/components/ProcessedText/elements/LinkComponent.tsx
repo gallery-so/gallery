@@ -12,6 +12,7 @@ type Props = {
 
 export function LinkComponent({ url, value }: Props) {
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  // @ts-expect-error: temporary
   const handleLinkPress = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);

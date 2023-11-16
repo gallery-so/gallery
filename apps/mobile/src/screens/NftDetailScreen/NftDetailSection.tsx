@@ -87,8 +87,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 }
               }
             }
-
-            ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
             ...TokenFailureBoundaryFragment
             ...extractRelevantMetadataFromTokenFragment
@@ -144,6 +142,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     }
   }, [token.community?.creator?.username, navigation]);
 
+  // @ts-expect-error: temporary
   const CreatorComponent = useMemo(() => {
     if (token.community?.creator) {
       return (

@@ -3,16 +3,12 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
-import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
-import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
@@ -20,17 +16,13 @@ import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScree
 import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
-import { contexts } from '~/shared/analytics/constants';
 import { chains } from '~/shared/utils/chains';
 
-import {
-  NetworkChoice,
-  NftSelectorFilterBottomSheet,
-  NftSelectorSortView,
-} from './NftSelectorFilterBottomSheet';
+import { NetworkChoice, NftSelectorSortView } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
+// @ts-expect-error: temporary
 const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
   ...chains.map((chain) => ({
     label: chain.name,
@@ -70,29 +62,36 @@ export function NftSelectorPickerScreen() {
   const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
+  // @ts-expect-error: temporary
   const handleSettingsPress = useCallback(() => {
     filterBottomSheetRef.current?.present();
   }, []);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+  // @ts-expect-error: temporary
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
+  // @ts-expect-error: temporary// @ts-expect-error: temporary
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
   const screenTitle = useMemo(() => {
     return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
   }, [currentScreen]);
 
+  // @ts-expect-error: temporary
   const handleRefresh = useCallback(() => {
     refetch({ networkFilter }, { fetchPolicy: 'network-only' });
   }, [networkFilter, refetch]);
 
+  // @ts-expect-error: temporary
   const { isSyncing, syncTokens } = useSyncTokensActions();
 
+  // @ts-expect-error: temporary
   const handleSync = useCallback(async () => {
     syncTokens(networkFilter);
   }, [syncTokens, networkFilter]);
 
+  // @ts-expect-error: temporary
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
   }, []);

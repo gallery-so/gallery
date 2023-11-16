@@ -1,20 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Linking, Share, View } from 'react-native';
+import { Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
-import { GlobeIcon } from 'src/icons/GlobeIcon';
-import { ObjktIcon } from 'src/icons/ObjktIcon';
-import { OpenseaIcon } from 'src/icons/OpenseaIcon';
-import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
-import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
-import { IconContainer } from '../IconContainer';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
@@ -73,6 +67,7 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
+  // @ts-expect-error: temporary
   const handleShare = useCallback(() => {
     Share.share({
       url: `https://gallery.so/community/${community.chain?.toLowerCase()}/${
@@ -91,6 +86,7 @@ export function CommunityView({ queryRef }: Props) {
     );
   }, [community, setSelectedRoute, selectedRoute]);
 
+  // @ts-expect-error: temporary
   const { openseaUrl, objktUrl, externalAddressUrl } =
     extractRelevantMetadataFromCommunity(community);
 

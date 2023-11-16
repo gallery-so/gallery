@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePictureAndUserOrAddressCreatorFragment$key } from '~/generated/ProfilePictureAndUserOrAddressCreatorFragment.graphql';
 import { ProfilePictureAndUserOrAddressOwnerFragment$key } from '~/generated/ProfilePictureAndUserOrAddressOwnerFragment.graphql';
 import { AnalyticsEventContextType } from '~/shared/analytics/constants';
 
-import { EnsOrAddress } from '../EnsOrAddress';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import { ProfilePicture } from './ProfilePicture';
-import { RawProfilePicture } from './RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureAndUserOrAddressOwnerFragment$key;
@@ -30,11 +27,6 @@ export function OwnerProfilePictureAndUsername({
       fragment ProfilePictureAndUserOrAddressOwnerFragment on GalleryUser {
         username
         universal
-        primaryWallet {
-          chainAddress {
-            ...EnsOrAddressWithSuspenseFragment
-          }
-        }
         ...ProfilePictureFragment
       }
     `,
@@ -43,7 +35,7 @@ export function OwnerProfilePictureAndUsername({
 
   // NOTE: we don't really have universal users popping up in the app yet,
   //       so this is more for future-proofing
-  if (user.universal && user.primaryWallet?.chainAddress) {
+  if (user.universal) {
     return null;
     // return (
     //   <GalleryTouchableOpacity
@@ -113,9 +105,6 @@ export function CreatorProfilePictureAndUsernameOrAddress({
         ... on GalleryUser {
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
-        ... on ChainAddress {
-          ...EnsOrAddressWithSuspenseFragment
-        }
       }
     `,
     userOrAddressRef
@@ -130,24 +119,6 @@ export function CreatorProfilePictureAndUsernameOrAddress({
         pfpDisabled={pfpDisabled}
       />
     );
-  } else if (creatorOrAddress.__typename === 'ChainAddress') {
-    return null;
-    // return (
-    //   <View className="flex flex-row items-center space-x-1">
-    //     {pfpDisabled ? null : (
-    //       <RawProfilePicture
-    //         size="xs"
-    //         default
-    //         eventElementId="NftDetail Creator PFP"
-    //         eventName="NftDetail Creator PFP"
-    //         eventContext={eventContext}
-    //       />
-    //     )}
-    //     <View>
-    //       <EnsOrAddress chainAddressRef={creatorOrAddress} eventContext={eventContext} />
-    //     </View>
-    //   </View>
-    // );
   }
   return null;
 }

@@ -24,8 +24,6 @@ import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
-import { CreatorProfilePictureAndUsernameOrAddress } from '../ProfilePicture/ProfilePictureAndUserOrAddress';
-import { Typography } from '../Typography';
 import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
 
 type Props = {
@@ -44,7 +42,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           address
         }
         creator {
-          ...ProfilePictureAndUserOrAddressCreatorFragment
           __typename
           ... on GalleryUser {
             username
@@ -88,6 +85,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
+  // @ts-expect-error: temporary
   const handleUsernamePress = useCallback(() => {
     if (community.creator?.__typename === 'GalleryUser') {
       navigation.navigate('Profile', { username: community.creator?.username ?? '' });
@@ -208,6 +206,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error: temporary
 function NetworkIcon({ chain }: { chain: Chain }) {
   if (chain === 'Ethereum') {
     return <EthIcon />;
