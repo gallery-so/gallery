@@ -1,18 +1,20 @@
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { NativeSyntheticEvent, Text, TextInputSelectionChangeEventData, View } from 'react-native';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
+import GalleryBottomSheetMentionTextInput from '~/components/GalleryBottomSheet/GalleryBottomSheetMentionTextInput';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { contexts } from '~/shared/analytics/constants';
+import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 import { SendIcon } from './SendIcon';
 
 type Props = {
   value: string;
+  mentions: MentionDataType[];
   onChangeText: (value: string) => void;
   onSelectionChange: (selection: { start: number; end: number }) => void;
 
@@ -35,6 +37,7 @@ export function CommentBox({
   isNotesModal = false,
   onSubmit,
   isSubmittingComment,
+  mentions,
 }: Props) {
   const { colorScheme } = useColorScheme();
 
@@ -88,24 +91,30 @@ export function CommentBox({
   return (
     <View className="p-2 flex flex-row items-center space-x-3 border-t border-porcelain dark:border-black-500">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
-        <BottomSheetTextInput
+        <GalleryBottomSheetMentionTextInput
           value={value}
+          placeholder="Add a comment..."
+          className="text-sm"
           onChangeText={onChangeText}
           onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
             onSelectionChange(e.nativeEvent.selection);
           }}
-          className="text-sm h-5"
+          autoFocus={autoFocus}
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoComplete="off"
-          autoFocus={autoFocus}
           onBlur={handleDismiss}
-          placeholder="Add a comment..."
           placeholderTextColor={colorScheme === 'dark' ? colors.shadow : colors.metal}
           onSubmitEditing={handleDismiss}
           keyboardType="twitter"
           keyboardAppearance={colorScheme}
-          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+          style={{
+            flex: 1,
+            color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+            lineHeight: 18,
+          }}
+          mentions={mentions}
         />
+
         <Text className="text-sm text-metal">{characterCount}</Text>
         <GalleryTouchableOpacity
           eventElementId="Submit Comment Button"

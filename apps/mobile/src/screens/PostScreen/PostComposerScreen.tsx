@@ -183,6 +183,7 @@ function PostComposerScreenInner() {
           onChange={setMessage}
           tokenRef={token}
           onSelectionChange={handleSelectionChange}
+          mentions={mentions}
         />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (

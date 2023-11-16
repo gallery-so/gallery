@@ -185,6 +185,7 @@ export function CommentsBottomSheet({
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
           onClose={noop}
+          mentions={mentions}
         />
       </Animated.View>
     </GalleryBottomSheetModal>
