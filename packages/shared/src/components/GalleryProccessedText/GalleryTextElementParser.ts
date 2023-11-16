@@ -56,52 +56,31 @@ export function getMentionElements(
   }
 
   const elements: TextElement[] = [];
+  let mentions: (GalleryTextElementParserMentionsFragment$data | MentionDataType)[] = [];
 
   if (mentionRefs.length > 0) {
-    let mentions: GalleryTextElementParserMentionsFragment$data[] = [];
-
-    mentionRefs.forEach((mentionRef) => {
-      mentions.push(fetchMention(mentionRef));
-    });
-
-    // Remove duplicate mentions
-    mentions = uniqWith(mentions, isEqual);
-
-    mentions?.forEach((mention) => {
-      if (!mention?.entity || !mention?.interval) return;
-
-      const { start, length } = mention.interval;
-      const mentionText = text.substring(start, start + length);
-
-      elements.push({
-        type: 'mention',
-        value: mentionText,
-        start: start,
-        end: start + length,
-        mentionData: mention.entity,
-      });
-    });
+    mentions = mentionRefs.map(fetchMention);
   } else if (mentionsInText.length > 0) {
-    let mentions = [...mentionsInText];
-
-    // Remove duplicate mentions
-    mentions = uniqWith(mentions, isEqual);
-
-    mentions?.forEach((mention) => {
-      if (!mention) return;
-
-      const { start, length } = mention.interval;
-      const mentionText = text.substring(start, start + length);
-
-      elements.push({
-        type: 'mention',
-        value: mentionText,
-        start: start,
-        end: start + length,
-        mentionData: null,
-      });
-    });
+    mentions = [...mentionsInText];
   }
+
+  // Remove duplicate mentions
+  mentions = uniqWith(mentions, isEqual);
+
+  mentions?.forEach((mention) => {
+    if (!mention || !mention?.interval) return;
+
+    const { start, length } = mention.interval;
+    const mentionText = text.substring(start, start + length);
+
+    elements.push({
+      type: 'mention',
+      value: mentionText,
+      start: start,
+      end: start + length,
+      mentionData: 'entity' in mention ? mention.entity : null,
+    });
+  });
 
   return elements;
 }
