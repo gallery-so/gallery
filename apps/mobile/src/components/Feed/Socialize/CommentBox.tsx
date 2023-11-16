@@ -111,6 +111,7 @@ export function CommentBox({
             flex: 1,
             color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             lineHeight: 18,
+            paddingTop: 0,
           }}
           mentions={mentions}
         />
