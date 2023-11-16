@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 import { GalleryProcessedTextFragment$key } from '~/generated/GalleryProcessedTextFragment.graphql';
 
@@ -10,7 +11,6 @@ import {
   TextElement,
 } from './GalleryTextElementParser';
 import { SupportedProcessedTextElements } from './types';
-import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 type GalleryProcessedTextProps = {
   text: string;
@@ -88,7 +88,15 @@ export default function GalleryProcessedText({
     });
 
     return elementsWithBreaks;
-  }, [text, mentions, LinkComponent, TextComponent, MentionComponent, BreakComponent]);
+  }, [
+    text,
+    mentions,
+    mentionsInText,
+    LinkComponent,
+    TextComponent,
+    MentionComponent,
+    BreakComponent,
+  ]);
 
   return <TextComponent>{processedText}</TextComponent>;
 }

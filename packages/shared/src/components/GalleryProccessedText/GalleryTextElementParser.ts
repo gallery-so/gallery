@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import uniqWith from 'lodash/uniqWith';
 import { graphql, readInlineData } from 'react-relay';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 import { GalleryProcessedTextFragment$data } from '~/generated/GalleryProcessedTextFragment.graphql';
 import {
@@ -9,7 +10,6 @@ import {
 } from '~/generated/GalleryTextElementParserMentionsFragment.graphql';
 
 import { MARKDOWN_LINK_REGEX, VALID_URL } from '../../utils/regex';
-import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 export type TextElement = {
   type: 'mention' | 'url' | 'markdown-link';
