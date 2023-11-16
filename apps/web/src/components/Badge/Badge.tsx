@@ -9,7 +9,7 @@ import Tooltip from '~/components/Tooltip/Tooltip';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
-import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES, BADGE_ENABLED_NAMES } from '~/shared/utils/communities';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -37,7 +37,11 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
   const { name, imageURL, contract } = badge;
 
-  const communityUrl = useMemo<Route>(() => {
+  const communityUrl = useMemo<Route | null>(() => {
+    if (!contract) {
+      return null;
+    }
+
     const contractAddress = contract?.contractAddress?.address as string;
 
     const chain = contract?.chain?.toLocaleLowerCase() as LowercaseChain;
@@ -57,20 +61,18 @@ export default function Badge({ badgeRef, eventContext }: Props) {
   }, []);
 
   const isEnabled = useMemo(() => {
-    return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '');
-  }, [contract?.contractAddress?.address]);
+    return (
+      BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '') ||
+      BADGE_ENABLED_NAMES.has(name ?? '')
+    );
+  }, [contract?.contractAddress?.address, name]);
 
   if (!isEnabled) {
     return null;
   }
 
-  return (
-    <StyledGalleryLink
-      eventElementId="Badge"
-      eventName="Badge Click"
-      eventContext={eventContext}
-      to={communityUrl}
-    >
+  const BadgeImage = () => (
+    <>
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <IconContainer
         size="md"
@@ -83,6 +85,21 @@ export default function Badge({ badgeRef, eventContext }: Props) {
           />
         }
       />
+    </>
+  );
+
+  if (!communityUrl) {
+    return <BadgeImage />;
+  }
+
+  return (
+    <StyledGalleryLink
+      eventElementId="Badge"
+      eventName="Badge Click"
+      eventContext={eventContext}
+      to={communityUrl}
+    >
+      <BadgeImage />
     </StyledGalleryLink>
   );
 }
