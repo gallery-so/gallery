@@ -7,7 +7,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
   mention: string;
-  mentionData: GalleryTextElementParserMentionsFragment$data['entity'];
+  mentionData: GalleryTextElementParserMentionsFragment$data['entity'] | null;
 };
 
 export function MentionComponent({ mention, mentionData }: Props) {

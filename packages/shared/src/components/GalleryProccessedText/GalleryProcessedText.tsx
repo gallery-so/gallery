@@ -10,10 +10,12 @@ import {
   TextElement,
 } from './GalleryTextElementParser';
 import { SupportedProcessedTextElements } from './types';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 type GalleryProcessedTextProps = {
   text: string;
   mentionsRef?: GalleryProcessedTextFragment$key;
+  mentionsInText?: MentionDataType[];
 } & SupportedProcessedTextElements;
 
 // Makes a raw text value display-ready by converting urls to link components
@@ -24,6 +26,7 @@ export default function GalleryProcessedText({
   TextComponent,
   LinkComponent,
   MentionComponent,
+  mentionsInText = [],
 }: GalleryProcessedTextProps) {
   const mentions = useFragment(
     graphql`
@@ -41,7 +44,7 @@ export default function GalleryProcessedText({
     const elements = [
       ...markdownLinks,
       ...getUrlElements(text, markdownLinks),
-      ...getMentionElements(text, mentions),
+      ...getMentionElements(text, mentions, mentionsInText),
     ];
 
     // Sort elements based on their start index

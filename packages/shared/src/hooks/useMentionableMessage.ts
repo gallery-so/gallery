@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { WHITESPACE_REGEX } from '../utils/regex';
 import useDebounce from './useDebounce';
 
-type MentionDataType = {
+export type MentionDataType = {
   interval: {
     start: number;
     length: number;

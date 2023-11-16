@@ -9,6 +9,7 @@ import {
 } from '~/generated/GalleryTextElementParserMentionsFragment.graphql';
 
 import { MARKDOWN_LINK_REGEX, VALID_URL } from '../../utils/regex';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 export type TextElement = {
   type: 'mention' | 'url' | 'markdown-link';
@@ -21,7 +22,8 @@ export type TextElement = {
 
 export function getMentionElements(
   text: string,
-  mentionRefs: GalleryProcessedTextFragment$data
+  mentionRefs: GalleryProcessedTextFragment$data,
+  mentionsInText: MentionDataType[]
 ): TextElement[] {
   function fetchMention(mentionRef: GalleryTextElementParserMentionsFragment$key) {
     return readInlineData(
@@ -53,31 +55,53 @@ export function getMentionElements(
     );
   }
 
-  let mentions: GalleryTextElementParserMentionsFragment$data[] = [];
-
-  mentionRefs.forEach((mentionRef) => {
-    mentions.push(fetchMention(mentionRef));
-  });
-
-  // Remove duplicate mentions
-  mentions = uniqWith(mentions, isEqual);
-
   const elements: TextElement[] = [];
 
-  mentions?.forEach((mention) => {
-    if (!mention?.entity || !mention?.interval) return;
+  if (mentionRefs.length > 0) {
+    let mentions: GalleryTextElementParserMentionsFragment$data[] = [];
 
-    const { start, length } = mention.interval;
-    const mentionText = text.substring(start, start + length);
-
-    elements.push({
-      type: 'mention',
-      value: mentionText,
-      start: start,
-      end: start + length,
-      mentionData: mention.entity,
+    mentionRefs.forEach((mentionRef) => {
+      mentions.push(fetchMention(mentionRef));
     });
-  });
+
+    // Remove duplicate mentions
+    mentions = uniqWith(mentions, isEqual);
+
+    mentions?.forEach((mention) => {
+      if (!mention?.entity || !mention?.interval) return;
+
+      const { start, length } = mention.interval;
+      const mentionText = text.substring(start, start + length);
+
+      elements.push({
+        type: 'mention',
+        value: mentionText,
+        start: start,
+        end: start + length,
+        mentionData: mention.entity,
+      });
+    });
+  } else if (mentionsInText.length > 0) {
+    let mentions = [...mentionsInText];
+
+    // Remove duplicate mentions
+    mentions = uniqWith(mentions, isEqual);
+
+    mentions?.forEach((mention) => {
+      if (!mention) return;
+
+      const { start, length } = mention.interval;
+      const mentionText = text.substring(start, start + length);
+
+      elements.push({
+        type: 'mention',
+        value: mentionText,
+        start: start,
+        end: start + length,
+        mentionData: null,
+      });
+    });
+  }
 
   return elements;
 }
