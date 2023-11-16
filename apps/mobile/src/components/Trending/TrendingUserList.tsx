@@ -13,6 +13,7 @@ import { graphql, useFragment } from 'react-relay';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserListFragment$key } from '~/generated/TrendingUserListFragment.graphql';
 import { TrendingUserListQueryFragment$key } from '~/generated/TrendingUserListQueryFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TrendingUserCard } from './TrendingUserCard';
 
@@ -37,6 +38,11 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
     graphql`
       fragment TrendingUserListFragment on GalleryUser @relay(plural: true) {
         ...TrendingUserCardFragment
+        galleries {
+          tokenPreviews {
+            __typename
+          }
+        }
       }
     `,
     usersRef
@@ -49,8 +55,15 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
   const pages = useMemo((): ListItemType[] => {
     const pages: ListItemType[] = [];
 
+    // remove users without token previews
+    const usersWithTokenPreviews = users.filter((user) => {
+      return user?.galleries?.find(
+        (gallery) => removeNullValues(gallery?.tokenPreviews).length > 0
+      );
+    });
+
     for (let i = 0; i < users.length; i += PAGE_SIZE) {
-      const pageUsers = users.slice(i, i + PAGE_SIZE);
+      const pageUsers = usersWithTokenPreviews.slice(i, i + PAGE_SIZE);
 
       pages.push({ kind: 'page', cells: pageUsers });
     }

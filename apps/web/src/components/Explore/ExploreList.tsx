@@ -11,6 +11,7 @@ import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 import { ExploreListFragment$key } from '~/generated/ExploreListFragment.graphql';
 import { ExploreListQueryFragment$key } from '~/generated/ExploreListQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -38,8 +39,13 @@ export default function ExploreList({ exploreUsersRef, queryRef, rowSize = 2 }: 
   const exploreUsers = useFragment(
     graphql`
       fragment ExploreListFragment on GalleryUser @relay(plural: true) {
-        id
         ...ExploreUserCardFragment
+        id
+        galleries {
+          tokenPreviews {
+            __typename
+          }
+        }
       }
     `,
     exploreUsersRef
@@ -54,7 +60,12 @@ export default function ExploreList({ exploreUsersRef, queryRef, rowSize = 2 }: 
   }, []);
 
   const shortenedUserList = useMemo(() => {
-    const users = exploreUsers ?? [];
+    // remove users without token previews
+    const users = (exploreUsers ?? []).filter((user) => {
+      return user?.galleries?.find(
+        (gallery) => removeNullValues(gallery?.tokenPreviews).length > 0
+      );
+    });
     return users.slice(0, USERS_TO_SHOW);
   }, [exploreUsers]);
 
