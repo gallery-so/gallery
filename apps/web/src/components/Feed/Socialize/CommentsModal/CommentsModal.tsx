@@ -90,6 +90,8 @@ export function CommentsModal({
     return new CellMeasurerCache({
       fixedWidth: true,
       minHeight: 0,
+      // _rowHeightCache is a private property of CellMeasurerCache but we need to use it seems to be the only way to
+      // trigger an effect when the row heights change. measurerCache itself doesnt trigger an effect.
     }) as CellMeasurerCache & { _rowHeightCache: Record<number, number> };
   }, []);
 
