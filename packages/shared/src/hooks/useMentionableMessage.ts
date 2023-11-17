@@ -1,3 +1,5 @@
+import isEqual from 'lodash/isEqual';
+import uniqWith from 'lodash/uniqWith';
 import { useCallback, useMemo, useState } from 'react';
 
 import { WHITESPACE_REGEX } from '../utils/regex';
@@ -153,5 +155,5 @@ function updateMentionPositions(text: string, mentions: MentionDataType[]) {
     }
   });
 
-  return updatedMentions;
+  return uniqWith(updatedMentions, isEqual);
 }
