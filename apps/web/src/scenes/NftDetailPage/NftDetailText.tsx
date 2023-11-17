@@ -11,7 +11,6 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
-import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
@@ -50,7 +49,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         tokenId
         owner {
           username
-          ...UserHoverCardFragment
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
         contract {
@@ -65,7 +63,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           creator {
             ... on GalleryUser {
               __typename
-              ...UserHoverCardFragment
             }
             ...ProfilePictureAndUserOrAddressCreatorFragment
           }
@@ -151,7 +148,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
         )}
       </>
     );
-  }, [token.owner?.username, token.community?.creator]);
+  }, [token.owner, token.community?.creator]);
 
   const OwnerAndCreatorSection = useMemo(() => {
     const ownerUsernameLength = token.owner?.username?.length ?? 0;
@@ -160,12 +157,14 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     if (ownerUsernameLength > 15) {
       return <VStack gap={10}>{OwnerAndCreatorDetails}</VStack>;
     } else if (ownerUsernameLength !== 0) {
-      <StyledOwnerAndCreator justify="space-between">
-        {OwnerAndCreatorDetails}
-      </StyledOwnerAndCreator>;
+      return (
+        <StyledOwnerAndCreator justify="space-between">
+          {OwnerAndCreatorDetails}
+        </StyledOwnerAndCreator>
+      );
     }
     return null;
-  }, [token.owner?.username]);
+  }, [token.owner?.username, OwnerAndCreatorDetails]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
