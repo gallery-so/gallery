@@ -20,7 +20,7 @@ type Props = {
 };
 
 const ROW_HEIGHT = 56;
-const MAX_LIST_HEIGHT = 400;
+const MAX_LIST_HEIGHT = 640;
 
 export default function SharedCommunitiesList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
@@ -62,9 +62,13 @@ export default function SharedCommunitiesList({ userRef }: Props) {
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasNext || index < sharedCommunities.length;
 
+  const isMobile = useIsMobileWindowWidth();
+
   const listHeight = useMemo(() => {
-    return Math.min(rowCount * ROW_HEIGHT, MAX_LIST_HEIGHT);
-  }, [rowCount]);
+    // 60px accounts for the header + margin height on mobile
+    const modalMaxHeight = isMobile ? window.innerHeight - 60 : MAX_LIST_HEIGHT;
+    return Math.min(rowCount * ROW_HEIGHT, modalMaxHeight);
+  }, [isMobile, rowCount]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
@@ -109,8 +113,6 @@ export default function SharedCommunitiesList({ userRef }: Props) {
     },
     [sharedCommunities]
   );
-
-  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledList fullscreen={isMobile} gap={24}>

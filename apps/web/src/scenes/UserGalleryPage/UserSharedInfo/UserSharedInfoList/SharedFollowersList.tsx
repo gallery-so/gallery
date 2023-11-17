@@ -20,7 +20,7 @@ type Props = {
 
 export const FOLLOWERS_PER_PAGE = 20;
 const ROW_HEIGHT = 56;
-const MAX_LIST_HEIGHT = 400;
+const MAX_LIST_HEIGHT = 640;
 
 export default function SharedFollowersList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
@@ -72,14 +72,16 @@ export default function SharedFollowersList({ userRef }: Props) {
     [sharedFollowers]
   );
 
-  const listHeight = useMemo(() => {
-    return Math.min(rowCount * ROW_HEIGHT, MAX_LIST_HEIGHT);
-  }, [rowCount]);
-
   const isMobile = useIsMobileWindowWidth();
+
+  const listHeight = useMemo(() => {
+    const modalMaxHeight = isMobile ? window.innerHeight - 60 : MAX_LIST_HEIGHT;
+    return Math.min(rowCount * ROW_HEIGHT, modalMaxHeight);
+  }, [isMobile, rowCount]);
+
   return (
     <StyledList fullscreen={isMobile} gap={24}>
-      <AutoSizer>
+      <AutoSizer disableHeight>
         {({ width }) => (
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
@@ -108,7 +110,7 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   width: 375px;
   max-width: 375px;
   margin: 4px;
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '400px')};
+  height: 100%;
 `;
 
 function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFragment$key }) {
