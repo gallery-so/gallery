@@ -294,23 +294,26 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
             <StyledTitleText>{selectedContract?.title}</StyledTitleText>
             <HStack align="center">
               <NftSelectorFilterSort selectedView={sortType} onSelectedViewChange={setSortType} />
-              <IconContainer
-                disabled={contractRefreshDisabled}
-                onClick={handleCreatorRefreshContract}
-                size="xs"
-                variant="default"
-                icon={<RefreshIcon />}
-                ref={reference}
-                {...getReferenceProps()}
-              />
-
-              <NewTooltip
-                {...getFloatingProps()}
-                style={{ ...floatingStyle }}
-                ref={floating}
-                whiteSpace="pre-line"
-                text={`Refresh Collection`}
-              />
+              {filterType === 'Created' && (
+                <>
+                  <IconContainer
+                    disabled={contractRefreshDisabled}
+                    onClick={handleCreatorRefreshContract}
+                    size="xs"
+                    variant="default"
+                    icon={<RefreshIcon />}
+                    ref={reference}
+                    {...getReferenceProps()}
+                  />
+                  <NewTooltip
+                    {...getFloatingProps()}
+                    style={{ ...floatingStyle }}
+                    ref={floating}
+                    whiteSpace="pre-line"
+                    text={`Refresh Collection`}
+                  />
+                </>
+              )}
             </HStack>
           </StyledHeaderContainer>
         ) : (
