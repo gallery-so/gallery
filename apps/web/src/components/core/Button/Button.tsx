@@ -113,7 +113,7 @@ const StyledButton = styled.button<StyledButtonProps>`
       return css`
         background: ${colors.white};
         color: ${colors.black['800']};
-        border: 1px solid ${active ? 'rgba(0, 28, 193, 0.2)' : colors.porcelain};
+        border: 1px solid ${active ? '#001cc133' : colors.porcelain};
         padding: 7px 23px;
 
         &:hover:not(:disabled) {
