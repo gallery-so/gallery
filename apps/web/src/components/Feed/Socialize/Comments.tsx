@@ -12,6 +12,8 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
 import { CommentsQueryFragment$key } from '~/generated/CommentsQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { FeedEventsCommentsModal } from './CommentsModal/FeedEventsCommentsModal';
@@ -81,6 +83,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     queryRef
   );
 
+  const track = useTrack();
   const router = useRouter();
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -103,13 +106,19 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   }, [feedItem, isMobile, query, commentId]);
 
   const handleAddCommentClick = useCallback(() => {
+    track('Button Click', {
+      id: 'Open Comments Modal Button',
+      name: 'Open Comments Modal',
+      context: contexts.Posts,
+    });
+
     showModal({
       content: ModalContent,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-  }, [ModalContent, isMobile, showModal]);
+  }, [ModalContent, isMobile, showModal, track]);
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -177,7 +186,11 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
         <VStack gap={4}>
           <VStack>
             {lastComment.map((comment) => {
-              return <CommentLine key={comment.dbid} commentRef={comment} />;
+              return (
+                <StyledCommentContainer key={comment.dbid} onClick={handleAddCommentClick}>
+                  <CommentLine commentRef={comment} />
+                </StyledCommentContainer>
+              );
             })}
           </VStack>
 
@@ -207,5 +220,9 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
 }
 
 const StyledAddCommentCta = styled(TitleDiatypeM)`
+  cursor: pointer;
+`;
+
+const StyledCommentContainer = styled.div`
   cursor: pointer;
 `;
