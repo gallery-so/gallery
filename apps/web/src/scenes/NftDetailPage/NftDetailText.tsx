@@ -33,7 +33,6 @@ import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetail
 import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -354,10 +353,10 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             eventName="Nft Detail Admire Token Button Pressed"
             eventContext={contexts['NFT Detail']}
           >
-            <StyledAdmireContainer active={hasViewerAdmiredToken} gap={8} align="center">
+            <HStack gap={8} align="center">
               <AdmireIcon active={hasViewerAdmiredToken} />
               {hasViewerAdmiredToken ? 'Admired' : 'Admire'}
-            </StyledAdmireContainer>
+            </HStack>
           </StyledAdmireButton>
           {authenticatedUserOwnsAsset && (
             <StyledInteractionButton
@@ -440,16 +439,10 @@ const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 
-const StyledAdmireContainer = styled(HStack)<{ active: boolean }>`
-  ${({ active }) => (active ? `color: ${colors.hyperBlue}` : null)};
-`;
-
 const StyledAdmireButton = styled(Button)<{ active: boolean }>`
   display: flex;
   flex-grow: 1;
   min-width: 202px;
-  border: ${({ active }) =>
-    active ? `1px solid ${colors.hyperBlue}` : '1px solid ${colors.porcelain}'};
 `;
 
 const StyledInteractionButton = styled(Button)`
