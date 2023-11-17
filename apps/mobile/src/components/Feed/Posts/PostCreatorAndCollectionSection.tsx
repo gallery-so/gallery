@@ -98,7 +98,13 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
       {isLegitGalleryUser ? (
-        <View style={creatorNameContainerStyle}>
+        <GalleryTouchableOpacity
+          style={creatorNameContainerStyle}
+          onPress={handleUsernamePress}
+          eventElementId="Post Creator Link"
+          eventName="Clicked Post Creator Link"
+          eventContext={contexts.Posts}
+        >
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs"
@@ -113,11 +119,19 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
             handlePress={handleUsernamePress}
             pfpDisabled
           />
-        </View>
+        </GalleryTouchableOpacity>
       ) : null}
 
       {token.community && (
-        <View className="flex" style={contractNameContainerStyle}>
+        <GalleryTouchableOpacity
+          className="flex"
+          style={contractNameContainerStyle}
+          onPress={handleCommunityPress}
+          eventElementId="Post Community Link"
+          eventName="Clicked Post Community Link"
+          eventContext={contexts.Posts}
+          properties={{ communityName: contractName }}
+        >
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs"
@@ -125,14 +139,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
           >
             COLLECTION
           </Typography>
-          <GalleryTouchableOpacity
-            className="flex flex-row"
-            onPress={handleCommunityPress}
-            eventElementId="Post Community Link"
-            eventName="Clicked Post Community Link"
-            eventContext={contexts.Posts}
-            properties={{ communityName: contractName }}
-          >
+          <View className="flex flex-row">
             <Typography
               numberOfLines={1}
               className="text-sm"
@@ -140,8 +147,8 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
             >
               {contractName}
             </Typography>
-          </GalleryTouchableOpacity>
-        </View>
+          </View>
+        </GalleryTouchableOpacity>
       )}
     </View>
   );
