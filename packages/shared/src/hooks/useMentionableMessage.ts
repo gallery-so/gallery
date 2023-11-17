@@ -136,7 +136,7 @@ export function useMentionableMessage() {
   };
 }
 
-function updateMentionPositions(text: string, mentions: MentionDataType[]) {
+export function updateMentionPositions(text: string, mentions: MentionDataType[]) {
   const updatedMentions: MentionDataType[] = [];
   mentions.forEach((mention) => {
     // use regex to find all mentions in text
