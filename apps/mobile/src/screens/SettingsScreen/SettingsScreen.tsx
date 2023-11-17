@@ -3,8 +3,8 @@ import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { QuestionCircleIcon } from 'src/icons/QuestionCircleIcon';
 
+// import { QuestionCircleIcon } from 'src/icons/QuestionCircleIcon';
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { FeedbackBottomSheet } from '~/components/FeedbackBottomSheet';
@@ -61,11 +61,11 @@ export function SettingsScreen() {
     Linking.openURL('https://discord.gg/U6Xx8heTXY');
   }, []);
 
-  const handleFaqPress = useCallback(() => {
-    Linking.openURL(
-      'https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2'
-    );
-  }, []);
+  // const handleFaqPress = useCallback(() => {
+  //   Linking.openURL(
+  //     'https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2'
+  //   );
+  // }, []);
 
   const handleTwitterPress = useCallback(() => {
     Linking.openURL('https://twitter.com/GALLERY');
@@ -122,7 +122,7 @@ export function SettingsScreen() {
             text="Report a bug"
             icon={<BugReportIcon width={24} height={24} />}
           />
-          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<QuestionCircleIcon />} />
+          {/* <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<QuestionCircleIcon />} /> */}
           <SettingsRow
             onPress={handleDiscordPress}
             text="Discord"
