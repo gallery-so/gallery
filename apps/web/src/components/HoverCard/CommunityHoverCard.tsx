@@ -58,6 +58,7 @@ type Props = PropsWithChildren<{
   communityRef: CommunityHoverCardFragment$key;
   communityName: string;
   onClick?: HoverCardProps<CommunityHoverCardQuery>['onHoverableElementClick'];
+  fitContent?: boolean;
 }>;
 
 export default function CommunityHoverCard({
@@ -65,6 +66,7 @@ export default function CommunityHoverCard({
   communityName,
   communityRef,
   onClick,
+  fitContent,
 }: Props) {
   const community = useFragment(
     graphql`
@@ -116,6 +118,7 @@ export default function CommunityHoverCard({
       }
       preloadQuery={handlePreloadQuery}
       preloadedQuery={preloadedHoverCardQuery}
+      fitContent={fitContent}
     />
   );
 }

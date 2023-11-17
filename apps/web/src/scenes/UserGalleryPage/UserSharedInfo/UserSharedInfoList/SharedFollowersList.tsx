@@ -19,6 +19,8 @@ type Props = {
 };
 
 export const FOLLOWERS_PER_PAGE = 20;
+const ROW_HEIGHT = 56;
+const MAX_LIST_HEIGHT = 400;
 
 export default function SharedFollowersList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
@@ -70,11 +72,15 @@ export default function SharedFollowersList({ userRef }: Props) {
     [sharedFollowers]
   );
 
+  const listHeight = useMemo(() => {
+    return Math.min(rowCount * ROW_HEIGHT, MAX_LIST_HEIGHT);
+  }, [rowCount]);
+
   const isMobile = useIsMobileWindowWidth();
   return (
     <StyledList fullscreen={isMobile} gap={24}>
       <AutoSizer>
-        {({ width, height }) => (
+        {({ width }) => (
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
             loadMoreRows={handleLoadMore}
@@ -86,8 +92,8 @@ export default function SharedFollowersList({ userRef }: Props) {
                 onRowsRendered={onRowsRendered}
                 rowRenderer={rowRenderer}
                 width={width}
-                height={height}
-                rowHeight={56}
+                height={listHeight}
+                rowHeight={ROW_HEIGHT}
                 rowCount={sharedFollowers.length}
               />
             )}
@@ -127,7 +133,7 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
   };
 
   return (
-    <UserHoverCard userRef={user}>
+    <UserHoverCard userRef={user} fitContent={false}>
       <PaginatedListRow
         href={userUrlPath}
         title={user.username ?? ''}

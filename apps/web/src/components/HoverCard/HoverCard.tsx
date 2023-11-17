@@ -39,6 +39,7 @@ export type HoverCardProps<T extends OperationType> = {
   preloadQuery: () => void;
   preloadedQuery?: PreloadedQuery<T> | null;
   HoveringContent: React.ReactNode;
+  fitContent?: boolean; // whether hover card width expands to fit parent (false) or is tight around content (true)
 };
 
 export default function HoverCard<T extends OperationType>({
@@ -48,6 +49,7 @@ export default function HoverCard<T extends OperationType>({
   HoveringContent,
   preloadedQuery,
   preloadQuery,
+  fitContent = true,
 }: HoverCardProps<T>) {
   const [isHovering, setIsHovering] = useState(false);
 
@@ -80,9 +82,9 @@ export default function HoverCard<T extends OperationType>({
   );
 
   return (
-    <StyledContainer>
+    <StyledContainer fitContent={fitContent}>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <GalleryLink
+        <StyledGalleryLink
           to={hoverableElementHref}
           onClick={handleClick}
           eventElementId="Hover Card Hoverable Element"
@@ -90,7 +92,7 @@ export default function HoverCard<T extends OperationType>({
           eventContext={contexts['Hover Card']}
         >
           {HoverableElement}
-        </GalleryLink>
+        </StyledGalleryLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
@@ -129,14 +131,21 @@ export default function HoverCard<T extends OperationType>({
   );
 }
 
-const StyledContainer = styled.span`
+const StyledContainer = styled.span<{ fitContent: boolean }>`
   position: relative;
   display: inline-grid;
   cursor: initial;
+
+  width: ${({ fitContent }) => (fitContent ? 'fit-content' : '100%;')};
 `;
 
 const StyledLinkContainer = styled.span`
   display: inline-flex;
+  width: 100%;
+`;
+
+const StyledGalleryLink = styled(GalleryLink)`
+  width: 100%;
 `;
 
 const StyledCardContainer = styled.div`
