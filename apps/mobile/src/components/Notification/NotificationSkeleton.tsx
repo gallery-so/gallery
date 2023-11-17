@@ -121,6 +121,9 @@ export function NotificationSkeleton({
                   ...NotificationPostPreviewWithBoundaryFragment
                 }
               }
+            }
+          }
+        }
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           post {
             tokens {
