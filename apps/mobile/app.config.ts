@@ -27,13 +27,13 @@ const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
 
-  name: 'Gallery',
+  name: 'Gallery Labs',
   slug: 'gallery-mobile',
   privacy: 'unlisted',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.30',
+  version: '1.0.31',
   updates: {
     fallbackToCacheTimeout: 0,
   },
