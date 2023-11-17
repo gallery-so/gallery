@@ -19,6 +19,7 @@ export default function ProcessedText({
   text,
   mentionsRef = [],
   mentionsInText,
+  ...props
 }: ProcessedTextProps) {
   const mentions = useFragment(
     graphql`
@@ -39,6 +40,7 @@ export default function ProcessedText({
       MentionComponent={MentionComponent}
       BreakComponent={() => <Text>{'\n'}</Text>}
       mentionsInText={mentionsInText}
+      {...props}
     />
   );
 }

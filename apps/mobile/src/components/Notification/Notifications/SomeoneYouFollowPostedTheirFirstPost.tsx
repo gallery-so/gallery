@@ -111,7 +111,7 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
         </View>
         {post?.caption && (
           <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
-            <ProcessedText text={post.caption} numberOfLines={3} />
+            <ProcessedText text={post.caption} numberOfLines={2} />
           </View>
         )}
       </View>
