@@ -128,27 +128,44 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     });
   }, [isMobile, showModal, token]);
 
-  const CreatorComponent = useMemo(() => {
-    if (token.community?.creator) {
-      if (token.community.creator.__typename === 'GalleryUser') {
-        return (
-          <UserHoverCard userRef={token.community.creator}>
+  const OwnerAndCreatorDetails = useMemo(() => {
+    return (
+      <>
+        {token.owner?.username && (
+          <VStack gap={2}>
+            <TitleXS>OWNER</TitleXS>
+            <OwnerProfilePictureAndUsername
+              userRef={token.owner}
+              eventContext={contexts['NFT Detail']}
+            />
+          </VStack>
+        )}
+        {token.community?.creator && (
+          <VStack gap={2}>
+            <TitleXS>CREATOR</TitleXS>
             <CreatorProfilePictureAndUsernameOrAddress
               userOrAddressRef={token.community.creator}
               eventContext={contexts['NFT Detail']}
             />
-          </UserHoverCard>
-        );
-      }
-      return (
-        <CreatorProfilePictureAndUsernameOrAddress
-          userOrAddressRef={token.community.creator}
-          eventContext={contexts['NFT Detail']}
-        />
-      );
+          </VStack>
+        )}
+      </>
+    );
+  }, [token.owner?.username, token.community?.creator]);
+
+  const OwnerAndCreatorSection = useMemo(() => {
+    const ownerUsernameLength = token.owner?.username?.length ?? 0;
+
+    // if owner username is too long we want the owner and creator on their own row
+    if (ownerUsernameLength > 15) {
+      return <VStack gap={10}>{OwnerAndCreatorDetails}</VStack>;
+    } else if (ownerUsernameLength !== 0) {
+      <StyledOwnerAndCreator justify="space-between">
+        {OwnerAndCreatorDetails}
+      </StyledOwnerAndCreator>;
     }
     return null;
-  }, [token.community?.creator]);
+  }, [token.owner?.username]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
@@ -183,25 +200,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
             )}
           </HStack>
         </VStack>
-
-        <StyledOwnerAndCreator justify="space-between">
-          {token.owner?.username && (
-            <VStack gap={2}>
-              <TitleXS>OWNER</TitleXS>
-              <OwnerProfilePictureAndUsername
-                userRef={token.owner}
-                eventContext={contexts['NFT Detail']}
-              />
-            </VStack>
-          )}
-          {CreatorComponent && (
-            <VStack gap={2}>
-              <TitleXS>CREATOR</TitleXS>
-              {CreatorComponent}
-            </VStack>
-          )}
-        </StyledOwnerAndCreator>
-
+        {OwnerAndCreatorSection}
         {token.description && (
           <BaseM>
             <Markdown text={token.description} eventContext={contexts['NFT Detail']} />
