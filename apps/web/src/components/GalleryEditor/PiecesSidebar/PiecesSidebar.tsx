@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import CreatorSupportAnnouncement from '~/components/Announcement/CreatorSupportAnnouncement';
 import { Button } from '~/components/core/Button/Button';
 import { FadedInput } from '~/components/core/Input/FadedInput';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -10,14 +11,16 @@ import { TitleS } from '~/components/core/Text/Text';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { contexts } from '~/shared/analytics/constants';
+import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
@@ -72,6 +75,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
         ...SidebarWalletSelectorFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
@@ -152,13 +156,35 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     !doesUserOwnWalletFromChainFamily(selectedChain.name, query) ||
     isLocked;
 
-  const handleSelectedViewChange = useCallback((view: TokenFilterType) => {
-    setSelectedView(view);
+  const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = useExperience({
+    type: 'CreatorBetaMicroAnnouncementModal',
+    queryRef: query,
+  });
+  const { showModal } = useModalActions();
 
-    if (view === 'Created') {
-      setSelectedChain(chainsMap['Ethereum']);
-    }
-  }, []);
+  const handleSelectedViewChange = useCallback(
+    (view: TokenFilterType) => {
+      setSelectedView(view);
+
+      if (view === 'Created') {
+        setSelectedChain(chainsMap['Ethereum']);
+
+        if (!creatorBetaAnnouncementSeen) {
+          showModal({
+            content: (
+              <CreatorSupportAnnouncement
+                handleContinueCreatorBetaClick={setCreatorBetaAnnouncementSeen}
+                eventFlow={flows['Edit Gallery FLow']}
+                eventContext={contexts.Editor}
+              />
+            ),
+            onClose: setCreatorBetaAnnouncementSeen,
+          });
+        }
+      }
+    },
+    [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen, showModal]
+  );
 
   const handleSelectedWalletChange = useCallback((wallet: SidebarWallet) => {
     setSelectedWallet(wallet);

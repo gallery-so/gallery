@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import uniqWith from 'lodash/uniqWith';
 import { graphql, readInlineData } from 'react-relay';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 import { GalleryProcessedTextFragment$data } from '~/generated/GalleryProcessedTextFragment.graphql';
 import {
@@ -21,7 +22,8 @@ export type TextElement = {
 
 export function getMentionElements(
   text: string,
-  mentionRefs: GalleryProcessedTextFragment$data
+  mentionRefs: GalleryProcessedTextFragment$data,
+  mentionsInText: MentionDataType[]
 ): TextElement[] {
   function fetchMention(mentionRef: GalleryTextElementParserMentionsFragment$key) {
     return readInlineData(
@@ -53,19 +55,20 @@ export function getMentionElements(
     );
   }
 
-  let mentions: GalleryTextElementParserMentionsFragment$data[] = [];
+  const elements: TextElement[] = [];
+  let mentions: (GalleryTextElementParserMentionsFragment$data | MentionDataType)[] = [];
 
-  mentionRefs.forEach((mentionRef) => {
-    mentions.push(fetchMention(mentionRef));
-  });
+  if (mentionRefs.length > 0) {
+    mentions = mentionRefs.map(fetchMention);
+  } else if (mentionsInText.length > 0) {
+    mentions = [...mentionsInText];
+  }
 
   // Remove duplicate mentions
   mentions = uniqWith(mentions, isEqual);
 
-  const elements: TextElement[] = [];
-
   mentions?.forEach((mention) => {
-    if (!mention?.entity || !mention?.interval) return;
+    if (!mention || !mention?.interval) return;
 
     const { start, length } = mention.interval;
     const mentionText = text.substring(start, start + length);
@@ -75,7 +78,7 @@ export function getMentionElements(
       value: mentionText,
       start: start,
       end: start + length,
-      mentionData: mention.entity,
+      mentionData: 'entity' in mention ? mention.entity : null,
     });
   });
 

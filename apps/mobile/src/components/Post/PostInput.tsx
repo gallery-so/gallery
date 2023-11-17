@@ -1,17 +1,14 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
-import {
-  NativeSyntheticEvent,
-  TextInput,
-  TextInputSelectionChangeEventData,
-  View,
-} from 'react-native';
+import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { PostInputTokenFragment$key } from '~/generated/PostInputTokenFragment.graphql';
+import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
+import MentionTextInput from '../MentionTextInput';
 import { Typography } from '../Typography';
 const MAX_LENGTH = 600;
 
@@ -19,10 +16,11 @@ type Props = {
   value: string;
   onChange: (newText: string) => void;
   tokenRef: PostInputTokenFragment$key;
+  mentions: MentionDataType[];
   onSelectionChange: (selection: { start: number; end: number }) => void;
 };
 
-export function PostInput({ value, onChange, tokenRef, onSelectionChange }: Props) {
+export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChange }: Props) {
   const token = useFragment(
     graphql`
       fragment PostInputTokenFragment on Token {
@@ -48,7 +46,7 @@ export function PostInput({ value, onChange, tokenRef, onSelectionChange }: Prop
         height: 117,
       }}
     >
-      <TextInput
+      <MentionTextInput
         value={value}
         onChangeText={onChange}
         className="px-3 pt-3 text-sm"
@@ -63,8 +61,13 @@ export function PostInput({ value, onChange, tokenRef, onSelectionChange }: Prop
         autoComplete="off"
         keyboardAppearance={colorScheme}
         placeholder={inputPlaceHolder}
-        style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+        style={{
+          flex: 1,
+          color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+        }}
+        mentions={mentions}
       />
+
       {isTextTooLong && (
         <Typography
           className="text-sm text-red absolute bottom-2 left-2"

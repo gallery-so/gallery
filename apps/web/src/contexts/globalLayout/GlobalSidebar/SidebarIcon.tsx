@@ -16,7 +16,8 @@ type Props = {
   tooltipLabel: string;
   showUnreadDot?: boolean;
   showBorderByDefault?: boolean;
-  href?: Route;
+  href?: string;
+  to?: Route;
 };
 export default function SidebarIcon({
   onClick,
@@ -26,6 +27,7 @@ export default function SidebarIcon({
   showUnreadDot = false,
   showBorderByDefault = false,
   href,
+  to,
 }: Props) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle, close } =
     useTooltipHover({ placement: 'right' });
@@ -59,11 +61,12 @@ export default function SidebarIcon({
     </>
   );
 
-  if (href) {
+  if (href || to) {
     return (
       <IconWrapper onClick={handleClick}>
         <GalleryLink
-          to={href}
+          to={to}
+          href={href}
           // TODO analytics - move tracking here as opposed to manually doing it on parent StandardSidebar.tsx
         >
           {content}

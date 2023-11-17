@@ -205,7 +205,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     <Wrapper>
       <InputWrapper gap={12} ref={reference}>
         <StyledTextArea
-          placeholder=""
+          placeholder="Add a comment"
           onInput={handleChange}
           ref={textareaRef}
           value={message}
@@ -292,4 +292,5 @@ const Wrapper = styled.div`
   background: ${colors.white};
 
   padding: 16px;
+  margin-top: auto;
 `;

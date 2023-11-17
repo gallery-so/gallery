@@ -1,4 +1,3 @@
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
@@ -7,14 +6,17 @@ import { TextInput } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
+import GalleryBottomSheetMentionTextInput from '~/components/GalleryBottomSheet/GalleryBottomSheetMentionTextInput';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { contexts } from '~/shared/analytics/constants';
+import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 
 import { SendIcon } from './SendIcon';
 
 type Props = {
   value: string;
+  mentions: MentionDataType[];
   onChangeText: (value: string) => void;
   onSelectionChange: (selection: { start: number; end: number }) => void;
 
@@ -42,6 +44,7 @@ export const CommentBox = forwardRef(
       onSubmit,
       isSubmittingComment,
       placeholder = 'Add a comment...',
+      mentions,
     }: Props,
     ref
   ) => {
@@ -105,25 +108,32 @@ export const CommentBox = forwardRef(
     return (
       <View className="p-2 flex flex-row items-center space-x-3 border-t border-porcelain dark:border-black-500">
         <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
-          <BottomSheetTextInput
+          <GalleryBottomSheetMentionTextInput
             ref={inputRef}
             value={value}
+            placeholder={placeholder}
+            className="text-sm"
             onChangeText={onChangeText}
             onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
               onSelectionChange(e.nativeEvent.selection);
             }}
-            className="text-sm h-5"
+            autoFocus={autoFocus}
             selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
             autoComplete="off"
-            autoFocus={autoFocus}
             onBlur={handleDismiss}
-            placeholder={placeholder}
             placeholderTextColor={colorScheme === 'dark' ? colors.shadow : colors.metal}
             onSubmitEditing={handleDismiss}
             keyboardType="twitter"
             keyboardAppearance={colorScheme}
-            style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+            style={{
+              flex: 1,
+              color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+              lineHeight: 18,
+              paddingTop: 0,
+            }}
+            mentions={mentions}
           />
+
           <Text className="text-sm text-metal">{characterCount}</Text>
           <GalleryTouchableOpacity
             eventElementId="Submit Comment Button"

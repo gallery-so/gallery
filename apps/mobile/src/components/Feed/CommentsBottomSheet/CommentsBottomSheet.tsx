@@ -244,6 +244,7 @@ export function CommentsBottomSheet({
           onClose={noop}
           placeholder={inputPlaceholder}
           ref={commentBoxRef}
+          mentions={mentions}
         />
       </Animated.View>
     </GalleryBottomSheetModal>

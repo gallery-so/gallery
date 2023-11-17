@@ -121,6 +121,10 @@ export function NotificationSkeleton({
                   ...NotificationPostPreviewWithBoundaryFragment
                 }
               }
+        ... on SomeoneYouFollowPostedTheirFirstPostNotification {
+          post {
+            tokens {
+              ...NotificationPostPreviewWithBoundaryFragment
             }
           }
         }
@@ -160,7 +164,8 @@ export function NotificationSkeleton({
     if (
       notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
       notification.__typename === 'SomeoneCommentedOnYourPostNotification' ||
-      notification.__typename === 'SomeonePostedYourWorkNotification'
+      notification.__typename === 'SomeonePostedYourWorkNotification' ||
+      notification.__typename === 'SomeoneYouFollowPostedTheirFirstPostNotification'
     ) {
       return notification.post?.tokens?.[0];
     }
