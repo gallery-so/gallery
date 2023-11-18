@@ -80,7 +80,7 @@
     "@types/react-native": "^0.71.1",
     "babel-plugin-relay": "^14.1.0",
     "babel-plugin-tsconfig-paths-module-resolver": "^1.0.4",
-    "eas-cli": "^3.7.2",
+    "eas-cli": "^5.2.0",
     "relay-compiler": "^14.1.0",
     "tailwindcss": "^3.2.7"
   },
