@@ -63,7 +63,7 @@ export function NotificationSkeleton({
       fragment NotificationSkeletonFragment on Notification {
         __typename
         seen
-        updatedTime
+
         ... on SomeoneAdmiredYourPostNotification {
           post {
             tokens {
@@ -215,19 +215,11 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-        <View
-          className={`w-[35px] flex-row space-x-2 items-center ${
-            !notification.seen ? 'justify-between' : 'justify-end'
-          }`}
-        >
-          <Typography
-            className="text-metal text-xs"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {getTimeSince(notification.updatedTime)}
-          </Typography>
-          {!notification.seen && <UnseenDot />}
-        </View>
+        {!notification.seen && (
+          <View className="w-[22px] flex-row space-x-2 items-center justify-end">
+            <UnseenDot />
+          </View>
+        )}
       </View>
       <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
         <UserFollowList
