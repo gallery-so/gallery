@@ -84,7 +84,7 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
           </ShimmerProvider>
-          {showCollectorsNoteComponent && (
+          {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
             <NftDetailNote
               tokenId={token.dbid}
               authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
@@ -93,7 +93,14 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
             />
           )}
         </StyledAssetAndNoteContainer>
-
+        {isMobileOrMobileLarge && showCollectorsNoteComponent && (
+          <NftDetailNote
+            tokenId={token.dbid}
+            authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+            nftCollectorsNote={token.collectorsNote ?? ''}
+            collectionId={collection.dbid}
+          />
+        )}
         <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
