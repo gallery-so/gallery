@@ -5371,17 +5371,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonrepo/cli@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/cli@npm:1.17.0"
+"@moonrepo/cli@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/cli@npm:1.17.1"
   dependencies:
-    "@moonrepo/core-linux-arm64-gnu": "npm:^1.17.0"
-    "@moonrepo/core-linux-arm64-musl": "npm:^1.17.0"
-    "@moonrepo/core-linux-x64-gnu": "npm:^1.17.0"
-    "@moonrepo/core-linux-x64-musl": "npm:^1.17.0"
-    "@moonrepo/core-macos-arm64": "npm:^1.17.0"
-    "@moonrepo/core-macos-x64": "npm:^1.17.0"
-    "@moonrepo/core-windows-x64-msvc": "npm:^1.17.0"
+    "@moonrepo/core-linux-arm64-gnu": "npm:^1.17.1"
+    "@moonrepo/core-linux-arm64-musl": "npm:^1.17.1"
+    "@moonrepo/core-linux-x64-gnu": "npm:^1.17.1"
+    "@moonrepo/core-linux-x64-musl": "npm:^1.17.1"
+    "@moonrepo/core-macos-arm64": "npm:^1.17.1"
+    "@moonrepo/core-macos-x64": "npm:^1.17.1"
+    "@moonrepo/core-windows-x64-msvc": "npm:^1.17.1"
     detect-libc: "npm:^2.0.2"
   dependenciesMeta:
     "@moonrepo/core-linux-arm64-gnu":
@@ -5400,55 +5400,55 @@ __metadata:
       optional: true
   bin:
     moon: moon
-  checksum: 116f8db2092d4f7d68004926b6c7e0daebc2a3e06ac831a9f601b0a34d367864589d74416899a696e0b58abe2bca54960750284e2d41f7b279b875f7d3c19e45
+  checksum: 7fa6096759065e8b2c5eed50caddc5b5112eff7020167f604ca381673bbf719650b34188c637169e6304db96defee4579b07987f18111ed2c313135bf83a4c1e
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-arm64-gnu@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-linux-arm64-gnu@npm:1.17.0"
+"@moonrepo/core-linux-arm64-gnu@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-linux-arm64-gnu@npm:1.17.1"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-arm64-musl@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-linux-arm64-musl@npm:1.17.0"
+"@moonrepo/core-linux-arm64-musl@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-linux-arm64-musl@npm:1.17.1"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-x64-gnu@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-linux-x64-gnu@npm:1.17.0"
+"@moonrepo/core-linux-x64-gnu@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-linux-x64-gnu@npm:1.17.1"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-x64-musl@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-linux-x64-musl@npm:1.17.0"
+"@moonrepo/core-linux-x64-musl@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-linux-x64-musl@npm:1.17.1"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@moonrepo/core-macos-arm64@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-macos-arm64@npm:1.17.0"
+"@moonrepo/core-macos-arm64@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-macos-arm64@npm:1.17.1"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@moonrepo/core-macos-x64@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-macos-x64@npm:1.17.0"
+"@moonrepo/core-macos-x64@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-macos-x64@npm:1.17.1"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@moonrepo/core-windows-x64-msvc@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@moonrepo/core-windows-x64-msvc@npm:1.17.0"
+"@moonrepo/core-windows-x64-msvc@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@moonrepo/core-windows-x64-msvc@npm:1.17.1"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -19545,7 +19545,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "gallery-monorepo@workspace:."
   dependencies:
-    "@moonrepo/cli": "npm:^1.17.0"
+    "@moonrepo/cli": "npm:^1.17.1"
     "@types/react-relay": "npm:^14.1.3"
     "@types/relay-runtime": "npm:^14.1.8"
     "@typescript-eslint/eslint-plugin": "npm:^5.44.0"
@@ -26068,7 +26068,7 @@ __metadata:
     "@babel/plugin-transform-flow-strip-types": "npm:^7.22.5"
     "@gorhom/bottom-sheet": "npm:4.4.7"
     "@magic-sdk/react-native-expo": "npm:^16.0.0"
-    "@moonrepo/cli": "npm:^1.17.0"
+    "@moonrepo/cli": "npm:^1.17.1"
     "@react-native-async-storage/async-storage": "npm:1.17.11"
     "@react-native-masked-view/masked-view": "npm:^0.2.8"
     "@react-navigation/material-top-tabs": "npm:^6.6.0"
@@ -35269,7 +35269,7 @@ __metadata:
     "@gallery-so/visitor-plugin-common": "npm:^0.0.2"
     "@graphql-codegen/cli": "npm:^2.11.6"
     "@graphql-codegen/typescript": "npm:^2.7.3"
-    "@moonrepo/cli": "npm:^1.17.0"
+    "@moonrepo/cli": "npm:^1.17.1"
     "@next/bundle-analyzer": "npm:^13.0.4"
     "@rainbow-me/rainbowkit": "npm:^1.0.5"
     "@sentry/nextjs": "npm:^7.77.0"
