@@ -116,12 +116,6 @@ export function CommentNote({
             </StyledReplyText>
 
             {footerElement}
-            {/* <StyledReplyText>Reply</StyledReplyText>
-
-            <HStack gap={4} align="center">
-              <StyledReplyDot />
-              <StyledReplyText>View 3 replies</StyledReplyText>
-            </HStack> */}
           </VStack>
         </VStack>
       </HStack>

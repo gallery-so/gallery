@@ -154,7 +154,6 @@ function ViewRepliesButton({ totalReplies, showReplies, onClick }: ViewRepliesBu
 }
 
 const StyledWrapper = styled(VStack)`
-  /* padding: 8px 16px; */
   padding: 8px 0px;
 `;
 
