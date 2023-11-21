@@ -15,7 +15,7 @@ export const creatorsFeaturePageContentQuery = getFeaturePageQueryString('creato
 
 export const getServerSideProps = async () => {
   const content = await fetchSanityContent(creatorsFeaturePageContentQuery);
-  console.log(content[0]);
+
   return {
     props: {
       pageContent: content[0],

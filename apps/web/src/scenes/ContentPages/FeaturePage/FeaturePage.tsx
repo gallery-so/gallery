@@ -42,7 +42,7 @@ export function FeaturePage({ pageContent, ctaAuthenticatedButtonRoute, eventPro
 
     return ctaAuthenticatedButtonRoute;
   }, [ctaAuthenticatedButtonRoute, isAuthenticated]);
-  console.log(pageContent);
+
   return (
     <StyledPage gap={96}>
       <StyledContent align="center" gap={96}>
@@ -73,11 +73,11 @@ export function FeaturePage({ pageContent, ctaAuthenticatedButtonRoute, eventPro
             loop
             muted
             playsInline
-            src={pageContent.splashImage?.video.asset.url}
+            src={pageContent.splashImage?.video.asset?.url}
           />
         )}
         {pageContent.splashImage.mediaType === 'image' && (
-          <StyledSplashImage src={pageContent.splashImage?.image.asset.url} />
+          <StyledSplashImage src={pageContent.splashImage?.image.asset?.url} />
         )}
         <VStack gap={96}>
           {pageContent.featureHighlights?.map((highlight) => (
