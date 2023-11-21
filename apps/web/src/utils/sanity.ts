@@ -31,12 +31,22 @@ export function getFeaturePageQueryString(pageId: string) {
         title,
         faqs
       },
-      "splashImage": {
-        "asset": splashImage.asset->{
-          url
+      splashImage{
+        mediaType,
+        image{
+          asset->{
+            _id,
+            url
+          },
+          alt
         },
-        alt
+        video{
+          asset->{
+            _id,
+            url
+          }
+        }
       }
     } | order(date desc)
-    `;
+  `;
 }
