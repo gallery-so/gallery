@@ -24,9 +24,6 @@ const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
 
 const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
 
-const iOSTrackingNoticeDescription =
-  'Your privacy is paramount: Gallery will only collect app performance analytics and crash reports to enhance your overall experience. We will never share your data with third parties or advertisers.';
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
 
@@ -44,9 +41,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     config: {
       usesNonExemptEncryption: false,
-    },
-    infoPlist: {
-      NSUserTrackingUsageDescription: iOSTrackingNoticeDescription,
     },
     associatedDomains: ['applinks:gallery.so', 'applinks:gallery-dev.vercel.app'],
     supportsTablet: false,
@@ -97,14 +91,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: [
-    ['sentry-expo', { setCommits: true }],
-    'expo-barcode-scanner',
-    [
-      'expo-tracking-transparency',
-      {
-        userTrackingPermission: iOSTrackingNoticeDescription,
-      },
-    ],
-  ],
+  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
 });

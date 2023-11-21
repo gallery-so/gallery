@@ -18403,15 +18403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-tracking-transparency@npm:~3.0.3":
-  version: 3.0.3
-  resolution: "expo-tracking-transparency@npm:3.0.3"
-  peerDependencies:
-    expo: "*"
-  checksum: 2d31cbbdfd6df8d082e143d520a04f9a76d5f24a59c488cb0e2e70d97649198ac7296ca50073f3f665e4a82fd930bdf48c314c36c271e5366c6456415a9f9fb9
-  languageName: node
-  linkType: hard
-
 "expo-updates-interface@npm:~0.9.0":
   version: 0.9.1
   resolution: "expo-updates-interface@npm:0.9.1"
@@ -25929,7 +25920,6 @@ __metadata:
     expo-splash-screen: ~0.18.2
     expo-status-bar: ~1.4.2
     expo-system-ui: ~2.2.1
-    expo-tracking-transparency: ~3.0.3
     expo-updates: ~0.16.3
     lodash.merge: ^4.6.2
     lru-cache: ^9.1.1
