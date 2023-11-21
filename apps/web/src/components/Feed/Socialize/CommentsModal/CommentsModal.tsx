@@ -13,7 +13,6 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import { CommentNote } from '~/components/Feed/Socialize/CommentsModal/CommentNote';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { CommentsModalFragment$key } from '~/generated/CommentsModalFragment.graphql';
 import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFragment.graphql';
@@ -21,6 +20,9 @@ import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import colors from '~/shared/theme/colors';
 
 import { CommentBox } from '../CommentBox/CommentBox';
+import { OnReplyClickParams } from './CommentNote';
+import { CommentNoteSection } from './CommentNoteSection';
+import { CommentRepliedBanner } from './CommentRepliedBanner';
 
 export const NOTES_PER_PAGE = 20;
 
@@ -30,7 +32,7 @@ type CommentsModalProps = {
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
   commentsRef: CommentsModalFragment$key;
-  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
+  onSubmitComment: (comment: string, mentions: MentionInput[], replyToId?: string) => void;
   isSubmittingComment: boolean;
   activeCommentId?: string;
 };
@@ -50,6 +52,7 @@ export function CommentsModal({
       fragment CommentsModalFragment on Comment @relay(plural: true) {
         dbid
         ...CommentNoteFragment
+        ...CommentNoteSectionFragment
       }
     `,
     commentsRef
@@ -64,7 +67,25 @@ export function CommentsModal({
     queryRef
   );
 
+  const [selectedComment, setSelectedComment] = useState<OnReplyClickParams>(null);
   const virtualizedListRef = useRef<List | null>(null);
+
+  const highlightCommentId = useMemo(() => {
+    if (selectedComment?.commentId) {
+      return selectedComment.commentId;
+    }
+
+    if (activeCommentId) {
+      return activeCommentId;
+    }
+
+    return undefined;
+  }, [activeCommentId, selectedComment?.commentId]);
+
+  const handleReplyClick = useCallback((params: OnReplyClickParams) => {
+    setSelectedComment(params);
+    // commentBoxRef.current?.focus();
+  }, []);
 
   const commentRowIndex = useMemo(() => {
     if (!activeCommentId) {
@@ -99,6 +120,12 @@ export function CommentsModal({
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
 
+  const handleExpand = useCallback(() => {
+    console.log(`recalculate height`);
+    measurerCache.clearAll();
+    virtualizedListRef.current?.recomputeRowHeights();
+  }, [measurerCache]);
+
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
       const interaction = comments[comments.length - index - 1];
@@ -119,14 +146,19 @@ export function CommentsModal({
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
-                <CommentNote commentRef={interaction} activeCommentId={activeCommentId} />
+                <CommentNoteSection
+                  commentRef={interaction}
+                  activeCommentId={highlightCommentId}
+                  onReplyClick={handleReplyClick}
+                  onExpand={handleExpand}
+                />
               </div>
             );
           }}
         </CellMeasurer>
       );
     },
-    [activeCommentId, measurerCache, comments]
+    [highlightCommentId, measurerCache, comments, handleExpand, handleReplyClick]
   );
 
   const [contentHeight, setContentHeight] = useState(0);
@@ -192,10 +224,18 @@ export function CommentsModal({
             )}
           </AutoSizer>
         )}
+        <CommentRepliedBanner
+          username={selectedComment?.username ?? ''}
+          comment={selectedComment?.comment ?? ''}
+          onClose={() => {
+            setSelectedComment(null);
+          }}
+        />
         <CommentBox
           queryRef={query}
           onSubmitComment={onSubmitComment}
           isSubmittingComment={isSubmittingComment}
+          replyToId={selectedComment?.commentId}
         />
       </WrappingVStack>
     </ModalContent>

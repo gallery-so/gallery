@@ -77,8 +77,8 @@ export default function PostCommentsModal({
   const info = useOptimisticUserInfo(query);
 
   const handleSubmitComment = useCallback(
-    (comment: string, mentions: MentionInput[]) => {
-      commentOnPost(post.id, post.dbid, comment, info, mentions);
+    (comment: string, mentions: MentionInput[], replyToId?: string) => {
+      commentOnPost(post.id, post.dbid, comment, info, mentions, replyToId);
     },
     [commentOnPost, info, post.dbid, post.id]
   );

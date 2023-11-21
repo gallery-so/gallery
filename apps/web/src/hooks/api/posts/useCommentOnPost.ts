@@ -19,8 +19,14 @@ export default function useCommentOnPost() {
         $comment: String!
         $mentions: [MentionInput!]
         $connections: [ID!]!
+        $replyToID: DBID
       ) @raw_response_type {
-        commentOnPost(comment: $comment, postId: $postId, mentions: $mentions) {
+        commentOnPost(
+          comment: $comment
+          postId: $postId
+          mentions: $mentions
+          replyToID: $replyToID
+        ) {
           ... on CommentOnPostPayload {
             __typename
 
@@ -28,6 +34,10 @@ export default function useCommentOnPost() {
               dbid
               ...CommentLineFragment
               ...CommentNoteFragment
+            }
+            replyToComment {
+              __typename
+              dbid
             }
           }
         }
@@ -49,7 +59,8 @@ export default function useCommentOnPost() {
       postDbid: string,
       comment: string,
       optimisticUserInfo: OptimisticUserInfo,
-      mentions: MentionInput[] = []
+      mentions: MentionInput[] = [],
+      replyToID?: string
     ) => {
       try {
         const interactionsConnection = ConnectionHandler.getConnectionID(
@@ -126,6 +137,7 @@ export default function useCommentOnPost() {
             postId: postDbid,
             mentions,
             connections: [interactionsConnection, commentsModalConnection],
+            replyToID,
           },
         });
 

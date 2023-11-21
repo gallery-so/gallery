@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
@@ -16,12 +16,27 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
+export type OnReplyClickParams = {
+  username: string;
+  commentId: string;
+  comment: string;
+} | null;
+
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
   activeCommentId?: string;
+  isReply?: boolean;
+  footerElement?: React.ReactNode;
+  onReplyClick: (params: OnReplyClickParams) => void;
 };
 
-export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
+export function CommentNote({
+  commentRef,
+  activeCommentId,
+  footerElement,
+  isReply,
+  onReplyClick,
+}: CommentNoteProps) {
   const comment = useFragment(
     graphql`
       fragment CommentNoteFragment on Comment {
@@ -43,6 +58,14 @@ export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
     commentRef
   );
 
+  const handleReplyClick = useCallback(() => {
+    onReplyClick({
+      username: comment.commenter?.username ?? '',
+      commentId: comment.dbid,
+      comment: comment.comment ?? '',
+    });
+  }, [comment.comment, comment.commenter?.username, comment.dbid, onReplyClick]);
+
   // TEMPORARY FIX: not sure how this component is even being rendered without a truthy `comment`
   const timeAgo = comment?.creationTime ? getTimeSince(comment.creationTime) : null;
   const nonNullMentions = useMemo(
@@ -58,7 +81,12 @@ export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
   const isCommentActive = activeCommentId === comment.dbid;
 
   return (
-    <StyledListItem justify="space-between" gap={4} isHighlighted={isCommentActive}>
+    <StyledListItem
+      justify="space-between"
+      gap={4}
+      isHighlighted={isCommentActive}
+      isReply={isReply}
+    >
       <HStack gap={8}>
         {comment.commenter && (
           <StyledProfilePictureWrapper>
@@ -66,7 +94,7 @@ export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
           </StyledProfilePictureWrapper>
         )}
 
-        <VStack>
+        <VStack gap={6}>
           <HStack gap={4} align="center">
             <UsernameLink
               username={comment.commenter?.username ?? null}
@@ -74,13 +102,27 @@ export function CommentNote({ commentRef, activeCommentId }: CommentNoteProps) {
             />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <StyledBaseM as="span">
-            <ProcessedText
-              text={comment.comment ?? ''}
-              mentionsRef={nonNullMentions}
-              eventContext={contexts.Social}
-            />
-          </StyledBaseM>
+          <VStack gap={4}>
+            <StyledBaseM as="span">
+              <ProcessedText
+                text={comment.comment ?? ''}
+                mentionsRef={nonNullMentions}
+                eventContext={contexts.Social}
+              />
+            </StyledBaseM>
+
+            <StyledReplyText role="button" onClick={handleReplyClick}>
+              Reply
+            </StyledReplyText>
+
+            {footerElement}
+            {/* <StyledReplyText>Reply</StyledReplyText>
+
+            <HStack gap={4} align="center">
+              <StyledReplyDot />
+              <StyledReplyText>View 3 replies</StyledReplyText>
+            </HStack> */}
+          </VStack>
         </VStack>
       </HStack>
     </StyledListItem>
@@ -91,8 +133,15 @@ const StyledProfilePictureWrapper = styled.div`
   margin-top: 4px;
 `;
 
-const StyledListItem = styled(ListItem)<{ isHighlighted?: boolean }>`
-  padding: 0px 16px 16px;
+const StyledListItem = styled(ListItem)<{ isHighlighted?: boolean; isReply?: boolean }>`
+  /* padding: 0px 16px 16px; */
+  padding: 8px 16px;
+
+  ${({ isReply }) =>
+    isReply &&
+    `
+    padding-left: 48px;
+  `}
 
   ${({ isHighlighted }) =>
     isHighlighted &&
@@ -112,4 +161,10 @@ const StyledBaseM = styled(BaseM)`
 
 const StyledTimeAgoText = styled(TimeAgoText)`
   font-size: 10px;
+`;
+
+const StyledReplyText = styled(BaseS)`
+  color: ${colors.shadow};
+  font-weight: 700;
+  cursor: pointer;
 `;
