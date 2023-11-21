@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
+import { useTrackingPermissions } from 'expo-tracking-transparency';
 import { Mixpanel } from 'mixpanel-react-native';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { getTimestamp } from 'swr/_internal';
 
 import { env } from '~/env/runtime';
@@ -39,13 +41,25 @@ const registerSuperProperties: RegisterSuperPropertiesFunction = (eventProps) =>
 };
 
 export function MobileAnalyticsProvider({ children }: PropsWithChildren) {
-  return (
-    <AnalyticsProvider
-      track={track}
-      identify={identify}
-      registerSuperProperties={registerSuperProperties}
-    >
-      {children}
-    </AnalyticsProvider>
-  );
+  const [permission, requestPermission] = useTrackingPermissions();
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      requestPermission();
+    }
+  }, [requestPermission]);
+
+  if (permission?.status === 'granted') {
+    return (
+      <AnalyticsProvider
+        track={track}
+        identify={identify}
+        registerSuperProperties={registerSuperProperties}
+      >
+        {children}
+      </AnalyticsProvider>
+    );
+  }
+
+  return <>{children}</>;
 }
