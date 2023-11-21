@@ -61,5 +61,5 @@ export function MobileAnalyticsProvider({ children }: PropsWithChildren) {
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
