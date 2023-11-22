@@ -86,11 +86,17 @@ export function NftSelectorPickerScreen() {
     refetch({ networkFilter }, { fetchPolicy: 'network-only' });
   }, [networkFilter, refetch]);
 
-  const { isSyncing, syncTokens } = useSyncTokensActions();
+  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
+    useSyncTokensActions();
 
   const handleSync = useCallback(async () => {
-    syncTokens(networkFilter);
-  }, [syncTokens, networkFilter]);
+    if (ownershipTypeFilter === 'Collected') {
+      await syncTokens(networkFilter);
+    }
+    if (ownershipTypeFilter === 'Created') {
+      await syncCreatedTokens(networkFilter);
+    }
+  }, [ownershipTypeFilter, syncTokens, networkFilter, syncCreatedTokens]);
 
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
@@ -144,7 +150,7 @@ export function NftSelectorPickerScreen() {
               <AnimatedRefreshIcon
                 onSync={handleSync}
                 onRefresh={handleRefresh}
-                isSyncing={isSyncing}
+                isSyncing={ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens}
                 eventElementId="NftSelectorSelectorRefreshButton"
                 eventName="NftSelectorSelectorRefreshButton pressed"
               />
@@ -179,7 +185,7 @@ export function NftSelectorPickerScreen() {
                 }}
                 queryRef={data}
                 screen={currentScreen}
-                syncTokens={syncTokens}
+                onRefresh={handleRefresh}
               />
             </Suspense>
           </View>
