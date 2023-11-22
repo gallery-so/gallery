@@ -24,10 +24,7 @@ tasks:
       - 'next.config.js'
 
   cypress-gh:
-    command:
-      - synpress run --record
-      - --key 9d633f22-7630-4a11-9cf4-ff9809332564
-      - --configFile cypress.config.ts
+    command: synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.config.ts
 
   next-dev-server:
     command: next dev
