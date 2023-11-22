@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -21,6 +21,7 @@ import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import { DeletePostBottomSheet } from './DeletePostBottomSheet';
+import ReportPost from './ReportPost';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -149,6 +150,13 @@ function PostBottomSheet(
     Share.share({ url });
   }, [post.dbid]);
 
+  const [showReportPostForm, setShowReportPostForm] = useState(false);
+
+  const handleReportPost = useCallback(() => {
+    // set state
+    setShowReportPostForm(true);
+  }, []);
+
   const inner = useMemo(() => {
     if (isOwnPost) {
       return (
@@ -183,6 +191,12 @@ function PostBottomSheet(
             onPress={handleFollowUser}
             eventContext={contexts.Posts}
           />
+          <BottomSheetRow
+            text="Report Post"
+            onPress={handleReportPost}
+            eventContext={contexts.Posts}
+            isConfirmationRow
+          />
         </>
       );
     }
@@ -200,11 +214,18 @@ function PostBottomSheet(
           onPress={handleViewNftDetail}
           eventContext={contexts.Posts}
         />
+        <BottomSheetRow
+          text="Report Post"
+          onPress={handleReportPost}
+          eventContext={contexts.Posts}
+          isConfirmationRow
+        />
       </>
     );
   }, [
     handleDeletePost,
     handleFollowUser,
+    handleReportPost,
     handleShare,
     handleViewNftDetail,
     isFollowing,
@@ -233,7 +254,11 @@ function PostBottomSheet(
           style={{ paddingBottom: bottom }}
           className="p-4 flex flex-col space-y-6"
         >
-          <View className="flex flex-col space-y-2">{inner}</View>
+          {showReportPostForm ? (
+            <ReportPost />
+          ) : (
+            <View className="flex flex-col space-y-2">{inner}</View>
+          )}
         </View>
       </GalleryBottomSheetModal>
 
