@@ -56,7 +56,7 @@ export namespace CmsTypes {
     id: string;
     title: string;
     introText: string;
-    splashImage: Image;
+    splashImage: Media;
     featureHighlights: FeatureHighlight[];
     faqModule: FaqModule;
     externalLink: string;

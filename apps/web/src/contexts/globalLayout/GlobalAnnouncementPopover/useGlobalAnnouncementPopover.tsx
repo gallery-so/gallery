@@ -5,8 +5,8 @@ import { graphql } from 'relay-runtime';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
-import { featurePostsPageContentQuery } from '~/pages/features/posts';
-import { PostsFeaturePageContent } from '~/scenes/ContentPages/PostsFeaturePage';
+import { creatorsFeaturePageContentQuery } from '~/pages/features/creators';
+import { CreatorsFeaturePageContent } from '~/scenes/ContentPages/FeaturePage/CreatorsFeaturePage';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import { fetchSanityContent } from '~/utils/sanity';
 
@@ -55,7 +55,7 @@ export default function useGlobalAnnouncementPopover({
   // NOTE: next time we use global announcements, we'll need to set a new flag in the schema
   // const isGlobalAnnouncementExperienced = true;
   const [isGlobalAnnouncementExperienced, setGlobalAnnouncementExperienced] = useExperience({
-    type: 'PostsBetaAnnouncement',
+    type: 'CreatorBetaFullscreenAnnouncementModal',
     queryRef: query,
   });
   const handleDismissGlobalAnnouncement = useCallback(async () => {
@@ -106,14 +106,14 @@ export default function useGlobalAnnouncementPopover({
       // prevent font flicker on popover load
       // await handlePreloadFonts();
 
-      const pageContent = await fetchSanityContent(featurePostsPageContentQuery);
+      const pageContent = await fetchSanityContent(creatorsFeaturePageContentQuery);
 
       if (!pageContent || !pageContent[0]) return;
 
       setTimeout(() => {
         showModal({
           id: 'global-announcement-popover',
-          content: <PostsFeaturePageContent pageContent={pageContent[0]} />,
+          content: <CreatorsFeaturePageContent pageContent={pageContent[0]} />,
           isFullPage: true,
           headerVariant: 'thicc',
         });
