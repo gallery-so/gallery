@@ -77,7 +77,8 @@ export function NftSelectorContractScreen() {
   const contractName = tokens[0]?.contract?.name;
   const contractId = tokens[0]?.contract?.dbid ?? '';
 
-  const { isSyncingCreatorTokens, syncCreatedTokensForExistingContract } = useSyncTokensActions();
+  const { isSyncingCreatedTokensForContract, syncCreatedTokensForExistingContract } =
+    useSyncTokensActions();
 
   const handleSyncTokensForContract = useCallback(async () => {
     syncCreatedTokensForExistingContract(contractId);
@@ -146,7 +147,7 @@ export function NftSelectorContractScreen() {
           {isCreator ? (
             <View>
               <AnimatedRefreshIcon
-                isSyncing={isSyncingCreatorTokens}
+                isSyncing={isSyncingCreatedTokensForContract}
                 onSync={handleSyncTokensForContract}
                 onRefresh={handleRefresh}
                 eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"

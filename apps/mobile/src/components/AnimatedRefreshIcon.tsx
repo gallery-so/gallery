@@ -3,7 +3,6 @@ import { Animated } from 'react-native';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 
 import { IconContainer } from '~/components/IconContainer';
-import { useToastActions } from '~/contexts/ToastContext';
 import { contexts } from '~/shared/analytics/constants';
 
 type AnimatedRefreshIconProps = {
@@ -21,18 +20,11 @@ export function AnimatedRefreshIcon({
   eventElementId,
   eventName,
 }: AnimatedRefreshIconProps) {
-  const { pushToast } = useToastActions();
-
   const handleSync = useCallback(async () => {
     if (isSyncing) return;
-
     await onSync();
     onRefresh();
-    pushToast({
-      message: 'Successfully refreshed your collection',
-      withoutNavbar: true,
-    });
-  }, [isSyncing, onSync, onRefresh, pushToast]);
+  }, [isSyncing, onRefresh, onSync]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 

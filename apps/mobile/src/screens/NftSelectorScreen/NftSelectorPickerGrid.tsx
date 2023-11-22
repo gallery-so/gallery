@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
@@ -12,6 +12,7 @@ import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
 import { NftSelectorPickerGridSinglePreviewFragment$key } from '~/generated/NftSelectorPickerGridSinglePreviewFragment.graphql';
@@ -35,6 +36,7 @@ import {
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 type NftSelectorPickerGridProps = {
   style?: ViewProps['style'];
@@ -45,8 +47,8 @@ type NftSelectorPickerGridProps = {
     sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
-
   queryRef: NftSelectorPickerGridFragment$key;
+  onRefresh: () => void;
 };
 
 export function NftSelectorPickerGrid({
@@ -54,6 +56,7 @@ export function NftSelectorPickerGrid({
   searchCriteria,
   screen,
   style,
+  onRefresh,
 }: NftSelectorPickerGridProps) {
   const query = useFragment(
     graphql`
@@ -68,11 +71,16 @@ export function NftSelectorPickerGrid({
             }
           }
         }
+        ...doesUserOwnWalletFromChainFamilyFragment
       }
     `,
     queryRef
   );
 
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    searchCriteria.networkFilter,
+    query
+  );
   const tokenRefs = removeNullValues(query.viewer?.user?.tokens);
 
   const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
@@ -200,6 +208,55 @@ export function NftSelectorPickerGrid({
 
     return groups;
   }, [sortedTokens]);
+
+  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
+    useSyncTokensActions();
+
+  // TODO: this logic is messy and shared with web; should be refactored
+  const handleRefresh = useCallback(() => {
+    if (!ownsWalletFromSelectedChainFamily) {
+      return;
+    }
+
+    if (searchCriteria.ownerFilter === 'Collected') {
+      if (isSyncing) {
+        return;
+      }
+      syncTokens(searchCriteria.networkFilter);
+      onRefresh();
+    }
+
+    if (searchCriteria.ownerFilter === 'Created') {
+      if (isSyncingCreatedTokens) {
+        return;
+      }
+      syncCreatedTokens(searchCriteria.networkFilter);
+      onRefresh();
+    }
+  }, [
+    isSyncing,
+    isSyncingCreatedTokens,
+    onRefresh,
+    ownsWalletFromSelectedChainFamily,
+    searchCriteria.networkFilter,
+    searchCriteria.ownerFilter,
+    syncCreatedTokens,
+    syncTokens,
+  ]);
+
+  // Auto-sync tokens when the chain or Collected/Created filter changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (
+      ownsWalletFromSelectedChainFamily &&
+      sortedTokens.length === 0 &&
+      !searchCriteria.searchQuery
+    ) {
+      handleRefresh();
+    }
+
+    // we only want to consider auto-syncing tokens if selectedNetworkView changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchCriteria.networkFilter, searchCriteria.ownerFilter]);
 
   type Row = { groups: Group[] };
   const rows = useMemo(() => {

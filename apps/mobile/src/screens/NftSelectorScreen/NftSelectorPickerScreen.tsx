@@ -74,7 +74,7 @@ export function NftSelectorPickerScreen() {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
+  const [ownershipTypeFilter, setFilter] = useState<'Collected' | 'Created'>('Collected');
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
@@ -86,11 +86,17 @@ export function NftSelectorPickerScreen() {
     refetch({ networkFilter }, { fetchPolicy: 'network-only' });
   }, [networkFilter, refetch]);
 
-  const { isSyncing, syncTokens } = useSyncTokensActions();
+  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
+    useSyncTokensActions();
 
   const handleSync = useCallback(async () => {
-    syncTokens(networkFilter);
-  }, [syncTokens, networkFilter]);
+    if (ownershipTypeFilter === 'Collected') {
+      await syncTokens(networkFilter);
+    }
+    if (ownershipTypeFilter === 'Created') {
+      await syncCreatedTokens(networkFilter);
+    }
+  }, [ownershipTypeFilter, syncTokens, networkFilter, syncCreatedTokens]);
 
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
@@ -144,7 +150,7 @@ export function NftSelectorPickerScreen() {
               <AnimatedRefreshIcon
                 onSync={handleSync}
                 onRefresh={handleRefresh}
-                isSyncing={isSyncing}
+                isSyncing={ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens}
                 eventElementId="NftSelectorSelectorRefreshButton"
                 eventName="NftSelectorSelectorRefreshButton pressed"
               />
@@ -160,7 +166,7 @@ export function NftSelectorPickerScreen() {
 
               <NftSelectorFilterBottomSheet
                 ref={filterBottomSheetRef}
-                ownerFilter={filter}
+                ownerFilter={ownershipTypeFilter}
                 onOwnerFilterChange={setFilter}
                 sortView={sortView}
                 onSortViewChange={setSortView}
@@ -173,12 +179,13 @@ export function NftSelectorPickerScreen() {
               <NftSelectorPickerGrid
                 searchCriteria={{
                   searchQuery,
-                  ownerFilter: filter,
+                  ownerFilter: ownershipTypeFilter,
                   networkFilter: networkFilter,
                   sortView,
                 }}
                 queryRef={data}
                 screen={currentScreen}
+                onRefresh={handleRefresh}
               />
             </Suspense>
           </View>
