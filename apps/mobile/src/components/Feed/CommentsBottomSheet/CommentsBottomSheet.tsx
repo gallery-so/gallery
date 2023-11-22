@@ -147,10 +147,6 @@ export function CommentsBottomSheet({
     commentBoxRef.current?.focus();
   }, []);
 
-  const inputPlaceholder = useMemo(() => {
-    return `Replying to ${selectedComment?.username ?? 'comment'}`;
-  }, [selectedComment?.username]);
-
   useLayoutEffect(() => {
     if (isKeyboardActive) {
       paddingBottomValue.value = withSpring(0, { overshootClamping: true });
@@ -242,7 +238,6 @@ export function CommentsBottomSheet({
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
           onClose={noop}
-          placeholder={inputPlaceholder}
           ref={commentBoxRef}
           mentions={mentions}
         />
