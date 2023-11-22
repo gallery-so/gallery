@@ -111,8 +111,6 @@ export function NftSelectorPickerScreen() {
     queryRef: query,
   });
 
-  // setCreatorBetaAnnouncementSeen({ experienced: false });
-
   useEffect(() => {
     if (ownershipTypeFilter === 'Created' && !creatorBetaAnnouncementSeen) {
       announcementBottomSheetRef.current?.present();
