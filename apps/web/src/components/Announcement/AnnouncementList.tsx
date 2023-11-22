@@ -8,9 +8,9 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { useOptimisticallyDismissExperience } from '~/shared/relay/useUpdateUserExperience';
 import colors from '~/shared/theme/colors';
 import { HTTPS_URL } from '~/shared/utils/regex';
-import { useOptimisticallyDismissExperience } from '~/utils/graphql/experiences/useUpdateUserExperience';
 
 import { GalleryChip } from '../core/Chip/Chip';
 import { HStack, VStack } from '../core/Spacer/Stack';

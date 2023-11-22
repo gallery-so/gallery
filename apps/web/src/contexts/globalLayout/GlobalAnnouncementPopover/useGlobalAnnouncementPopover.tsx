@@ -7,7 +7,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
 import { creatorsFeaturePageContentQuery } from '~/pages/features/creators';
 import { CreatorsFeaturePageContent } from '~/scenes/ContentPages/FeaturePage/CreatorsFeaturePage';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import useExperience from '~/shared/hooks/useExperience';
 import { fetchSanityContent } from '~/utils/sanity';
 
 // Keeping for future use

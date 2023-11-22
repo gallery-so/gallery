@@ -17,10 +17,10 @@ import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewer
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
+import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
 import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
-import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

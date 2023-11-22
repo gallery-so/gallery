@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleL } from '~/components/core/Text/Text';
 import { UserExperienceType } from '~/generated/enums';
-import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
+import useUpdateUserExperience from '~/shared/relay/useUpdateUserExperience';
 
 const experiences: UserExperienceType[] = [
   'MultiGalleryAnnouncement',

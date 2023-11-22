@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import useExperience from '~/shared/hooks/useExperience';
 import isMac from '~/utils/isMac';
 
 type OnboardingDialogContextType = {

@@ -9,8 +9,8 @@ import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTw
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
 import { contexts } from '~/shared/analytics/constants';
+import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
-import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack } from '../core/Spacer/Stack';
