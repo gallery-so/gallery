@@ -74,7 +74,7 @@ export function NftSelectorPickerScreen() {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
+  const [ownershipTypeFilter, setFilter] = useState<'Collected' | 'Created'>('Collected');
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
@@ -160,7 +160,7 @@ export function NftSelectorPickerScreen() {
 
               <NftSelectorFilterBottomSheet
                 ref={filterBottomSheetRef}
-                ownerFilter={filter}
+                ownerFilter={ownershipTypeFilter}
                 onOwnerFilterChange={setFilter}
                 sortView={sortView}
                 onSortViewChange={setSortView}
@@ -173,12 +173,13 @@ export function NftSelectorPickerScreen() {
               <NftSelectorPickerGrid
                 searchCriteria={{
                   searchQuery,
-                  ownerFilter: filter,
+                  ownerFilter: ownershipTypeFilter,
                   networkFilter: networkFilter,
                   sortView,
                 }}
                 queryRef={data}
                 screen={currentScreen}
+                syncTokens={syncTokens}
               />
             </Suspense>
           </View>

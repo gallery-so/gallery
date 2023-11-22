@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
@@ -35,6 +35,8 @@ import {
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { Chain } from '~/shared/utils/chains';
+import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 type NftSelectorPickerGridProps = {
   style?: ViewProps['style'];
@@ -45,7 +47,7 @@ type NftSelectorPickerGridProps = {
     sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
-
+  syncTokens: (chain: Chain) => void;
   queryRef: NftSelectorPickerGridFragment$key;
 };
 
@@ -54,6 +56,7 @@ export function NftSelectorPickerGrid({
   searchCriteria,
   screen,
   style,
+  syncTokens,
 }: NftSelectorPickerGridProps) {
   const query = useFragment(
     graphql`
@@ -68,11 +71,16 @@ export function NftSelectorPickerGrid({
             }
           }
         }
+        ...doesUserOwnWalletFromChainFamilyFragment
       }
     `,
     queryRef
   );
 
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    searchCriteria.networkFilter,
+    query
+  );
   const tokenRefs = removeNullValues(query.viewer?.user?.tokens);
 
   const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
@@ -200,6 +208,20 @@ export function NftSelectorPickerGrid({
 
     return groups;
   }, [sortedTokens]);
+
+  // Auto-sync tokens when the chain or Collected/Created filter changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (
+      ownsWalletFromSelectedChainFamily &&
+      sortedTokens.length === 0 &&
+      !searchCriteria.searchQuery
+    ) {
+      syncTokens(searchCriteria.networkFilter);
+    }
+
+    // we only want to consider auto-syncing tokens if selectedNetworkView changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchCriteria.networkFilter, searchCriteria.ownerFilter]);
 
   type Row = { groups: Group[] };
   const rows = useMemo(() => {

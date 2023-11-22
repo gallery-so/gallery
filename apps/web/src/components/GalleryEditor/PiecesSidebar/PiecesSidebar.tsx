@@ -19,7 +19,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
-import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
+import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -213,9 +213,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       handleRefresh();
     }
 
-    // we only want to consider auto-syncing tokens if selectedChain.name changes, so limit dependencies
+    // we only want to consider auto-syncing tokens if selectedChain.name or Collected/Created filter changes, so limit dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChain.name]);
+  }, [selectedChain.name, selectedView]);
 
   const sidebarMainContent = useMemo(() => {
     if (selectedView === 'Created') {
