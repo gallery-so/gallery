@@ -77,13 +77,6 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const sync = useCallback(
     async (chain: Chain) => {
       try {
-        // TODO: refactor this logic later, add success toast afterwards.
-        // may need to look into weird timeout interference with `syncTokens` async call
-        pushToast({
-          message: 'Refreshing your collection. This may take a minute!',
-          withoutNavbar: true,
-        });
-
         setIsSyncing(true);
         const response = await syncTokens({
           variables: {
@@ -107,7 +100,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncing(false);
       }
     },
-    [clearTokenFailureState, pushToast, showFailure, syncTokens]
+    [clearTokenFailureState, showFailure, syncTokens]
   );
 
   const [syncCreatedTokensMutation] =
@@ -144,13 +137,6 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const syncCreatedTokens = useCallback(
     async (chain: Chain) => {
       try {
-        // TODO: refactor this logic later, add success toast afterwards.
-        // may need to look into weird timeout interference with `syncTokens` async call
-        pushToast({
-          message: 'Refreshing your collection. This may take a minute!',
-          withoutNavbar: true,
-        });
-
         setIsSyncingCreatedTokens(true);
         const response = await syncCreatedTokensMutation({
           variables: {
@@ -177,7 +163,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncingCreatedTokens(false);
       }
     },
-    [clearTokenFailureState, pushToast, showFailure, syncCreatedTokensMutation]
+    [clearTokenFailureState, showFailure, syncCreatedTokensMutation]
   );
 
   const [syncCreatedTokensForExistingContractMutate] =
@@ -213,13 +199,6 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const syncCreatedTokensForExistingContract = useCallback(
     async (contractId: string) => {
       try {
-        // TODO: refactor this logic later, add success toast afterwards.
-        // may need to look into weird timeout interference with `syncTokens` async call
-        pushToast({
-          message: 'Refreshing your collection. This may take a minute!',
-          withoutNavbar: true,
-        });
-
         setIsSyncingCreatedTokensForContract(true);
         const response = await syncCreatedTokensForExistingContractMutate({
           variables: { input: { contractId } },
@@ -246,7 +225,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       }
     },
 
-    [pushToast, syncCreatedTokensForExistingContractMutate, showFailure, clearTokenFailureState]
+    [syncCreatedTokensForExistingContractMutate, showFailure, clearTokenFailureState]
   );
 
   const value = useMemo(() => {
