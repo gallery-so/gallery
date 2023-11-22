@@ -38,6 +38,8 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
+import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
+
 type NftSelectorPickerGridProps = {
   style?: ViewProps['style'];
   searchCriteria: {
@@ -294,6 +296,10 @@ export function NftSelectorPickerGrid({
     },
     [screen, searchCriteria.ownerFilter]
   );
+
+  if (isSyncing || isSyncingCreatedTokens) {
+    return <NftSelectorLoadingSkeleton />;
+  }
 
   if (!rows.length) {
     return (

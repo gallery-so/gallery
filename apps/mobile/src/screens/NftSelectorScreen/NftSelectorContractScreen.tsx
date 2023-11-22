@@ -16,6 +16,8 @@ import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/nav
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
+
 export function NftSelectorContractScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
   const query = useLazyLoadQuery<NftSelectorContractScreenQuery>(
@@ -157,7 +159,11 @@ export function NftSelectorContractScreen() {
           ) : null}
         </View>
         <View className="flex-1 w-full">
-          <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
+          {isSyncingCreatedTokensForContract ? (
+            <NftSelectorLoadingSkeleton />
+          ) : (
+            <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
+          )}
         </View>
       </View>
     </View>
