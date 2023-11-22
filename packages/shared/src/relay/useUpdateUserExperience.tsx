@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
-import { useToastActions } from '~/contexts/toast/ToastContext';
 import {
   UserExperienceType,
   useUpdateUserExperienceMutation,
   useUpdateUserExperienceMutation$data,
 } from '~/generated/useUpdateUserExperienceMutation.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type Props = {
   type: UserExperienceType;
@@ -42,8 +42,6 @@ export default function useUpdateUserExperience() {
     }
   `);
 
-  const { pushToast } = useToastActions();
-
   return useCallback(
     async ({ type, experienced, optimisticExperiencesList }: Props) => {
       try {
@@ -66,13 +64,11 @@ export default function useUpdateUserExperience() {
         });
       } catch (error) {
         if (error instanceof Error) {
-          pushToast({
-            message: 'Unfortunately there was an error to save the settings.',
-          });
+          // TODO throw error for consumer to use
         }
       }
     },
-    [pushToast, updateUserExperience]
+    [updateUserExperience]
   );
 }
 
