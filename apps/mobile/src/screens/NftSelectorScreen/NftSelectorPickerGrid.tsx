@@ -48,6 +48,7 @@ type NftSelectorPickerGridProps = {
   };
   screen: ScreenWithNftSelector;
   queryRef: NftSelectorPickerGridFragment$key;
+  onRefresh: () => void;
 };
 
 export function NftSelectorPickerGrid({
@@ -55,6 +56,7 @@ export function NftSelectorPickerGrid({
   searchCriteria,
   screen,
   style,
+  onRefresh,
 }: NftSelectorPickerGridProps) {
   const query = useFragment(
     graphql`
@@ -221,6 +223,7 @@ export function NftSelectorPickerGrid({
         return;
       }
       syncTokens(searchCriteria.networkFilter);
+      onRefresh();
     }
 
     if (searchCriteria.ownerFilter === 'Created') {
@@ -228,10 +231,12 @@ export function NftSelectorPickerGrid({
         return;
       }
       syncCreatedTokens(searchCriteria.networkFilter);
+      onRefresh();
     }
   }, [
     isSyncing,
     isSyncingCreatedTokens,
+    onRefresh,
     ownsWalletFromSelectedChainFamily,
     searchCriteria.networkFilter,
     searchCriteria.ownerFilter,

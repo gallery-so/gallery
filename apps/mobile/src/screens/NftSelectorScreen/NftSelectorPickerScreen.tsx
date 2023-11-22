@@ -185,6 +185,7 @@ export function NftSelectorPickerScreen() {
                 }}
                 queryRef={data}
                 screen={currentScreen}
+                onRefresh={handleRefresh}
               />
             </Suspense>
           </View>
