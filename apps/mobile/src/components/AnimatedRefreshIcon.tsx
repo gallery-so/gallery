@@ -26,13 +26,35 @@ export function AnimatedRefreshIcon({
   const handleSync = useCallback(async () => {
     if (isSyncing) return;
 
-    await onSync();
-    onRefresh();
     pushToast({
-      message: 'Successfully refreshed your collection',
+      message: 'Refreshing your collection. This may take a minute!',
       withoutNavbar: true,
     });
-  }, [isSyncing, onSync, onRefresh, pushToast]);
+
+    /**
+     * NOTE: there's a SUPER FUCKING WEIRD UI bug here!
+     *
+     * the above `pushToast` will successfully display a toast, but
+     * it won't auto-close even after the timeout (4 seconds). turns
+     * out the function immediately below (`await onSync`) keeps the
+     * toast hanging for some reason. the timeout definitely fires
+     * in the `AnimatedToast/useEffect`, but after the timeout period
+     * the close animation is blocked from firing. if we disable `onSync`,
+     * then the toast behaves normally and closes.
+     *
+     * the resulting effect is that we see a double-layered toast:
+     * the first one hangs around until the sync completes, then the
+     * second one appears on top, and they both disappear together
+     */
+    await onSync();
+    onRefresh();
+
+    // disabling this until the double-toast bug is fixed
+    // pushToast({
+    //   message: 'Successfully refreshed your collection',
+    //   withoutNavbar: true,
+    // });
+  }, [isSyncing, onRefresh, onSync, pushToast]);
 
   const spinValue = useRef(new Animated.Value(0)).current;
 
