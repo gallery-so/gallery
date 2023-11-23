@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-android:
-    if: !github.event.pull_request.draft
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
@@ -37,7 +37,7 @@ jobs:
           cd apps/mobile;
           eas build -p android -e production --non-interactive
   build-ios:
-    if: !github.event.pull_request.draft
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
