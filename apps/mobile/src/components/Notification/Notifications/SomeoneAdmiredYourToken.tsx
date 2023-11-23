@@ -11,7 +11,6 @@ import { SomeoneAdmiredYourTokenQueryFragment$key } from '~/generated/SomeoneAdm
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 type SomeoneAdmiredYourTokenProps = {
   queryRef: SomeoneAdmiredYourTokenQueryFragment$key;
@@ -37,8 +36,8 @@ export function SomeoneAdmiredYourToken({
         count
         token {
           dbid
+          name
 
-          ...extractRelevantMetadataFromTokenFragment
           ...useGetPreviewImagesSingleFragment
         }
 
@@ -91,8 +90,6 @@ export function SomeoneAdmiredYourToken({
     }
   }, [navigation, imageUrl, token]);
 
-  const { contractName } = extractRelevantMetadataFromToken(token);
-
   return (
     <NotificationSkeleton
       queryRef={query}
@@ -131,7 +128,7 @@ export function SomeoneAdmiredYourToken({
           className="text-sm"
           numberOfLines={2}
         >
-          {contractName ?? 'token'}
+          {token.name ?? 'item'}
         </Typography>
       </Text>
     </NotificationSkeleton>

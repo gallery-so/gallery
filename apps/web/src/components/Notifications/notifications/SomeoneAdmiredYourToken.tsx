@@ -7,7 +7,6 @@ import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourTokenFragment$key } from '~/generated/SomeoneAdmiredYourTokenFragment.graphql';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -23,7 +22,8 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
         __typename
         dbid
         token {
-          ...extractRelevantMetadataFromTokenFragment
+          name
+
           ...NotificationPostPreviewWithBoundaryFragment
         }
         count
@@ -57,8 +57,6 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
     throw new Error('Notification does not have accompanying token');
   }
 
-  const { contractName } = extractRelevantMetadataFromToken(token);
-
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
@@ -75,7 +73,7 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
                 </strong>
               </>
             )}
-            admired your <strong>{contractName ?? 'token'}</strong>
+            admired your <strong>{token.name ?? 'item'}</strong>
           </BaseM>
         </StyledTextWrapper>
       </HStack>
