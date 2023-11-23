@@ -6,6 +6,7 @@ import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
 import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
@@ -162,7 +163,26 @@ export function NftSelectorContractScreen() {
           {isSyncingCreatedTokensForContract ? (
             <NftSelectorLoadingSkeleton />
           ) : (
-            <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
+            <FlashList
+              renderItem={renderItem}
+              data={rows}
+              estimatedItemSize={100}
+              refreshControl={
+                isCreator ? (
+                  <GalleryRefreshControl
+                    refreshing={isSyncingCreatedTokensForContract}
+                    onRefresh={
+                      // TODO: `handleRefresh` should just be defined within `handleSyncTokensForContract`
+                      // this will require refactoring out the `onRefresh` prep from AnimatedRefreshIcon
+                      async () => {
+                        await handleSyncTokensForContract();
+                        handleRefresh();
+                      }
+                    }
+                  />
+                ) : undefined
+              }
+            />
           )}
         </View>
       </View>

@@ -8,6 +8,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
@@ -297,7 +298,9 @@ export function NftSelectorPickerGrid({
     [screen, searchCriteria.ownerFilter]
   );
 
-  if (isSyncing || isSyncingCreatedTokens) {
+  const isRefreshing = isSyncing || isSyncingCreatedTokens;
+
+  if (isRefreshing) {
     return <NftSelectorLoadingSkeleton />;
   }
 
@@ -313,7 +316,14 @@ export function NftSelectorPickerGrid({
 
   return (
     <View className="flex flex-col flex-1" style={style}>
-      <FlashList renderItem={renderItem} data={rows} estimatedItemSize={200} />
+      <FlashList
+        renderItem={renderItem}
+        data={rows}
+        estimatedItemSize={200}
+        refreshControl={
+          <GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
+      />
     </View>
   );
 }
