@@ -32,11 +32,17 @@ import {
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
-const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
+const NETWORKS: {
+  label: string;
+  id: NetworkChoice;
+  icon: JSX.Element;
+  hasCreatorSupport: boolean;
+}[] = [
   ...chains.map((chain) => ({
     label: chain.name,
     id: chain.name,
     icon: getChainIconComponent(chain),
+    hasCreatorSupport: chain.hasCreatorSupport,
   })),
 ];
 
@@ -118,6 +124,15 @@ export function NftSelectorPickerScreen() {
     }
   }, [creatorBetaAnnouncementSeen, ownershipTypeFilter, setCreatorBetaAnnouncementSeen]);
 
+  const decoratedNetworks = useMemo(() => {
+    return NETWORKS.map((network) => {
+      return {
+        ...network,
+        disabled: ownershipTypeFilter === 'Created' && !network.hasCreatorSupport,
+      };
+    });
+  }, [ownershipTypeFilter]);
+
   return (
     <>
       <View
@@ -160,7 +175,7 @@ export function NftSelectorPickerScreen() {
                 eventElementId="NftSelectorNetworkFilter"
                 onChange={handleNetworkChange}
                 selectedId={networkFilter}
-                options={NETWORKS}
+                options={decoratedNetworks}
               />
 
               <View className="flex flex-row space-x-1">
@@ -189,6 +204,7 @@ export function NftSelectorPickerScreen() {
                   onOwnerFilterChange={setFilter}
                   sortView={sortView}
                   onSortViewChange={setSortView}
+                  selectedNetwork={networkFilter}
                 />
               </View>
             </View>
