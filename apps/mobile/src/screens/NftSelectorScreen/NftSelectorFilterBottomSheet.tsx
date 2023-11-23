@@ -1,5 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import {
@@ -9,7 +9,7 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Options, Section } from '~/components/Select';
 import { Typography } from '~/components/Typography';
-import { ChainMetadata } from '~/shared/utils/chains';
+import { ChainMetadata, isSupportedChainForCreators } from '~/shared/utils/chains';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -30,13 +30,15 @@ type Props = {
 
   sortView: NftSelectorSortView;
   onSortViewChange: (sortView: NftSelectorSortView) => void;
+
+  selectedNetwork: NetworkChoice;
 };
 
 export type NetworkChoice = ChainMetadata['name'];
 export type NftSelectorSortView = 'Recently added' | 'Oldest' | 'Alphabetical';
 
 function NftSelectorFilterBottomSheet(
-  { ownerFilter, onOwnerFilterChange, sortView, onSortViewChange }: Props,
+  { ownerFilter, onOwnerFilterChange, sortView, onSortViewChange, selectedNetwork }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -65,6 +67,18 @@ function NftSelectorFilterBottomSheet(
     },
     [onSortViewChange, handleClose]
   );
+
+  const decoratedOwnerOptions = useMemo(() => {
+    return OWNER_OPTIONS.map((ownerOption) => {
+      if (ownerOption.id === 'Created') {
+        return {
+          ...ownerOption,
+          disabled: !isSupportedChainForCreators(selectedNetwork),
+        };
+      }
+      return ownerOption;
+    });
+  }, [selectedNetwork]);
 
   return (
     <GalleryBottomSheetModal
@@ -95,7 +109,7 @@ function NftSelectorFilterBottomSheet(
               <Options
                 onChange={handleOwnerFilterChange}
                 selected={ownerFilter}
-                options={OWNER_OPTIONS}
+                options={decoratedOwnerOptions}
                 eventElementId="Owner filter"
               />
             </Section>
