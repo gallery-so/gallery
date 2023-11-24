@@ -33,9 +33,9 @@ import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetail
 import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
-import colors from '~/shared/theme/colors';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
