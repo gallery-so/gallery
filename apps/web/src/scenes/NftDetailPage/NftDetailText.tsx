@@ -35,6 +35,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
+import colors from '~/shared/theme/colors';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
@@ -254,9 +255,9 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={8}>
-          <HStack justify="space-between">
+          <HStack gap={8} justify="space-between">
             {token.name && <TitleM>{decodedTokenName}</TitleM>}
-            <HStack gap={8}>
+            <HStack gap={8} align="flex-start">
               <ProfilePictureStack
                 onClick={openAdmireModal}
                 usersRef={nonNullAdmires}
@@ -344,7 +345,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             </VStack>
           )}
         </VStack>
-        <HStack gap={12}>
+        <StyledButtonContainer gap={12}>
           <StyledAdmireButton
             active={hasViewerAdmiredToken}
             onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
@@ -353,10 +354,10 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             eventName="Nft Detail Admire Token Button Pressed"
             eventContext={contexts['NFT Detail']}
           >
-            <HStack gap={8} align="center">
+            <StyledAdmireButtonContainer active={hasViewerAdmiredToken} gap={8} align="center">
               <AdmireIcon active={hasViewerAdmiredToken} />
               {hasViewerAdmiredToken ? 'Admired' : 'Admire'}
-            </HStack>
+            </StyledAdmireButtonContainer>
           </StyledAdmireButton>
           {authenticatedUserOwnsAsset && (
             <StyledInteractionButton
@@ -371,7 +372,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
               </HStack>
             </StyledInteractionButton>
           )}
-        </HStack>
+        </StyledButtonContainer>
 
         <VStack gap={16}>
           <NftAdditionalDetails tokenRef={token} />
@@ -413,10 +414,15 @@ const StyledOwnerAndCreator = styled(HStack)`
   }
 `;
 
+const StyledButtonContainer = styled(HStack)`
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
   display: block;
-  max-width: 420px;
-  min-width: 420px;
+  max-width: 296px;
+  min-width: 296px;
   word-wrap: break-word;
 
   ${({ horizontalLayout, navbarHeight }) =>
@@ -424,15 +430,22 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
       ? `
     max-height: calc(100vh - ${navbarHeight * 2}px);
     overflow: auto;
+    margin-right: 16px;
     `
       : `
       margin: 32px 0px;
     `}
 
   @media only screen and ${breakpoints.tablet} {
+    max-width: 420px;
+    min-width: 420px;
     margin-left: 56px;
     margin-top: 0;
   }
+`;
+
+const StyledAdmireButtonContainer = styled(HStack)<{ active: boolean }>`
+  ${({ active }) => (active ? `color: ${colors.hyperBlue}` : null)};
 `;
 
 const StyledGalleryLink = styled(GalleryLink)`
@@ -452,7 +465,7 @@ const StyledInteractionButton = styled(Button)`
 `;
 
 const StyledButton = styled(Button)`
-  widht: 100%;
+  width: 100%;
 `;
 
 const StyledPillContent = styled(HStack)`
