@@ -4,8 +4,8 @@ import OpenBracket from 'public/icons/open_bracket.svg';
 import styled from 'styled-components';
 
 import { pageGutter } from '~/components/core/breakpoints';
-import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseXL, TitleDiatypeL } from '~/components/core/Text/Text';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 
@@ -35,7 +35,7 @@ export const PostOpenGraphPreview = ({ username, caption, imageUrl, profileImage
             </StyledUserInfoContainer>
             <StyledDescription>
               {caption ? (
-                <Markdown text={unescape(caption)} eventContext={null} />
+                <ProcessedText text={caption} eventContext={null} />
               ) : (
                 <>
                   View this post on <strong>gallery.so</strong>
