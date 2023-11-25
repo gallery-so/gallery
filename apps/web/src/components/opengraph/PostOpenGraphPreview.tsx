@@ -35,7 +35,7 @@ export const PostOpenGraphPreview = ({ username, caption, imageUrl, profileImage
             </StyledUserInfoContainer>
             <StyledDescription>
               {caption ? (
-                <ProcessedText text={caption} eventContext={null} />
+                <ProcessedText text={unescape(caption)} eventContext={null} />
               ) : (
                 <>
                   View this post on <strong>gallery.so</strong>
