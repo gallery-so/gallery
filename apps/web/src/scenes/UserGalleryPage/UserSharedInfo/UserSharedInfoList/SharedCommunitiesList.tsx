@@ -18,6 +18,10 @@ import PaginatedListRow from './SharedInfoListRow';
 type Props = {
   userRef: SharedCommunitiesListFragment$key;
 };
+
+const ROW_HEIGHT = 56;
+const MAX_LIST_HEIGHT = 640;
+
 export default function SharedCommunitiesList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
@@ -58,6 +62,14 @@ export default function SharedCommunitiesList({ userRef }: Props) {
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasNext || index < sharedCommunities.length;
 
+  const isMobile = useIsMobileWindowWidth();
+
+  const listHeight = useMemo(() => {
+    // 60px accounts for the header + margin height on mobile
+    const modalMaxHeight = isMobile ? window.innerHeight - 60 : MAX_LIST_HEIGHT;
+    return Math.min(rowCount * ROW_HEIGHT, modalMaxHeight);
+  }, [isMobile, rowCount]);
+
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
       const community = sharedCommunities[index]?.node;
@@ -84,7 +96,11 @@ export default function SharedCommunitiesList({ userRef }: Props) {
 
       return (
         <div style={style} key={key}>
-          <CommunityHoverCard communityRef={community} communityName={displayName}>
+          <CommunityHoverCard
+            communityRef={community}
+            communityName={displayName}
+            fitContent={false}
+          >
             <PaginatedListRow
               title={community.name ?? ''}
               subTitle={descriptionFirstLine}
@@ -98,12 +114,10 @@ export default function SharedCommunitiesList({ userRef }: Props) {
     [sharedCommunities]
   );
 
-  const isMobile = useIsMobileWindowWidth();
-
   return (
     <StyledList fullscreen={isMobile} gap={24}>
-      <AutoSizer>
-        {({ width, height }) => (
+      <AutoSizer disableHeight>
+        {({ width }) => (
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
             loadMoreRows={handleLoadMore}
@@ -115,7 +129,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
                 onRowsRendered={onRowsRendered}
                 rowRenderer={rowRenderer}
                 width={width}
-                height={height}
+                height={listHeight}
                 rowHeight={56}
                 rowCount={sharedCommunities.length}
               />
@@ -123,8 +137,6 @@ export default function SharedCommunitiesList({ userRef }: Props) {
           </InfiniteLoader>
         )}
       </AutoSizer>
-
-      <VStack></VStack>
     </StyledList>
   );
 }
@@ -133,5 +145,5 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   width: 375px;
   max-width: 375px;
   margin: 4px;
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  height: 100%;
 `;

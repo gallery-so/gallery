@@ -92,7 +92,7 @@ const StyledProfilePictureWrapper = styled.div`
 `;
 
 const StyledListItem = styled(ListItem)<{ isHighlighted?: boolean }>`
-  padding: 8px 16px 16px;
+  padding: 0px 16px 16px;
 
   ${({ isHighlighted }) =>
     isHighlighted &&

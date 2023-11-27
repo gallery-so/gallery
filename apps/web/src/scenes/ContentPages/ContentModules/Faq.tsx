@@ -132,7 +132,7 @@ export default function Faq({ content }: Props) {
     <StyledSection gap={64} justify="center">
       <StyledContainer gap={16}>
         <StyledTitle>Frequently asked questions</StyledTitle>
-        <VStack>
+        <StyledQuestionsContainer>
           {content.faqs.map((faq, index) => (
             <FaqPair
               key={index}
@@ -141,7 +141,7 @@ export default function Faq({ content }: Props) {
               onClick={() => handleClick(index)}
             />
           ))}
-        </VStack>
+        </StyledQuestionsContainer>
       </StyledContainer>
     </StyledSection>
   );
@@ -163,6 +163,10 @@ const StyledContainer = styled(VStack)`
     width: 943px;
     flex-direction: row;
   }
+`;
+
+const StyledQuestionsContainer = styled(VStack)`
+  width: 100%;
 `;
 
 const StyledTitle = styled(TitleDiatypeL)`

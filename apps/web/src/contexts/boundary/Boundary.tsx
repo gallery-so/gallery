@@ -19,7 +19,7 @@ const Boundary = memo(({ children }: PropsWithChildren) => {
   if (isFullPageLoaderExcluded) {
     return (
       <Suspense>
-        <ErrorBoundary>{children}</ErrorBoundary>;
+        <ErrorBoundary>{children}</ErrorBoundary>
       </Suspense>
     );
   }

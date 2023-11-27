@@ -16,6 +16,7 @@ import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
 import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
+import { SomeoneRepliedToYourComment } from './Notifications/SomeoneRepliedToYourComment';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 import { SomeoneYouFollowPostedTheirFirstPost } from './Notifications/SomeoneYouFollowPostedTheirFirstPost';
 
@@ -38,6 +39,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneCommentedOnYourPostQueryFragment
         ...SomeoneMentionedYouQueryFragment
         ...SomeonePostedYourWorkQueryFragment
+        ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
       }
     `,
@@ -112,6 +114,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           ...SomeonePostedYourWorkFragment
         }
 
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          ...SomeoneRepliedToYourCommentFragment
+        }
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
@@ -150,6 +156,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <SomeoneMentionedYou queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
       return <SomeonePostedYourWork queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      return <SomeoneRepliedToYourComment queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneYouFollowPostedTheirFirstPostNotification') {
       return (
         <SomeoneYouFollowPostedTheirFirstPost queryRef={query} notificationRef={notification} />

@@ -89,3 +89,11 @@ export function isChainEvm(chain: Chain) {
 export function isSupportedChain(chain: string): chain is Chain {
   return Boolean(chains.find((c) => c.name.toLowerCase() === chain.toLowerCase()));
 }
+
+export function isSupportedChainForCreators(chain: string) {
+  const isLegit = isSupportedChain(chain);
+  if (isLegit) {
+    return chainsMap[chain].hasCreatorSupport;
+  }
+  return false;
+}

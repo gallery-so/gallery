@@ -1,30 +1,24 @@
-import { useCallback, useState } from 'react';
+import isEqual from 'lodash/isEqual';
+import uniqWith from 'lodash/uniqWith';
+import { useCallback, useMemo, useState } from 'react';
 
 import { WHITESPACE_REGEX } from '../utils/regex';
 import useDebounce from './useDebounce';
 
-type MentionDataType = {
+export type MentionDataType = {
   interval: {
     start: number;
     length: number;
   };
   userId?: string;
   communityId?: string;
+  label?: string;
 };
 
 export type MentionType = {
   type: 'User' | 'Community';
   label: string;
   value: string;
-};
-
-type Mention = {
-  interval: {
-    start: number;
-    length: number;
-  };
-  userId?: string;
-  communityId?: string;
 };
 
 export function useMentionableMessage() {
@@ -51,11 +45,12 @@ export function useMentionableMessage() {
 
       setMessage(newMessage);
 
-      const newMention: Mention = {
+      const newMention: MentionDataType = {
         interval: {
           start: mentionStartPos,
           length: mention.label.length + 1, // +1 for the @
         },
+        label: mention.label,
       };
 
       if (mention.type === 'User') {
@@ -64,39 +59,12 @@ export function useMentionableMessage() {
         newMention.communityId = mention.value;
       }
 
-      // Check if the mention already exists
-      const mentionExists = mentions.some(
-        (existingMention) =>
-          (existingMention.userId === newMention.userId ||
-            existingMention.communityId === newMention.communityId) &&
-          existingMention.interval.start === newMention.interval.start &&
-          existingMention.interval.length === newMention.interval.length
-      );
-
-      if (mentionExists) {
-        return newMessage; // If the mention already exists, return here
-      }
-
-      // Calculate the length difference between the old alias and the new mention
-      const lengthDifference = mention.label.length + 1 - aliasKeyword.length; // +1 for the @
-
-      // Adjust the positions of mentions that come after the newly added mention
-      const adjustedMentions = mentions.map((existingMention) => {
-        if (existingMention.interval.start >= mentionStartPos) {
-          return {
-            ...existingMention,
-            interval: {
-              start: existingMention.interval.start + lengthDifference,
-              length: existingMention.interval.length,
-            },
-          };
-        }
-        return existingMention;
-      });
-
       setIsSelectingMentions(false);
 
-      setMentions([...adjustedMentions, newMention]);
+      const updatedMentions = updateMentionPositions(newMessage, [...mentions, newMention]);
+
+      setMentions(updatedMentions);
+
       setAliasKeyword('');
 
       return newMessage;
@@ -123,37 +91,12 @@ export function useMentionableMessage() {
         setAliasKeyword(wordAtCursor);
       }
 
-      // Determine how many characters were added or removed
-      const diff = message.length - text.length;
-
-      // Update the positions of the mentions based on the added/removed characters
-      let updatedMentions = mentions.map((mention) => {
-        // If the change occurred before a mention, adjust its position
-        if (mention.interval.start >= selection.start) {
-          return {
-            ...mention,
-            interval: {
-              ...mention.interval,
-              start: mention.interval.start - diff,
-            },
-          };
-        }
-        return mention;
-      });
-
-      // Remove any mentions that were deleted
-      updatedMentions = updatedMentions.filter((mention) => {
-        // if start < 0, it means the mention was deleted
-        return (
-          mention.interval.start >= 0 &&
-          mention.interval.start + mention.interval.length <= text.length
-        );
-      });
+      const updatedMentions = updateMentionPositions(text, mentions);
 
       setMentions(updatedMentions);
       setMessage(text);
     },
-    [mentions, message, selection]
+    [mentions, selection]
   );
 
   const resetMentions = useCallback(() => {
@@ -172,16 +115,45 @@ export function useMentionableMessage() {
     setAliasKeyword('');
   }, []);
 
+  const internalMentions = useMemo(() => {
+    return mentions.map((mention) => {
+      const { label, ...rest } = mention;
+      return rest;
+    });
+  }, [mentions]);
+
   return {
     aliasKeyword: debouncedAliasKeyword,
     isSelectingMentions,
     message,
     setMessage: handleSetMessage,
     selectMention: handleSetMention,
-    mentions: mentions || [],
+    mentions: internalMentions || [],
     resetMentions,
     handleSelectionChange,
     selection,
     closeMention: handleClosingMention,
   };
+}
+
+export function updateMentionPositions(text: string, mentions: MentionDataType[]) {
+  const updatedMentions: MentionDataType[] = [];
+  mentions.forEach((mention) => {
+    // use regex to find all mentions in text
+    const regex = new RegExp(`@${mention.label}`, 'g');
+    let matches;
+
+    while ((matches = regex.exec(text))) {
+      const label = mention?.label || '';
+      updatedMentions.push({
+        ...mention,
+        interval: {
+          start: matches.index || 0,
+          length: label.length + 1, // +1 for the @
+        },
+      });
+    }
+  });
+
+  return uniqWith(updatedMentions, isEqual);
 }

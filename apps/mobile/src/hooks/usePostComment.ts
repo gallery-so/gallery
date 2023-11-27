@@ -12,7 +12,9 @@ type submitCommentProps = {
   feedId: string;
   value: string;
   mentions?: MentionInput[];
+  replyToId?: string;
   onSuccess?: () => void;
+  topCommentId?: string;
 };
 
 export function usePostComment() {
@@ -23,8 +25,14 @@ export function usePostComment() {
         $comment: String!
         $connections: [ID!]!
         $mentions: [MentionInput!]!
+        $replyToId: DBID
       ) @raw_response_type {
-        commentOnPost(comment: $comment, postId: $postId, mentions: $mentions) {
+        commentOnPost(
+          comment: $comment
+          postId: $postId
+          mentions: $mentions
+          replyToID: $replyToId
+        ) {
           ... on CommentOnPostPayload {
             __typename
 
@@ -57,6 +65,10 @@ export function usePostComment() {
               }
               creationTime
             }
+            replyToComment {
+              __typename
+              dbid
+            }
           }
         }
       }
@@ -65,7 +77,14 @@ export function usePostComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedId, value, onSuccess = noop, mentions = [] }: submitCommentProps) => {
+    async ({
+      feedId,
+      value,
+      onSuccess = noop,
+      mentions = [],
+      replyToId,
+      topCommentId,
+    }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
@@ -105,6 +124,20 @@ export function usePostComment() {
           'CommentsBottomSheet_comments'
         );
 
+        const repliesConnection = ConnectionHandler.getConnectionID(
+          `Comment:${topCommentId}`,
+          'CommentsBottomSheetSection_replies'
+        );
+
+        const connectionsIdsIncluded = [];
+
+        if (topCommentId) {
+          connectionsIdsIncluded.push(repliesConnection);
+        } else {
+          connectionsIdsIncluded.push(commentsBottomSheetConnection);
+          connectionsIdsIncluded.push(interactionsConnection);
+        }
+
         const updater: SelectorStoreUpdater<usePostCommentMutation['response']> = (
           store,
           response
@@ -113,6 +146,12 @@ export function usePostComment() {
             const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+            const repliesPageInfo = store.get(repliesConnection)?.getLinkedRecord('pageInfo');
+            repliesPageInfo?.setValue(
+              ((repliesPageInfo?.getValue('total') as number) ?? 0) + 1,
+              'total'
+            );
           }
         };
 
@@ -156,13 +195,19 @@ export function usePostComment() {
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,
               },
+              replyToComment: {
+                __typename: 'Comment',
+                dbid: topCommentId ?? 'unknown',
+                id: `Comment:${topCommentId ?? 'unknown'}`,
+              },
             },
           },
           variables: {
             comment: value,
             postId: feedId,
-            connections: [interactionsConnection, commentsBottomSheetConnection],
+            connections: connectionsIdsIncluded,
             mentions,
+            replyToId,
           },
         });
 

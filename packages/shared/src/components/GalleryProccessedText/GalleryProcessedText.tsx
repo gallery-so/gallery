@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { MentionDataType } from 'src/hooks/useMentionableMessage';
 
 import { GalleryProcessedTextFragment$key } from '~/generated/GalleryProcessedTextFragment.graphql';
 
@@ -14,6 +15,7 @@ import { SupportedProcessedTextElements } from './types';
 type GalleryProcessedTextProps = {
   text: string;
   mentionsRef?: GalleryProcessedTextFragment$key;
+  mentionsInText?: MentionDataType[];
 } & SupportedProcessedTextElements;
 
 // Makes a raw text value display-ready by converting urls to link components
@@ -24,6 +26,8 @@ export default function GalleryProcessedText({
   TextComponent,
   LinkComponent,
   MentionComponent,
+  mentionsInText = [],
+  ...props
 }: GalleryProcessedTextProps) {
   const mentions = useFragment(
     graphql`
@@ -41,7 +45,7 @@ export default function GalleryProcessedText({
     const elements = [
       ...markdownLinks,
       ...getUrlElements(text, markdownLinks),
-      ...getMentionElements(text, mentions),
+      ...getMentionElements(text, mentions, mentionsInText),
     ];
 
     // Sort elements based on their start index
@@ -85,9 +89,17 @@ export default function GalleryProcessedText({
     });
 
     return elementsWithBreaks;
-  }, [text, mentions, LinkComponent, TextComponent, MentionComponent, BreakComponent]);
+  }, [
+    text,
+    mentions,
+    mentionsInText,
+    LinkComponent,
+    TextComponent,
+    MentionComponent,
+    BreakComponent,
+  ]);
 
-  return <TextComponent>{processedText}</TextComponent>;
+  return <TextComponent {...props}>{processedText}</TextComponent>;
 }
 
 type addLinkElementProps = {

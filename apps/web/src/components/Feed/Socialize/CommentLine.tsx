@@ -11,7 +11,6 @@ import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -22,8 +21,6 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     graphql`
       fragment CommentLineFragment on Comment {
         dbid
-
-        creationTime
 
         comment @required(action: THROW)
         commenter {
@@ -47,42 +44,33 @@ export function CommentLine({ commentRef }: CommentLineProps) {
     return () => clearInterval(intervalId);
   }, []);
 
-  const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
   return (
     <HStack inline key={comment.dbid} gap={4}>
-      {comment.commenter && (
-        <StyledUsernameWrapper>
-          <UserHoverCard userRef={comment.commenter}>
-            <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-          </UserHoverCard>
-        </StyledUsernameWrapper>
-      )}
       <CommentText>
+        {comment.commenter && (
+          <StyledUsernameWrapper>
+            <UserHoverCard userRef={comment.commenter}>
+              <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+            </UserHoverCard>
+          </StyledUsernameWrapper>
+        )}
         <ProcessedText
           text={comment.comment}
           mentionsRef={nonNullMentions}
           eventContext={contexts.Posts}
         />
       </CommentText>
-      {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
   );
 }
 
-const TimeAgoText = styled.div`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 10px;
-  line-height: 18px;
-  font-weight: 400;
-
-  color: ${colors.metal};
-`;
-
 const StyledUsernameWrapper = styled.div`
   line-height: 16px;
   height: fit-content;
+  display: inline-grid;
+  margin-right: 4px;
 `;
 
 const CommenterName = styled.span`

@@ -60,7 +60,6 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
 }
 
 const StyledRowNonLink = styled.div`
-  padding: 8px 12px;
   &:hover {
     background: ${colors.offWhite};
   }
@@ -71,6 +70,7 @@ const StyledRowLink = styled(GalleryLink)`
   text-decoration: none;
   max-height: 56px;
   display: block;
+  width: 100%;
 
   &:hover {
     background: ${colors.offWhite};

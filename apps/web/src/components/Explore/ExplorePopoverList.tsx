@@ -13,6 +13,7 @@ import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   exploreUsersRef: ExplorePopoverListFragment$key;
@@ -35,6 +36,7 @@ export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props)
         id
         username
         bio
+        ...ProfilePictureFragment
         ...FollowButtonUserFragment
       }
     `,
@@ -59,6 +61,7 @@ export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props)
             eventContext={contexts.Explore}
           >
             <StyledHStack justify="space-between" align="center" gap={8}>
+              <ProfilePicture size="md" userRef={user} />
               <StyledVStack justify="center">
                 <TitleDiatypeM>{user.username}</TitleDiatypeM>
                 <StyledBio>
