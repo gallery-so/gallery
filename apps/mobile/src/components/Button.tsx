@@ -8,7 +8,7 @@ import colors from '~/shared/theme/colors';
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-type Variant = 'primary' | 'secondary' | 'danger' | 'disabled';
+type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
 
@@ -20,6 +20,8 @@ type ButtonProps = {
   text?: string;
   icon?: ReactNode;
   variant?: Variant;
+  textClassName?: string;
+  containerClassName?: string;
   fontWeight?: FontWeight;
   size?: Size;
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
@@ -87,6 +89,18 @@ const buttonVariants: ButtonVariants = {
         loadingColor: 'black',
       },
     },
+    blue: {
+      inactive: {
+        containerClassName: 'bg-white',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+      active: {
+        containerClassName: 'bg-white border border-[#2563ebcc]',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+    },
   },
   dark: {
     primary: {
@@ -137,6 +151,18 @@ const buttonVariants: ButtonVariants = {
         loadingColor: colors.shadow,
       },
     },
+    blue: {
+      inactive: {
+        containerClassName: 'bg-black-900',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+      active: {
+        containerClassName: 'bg-black-900 border border-[#2563ebcc]',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+    },
   },
 };
 
@@ -147,6 +173,8 @@ export function Button({
   loading,
   disabled,
   style,
+  textClassName,
+  containerClassName,
   size = 'md',
   fontWeight = 'Medium',
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
@@ -180,6 +208,7 @@ export function Button({
         className={clsx(
           'relative flex h-[36] items-center justify-center px-6 rounded-sm',
           variantClassNames.containerClassName,
+          !active ? containerClassName : null,
           sizeVariants[size]
         )}
       >
@@ -193,7 +222,11 @@ export function Button({
 
           <Typography
             font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx('text-xs uppercase text-center', variantClassNames.textClassName)}
+            className={clsx(
+              'text-xs uppercase text-center',
+              variantClassNames.textClassName,
+              textClassName
+            )}
           >
             {text}
           </Typography>
