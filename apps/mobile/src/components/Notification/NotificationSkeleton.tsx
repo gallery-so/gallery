@@ -113,6 +113,17 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneRepliedToYourCommentNotification {
+          comment {
+            source {
+              ... on Post {
+                tokens {
+                  ...NotificationPostPreviewWithBoundaryFragment
+                }
+              }
+            }
+          }
+        }
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           post {
             tokens {
@@ -170,6 +181,10 @@ export function NotificationSkeleton({
       if (notification.mentionSource?.__typename === 'Comment') {
         return notification.mentionSource.source?.tokens?.[0];
       }
+    }
+
+    if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      return notification.comment?.source?.tokens?.[0];
     }
 
     return null;

@@ -15,12 +15,28 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
+export type OnReplyPressParams = {
+  username?: string;
+  commentId?: string;
+  comment?: string;
+  topCommentId?: string;
+} | null;
+
 type CommentLineProps = {
   activeCommentId?: string;
   commentRef: CommentsBottomSheetLineFragment$key;
+  onReplyPress: (params: OnReplyPressParams) => void;
+  footerElement?: React.ReactNode;
+  isReply?: boolean;
 };
 
-export function CommentsBottomSheetLine({ activeCommentId, commentRef }: CommentLineProps) {
+export function CommentsBottomSheetLine({
+  activeCommentId,
+  commentRef,
+  onReplyPress,
+  footerElement,
+  isReply,
+}: CommentLineProps) {
   const comment = useFragment(
     graphql`
       fragment CommentsBottomSheetLineFragment on Comment {
@@ -40,7 +56,6 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
     `,
     commentRef
   );
-
   const timeAgo = getTimeSince(comment.creationTime);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -53,23 +68,35 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
 
   const nonNullMentions = useMemo(() => removeNullValues(comment.mentions), [comment.mentions]);
 
+  const handleReplyPress = useCallback(() => {
+    onReplyPress({
+      username: comment?.commenter?.username ?? '',
+      comment: comment.comment ?? '',
+      commentId: comment.dbid,
+    });
+  }, [comment?.commenter?.username, comment.dbid, comment.comment, onReplyPress]);
+
   if (!comment.comment) {
     return null;
   }
 
   return (
-    <GalleryTouchableOpacity
-      className={clsx('flex flex-row space-x-2 px-3 py-2', {
+    <View
+      className={clsx('flex flex-row space-x-2 px-4 py-2', {
         'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
+        'pl-12': isReply,
       })}
-      onPress={handleUserPress}
-      eventElementId={'CommentsBottomSheetLine Single User'}
-      eventName={'CommentsBottomSheetLine Single User'}
-      eventContext={contexts.Posts}
     >
       {comment.commenter && (
         <View className="mt-1">
-          <ProfilePicture userRef={comment.commenter} size="sm" />
+          <GalleryTouchableOpacity
+            onPress={handleUserPress}
+            eventElementId={'PFP in comment'}
+            eventName={'PFP in comment Press'}
+            eventContext={contexts.Posts}
+          >
+            <ProfilePicture userRef={comment.commenter} size="sm" />
+          </GalleryTouchableOpacity>
         </View>
       )}
       <View className="flex flex-col grow-0">
@@ -84,10 +111,26 @@ export function CommentsBottomSheetLine({ activeCommentId, commentRef }: Comment
             {timeAgo}
           </Typography>
         </View>
-        <View className="flex mr-5">
+        <View className="flex mr-5 space-y-1">
           <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+
+          <GalleryTouchableOpacity
+            eventElementId={'Reply to Comment'}
+            eventName={'Reply to Comment Press'}
+            eventContext={contexts.Posts}
+            onPress={handleReplyPress}
+          >
+            <Typography
+              className="text-xs text-shadow"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              Reply
+            </Typography>
+          </GalleryTouchableOpacity>
+
+          {footerElement}
         </View>
       </View>
-    </GalleryTouchableOpacity>
+    </View>
   );
 }

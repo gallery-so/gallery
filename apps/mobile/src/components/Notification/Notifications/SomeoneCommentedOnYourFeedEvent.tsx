@@ -101,13 +101,13 @@ export function SomeoneCommentedOnYourFeedEvent({
     }
   }, [eventType]);
 
-  const commenters = useMemo(() => {
-    return removeNullValues([notification.comment?.commenter]);
-  }, [notification.comment?.commenter]);
-
   // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
   const collection = notification.feedEvent?.eventData?.collection;
   const commenter = notification.comment?.commenter;
+
+  const commenters = useMemo(() => {
+    return removeNullValues([commenter]);
+  }, [commenter]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
