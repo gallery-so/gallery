@@ -326,23 +326,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </BaseM>
         )}
 
-        <VStack gap={16}>
-          <NftAdditionalDetails tokenRef={token} />
-          {SHOW_BUY_NOW_BUTTON && (
-            <VStack gap={24}>
-              <HorizontalBreak />
-              <StyledGalleryLink href={openseaUrl} onClick={handleBuyNowClick}>
-                <StyledButton
-                  eventElementId="Buy Now Button"
-                  eventName="Buy Now"
-                  eventContext={contexts['NFT Detail']}
-                >
-                  Buy Now
-                </StyledButton>
-              </StyledGalleryLink>
-            </VStack>
-          )}
-        </VStack>
         <StyledButtonContainer gap={12}>
           <StyledAdmireButton
             active={hasViewerAdmiredToken}
@@ -432,6 +415,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
     `
       : `
       margin: 32px 0px;
+      padding-bottom: 48px;
     `}
 
   @media only screen and ${breakpoints.tablet} {
