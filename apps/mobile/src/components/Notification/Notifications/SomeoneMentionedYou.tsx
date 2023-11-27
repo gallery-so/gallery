@@ -178,7 +178,7 @@ export function SomeoneMentionedYou({
         </Text>
 
         <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
-          <ProcessedText text={message ?? ''} numberOfLines={3} />
+          <ProcessedText text={message ?? ''} numberOfLines={2} />
         </View>
       </View>
     </NotificationSkeleton>

@@ -30,7 +30,7 @@ git checkout -b $new_version
 git add $FILE
 
 # Commit the changes with a message
-git commit -m "Incremented version number to $new_version"
+git commit -m "[mobile] bump version $new_version"
 
 # Push the branch to the remote repository
 git push origin $new_version

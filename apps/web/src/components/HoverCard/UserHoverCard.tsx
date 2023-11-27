@@ -62,9 +62,10 @@ const UserHoverCardContentQueryNode = graphql`
 type Props = PropsWithChildren<{
   userRef: UserHoverCardFragment$key;
   onClick?: HoverCardProps<UserHoverCardContentQuery>['onHoverableElementClick'];
+  fitContent?: boolean;
 }>;
 
-export default function UserHoverCard({ children, userRef, onClick }: Props) {
+export default function UserHoverCard({ children, userRef, onClick, fitContent }: Props) {
   const user = useFragment(
     graphql`
       fragment UserHoverCardFragment on GalleryUser {
@@ -108,6 +109,7 @@ export default function UserHoverCard({ children, userRef, onClick }: Props) {
       }
       preloadQuery={handlePreloadQuery}
       preloadedQuery={preloadedHoverCardQuery}
+      fitContent={fitContent}
     />
   );
 }

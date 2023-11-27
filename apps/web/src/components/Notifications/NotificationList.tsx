@@ -7,7 +7,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/Notifications/SeeMore';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import useExperience from '~/shared/hooks/useExperience';
 
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';

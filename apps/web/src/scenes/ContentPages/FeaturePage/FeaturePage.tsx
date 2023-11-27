@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -10,33 +9,25 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
-import { PostsFeaturePageContentQuery } from '~/generated/PostsFeaturePageContentQuery.graphql';
-import { contexts, flows } from '~/shared/analytics/constants';
+import { FeaturePageContentQuery } from '~/generated/FeaturePageContentQuery.graphql';
+import { contexts } from '~/shared/analytics/constants';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
-import { CmsTypes } from './cms_types';
-import Faq from './ContentModules/Faq';
-import FeatureHighlight from './ContentModules/FeatureHighlight';
+import { CmsTypes } from '../cms_types';
+import Faq from '../ContentModules/Faq';
+import FeatureHighlight from '../ContentModules/FeatureHighlight';
 
 type Props = {
   pageContent: CmsTypes.FeaturePage;
+  ctaAuthenticatedButtonRoute: Route;
+  eventProperties: GalleryElementTrackingProps;
 };
 
-export default function PostsFeaturePage({ pageContent }: Props) {
-  return (
-    <>
-      <Head>
-        <title>Gallery | Posts</title>
-      </Head>
-      <PostsFeaturePageContent pageContent={pageContent} />
-    </>
-  );
-}
-
-export function PostsFeaturePageContent({ pageContent }: Props) {
-  const query = useLazyLoadQuery<PostsFeaturePageContentQuery>(
+export function FeaturePage({ pageContent, ctaAuthenticatedButtonRoute, eventProperties }: Props) {
+  const query = useLazyLoadQuery<FeaturePageContentQuery>(
     graphql`
-      query PostsFeaturePageContentQuery {
+      query FeaturePageContentQuery {
         viewer {
           __typename
         }
@@ -49,19 +40,19 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
   const ctaButtonRoute: Route = useMemo(() => {
     if (!isAuthenticated) return { pathname: '/auth' };
 
-    return { pathname: '/home', query: { composer: 'true' } };
-  }, [isAuthenticated]);
+    return ctaAuthenticatedButtonRoute;
+  }, [ctaAuthenticatedButtonRoute, isAuthenticated]);
 
   return (
     <StyledPage gap={96}>
       <StyledContent align="center" gap={96}>
-        <StyledIntro gap={48} align="center">
-          <VStack gap={32}>
+        <StyledIntro align="center" gap={48}>
+          <VStack align="center" gap={32}>
             <VStack align="center" gap={16}>
               <VStack>
                 <StyledHeading>Introducing</StyledHeading>
                 <StyledHeading>
-                  <strong>Posts</strong>
+                  <strong>{pageContent.title}</strong>
                 </StyledHeading>
               </VStack>
               <StyledBetaPill>
@@ -70,19 +61,24 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
             </VStack>
             <StyledSubheading>{pageContent.introText}</StyledSubheading>
           </VStack>
-          <GalleryLink
-            to={ctaButtonRoute}
-            eventElementId="Posts Feature Page: Get Started"
-            eventName="Posts Feature Page: Get Started Click"
-            eventContext={contexts.Posts}
-            eventFlow={flows['Posts Beta Announcement']}
-          >
+          <GalleryLink to={ctaButtonRoute} {...eventProperties}>
             <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
               <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
             </GetStartedButton>
           </GalleryLink>
         </StyledIntro>
-        <StyledSplashImage src={pageContent.splashImage?.asset.url} />
+        {pageContent.splashImage.mediaType === 'video' && (
+          <StyledSplashVideo
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={pageContent.splashImage?.video.asset?.url}
+          />
+        )}
+        {pageContent.splashImage.mediaType === 'image' && (
+          <StyledSplashImage src={pageContent.splashImage?.image.asset?.url} />
+        )}
         <VStack gap={96}>
           {pageContent.featureHighlights?.map((highlight) => (
             <FeatureHighlight key={highlight.heading} content={highlight} />
@@ -94,13 +90,7 @@ export function PostsFeaturePageContent({ pageContent }: Props) {
               <Markdown text={pageContent.externalLink} eventContext={contexts.Posts} />
             </StyledSubheading>
           )}
-          <GalleryLink
-            to={ctaButtonRoute}
-            eventElementId="Posts Feature Page: Get Started"
-            eventName="Posts Feature Page: Get Started Click"
-            eventContext={contexts.Posts}
-            eventFlow={flows['Posts Beta Announcement']}
-          >
+          <GalleryLink to={ctaButtonRoute} {...eventProperties}>
             <GetStartedButton eventElementId={null} eventName={null} eventContext={null}>
               <TitleDiatypeL color={colors.white}>Get Started</TitleDiatypeL>
             </GetStartedButton>
@@ -149,7 +139,7 @@ const StyledHeading = styled(TitleCondensed)`
   @media only screen and ${breakpoints.desktop} {
     font-size: 128px;
     line-height: 96px;
-    width: 500px;
+    max-width: 900px;
   }
 `;
 
@@ -195,6 +185,17 @@ const GetStartedButton = styled(Button)`
 `;
 
 const StyledSplashImage = styled.img`
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-width: 480px;
+  }
+  @media only screen and ${breakpoints.desktop} {
+    max-width: 720px;
+  }
+`;
+
+const StyledSplashVideo = styled.video`
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {

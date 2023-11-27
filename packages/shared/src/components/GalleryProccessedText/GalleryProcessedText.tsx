@@ -27,6 +27,7 @@ export default function GalleryProcessedText({
   LinkComponent,
   MentionComponent,
   mentionsInText = [],
+  ...props
 }: GalleryProcessedTextProps) {
   const mentions = useFragment(
     graphql`
@@ -98,7 +99,7 @@ export default function GalleryProcessedText({
     BreakComponent,
   ]);
 
-  return <TextComponent>{processedText}</TextComponent>;
+  return <TextComponent {...props}>{processedText}</TextComponent>;
 }
 
 type addLinkElementProps = {

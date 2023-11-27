@@ -7,14 +7,14 @@ type Props = {
   pageContent: CmsTypes.FeaturePage;
 };
 
-export default function PostsFeatureRoute({ pageContent }: Props) {
+export default function CreatorSupportFeatureRoute({ pageContent }: Props) {
   return <GalleryRoute element={<PostsFeaturePage pageContent={pageContent} />} navbar={false} />;
 }
 
-export const featurePostsPageContentQuery = getFeaturePageQueryString('posts');
+export const creatorsFeaturePageContentQuery = getFeaturePageQueryString('creators');
 
 export const getServerSideProps = async () => {
-  const content = await fetchSanityContent(featurePostsPageContentQuery);
+  const content = await fetchSanityContent(creatorsFeaturePageContentQuery);
 
   return {
     props: {

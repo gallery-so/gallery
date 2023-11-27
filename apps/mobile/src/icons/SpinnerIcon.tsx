@@ -7,9 +7,10 @@ import colors from '~/shared/theme/colors';
 
 type Props = {
   spin?: boolean;
+  size?: 's' | 'm';
 } & SvgProps;
 
-export function SpinnerIcon({ spin, ...props }: Props) {
+export function SpinnerIcon({ spin, size = 'm', ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   const spinValue = useRef(new Animated.Value(0)).current;
@@ -47,7 +48,7 @@ export function SpinnerIcon({ spin, ...props }: Props) {
   return (
     <Animated.View
       style={{
-        transform: [{ rotate: spin ? spinAnimation : '0deg' }],
+        transform: [{ rotate: spin ? spinAnimation : '0deg' }, { scale: size === 'm' ? 1 : 0.5 }],
         width: 101,
       }}
     >
