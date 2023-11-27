@@ -56,11 +56,11 @@ export function SomeoneRepliedToYourComment({
 
   const post = notification.comment?.source ?? {};
 
-  const commenters = useMemo(() => {
-    return removeNullValues([notification.comment?.commenter]);
-  }, [notification.comment?.commenter]);
-
   const commenter = notification.comment?.commenter;
+
+  const commenters = useMemo(() => {
+    return removeNullValues([commenter]);
+  }, [commenter]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
