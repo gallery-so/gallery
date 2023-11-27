@@ -14,6 +14,7 @@ type submitCommentProps = {
   mentions?: MentionInput[];
   replyToId?: string;
   onSuccess?: () => void;
+  topCommentId?: string;
 };
 
 export function usePostComment() {
@@ -76,7 +77,14 @@ export function usePostComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedId, value, onSuccess = noop, mentions = [], replyToId }: submitCommentProps) => {
+    async ({
+      feedId,
+      value,
+      onSuccess = noop,
+      mentions = [],
+      replyToId,
+      topCommentId,
+    }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
@@ -117,13 +125,13 @@ export function usePostComment() {
         );
 
         const repliesConnection = ConnectionHandler.getConnectionID(
-          `Comment:${replyToId}`,
+          `Comment:${topCommentId}`,
           'CommentsBottomSheetSection_replies'
         );
 
         const connectionsIdsIncluded = [];
 
-        if (replyToId) {
+        if (topCommentId) {
           connectionsIdsIncluded.push(repliesConnection);
         } else {
           connectionsIdsIncluded.push(commentsBottomSheetConnection);
@@ -189,8 +197,8 @@ export function usePostComment() {
               },
               replyToComment: {
                 __typename: 'Comment',
-                dbid: replyToId ?? 'unknown',
-                id: `Comment:${replyToId ?? 'unknown'}`,
+                dbid: topCommentId ?? 'unknown',
+                id: `Comment:${topCommentId ?? 'unknown'}`,
               },
             },
           },

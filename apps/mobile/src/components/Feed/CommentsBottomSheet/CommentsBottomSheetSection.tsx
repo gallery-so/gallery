@@ -90,6 +90,18 @@ export function CommentsBottomSheetSection({
     }
   }, [loadMore, onExpandReplies, showReplies]);
 
+  const handleReplyPressWithTopCommentId = useCallback(
+    (params: OnReplyPressParams) => {
+      const payload = {
+        topCommentId: comment.dbid,
+        ...params,
+      };
+
+      onReplyPress(payload);
+    },
+    [comment.dbid, onReplyPress]
+  );
+
   useEffect(() => {
     // if the active commentId is in a reply, we want to show the replies
     if (activeCommentId && replies.find((reply) => reply.dbid === activeCommentId)) {
@@ -127,7 +139,7 @@ export function CommentsBottomSheetSection({
               key={reply.dbid}
               activeCommentId={activeCommentId}
               commentRef={reply}
-              onReplyPress={onReplyPress}
+              onReplyPress={handleReplyPressWithTopCommentId}
               isReply
             />
           ))}

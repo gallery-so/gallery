@@ -19,6 +19,7 @@ export type OnReplyPressParams = {
   username?: string;
   commentId?: string;
   comment?: string;
+  topCommentId?: string;
 } | null;
 
 type CommentLineProps = {

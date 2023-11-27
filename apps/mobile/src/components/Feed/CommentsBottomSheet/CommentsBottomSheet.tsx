@@ -69,6 +69,8 @@ export function CommentsBottomSheet({
 
   const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
   const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(null);
+  const topCommentId = useRef<string | null>(null);
+
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
@@ -115,7 +117,9 @@ export function CommentsBottomSheet({
           onSuccess: () => {
             Keyboard.dismiss();
             setSelectedComment(null);
+            topCommentId.current = null;
           },
+          topCommentId: topCommentId.current ?? undefined,
         });
 
         resetMentions();
@@ -128,6 +132,7 @@ export function CommentsBottomSheet({
         onSuccess: () => {
           Keyboard.dismiss();
           setSelectedComment(null);
+          topCommentId.current = null;
         },
       });
     },
@@ -144,6 +149,11 @@ export function CommentsBottomSheet({
 
   const handleReplyPress = useCallback((params: OnReplyPressParams) => {
     setSelectedComment(params);
+    if (params?.topCommentId) {
+      topCommentId.current = params.topCommentId;
+    } else {
+      topCommentId.current = null;
+    }
     commentBoxRef.current?.focus();
   }, []);
 
@@ -158,6 +168,7 @@ export function CommentsBottomSheet({
   const handleDismiss = useCallback(() => {
     resetMentions();
     setSelectedComment(null);
+    topCommentId.current = null;
     setIsBottomSheetExpanded(false);
   }, [resetMentions]);
 
@@ -228,6 +239,7 @@ export function CommentsBottomSheet({
           comment={selectedComment?.comment ?? ''}
           onClose={() => {
             setSelectedComment(null);
+            topCommentId.current = null;
           }}
         />
 
