@@ -64,7 +64,6 @@ export function SomeoneAdmiredYourToken({
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
 
-  //  TODO: test navigation to token from notification is working when BE work done
   const { token } = notification;
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
