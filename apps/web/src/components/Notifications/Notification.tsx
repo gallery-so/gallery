@@ -5,7 +5,6 @@ import { ConnectionHandler, graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseS } from '~/components/core/Text/Text';
 import { SomeoneAdmiredYourFeedEvent } from '~/components/Notifications/notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneCommentedOnYourFeedEvent } from '~/components/Notifications/notifications/SomeoneCommentedOnYourFeedEvent';
 import { SomeoneFollowedYou } from '~/components/Notifications/notifications/SomeoneFollowedYou';
@@ -22,7 +21,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
-import { getTimeSince } from '~/shared/utils/time';
 
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
@@ -44,7 +42,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       fragment NotificationFragment on Notification {
         id
         seen
-        updatedTime
 
         __typename
 
@@ -289,8 +286,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     track,
   ]);
 
-  const timeAgo = getTimeSince(notification.updatedTime);
-
   if (
     ![
       'SomeoneAdmiredYourFeedEventNotification',
@@ -338,26 +333,21 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   return (
     <ReportingErrorBoundary fallback={null}>
       <Container isClickable={isClickable} onClick={handleClick}>
-        <HStack gap={8} align="center" justify="space-between">
+        <HStack gap={8} align="center">
+          {!notification.seen && (
+            <StyledDotContainer align="center">
+              <UnseenDot />
+            </StyledDotContainer>
+          )}
           <NotificationInner notificationRef={notification} queryRef={query} />
-          <StyledDotAndTimeAgo align="center" gap={4}>
-            <HStack grow justify="flex-end" gap={16}>
-              <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-            </HStack>
-            {!notification.seen && (
-              <UnseenDotContainer>
-                <UnseenDot />
-              </UnseenDotContainer>
-            )}
-          </StyledDotAndTimeAgo>
         </HStack>
       </Container>
     </ReportingErrorBoundary>
   );
 }
 
-const StyledDotAndTimeAgo = styled(HStack)`
-  width: 35px;
+const StyledDotContainer = styled(HStack)`
+  width: 10px;
 `;
 
 type NotificationInnerProps = {
@@ -479,17 +469,6 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
 
   return null;
 }
-
-export const TimeAgoText = styled(BaseS)`
-  white-space: nowrap;
-  flex-shrink: 0;
-`;
-
-const UnseenDotContainer = styled.div`
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-`;
 
 const UnseenDot = styled.div`
   width: 8px;

@@ -3,12 +3,13 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneMentionedYouFragment$key } from '~/generated/SomeoneMentionedYouFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -23,6 +24,7 @@ export function SomeoneMentionedYou({ notificationRef, onClose }: Props) {
       fragment SomeoneMentionedYouFragment on SomeoneMentionedYouNotification {
         __typename
         dbid
+        updatedTime
         mentionSource @required(action: THROW) {
           __typename
           ... on Post {
@@ -99,6 +101,7 @@ export function SomeoneMentionedYou({ notificationRef, onClose }: Props) {
   if (!notificationData) return null;
 
   const { author, message, type, token } = notificationData;
+  const timeAgo = getTimeSince(notification.updatedTime);
 
   if (!author) {
     reportError(
@@ -118,6 +121,8 @@ export function SomeoneMentionedYou({ notificationRef, onClose }: Props) {
             <BaseM as="span">
               mentioned you in a <strong>{type}</strong>
             </BaseM>
+            &nbsp;
+            <TimeAgoText as="span">{timeAgo}</TimeAgoText>
           </StyledTextWrapper>
           <StyledCaption>{message}</StyledCaption>
         </VStack>
@@ -141,6 +146,12 @@ const StyledCaption = styled(BaseM)`
   overflow: hidden;
   line-clamp: 2;
   -webkit-line-clamp: 2;
+`;
+
+const TimeAgoText = styled(BaseS)`
+  color: ${colors.metal};
+  white-space: nowrap;
+  flex-shrink: 0;
 `;
 
 const StyledTextWrapper = styled(HStack)`
