@@ -58,6 +58,11 @@ export function NewTokens({ notificationRef }: Props) {
   return (
     <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 items-center space-x-2">
+        {true && (
+          <View className={'w-[14px] flex-row items-center justify-start'}>
+            <UnseenDot />
+          </View>
+        )}
         <View className="w-[56px] h-[56px]">
           <NotificationTokenPreviewWithBoundary tokenRef={token} count={quantity} />
         </View>
@@ -98,11 +103,6 @@ export function NewTokens({ notificationRef }: Props) {
         eventContext={contexts.Notifications}
         properties={{ type: notification.__typename }}
       />
-      {!notification.seen && (
-        <View className={'w-[22px] flex-row space-x-2 items-center justify-end'}>
-          <UnseenDot />
-        </View>
-      )}
     </View>
   );
 }

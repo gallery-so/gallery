@@ -185,6 +185,11 @@ export function NotificationSkeleton({
       properties={{ type: notification.__typename }}
     >
       <View className="flex-1 flex-row items-center">
+        {!notification.seen && (
+          <View className="w-[14px] flex-row space-x-2 items-center justify-start">
+            <UnseenDot />
+          </View>
+        )}
         <View className="mr-2">
           <ProfilePictureBubblesWithCount
             eventElementId="Notification Row PFP Bubbles"
@@ -212,11 +217,6 @@ export function NotificationSkeleton({
           </View>
         ) : (
           <View />
-        )}
-        {!notification.seen && (
-          <View className="w-[22px] flex-row space-x-2 items-center justify-end">
-            <UnseenDot />
-          </View>
         )}
       </View>
       <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
