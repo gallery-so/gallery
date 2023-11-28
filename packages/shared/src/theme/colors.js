@@ -21,6 +21,7 @@ const lightMode = {
   porcelain: '#e2e2e2',
   hyperBlue: '#001CC1',
   activeBlue: '#0022F0',
+  darkModeBlue: '#7597FF',
   error: '#FF6666',
   red: '#F00000',
 };
@@ -43,6 +44,7 @@ const darkMode = {
   shadow: '#f2f2f2',
   porcelain: '#e2e2e2',
   hyperBlue: '#2563eb',
+  darkModeBlue: '#7597FF',
   activeBlue: '#2563eb',
   error: '#FF6666',
   red: '#F00000',

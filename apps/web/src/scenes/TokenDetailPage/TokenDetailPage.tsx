@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { TokenDetailPageQuery } from '~/generated/TokenDetailPageQuery.graphql';
 
 import NotFound from '../NotFound/NotFound';
@@ -16,7 +17,11 @@ type TokenDetailPageProps = {
 function TokenDetailPage({ tokenId }: TokenDetailPageProps) {
   const query = useLazyLoadQuery<TokenDetailPageQuery>(
     graphql`
-      query TokenDetailPageQuery($tokenId: DBID!) {
+      query TokenDetailPageQuery(
+        $tokenId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         token: tokenById(id: $tokenId) {
           ... on ErrTokenNotFound {
             __typename
@@ -29,7 +34,7 @@ function TokenDetailPage({ tokenId }: TokenDetailPageProps) {
         ...TokenDetailViewQueryFragment
       }
     `,
-    { tokenId }
+    { tokenId, interactionsFirst: NOTES_PER_PAGE }
   );
 
   if (!query.token || query.token.__typename !== 'Token') {

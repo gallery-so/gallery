@@ -17,10 +17,8 @@ export function AdmireIcon({ active = false, style, height = 28, ...props }: Pro
   const scale = height / originalHeight;
   const width = height;
 
-  // unofficial lighter shade of hyperBlue for better visibility on dark mode
-  const lightActiveBlue = '#0E60FF';
   const blueToDisplay = useMemo(
-    () => (colorScheme === 'dark' ? lightActiveBlue : colors.hyperBlue),
+    () => (colorScheme === 'dark' ? colors.darkModeBlue : colors.hyperBlue),
     [colorScheme]
   );
 

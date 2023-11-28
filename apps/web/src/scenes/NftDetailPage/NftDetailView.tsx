@@ -3,9 +3,11 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
+import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 
@@ -15,6 +17,7 @@ import NftDetailText from './NftDetailText';
 
 type Props = {
   authenticatedUserOwnsAsset: boolean;
+  queryRef: NftDetailViewQueryFragment$key;
   collectionTokenRef: NftDetailViewFragment$key;
 };
 
@@ -30,13 +33,19 @@ export function LoadableNftDetailView({
 }: LoadableNftDetailViewProps) {
   const query = useLazyLoadQuery<NftDetailViewQuery>(
     graphql`
-      query NftDetailViewQuery($tokenId: DBID!, $collectionId: DBID!) {
+      query NftDetailViewQuery(
+        $tokenId: DBID!
+        $collectionId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ...NftDetailViewFragment
         }
+        ...NftDetailViewQueryFragment
       }
     `,
-    { tokenId: tokenId, collectionId: collectionId }
+    { tokenId: tokenId, collectionId: collectionId, interactionsFirst: NOTES_PER_PAGE }
   );
 
   if (!query.collectionTokenById) {
@@ -46,7 +55,11 @@ export function LoadableNftDetailView({
   return <NftDetailView collectionTokenRef={query.collectionTokenById} {...props} />;
 }
 
-export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTokenRef }: Props) {
+export default function NftDetailView({
+  authenticatedUserOwnsAsset,
+  queryRef,
+  collectionTokenRef,
+}: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {
@@ -63,6 +76,15 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
       }
     `,
     collectionTokenRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment NftDetailViewQueryFragment on Query {
+        ...NftDetailTextQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
@@ -93,6 +115,12 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
             />
           )}
         </StyledAssetAndNoteContainer>
+
+        <NftDetailText
+          queryRef={query}
+          tokenRef={token}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+        />
         {isMobileOrMobileLarge && showCollectorsNoteComponent && (
           <NftDetailNote
             tokenId={token.dbid}
@@ -101,7 +129,6 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
             collectionId={collection.dbid}
           />
         )}
-        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>

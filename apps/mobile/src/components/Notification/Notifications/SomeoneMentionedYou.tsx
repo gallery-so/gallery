@@ -13,6 +13,7 @@ import { SomeoneMentionedYouQueryFragment$key } from '~/generated/SomeoneMention
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { noop } from '~/shared/utils/noop';
+import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneMentionedYouQueryFragment$key;
@@ -44,6 +45,7 @@ export function SomeoneMentionedYou({
     graphql`
       fragment SomeoneMentionedYouFragment on SomeoneMentionedYouNotification {
         __typename
+        updatedTime
 
         mentionSource @required(action: THROW) {
           __typename
@@ -154,7 +156,7 @@ export function SomeoneMentionedYou({
       responsibleUserRefs={usersMentioned}
       notificationRef={notification}
     >
-      <View className="flex space-y-2">
+      <View className="flex space-y-0.5 pt-1">
         <Text className="dark:text-white">
           <Typography
             font={{
@@ -174,6 +176,12 @@ export function SomeoneMentionedYou({
             className="text-sm"
           >
             {type}
+          </Typography>{' '}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
           </Typography>
         </Text>
 

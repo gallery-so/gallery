@@ -6,6 +6,7 @@ import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
 import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
@@ -15,6 +16,8 @@ import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorCo
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+
+import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
 
 export function NftSelectorContractScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
@@ -157,7 +160,30 @@ export function NftSelectorContractScreen() {
           ) : null}
         </View>
         <View className="flex-1 w-full">
-          <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
+          {isSyncingCreatedTokensForContract ? (
+            <NftSelectorLoadingSkeleton />
+          ) : (
+            <FlashList
+              renderItem={renderItem}
+              data={rows}
+              estimatedItemSize={100}
+              refreshControl={
+                isCreator ? (
+                  <GalleryRefreshControl
+                    refreshing={isSyncingCreatedTokensForContract}
+                    onRefresh={
+                      // TODO: `handleRefresh` should just be defined within `handleSyncTokensForContract`
+                      // this will require refactoring out the `onRefresh` prep from AnimatedRefreshIcon
+                      async () => {
+                        await handleSyncTokensForContract();
+                        handleRefresh();
+                      }
+                    }
+                  />
+                ) : undefined
+              }
+            />
+          )}
         </View>
       </View>
     </View>

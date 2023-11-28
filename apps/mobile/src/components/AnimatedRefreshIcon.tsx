@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import { useCallback } from 'react';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 
 import { IconContainer } from '~/components/IconContainer';
@@ -26,47 +25,15 @@ export function AnimatedRefreshIcon({
     onRefresh();
   }, [isSyncing, onRefresh, onSync]);
 
-  const spinValue = useRef(new Animated.Value(0)).current;
-
-  const spin = useCallback(() => {
-    spinValue.setValue(0);
-    Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
-      if (finished && isSyncing) {
-        spin();
-      }
-    });
-  }, [isSyncing, spinValue]);
-
-  const spinAnimation = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
-  useEffect(() => {
-    if (isSyncing) {
-      spin();
-    } else {
-      spinValue.stopAnimation();
-    }
-  }, [isSyncing, spin, spinValue]);
-
   return (
     <IconContainer
       size="sm"
       onPress={handleSync}
-      icon={
-        <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
-          <RefreshIcon />
-        </Animated.View>
-      }
+      icon={<RefreshIcon />}
       eventElementId={eventElementId}
       eventName={eventName}
       eventContext={contexts.Posts}
+      style={{ opacity: isSyncing ? 0.3 : 1 }}
     />
   );
 }

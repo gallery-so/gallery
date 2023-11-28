@@ -4,11 +4,13 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
+import colors from '~/shared/theme/colors';
+import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
@@ -24,6 +26,7 @@ export function SomeoneCommentedOnYourFeedEvent({
     graphql`
       fragment SomeoneCommentedOnYourFeedEventFragment on SomeoneCommentedOnYourFeedEventNotification {
         __typename
+        updatedTime
 
         comment {
           commenter {
@@ -70,6 +73,7 @@ export function SomeoneCommentedOnYourFeedEvent({
   );
 
   const eventType = notification.feedEvent?.eventData?.__typename;
+  const timeAgo = getTimeSince(notification.updatedTime);
 
   const verb = useMemo(() => {
     switch (eventType) {
@@ -105,13 +109,20 @@ export function SomeoneCommentedOnYourFeedEvent({
         {` ${verb} `}
         {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
       </BaseM>
-
+      &nbsp;
+      <TimeAgoText as="span">{timeAgo}</TimeAgoText>
       <CommentPreviewContainer>
         <BaseM>{unescape(notification.comment?.comment ?? '')}</BaseM>
       </CommentPreviewContainer>
     </VStack>
   );
 }
+
+const TimeAgoText = styled(BaseS)`
+  color: ${colors.metal};
+  white-space: nowrap;
+  flex-shrink: 0;
+`;
 
 const CommentPreviewContainer = styled.div`
   margin-left: 16px;

@@ -6,24 +6,23 @@ import { graphql } from 'relay-runtime';
 
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
-import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneCommentedOnYourPostFragment.graphql';
-import { SomeoneCommentedOnYourPostQueryFragment$key } from '~/generated/SomeoneCommentedOnYourPostQueryFragment.graphql';
+import { SomeoneRepliedToYourCommentFragment$key } from '~/generated/SomeoneRepliedToYourCommentFragment.graphql';
+import { SomeoneRepliedToYourCommentQueryFragment$key } from '~/generated/SomeoneRepliedToYourCommentQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
-  queryRef: SomeoneCommentedOnYourPostQueryFragment$key;
-  notificationRef: SomeoneCommentedOnYourPostFragment$key;
+  queryRef: SomeoneRepliedToYourCommentQueryFragment$key;
+  notificationRef: SomeoneRepliedToYourCommentFragment$key;
 };
 
-export function SomeoneCommentedOnYourPost({
+export function SomeoneRepliedToYourComment({
   queryRef,
   notificationRef,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const query = useFragment(
     graphql`
-      fragment SomeoneCommentedOnYourPostQueryFragment on Query {
+      fragment SomeoneRepliedToYourCommentQueryFragment on Query {
         ...NotificationSkeletonQueryFragment
       }
     `,
@@ -32,20 +31,21 @@ export function SomeoneCommentedOnYourPost({
 
   const notification = useFragment(
     graphql`
-      fragment SomeoneCommentedOnYourPostFragment on SomeoneCommentedOnYourPostNotification {
+      fragment SomeoneRepliedToYourCommentFragment on SomeoneRepliedToYourCommentNotification {
         __typename
-        updatedTime
 
         comment {
+          dbid
           commenter {
             username
             ...NotificationSkeletonResponsibleUsersFragment
           }
           comment
-        }
-
-        post {
-          dbid
+          source {
+            ... on Post {
+              dbid
+            }
+          }
         }
 
         ...NotificationSkeletonFragment
@@ -54,7 +54,7 @@ export function SomeoneCommentedOnYourPost({
     notificationRef
   );
 
-  const { post } = notification;
+  const post = notification.comment?.source ?? {};
 
   const commenter = notification.comment?.commenter;
 
@@ -65,9 +65,9 @@ export function SomeoneCommentedOnYourPost({
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     if (post?.dbid) {
-      navigation.navigate('Post', { postId: post.dbid });
+      navigation.navigate('Post', { postId: post.dbid, commentId: notification.comment?.dbid });
     }
-  }, [navigation, post?.dbid]);
+  }, [navigation, post?.dbid, notification.comment?.dbid]);
 
   return (
     <NotificationSkeleton
@@ -87,7 +87,7 @@ export function SomeoneCommentedOnYourPost({
           >
             {commenter ? commenter.username : 'Someone'}
           </Typography>{' '}
-          commented on your{' '}
+          replied to your{' '}
           <Typography
             font={{
               family: 'ABCDiatype',
@@ -95,13 +95,7 @@ export function SomeoneCommentedOnYourPost({
             }}
             className="text-sm"
           >
-            post
-          </Typography>{' '}
-          <Typography
-            className="text-metal text-xs"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {getTimeSince(notification.updatedTime)}
+            comment
           </Typography>
         </Text>
 

@@ -20,6 +20,7 @@ type Option<T> = {
   id: T;
   icon?: ReactNode;
   label: string;
+  disabled?: boolean;
 };
 
 export type SelectProps<T> = {
@@ -107,8 +108,13 @@ export function Options<ValueType extends string>({
             className={clsx('h-12 flex flex-row items-center justify-between', {
               'border-b border-porcelain dark:border-shadow': index !== options.length - 1,
             })}
+            disabled={option.disabled}
           >
-            <View className="flex flex-row items-center space-x-1">
+            <View
+              className={clsx('flex flex-row items-center space-x-1', {
+                'opacity-30': option.disabled,
+              })}
+            >
               {option.icon && (
                 <View className="h-4 w-4 flex items-center justify-center">{option.icon}</View>
               )}
