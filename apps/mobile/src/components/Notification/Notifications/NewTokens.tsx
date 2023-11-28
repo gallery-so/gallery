@@ -58,7 +58,7 @@ export function NewTokens({ notificationRef }: Props) {
   return (
     <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 items-center space-x-2">
-        {true && (
+        {!notification.seen && (
           <View className={'w-[14px] flex-row items-center justify-start'}>
             <UnseenDot />
           </View>
