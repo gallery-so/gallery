@@ -16,7 +16,9 @@
       "~/components/*": ["src/components/*"],
       "~/shared/*": ["../../packages/shared/src/*"],
     },
-    "outDir": "../../.moon/cache/types/apps/mobile"
+    "outDir": "../../.moon/cache/types/apps/mobile",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "references": [{ "path": "../../packages/shared" }]
 }

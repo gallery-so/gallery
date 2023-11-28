@@ -21,6 +21,7 @@ tasks:
 
   codegen-watch:
     command: relay-compiler --repersist --watch ../../relay.config.js
+    local: true
 
   ios-prebuild:
     command: expo prebuild -p ios

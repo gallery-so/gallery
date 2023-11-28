@@ -2,9 +2,10 @@ import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { UserExperienceType } from '~/generated/enums';
 import { useExperienceFragment$key } from '~/generated/useExperienceFragment.graphql';
-import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
+import { UserExperienceType } from '~/generated/useUpdateUserExperienceMutation.graphql';
+
+import useUpdateUserExperience from '../relay/useUpdateUserExperience';
 
 type Props = {
   type: UserExperienceType;

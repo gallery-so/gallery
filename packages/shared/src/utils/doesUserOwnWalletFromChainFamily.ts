@@ -6,7 +6,8 @@ import {
   Chain,
   doesUserOwnWalletFromChainFamilyFragment$key,
 } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
-import { chainsMap } from '~/shared/utils/chains';
+
+import { chainsMap } from './chains';
 
 export function doesUserOwnWalletFromChainFamily(
   _chain: Chain,

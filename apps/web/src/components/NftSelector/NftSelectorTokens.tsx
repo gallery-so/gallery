@@ -6,8 +6,8 @@ import { NftSelectorTokensFragment$key } from '~/generated/NftSelectorTokensFrag
 import { NftSelectorTokensQueryFragment$key } from '~/generated/NftSelectorTokensQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+import useExperience from '~/shared/hooks/useExperience';
 import { Chain } from '~/shared/utils/chains';
-import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import CreatorSupportAnnouncement from '../Announcement/CreatorSupportAnnouncement';
 import { VStack } from '../core/Spacer/Stack';

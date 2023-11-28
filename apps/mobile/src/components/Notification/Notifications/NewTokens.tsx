@@ -8,7 +8,6 @@ import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
-import { getTimeSince } from '~/shared/utils/time';
 
 import { UnseenDot } from '../NotificationSkeleton';
 import { NotificationTokenPreviewWithBoundary } from './NotificationTokenPreview';
@@ -24,7 +23,7 @@ export function NewTokens({ notificationRef }: Props) {
         __typename
         count
         seen
-        updatedTime
+
         token {
           ... on Token {
             __typename
@@ -59,6 +58,11 @@ export function NewTokens({ notificationRef }: Props) {
   return (
     <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 items-center space-x-2">
+        {!notification.seen && (
+          <View className={'w-[17px] flex-row items-center justify-start'}>
+            <UnseenDot />
+          </View>
+        )}
         <View className="w-[56px] h-[56px]">
           <NotificationTokenPreviewWithBoundary tokenRef={token} count={quantity} />
         </View>
@@ -99,19 +103,6 @@ export function NewTokens({ notificationRef }: Props) {
         eventContext={contexts.Notifications}
         properties={{ type: notification.__typename }}
       />
-      <View
-        className={`w-[35px] flex-row space-x-2 items-center ${
-          !notification.seen ? 'justify-between' : 'justify-end'
-        }`}
-      >
-        <Typography
-          className="text-metal text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
-          {getTimeSince(notification.updatedTime)}
-        </Typography>
-        {!notification.seen && <UnseenDot />}
-      </View>
     </View>
   );
 }

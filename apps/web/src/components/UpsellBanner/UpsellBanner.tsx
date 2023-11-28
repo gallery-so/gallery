@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { UpsellBannerQuery$key } from '~/generated/UpsellBannerQuery.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import useExperience from '~/shared/hooks/useExperience';
 
 import { GlobalBanner } from '../core/GlobalBanner/GlobalBanner';
 

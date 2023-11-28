@@ -12,7 +12,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
+import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import breakpoints from '../core/breakpoints';
 import IconContainer from '../core/IconContainer';
@@ -257,7 +257,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       placement: 'bottom-end',
     });
 
-  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
+  // Auto-sync tokens when the chain or Collected/Created filter changes, and there are 0 tokens to display
   useEffect(() => {
     if (ownsWalletFromSelectedChainFamily && tokensToDisplay.length === 0 && !isSearching) {
       handleRefresh();
@@ -265,7 +265,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
     // we only want to consider auto-syncing tokens if selectedNetworkView changes, so limit dependencies
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [network]);
+  }, [network, filterType]);
 
   return (
     <StyledNftSelectorModal>

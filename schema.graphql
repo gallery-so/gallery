@@ -108,6 +108,12 @@ type BanUserFromFeedPayload {
 
 union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
 
+type BlockUserPayload {
+  userId: DBID!
+}
+
+union BlockUserPayloadOrError = BlockUserPayload | ErrUserNotFound | ErrNotAuthorized | ErrInvalidInput
+
 enum Chain {
   Ethereum
   Arbitrum
@@ -761,7 +767,6 @@ type GalleryUser implements Node {
   profileImage: ProfileImage
   potentialEnsProfileImage: EnsProfileImage
   bio: String
-  traits: String
   universal: Boolean
   roles: [Role]
   socialAccounts: SocialAccounts
@@ -1033,6 +1038,9 @@ type Mutation {
   unregisterUserPushToken(pushToken: String!): UnregisterUserPushTokenPayloadOrError
   setProfileImage(input: SetProfileImageInput!): SetProfileImagePayloadOrError
   removeProfileImage: RemoveProfileImagePayloadOrError
+  reportPost(postId: DBID!, reason: ReportReason!): ReportPostPayloadOrError
+  blockUser(userId: DBID!): BlockUserPayloadOrError
+  unblockUser(userId: DBID!): UnblockUserPayloadOrError
   updateGalleryCollections(input: UpdateGalleryCollectionsInput!): UpdateGalleryCollectionsPayloadOrError
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
@@ -1096,7 +1104,7 @@ type Mutation {
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
   syncCreatedTokensForUsername(username: String!, chains: [Chain!]!): SyncCreatedTokensForUsernamePayloadOrError
   syncCreatedTokensForUsernameAndExistingContract(username: String!, chainAddress: ChainAddressInput!): SyncCreatedTokensForUsernameAndExistingContractPayloadOrError
-  banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError
+  banUserFromFeed(username: String!, reason: ReportReason!): BanUserFromFeedPayloadOrError
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
   mintPremiumCardToWallet(input: MintPremiumCardToWalletInput!): MintPremiumCardToWalletPayloadOrError
   setCommunityOverrideCreator(communityID: DBID!, creatorUserID: DBID): SetCommunityOverrideCreatorPayloadOrError
@@ -1449,6 +1457,18 @@ type RemoveUserWalletsPayload {
 }
 
 union RemoveUserWalletsPayloadOrError = RemoveUserWalletsPayload | ErrNotAuthorized | ErrInvalidInput
+
+type ReportPostPayload {
+  postId: DBID!
+}
+
+union ReportPostPayloadOrError = ReportPostPayload | ErrInvalidInput | ErrPostNotFound
+
+enum ReportReason {
+  INAPPROPRIATE_CONTENT
+  SPAM_AND_OR_BOT
+  SOMETHING_ELSE
+}
 
 enum ReportWindow {
   LAST_5_DAYS
@@ -1921,6 +1941,12 @@ type UnbanUserFromFeedPayload {
 
 union UnbanUserFromFeedPayloadOrError = UnbanUserFromFeedPayload | ErrNotAuthorized
 
+type UnblockUserPayload {
+  userId: DBID!
+}
+
+union UnblockUserPayloadOrError = UnblockUserPayload | ErrUserNotFound | ErrNotAuthorized | ErrInvalidInput
+
 type UnfollowUserPayload {
   viewer: Viewer
   user: GalleryUser
@@ -2300,5 +2326,14 @@ type Wallet implements Node {
 enum WalletType {
   EOA
   GnosisSafe
+}
+
+type YouReceivedTopActivityBadgeNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  threshold: Int!
 }
 

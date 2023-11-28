@@ -67,7 +67,6 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
-  // @ts-expect-error: temporary
   const handleShare = useCallback(() => {
     Share.share({
       url: `https://gallery.so/community/${community.chain?.toLowerCase()}/${
@@ -86,7 +85,6 @@ export function CommunityView({ queryRef }: Props) {
     );
   }, [community, setSelectedRoute, selectedRoute]);
 
-  // @ts-expect-error: temporary
   const { openseaUrl, objktUrl, externalAddressUrl } =
     extractRelevantMetadataFromCommunity(community);
 

@@ -10,6 +10,7 @@ import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneComme
 import { SomeoneCommentedOnYourPostQueryFragment$key } from '~/generated/SomeoneCommentedOnYourPostQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneCommentedOnYourPostQueryFragment$key;
@@ -33,6 +34,7 @@ export function SomeoneCommentedOnYourPost({
     graphql`
       fragment SomeoneCommentedOnYourPostFragment on SomeoneCommentedOnYourPostNotification {
         __typename
+        updatedTime
 
         comment {
           commenter {
@@ -54,11 +56,11 @@ export function SomeoneCommentedOnYourPost({
 
   const { post } = notification;
 
-  const commenters = useMemo(() => {
-    return removeNullValues([notification.comment?.commenter]);
-  }, [notification.comment?.commenter]);
-
   const commenter = notification.comment?.commenter;
+
+  const commenters = useMemo(() => {
+    return removeNullValues([commenter]);
+  }, [commenter]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
@@ -94,6 +96,12 @@ export function SomeoneCommentedOnYourPost({
             className="text-sm"
           >
             post
+          </Typography>{' '}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
           </Typography>
         </Text>
 

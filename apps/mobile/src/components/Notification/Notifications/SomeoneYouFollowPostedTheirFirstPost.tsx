@@ -69,7 +69,7 @@ export function SomeoneYouFollowPostedTheirFirstPost({ queryRef, notificationRef
       notificationRef={notification}
       responsibleUserRefs={postAuthor ? [postAuthor] : []}
     >
-      <View className="flex pt-1">
+      <View className="flex space-y-0.5 pt-1">
         <View className="flex-row items-center">
           <GalleryTouchableOpacity
             onPress={handleUserPress}

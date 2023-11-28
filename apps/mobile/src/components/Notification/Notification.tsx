@@ -9,12 +9,14 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { NewTokens } from './Notifications/NewTokens';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
+import { SomeoneAdmiredYourToken } from './Notifications/SomeoneAdmiredYourToken';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
 import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
 import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
+import { SomeoneRepliedToYourComment } from './Notifications/SomeoneRepliedToYourComment';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 import { SomeoneYouFollowPostedTheirFirstPost } from './Notifications/SomeoneYouFollowPostedTheirFirstPost';
 
@@ -33,9 +35,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneCommentedOnYourFeedEventQueryFragment
         ...SomeoneViewedYourGalleryQueryFragment
         ...SomeoneAdmiredYourPostQueryFragment
+        ...SomeoneAdmiredYourTokenQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
         ...SomeoneMentionedYouQueryFragment
         ...SomeonePostedYourWorkQueryFragment
+        ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
       }
     `,
@@ -79,6 +83,14 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           ...SomeoneAdmiredYourPostFragment
         }
 
+        ... on SomeoneAdmiredYourTokenNotification {
+          __typename
+          token {
+            __typename
+          }
+          ...SomeoneAdmiredYourTokenFragment
+        }
+
         ... on SomeoneCommentedOnYourPostNotification {
           __typename
           post {
@@ -102,6 +114,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           ...SomeonePostedYourWorkFragment
         }
 
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          ...SomeoneRepliedToYourCommentFragment
+        }
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
@@ -126,6 +142,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return notification.post ? (
         <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />
       ) : null;
+    } else if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
+      return notification.token ? (
+        <SomeoneAdmiredYourToken queryRef={query} notificationRef={notification} />
+      ) : null;
     } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
       return notification.post ? (
         <SomeoneCommentedOnYourPost queryRef={query} notificationRef={notification} />
@@ -136,6 +156,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <SomeoneMentionedYou queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
       return <SomeonePostedYourWork queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      return <SomeoneRepliedToYourComment queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneYouFollowPostedTheirFirstPostNotification') {
       return (
         <SomeoneYouFollowPostedTheirFirstPost queryRef={query} notificationRef={notification} />
