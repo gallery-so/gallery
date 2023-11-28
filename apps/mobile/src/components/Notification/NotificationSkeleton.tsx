@@ -213,7 +213,7 @@ export function NotificationSkeleton({
     >
       <View className="flex-1 flex-row items-center">
         {!notification.seen && (
-          <View className="w-[14px] flex-row items-center justify-start">
+          <View className="w-[17px] flex-row items-center justify-start">
             <UnseenDot />
           </View>
         )}
