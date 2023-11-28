@@ -20,6 +20,7 @@ declare const colors: {
   porcelain: '#e2e2e2';
   faint: '#f2f2f2';
   hyperBlue: '#001CC1';
+  darkModeBlue: '#7597FF';
   activeBlue: '#0022F0';
   error: '#FF6666';
   red: '#F00000';

@@ -76,6 +76,11 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneAdmiredYourTokenNotification {
+          token {
+            ...NotificationPostPreviewWithBoundaryFragment
+          }
+        }
         ... on SomeoneFollowedYouNotification {
           followers(last: 1) {
             edges {
@@ -108,6 +113,17 @@ export function NotificationSkeleton({
           post {
             tokens {
               ...NotificationPostPreviewWithBoundaryFragment
+            }
+          }
+        }
+        ... on SomeoneRepliedToYourCommentNotification {
+          comment {
+            source {
+              ... on Post {
+                tokens {
+                  ...NotificationPostPreviewWithBoundaryFragment
+                }
+              }
             }
           }
         }
@@ -170,6 +186,17 @@ export function NotificationSkeleton({
       }
     }
 
+    if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      return notification.comment?.source?.tokens?.[0];
+    }
+
+    return null;
+  }, [notification]);
+
+  const galleryToken = useMemo(() => {
+    if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
+      return notification?.token;
+    }
     return null;
   }, [notification]);
 
@@ -214,6 +241,13 @@ export function NotificationSkeleton({
         {postToken ? (
           <View className="w-[56px] h-[56px]">
             <NotificationPostPreviewWithBoundary tokenRef={postToken} />
+          </View>
+        ) : (
+          <View />
+        )}
+        {galleryToken ? (
+          <View className="w-[56px] h-[56px]">
+            <NotificationPostPreviewWithBoundary tokenRef={galleryToken} />
           </View>
         ) : (
           <View />

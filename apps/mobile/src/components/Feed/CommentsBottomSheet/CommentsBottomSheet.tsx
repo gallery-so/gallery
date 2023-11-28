@@ -7,8 +7,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { View } from 'react-native';
-import { Keyboard } from 'react-native';
+import { Keyboard, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
@@ -36,8 +36,9 @@ import { noop } from '~/shared/utils/noop';
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
-
-const SNAP_POINTS = [400];
+import { OnReplyPressParams } from './CommentsBottomSheetLine';
+import { CommentsRepliedBanner } from './CommentsRepliedBanner';
+import { REPLIES_PER_PAGE } from './constants';
 
 type CommentsBottomSheetProps = {
   activeCommentId?: string;
@@ -53,6 +54,8 @@ export function CommentsBottomSheet({
   type,
 }: CommentsBottomSheetProps) {
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const commentBoxRef = useRef<TextInput>(null);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const { bottom } = useSafeAreaPadding();
@@ -64,9 +67,21 @@ export function CommentsBottomSheet({
     };
   });
 
+  const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
+  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(null);
+  const topCommentId = useRef<string | null>(null);
+
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
+
+  const snapPoints = useMemo(() => {
+    if (isBottomSheetExpanded) {
+      return [700];
+    }
+
+    return [400];
+  }, [isBottomSheetExpanded]);
 
   const {
     aliasKeyword,
@@ -79,6 +94,18 @@ export function CommentsBottomSheet({
     handleSelectionChange,
   } = useMentionableMessage();
 
+  const highlightCommentId = useMemo(() => {
+    if (selectedComment?.commentId) {
+      return selectedComment.commentId;
+    }
+
+    if (activeCommentId) {
+      return activeCommentId;
+    }
+
+    return undefined;
+  }, [activeCommentId, selectedComment?.commentId]);
+
   const handleSubmit = useCallback(
     (value: string) => {
       if (type === 'Post') {
@@ -86,9 +113,13 @@ export function CommentsBottomSheet({
           feedId,
           value,
           mentions,
+          replyToId: selectedComment ? selectedComment.commentId : undefined,
           onSuccess: () => {
             Keyboard.dismiss();
+            setSelectedComment(null);
+            topCommentId.current = null;
           },
+          topCommentId: topCommentId.current ?? undefined,
         });
 
         resetMentions();
@@ -100,10 +131,12 @@ export function CommentsBottomSheet({
         value,
         onSuccess: () => {
           Keyboard.dismiss();
+          setSelectedComment(null);
+          topCommentId.current = null;
         },
       });
     },
-    [feedId, type, mentions, submitComment, postComment, resetMentions]
+    [feedId, type, mentions, submitComment, postComment, resetMentions, selectedComment]
   );
 
   const isSubmitting = useMemo(() => {
@@ -114,6 +147,16 @@ export function CommentsBottomSheet({
     return isSubmittingComment;
   }, [isSubmittingComment, isSubmittingPostComment, type]);
 
+  const handleReplyPress = useCallback((params: OnReplyPressParams) => {
+    setSelectedComment(params);
+    if (params?.topCommentId) {
+      topCommentId.current = params.topCommentId;
+    } else {
+      topCommentId.current = null;
+    }
+    commentBoxRef.current?.focus();
+  }, []);
+
   useLayoutEffect(() => {
     if (isKeyboardActive) {
       paddingBottomValue.value = withSpring(0, { overshootClamping: true });
@@ -121,6 +164,17 @@ export function CommentsBottomSheet({
       paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
     }
   }, [bottom, isKeyboardActive, paddingBottomValue]);
+
+  const handleDismiss = useCallback(() => {
+    resetMentions();
+    setSelectedComment(null);
+    topCommentId.current = null;
+    setIsBottomSheetExpanded(false);
+  }, [resetMentions]);
+
+  const handleExpandReplies = useCallback(() => {
+    setIsBottomSheetExpanded(true);
+  }, []);
 
   return (
     <GalleryBottomSheetModal
@@ -132,11 +186,11 @@ export function CommentsBottomSheet({
           bottomSheetRef.current = value;
         }
       }}
-      snapPoints={SNAP_POINTS}
+      snapPoints={snapPoints}
       onChange={() => setIsOpen(true)}
       android_keyboardInputMode="adjustResize"
       keyboardBlurBehavior="restore"
-      onDismiss={resetMentions}
+      onDismiss={handleDismiss}
     >
       <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
         <View className="flex-grow">
@@ -169,7 +223,9 @@ export function CommentsBottomSheet({
                     <ConnectedCommentsList
                       type={type}
                       feedId={feedId}
-                      activeCommentId={activeCommentId}
+                      activeCommentId={highlightCommentId}
+                      onReplyPress={handleReplyPress}
+                      onExpandReplies={handleExpandReplies}
                     />
                   )}
                 </Suspense>
@@ -178,6 +234,15 @@ export function CommentsBottomSheet({
           )}
         </View>
 
+        <CommentsRepliedBanner
+          username={selectedComment?.username ?? ''}
+          comment={selectedComment?.comment ?? ''}
+          onClose={() => {
+            setSelectedComment(null);
+            topCommentId.current = null;
+          }}
+        />
+
         <CommentBox
           value={message}
           onChangeText={setMessage}
@@ -185,6 +250,7 @@ export function CommentsBottomSheet({
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmitting}
           onClose={noop}
+          ref={commentBoxRef}
           mentions={mentions}
         />
       </Animated.View>
@@ -196,33 +262,64 @@ type ConnectedCommentsListProps = {
   type: FeedItemTypes;
   feedId: string;
   activeCommentId?: string;
+  onReplyPress: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
-function ConnectedCommentsList({ type, feedId, activeCommentId }: ConnectedCommentsListProps) {
+function ConnectedCommentsList({
+  type,
+  feedId,
+  activeCommentId,
+  onExpandReplies,
+  onReplyPress,
+}: ConnectedCommentsListProps) {
   if (type === 'Post') {
-    return <ConnectedPostCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
+    return (
+      <ConnectedPostCommentsList
+        feedId={feedId}
+        activeCommentId={activeCommentId}
+        onReplyPress={onReplyPress}
+        onExpandReplies={onExpandReplies}
+      />
+    );
   }
 
-  return <ConnectedEventCommentsList feedId={feedId} activeCommentId={activeCommentId} />;
+  return (
+    <ConnectedEventCommentsList
+      feedId={feedId}
+      activeCommentId={activeCommentId}
+      onReplyPress={onReplyPress}
+      onExpandReplies={onExpandReplies}
+    />
+  );
 }
 
 type ConnectedCommentsProps = {
   activeCommentId?: string;
   feedId: string;
+  onReplyPress: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
-function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
+function ConnectedEventCommentsList({
+  activeCommentId,
+  feedId,
+  onExpandReplies,
+  onReplyPress,
+}: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedCommentsListQuery(
         $feedEventId: DBID!
         $last: Int!
         $before: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 },
+    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
     { fetchPolicy: 'store-and-network' }
   );
 
@@ -273,6 +370,8 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
           onLoadMore={handleLoadMore}
           commentRefs={comments}
           activeCommentId={activeCommentId}
+          onReply={onReplyPress}
+          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">
@@ -288,18 +387,25 @@ function ConnectedEventCommentsList({ activeCommentId, feedId }: ConnectedCommen
   );
 }
 
-function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedCommentsProps) {
+function ConnectedPostCommentsList({
+  activeCommentId,
+  feedId,
+  onReplyPress,
+  onExpandReplies,
+}: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedPostCommentsListQuery(
         $feedEventId: DBID!
         $last: Int!
         $before: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10 },
+    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
     { fetchPolicy: 'store-and-network' }
   );
 
@@ -348,6 +454,8 @@ function ConnectedPostCommentsList({ activeCommentId, feedId }: ConnectedComment
           onLoadMore={handleLoadMore}
           commentRefs={comments}
           activeCommentId={activeCommentId}
+          onReply={onReplyPress}
+          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">

@@ -1,7 +1,7 @@
 export const ANIMATED_COMPONENT_TRANSITION_MS = 300;
 export const ANIMATED_COMPONENT_TRANSITION_S = 0.3;
 
-export const ANIMATED_COMPONENT_TIMEOUT_MS = 4000;
+export const ANIMATED_COMPONENT_TIMEOUT_MS = 3000;
 export const ANIMATED_COMPONENT_TIMEOUT_S = 4;
 
 // translation for larger items like modals, popovers

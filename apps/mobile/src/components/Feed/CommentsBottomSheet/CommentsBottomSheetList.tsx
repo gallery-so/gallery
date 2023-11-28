@@ -2,25 +2,31 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useEffect, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { CommentsBottomSheetLine } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetLine';
+import { OnReplyPressParams } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetLine';
 import { CommentsBottomSheetList$key } from '~/generated/CommentsBottomSheetList.graphql';
+
+import { CommentsBottomSheetSection } from './CommentsBottomSheetSection';
 
 type CommentsListProps = {
   activeCommentId?: string;
   onLoadMore: () => void;
   commentRefs: CommentsBottomSheetList$key;
+  onReply: (params: OnReplyPressParams) => void;
+  onExpandReplies: () => void;
 };
 
 export function CommentsBottomSheetList({
   activeCommentId,
   commentRefs,
+  onExpandReplies,
   onLoadMore,
+  onReply,
 }: CommentsListProps) {
   const comments = useFragment(
     graphql`
       fragment CommentsBottomSheetList on Comment @relay(plural: true) {
         dbid
-        ...CommentsBottomSheetLineFragment
+        ...CommentsBottomSheetSectionFragment
       }
     `,
     commentRefs
@@ -44,9 +50,16 @@ export function CommentsBottomSheetList({
 
   const renderItem = useCallback<ListRenderItem<(typeof comments)[number]>>(
     ({ item: comment }) => {
-      return <CommentsBottomSheetLine activeCommentId={activeCommentId} commentRef={comment} />;
+      return (
+        <CommentsBottomSheetSection
+          activeCommentId={activeCommentId}
+          commentRef={comment}
+          onReplyPress={onReply}
+          onExpandReplies={onExpandReplies}
+        />
+      );
     },
-    [activeCommentId]
+    [activeCommentId, onExpandReplies, onReply]
   );
 
   return (
@@ -56,6 +69,7 @@ export function CommentsBottomSheetList({
       renderItem={renderItem}
       data={comments}
       estimatedItemSize={24}
+      extraData={activeCommentId}
     />
   );
 }

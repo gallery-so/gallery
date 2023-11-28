@@ -3,6 +3,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
@@ -21,7 +22,11 @@ type LoadableTokenDetailViewProps = {
 export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDetailViewProps) {
   const query = useLazyLoadQuery<TokenDetailViewQuery>(
     graphql`
-      query TokenDetailViewQuery($tokenId: DBID!) {
+      query TokenDetailViewQuery(
+        $tokenId: DBID!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         token: tokenById(id: $tokenId) {
           ... on ErrTokenNotFound {
             __typename
@@ -35,7 +40,7 @@ export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDeta
         ...TokenDetailViewQueryFragment
       }
     `,
-    { tokenId }
+    { tokenId, interactionsFirst: NOTES_PER_PAGE }
   );
 
   if (!query.token || query.token.__typename !== 'Token') {
@@ -77,6 +82,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
             }
           }
         }
+        ...NftDetailTextQueryFragment
       }
     `,
     queryRef
@@ -108,7 +114,11 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
+        <NftDetailText
+          queryRef={query}
+          tokenRef={token}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+        />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>

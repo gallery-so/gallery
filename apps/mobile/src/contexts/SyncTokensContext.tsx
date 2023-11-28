@@ -1,6 +1,7 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql } from 'react-relay';
 
+import { SyncTokensContextForCreatedTokensMutation } from '~/generated/SyncTokensContextForCreatedTokensMutation.graphql';
 import { SyncTokensContextForExistingContractMutation } from '~/generated/SyncTokensContextForExistingContractMutation.graphql';
 import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -10,10 +11,12 @@ import { useToastActions } from './ToastContext';
 import { useTokenStateManagerContext } from './TokenStateManagerContext';
 
 type SyncTokensActions = {
-  syncTokens: (chain: Chain) => void;
-  syncCreatedTokensForExistingContract: (contractId: string) => void;
   isSyncing: boolean;
-  isSyncingCreatorTokens: boolean;
+  syncTokens: (chain: Chain) => void;
+  isSyncingCreatedTokens: boolean;
+  syncCreatedTokens: (chain: Chain) => void;
+  isSyncingCreatedTokensForContract: boolean;
+  syncCreatedTokensForExistingContract: (contractId: string) => void;
 };
 
 const SyncTokensActionsContext = createContext<SyncTokensActions | undefined>(undefined);
@@ -31,6 +34,19 @@ type Props = { children: ReactNode };
 
 const SyncTokensProvider = memo(({ children }: Props) => {
   const { clearTokenFailureState } = useTokenStateManagerContext();
+  const { pushToast } = useToastActions();
+  const showFailure = useCallback(() => {
+    pushToast({
+      autoClose: true,
+      message:
+        "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+    });
+  }, [pushToast]);
+
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isSyncingCreatedTokens, setIsSyncingCreatedTokens] = useState(false);
+  const [isSyncingCreatedTokensForContract, setIsSyncingCreatedTokensForContract] = useState(false);
+
   const [syncTokens] = usePromisifiedMutation<SyncTokensContextMutation>(
     graphql`
       mutation SyncTokensContextMutation($chain: Chain!) {
@@ -56,6 +72,98 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         }
       }
     `
+  );
+
+  const sync = useCallback(
+    async (chain: Chain) => {
+      try {
+        setIsSyncing(true);
+        const response = await syncTokens({
+          variables: {
+            chain,
+          },
+        });
+
+        if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
+          showFailure();
+        } else {
+          const tokenIds = removeNullValues(
+            response.syncTokens?.viewer?.user?.tokens?.map((token) => {
+              return token?.dbid;
+            })
+          );
+          clearTokenFailureState(tokenIds);
+        }
+      } catch (error) {
+        showFailure();
+      } finally {
+        setIsSyncing(false);
+      }
+    },
+    [clearTokenFailureState, showFailure, syncTokens]
+  );
+
+  const [syncCreatedTokensMutation] =
+    usePromisifiedMutation<SyncTokensContextForCreatedTokensMutation>(
+      graphql`
+        mutation SyncTokensContextForCreatedTokensMutation($chain: Chain!) {
+          syncCreatedTokensForNewContracts(input: { includeChains: [$chain] }) {
+            __typename
+            ... on SyncCreatedTokensForNewContractsPayload {
+              __typename
+              viewer {
+                ... on Viewer {
+                  user {
+                    tokens(ownershipFilter: [Creator, Holder]) {
+                      dbid
+                    }
+                  }
+                }
+              }
+            }
+            ... on ErrNotAuthorized {
+              __typename
+              message
+            }
+            ... on ErrSyncFailed {
+              __typename
+              message
+            }
+          }
+        }
+      `
+    );
+
+  const syncCreatedTokens = useCallback(
+    async (chain: Chain) => {
+      try {
+        setIsSyncingCreatedTokens(true);
+        const response = await syncCreatedTokensMutation({
+          variables: {
+            chain,
+          },
+        });
+
+        if (
+          response.syncCreatedTokensForNewContracts?.__typename !==
+          'SyncCreatedTokensForNewContractsPayload'
+        ) {
+          showFailure();
+        } else {
+          const tokenIds = removeNullValues(
+            response.syncCreatedTokensForNewContracts?.viewer?.user?.tokens?.map((token) => {
+              return token?.dbid;
+            })
+          );
+          clearTokenFailureState(tokenIds);
+        }
+      } catch (error) {
+        showFailure();
+      } finally {
+        setIsSyncingCreatedTokens(false);
+      }
+    },
+    [clearTokenFailureState, showFailure, syncCreatedTokensMutation]
   );
 
   const [syncCreatedTokensForExistingContractMutate] =
@@ -88,51 +196,10 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       }
     `);
 
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isSyncingCreatorTokens, setIsSyncingCreatorTokens] = useState(false);
-
-  const { pushToast } = useToastActions();
-  const showFailure = useCallback(() => {
-    pushToast({
-      autoClose: true,
-      message:
-        "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
-    });
-  }, [pushToast]);
-
-  const sync = useCallback(
-    async (chain: Chain) => {
-      try {
-        setIsSyncing(true);
-        const response = await syncTokens({
-          variables: {
-            chain,
-          },
-        });
-
-        if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
-          showFailure();
-        } else {
-          const tokenIds = removeNullValues(
-            response.syncTokens?.viewer?.user?.tokens?.map((token) => {
-              return token?.dbid;
-            })
-          );
-          clearTokenFailureState(tokenIds);
-        }
-      } catch (error) {
-        showFailure();
-      } finally {
-        setIsSyncing(false);
-      }
-    },
-    [clearTokenFailureState, showFailure, syncTokens]
-  );
-
   const syncCreatedTokensForExistingContract = useCallback(
     async (contractId: string) => {
       try {
-        setIsSyncingCreatorTokens(true);
+        setIsSyncingCreatedTokensForContract(true);
         const response = await syncCreatedTokensForExistingContractMutate({
           variables: { input: { contractId } },
         });
@@ -154,21 +221,30 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       } catch (error) {
         showFailure();
       } finally {
-        setIsSyncingCreatorTokens(false);
+        setIsSyncingCreatedTokensForContract(false);
       }
     },
 
-    [syncCreatedTokensForExistingContractMutate, clearTokenFailureState, showFailure]
+    [syncCreatedTokensForExistingContractMutate, showFailure, clearTokenFailureState]
   );
 
   const value = useMemo(() => {
     return {
-      syncTokens: sync,
-      isSyncingCreatorTokens,
       isSyncing,
-      syncCreatedTokensForExistingContract: syncCreatedTokensForExistingContract,
+      syncTokens: sync,
+      isSyncingCreatedTokens,
+      syncCreatedTokens,
+      isSyncingCreatedTokensForContract,
+      syncCreatedTokensForExistingContract,
     };
-  }, [isSyncing, sync, syncCreatedTokensForExistingContract, isSyncingCreatorTokens]);
+  }, [
+    isSyncing,
+    sync,
+    isSyncingCreatedTokens,
+    syncCreatedTokens,
+    isSyncingCreatedTokensForContract,
+    syncCreatedTokensForExistingContract,
+  ]);
 
   return (
     <SyncTokensActionsContext.Provider value={value}>{children}</SyncTokensActionsContext.Provider>

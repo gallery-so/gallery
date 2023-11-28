@@ -6,7 +6,7 @@ import { GlobalBanner } from '~/components/core/GlobalBanner/GlobalBanner';
 import { UserExperienceType } from '~/generated/enums';
 import { MobileBetaUpsellFragment$key } from '~/generated/MobileBetaUpsellFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import useExperience from '~/utils/graphql/experiences/useExperience';
+import useExperience from '~/shared/hooks/useExperience';
 import isIOS from '~/utils/isIOS';
 
 import MobileBetaReleaseBanner from './MobileBetaReleaseBanner';
