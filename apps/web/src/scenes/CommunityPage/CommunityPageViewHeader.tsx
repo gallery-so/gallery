@@ -15,10 +15,10 @@ import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfil
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import CopyIcon from '~/icons/CopyIcon';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ObjktIcon from '~/icons/ObjktIcon';
 import OpenseaIcon from '~/icons/OpenseaIcon';
-import ShareIcon from '~/icons/ShareIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
@@ -164,7 +164,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
           <IconContainer
             variant="default"
             tooltipLabel="Copy page url"
-            icon={<ShareIcon />}
+            icon={<CopyIcon />}
             onClick={handleShareLinkClick}
           />
         </CopyToClipboard>
