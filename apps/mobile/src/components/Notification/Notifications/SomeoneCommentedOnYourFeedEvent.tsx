@@ -10,6 +10,7 @@ import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/Someone
 import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneCommentedOnYourFeedEventQueryFragment$key;
@@ -33,6 +34,7 @@ export function SomeoneCommentedOnYourFeedEvent({
     graphql`
       fragment SomeoneCommentedOnYourFeedEventFragment on SomeoneCommentedOnYourFeedEventNotification {
         __typename
+        updatedTime
 
         comment {
           commenter {
@@ -123,7 +125,7 @@ export function SomeoneCommentedOnYourFeedEvent({
       responsibleUserRefs={commenters}
       notificationRef={notification}
     >
-      <View className="flex space-y-2">
+      <View className="flex space-y-0.5">
         <Text className="dark:text-white">
           <Typography
             font={{
@@ -147,9 +149,14 @@ export function SomeoneCommentedOnYourFeedEvent({
             </Typography>
           ) : (
             <Text>your collection</Text>
-          )}
+          )}{' '}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
+          </Typography>
         </Text>
-
         <View className="border-l-2 border-[#d9d9d9] pl-2">
           <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
         </View>

@@ -9,14 +9,12 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
-import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
 import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
-import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
@@ -63,7 +61,7 @@ export function NotificationSkeleton({
       fragment NotificationSkeletonFragment on Notification {
         __typename
         seen
-        updatedTime
+
         ... on SomeoneAdmiredYourPostNotification {
           post {
             tokens {
@@ -214,6 +212,11 @@ export function NotificationSkeleton({
       properties={{ type: notification.__typename }}
     >
       <View className="flex-1 flex-row items-center">
+        {!notification.seen && (
+          <View className="w-[17px] flex-row items-center justify-start">
+            <UnseenDot />
+          </View>
+        )}
         <View className="mr-2">
           <ProfilePictureBubblesWithCount
             eventElementId="Notification Row PFP Bubbles"
@@ -249,19 +252,6 @@ export function NotificationSkeleton({
         ) : (
           <View />
         )}
-        <View
-          className={`w-[35px] flex-row space-x-2 items-center ${
-            !notification.seen ? 'justify-between' : 'justify-end'
-          }`}
-        >
-          <Typography
-            className="text-metal text-xs"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {getTimeSince(notification.updatedTime)}
-          </Typography>
-          {!notification.seen && <UnseenDot />}
-        </View>
       </View>
       <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
         <UserFollowList
