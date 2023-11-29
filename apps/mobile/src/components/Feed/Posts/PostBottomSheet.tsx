@@ -153,7 +153,6 @@ function PostBottomSheet(
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 
   const handleReportPost = useCallback(() => {
-    // set state
     setShowReportPostForm(true);
   }, []);
 
