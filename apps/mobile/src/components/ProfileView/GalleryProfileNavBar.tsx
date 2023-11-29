@@ -46,6 +46,7 @@ export function GalleryProfileNavBar({
     graphql`
       fragment GalleryProfileNavBarQueryFragment on Query {
         ...useLoggedInUserIdFragment
+        ...GalleryProfileMoreOptionsBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -154,7 +155,7 @@ export function GalleryProfileNavBar({
           </>
         )}
       </View>
-      <GalleryProfileMoreOptionsBottomSheet ref={bottomSheetRef} userRef={user} />
+      <GalleryProfileMoreOptionsBottomSheet ref={bottomSheetRef} queryRef={query} userRef={user} />
     </View>
   );
 }
