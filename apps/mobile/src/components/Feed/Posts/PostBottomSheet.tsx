@@ -171,7 +171,7 @@ function PostBottomSheet(
         <>
           <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
           <BottomSheetRow
-            text="View item detail"
+            text="View Item Detail"
             onPress={handleViewNftDetail}
             eventContext={contexts.Posts}
           />
@@ -190,7 +190,7 @@ function PostBottomSheet(
         <>
           <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
           <BottomSheetRow
-            text="View item detail"
+            text="View Item Detail"
             onPress={handleViewNftDetail}
             eventContext={contexts.Posts}
           />
@@ -218,7 +218,7 @@ function PostBottomSheet(
           eventContext={contexts.Posts}
         />
         <BottomSheetRow
-          text="View item detail"
+          text="View Item Detail"
           onPress={handleViewNftDetail}
           eventContext={contexts.Posts}
         />
