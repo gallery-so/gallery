@@ -1,30 +1,87 @@
-import { ReactNode, useMemo, useCallback } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import { HStack, VStack } from '../core/Spacer/Stack';
-import { noop } from '~/shared/utils/noop';
-import { BaseM } from '../core/Text/Text';
+import Input from '~/components/core/Input/Input';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
 import FarcasterIcon from '~/icons/FarcasterIcon';
 import LensIcon from '~/icons/LensIcon';
-import Input from '~/components/core/Input/Input';
-import { Button } from '../core/Button/Button';
 import TwitterIcon from '~/icons/TwitterIcon';
-import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
 import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
-import useOpenGraphPost from '~/shared/hooks/useOpenGraphPost';
-import { useToastActions } from '~/contexts/toast/ToastContext';
+import { noop } from '~/shared/utils/noop';
+
+import { Button } from '../core/Button/Button';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
 
 type Props = {
   postId: string;
+  tokenName?: string;
 };
 
-export default function SharePostModal({ postId }: Props) {
+export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
   const realPostId = postId.substring(5);
-  const post = useOpenGraphPost(realPostId);
+  const queryResponse = useLazyLoadQuery<SharePostModalQuery>(
+    graphql`
+      query SharePostModalQuery($postId: DBID!) {
+        post: postById(id: $postId) {
+          ... on ErrPostNotFound {
+            __typename
+          }
+          ... on Post {
+            __typename
+            author @required(action: THROW) {
+              username
+              profileImage {
+                ... on TokenProfileImage {
+                  token {
+                    ...getPreviewImageUrlsInlineDangerouslyFragment
+                  }
+                }
+                ... on EnsProfileImage {
+                  __typename
+                  profileImage {
+                    __typename
+                    previewURLs {
+                      medium
+                    }
+                  }
+                }
+              }
+            }
+            caption
+            tokens {
+              ...getPreviewImageUrlsInlineDangerouslyFragment
+            }
+          }
+        }
+      }
+    `,
+    { postId: realPostId }
+  );
+
+  const { post } = queryResponse;
+  const postUrl = `https://gallery.so/post/${realPostId}`;
 
   console.log('post', post);
   const { pushToast } = useToastActions();
+
+  const handleCopyToClipboard = useCallback(async () => {
+    void navigator.clipboard.writeText(postUrl);
+    pushToast({ message: 'Copied link to clipboard', autoClose: true });
+  }, [postUrl, pushToast]);
+
+  const handleShareButtonClick = useCallback(
+    (baseComposePostUrl: string) => {
+      const message = `I just posted ${tokenName} on gallery ${postUrl}`;
+      const encodedMessage = encodeURIComponent(message);
+
+      window.open(`${baseComposePostUrl}?text=${encodedMessage}`, '_blank');
+    },
+    [tokenName, postUrl]
+  );
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
   const profileImageUrl = useMemo(() => {
@@ -65,18 +122,9 @@ export default function SharePostModal({ postId }: Props) {
     return null;
   }
 
-  const postUrl = `https://gallery.so/post/${realPostId}`;
-
-  const handleCopyToClipboard = useCallback(async () => {
-    void navigator.clipboard.writeText(postUrl);
-    pushToast({ message: 'Copied link to clipboard', autoClose: true });
-  }, [postUrl, pushToast]);
-
-  const handleShareButtonClick = (baseComposePostUrl: string) => {
-    const encodedMessage = encodeURIComponent(message);
-
-    window.open(`${baseComposePostUrl}?text=${encodedMessage}`, '_blank');
-  };
+  const imageUrl = result.urls.small ?? '';
+  const username = post.author.username ?? '';
+  const caption = post.caption ?? '';
 
   const shareButtonsDetails = [
     {
@@ -96,18 +144,12 @@ export default function SharePostModal({ postId }: Props) {
     },
   ];
 
-  const captionForNow = 'New PFP ( •̀ᴗ•́ ) ♡';
-  const imageUrl = result.urls.large ?? '';
-  const username = post.author.username ?? '';
-  const caption = post.caption ?? '';
-  const message = `I just posted x on gallery. Check it out here: ${postUrl}`;
-
   return (
     <StyledConfirmation>
       <VStack gap={16}>
         <HStack justify="space-between">
           <MiniPostOpenGraphPreview
-            caption={captionForNow}
+            caption={caption}
             username={username}
             imageUrl={imageUrl}
             profileImageUrl={profileImageUrl ?? ''}
@@ -127,7 +169,13 @@ export default function SharePostModal({ postId }: Props) {
           <InputContainer>
             <Input onChange={noop} disabled={true} defaultValue={postUrl} placeholder="post link" />
           </InputContainer>
-          <Button onClick={handleCopyToClipboard} variant="secondary" eventContext={contexts.Posts}>
+          <Button
+            onClick={handleCopyToClipboard}
+            variant="secondary"
+            eventContext={contexts.Posts}
+            eventName="Copy Post Url"
+            eventElementId="Click Copy Post Url"
+          >
             COPY
           </Button>
         </StyledContainer>
@@ -144,12 +192,17 @@ const StyledConfirmation = styled.div`
 type ButtonProps = {
   title: string;
   icon: ReactNode;
-  onClick?: () => void;
+  onClick: () => void;
 };
 
-function ShareButton({ title, icon, onClick = noop }: ButtonProps) {
+function ShareButton({ title, icon, onClick }: ButtonProps) {
   return (
-    <StyledButton onClick={onClick} eventContext={contexts.Posts} eventName="Share Button Clicked">
+    <StyledButton
+      onClick={onClick}
+      eventContext={contexts.Posts}
+      eventName="Click Share"
+      eventElementId="Click Share Button"
+    >
       <HStack gap={8} align="center">
         {icon}
         {title}

@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import { pageGutter } from '~/components/core/breakpoints';
 import { BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
+import colors from '~/shared/theme/colors';
 
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
-import colors from '~/shared/theme/colors';
 
 type Props = {
   username: string;

@@ -106,7 +106,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       console.log('createdPostID', responsePost?.id);
       showModal({
         headerText: `Successfully posted ${token.name || 'item'}`,
-        content: <SharePostModal postId={responsePost?.id} />,
+        content: <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />,
         isFullPage: false,
       });
       pushToast({
@@ -128,6 +128,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     token.community?.id,
     token.name,
     hideModal,
+    showModal,
     pushToast,
     reportError,
     mentions,
