@@ -83,6 +83,18 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
     }
   }, [loadMore, onExpand, showReplies]);
 
+  const handleReplyClickWithTopCommentId = useCallback(
+    (params: OnReplyClickParams) => {
+      if (!params?.username) return;
+      const payload = {
+        ...params,
+        topCommentId: comment.dbid,
+      };
+      onReplyClick(payload);
+    },
+    [comment.dbid, onReplyClick]
+  );
+
   // TEMPORARY FIX: not sure how this component is even being rendered without a truthy `comment`
 
   if (!comment) {
@@ -94,7 +106,7 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
     <StyledWrapper>
       <CommentNote
         commentRef={comment}
-        onReplyClick={onReplyClick}
+        onReplyClick={handleReplyClickWithTopCommentId}
         activeCommentId={activeCommentId}
         footerElement={
           !showReplies && (
@@ -113,7 +125,7 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
             <CommentNote
               key={reply.dbid}
               commentRef={reply}
-              onReplyClick={onReplyClick}
+              onReplyClick={handleReplyClickWithTopCommentId}
               isReply
               activeCommentId={activeCommentId}
             />

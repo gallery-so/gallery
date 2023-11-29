@@ -20,6 +20,7 @@ export type OnReplyClickParams = {
   username: string;
   commentId: string;
   comment: string;
+  topCommentId?: string;
 } | null;
 
 type CommentNoteProps = {

@@ -60,7 +60,8 @@ export default function useCommentOnPost() {
       comment: string,
       optimisticUserInfo: OptimisticUserInfo,
       mentions: MentionInput[] = [],
-      replyToID?: string
+      replyToID?: string,
+      topCommentId?: string
     ) => {
       try {
         const interactionsConnection = ConnectionHandler.getConnectionID(
@@ -72,6 +73,19 @@ export default function useCommentOnPost() {
           'CommentsModal_interactions'
         );
 
+        const repliesConnection = ConnectionHandler.getConnectionID(
+          `Comment:${topCommentId}`,
+          'CommentNoteSectionPagination_replies'
+        );
+
+        const connectionsIdsIncluded = [];
+
+        if (topCommentId) {
+          connectionsIdsIncluded.push(repliesConnection);
+        } else {
+          connectionsIdsIncluded.push(interactionsConnection, commentsModalConnection);
+        }
+
         const updater: SelectorStoreUpdater<useCommentOnPostMutation['response']> = (
           store,
           response
@@ -80,6 +94,12 @@ export default function useCommentOnPost() {
             const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
             pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+            const repliesPageInfo = store.get(repliesConnection)?.getLinkedRecord('pageInfo');
+            repliesPageInfo?.setValue(
+              ((repliesPageInfo?.getValue('total') as number) ?? 0) + 1,
+              'total'
+            );
           }
         };
 
@@ -130,13 +150,18 @@ export default function useCommentOnPost() {
                 // TODO: Add mentions to optimistic response when we implement mentions on web
                 mentions: [],
               },
+              replyToComment: {
+                __typename: 'Comment',
+                dbid: topCommentId ?? 'unknown',
+                id: `Comment:${topCommentId ?? 'unknown'}`,
+              },
             },
           },
           variables: {
             comment,
             postId: postDbid,
             mentions,
-            connections: [interactionsConnection, commentsModalConnection],
+            connections: connectionsIdsIncluded,
             replyToID,
           },
         });

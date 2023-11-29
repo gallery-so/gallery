@@ -32,7 +32,12 @@ type CommentsModalProps = {
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
   commentsRef: CommentsModalFragment$key;
-  onSubmitComment: (comment: string, mentions: MentionInput[], replyToId?: string) => void;
+  onSubmitComment: (
+    comment: string,
+    mentions: MentionInput[],
+    replyToId?: string,
+    topCommentId?: string
+  ) => void;
   isSubmittingComment: boolean;
   activeCommentId?: string;
 };
@@ -68,6 +73,7 @@ export function CommentsModal({
   );
 
   const [selectedComment, setSelectedComment] = useState<OnReplyClickParams>(null);
+  const topCommentId = useRef<string | null>(null);
   const virtualizedListRef = useRef<List | null>(null);
 
   const highlightCommentId = useMemo(() => {
@@ -84,8 +90,24 @@ export function CommentsModal({
 
   const handleReplyClick = useCallback((params: OnReplyClickParams) => {
     setSelectedComment(params);
+
+    if (params?.topCommentId) {
+      topCommentId.current = params.topCommentId;
+    } else {
+      topCommentId.current = null;
+    }
+
     // commentBoxRef.current?.focus();
   }, []);
+
+  const handleSubmitComment = useCallback(
+    (comment: string, mentions: MentionInput[]) => {
+      onSubmitComment(comment, mentions, selectedComment?.commentId, topCommentId?.current ?? '');
+      setSelectedComment(null);
+      topCommentId.current = null;
+    },
+    [onSubmitComment, selectedComment?.commentId]
+  );
 
   const commentRowIndex = useMemo(() => {
     if (!activeCommentId) {
@@ -121,7 +143,6 @@ export function CommentsModal({
   }, [loadPrevious]);
 
   const handleExpand = useCallback(() => {
-    console.log(`recalculate height`);
     measurerCache.clearAll();
     virtualizedListRef.current?.recomputeRowHeights();
   }, [measurerCache]);
@@ -229,11 +250,12 @@ export function CommentsModal({
           comment={selectedComment?.comment ?? ''}
           onClose={() => {
             setSelectedComment(null);
+            topCommentId.current = null;
           }}
         />
         <CommentBox
           queryRef={query}
-          onSubmitComment={onSubmitComment}
+          onSubmitComment={handleSubmitComment}
           isSubmittingComment={isSubmittingComment}
           replyToId={selectedComment?.commentId}
         />
