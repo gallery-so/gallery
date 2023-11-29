@@ -103,7 +103,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       });
       setIsSubmitting(false);
       hideModal();
-      console.log('createdPostID', responsePost?.id);
       showModal({
         headerText: `Successfully posted ${token.name || 'item'}`,
         content: <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />,
