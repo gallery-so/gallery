@@ -68,6 +68,7 @@ export default function SharePostModal({ postId }: Props) {
   console.log('postId passed to query', postId.substring(5));
   console.log('queryResponse', queryResponse);
   console.log('post', post);
+
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
   const profileImageUrl = useMemo(() => {
     if (!post || post?.__typename !== 'Post') {
@@ -110,31 +111,57 @@ export default function SharePostModal({ postId }: Props) {
   const { hideModal } = useModalActions();
   const postUrl = `https://gallery.so/post/${realPostId}`;
   console.log('postId', postId);
+
+  const handleTweetClick = () => {
+    // Encode the message for the URL
+    const encodedMessage = encodeURIComponent(message);
+
+    // Open Twitter Web Intent in a new window
+    window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}`, '_blank');
+  };
+
+  const handleWarpcastClick = () => {
+    const encodedMessage = encodeURIComponent(message);
+
+    window.open(`https://warpcast.com/~/compose?text=${encodedMessage}`, '_blank');
+  };
+
+  const handleLensClick = () => {
+    const encodedMessage = encodeURIComponent(message);
+
+    window.open(`https://hey.xyz/?text=${encodedMessage}`, '_blank');
+  };
+
   const shareButtonsDetails = [
     {
       icon: <FarcasterIcon fillColor="white" />,
       title: 'WARPCAST',
+      onClick: handleWarpcastClick,
     },
     {
       icon: <LensIcon fillColor="white" />,
       title: 'LENS',
+      onClick: handleLensClick,
     },
     {
       icon: <TwitterIcon fillColor="white" />,
       title: 'TWITTER',
+      onClick: handleTweetClick,
     },
   ];
 
   const captionForNow = 'New PFP ( •̀ᴗ•́ ) ♡';
- // const username = 'fraser';
+  // const username = 'fraser';
   const imageUrl = result.urls.large ?? '';
   const username = post.author.username ?? '';
   const caption = post.caption ?? '';
-//  const imageUrl =
+  //  const imageUrl =
   //  'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F0-1e-0xfdbff7861236e6f0b846383a74715e9c7e7b57dc-image?auto=format%2Ccompress&fit=max&glryts=1697111079&w=1024&s=beef9f99e6237bdfc9e8cd7a6ceb4a85';
   // const profileImageUrl =
   //'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F0-1e-0xfdbff7861236e6f0b846383a74715e9c7e7b57dc-image?auto=format%2Ccompress&fit=max&glryts=1697111079&w=1024&s=beef9f99e6237bdfc9e8cd7a6ceb4a85';
   console.log('profileImageUrl', profileImageUrl);
+
+  const message = `I just posted x on gallery. Check it out here: ${postUrl}`;
 
   return (
     <StyledConfirmation>
@@ -149,7 +176,7 @@ export default function SharePostModal({ postId }: Props) {
         </HStack>
         <HStack gap={8}>
           {shareButtonsDetails.map((btnData) => (
-            <ShareButton title={btnData.title} icon={btnData.icon} />
+            <ShareButton title={btnData.title} icon={btnData.icon} onClick={btnData.onClick} />
           ))}
         </HStack>
         <StyledContainer gap={8}>
@@ -175,11 +202,12 @@ const StyledConfirmation = styled.div`
 type ButtonProps = {
   title: string;
   icon: ReactNode;
+  onClick?: () => void;
 };
 
-function ShareButton({ title, icon }: ButtonProps) {
+function ShareButton({ title, icon, onClick = noop }: ButtonProps) {
   return (
-    <StyledButton>
+    <StyledButton onClick={onClick}>
       <HStack gap={8} align="center">
         {icon}
         {title}
