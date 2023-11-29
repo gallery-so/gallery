@@ -1,13 +1,13 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { Share, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { OptionIcon } from 'src/icons/OptionIcon';
 import { SettingsIcon } from 'src/icons/SettingsIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { DarkModeToggle } from '~/components/DarkModeToggle';
-import { FollowButton } from '~/components/FollowButton';
 import { IconContainer } from '~/components/IconContainer';
 import { GalleryProfileNavBarFragment$key } from '~/generated/GalleryProfileNavBarFragment.graphql';
 import { GalleryProfileNavBarQueryFragment$key } from '~/generated/GalleryProfileNavBarQueryFragment.graphql';
@@ -17,6 +17,8 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryProfileMoreOptionsBottomSheet } from './GalleryProfileMoreOptionsBottomSheet';
 
 type ScreenName = 'Profile' | 'Gallery' | 'Collection';
 type RouteParams = {
@@ -44,7 +46,6 @@ export function GalleryProfileNavBar({
     graphql`
       fragment GalleryProfileNavBarQueryFragment on Query {
         ...useLoggedInUserIdFragment
-        ...FollowButtonQueryFragment
       }
     `,
     queryRef
@@ -56,8 +57,7 @@ export function GalleryProfileNavBar({
         __typename
         id
         username
-
-        ...FollowButtonUserFragment
+        ...GalleryProfileMoreOptionsBottomSheetFragment
       }
     `,
     userRef
@@ -100,38 +100,61 @@ export function GalleryProfileNavBar({
     navigation.navigate('Settings');
   }, [navigation]);
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const handleMoreOptionsPress = useCallback(async () => {
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
       {shouldShowBackButton ? <BackButton /> : <DarkModeToggle />}
 
       <View className="flex flex-row items-center space-x-2">
-        {isLoggedInUser && (
-          <IconContainer
-            eventElementId="Profile QR Code Icon"
-            eventName="Profile QR Code Icon Clicked"
-            eventContext={contexts.UserGallery}
-            icon={<QRCodeIcon />}
-            onPress={handleQrCode}
-          />
+        {isLoggedInUser ? (
+          <>
+            <IconContainer
+              eventElementId="Profile QR Code Icon"
+              eventName="Profile QR Code Icon Clicked"
+              eventContext={contexts.UserGallery}
+              icon={<QRCodeIcon />}
+              onPress={handleQrCode}
+            />
+            <IconContainer
+              eventElementId="Profile Share Icon"
+              eventName="Profile Share Icon Clicked"
+              eventContext={contexts.UserGallery}
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+            <IconContainer
+              eventElementId="Settings Share Icon"
+              eventName="Settings Icon Clicked"
+              eventContext={contexts.UserGallery}
+              icon={<SettingsIcon />}
+              onPress={handleSettings}
+            />
+          </>
+        ) : (
+          <>
+            <IconContainer
+              eventElementId="Profile Share Icon"
+              eventName="Profile Share Icon Clicked"
+              eventContext={contexts.UserGallery}
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
+            <IconContainer
+              eventElementId="Profile More Options Icon"
+              eventName="Profile More Options Icon Clicked"
+              eventContext={contexts.UserGallery}
+              icon={<OptionIcon />}
+              onPress={handleMoreOptionsPress}
+            />
+          </>
         )}
-        <IconContainer
-          eventElementId="Profile Share Icon"
-          eventName="Profile Share Icon Clicked"
-          eventContext={contexts.UserGallery}
-          icon={<ShareIcon />}
-          onPress={handleShare}
-        />
-
-        <IconContainer
-          eventElementId="Settings Share Icon"
-          eventName="Settings Icon Clicked"
-          eventContext={contexts.UserGallery}
-          icon={<SettingsIcon />}
-          onPress={handleSettings}
-        />
-
-        {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}
       </View>
+      <GalleryProfileMoreOptionsBottomSheet ref={bottomSheetRef} userRef={user} />
     </View>
   );
 }
