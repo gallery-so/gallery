@@ -1,6 +1,5 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
-import colors from '~/shared/theme/colors';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { noop } from '~/shared/utils/noop';
@@ -10,11 +9,11 @@ import LensIcon from '~/icons/LensIcon';
 import Input from '~/components/core/Input/Input';
 import { Button } from '../core/Button/Button';
 import TwitterIcon from '~/icons/TwitterIcon';
-import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
 import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import useOpenGraphPost from '~/shared/hooks/useOpenGraphPost';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 
 type Props = {
   postId: string;
@@ -25,6 +24,7 @@ export default function SharePostModal({ postId }: Props) {
   const post = useOpenGraphPost(realPostId);
 
   console.log('post', post);
+  const { pushToast } = useToastActions();
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
   const profileImageUrl = useMemo(() => {
@@ -66,7 +66,11 @@ export default function SharePostModal({ postId }: Props) {
   }
 
   const postUrl = `https://gallery.so/post/${realPostId}`;
-  console.log('postId', postId);
+
+  const handleCopyToClipboard = useCallback(async () => {
+    void navigator.clipboard.writeText(postUrl);
+    pushToast({ message: 'Copied link to clipboard', autoClose: true });
+  }, [postUrl, pushToast]);
 
   const handleShareButtonClick = (baseComposePostUrl: string) => {
     const encodedMessage = encodeURIComponent(message);
@@ -93,16 +97,9 @@ export default function SharePostModal({ postId }: Props) {
   ];
 
   const captionForNow = 'New PFP ( •̀ᴗ•́ ) ♡';
-  // const username = 'fraser';
   const imageUrl = result.urls.large ?? '';
   const username = post.author.username ?? '';
   const caption = post.caption ?? '';
-  //  const imageUrl =
-  //  'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F0-1e-0xfdbff7861236e6f0b846383a74715e9c7e7b57dc-image?auto=format%2Ccompress&fit=max&glryts=1697111079&w=1024&s=beef9f99e6237bdfc9e8cd7a6ceb4a85';
-  // const profileImageUrl =
-  //'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F0-1e-0xfdbff7861236e6f0b846383a74715e9c7e7b57dc-image?auto=format%2Ccompress&fit=max&glryts=1697111079&w=1024&s=beef9f99e6237bdfc9e8cd7a6ceb4a85';
-  console.log('profileImageUrl', profileImageUrl);
-
   const message = `I just posted x on gallery. Check it out here: ${postUrl}`;
 
   return (
@@ -119,6 +116,7 @@ export default function SharePostModal({ postId }: Props) {
         <HStack gap={8}>
           {shareButtonsDetails.map((btnData) => (
             <ShareButton
+              key={btnData.title}
               title={btnData.title}
               icon={btnData.icon}
               onClick={() => handleShareButtonClick(btnData.baseComposePostUrl)}
@@ -129,11 +127,9 @@ export default function SharePostModal({ postId }: Props) {
           <InputContainer>
             <Input onChange={noop} disabled={true} defaultValue={postUrl} placeholder="post link" />
           </InputContainer>
-          <CopyToClipboard textToCopy={postUrl}>
-            <Button aria-disabled={true} variant="secondary" eventContext={contexts.Posts}>
-              COPY
-            </Button>
-          </CopyToClipboard>
+          <Button onClick={handleCopyToClipboard} variant="secondary" eventContext={contexts.Posts}>
+            COPY
+          </Button>
         </StyledContainer>
       </VStack>
     </StyledConfirmation>
@@ -167,10 +163,6 @@ const StyledButton = styled(Button)`
   flex-wrap: wrap;
   height: 32px;
   flex: 1;
-`;
-
-const CopyButton = styled(Button)`
-  pointer-events: none;
 `;
 
 const InputContainer = styled.div`
