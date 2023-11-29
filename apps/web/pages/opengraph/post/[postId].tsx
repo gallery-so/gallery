@@ -47,7 +47,6 @@ export default function OpenGraphPostPage() {
     `,
     { postId: query.postId as string }
   );
-
   const { post } = queryResponse;
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
