@@ -157,6 +157,14 @@ function PostBottomSheet(
     setShowReportPostForm(true);
   }, []);
 
+  const handleResetState = useCallback(() => {
+    setShowReportPostForm(false);
+  }, []);
+
+  const handleDismissBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+  }, []);
+
   const inner = useMemo(() => {
     if (isOwnPost) {
       return (
@@ -248,6 +256,7 @@ function PostBottomSheet(
         snapPoints={animatedSnapPoints}
         handleHeight={animatedHandleHeight}
         contentHeight={animatedContentHeight}
+        onDismiss={handleResetState}
       >
         <View
           onLayout={handleContentLayout}
@@ -255,7 +264,7 @@ function PostBottomSheet(
           className="p-4 flex flex-col space-y-6"
         >
           {showReportPostForm ? (
-            <ReportPost />
+            <ReportPost postId={post.dbid} onDismiss={handleDismissBottomSheet} />
           ) : (
             <View className="flex flex-col space-y-2">{inner}</View>
           )}
@@ -265,9 +274,7 @@ function PostBottomSheet(
       <DeletePostBottomSheet
         ref={deletePostBottomSheetRef}
         postRef={post}
-        onDeleted={() => {
-          bottomSheetRef.current?.dismiss();
-        }}
+        onDeleted={handleDismissBottomSheet}
       />
     </>
   );
