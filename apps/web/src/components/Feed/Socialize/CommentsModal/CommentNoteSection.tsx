@@ -103,7 +103,7 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
   // END TEMPORARY FIX
 
   return (
-    <StyledWrapper>
+    <VStack>
       <CommentNote
         commentRef={comment}
         onReplyClick={handleReplyClickWithTopCommentId}
@@ -140,7 +140,7 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
           </StyledViewRepliesButtonWrapper>
         </>
       )}
-    </StyledWrapper>
+    </VStack>
   );
 }
 
@@ -164,10 +164,6 @@ function ViewRepliesButton({ totalReplies, showReplies, onClick }: ViewRepliesBu
     </HStack>
   );
 }
-
-const StyledWrapper = styled(VStack)`
-  padding: 8px 0px;
-`;
 
 const StyledReplyText = styled(BaseS)`
   color: ${colors.shadow};
