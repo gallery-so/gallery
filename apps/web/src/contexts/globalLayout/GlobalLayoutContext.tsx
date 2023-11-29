@@ -26,12 +26,14 @@ import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.g
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
+import { LocalStorageGlobalBanner } from './GlobalBanner/LocalStorageGlobalBanner';
 import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
 import {
   UpcomingMaintenanceBanner,
@@ -373,6 +375,7 @@ function GlobalNavbarWithFadeEnabled({
         ...MobileBetaUpsellFragment
         ...UpsellBannerQuery
         ...UpcomingMaintenanceBannerFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
@@ -381,12 +384,23 @@ function GlobalNavbarWithFadeEnabled({
   const isLoggedInAndDoesNotHaveWallet =
     query.viewer?.__typename === 'Viewer' && !query.viewer.user?.primaryWallet;
 
-  const { shouldDisplayBanner, handleDismissBanner, maintenanceId, message } =
-    useUpcomingMaintenanceBannerWeb();
+  const {
+    shouldDisplayBanner: shouldDisplayMaintenanceBanner,
+    handleDismissBanner,
+    maintenanceId,
+    message,
+  } = useUpcomingMaintenanceBannerWeb();
+
+  const MOBILE_BETA_UPSELL_FLAG = 'MobileBetaUpsell';
+
+  const [isMobileUpsellBannerExperienced] = useExperience({
+    type: MOBILE_BETA_UPSELL_FLAG,
+    queryRef: query,
+  });
 
   const displayedBanner = useMemo(() => {
     // maintenance banner should display over any other type of banner since it's a rare occurrence
-    if (shouldDisplayBanner) {
+    if (shouldDisplayMaintenanceBanner) {
       return (
         <UpcomingMaintenanceBanner
           queryRef={query}
@@ -402,15 +416,20 @@ function GlobalNavbarWithFadeEnabled({
     }
 
     if (isBannerVisible) {
-      return (
-        <MobileBetaUpsell
-          experienceFlag="MobileBetaUpsell"
-          text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
-          dismissOnActionComponentClick
-          queryRef={query}
-          requireAuth
-        />
-      );
+      if (!isMobileUpsellBannerExperienced) {
+        return (
+          <MobileBetaUpsell
+            experienceFlag={MOBILE_BETA_UPSELL_FLAG}
+            text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
+            dismissOnActionComponentClick
+            queryRef={query}
+            requireAuth
+          />
+        );
+      }
+
+      // TODO: this should ideally be controlled through Sanity
+      return <LocalStorageGlobalBanner />;
     }
 
     return null;
@@ -418,10 +437,11 @@ function GlobalNavbarWithFadeEnabled({
     handleDismissBanner,
     isBannerVisible,
     isLoggedInAndDoesNotHaveWallet,
+    isMobileUpsellBannerExperienced,
     maintenanceId,
     message,
     query,
-    shouldDisplayBanner,
+    shouldDisplayMaintenanceBanner,
   ]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
