@@ -1,9 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 import colors from '~/shared/theme/colors';
-import { graphql, useLazyLoadQuery } from 'react-relay';
-
-import { useModalActions } from '~/contexts/modal/ModalContext';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { noop } from '~/shared/utils/noop';
@@ -17,7 +14,7 @@ import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
 import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
-import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
+import useOpenGraphPost from '~/shared/hooks/useOpenGraphPost';
 
 type Props = {
   postId: string;
@@ -25,48 +22,8 @@ type Props = {
 
 export default function SharePostModal({ postId }: Props) {
   const realPostId = postId.substring(5);
-  const queryResponse = useLazyLoadQuery<SharePostModalQuery>(
-    graphql`
-      query SharePostModalQuery($postId: DBID!) {
-        post: postById(id: $postId) {
-          ... on ErrPostNotFound {
-            __typename
-          }
-          ... on Post {
-            __typename
-            author @required(action: THROW) {
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    ...getPreviewImageUrlsInlineDangerouslyFragment
-                  }
-                }
-                ... on EnsProfileImage {
-                  __typename
-                  profileImage {
-                    __typename
-                    previewURLs {
-                      medium
-                    }
-                  }
-                }
-              }
-            }
-            caption
-            tokens {
-              ...getPreviewImageUrlsInlineDangerouslyFragment
-            }
-          }
-        }
-      }
-    `,
-    { postId: realPostId as string }
-  );
-  const { post } = queryResponse;
+  const post = useOpenGraphPost(realPostId);
 
-  console.log('postId passed to query', postId.substring(5));
-  console.log('queryResponse', queryResponse);
   console.log('post', post);
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
@@ -108,45 +65,30 @@ export default function SharePostModal({ postId }: Props) {
     return null;
   }
 
-  const { hideModal } = useModalActions();
   const postUrl = `https://gallery.so/post/${realPostId}`;
   console.log('postId', postId);
 
-  const handleTweetClick = () => {
-    // Encode the message for the URL
+  const handleShareButtonClick = (baseComposePostUrl: string) => {
     const encodedMessage = encodeURIComponent(message);
 
-    // Open Twitter Web Intent in a new window
-    window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}`, '_blank');
-  };
-
-  const handleWarpcastClick = () => {
-    const encodedMessage = encodeURIComponent(message);
-
-    window.open(`https://warpcast.com/~/compose?text=${encodedMessage}`, '_blank');
-  };
-
-  const handleLensClick = () => {
-    const encodedMessage = encodeURIComponent(message);
-
-    window.open(`https://hey.xyz/?text=${encodedMessage}`, '_blank');
+    window.open(`${baseComposePostUrl}?text=${encodedMessage}`, '_blank');
   };
 
   const shareButtonsDetails = [
     {
       icon: <FarcasterIcon fillColor="white" />,
       title: 'WARPCAST',
-      onClick: handleWarpcastClick,
+      baseComposePostUrl: 'https://warpcast.com/~/compose',
     },
     {
       icon: <LensIcon fillColor="white" />,
       title: 'LENS',
-      onClick: handleLensClick,
+      baseComposePostUrl: 'https://hey.xyz/',
     },
     {
       icon: <TwitterIcon fillColor="white" />,
       title: 'TWITTER',
-      onClick: handleTweetClick,
+      baseComposePostUrl: 'https://twitter.com/intent/tweet',
     },
   ];
 
@@ -176,7 +118,11 @@ export default function SharePostModal({ postId }: Props) {
         </HStack>
         <HStack gap={8}>
           {shareButtonsDetails.map((btnData) => (
-            <ShareButton title={btnData.title} icon={btnData.icon} onClick={btnData.onClick} />
+            <ShareButton
+              title={btnData.title}
+              icon={btnData.icon}
+              onClick={() => handleShareButtonClick(btnData.baseComposePostUrl)}
+            />
           ))}
         </HStack>
         <StyledContainer gap={8}>
@@ -207,7 +153,7 @@ type ButtonProps = {
 
 function ShareButton({ title, icon, onClick = noop }: ButtonProps) {
   return (
-    <StyledButton onClick={onClick}>
+    <StyledButton onClick={onClick} eventContext={contexts.Posts} eventName="Share Button Clicked">
       <HStack gap={8} align="center">
         {icon}
         {title}

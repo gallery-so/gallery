@@ -5,49 +5,12 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { PostOpenGraphPreview } from '~/components/opengraph/PostOpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { PostIdOpengraphQuery } from '~/generated/PostIdOpengraphQuery.graphql';
+import useOpenGraphPost from '~/shared/hooks/useOpenGraphPost';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 export default function OpenGraphPostPage() {
   const { query } = useRouter();
-  const queryResponse = useLazyLoadQuery<PostIdOpengraphQuery>(
-    graphql`
-      query PostIdOpengraphQuery($postId: DBID!) {
-        post: postById(id: $postId) {
-          ... on ErrPostNotFound {
-            __typename
-          }
-          ... on Post {
-            __typename
-            author @required(action: THROW) {
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    ...getPreviewImageUrlsInlineDangerouslyFragment
-                  }
-                }
-                ... on EnsProfileImage {
-                  __typename
-                  profileImage {
-                    __typename
-                    previewURLs {
-                      medium
-                    }
-                  }
-                }
-              }
-            }
-            caption
-            tokens {
-              ...getPreviewImageUrlsInlineDangerouslyFragment
-            }
-          }
-        }
-      }
-    `,
-    { postId: query.postId as string }
-  );
-  const { post } = queryResponse;
+  const post = useOpenGraphPost(query.postId as string);
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
   const profileImageUrl = useMemo(() => {
