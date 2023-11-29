@@ -55,7 +55,7 @@ const SnowProvider = memo(({ children }: Props) => {
   return (
     <SnowContext.Provider value={value}>
       <VisibilityWrapper isVisible={isSnowEnabled}>
-        <AnimatedSnowfall />
+        <AnimatedSnowfall amount={50} />
       </VisibilityWrapper>
       {children}
     </SnowContext.Provider>
