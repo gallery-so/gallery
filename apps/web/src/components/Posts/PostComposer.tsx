@@ -23,6 +23,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
+import SharePostModal from './SharePostModal';
 
 type Props = {
   tokenId: string;
@@ -80,7 +81,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const createPost = useCreatePost();
 
-  const { hideModal } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
@@ -95,13 +96,19 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       added_description: Boolean(message),
     });
     try {
-      await createPost({
+      const responsePost = await createPost({
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
         caption: message,
         mentions,
       });
       setIsSubmitting(false);
       hideModal();
+      console.log('createdPostID', responsePost?.id);
+      showModal({
+        headerText: `Successfully posted ${token.name || 'item'}`,
+        content: <SharePostModal postId={responsePost?.id} />,
+        isFullPage: false,
+      });
       pushToast({
         message: `Successfully posted ${token.name || 'item'}`,
       });
