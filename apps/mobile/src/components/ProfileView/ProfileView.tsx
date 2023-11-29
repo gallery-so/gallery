@@ -16,12 +16,12 @@ import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/ProfileViewConnectedProfilePictureFragment.graphql';
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
-import { ProfileViewEditProfileButtonFragment$key } from '~/generated/ProfileViewEditProfileButtonFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
+import { FollowButton } from '../FollowButton';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
@@ -45,7 +45,21 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         ...ProfileViewActivityTabFragment
         ...ProfileViewUsernameFragment
         ...ProfileViewConnectedProfilePictureFragment
-        ...ProfileViewEditProfileButtonFragment
+        ...FollowButtonQueryFragment
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            __typename
+            dbid
+            ...FollowButtonUserFragment
+          }
+        }
       }
     `,
     queryRef
@@ -70,6 +84,16 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     }
   }, [selectedRoute]);
 
+  const isLoggedInUser = Boolean(
+    query.userByUsername &&
+      'dbid' in query.userByUsername &&
+      query.viewer?.user?.dbid === query.userByUsername?.dbid
+  );
+
+  if (query.userByUsername?.__typename !== 'GalleryUser') {
+    throw new Error('User not found for profile');
+  }
+
   return (
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
@@ -85,7 +109,11 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
             <ConnectedProfilePicture queryRef={query} />
             <ProfileViewUsername queryRef={query} />
           </View>
-          <EditProfileButton queryRef={query} />
+          {isLoggedInUser ? (
+            <EditProfileButton />
+          ) : (
+            <FollowButton queryRef={query} userRef={query.userByUsername} />
+          )}
         </View>
       </View>
 
@@ -255,42 +283,11 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
   );
 }
 
-type EditProfileButtonProps = {
-  queryRef: ProfileViewEditProfileButtonFragment$key;
-};
-
-function EditProfileButton({ queryRef }: EditProfileButtonProps) {
-  const query = useFragment(
-    graphql`
-      fragment ProfileViewEditProfileButtonFragment on Query {
-        userByUsername(username: $username) {
-          ... on GalleryUser {
-            dbid
-          }
-        }
-
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
-  const isLoggedInUser = Boolean(query.viewer?.user?.dbid === query.userByUsername?.dbid);
-
+function EditProfileButton() {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     navigation.navigate('SettingsProfile');
   }, [navigation]);
-
-  if (!isLoggedInUser) {
-    return null;
-  }
 
   return (
     <ButtonChip variant="secondary" onPress={handlePress}>

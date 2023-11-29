@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -21,6 +21,7 @@ import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import { DeletePostBottomSheet } from './DeletePostBottomSheet';
+import ReportPost from './ReportPost';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -149,13 +150,27 @@ function PostBottomSheet(
     Share.share({ url });
   }, [post.dbid]);
 
+  const [showReportPostForm, setShowReportPostForm] = useState(false);
+
+  const handleReportPost = useCallback(() => {
+    setShowReportPostForm(true);
+  }, []);
+
+  const handleResetState = useCallback(() => {
+    setShowReportPostForm(false);
+  }, []);
+
+  const handleDismissBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+  }, []);
+
   const inner = useMemo(() => {
     if (isOwnPost) {
       return (
         <>
           <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
           <BottomSheetRow
-            text="View item detail"
+            text="View Item Detail"
             onPress={handleViewNftDetail}
             eventContext={contexts.Posts}
           />
@@ -174,7 +189,7 @@ function PostBottomSheet(
         <>
           <BottomSheetRow text="Share" onPress={handleShare} eventContext={contexts.Posts} />
           <BottomSheetRow
-            text="View item detail"
+            text="View Item Detail"
             onPress={handleViewNftDetail}
             eventContext={contexts.Posts}
           />
@@ -182,6 +197,12 @@ function PostBottomSheet(
             text={`Unfollow ${username}`}
             onPress={handleFollowUser}
             eventContext={contexts.Posts}
+          />
+          <BottomSheetRow
+            text="Report Post"
+            onPress={handleReportPost}
+            eventContext={contexts.Posts}
+            isConfirmationRow
           />
         </>
       );
@@ -196,15 +217,22 @@ function PostBottomSheet(
           eventContext={contexts.Posts}
         />
         <BottomSheetRow
-          text="View item detail"
+          text="View Item Detail"
           onPress={handleViewNftDetail}
           eventContext={contexts.Posts}
+        />
+        <BottomSheetRow
+          text="Report Post"
+          onPress={handleReportPost}
+          eventContext={contexts.Posts}
+          isConfirmationRow
         />
       </>
     );
   }, [
     handleDeletePost,
     handleFollowUser,
+    handleReportPost,
     handleShare,
     handleViewNftDetail,
     isFollowing,
@@ -227,22 +255,25 @@ function PostBottomSheet(
         snapPoints={animatedSnapPoints}
         handleHeight={animatedHandleHeight}
         contentHeight={animatedContentHeight}
+        onDismiss={handleResetState}
       >
         <View
           onLayout={handleContentLayout}
           style={{ paddingBottom: bottom }}
           className="p-4 flex flex-col space-y-6"
         >
-          <View className="flex flex-col space-y-2">{inner}</View>
+          {showReportPostForm ? (
+            <ReportPost postId={post.dbid} onDismiss={handleDismissBottomSheet} />
+          ) : (
+            <View className="flex flex-col space-y-2">{inner}</View>
+          )}
         </View>
       </GalleryBottomSheetModal>
 
       <DeletePostBottomSheet
         ref={deletePostBottomSheetRef}
         postRef={post}
-        onDeleted={() => {
-          bottomSheetRef.current?.dismiss();
-        }}
+        onDeleted={handleDismissBottomSheet}
       />
     </>
   );
