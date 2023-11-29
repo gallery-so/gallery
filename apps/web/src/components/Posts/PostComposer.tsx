@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
 import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
@@ -82,7 +81,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   const createPost = useCreatePost();
 
   const { showModal, hideModal } = useModalActions();
-  const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
   const [generalError, setGeneralError] = useState('');
@@ -108,9 +106,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         content: <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />,
         isFullPage: false,
       });
-      pushToast({
-        message: `Successfully posted ${token.name || 'item'}`,
-      });
       resetMentions();
     } catch (error) {
       setIsSubmitting(false);
@@ -128,7 +123,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     token.name,
     hideModal,
     showModal,
-    pushToast,
     reportError,
     mentions,
     message,
