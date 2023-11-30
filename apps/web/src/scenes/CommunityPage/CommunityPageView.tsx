@@ -88,7 +88,4 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
 const StyledCommunityPageContainer = styled.div`
   padding: 0;
-  @media only screen and ${breakpoints.tablet} {
-    padding: 80px 0 64px;
-  }
 `;
