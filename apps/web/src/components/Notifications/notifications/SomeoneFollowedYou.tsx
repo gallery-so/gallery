@@ -90,6 +90,7 @@ export function SomeoneFollowedYou({
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
+            &nbsp;followed you
           </BaseM>
         ) : (
           <>
