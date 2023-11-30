@@ -100,7 +100,7 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
         tokenRef: token,
       });
       if (result.type === 'valid') {
-        return result.urls.small;
+        return result.urls.large;
       }
       return null;
     }
@@ -122,10 +122,6 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
     return null;
   }
 
-  const imageUrl = result.urls.small ?? '';
-  const username = post.author.username ?? '';
-  const caption = post.caption ?? '';
-
   const shareButtonsDetails = [
     {
       icon: <FarcasterIcon fillColor="white" />,
@@ -144,8 +140,12 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
     },
   ];
 
+  const imageUrl = result.urls.small ?? '';
+  const username = post.author.username ?? '';
+  const caption = post.caption ?? '';
+
   return (
-    <StyledConfirmation>
+    <StyledContainer>
       <VStack gap={16}>
         <HStack justify="space-between">
           <MiniPostOpenGraphPreview
@@ -165,7 +165,7 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
             />
           ))}
         </HStack>
-        <StyledContainer gap={8}>
+        <StyledPostUrlContainer gap={8}>
           <InputContainer>
             <Input onChange={noop} disabled={true} defaultValue={postUrl} placeholder="post link" />
           </InputContainer>
@@ -178,13 +178,13 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
           >
             COPY
           </Button>
-        </StyledContainer>
+        </StyledPostUrlContainer>
       </VStack>
-    </StyledConfirmation>
+    </StyledContainer>
   );
 }
 
-const StyledConfirmation = styled.div`
+const StyledContainer = styled.div`
   min-width: 480px;
   max-width: 100%;
 `;
@@ -223,6 +223,6 @@ const InputContainer = styled.div`
   height: 32px;
 `;
 
-const StyledContainer = styled(HStack)`
+const StyledPostUrlContainer = styled(HStack)`
   margin-bottom: 24px;
 `;

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -99,11 +99,14 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         caption: message,
         mentions,
       });
-      setIsSubmitting(false);
       hideModal();
       showModal({
         headerText: `Successfully posted ${token.name || 'item'}`,
-        content: <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />,
+        content: (
+          <Suspense fallback={<StyledContainerFallback />}>
+            <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />
+          </Suspense>
+        ),
         isFullPage: false,
       });
       resetMentions();
@@ -220,4 +223,10 @@ const StyledWrapper = styled(HStack)`
   height: 100%;
   gap: 4px;
   align-items: center;
+`;
+
+const StyledContainerFallback = styled.div`
+  min-width: 480px;
+  min-height: 307px;
+  max-width: 100%;
 `;

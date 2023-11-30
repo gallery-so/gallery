@@ -17,7 +17,12 @@ type Props = {
   profileImageUrl?: string;
 };
 
-export const MiniPostOpenGraphPreview = ({ username, caption, imageUrl, profileImageUrl }: Props) => {
+export const MiniPostOpenGraphPreview = ({
+  username,
+  caption,
+  imageUrl,
+  profileImageUrl,
+}: Props) => {
   return (
     <StyledContainer>
       <StyledGalleryContainer>
