@@ -32,7 +32,7 @@ const SnowProvider = memo(({ children }: Props) => {
   const { asPath } = useRouter();
 
   const isEnabledBasedOnRoute = useMemo(() => {
-    if (asPath.includes('/gallery')) {
+    if (asPath.includes('/edit')) {
       return false;
     }
     return true;
