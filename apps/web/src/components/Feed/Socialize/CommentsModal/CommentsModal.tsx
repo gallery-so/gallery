@@ -142,14 +142,6 @@ export function CommentsModal({
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
 
-  const handleExpand = useCallback(
-    (index: number) => {
-      measurerCache.clearAll();
-      virtualizedListRef.current?.recomputeRowHeights(index);
-    },
-    [measurerCache]
-  );
-
   const rowRepliesExpanded = useState<Record<number, boolean>>({});
 
   const setRowRepliesExpanded = useCallback(
@@ -170,6 +162,42 @@ export function CommentsModal({
     },
     [rowRepliesExpanded]
   );
+
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
+
+  const rowCount = hasPrevious ? comments.length + 1 : comments.length;
+
+  const calculateModalMaxHeight = useCallback(() => {
+    let height = 0;
+    for (let i = 0; i < rowCount; i++) {
+      height += measurerCache.rowHeight({ index: i });
+    }
+    const modalMaxHeight = fullscreen ? window.innerHeight : 640;
+    // 121 is the height of the modal header + bottom padding + comment box
+    setContentHeight(Math.min(height, modalMaxHeight - 121));
+  }, [fullscreen, rowCount, measurerCache, setContentHeight]);
+
+  const recalculateHeightsWhenCommentsChange = useCallback(() => {
+    measurerCache.clearAll();
+    virtualizedListRef.current?.recomputeRowHeights();
+    calculateModalMaxHeight();
+  }, [calculateModalMaxHeight, measurerCache]);
+
+  useEffect(recalculateHeightsWhenCommentsChange, [
+    comments,
+    measurerCache,
+    recalculateHeightsWhenCommentsChange,
+  ]);
+
+  // calculate the height of the list
+  useEffect(() => {
+    calculateModalMaxHeight();
+    //
+    // limit dependencies. we specifically want to run this effect only when the rowHeightCache changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [measurerCache._rowHeightCache]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
@@ -196,9 +224,9 @@ export function CommentsModal({
                   commentRef={interaction}
                   activeCommentId={highlightCommentId}
                   onReplyClick={handleReplyClick}
-                  onExpand={handleExpand}
                   onRowRepliesExpand={setRowRepliesExpanded}
                   isRowRepliesExpanded={getRowRepliesExpanded(index)}
+                  onReplySubmitted={recalculateHeightsWhenCommentsChange}
                 />
               </div>
             );
@@ -211,38 +239,10 @@ export function CommentsModal({
       highlightCommentId,
       measurerCache,
       comments,
-      handleExpand,
       handleReplyClick,
+      recalculateHeightsWhenCommentsChange,
       setRowRepliesExpanded,
     ]
-  );
-
-  const [contentHeight, setContentHeight] = useState(0);
-
-  // calculate the height of the list
-  useEffect(() => {
-    let height = 0;
-    for (let i = 0; i < rowCount; i++) {
-      height += measurerCache.rowHeight({ index: i });
-    }
-    const modalMaxHeight = fullscreen ? window.innerHeight : 640;
-    // 121 is the height of the modal header + bottom padding + comment box
-    setContentHeight(Math.min(height, modalMaxHeight - 121));
-    //
-    // limit dependencies. we specifically want to run this effect only when the rowHeightCache changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [measurerCache._rowHeightCache]);
-
-  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
-
-  const rowCount = hasPrevious ? comments.length + 1 : comments.length;
-
-  useEffect(
-    function recalculateHeightsWhenCommentsChange() {
-      measurerCache.clearAll();
-      virtualizedListRef.current?.recomputeRowHeights();
-    },
-    [comments, measurerCache]
   );
 
   return (

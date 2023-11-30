@@ -15,23 +15,22 @@ type Props = {
   commentRef: CommentNoteSectionFragment$key;
   activeCommentId?: string;
   onReplyClick: (params: OnReplyClickParams) => void;
-  onExpand: (index: number) => void;
 
   onRowRepliesExpand: (index: number, value: boolean) => void;
   isRowRepliesExpanded: boolean;
+  onReplySubmitted: () => void;
 };
 
-// export const REPLIES_PER_PAGE = 6;
-export const REPLIES_PER_PAGE = 1;
+export const REPLIES_PER_PAGE = 6;
 
 export function CommentNoteSection({
   index,
   commentRef,
   activeCommentId,
   onReplyClick,
-  onExpand,
   onRowRepliesExpand,
   isRowRepliesExpanded,
+  onReplySubmitted,
 }: Props) {
   const {
     data: comment,
@@ -78,22 +77,25 @@ export function CommentNoteSection({
     return totalReplies - replies.length;
   }, [replies, isRowRepliesExpanded, totalReplies]);
 
-  const loadMore = useCallback(() => {
+  const loadMore = useCallback(async () => {
     if (hasPrevious) {
-      loadPrevious(REPLIES_PER_PAGE);
-      onExpand(index);
+      await new Promise((resolve) => {
+        loadPrevious(REPLIES_PER_PAGE, { onComplete: resolve });
+      });
+      onReplySubmitted();
     }
-  }, [hasPrevious, loadPrevious, onExpand, index]);
+  }, [hasPrevious, loadPrevious, onReplySubmitted]);
 
   const handleViewRepliesClick = useCallback(() => {
     if (!isRowRepliesExpanded) {
       onRowRepliesExpand(index, true);
-      onExpand(index);
+      setTimeout(() => {
+        onReplySubmitted();
+      }, 100);
     } else {
       loadMore();
-      onExpand(index);
     }
-  }, [loadMore, onExpand, isRowRepliesExpanded, onRowRepliesExpand, index]);
+  }, [loadMore, isRowRepliesExpanded, onRowRepliesExpand, index, onReplySubmitted]);
 
   const handleReplyClickWithTopCommentId = useCallback(
     (params: OnReplyClickParams) => {
