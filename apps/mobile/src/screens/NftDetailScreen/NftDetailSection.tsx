@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
@@ -15,8 +15,8 @@ import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
@@ -36,7 +36,6 @@ import { AdmireBottomSheet } from './AdmireBottomSheet';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
-import ProcessedText from '~/components/ProcessedText/ProcessedText';
 
 type Props = {
   onShare: () => void;
