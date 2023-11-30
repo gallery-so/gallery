@@ -100,15 +100,6 @@ export function CommentsModal({
     // commentBoxRef.current?.focus();
   }, []);
 
-  const handleSubmitComment = useCallback(
-    (comment: string, mentions: MentionInput[]) => {
-      onSubmitComment(comment, mentions, selectedComment?.commentId, topCommentId?.current ?? '');
-      setSelectedComment(null);
-      topCommentId.current = null;
-    },
-    [onSubmitComment, selectedComment?.commentId]
-  );
-
   const commentRowIndex = useMemo(() => {
     if (!activeCommentId) {
       return null;
@@ -184,6 +175,21 @@ export function CommentsModal({
     virtualizedListRef.current?.recomputeRowHeights();
     calculateModalMaxHeight();
   }, [calculateModalMaxHeight, measurerCache]);
+
+  const handleSubmitComment = useCallback(
+    async (comment: string, mentions: MentionInput[]) => {
+      await onSubmitComment(
+        comment,
+        mentions,
+        selectedComment?.commentId,
+        topCommentId?.current ?? ''
+      );
+      setSelectedComment(null);
+      topCommentId.current = null;
+      recalculateHeightsWhenCommentsChange();
+    },
+    [onSubmitComment, selectedComment?.commentId, recalculateHeightsWhenCommentsChange]
+  );
 
   useEffect(recalculateHeightsWhenCommentsChange, [
     comments,
