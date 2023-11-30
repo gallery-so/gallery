@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
@@ -15,8 +15,8 @@ import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
@@ -41,19 +41,6 @@ type Props = {
   onShare: () => void;
   queryRef: NftDetailSectionQueryFragment$key;
 };
-
-const markdownStyle = StyleSheet.create({
-  body: {
-    fontSize: 14,
-  },
-  heading1: {
-    fontSize: 14,
-  },
-  hr: {
-    height: 15,
-    backgroundColor: 'transparent',
-  },
-});
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -346,7 +333,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         </View>
         {token.description && (
           <View>
-            <Markdown style={markdownStyle}>{token.description}</Markdown>
+            <ProcessedText text={token.description} />
           </View>
         )}
 
