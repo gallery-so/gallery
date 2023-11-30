@@ -142,10 +142,34 @@ export function CommentsModal({
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
 
-  const handleExpand = useCallback(() => {
-    measurerCache.clearAll();
-    virtualizedListRef.current?.recomputeRowHeights();
-  }, [measurerCache]);
+  const handleExpand = useCallback(
+    (index: number) => {
+      measurerCache.clearAll();
+      virtualizedListRef.current?.recomputeRowHeights(index);
+    },
+    [measurerCache]
+  );
+
+  const rowRepliesExpanded = useState<Record<number, boolean>>({});
+
+  const setRowRepliesExpanded = useCallback(
+    (index: number, value: boolean) => {
+      rowRepliesExpanded[1]((prev) => {
+        return {
+          ...prev,
+          [index]: value,
+        };
+      });
+    },
+    [rowRepliesExpanded]
+  );
+
+  const getRowRepliesExpanded = useCallback(
+    (index: number) => {
+      return rowRepliesExpanded[0][index] ?? false;
+    },
+    [rowRepliesExpanded]
+  );
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
@@ -168,10 +192,13 @@ export function CommentsModal({
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
                 <CommentNoteSection
+                  index={index}
                   commentRef={interaction}
                   activeCommentId={highlightCommentId}
                   onReplyClick={handleReplyClick}
                   onExpand={handleExpand}
+                  onRowRepliesExpand={setRowRepliesExpanded}
+                  isRowRepliesExpanded={getRowRepliesExpanded(index)}
                 />
               </div>
             );
@@ -179,7 +206,15 @@ export function CommentsModal({
         </CellMeasurer>
       );
     },
-    [highlightCommentId, measurerCache, comments, handleExpand, handleReplyClick]
+    [
+      getRowRepliesExpanded,
+      highlightCommentId,
+      measurerCache,
+      comments,
+      handleExpand,
+      handleReplyClick,
+      setRowRepliesExpanded,
+    ]
   );
 
   const [contentHeight, setContentHeight] = useState(0);

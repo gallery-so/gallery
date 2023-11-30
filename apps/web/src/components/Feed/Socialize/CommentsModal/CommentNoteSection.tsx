@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -11,15 +11,28 @@ import colors from '~/shared/theme/colors';
 import { CommentNote, OnReplyClickParams } from './CommentNote';
 
 type Props = {
+  index: number;
   commentRef: CommentNoteSectionFragment$key;
   activeCommentId?: string;
   onReplyClick: (params: OnReplyClickParams) => void;
-  onExpand: () => void;
+  onExpand: (index: number) => void;
+
+  onRowRepliesExpand: (index: number, value: boolean) => void;
+  isRowRepliesExpanded: boolean;
 };
 
-export const REPLIES_PER_PAGE = 6;
+// export const REPLIES_PER_PAGE = 6;
+export const REPLIES_PER_PAGE = 1;
 
-export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, onExpand }: Props) {
+export function CommentNoteSection({
+  index,
+  commentRef,
+  activeCommentId,
+  onReplyClick,
+  onExpand,
+  onRowRepliesExpand,
+  isRowRepliesExpanded,
+}: Props) {
   const {
     data: comment,
     hasPrevious,
@@ -51,8 +64,6 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
     commentRef
   );
 
-  const [showReplies, setShowReplies] = useState(false);
-
   const replies = useMemo(() => {
     return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment?.replies?.edges]);
@@ -60,28 +71,29 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
   const totalReplies = comment?.replies?.pageInfo.total ?? 0;
 
   const totalRepliesShown = useMemo(() => {
-    if (!showReplies) {
+    if (!isRowRepliesExpanded) {
       return totalReplies;
     }
 
     return totalReplies - replies.length;
-  }, [replies, showReplies, totalReplies]);
+  }, [replies, isRowRepliesExpanded, totalReplies]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {
       loadPrevious(REPLIES_PER_PAGE);
+      onExpand(index);
     }
-  }, [hasPrevious, loadPrevious]);
+  }, [hasPrevious, loadPrevious, onExpand, index]);
 
   const handleViewRepliesClick = useCallback(() => {
-    if (!showReplies) {
-      setShowReplies(true);
-      onExpand();
+    if (!isRowRepliesExpanded) {
+      onRowRepliesExpand(index, true);
+      onExpand(index);
     } else {
       loadMore();
-      onExpand();
+      onExpand(index);
     }
-  }, [loadMore, onExpand, showReplies]);
+  }, [loadMore, onExpand, isRowRepliesExpanded, onRowRepliesExpand, index]);
 
   const handleReplyClickWithTopCommentId = useCallback(
     (params: OnReplyClickParams) => {
@@ -109,17 +121,17 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
         onReplyClick={handleReplyClickWithTopCommentId}
         activeCommentId={activeCommentId}
         footerElement={
-          !showReplies && (
+          !isRowRepliesExpanded && (
             <ViewRepliesButton
               totalReplies={totalRepliesShown}
-              showReplies={showReplies}
+              showReplies={isRowRepliesExpanded}
               onClick={handleViewRepliesClick}
             />
           )
         }
       />
 
-      {showReplies && (
+      {isRowRepliesExpanded && (
         <>
           {replies.map((reply) => (
             <CommentNote
@@ -134,7 +146,7 @@ export function CommentNoteSection({ commentRef, activeCommentId, onReplyClick, 
           <StyledViewRepliesButtonWrapper>
             <ViewRepliesButton
               totalReplies={totalRepliesShown}
-              showReplies={showReplies}
+              showReplies={isRowRepliesExpanded}
               onClick={handleViewRepliesClick}
             />
           </StyledViewRepliesButtonWrapper>
