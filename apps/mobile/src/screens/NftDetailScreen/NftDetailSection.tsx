@@ -36,24 +36,12 @@ import { AdmireBottomSheet } from './AdmireBottomSheet';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
+import ProcessedText from '~/components/ProcessedText/ProcessedText';
 
 type Props = {
   onShare: () => void;
   queryRef: NftDetailSectionQueryFragment$key;
 };
-
-const markdownStyle = StyleSheet.create({
-  body: {
-    fontSize: 14,
-  },
-  heading1: {
-    fontSize: 14,
-  },
-  hr: {
-    height: 15,
-    backgroundColor: 'transparent',
-  },
-});
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -346,7 +334,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         </View>
         {token.description && (
           <View>
-            <Markdown style={markdownStyle}>{token.description}</Markdown>
+            <ProcessedText text={token.description} />
           </View>
         )}
 
