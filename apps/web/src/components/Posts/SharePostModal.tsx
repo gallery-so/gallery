@@ -65,7 +65,6 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
   const { post } = queryResponse;
   const postUrl = `https://gallery.so/post/${realPostId}`;
 
-  console.log('post', post);
   const { pushToast } = useToastActions();
 
   const handleCopyToClipboard = useCallback(async () => {
