@@ -364,7 +364,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
           textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : undefined}
           containerClassName={
-          hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+            hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
           }
         />
 
