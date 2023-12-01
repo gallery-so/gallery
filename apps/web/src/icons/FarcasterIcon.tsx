@@ -4,7 +4,7 @@ type Props = {
 
 export default function FarcasterIcon({ fillColor = '#141414' }: Props) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_501_4356)">
         <path
           d="M15.4666 14.2859C15.7613 14.2859 16 14.5203 16 14.8097V15.3335H10.6666V14.8097C10.6666 14.5203 10.9053 14.2859 11.2 14.2859H15.4666Z"

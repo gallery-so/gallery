@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import Input from '~/components/core/Input/Input';
+import { ReadOnlyInput } from '~/components/core/Input/Input';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
 import FarcasterIcon from '~/icons/FarcasterIcon';
@@ -15,6 +15,8 @@ import { noop } from '~/shared/utils/noop';
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
+import breakpoints from '../core/breakpoints';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   postId: string;
@@ -123,17 +125,17 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 
   const shareButtonsDetails = [
     {
-      icon: <FarcasterIcon fillColor="white" />,
+      icon: <FarcasterIcon fillColor="#FEFEFE" />,
       title: 'WARPCAST',
       baseComposePostUrl: 'https://warpcast.com/~/compose',
     },
     {
-      icon: <LensIcon fillColor="white" />,
+      icon: <LensIcon fillColor="#FEFEFE" />,
       title: 'LENS',
       baseComposePostUrl: 'https://hey.xyz/',
     },
     {
-      icon: <TwitterIcon fillColor="white" />,
+      icon: <TwitterIcon fillColor="#FEFEFE" />,
       title: 'TWITTER',
       baseComposePostUrl: 'https://twitter.com/intent/tweet',
     },
@@ -166,7 +168,12 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
         </HStack>
         <StyledPostUrlContainer gap={8}>
           <InputContainer>
-            <Input onChange={noop} disabled={true} defaultValue={postUrl} placeholder="post link" />
+            <ReadOnlyInput
+              onChange={noop}
+              disabled={true}
+              defaultValue={postUrl}
+              placeholder="post link"
+            />
           </InputContainer>
           <Button
             onClick={handleCopyToClipboard}
@@ -184,8 +191,13 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 }
 
 const StyledContainer = styled.div`
-  min-width: 480px;
+  min-width: 324px;
   max-width: 100%;
+
+  @media only screen and ${breakpoints.desktop} {
+    min-width: 480px;
+    font-size: 14px;
+  }
 `;
 
 type ButtonProps = {
@@ -195,6 +207,8 @@ type ButtonProps = {
 };
 
 function ShareButton({ title, icon, onClick }: ButtonProps) {
+  const isMobile = useIsMobileWindowWidth();
+
   return (
     <StyledButton
       onClick={onClick}
@@ -202,26 +216,36 @@ function ShareButton({ title, icon, onClick }: ButtonProps) {
       eventName="Click Share"
       eventElementId="Click Share Button"
     >
-      <HStack gap={8} align="center">
+      <StyledInnerShareButton gap={!isMobile ? 8 : 6} align="center">
         {icon}
         {title}
-      </HStack>
+      </StyledInnerShareButton>
     </StyledButton>
   );
 }
 
 const StyledButton = styled(Button)`
-  gap: 12px;
   flex-wrap: wrap;
   height: 32px;
   flex: 1;
+  padding: 4px;
+  font-size: 12px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 8px 24px;
+  }
 `;
 
 const InputContainer = styled.div`
   width: 82%;
-  height: 32px;
+  height: 30px;
+  font-size: 14px;
 `;
 
 const StyledPostUrlContainer = styled(HStack)`
-  margin-bottom: 24px;
+  margin-bottom: 14px;
+`;
+
+const StyledInnerShareButton = styled(HStack)`
+  font-size: 12px;
 `;
