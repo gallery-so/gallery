@@ -1,5 +1,5 @@
 type Props = {
-  fill: string;
+  fill?: string;
 };
 
 export default function LensIcon({ fill = 'black' }: Props) {
