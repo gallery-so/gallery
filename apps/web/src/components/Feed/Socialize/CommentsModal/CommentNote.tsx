@@ -95,7 +95,7 @@ export function CommentNote({
           </StyledProfilePictureWrapper>
         )}
 
-        <VStack gap={6}>
+        <VStack>
           <HStack gap={4} align="center">
             <UsernameLink
               username={comment.commenter?.username ?? null}
@@ -103,7 +103,7 @@ export function CommentNote({
             />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <VStack gap={4}>
+          <StyledCommentAndReplyButtonContainer gap={2}>
             <StyledBaseM as="span">
               <ProcessedText
                 text={comment.comment ?? ''}
@@ -117,7 +117,7 @@ export function CommentNote({
             </StyledReplyText>
 
             {footerElement}
-          </VStack>
+          </StyledCommentAndReplyButtonContainer>
         </VStack>
       </HStack>
     </StyledListItem>
@@ -162,4 +162,8 @@ const StyledReplyText = styled(BaseS)`
   color: ${colors.shadow};
   font-weight: 700;
   cursor: pointer;
+`;
+
+const StyledCommentAndReplyButtonContainer = styled(VStack)`
+  margin-top: -2px;
 `;

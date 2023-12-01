@@ -18,7 +18,7 @@ export function CommentRepliedBanner({ username, comment, onClose }: Props) {
   }
 
   return (
-    <StyledWrapper gap={6}>
+    <StyledWrapper>
       <HStack align="center" justify="space-between">
         <StyledCommentAuthor>Replying to {username}</StyledCommentAuthor>
         <IconContainer
