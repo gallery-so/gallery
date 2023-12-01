@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
@@ -71,7 +72,18 @@ export default function PostHeader({ postRef, queryRef }: Props) {
               </VStack>
             </HStack>
           </UserHoverCard>
-          <HStack align="center">{post.isFirstPost && <LeafIcon />}</HStack>
+          <HStack align="center">
+            {post.isFirstPost && (
+              <IconContainer
+                variant="stacked"
+                icon={<LeafIcon />}
+                tooltipLabel="First-time poster"
+                disableHoverPadding
+                disabled
+                tooltipPlacement="right"
+              />
+            )}
+          </HStack>
         </HStack>
 
         <HStack align="center" gap={4}>
