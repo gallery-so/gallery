@@ -28,6 +28,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       fragment PostHeaderFragment on Post {
         __typename
         caption
+        isFirstPost
         author @required(action: THROW) {
           ... on GalleryUser {
             username
@@ -60,14 +61,18 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
-        <UserHoverCard userRef={post.author}>
-          <HStack align="center" gap={6}>
-            <ProfilePicture userRef={post.author} size="md" />
-            <VStack>
-              <TitleDiatypeM>{displayName}</TitleDiatypeM>
-            </VStack>
-          </HStack>
-        </UserHoverCard>
+        <HStack gap={4}>
+          <UserHoverCard userRef={post.author}>
+            <HStack align="center" gap={6}>
+              <ProfilePicture userRef={post.author} size="md" />
+              <VStack>
+                <TitleDiatypeM>{displayName}</TitleDiatypeM>
+              </VStack>
+            </HStack>
+          </UserHoverCard>
+          {post.isFirstPost && null}
+        </HStack>
+
         <HStack align="center" gap={4}>
           <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
           <PostDropdown postRef={post} queryRef={query} />

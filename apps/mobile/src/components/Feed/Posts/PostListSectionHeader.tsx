@@ -28,6 +28,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderFragment on Post {
         __typename
+        isFirstPost
         author @required(action: THROW) {
           __typename
           id
@@ -83,6 +84,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           >
             <ProfilePicture userRef={feedPost.author} size="md" />
           </GalleryTouchableOpacity>
+          {feedPost.isFirstPost && null}
           <View className="flex-1">
             <GalleryTouchableOpacity
               className="flex flex-row items-center space-x-1"
