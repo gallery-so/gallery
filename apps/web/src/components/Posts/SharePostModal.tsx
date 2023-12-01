@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ReadOnlyInput } from '~/components/core/Input/Input';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import FarcasterIcon from '~/icons/FarcasterIcon';
 import LensIcon from '~/icons/LensIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
@@ -12,11 +13,10 @@ import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { noop } from '~/shared/utils/noop';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
-import breakpoints from '../core/breakpoints';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   postId: string;
