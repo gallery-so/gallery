@@ -31,11 +31,12 @@ const MAX_TEXT_LENGTH = 300;
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
-  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
+  onSubmitComment: (comment: string, mentions: MentionInput[], replyToId?: string) => void;
   isSubmittingComment: boolean;
+  replyToId?: string;
 };
 
-export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: Props) {
+export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, replyToId }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -121,7 +122,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     });
 
     try {
-      onSubmitComment(message, mentions);
+      onSubmitComment(message, mentions, replyToId);
     } catch (error) {
       pushErrorToast();
       return;
@@ -137,6 +138,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     showModal,
     onSubmitComment,
     pushErrorToast,
+    replyToId,
   ]);
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(

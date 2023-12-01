@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import { REPLIES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentNoteSection';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -20,13 +21,15 @@ export default function StandalonePost({ postId }: Props) {
         $postId: DBID!
         $interactionsFirst: Int!
         $interactionsAfter: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...StandardSidebarFragment
         ...StandalonePostPageQueryFragment
         ...HomeNavbarFragment
       }
     `,
-    { postId, interactionsFirst: NOTES_PER_PAGE }
+    { postId, interactionsFirst: NOTES_PER_PAGE, replyLast: REPLIES_PER_PAGE }
   );
 
   return (

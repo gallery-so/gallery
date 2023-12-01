@@ -28,6 +28,7 @@ import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
 import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
+import { SomeoneRepliedToYourComment } from './notifications/SomeoneRepliedToYourComment';
 import { SomeoneYouFollowPostedTheirFirstPost } from './notifications/SomeoneYouFollowPostedTheirFirstPost';
 
 type NotificationProps = {
@@ -121,6 +122,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           post {
             dbid
+          }
+        }
+
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          comment {
+            source {
+              ... on Post {
+                __typename
+                dbid
+              }
+            }
           }
         }
 
@@ -250,6 +263,21 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      const postId =
+        notification.comment?.source?.__typename === 'Post'
+          ? notification.comment?.source?.dbid
+          : undefined;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (postId) {
+            push({ pathname: `/post/[postId]`, query: { postId } });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
@@ -300,6 +328,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeonePostedYourWorkNotification',
       'SomeoneMentionedYouNotification',
       'SomeoneYouFollowPostedTheirFirstPostNotification',
+      'SomeoneRepliedToYourCommentNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -418,6 +447,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
         }
+
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          ...SomeoneRepliedToYourCommentFragment
+        }
       }
     `,
     notificationRef
@@ -465,6 +499,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return (
       <SomeoneYouFollowPostedTheirFirstPost notificationRef={notification} onClose={handleClose} />
     );
+  } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+    return <SomeoneRepliedToYourComment notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;

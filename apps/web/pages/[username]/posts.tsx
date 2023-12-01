@@ -3,6 +3,7 @@ import { loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
+import { REPLIES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentNoteSection';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -29,6 +30,8 @@ const postsQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
+    $replyLast: Int!
+    $replyBefore: String
   ) {
     ...UserActivityPageFragment
     ...GalleryNavbarFragment
@@ -74,6 +77,7 @@ UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+        replyLast: REPLIES_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );

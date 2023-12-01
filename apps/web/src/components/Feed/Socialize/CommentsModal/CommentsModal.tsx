@@ -13,7 +13,6 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import { CommentNote } from '~/components/Feed/Socialize/CommentsModal/CommentNote';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { CommentsModalFragment$key } from '~/generated/CommentsModalFragment.graphql';
 import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFragment.graphql';
@@ -21,6 +20,9 @@ import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
 import colors from '~/shared/theme/colors';
 
 import { CommentBox } from '../CommentBox/CommentBox';
+import { OnReplyClickParams } from './CommentNote';
+import { CommentNoteSection } from './CommentNoteSection';
+import { CommentRepliedBanner } from './CommentRepliedBanner';
 
 export const NOTES_PER_PAGE = 20;
 
@@ -30,7 +32,12 @@ type CommentsModalProps = {
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
   commentsRef: CommentsModalFragment$key;
-  onSubmitComment: (comment: string, mentions: MentionInput[]) => void;
+  onSubmitComment: (
+    comment: string,
+    mentions: MentionInput[],
+    replyToId?: string,
+    topCommentId?: string
+  ) => void;
   isSubmittingComment: boolean;
   activeCommentId?: string;
 };
@@ -50,6 +57,7 @@ export function CommentsModal({
       fragment CommentsModalFragment on Comment @relay(plural: true) {
         dbid
         ...CommentNoteFragment
+        ...CommentNoteSectionFragment
       }
     `,
     commentsRef
@@ -64,7 +72,33 @@ export function CommentsModal({
     queryRef
   );
 
+  const [selectedComment, setSelectedComment] = useState<OnReplyClickParams>(null);
+  const topCommentId = useRef<string | null>(null);
   const virtualizedListRef = useRef<List | null>(null);
+
+  const highlightCommentId = useMemo(() => {
+    if (selectedComment?.commentId) {
+      return selectedComment.commentId;
+    }
+
+    if (activeCommentId) {
+      return activeCommentId;
+    }
+
+    return undefined;
+  }, [activeCommentId, selectedComment?.commentId]);
+
+  const handleReplyClick = useCallback((params: OnReplyClickParams) => {
+    setSelectedComment(params);
+
+    if (params?.topCommentId) {
+      topCommentId.current = params.topCommentId;
+    } else {
+      topCommentId.current = null;
+    }
+
+    // commentBoxRef.current?.focus();
+  }, []);
 
   const commentRowIndex = useMemo(() => {
     if (!activeCommentId) {
@@ -99,6 +133,78 @@ export function CommentsModal({
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
 
+  const rowRepliesExpanded = useState<Record<number, boolean>>({});
+
+  const setRowRepliesExpanded = useCallback(
+    (index: number, value: boolean) => {
+      rowRepliesExpanded[1]((prev) => {
+        return {
+          ...prev,
+          [index]: value,
+        };
+      });
+    },
+    [rowRepliesExpanded]
+  );
+
+  const getRowRepliesExpanded = useCallback(
+    (index: number) => {
+      return rowRepliesExpanded[0][index] ?? false;
+    },
+    [rowRepliesExpanded]
+  );
+
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
+
+  const rowCount = hasPrevious ? comments.length + 1 : comments.length;
+
+  const calculateModalMaxHeight = useCallback(() => {
+    let height = 0;
+    for (let i = 0; i < rowCount; i++) {
+      height += measurerCache.rowHeight({ index: i });
+    }
+    const modalMaxHeight = fullscreen ? window.innerHeight : 640;
+    // 121 is the height of the modal header + bottom padding + comment box
+    setContentHeight(Math.min(height, modalMaxHeight - 121));
+  }, [fullscreen, rowCount, measurerCache, setContentHeight]);
+
+  const recalculateHeightsWhenCommentsChange = useCallback(() => {
+    measurerCache.clearAll();
+    virtualizedListRef.current?.recomputeRowHeights();
+    calculateModalMaxHeight();
+  }, [calculateModalMaxHeight, measurerCache]);
+
+  const handleSubmitComment = useCallback(
+    async (comment: string, mentions: MentionInput[]) => {
+      await onSubmitComment(
+        comment,
+        mentions,
+        selectedComment?.commentId,
+        topCommentId?.current ?? ''
+      );
+      setSelectedComment(null);
+      topCommentId.current = null;
+      recalculateHeightsWhenCommentsChange();
+    },
+    [onSubmitComment, selectedComment?.commentId, recalculateHeightsWhenCommentsChange]
+  );
+
+  useEffect(recalculateHeightsWhenCommentsChange, [
+    comments,
+    measurerCache,
+    recalculateHeightsWhenCommentsChange,
+  ]);
+
+  // calculate the height of the list
+  useEffect(() => {
+    calculateModalMaxHeight();
+    //
+    // limit dependencies. we specifically want to run this effect only when the rowHeightCache changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [measurerCache._rowHeightCache]);
+
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
       const interaction = comments[comments.length - index - 1];
@@ -119,42 +225,30 @@ export function CommentsModal({
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
-                <CommentNote commentRef={interaction} activeCommentId={activeCommentId} />
+                <CommentNoteSection
+                  index={index}
+                  commentRef={interaction}
+                  activeCommentId={highlightCommentId}
+                  onReplyClick={handleReplyClick}
+                  onRowRepliesExpand={setRowRepliesExpanded}
+                  isRowRepliesExpanded={getRowRepliesExpanded(index)}
+                  onReplySubmitted={recalculateHeightsWhenCommentsChange}
+                />
               </div>
             );
           }}
         </CellMeasurer>
       );
     },
-    [activeCommentId, measurerCache, comments]
-  );
-
-  const [contentHeight, setContentHeight] = useState(0);
-
-  // calculate the height of the list
-  useEffect(() => {
-    let height = 0;
-    for (let i = 0; i < rowCount; i++) {
-      height += measurerCache.rowHeight({ index: i });
-    }
-    const modalMaxHeight = fullscreen ? window.innerHeight : 640;
-    // 121 is the height of the modal header + bottom padding + comment box
-    setContentHeight(Math.min(height, modalMaxHeight - 121));
-    //
-    // limit dependencies. we specifically want to run this effect only when the rowHeightCache changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [measurerCache._rowHeightCache]);
-
-  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
-
-  const rowCount = hasPrevious ? comments.length + 1 : comments.length;
-
-  useEffect(
-    function recalculateHeightsWhenCommentsChange() {
-      measurerCache.clearAll();
-      virtualizedListRef.current?.recomputeRowHeights();
-    },
-    [comments, measurerCache]
+    [
+      getRowRepliesExpanded,
+      highlightCommentId,
+      measurerCache,
+      comments,
+      handleReplyClick,
+      recalculateHeightsWhenCommentsChange,
+      setRowRepliesExpanded,
+    ]
   );
 
   return (
@@ -192,10 +286,19 @@ export function CommentsModal({
             )}
           </AutoSizer>
         )}
+        <CommentRepliedBanner
+          username={selectedComment?.username ?? ''}
+          comment={selectedComment?.comment ?? ''}
+          onClose={() => {
+            setSelectedComment(null);
+            topCommentId.current = null;
+          }}
+        />
         <CommentBox
           queryRef={query}
-          onSubmitComment={onSubmitComment}
+          onSubmitComment={handleSubmitComment}
           isSubmittingComment={isSubmittingComment}
+          replyToId={selectedComment?.commentId}
         />
       </WrappingVStack>
     </ModalContent>
