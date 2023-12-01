@@ -1,24 +1,24 @@
 import Script from 'next/script';
 import styled from 'styled-components';
 
-export default function AnimatedSnowfall() {
+export default function AnimatedSnowfall({ amount }: { amount: number }) {
   return (
     <>
       <StyledDiv id="snow" />
       <Script
         src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"
-        onLoad={handleLoad}
+        onLoad={() => handleLoad(amount)}
       />
     </>
   );
 }
 
-function handleLoad() {
+function handleLoad(amount: number) {
   // @ts-expect-error: temp importing above library
   particlesJS('snow', {
     particles: {
       number: {
-        value: 150,
+        value: amount,
         density: {
           enable: true,
           value_area: 800,
