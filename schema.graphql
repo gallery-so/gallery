@@ -46,6 +46,14 @@ type Admire implements Node {
   source: AdmireSource
 }
 
+type AdmireCommentPayload {
+  viewer: Viewer
+  comment: Comment
+  admire: Admire
+}
+
+union AdmireCommentPayloadOrError = AdmireCommentPayload | ErrCommentNotFound | ErrInvalidInput | ErrNotAuthorized
+
 type AdmireFeedEventPayload {
   viewer: Viewer
   admire: Admire
@@ -60,9 +68,9 @@ type AdmirePostPayload {
   admire: Admire
 }
 
-union AdmirePostPayloadOrError = AdmirePostPayload | ErrInvalidInput | ErrNotAuthorized
+union AdmirePostPayloadOrError = AdmirePostPayload | ErrInvalidInput | ErrNotAuthorized | ErrPostNotFound
 
-union AdmireSource = Post | FeedEvent
+union AdmireSource = Post | FeedEvent | Comment
 
 type AdmireTokenPayload {
   viewer: Viewer
@@ -273,6 +281,18 @@ type Comment implements Node {
   replies(before: String, after: String, first: Int, last: Int): CommentsConnection
   source: CommentSource
   deleted: Boolean
+  viewerAdmire: Admire
+  admires(before: String, after: String, first: Int, last: Int): CommentAdmiresConnection
+}
+
+type CommentAdmireEdge {
+  node: Admire
+  cursor: String
+}
+
+type CommentAdmiresConnection {
+  edges: [CommentAdmireEdge]
+  pageInfo: PageInfo
 }
 
 type CommentEdge {
@@ -365,6 +385,7 @@ type Contract implements Node {
   profileImageURL: String
   profileBannerURL: String
   badgeURL: String
+  mintURL: String
   isSpam: Boolean
 }
 
@@ -1072,6 +1093,7 @@ type Mutation {
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
   admirePost(postId: DBID!): AdmirePostPayloadOrError
   admireToken(tokenId: DBID!): AdmireTokenPayloadOrError
+  admireComment(commentId: DBID!): AdmireCommentPayloadOrError
   removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError
   commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!, mentions: [MentionInput!]): CommentOnFeedEventPayloadOrError
   removeComment(commentId: DBID!): RemoveCommentPayloadOrError
@@ -1212,6 +1234,7 @@ type Post implements Node {
   comments(before: String, after: String, first: Int, last: Int): PostCommentsConnection
   interactions(before: String, after: String, first: Int, last: Int): InteractionsConnection
   viewerAdmire: Admire
+  isFirstPost: Boolean!
 }
 
 type PostAdmireEdge {
@@ -1589,6 +1612,17 @@ type SocialQueries {
 }
 
 union SocialQueriesOrError = SocialQueries | ErrNotAuthorized | ErrNeedsToReconnectSocial
+
+type SomeoneAdmiredYourCommentNotification implements Notification & Node & GroupedNotification {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  count: Int
+  comment: Comment
+  admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+}
 
 type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & GroupedNotification {
   id: ID!
