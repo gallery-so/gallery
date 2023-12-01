@@ -3,7 +3,7 @@ type Props = {
   fill?: string;
 };
 
-export default function TwitterIcon({ size = 'sm', fill= '#000' }: Props) {
+export default function TwitterIcon({ size = 'sm', fill = '#000' }: Props) {
   if (size === 'md') {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="18" fill="none">
