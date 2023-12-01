@@ -215,6 +215,7 @@ function ShareButton({ title, icon, onClick }: ButtonProps) {
       eventContext={contexts.Posts}
       eventName="Click Share"
       eventElementId="Click Share Button"
+      properties={{ variant: title }}
     >
       <StyledInnerShareButton gap={!isMobile ? 8 : 6} align="center">
         {icon}
