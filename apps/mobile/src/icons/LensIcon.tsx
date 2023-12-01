@@ -4,10 +4,14 @@ import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export default function LensIcon(props: SvgProps) {
+type Props = {
+  fill?: string;
+} & SvgProps;
+
+export default function LensIcon({ fill, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
-  const strokeColor = colorScheme === 'dark' ? colors.white : colors.black['800'];
+  const strokeColor = fill ? fill : colorScheme === 'dark' ? colors.white : colors.black['800'];
 
   return (
     <Svg width="16" height="16" viewBox="35 33 108 108" fill="none" {...props}>
