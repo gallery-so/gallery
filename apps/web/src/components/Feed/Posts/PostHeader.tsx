@@ -9,6 +9,7 @@ import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
+import LeafIcon from '~/icons/LeafIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
@@ -61,7 +62,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
-        <HStack gap={4}>
+        <HStack gap={6}>
           <UserHoverCard userRef={post.author}>
             <HStack align="center" gap={6}>
               <ProfilePicture userRef={post.author} size="md" />
@@ -70,7 +71,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
               </VStack>
             </HStack>
           </UserHoverCard>
-          {post.isFirstPost && null}
+          <HStack align="center">{post.isFirstPost && <LeafIcon />}</HStack>
         </HStack>
 
         <HStack align="center" gap={4}>
