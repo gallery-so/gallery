@@ -202,10 +202,13 @@ function PostComposerScreenInner() {
         </View>
       </View>
       <WarningPostBottomSheet ref={bottomSheetRef} />
-      <SharePostBottomSheet
-        ref={sharePostBottomSheetRef}
-        postId={createdPostId.substring(5) ?? ''}
-      />
+
+      <Suspense fallback={null}>
+        <SharePostBottomSheet
+          ref={sharePostBottomSheetRef}
+          postId={createdPostId.substring(5) ?? ''}
+        />
+      </Suspense>
     </View>
   );
 }

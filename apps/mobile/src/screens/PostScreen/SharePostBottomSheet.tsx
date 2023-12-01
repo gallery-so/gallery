@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, ReactElement, useCallback, useRef } from 'react';
+import { ForwardedRef, forwardRef, ReactElement, useCallback, useRef, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { Linking, View } from 'react-native';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
@@ -18,6 +18,8 @@ import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { contexts } from '~/shared/analytics/constants';
 import { SharePostBottomSheetQuery } from '~/generated/SharePostBottomSheetQuery.graphql';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -28,7 +30,7 @@ type Props = {
 
 function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
   const navigation = useNavigation();
-  /*
+  const realPostId = props.postId;
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
     graphql`
       query SharePostBottomSheetQuery($postId: DBID!) {
@@ -65,18 +67,19 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
         }
       }
     `,
-    { postId: props.postId }
+    { postId: realPostId }
   );
-*/
 
+  const { post } = queryResponse;
   const { bottom } = useSafeAreaPadding();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
-  const postId = 'jorjro';
-  const postUrl = `https://gallery.so/post/${postId}`;
+
+  // const postId = 'jorjro';
+  const postUrl = `https://gallery.so/post/${realPostId}`;
   const tokenName = 'allstarz';
 
   const handleShareButtonPress = useCallback(
@@ -92,6 +95,44 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
   const handleCopyButtonPress = useCallback(() => {
     //Clipboard.setString(postUrl);
   }, [postUrl]);
+
+  const profileImageUrl = useMemo(() => {
+    if (!post || post?.__typename !== 'Post') {
+      return null;
+    }
+
+    const { token, profileImage } = post.author.profileImage ?? {};
+
+    if (profileImage && profileImage.previewURLs?.medium) {
+      return profileImage.previewURLs.medium;
+    }
+
+    if (token) {
+      const result = getPreviewImageUrlsInlineDangerously({
+        tokenRef: token,
+      });
+      if (result.type === 'valid') {
+        return result.urls.large;
+      }
+      return null;
+    }
+
+    return null;
+  }, [post]);
+
+  if (post?.__typename !== 'Post') {
+    return null;
+  }
+
+  const token = post.tokens?.[0];
+  if (!token) {
+    return null;
+  }
+
+  const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
+  if (result.type !== 'valid') {
+    return null;
+  }
 
   const shareButtonDetails = [
     {
@@ -110,6 +151,10 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
       baseComposePostUrl: 'https://twitter.com/intent/tweet',
     },
   ];
+
+  const imageUrl = result.urls.small ?? '';
+  const username = post.author.username ?? '';
+  const caption = post.caption ?? '';
 
   return (
     <GalleryBottomSheetModal
@@ -138,12 +183,12 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
           >
             Successfuly posted {tokenName}
           </Typography>
-          <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            Insert og image preview here If you go back now, this post will be discarded.
-          </Typography>
+          <MiniPostOpenGraphPreview
+            imageUrl={imageUrl}
+            username={username}
+            profileImageUrl={profileImageUrl ?? ''}
+            caption={caption}
+          />
         </View>
         <View className="flex flex-row space-x-4 justify-between">
           {shareButtonDetails.map((btnDetails) => (

@@ -7,11 +7,20 @@ export enum DateFormatOption {
   ISO_8601 = 'yyyy-MM-dd HH:mm:ss', // e.g., "2023-07-28 15:47:51"
 }
 
-// Utility function to format a date string
 export const getFormattedDate = (
   inputDateString: string,
   formatOption: DateFormatOption
 ): string => {
+  // Validate inputDateString
+  if (!inputDateString || isNaN(new Date(inputDateString).getTime())) {
+    // If inputDateString is not provided or is not a valid date string
+    console.error('Invalid date string:', inputDateString);
+    return 'Invalid Date';
+  }
+
+  // Create a Date object
   const date: Date = new Date(inputDateString);
+
+  // Format the date using date-fns library
   return format(date, formatOption);
 };
