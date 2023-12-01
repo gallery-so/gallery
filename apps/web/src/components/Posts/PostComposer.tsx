@@ -103,8 +103,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       showModal({
         headerText: `Successfully posted ${token.name || 'item'}`,
         content: (
-          <Suspense fallback={<StyledContainerFallback />}>
-            <SharePostModal postId={responsePost?.id ?? ''} tokenName={token.name ?? ''} />
+          <Suspense fallback={<SharePostModalFallback />}>
+            <SharePostModal postId={responsePost?.dbid ?? ''} tokenName={token.name ?? ''} />
           </Suspense>
         ),
         isFullPage: false,
@@ -225,7 +225,7 @@ const StyledWrapper = styled(HStack)`
   align-items: center;
 `;
 
-const StyledContainerFallback = styled.div`
+const SharePostModalFallback = styled.div`
   min-width: 480px;
   min-height: 307px;
   max-width: 100%;

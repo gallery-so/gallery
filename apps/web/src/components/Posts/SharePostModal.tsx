@@ -12,6 +12,7 @@ import TwitterIcon from '~/icons/TwitterIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { noop } from '~/shared/utils/noop';
+import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -24,7 +25,6 @@ type Props = {
 };
 
 export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
-  const realPostId = postId.substring(5);
   const queryResponse = useLazyLoadQuery<SharePostModalQuery>(
     graphql`
       query SharePostModalQuery($postId: DBID!) {
@@ -61,11 +61,11 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
         }
       }
     `,
-    { postId: realPostId }
+    { postId: postId }
   );
 
   const { post } = queryResponse;
-  const postUrl = `https://gallery.so/post/${realPostId}`;
+  const postUrl = `${getBaseUrl()}/post/${postId}`;
 
   const { pushToast } = useToastActions();
 
@@ -125,17 +125,17 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 
   const shareButtonsDetails = [
     {
-      icon: <FarcasterIcon fillColor="#FEFEFE" />,
+      icon: <FarcasterIcon fill="#FEFEFE" />,
       title: 'WARPCAST',
       baseComposePostUrl: 'https://warpcast.com/~/compose',
     },
     {
-      icon: <LensIcon fillColor="#FEFEFE" />,
+      icon: <LensIcon fill="#FEFEFE" />,
       title: 'LENS',
       baseComposePostUrl: 'https://hey.xyz/',
     },
     {
-      icon: <TwitterIcon fillColor="#FEFEFE" />,
+      icon: <TwitterIcon fill="#FEFEFE" />,
       title: 'TWITTER',
       baseComposePostUrl: 'https://twitter.com/intent/tweet',
     },
@@ -148,7 +148,7 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
   return (
     <StyledContainer>
       <VStack gap={16}>
-        <HStack justify="space-between">
+        <HStack>
           <MiniPostOpenGraphPreview
             caption={caption}
             username={username}

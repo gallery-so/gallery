@@ -1,17 +1,16 @@
-import { useCallback, useMemo } from 'react';
+import { Suspense, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
-import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
+import SharePostModal from '~/components/Posts/SharePostModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import { contexts } from '~/shared/analytics/constants';
-import { noop } from '~/shared/utils/noop';
-import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
 
@@ -34,6 +33,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
         }
         tokens {
           dbid
+          name
           owner {
             username
           }
@@ -68,11 +68,19 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
 
   const token = post.tokens && post.tokens[0];
 
-  const postUrl = useMemo(() => {
-    return `${getBaseUrl()}/post/${post.dbid}`;
-  }, [post.dbid]);
-
   const { showModal } = useModalActions();
+
+  const handleSharePostClick = () => {
+    showModal({
+      headerText: `Successfully posted ${token?.name || 'item'}`,
+      content: (
+        <Suspense fallback={<SharePostModalFallback />}>
+          <SharePostModal postId={post.dbid ?? ''} tokenName={token?.name ?? ''} />
+        </Suspense>
+      ),
+      isFullPage: false,
+    });
+  };
 
   const handleDeletePostClick = useCallback(() => {
     showModal({
@@ -87,9 +95,12 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
     return (
       <SettingsDropdown iconVariant="default">
         <DropdownSection>
-          <CopyToClipboard textToCopy={postUrl}>
-            <DropdownItem name="Feed Post" eventContext={contexts.Posts} label="Share" />
-          </CopyToClipboard>
+          <DropdownItem
+            onClick={handleSharePostClick}
+            name="Feed Post"
+            eventContext={contexts.Posts}
+            label="Share"
+          />
           {token && (
             <LinkToFullPageNftDetailModal
               username={token?.owner?.username ?? ''}
@@ -118,14 +129,12 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
   return (
     <SettingsDropdown iconVariant="default">
       <DropdownSection>
-        <CopyToClipboard textToCopy={postUrl}>
-          <DropdownItem
-            onClick={noop}
-            name="Feed Post"
-            eventContext={contexts.Posts}
-            label="Share"
-          />
-        </CopyToClipboard>
+        <DropdownItem
+          onClick={handleSharePostClick}
+          name="Feed Post"
+          eventContext={contexts.Posts}
+          label="Share"
+        />
         {/* Follow up: GAL-3862 */}
         {/* <DropdownItem onClick={handleFollowClick}>
           <BaseM>Follow</BaseM>
@@ -143,3 +152,9 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
     </SettingsDropdown>
   );
 }
+
+const SharePostModalFallback = styled.div`
+  min-width: 480px;
+  min-height: 307px;
+  max-width: 100%;
+`;

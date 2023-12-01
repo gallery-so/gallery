@@ -27,7 +27,7 @@ export default function useCreatePost() {
           ... on PostTokensPayload {
             post {
               __typename
-              id
+              dbid
               tokens {
                 community {
                   contractAddress {

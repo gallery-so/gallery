@@ -15,7 +15,6 @@ type Props = {
   autoFocus?: boolean;
   errorMessage?: string;
   variant?: 'grande' | 'medium';
-  disabled?: boolean;
   type?: HTMLInputTypeAttribute;
 };
 
@@ -26,7 +25,6 @@ function Input({
   autoFocus = false,
   errorMessage,
   variant = 'medium',
-  disabled = false,
   type,
 }: Props) {
   return (
@@ -42,7 +40,6 @@ function Input({
         autoCapitalize="off"
         spellCheck="false"
         variant={variant}
-        disabled={disabled}
         type={type}
       />
       {errorMessage && <ErrorText message={errorMessage} />}
