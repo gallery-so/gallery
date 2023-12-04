@@ -107,13 +107,6 @@ export function CommentNoteSection({
     [comment.dbid, onReplyClick]
   );
 
-  // TEMPORARY FIX: not sure how this component is even being rendered without a truthy `comment`
-
-  if (!comment) {
-    return null;
-  }
-  // END TEMPORARY FIX
-
   return (
     <VStack>
       <CommentNote
