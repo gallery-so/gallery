@@ -9,7 +9,7 @@ import Tooltip from '~/components/Tooltip/Tooltip';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
-import { BADGE_ENABLED_COMMUNITY_ADDRESSES, BADGE_ENABLED_NAMES } from '~/shared/utils/communities';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -62,10 +62,9 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
   const isEnabled = useMemo(() => {
     return (
-      BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '') ||
-      BADGE_ENABLED_NAMES.has(name ?? '')
+      BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '') || imageURL
     );
-  }, [contract?.contractAddress?.address, name]);
+  }, [contract?.contractAddress?.address, imageURL]);
 
   if (!isEnabled) {
     return null;
@@ -106,7 +105,8 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
+  transform: translateY(${({ showTooltip }) => (showTooltip ? 28 : 24)}px);
+  z-index: 5;
 `;
 
 const StyledGalleryLink = styled(GalleryLink)`
