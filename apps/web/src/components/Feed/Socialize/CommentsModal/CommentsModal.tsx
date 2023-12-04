@@ -96,8 +96,6 @@ export function CommentsModal({
     } else {
       topCommentId.current = null;
     }
-
-    // commentBoxRef.current?.focus();
   }, []);
 
   const commentRowIndex = useMemo(() => {
@@ -232,7 +230,7 @@ export function CommentsModal({
                   onReplyClick={handleReplyClick}
                   onRowRepliesExpand={setRowRepliesExpanded}
                   isRowRepliesExpanded={getRowRepliesExpanded(index)}
-                  onReplySubmitted={recalculateHeightsWhenCommentsChange}
+                  onExpandModal={recalculateHeightsWhenCommentsChange}
                 />
               </div>
             );
