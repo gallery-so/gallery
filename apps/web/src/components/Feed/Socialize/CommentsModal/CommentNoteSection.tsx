@@ -18,7 +18,7 @@ type Props = {
 
   onRowRepliesExpand: (index: number, value: boolean) => void;
   isRowRepliesExpanded: boolean;
-  onReplySubmitted: () => void;
+  onExpandModal: () => void;
 };
 
 export const REPLIES_PER_PAGE = 6;
@@ -30,7 +30,7 @@ export function CommentNoteSection({
   onReplyClick,
   onRowRepliesExpand,
   isRowRepliesExpanded,
-  onReplySubmitted,
+  onExpandModal,
 }: Props) {
   const {
     data: comment,
@@ -82,20 +82,20 @@ export function CommentNoteSection({
       await new Promise((resolve) => {
         loadPrevious(REPLIES_PER_PAGE, { onComplete: resolve });
       });
-      onReplySubmitted();
+      onExpandModal();
     }
-  }, [hasPrevious, loadPrevious, onReplySubmitted]);
+  }, [hasPrevious, loadPrevious, onExpandModal]);
 
   const handleViewRepliesClick = useCallback(() => {
     if (!isRowRepliesExpanded) {
       onRowRepliesExpand(index, true);
       setTimeout(() => {
-        onReplySubmitted();
+        onExpandModal();
       }, 100);
     } else {
       loadMore();
     }
-  }, [loadMore, isRowRepliesExpanded, onRowRepliesExpand, index, onReplySubmitted]);
+  }, [loadMore, isRowRepliesExpanded, onRowRepliesExpand, index, onExpandModal]);
 
   const handleReplyClickWithTopCommentId = useCallback(
     (params: OnReplyClickParams) => {

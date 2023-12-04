@@ -232,7 +232,7 @@ export function CommentsModal({
                   onReplyClick={handleReplyClick}
                   onRowRepliesExpand={setRowRepliesExpanded}
                   isRowRepliesExpanded={getRowRepliesExpanded(index)}
-                  onReplySubmitted={recalculateHeightsWhenCommentsChange}
+                  onExpandModal={recalculateHeightsWhenCommentsChange}
                 />
               </div>
             );
