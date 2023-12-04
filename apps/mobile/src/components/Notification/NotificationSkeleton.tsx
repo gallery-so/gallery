@@ -25,6 +25,7 @@ type Props = PropsWithChildren<{
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
   shouldShowFollowBackButton?: boolean;
+  overridePfpElement?: React.ReactNode;
 }>;
 
 export function NotificationSkeleton({
@@ -34,6 +35,7 @@ export function NotificationSkeleton({
   notificationRef,
   shouldShowFollowBackButton = false,
   responsibleUserRefs = [],
+  overridePfpElement,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -218,15 +220,19 @@ export function NotificationSkeleton({
           </View>
         )}
         <View className="mr-2">
-          <ProfilePictureBubblesWithCount
-            eventElementId="Notification Row PFP Bubbles"
-            eventName="Notification Row PFP Bubbles Pressed"
-            eventContext={contexts.Notifications}
-            onPress={handleBubblesPress}
-            userRefs={responsibleUsers}
-            totalCount={responsibleUserRefs.length}
-            size="md"
-          />
+          {overridePfpElement ? (
+            overridePfpElement
+          ) : (
+            <ProfilePictureBubblesWithCount
+              eventElementId="Notification Row PFP Bubbles"
+              eventName="Notification Row PFP Bubbles Pressed"
+              eventContext={contexts.Notifications}
+              onPress={handleBubblesPress}
+              userRefs={responsibleUsers}
+              totalCount={responsibleUserRefs.length}
+              size="md"
+            />
+          )}
         </View>
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
