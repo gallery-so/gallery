@@ -33,7 +33,6 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import { LocalStorageGlobalBanner } from './GlobalBanner/LocalStorageGlobalBanner';
 import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
 import {
   UpcomingMaintenanceBanner,
