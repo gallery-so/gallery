@@ -11,3 +11,5 @@ export const BADGE_ENABLED_COMMUNITY_ADDRESSES = new Set([
   // Gallery Premium Membership Cards
   '0xe01569ca9b39e55bc7c0dfa09f05fa15cb4c7698',
 ]);
+
+export const BADGE_ENABLED_NAMES = new Set(['Top 100 Active User']);
