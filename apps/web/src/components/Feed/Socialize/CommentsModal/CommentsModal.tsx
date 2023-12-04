@@ -96,8 +96,6 @@ export function CommentsModal({
     } else {
       topCommentId.current = null;
     }
-
-    // commentBoxRef.current?.focus();
   }, []);
 
   const commentRowIndex = useMemo(() => {
