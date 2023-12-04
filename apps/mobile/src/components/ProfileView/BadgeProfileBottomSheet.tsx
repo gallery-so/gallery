@@ -74,9 +74,9 @@ function BadgeProfileBottomSheet(
         <Button
           onPress={handleClose}
           text="CLOSE"
-          eventElementId="Discard Post Button"
-          eventName="Close Post"
-          eventContext={contexts.Posts}
+          eventElementId="Close badge details"
+          eventName="Close badge"
+          eventContext={contexts.Badge}
           variant="secondary"
         />
       </View>
