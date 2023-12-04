@@ -89,9 +89,7 @@ export function CommentNoteSection({
   const handleViewRepliesClick = useCallback(() => {
     if (!isRowRepliesExpanded) {
       onRowRepliesExpand(index, true);
-      setTimeout(() => {
-        onExpandModal();
-      }, 100);
+      onExpandModal();
     } else {
       loadMore();
     }
