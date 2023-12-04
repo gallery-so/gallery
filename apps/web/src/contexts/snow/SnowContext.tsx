@@ -23,20 +23,28 @@ export const useSnowContext = (): SnowState => {
 
 type Props = { children: ReactNode };
 
+const userProfilesWhereItDoesntSnow = new Set(['digen_art']);
+
 const SnowProvider = memo(({ children }: Props) => {
   const [isEnabledBasedOnUserPreference, setIsEnabledBasedOnUserPreference] = usePersistedState(
     'gallery_snowfall_enabled',
     true
   );
 
-  const { asPath } = useRouter();
+  const { pathname, query } = useRouter();
 
   const isEnabledBasedOnRoute = useMemo(() => {
-    if (asPath.includes('/edit')) {
+    if (pathname === '/gallery/[galleryId]/edit') {
+      return false;
+    }
+    if (
+      typeof query.username === 'string' &&
+      userProfilesWhereItDoesntSnow.has(query.username.toLowerCase())
+    ) {
       return false;
     }
     return true;
-  }, [asPath]);
+  }, [pathname, query.username]);
 
   const isSnowEnabled = isEnabledBasedOnUserPreference && isEnabledBasedOnRoute;
 
