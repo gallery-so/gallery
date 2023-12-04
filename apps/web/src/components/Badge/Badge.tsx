@@ -61,10 +61,11 @@ export default function Badge({ badgeRef, eventContext }: Props) {
   }, []);
 
   const isEnabled = useMemo(() => {
-    return (
-      BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '') || imageURL
-    );
-  }, [contract?.contractAddress?.address, imageURL]);
+    if (contract) {
+      return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '');
+    }
+    return Boolean(imageURL);
+  }, [contract, imageURL]);
 
   if (!isEnabled) {
     return null;
