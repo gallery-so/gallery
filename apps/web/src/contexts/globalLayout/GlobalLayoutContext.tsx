@@ -429,7 +429,7 @@ function GlobalNavbarWithFadeEnabled({
       }
 
       // TODO: this should ideally be controlled through Sanity
-      return <LocalStorageGlobalBanner />;
+      // return <LocalStorageGlobalBanner />;
     }
 
     return null;
