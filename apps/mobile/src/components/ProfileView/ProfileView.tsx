@@ -5,6 +5,7 @@ import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { ButtonChip } from '~/components/ButtonChip';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
@@ -203,10 +204,13 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
             }
           }
         }
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -237,24 +241,26 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
         {query.userByUsername?.username}
       </Typography>
 
-      <View className="flex flex-row items-center space-x-1">
-        {filteredBadges.map((badge, index) => (
-          <GalleryTouchableOpacity
-            onPress={() => handlePress(badge?.name ?? '')}
-            eventElementId={null}
-            eventName={null}
-            key={index}
-            eventContext={null}
-          >
-            <FastImage
-              className="h-6 w-6 rounded-full"
-              source={{
-                uri: badge?.imageURL ?? '',
-              }}
-            />
-          </GalleryTouchableOpacity>
-        ))}
-      </View>
+      {isActivityBadgeEnabled && (
+        <View className="flex flex-row items-center space-x-1">
+          {filteredBadges.map((badge, index) => (
+            <GalleryTouchableOpacity
+              onPress={() => handlePress(badge?.name ?? '')}
+              eventElementId={null}
+              eventName={null}
+              key={index}
+              eventContext={null}
+            >
+              <FastImage
+                className="h-6 w-6 rounded-full"
+                source={{
+                  uri: badge?.imageURL ?? '',
+                }}
+              />
+            </GalleryTouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <BadgeProfileBottomSheet
         ref={bottomSheetRef}
