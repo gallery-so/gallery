@@ -208,7 +208,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const { contractName } = extractRelevantMetadataFromToken(token);
 
   const blueToDisplay = useMemo(
-    () => (colorScheme === 'dark' ? 'darkModeBlue' : 'hyperBlue'),
+    () => (colorScheme === 'dark' ? '[#7597FF]' : 'activeBlue'),
     [colorScheme]
   );
 
@@ -362,7 +362,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           eventContext={contexts['NFT Detail']}
           onPress={toggleTokenAdmire}
           text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
-          textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : undefined}
+          textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : ''}
           containerClassName={
             hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
           }
