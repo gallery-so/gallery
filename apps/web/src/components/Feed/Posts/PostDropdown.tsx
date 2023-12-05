@@ -33,12 +33,19 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
         }
         tokens {
           dbid
-          name
           owner {
             username
           }
-          community {
-            id
+          definition {
+            name
+            community {
+              id
+              creator {
+                ... on GalleryUser {
+                  username
+                }
+              }
+            }
           }
         }
         #
@@ -66,7 +73,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
   const viewerIsPostAuthor =
     query.viewer?.__typename === 'Viewer' && query.viewer?.user?.dbid === post.author.dbid;
 
-  const token = post.tokens && post.tokens[0];
+  const token = post.tokens?.[0];
 
   const { showModal } = useModalActions();
 
@@ -75,7 +82,11 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
       headerText: 'Share Post',
       content: (
         <Suspense fallback={<SharePostModalFallback />}>
-          <SharePostModal postId={post.dbid ?? ''} tokenName={token?.name ?? ''} />
+          <SharePostModal
+            postId={post.dbid ?? ''}
+            tokenName={token?.definition?.name ?? ''}
+            creatorName={token?.definition?.community?.creator?.username ?? ''}
+          />
         </Suspense>
       ),
       isFullPage: false,
@@ -85,7 +96,10 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
   const handleDeletePostClick = useCallback(() => {
     showModal({
       content: (
-        <DeletePostConfirmation postDbid={post.dbid} communityId={token?.community?.id ?? ''} />
+        <DeletePostConfirmation
+          postDbid={post.dbid}
+          communityId={token?.definition?.community?.id ?? ''}
+        />
       ),
       headerText: 'Delete Post',
     });

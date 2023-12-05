@@ -53,9 +53,16 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     graphql`
       fragment PostComposerTokenFragment on Token {
         dbid
-        name
-        community {
-          id
+        definition {
+          name
+          community {
+            id
+            creator {
+              ... on GalleryUser {
+                username
+              }
+            }
+          }
         }
         ...PostComposerNftFragment
         ...PostComposerTextAreaFragment
@@ -95,16 +102,20 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     });
     try {
       const responsePost = await createPost({
-        tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
+        tokens: [{ dbid: token.dbid, communityId: token.definition?.community?.id || '' }],
         caption: message,
         mentions,
       });
       hideModal();
       showModal({
-        headerText: `Successfully posted ${token.name || 'item'}`,
+        headerText: `Successfully posted ${token.definition.name || 'item'}`,
         content: (
           <Suspense fallback={<SharePostModalFallback />}>
-            <SharePostModal postId={responsePost?.dbid ?? ''} tokenName={token.name ?? ''} />
+            <SharePostModal
+              postId={responsePost?.dbid ?? ''}
+              tokenName={token.definition.name ?? ''}
+              creatorName={token.definition.community?.creator?.username ?? ''}
+            />
           </Suspense>
         ),
         isFullPage: false,
@@ -120,16 +131,17 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   }, [
     track,
     eventFlow,
+    message,
     createPost,
     token.dbid,
-    token.community?.id,
-    token.name,
+    token.definition.community?.id,
+    token.definition.community?.creator?.username,
+    token.definition.name,
+    mentions,
     hideModal,
     showModal,
-    reportError,
-    mentions,
-    message,
     resetMentions,
+    reportError,
   ]);
 
   const handleBackClick = useCallback(() => {

@@ -22,6 +22,7 @@ import { MiniPostOpenGraphPreview } from './MiniPostOpenGraphPreview';
 type Props = {
   postId: string;
   tokenName?: string;
+  creatorName?: string;
 };
 
 const shareButtonsDetails = [
@@ -42,7 +43,7 @@ const shareButtonsDetails = [
   },
 ];
 
-export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
+export default function SharePostModal({ postId, tokenName = 'this', creatorName }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostModalQuery>(
     graphql`
       query SharePostModalQuery($postId: DBID!) {
@@ -94,12 +95,13 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 
   const handleShareButtonClick = useCallback(
     (baseComposePostUrl: string) => {
-      const message = `I 🤍 ${tokenName}\n\n${postUrl}`;
+      const creatorInfo = creatorName ? ` by ${creatorName}` : '';
+      const message = `I 🤍 ${tokenName}${creatorInfo}\n\n${postUrl}`;
       const encodedMessage = encodeURIComponent(message);
 
       window.open(`${baseComposePostUrl}?text=${encodedMessage}`, '_blank');
     },
-    [tokenName, postUrl]
+    [creatorName, tokenName, postUrl]
   );
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
