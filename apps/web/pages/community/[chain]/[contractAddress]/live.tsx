@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { REPLIES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentNoteSection';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { Chain } from '~/generated/enums';
 import { liveContractAddressByChainQuery } from '~/generated/liveContractAddressByChainQuery.graphql';
@@ -35,6 +36,8 @@ export default function CommunityLivePage({
         $communityPostsAfter: String
         $interactionsFirst: Int!
         $interactionsAfter: String
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommunityPagePresentationSceneFragment
       }
@@ -48,6 +51,7 @@ export default function CommunityLivePage({
       communityPostsFirst: 1,
       interactionsFirst: NOTES_PER_PAGE,
       communityProjectID: projectId,
+      replyLast: REPLIES_PER_PAGE,
     }
   );
 

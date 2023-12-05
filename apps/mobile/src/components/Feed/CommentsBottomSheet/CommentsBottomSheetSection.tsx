@@ -119,7 +119,7 @@ export function CommentsBottomSheetSection({
         <CommentsBottomSheetLine
           activeCommentId={activeCommentId}
           commentRef={comment}
-          onReplyPress={onReplyPress}
+          onReplyPress={handleReplyPressWithTopCommentId}
           footerElement={
             !showReplies && (
               <ViewRepliesButton

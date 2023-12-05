@@ -7,6 +7,7 @@ import {
   NavbarLeftContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { CommunityNavbarFragment$key } from '~/generated/CommunityNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
@@ -39,8 +40,11 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
 
       <NavbarCenterContent />
 
-      {query.viewer?.__typename !== 'Viewer' && (
+      {query.viewer?.__typename === 'Viewer' ? (
+        <SnowToggleIcon />
+      ) : (
         <HStack gap={8} align="center">
+          <SnowToggleIcon />
           <SignInButton />
           {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
           {!isMobile && <SignUpButton />}

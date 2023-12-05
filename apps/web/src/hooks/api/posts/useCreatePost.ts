@@ -27,6 +27,7 @@ export default function useCreatePost() {
           ... on PostTokensPayload {
             post {
               __typename
+              dbid
               tokens {
                 community {
                   contractAddress {
@@ -141,6 +142,8 @@ export default function useCreatePost() {
           if (!stayOnCommunityPage && !['/home', '/latest'].includes(pathname)) {
             router.push('/latest');
           }
+
+          return response.postTokens.post;
         }
       } catch (error) {
         if (error instanceof Error) {

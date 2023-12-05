@@ -3,6 +3,7 @@ import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { LeafIcon } from 'src/icons/LeafIcon';
 import { OptionIcon } from 'src/icons/OptionIcon';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -28,6 +29,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderFragment on Post {
         __typename
+        isFirstPost
         author @required(action: THROW) {
           __typename
           id
@@ -92,9 +94,10 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
               eventContext={contexts.Posts}
               properties={{ variant: 'Feed event author' }}
             >
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              <Typography className="text-sm pr-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                 {feedPost?.author?.username}
               </Typography>
+              {feedPost.isFirstPost && <LeafIcon />}
             </GalleryTouchableOpacity>
           </View>
         </View>
