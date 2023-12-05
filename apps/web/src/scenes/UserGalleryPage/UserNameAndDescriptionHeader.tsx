@@ -95,10 +95,10 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
     if (!badges) return [];
 
     if (!isActivityBadgeEnabled) {
-      return badges.filter((badge) => badge && badge?.contract && badge?.imageURL);
+      return badges.filter((badge) => badge?.contract && badge?.imageURL);
     }
 
-    return badges.filter((badge) => badge && badge?.imageURL);
+    return badges.filter((badge) => badge?.imageURL);
   }, [badges, isActivityBadgeEnabled]);
 
   if (!username) {
