@@ -141,7 +141,7 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
       baseComposePostUrl: 'https://warpcast.com/~/compose',
     },
     {
-      icon: <LensIcon color="black" fill="white" />,
+      icon: <LensIcon width={22} height={22} fill="white" />,
       title: 'LENS',
       baseComposePostUrl: 'https://hey.xyz/',
     },
@@ -201,8 +201,8 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
         </View>
 
         <View className="flex flex-row">
-          <View className="w-9/12">
-            <FadedInput value={postUrl} onChange={noop} editable={false} />
+          <View className="w-9/12 mr-2">
+            <FadedInput textClassName="text-[#707070] h-[24px]" value={postUrl} onChange={noop} editable={false} />
           </View>
           <Button
             className="w-[81px] h-[32]px"

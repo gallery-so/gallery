@@ -54,8 +54,8 @@ export default function ProfileViewLensPill({ userRef, maxWidth }: Props) {
       properties={{ variant: 'Lens' }}
       className={`ml-2 max-w-[${maxWidth}]`}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start mr-2">
-        <LensIcon width={14} />
+      <Pill className="flex flex-row items-center space-x-1 self-start mr-2">
+        <LensIcon width={18} />
         <Typography
           numberOfLines={1}
           className="text-sm"

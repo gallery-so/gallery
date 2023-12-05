@@ -4,9 +4,17 @@ import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-type Props = TextInputProps & { icon?: ReactNode, editable?: boolean };
+type Props = TextInputProps & { icon?: ReactNode; editable?: boolean; textClassName?: string };
 
-export function FadedInput({ value, onChange, icon, style, editable = true, ...props }: Props) {
+export function FadedInput({
+  value,
+  onChange,
+  icon,
+  style,
+  editable = true,
+  textClassName,
+  ...props
+}: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
@@ -21,7 +29,7 @@ export function FadedInput({ value, onChange, icon, style, editable = true, ...p
           flex: 1,
         }}
         editable={editable}
-        className="dark:text-white"
+        className={`dark:text-white ${textClassName}`}
         placeholderTextColor={colors.metal}
         selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
         textAlignVertical="center"
