@@ -1,10 +1,9 @@
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
 import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
@@ -23,6 +22,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
+import SharePostModal from './SharePostModal';
 
 type Props = {
   tokenId: string;
@@ -53,9 +53,16 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     graphql`
       fragment PostComposerTokenFragment on Token {
         dbid
-        name
-        community {
-          id
+        definition {
+          name
+          community {
+            id
+            creator {
+              ... on GalleryUser {
+                username
+              }
+            }
+          }
         }
         ...PostComposerNftFragment
         ...PostComposerTextAreaFragment
@@ -80,8 +87,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const createPost = useCreatePost();
 
-  const { hideModal } = useModalActions();
-  const { pushToast } = useToastActions();
+  const { showModal, hideModal } = useModalActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
   const [generalError, setGeneralError] = useState('');
@@ -95,15 +101,24 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       added_description: Boolean(message),
     });
     try {
-      await createPost({
-        tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
+      const responsePost = await createPost({
+        tokens: [{ dbid: token.dbid, communityId: token.definition?.community?.id || '' }],
         caption: message,
         mentions,
       });
-      setIsSubmitting(false);
       hideModal();
-      pushToast({
-        message: `Successfully posted ${token.name || 'item'}`,
+      showModal({
+        headerText: `Successfully posted ${token.definition.name || 'item'}`,
+        content: (
+          <Suspense fallback={<SharePostModalFallback />}>
+            <SharePostModal
+              postId={responsePost?.dbid ?? ''}
+              tokenName={token.definition.name ?? ''}
+              creatorName={token.definition.community?.creator?.username ?? ''}
+            />
+          </Suspense>
+        ),
+        isFullPage: false,
       });
       resetMentions();
     } catch (error) {
@@ -116,16 +131,17 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   }, [
     track,
     eventFlow,
+    message,
     createPost,
     token.dbid,
-    token.community?.id,
-    token.name,
-    hideModal,
-    pushToast,
-    reportError,
+    token.definition.community?.id,
+    token.definition.community?.creator?.username,
+    token.definition.name,
     mentions,
-    message,
+    hideModal,
+    showModal,
     resetMentions,
+    reportError,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -219,4 +235,10 @@ const StyledWrapper = styled(HStack)`
   height: 100%;
   gap: 4px;
   align-items: center;
+`;
+
+const SharePostModalFallback = styled.div`
+  min-width: 480px;
+  min-height: 307px;
+  max-width: 100%;
 `;
