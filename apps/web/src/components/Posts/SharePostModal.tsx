@@ -94,7 +94,7 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 
   const handleShareButtonClick = useCallback(
     (baseComposePostUrl: string) => {
-      const message = `I just posted ${tokenName} on gallery ${postUrl}`;
+      const message = `I 🤍 ${tokenName}\n\n${postUrl}`;
       const encodedMessage = encodeURIComponent(message);
 
       window.open(`${baseComposePostUrl}?text=${encodedMessage}`, '_blank');
