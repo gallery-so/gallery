@@ -85,7 +85,7 @@ export function YouReceivedTopActivityBadge({
             }}
             className="text-sm"
           >
-            You've earned a new badge as one of the top 60 active members on Gallery!
+            You received a new badge for being amongst the top active users on Gallery this week!
           </Typography>
         </Text>
       </View>
