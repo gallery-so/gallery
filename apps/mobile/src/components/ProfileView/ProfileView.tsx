@@ -23,6 +23,7 @@ import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragme
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 import { FollowButton } from '../FollowButton';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
@@ -204,6 +205,12 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
             badges {
               name
               imageURL
+              contract {
+                __typename
+                contractAddress {
+                  address
+                }
+              }
             }
           }
         }
@@ -219,7 +226,15 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
 
   const filteredBadges = useMemo(() => {
     const badges = query.userByUsername?.badges ?? [];
-    return badges.filter((badge) => badge?.imageURL);
+    return badges.filter((badge) => {
+      if (badge?.contract) {
+        return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(
+          badge?.contract?.contractAddress?.address ?? ''
+        );
+      }
+
+      return Boolean(badge?.imageURL);
+    });
   }, [query.userByUsername?.badges]);
 
   const [selectedBadge, setSelectedBadge] = useState<{
