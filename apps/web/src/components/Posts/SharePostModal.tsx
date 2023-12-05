@@ -24,6 +24,24 @@ type Props = {
   tokenName?: string;
 };
 
+const shareButtonsDetails = [
+  {
+    icon: <FarcasterIcon fill="#FEFEFE" />,
+    title: 'WARPCAST',
+    baseComposePostUrl: 'https://warpcast.com/~/compose',
+  },
+  {
+    icon: <LensIcon fill="#FEFEFE" />,
+    title: 'LENS',
+    baseComposePostUrl: 'https://hey.xyz/',
+  },
+  {
+    icon: <TwitterIcon fill="#FEFEFE" />,
+    title: 'TWITTER',
+    baseComposePostUrl: 'https://twitter.com/intent/tweet',
+  },
+];
+
 export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostModalQuery>(
     graphql`
@@ -122,24 +140,6 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
   if (result.type !== 'valid') {
     return null;
   }
-
-  const shareButtonsDetails = [
-    {
-      icon: <FarcasterIcon fill="#FEFEFE" />,
-      title: 'WARPCAST',
-      baseComposePostUrl: 'https://warpcast.com/~/compose',
-    },
-    {
-      icon: <LensIcon fill="#FEFEFE" />,
-      title: 'LENS',
-      baseComposePostUrl: 'https://hey.xyz/',
-    },
-    {
-      icon: <TwitterIcon fill="#FEFEFE" />,
-      title: 'TWITTER',
-      baseComposePostUrl: 'https://twitter.com/intent/tweet',
-    },
-  ];
 
   const imageUrl = result.urls.small ?? '';
   const username = post.author.username ?? '';
