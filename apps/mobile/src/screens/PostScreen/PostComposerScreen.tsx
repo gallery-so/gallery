@@ -8,6 +8,7 @@ import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
+import { PostMintLinkInput } from '~/components/Post/PostMintLinkInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
@@ -42,6 +43,7 @@ function PostComposerScreenInner() {
               contractAddress {
                 address
               }
+              mintURL
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -60,6 +62,8 @@ function PostComposerScreenInner() {
   if (token?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
+
+  const mintURL = token.contract?.mintURL ?? '';
 
   const { post } = usePost({
     tokenRef: token,
@@ -185,6 +189,7 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
+        <PostMintLinkInput defaultValue={mintURL} />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">
