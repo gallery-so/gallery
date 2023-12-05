@@ -220,9 +220,7 @@ export function NotificationSkeleton({
           </View>
         )}
         <View className="mr-2">
-          {overridePfpElement ? (
-            overridePfpElement
-          ) : (
+          {overridePfpElement ?? (
             <ProfilePictureBubblesWithCount
               eventElementId="Notification Row PFP Bubbles"
               eventName="Notification Row PFP Bubbles Pressed"
