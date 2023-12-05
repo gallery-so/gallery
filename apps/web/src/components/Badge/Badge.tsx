@@ -11,6 +11,9 @@ import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext'
 import { LowercaseChain } from '~/shared/utils/chains';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
+import { VStack } from '../core/Spacer/Stack';
+import { TopMemberBadge } from '../Notifications/notifications/YouReceivedTopActivityBadge';
+
 type Props = {
   badgeRef: BadgeFragment$key;
   eventContext: GalleryElementTrackingProps['eventContext'];
@@ -69,6 +72,22 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
   if (!isEnabled) {
     return null;
+  }
+
+  if (badge.name === 'Top Member') {
+    return (
+      <>
+        <StyledTooltip text={name || ''} showTooltip={showTooltip} />
+        <VStack
+          align="center"
+          justify="center"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseExit}
+        >
+          <TopMemberBadge />
+        </VStack>
+      </>
+    );
   }
 
   const BadgeImage = () => (
