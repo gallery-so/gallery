@@ -10,6 +10,9 @@ import { noop } from 'swr/_internal';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
+import { useToastActions } from '~/contexts/ToastContext';
+import * as Clipboard from 'expo-clipboard';
+
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -72,6 +75,7 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
 
   const { post } = queryResponse;
   const { bottom } = useSafeAreaPadding();
+  const { pushToast } = useToastActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -92,8 +96,12 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
     [tokenName, postUrl]
   );
 
-  const handleCopyButtonPress = useCallback(() => {
-    //Clipboard.setString(postUrl);
+  const handleCopyButtonPress = useCallback(async () => {
+    try {
+      await Clipboard.setStringAsync(postUrl);
+    } catch (e) {
+      pushToast({ message: "Failed to copy post url. We're looking into it." });
+    }
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
@@ -202,7 +210,12 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
 
         <View className="flex flex-row">
           <View className="w-9/12 mr-2">
-            <FadedInput textClassName="text-[#707070] h-[24px]" value={postUrl} onChange={noop} editable={false} />
+            <FadedInput
+              textClassName="text-[#707070] h-[24px]"
+              value={postUrl}
+              onChange={noop}
+              editable={false}
+            />
           </View>
           <Button
             className="w-[81px] h-[32]px"
