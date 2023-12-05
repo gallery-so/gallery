@@ -117,5 +117,5 @@ const StyledDescription = styled(BaseS)`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
-  max-width: 600px;
+  max-width: 200px;
 `;
