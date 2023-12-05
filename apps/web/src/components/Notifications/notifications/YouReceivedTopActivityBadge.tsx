@@ -13,7 +13,7 @@ export default function YouReceivedTopActivityBadge() {
         </StyledIconWrapper>
         <StyledTextWrapper align="center" as="span" wrap="wrap">
           <BaseM as="span">
-            You've earned a new badge as one of the top 60 active members on Gallery!
+            You received a new badge for being amongst the top active users on Gallery this week!
           </BaseM>
         </StyledTextWrapper>
       </HStack>
