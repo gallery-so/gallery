@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { contexts } from '~/shared/analytics/constants';
 
@@ -9,6 +9,7 @@ import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { Markdown } from '../Markdown';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
 
@@ -18,6 +19,18 @@ type Props = {
   title: string;
   description: string;
 };
+
+const markdownStyles = StyleSheet.create({
+  paragraph: {
+    marginBottom: 0,
+  },
+  body: {
+    fontSize: 18,
+  },
+  strong: {
+    fontFamily: 'ABCDiatypeBold',
+  },
+});
 
 function BadgeProfileBottomSheet(
   { title, description }: Props,
@@ -66,7 +79,7 @@ function BadgeProfileBottomSheet(
               className="text-lg text-black-900 dark:text-offWhite"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              {description}
+              <Markdown style={markdownStyles}>{description}</Markdown>
             </Typography>
           )}
         </View>

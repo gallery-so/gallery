@@ -5,6 +5,7 @@ import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { TopMemberBadgeIcon } from 'src/icons/TopMemberBadgeIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { ButtonChip } from '~/components/ButtonChip';
@@ -189,6 +190,8 @@ const BADGE_DESCRIPTIONS: Record<string, string> = {
   'Top Member':
     'Awarded for being one of the most active contributors on Gallery in the past week.',
   'Community pillar badge': 'Awarded for high-quality engagement',
+  'Gallery Membership Cards':
+    'This exclusive badge on your profile signifies that you hold one of the coveted Gallery membership cards. This gives you early access to beta features and access to Members Only **Discord channel**.',
 };
 
 export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProps) {
@@ -251,12 +254,16 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
               key={index}
               eventContext={null}
             >
-              <FastImage
-                className="h-6 w-6 rounded-full"
-                source={{
-                  uri: badge?.imageURL ?? '',
-                }}
-              />
+              {badge?.name === 'Top Member' ? (
+                <TopMemberBadgeIcon />
+              ) : (
+                <FastImage
+                  className="h-5 w-5 rounded-full"
+                  source={{
+                    uri: badge?.imageURL ?? '',
+                  }}
+                />
+              )}
             </GalleryTouchableOpacity>
           ))}
         </View>
