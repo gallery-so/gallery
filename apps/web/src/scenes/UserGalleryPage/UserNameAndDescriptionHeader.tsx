@@ -23,6 +23,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import LinkToFullPageNftDetailModal from '../NftDetailPage/LinkToFullPageNftDetailModal';
@@ -43,6 +44,9 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
         badges {
           name
           imageURL
+          contract {
+            __typename
+          }
           ...BadgeFragment
         }
         ...ProfilePictureFragment
@@ -56,6 +60,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       fragment UserNameAndDescriptionHeaderQueryFragment on Query {
         ...EditUserInfoModalFragment
         ...useLoggedInUserIdFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -69,6 +74,8 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user?.id;
   const track = useTrack();
+
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
 
   const { showModal } = useModalActions();
   const handleEditBioAndName = useCallback(() => {
@@ -87,8 +94,12 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
   const userBadges = useMemo(() => {
     if (!badges) return [];
 
-    return badges.filter((badge) => badge && badge?.imageURL);
-  }, [badges]);
+    if (!isActivityBadgeEnabled) {
+      return badges.filter((badge) => badge?.contract && badge?.imageURL);
+    }
+
+    return badges.filter((badge) => badge?.imageURL);
+  }, [badges, isActivityBadgeEnabled]);
 
   if (!username) {
     return null;
