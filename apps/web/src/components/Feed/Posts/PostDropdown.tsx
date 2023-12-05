@@ -72,7 +72,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
 
   const handleSharePostClick = () => {
     showModal({
-      headerText: `Successfully posted ${token?.name || 'item'}`,
+      headerText: 'Share Post',
       content: (
         <Suspense fallback={<SharePostModalFallback />}>
           <SharePostModal postId={post.dbid ?? ''} tokenName={token?.name ?? ''} />

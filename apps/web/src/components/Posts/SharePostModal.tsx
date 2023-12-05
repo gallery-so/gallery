@@ -86,13 +86,13 @@ export default function SharePostModal({ postId, tokenName = 'this' }: Props) {
 
   // stripped down version of the pfp retrieving logic in ProfilePicture.tsx
   const profileImageUrl = useMemo(() => {
-    if (!post || post?.__typename !== 'Post') {
+    if (post?.__typename !== 'Post') {
       return null;
     }
 
     const { token, profileImage } = post.author.profileImage ?? {};
 
-    if (profileImage && profileImage.previewURLs?.medium) {
+    if (profileImage?.previewURLs?.medium) {
       return profileImage.previewURLs.medium;
     }
 
