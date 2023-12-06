@@ -1,3 +1,4 @@
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -36,6 +37,7 @@ export function MintLinkButton({
     `,
     tokenRef
   );
+  const { colorScheme } = useColorScheme();
 
   const mintURL = token?.definition?.community?.contract?.mintURL ?? '';
 
@@ -71,15 +73,28 @@ export function MintLinkButton({
     Linking.openURL(mintURL);
   }, [mintURL]);
 
+  const arrowColor = useMemo(() => {
+    const colorMap = {
+      primary: {
+        dark: colors.black[800],
+        light: colors.white,
+      },
+      secondary: {
+        dark: colors.white,
+        light: colors.black[800],
+      },
+    };
+
+    return colorMap[variant as 'primary' | 'secondary'][colorScheme === 'dark' ? 'dark' : 'light'];
+  }, [variant, colorScheme]);
+
   return (
     <Button
       text={mintProvider?.name}
       variant={variant}
       onPress={handlePress}
       icon={mintProvider?.icon}
-      footerIcon={
-        <TopRightArrowIcon color={variant === 'primary' ? colors.white : colors.black[800]} />
-      }
+      footerIcon={<TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
       {...props}
