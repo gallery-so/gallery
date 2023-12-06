@@ -27,7 +27,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   return (
     <View className="px-3 pb-8 pt-2">
-      <MintLinkButton tokenRef={token} />
+      <MintLinkButton tokenRef={token} variant="secondary" />
     </View>
   );
 }

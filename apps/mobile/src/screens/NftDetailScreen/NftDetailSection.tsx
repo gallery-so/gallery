@@ -15,6 +15,7 @@ import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
+import { MintLinkButton } from '~/components/MintLinkButton';
 import { Pill } from '~/components/Pill';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import {
@@ -102,6 +103,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             ...TokenFailureBoundaryFragment
             ...extractRelevantMetadataFromTokenFragment
             ...useToggleTokenAdmireFragment
+            ...MintLinkButtonFragment
           }
         }
         ...useLoggedInUserIdFragment
@@ -354,19 +356,23 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           />
         )}
 
-        <Button
-          variant="blue"
-          icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
-          eventElementId={'NFT Detail Token Admire'}
-          eventName={'NFT Detail Token Admire Clicked'}
-          eventContext={contexts['NFT Detail']}
-          onPress={toggleTokenAdmire}
-          text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
-          textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : undefined}
-          containerClassName={
-            hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
-          }
-        />
+        <View className="space-y-2">
+          <Button
+            variant="blue"
+            icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
+            eventElementId={'NFT Detail Token Admire'}
+            eventName={'NFT Detail Token Admire Clicked'}
+            eventContext={contexts['NFT Detail']}
+            onPress={toggleTokenAdmire}
+            text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
+            textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : undefined}
+            containerClassName={
+              hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+            }
+          />
+
+          <MintLinkButton tokenRef={token} />
+        </View>
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />

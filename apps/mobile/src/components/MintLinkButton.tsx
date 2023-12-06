@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Linking } from 'react-native';
+import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
@@ -7,13 +7,15 @@ import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 
-import { Button } from './Button';
+import { Button, Variant } from './Button';
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
+  style?: ViewStyle;
+  variant?: Variant;
 };
 
-export function MintLinkButton({ tokenRef }: Props) {
+export function MintLinkButton({ tokenRef, style, variant = 'primary' }: Props) {
   const token = useFragment(
     graphql`
       fragment MintLinkButtonFragment on Token {
@@ -57,14 +59,14 @@ export function MintLinkButton({ tokenRef }: Props) {
   return (
     <Button
       text={`Mint on ${mintProvider?.name}`}
-      variant="secondary"
+      variant={variant}
       onPress={handlePress}
       eventElementId={null}
       eventName={null}
       eventContext={null}
-      //   icon={<ZoraIcon />}
       icon={mintProvider?.icon}
       footerIcon={<TopRightArrowIcon />}
+      style={style}
     />
   );
 }
