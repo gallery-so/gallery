@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { getMintUrlWithReferrer } from 'src/utils/getMintUrlWithReferrer';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -51,6 +52,17 @@ function PostComposerScreenInner() {
             ...usePostTokenFragment
           }
         }
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+            }
+          }
+        }
       }
     `,
     {
@@ -64,7 +76,9 @@ function PostComposerScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
-  const mintURL = token.contract?.mintURL ?? '';
+  const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
+
+  const mintURL = getMintUrlWithReferrer(token.contract?.mintURL ?? '', ownerWalletAddress).url;
 
   const { post } = usePost({
     tokenRef: token,

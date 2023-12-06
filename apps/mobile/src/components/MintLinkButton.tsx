@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
+import { getMintUrlWithReferrer } from 'src/utils/getMintUrlWithReferrer';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import colors from '~/shared/theme/colors';
@@ -17,8 +18,6 @@ type Props = {
   style?: ViewStyle;
   referrerAddress?: string;
 } & ButtonProps;
-
-type MintProvider = 'Zora' | 'MintFun' | '';
 
 const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
@@ -54,38 +53,10 @@ export function MintLinkButton({
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
   const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
 
-  const mintProviderType = useMemo((): MintProvider => {
-    const mintFunRegex = new RegExp('https://mint.fun/');
-    const zoraRegex = new RegExp('https://zora.co/');
-
-    const mintUrl = token?.definition?.community?.contract?.mintURL ?? '';
-
-    if (zoraRegex.test(mintUrl)) {
-      return 'Zora';
-    } else if (mintFunRegex.test(mintUrl)) {
-      return 'MintFun';
-    }
-
-    return '';
-  }, [token]);
-
-  const mintURL = useMemo(() => {
-    const url = token?.definition?.community?.contract?.mintURL ?? '';
-
-    if (!referrerAddress) {
-      return url;
-    }
-
-    if (mintProviderType === 'MintFun') {
-      return `${url}?ref=${referrerAddress}`;
-    }
-
-    if (mintProviderType === 'Zora') {
-      return `${url}?referrer=${referrerAddress}`;
-    }
-
-    return url;
-  }, [mintProviderType, referrerAddress, token]);
+  const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
+    token?.definition?.community?.contract?.mintURL ?? '',
+    referrerAddress ?? ''
+  );
 
   const mintProvider = useMemo(() => {
     const provider = {
