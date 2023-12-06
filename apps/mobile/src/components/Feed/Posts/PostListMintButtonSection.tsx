@@ -16,6 +16,13 @@ export function PostListMintButtonSection({ postRef }: Props) {
         tokens {
           ...MintLinkButtonFragment
         }
+        author {
+          primaryWallet {
+            chainAddress {
+              address
+            }
+          }
+        }
       }
     `,
     postRef
@@ -23,8 +30,9 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   const token = post?.tokens?.[0];
 
-  if (!token) return null;
+  const ownerWalletAddress = post?.author?.primaryWallet?.chainAddress?.address ?? '';
 
+  if (!token) return null;
   return (
     <View className="px-3 pb-8 pt-2">
       <MintLinkButton
@@ -33,6 +41,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
         eventElementId="Press Mint Link Button"
         eventName="Press Mint Link Button"
         eventContext={contexts.Feed}
+        referrerAddress={ownerWalletAddress}
       />
     </View>
   );

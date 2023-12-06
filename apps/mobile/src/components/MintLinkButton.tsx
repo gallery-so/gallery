@@ -14,10 +14,14 @@ import { Button, ButtonProps } from './Button';
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
   style?: ViewStyle;
+  referrerAddress?: string;
 } & ButtonProps;
+
+type MintProvider = 'Zora' | 'MintFun' | '';
 
 export function MintLinkButton({
   tokenRef,
+  referrerAddress,
   style,
   variant = 'primary',
   size = 'md',
@@ -39,12 +43,40 @@ export function MintLinkButton({
   );
   const { colorScheme } = useColorScheme();
 
-  const mintURL = token?.definition?.community?.contract?.mintURL ?? '';
-
-  const mintProvider = useMemo(() => {
+  const mintProviderType = useMemo((): MintProvider => {
     const mintFunRegex = new RegExp('https://mint.fun/');
     const zoraRegex = new RegExp('https://zora.co/');
 
+    const mintUrl = token?.definition?.community?.contract?.mintURL ?? '';
+
+    if (zoraRegex.test(mintUrl)) {
+      return 'Zora';
+    } else if (mintFunRegex.test(mintUrl)) {
+      return 'MintFun';
+    }
+
+    return '';
+  }, [token]);
+
+  const mintURL = useMemo(() => {
+    const url = token?.definition?.community?.contract?.mintURL ?? '';
+
+    if (!referrerAddress) {
+      return url;
+    }
+
+    if (mintProviderType === 'MintFun') {
+      return `${url}?ref=${referrerAddress}`;
+    }
+
+    if (mintProviderType === 'Zora') {
+      return `${url}?referrer=${referrerAddress}`;
+    }
+
+    return url;
+  }, [mintProviderType, referrerAddress, token]);
+
+  const mintProvider = useMemo(() => {
     const provider = {
       name: '',
       icon: null as React.ReactNode | null,
@@ -52,22 +84,22 @@ export function MintLinkButton({
 
     if (size === 'sm') {
       provider.name = 'mint';
-    } else if (zoraRegex.test(mintURL)) {
+    } else if (mintProviderType === 'Zora') {
       provider.name = 'mint on zora';
-    } else if (mintFunRegex.test(mintURL)) {
+    } else if (mintProviderType === 'MintFun') {
       provider.name = 'mint on mint.fun';
     }
 
-    if (zoraRegex.test(mintURL)) {
+    if (mintProviderType === 'Zora') {
       provider.icon = <ZoraIcon />;
-    } else if (mintFunRegex.test(mintURL)) {
+    } else if (mintProviderType === 'MintFun') {
       provider.icon = (
         <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />
       );
     }
 
     return provider;
-  }, [mintURL, size]);
+  }, [mintProviderType, size]);
 
   const handlePress = useCallback(() => {
     Linking.openURL(mintURL);

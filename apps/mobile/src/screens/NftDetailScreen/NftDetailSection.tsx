@@ -87,6 +87,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             owner {
               id
               username
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
               ...ProfilePictureAndUserOrAddressOwnerFragment
             }
             community {
@@ -116,6 +121,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const { colorScheme } = useColorScheme();
 
   const token = query.tokenById;
+  const ownerWalletAddress =
+    token?.__typename === 'Token' ? token.owner?.primaryWallet?.chainAddress?.address ?? '' : '';
 
   const loggedInUserId = useLoggedInUserId(query);
 
@@ -376,6 +383,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             eventElementId="Press Mint Link Button"
             eventName="Press Mint Link"
             eventContext={contexts['NFT Detail']}
+            referrerAddress={ownerWalletAddress}
           />
         </View>
 

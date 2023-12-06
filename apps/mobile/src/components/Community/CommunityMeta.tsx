@@ -48,6 +48,11 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           __typename
           ... on GalleryUser {
             username
+            primaryWallet {
+              chainAddress {
+                address
+              }
+            }
           }
         }
         tokensInCommunity(first: 1) {
@@ -88,6 +93,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
+  const creatorWalletAddress = community?.creator?.primaryWallet?.chainAddress?.address ?? '';
 
   const token = community?.tokensInCommunity?.edges?.[0]?.node;
 
@@ -217,6 +224,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             eventElementId="Press Mint Link Button"
             eventName="Press Mint Link"
             eventContext={contexts.Community}
+            referrerAddress={creatorWalletAddress}
           />
         )
       )}
