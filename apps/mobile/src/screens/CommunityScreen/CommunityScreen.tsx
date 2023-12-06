@@ -102,7 +102,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
 
 export function CommunityScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Community'>>();
-  const { chain, contractAddress, postId } = route.params;
+  const { chain, contractAddress, postId, creatorName } = route.params;
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
@@ -111,7 +111,7 @@ export function CommunityScreen() {
       </Suspense>
       {postId && (
         <Suspense fallback={null}>
-          <SharePostBottomSheet postId={postId} />
+          <SharePostBottomSheet postId={postId} creatorName={creatorName} />
         </Suspense>
       )}
     </View>

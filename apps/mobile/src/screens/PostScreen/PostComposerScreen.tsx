@@ -42,6 +42,16 @@ function PostComposerScreenInner() {
                 address
               }
             }
+            definition {
+              name
+              community {
+                creator {
+                  ... on GalleryUser {
+                    username
+                  }
+                }
+              }
+            }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
             ...usePostTokenFragment
@@ -112,6 +122,7 @@ function PostComposerScreenInner() {
     }
 
     const createdPostId = response?.postTokens?.post?.dbid ?? '';
+    const creatorName = token?.definition?.community?.creator?.username ?? '';
 
     mainTabNavigation.reset({
       index: 0,
@@ -124,7 +135,10 @@ function PostComposerScreenInner() {
               screen: 'Home',
               params: {
                 screen: 'For You',
-                params: { postId: createdPostId },
+                params: {
+                  postId: createdPostId,
+                  creatorName: creatorName,
+                },
               },
             },
           },
@@ -137,10 +151,12 @@ function PostComposerScreenInner() {
         contractAddress: token.contract?.contractAddress?.address ?? '',
         chain: token.chain ?? '',
         postId: createdPostId,
+        creatorName: creatorName,
       });
     } else {
       feedTabNavigation.navigate('Latest', {
         postId: createdPostId,
+        creatorName: creatorName,
       });
     }
 

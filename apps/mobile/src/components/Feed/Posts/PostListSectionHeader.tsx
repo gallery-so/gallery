@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense,useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -37,6 +37,18 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           ...ProfilePictureFragment
           ...PostBottomSheetUserFragment
         }
+        tokens {
+          definition {
+            community {
+              id
+              creator {
+                ... on GalleryUser {
+                  username
+                }
+              }
+            }
+          }
+        }
         creationTime
         ...PostBottomSheetFragment
       }
@@ -57,8 +69,9 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const [showSharePostBottomSheet, setShowSharePostBottomSheet]  = useState(false);
+  const [showSharePostBottomSheet, setShowSharePostBottomSheet] = useState(false);
 
+  const token = feedPost?.tokens?.[0];
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
 
@@ -130,7 +143,11 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
       />
       {showSharePostBottomSheet && (
         <Suspense fallback={null}>
-          <SharePostBottomSheet title="Share Post" postId={feedPost.dbid} />
+          <SharePostBottomSheet
+            title="Share Post"
+            postId={feedPost.dbid}
+            creatorName={token?.definition?.community?.creator?.username ?? ''}
+          />
         </Suspense>
       )}
     </View>

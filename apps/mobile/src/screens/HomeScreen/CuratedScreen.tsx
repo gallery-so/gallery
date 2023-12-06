@@ -116,7 +116,10 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
       {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
       {showSharePostBottomSheet && (
         <Suspense fallback={null}>
-          <SharePostBottomSheet postId={routeParams?.postId ?? ''} />
+          <SharePostBottomSheet
+            postId={routeParams?.postId ?? ''}
+            creatorName={routeParams?.postId ?? ''}
+          />
         </Suspense>
       )}
     </>

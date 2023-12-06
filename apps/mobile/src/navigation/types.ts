@@ -37,7 +37,7 @@ export type MainTabStackNavigatorParamList = {
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
-  Community: { contractAddress: string; chain: string; postId?: string };
+  Community: { contractAddress: string; chain: string; postId?: string; creatorName?: string };
 
   ProfilePicturePicker: {
     fullScreen?: boolean;
@@ -75,9 +75,11 @@ export type FeedTabNavigatorParamList = {
     isNewUser?: boolean;
     showMarfaCheckIn?: boolean;
     postId?: string;
+    creatorName?: string;
   };
   Latest: {
     postId?: string;
+    creatorName?: string;
   };
   Explore: undefined;
 };

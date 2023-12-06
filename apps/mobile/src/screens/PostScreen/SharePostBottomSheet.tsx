@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { forwardRef, ReactElement, useCallback, useEffect,useMemo, useRef } from 'react';
+import { forwardRef, ReactElement, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
@@ -24,13 +24,31 @@ import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+const shareButtonDetails = [
+  {
+    icon: <FarcasterIcon fill="white" />,
+    title: 'WARPCAST',
+    baseComposePostUrl: 'https://warpcast.com/~/compose',
+  },
+  {
+    icon: <LensIcon width={22} height={22} fill="white" />,
+    title: 'LENS',
+    baseComposePostUrl: 'https://hey.xyz/',
+  },
+  {
+    icon: <TwitterIcon fill="white" />,
+    title: 'TWITTER',
+    baseComposePostUrl: 'https://twitter.com/intent/tweet',
+  },
+];
+
 type Props = {
   postId: string;
   title?: string;
+  creatorName?: string;
 };
 
-function SharePostBottomSheet({ title, postId }: Props) {
+function SharePostBottomSheet({ title, creatorName, postId }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
     graphql`
       query SharePostBottomSheetQuery($postId: DBID!) {
@@ -80,7 +98,6 @@ function SharePostBottomSheet({ title, postId }: Props) {
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  // const postId = 'jorjro';
   const postUrl = `https://gallery.so/post/${postId}`;
 
   const tokenName = useMemo(() => {
@@ -95,12 +112,13 @@ function SharePostBottomSheet({ title, postId }: Props) {
 
   const handleShareButtonPress = useCallback(
     (baseComposePostUrl: string) => {
-      const message = `I just posted ${tokenName} on gallery ${postUrl}`;
+      const creatorInfo = creatorName ? ` by ${creatorName}` : '';
+      const message = `I 🤍 ${tokenName}${creatorInfo}\n\n${postUrl}`;
       const encodedMessage = encodeURIComponent(message);
 
       Linking.openURL(`${baseComposePostUrl}?text=${encodedMessage}`);
     },
-    [tokenName, postUrl]
+    [creatorName, tokenName, postUrl]
   );
 
   const handleCopyButtonPress = useCallback(() => {
@@ -108,13 +126,13 @@ function SharePostBottomSheet({ title, postId }: Props) {
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
-    if (!post || post?.__typename !== 'Post') {
+    if (post?.__typename !== 'Post') {
       return null;
     }
 
     const { token, profileImage } = post.author.profileImage ?? {};
 
-    if (profileImage && profileImage.previewURLs?.medium) {
+    if (profileImage?.previewURLs?.medium) {
       return profileImage.previewURLs.medium;
     }
 
@@ -144,24 +162,6 @@ function SharePostBottomSheet({ title, postId }: Props) {
   if (result.type !== 'valid') {
     return null;
   }
-
-  const shareButtonDetails = [
-    {
-      icon: <FarcasterIcon fill="white" />,
-      title: 'WARPCAST',
-      baseComposePostUrl: 'https://warpcast.com/~/compose',
-    },
-    {
-      icon: <LensIcon width={22} height={22} fill="white" />,
-      title: 'LENS',
-      baseComposePostUrl: 'https://hey.xyz/',
-    },
-    {
-      icon: <TwitterIcon fill="white" />,
-      title: 'TWITTER',
-      baseComposePostUrl: 'https://twitter.com/intent/tweet',
-    },
-  ];
 
   const imageUrl = result.urls.small ?? '';
   const username = post.author.username ?? '';
