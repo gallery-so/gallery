@@ -84,7 +84,6 @@ function PostComposerScreenInner() {
   } = useMentionableMessage();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const sharePostBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBackPress = useCallback(() => {
     if (!message) {
       navigation.goBack();
@@ -116,6 +115,8 @@ function PostComposerScreenInner() {
       return null;
     }
 
+    const createdPostId = response?.postTokens?.post?.dbid ?? '';
+
     mainTabNavigation.reset({
       index: 0,
       routes: [
@@ -127,7 +128,7 @@ function PostComposerScreenInner() {
               screen: 'Home',
               params: {
                 screen: 'For You',
-                params: { postId: response?.postTokens?.post?.dbid ?? '' },
+                params: { postId: createdPostId },
               },
             },
           },
@@ -135,7 +136,18 @@ function PostComposerScreenInner() {
       ],
     });
 
-    sharePostBottomSheetRef.current?.present();
+    if (route.params.redirectTo === 'Community') {
+      console.log('what');
+      mainTabNavigation.navigate('Community', {
+        contractAddress: token.contract?.contractAddress?.address ?? '',
+        chain: token.chain ?? '',
+        postId: createdPostId,
+      });
+    } else {
+      feedTabNavigation.navigate('Latest', {
+        postId: createdPostId,
+      });
+    }
 
     setIsPosting(false);
     resetMentions();

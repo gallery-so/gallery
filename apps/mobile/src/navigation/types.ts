@@ -37,7 +37,8 @@ export type MainTabStackNavigatorParamList = {
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
-  Community: { contractAddress: string; chain: string };
+  Community: { contractAddress: string; chain: string; postId?: string };
+
   ProfilePicturePicker: {
     fullScreen?: boolean;
     page: ScreenWithNftSelector;
@@ -75,7 +76,9 @@ export type FeedTabNavigatorParamList = {
     showMarfaCheckIn?: boolean;
     postId?: string;
   };
-  Latest: undefined;
+  Latest: {
+    postId?: string;
+  };
   Explore: undefined;
 };
 
