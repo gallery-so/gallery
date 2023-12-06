@@ -253,7 +253,3 @@ function ShareButton({ title, icon, onPress }: ButtonProps) {
     />
   );
 }
-
-const ForwardedSharePostBottomSheet = forwardRef(SharePostBottomSheet);
-
-export { ForwardedSharePostBottomSheet as SharePostBottomSheet };
