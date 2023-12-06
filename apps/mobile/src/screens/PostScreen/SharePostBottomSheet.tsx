@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { forwardRef, ReactElement, useCallback, useEffect, useMemo, useRef } from 'react';
+import { ReactElement, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
@@ -48,7 +48,7 @@ type Props = {
   creatorName?: string;
 };
 
-function SharePostBottomSheet({ title, creatorName, postId }: Props) {
+export function SharePostBottomSheet({ title, creatorName, postId }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
     graphql`
       query SharePostBottomSheetQuery($postId: DBID!) {
@@ -177,7 +177,7 @@ function SharePostBottomSheet({ title, creatorName, postId }: Props) {
       <View
         onLayout={handleContentLayout}
         style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-4 mb-2"
+        className="p-4 flex flex-col space-y-4"
       >
         <View className="flex flex-col space-y-4">
           <Typography

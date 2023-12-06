@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
-import { Text,View } from 'react-native';
+import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import CloseBracket from 'src/icons/CloseBracket';
 import OpenBracket from 'src/icons/OpenBracket';
 import { noop } from 'swr/_internal';
 
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
+import { Typography } from '~/components/Typography';
 
 type Props = {
   username: string;
@@ -21,38 +22,53 @@ export default function MiniPostOpenGraphPreview({
   imageUrl,
   profileImageUrl,
 }: Props) {
-
   const letter = username?.[0]?.toUpperCase();
   const fallbackProfilePicture = (
     <RawProfilePicture
       eventElementId="ProfilePicture"
       eventName="ProfilePicture pressed"
       eventContext={null}
-      size="xs"
+      size="xxs"
       letter={letter ?? '?'}
     />
   );
 
   return (
     <View className="flex w-[358]px h-[188px] bg-[#F9F9F9] items-center justify-center">
-      <View className="flex flex-row items-center space-x-6">
+      <View className="flex flex-row items-center space-x-3">
         <OpenBracket />
-        <View className="flex flex-row space-x-5">
+        <View className="flex flex-row space-x-3">
           <ImagePreview tokenUrl={imageUrl} onError={noop} />
           <View className="flex flex-col justify-center">
             <View className="flex flex-row items-center space-x-1">
               {profileImageUrl ? (
-                <ImagePreview
-                  isPfp
-                  tokenUrl={profileImageUrl ?? ''}
-                  onError={noop}
-                />
+                <ImagePreview isPfp tokenUrl={profileImageUrl ?? ''} onError={noop} />
               ) : (
                 fallbackProfilePicture
               )}
-              <Text>{username}</Text>
+              <Text>
+                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {username}
+                </Typography>
+              </Text>
             </View>
-            {caption ? <Text>{caption}</Text> : null}
+            {caption ? (
+              <Text>
+                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                  {caption}{' '}
+                </Typography>
+              </Text>
+            ) : (
+              <Text>
+                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                  View this post on
+                </Typography>
+                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {' '}
+                  gallery.so
+                </Typography>
+              </Text>
+            )}
           </View>
         </View>
 
