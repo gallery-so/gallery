@@ -13,12 +13,12 @@ export function getMintUrlWithReferrer(url: string, referrer: string) {
   if (mintProviderType === 'mintFun') {
     return {
       url: `${url}?referrer=${referrer}`,
-      provider: 'mintFun',
+      provider: 'MintFun',
     };
   } else if (mintProviderType === 'zora') {
     return {
       url: `${url}?ref=${referrer}`,
-      provider: 'zora',
+      provider: 'Zora',
     };
   } else {
     return {
