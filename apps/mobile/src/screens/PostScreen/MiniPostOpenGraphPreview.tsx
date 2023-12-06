@@ -20,10 +20,8 @@ export default function MiniPostOpenGraphPreview({
   imageUrl,
   profileImageUrl,
 }: Props) {
-  console.log('profileImageUrl');
 
   const letter = username?.[0]?.toUpperCase();
-
   const fallbackProfilePicture = (
     <RawProfilePicture
       eventElementId="ProfilePicture"

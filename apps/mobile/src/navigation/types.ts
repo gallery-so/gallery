@@ -73,6 +73,7 @@ export type FeedTabNavigatorParamList = {
     // check if new registered user, we show a welcome message
     isNewUser?: boolean;
     showMarfaCheckIn?: boolean;
+    postId?: string;
   };
   Latest: undefined;
   Explore: undefined;

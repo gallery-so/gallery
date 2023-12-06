@@ -30,10 +30,11 @@ type Props = {
   postRef: PostBottomSheetFragment$key;
   queryRef: PostBottomSheetQueryFragment$key;
   userRef: PostBottomSheetUserFragment$key;
+  setShowSharePostBottomSheet: (arg0: boolean) => void;
 };
 
 function PostBottomSheet(
-  { isOwnPost, postRef, queryRef, userRef }: Props,
+  { isOwnPost, postRef, queryRef, userRef, setShowSharePostBottomSheet }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const post = useFragment(
@@ -146,9 +147,9 @@ function PostBottomSheet(
   }, [imageUrl, navigation, token.dbid]);
 
   const handleShare = useCallback(() => {
-    const url = `https://gallery.so/post/${post.dbid}`;
-    Share.share({ url });
-  }, [post.dbid]);
+    bottomSheetRef.current?.dismiss();
+    setShowSharePostBottomSheet(true);
+  }, []);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 

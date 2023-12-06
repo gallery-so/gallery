@@ -27,7 +27,6 @@ import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
 import { usePost } from './usePost';
-import { SharePostBottomSheet } from './SharePostBottomSheet';
 import { usePostMutation$data } from '~/generated/usePostMutation.graphql';
 
 function PostComposerScreenInner() {
@@ -68,7 +67,6 @@ function PostComposerScreenInner() {
   });
 
   const [isPosting, setIsPosting] = useState(false);
-  const [createdPostId, setCreatedPostId] = useState('');
 
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
@@ -114,9 +112,28 @@ function PostComposerScreenInner() {
       mentions,
     });
 
-    if (response?.postTokens?.post?.__typename === 'Post') {
-      setCreatedPostId(response.postTokens?.post?.id);
+    if (response?.postTokens?.post?.__typename !== 'Post') {
+      return null;
     }
+
+    mainTabNavigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'MainTabs',
+          params: {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Home',
+              params: {
+                screen: 'For You',
+                params: { postId: response?.postTokens?.post?.dbid ?? '' },
+              },
+            },
+          },
+        },
+      ],
+    });
 
     sharePostBottomSheetRef.current?.present();
 
@@ -134,8 +151,6 @@ function PostComposerScreenInner() {
     route.params.redirectTo,
     token,
   ]);
-
-  console.log('postId', createdPostId);
 
   return (
     <View className="flex flex-col flex-grow space-y-8">
@@ -202,13 +217,6 @@ function PostComposerScreenInner() {
         </View>
       </View>
       <WarningPostBottomSheet ref={bottomSheetRef} />
-
-      <Suspense fallback={null}>
-        <SharePostBottomSheet
-          ref={sharePostBottomSheetRef}
-          postId={createdPostId.substring(5) ?? ''}
-        />
-      </Suspense>
     </View>
   );
 }

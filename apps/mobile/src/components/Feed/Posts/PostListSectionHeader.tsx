@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState, Suspense } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -17,6 +17,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { PostBottomSheet } from './PostBottomSheet';
+import { SharePostBottomSheet } from '~/screens/PostScreen/SharePostBottomSheet';
 
 type PostListSectionHeaderProps = {
   feedPostRef: PostListSectionHeaderFragment$key;
@@ -28,6 +29,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderFragment on Post {
         __typename
+        dbid
         author @required(action: THROW) {
           __typename
           id
@@ -55,6 +57,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const [showSharePostBottomSheet, setShowSharePostBottomSheet]  = useState(false);
 
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
@@ -123,7 +126,13 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         postRef={feedPost}
         queryRef={query}
         userRef={feedPost.author}
+        setShowSharePostBottomSheet={setShowSharePostBottomSheet}
       />
+      {showSharePostBottomSheet && (
+        <Suspense fallback={null}>
+          <SharePostBottomSheet title="Share Post" postId={feedPost.dbid} />
+        </Suspense>
+      )}
     </View>
   );
 }

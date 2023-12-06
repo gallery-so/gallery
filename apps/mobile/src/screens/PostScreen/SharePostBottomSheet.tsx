@@ -1,6 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, ReactElement, useCallback, useRef, useMemo } from 'react';
+import { forwardRef, ReactElement, useCallback, useRef, useMemo, useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { Linking, View } from 'react-native';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
@@ -10,8 +9,7 @@ import { noop } from 'swr/_internal';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
-import { useToastActions } from '~/contexts/ToastContext';
-import * as Clipboard from 'expo-clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import {
   GalleryBottomSheetModal,
@@ -28,12 +26,11 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {
+  title?: string;
   postId: string;
 };
 
-function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
-  const navigation = useNavigation();
-  const realPostId = props.postId;
+function SharePostBottomSheet({ title, postId }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
     graphql`
       query SharePostBottomSheetQuery($postId: DBID!) {
@@ -64,27 +61,37 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
             }
             caption
             tokens {
+              name
               ...getPreviewImageUrlsInlineDangerouslyFragment
             }
           }
         }
       }
     `,
-    { postId: realPostId }
+    { postId: postId }
   );
 
   const { post } = queryResponse;
   const { bottom } = useSafeAreaPadding();
-  const { pushToast } = useToastActions();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
+  useEffect(() => bottomSheetRef.current?.present(), []);
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   // const postId = 'jorjro';
-  const postUrl = `https://gallery.so/post/${realPostId}`;
-  const tokenName = 'allstarz';
+  const postUrl = `https://gallery.so/post/${postId}`;
+
+  const tokenName = useMemo(() => {
+    if (post?.__typename === 'Post') {
+      const token = post?.tokens?.[0];
+      if (token) {
+        return token.name;
+      }
+    }
+    return 'this';
+  }, [post]);
 
   const handleShareButtonPress = useCallback(
     (baseComposePostUrl: string) => {
@@ -96,12 +103,8 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
     [tokenName, postUrl]
   );
 
-  const handleCopyButtonPress = useCallback(async () => {
-    try {
-      await Clipboard.setStringAsync(postUrl);
-    } catch (e) {
-      pushToast({ message: "Failed to copy post url. We're looking into it." });
-    }
+  const handleCopyButtonPress = useCallback(() => {
+    Clipboard.setString(postUrl);
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
@@ -166,15 +169,7 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
 
   return (
     <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
-
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
+      ref={bottomSheetRef}
       snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
@@ -182,25 +177,29 @@ function SharePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheet
       <View
         onLayout={handleContentLayout}
         style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-6"
+        className="p-4 flex flex-col space-y-4 mb-2"
       >
         <View className="flex flex-col space-y-4">
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Successfuly posted {tokenName}
+            {title ? title : `Successfuly posted ${tokenName}`}
           </Typography>
-          <MiniPostOpenGraphPreview
-            imageUrl={imageUrl}
-            username={username}
-            profileImageUrl={profileImageUrl ?? ''}
-            caption={caption}
-          />
+          <View>
+            <MiniPostOpenGraphPreview
+              imageUrl={imageUrl}
+              username={username}
+              profileImageUrl={profileImageUrl ?? ''}
+              caption={caption}
+            />
+          </View>
         </View>
+
         <View className="flex flex-row space-x-4 justify-between">
           {shareButtonDetails.map((btnDetails) => (
             <ShareButton
+              key={btnDetails.title}
               title={btnDetails.title}
               icon={btnDetails.icon}
               onPress={() => handleShareButtonPress(btnDetails.baseComposePostUrl)}
@@ -248,6 +247,7 @@ function ShareButton({ title, icon, onPress }: ButtonProps) {
       eventContext={contexts.Posts}
       eventName="Press Share Post"
       eventElementId="Press Share Post Button"
+      properties={{ variant: title }}
       icon={icon}
       text={title}
     />
