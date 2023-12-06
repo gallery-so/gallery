@@ -11,16 +11,11 @@ export const getFormattedDate = (
   inputDateString: string,
   formatOption: DateFormatOption
 ): string => {
-  // Validate inputDateString
+  // TODO: investigate why inputeDateString is invalid
   if (!inputDateString || isNaN(new Date(inputDateString).getTime())) {
-    // If inputDateString is not provided or is not a valid date string
-    console.error('Invalid date string:', inputDateString);
     return 'Invalid Date';
   }
 
-  // Create a Date object
   const date: Date = new Date(inputDateString);
-
-  // Format the date using date-fns library
   return format(date, formatOption);
 };
