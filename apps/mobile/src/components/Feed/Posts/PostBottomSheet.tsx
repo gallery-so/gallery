@@ -29,11 +29,11 @@ type Props = {
   postRef: PostBottomSheetFragment$key;
   queryRef: PostBottomSheetQueryFragment$key;
   userRef: PostBottomSheetUserFragment$key;
-  setShowSharePostBottomSheet: (arg0: boolean) => void;
+  onShare: () => void;
 };
 
 function PostBottomSheet(
-  { isOwnPost, postRef, queryRef, userRef, setShowSharePostBottomSheet }: Props,
+  { isOwnPost, postRef, queryRef, userRef, onShare }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const post = useFragment(
@@ -147,8 +147,8 @@ function PostBottomSheet(
 
   const handleShare = useCallback(() => {
     bottomSheetRef.current?.dismiss();
-    setShowSharePostBottomSheet(true);
-  }, [setShowSharePostBottomSheet]);
+    onShare();
+  }, [onShare]);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 

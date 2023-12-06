@@ -35,9 +35,9 @@ export default function MiniPostOpenGraphPreview({
 
   return (
     <View className="flex w-[358]px h-[188px] bg-[#F9F9F9] items-center justify-center">
-      <View className="flex flex-row items-center space-x-3">
+      <View className="flex flex-row items-center space-x-5">
         <OpenBracket />
-        <View className="flex flex-row space-x-3">
+        <View className="flex flex-row space-x-4">
           <ImagePreview tokenUrl={imageUrl} onError={noop} />
           <View className="flex flex-col justify-center">
             <View className="flex flex-row items-center space-x-1">
@@ -53,11 +53,18 @@ export default function MiniPostOpenGraphPreview({
               </Text>
             </View>
             {caption ? (
-              <Text>
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                  {caption}{' '}
+              <View className="max-w-[160px]">
+                <Typography
+                  numberOfLines={5}
+                  style={{
+                    fontSize: 8,
+                    lineHeight: 12,
+                  }}
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                >
+                  {caption}
                 </Typography>
-              </Text>
+              </View>
             ) : (
               <Text>
                 <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>

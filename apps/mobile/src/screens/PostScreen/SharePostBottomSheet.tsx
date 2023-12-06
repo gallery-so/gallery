@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { ReactElement, useCallback, useEffect, useMemo, useRef } from 'react';
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
@@ -21,6 +21,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
+import CopyIcon from 'src/icons/CopyIcon';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -46,9 +47,10 @@ type Props = {
   postId: string;
   title?: string;
   creatorName?: string;
+  onClose?: () => void;
 };
 
-export function SharePostBottomSheet({ title, creatorName, postId }: Props) {
+export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Props) {
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
     graphql`
       query SharePostBottomSheetQuery($postId: DBID!) {
@@ -91,12 +93,20 @@ export function SharePostBottomSheet({ title, creatorName, postId }: Props) {
 
   const { post } = queryResponse;
   const { bottom } = useSafeAreaPadding();
+  const [hasCopiedUrl, setHasCopiedUrl] = useState(false);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   useEffect(() => bottomSheetRef.current?.present(), []);
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
+
+  const closeSheet = useCallback(() => {
+    if (onClose) {
+      onClose();
+    }
+    bottomSheetRef.current?.dismiss();
+  }, []);
 
   const postUrl = `https://gallery.so/post/${postId}`;
 
@@ -123,7 +133,11 @@ export function SharePostBottomSheet({ title, creatorName, postId }: Props) {
 
   const handleCopyButtonPress = useCallback(() => {
     Clipboard.setString(postUrl);
-  }, [postUrl]);
+    setHasCopiedUrl(true);
+    setTimeout(() => {
+      closeSheet();
+    }, 800);
+  }, [postUrl, closeSheet]);
 
   const profileImageUrl = useMemo(() => {
     if (post?.__typename !== 'Post') {
@@ -219,12 +233,20 @@ export function SharePostBottomSheet({ title, creatorName, postId }: Props) {
           <Button
             className="w-[81px] h-[32]px"
             onPress={handleCopyButtonPress}
+            icon={
+              hasCopiedUrl ? (
+                <View className="ml-1.5">
+                  <CopyIcon />
+                </View>
+              ) : null
+            }
             size="sm"
             variant="secondary"
             eventContext={contexts.Posts}
             eventName="Press Copy Post Url"
             eventElementId="Press Copy Post Url Button"
-            text="COPY"
+            text={!hasCopiedUrl ? 'COPY' : undefined}
+            containerClassName={hasCopiedUrl ? 'border border-[#141414]' : ''}
           />
         </View>
       </View>

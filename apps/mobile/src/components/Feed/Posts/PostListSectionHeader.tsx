@@ -139,13 +139,14 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         postRef={feedPost}
         queryRef={query}
         userRef={feedPost.author}
-        setShowSharePostBottomSheet={setShowSharePostBottomSheet}
+        onShare={() => setShowSharePostBottomSheet(true)}
       />
       {showSharePostBottomSheet && (
         <Suspense fallback={null}>
           <SharePostBottomSheet
             title="Share Post"
             postId={feedPost.dbid}
+            onClose={() => setShowSharePostBottomSheet(false)}
             creatorName={token?.definition?.community?.creator?.username ?? ''}
           />
         </Suspense>
