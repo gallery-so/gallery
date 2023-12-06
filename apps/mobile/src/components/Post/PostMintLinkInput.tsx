@@ -77,9 +77,12 @@ export function PostMintLinkInput({
             value={mintLink}
             defaultValue={defaultValue}
             onChangeText={handleTextChange}
-            className={clsx('py-2 px-3 border bg-faint border-porcelain', {
-              'border-red': invalid,
-            })}
+            className={clsx(
+              'py-2 px-3 border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500',
+              {
+                'border-red': invalid,
+              }
+            )}
             selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
             placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
             autoCapitalize="none"
