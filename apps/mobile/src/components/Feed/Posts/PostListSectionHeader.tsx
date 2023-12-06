@@ -1,10 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { LeafIcon } from 'src/icons/LeafIcon';
 import { OptionIcon } from 'src/icons/OptionIcon';
+import { TopMemberBadgeIcon } from 'src/icons/TopMemberBadgeIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
@@ -34,6 +36,10 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           __typename
           id
           username
+          badges {
+            __typename
+            name
+          }
           ...ProfilePictureFragment
           ...PostBottomSheetUserFragment
         }
@@ -49,6 +55,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
       fragment PostListSectionHeaderQueryFragment on Query {
         ...useLoggedInUserIdFragment
         ...PostBottomSheetQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -60,6 +67,12 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
 
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
+
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
+  const activeBadge = useMemo(() => {
+    if (!isActivityBadgeEnabled) return null;
+    return feedPost.author?.badges?.find((badge) => badge?.name === 'Top Member');
+  }, [feedPost.author?.badges, isActivityBadgeEnabled]);
 
   const handleMenuPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -87,7 +100,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           </GalleryTouchableOpacity>
           <View className="flex-1">
             <GalleryTouchableOpacity
-              className="flex flex-row items-center space-x-1"
+              className="flex flex-row items-center"
               onPress={handleUsernamePress}
               eventElementId="Feed Username Button"
               eventName="Feed Username Clicked"
@@ -97,6 +110,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
               <Typography className="text-sm pr-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                 {feedPost?.author?.username}
               </Typography>
+              {activeBadge && <TopMemberBadgeIcon />}
               {feedPost.isFirstPost && <LeafIcon />}
             </GalleryTouchableOpacity>
           </View>
