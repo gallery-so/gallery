@@ -214,13 +214,15 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
-        <PostMintLinkInput
-          defaultValue={mintURL}
-          invalid={isInvalidMintLink}
-          onSetInvalid={setIsInvalidMintLink}
-          isFocused={isMintLinkInputFocused}
-          onSetIsFocused={setIsMintLinkInputFocused}
-        />
+        {mintURL && (
+          <PostMintLinkInput
+            defaultValue={mintURL}
+            invalid={isInvalidMintLink}
+            onSetInvalid={setIsInvalidMintLink}
+            isFocused={isMintLinkInputFocused}
+            onSetIsFocused={setIsMintLinkInputFocused}
+          />
+        )}
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">

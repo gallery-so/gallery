@@ -30,7 +30,7 @@ export function PostMintLinkInput({
 
   style,
 }: Props) {
-  const [includeMintLink, setIncludeMintLink] = useState(false);
+  const [includeMintLink, setIncludeMintLink] = useState(true);
   const [mintLink, setMintLink] = useState(defaultValue);
 
   const { colorScheme } = useColorScheme();
