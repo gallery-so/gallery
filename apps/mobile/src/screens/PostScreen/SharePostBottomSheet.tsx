@@ -27,17 +27,17 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 const shareButtonDetails = [
   {
-    icon: <FarcasterIcon fill="white" />,
+    icon: <FarcasterIcon fill="FEFEFE" />,
     title: 'WARPCAST',
     baseComposePostUrl: 'https://warpcast.com/~/compose',
   },
   {
-    icon: <LensIcon width={22} height={22} fill="white" />,
+    icon: <LensIcon width={22} height={22} fill="FEFEFE" />,
     title: 'LENS',
     baseComposePostUrl: 'https://hey.xyz/',
   },
   {
-    icon: <TwitterIcon fill="white" />,
+    icon: <TwitterIcon fill="FEFEFE" />,
     title: 'TWITTER',
     baseComposePostUrl: 'https://twitter.com/intent/tweet',
   },
