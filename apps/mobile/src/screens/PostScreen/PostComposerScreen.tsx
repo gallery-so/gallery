@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
@@ -74,6 +75,9 @@ function PostComposerScreenInner() {
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
   const navigation = useNavigation();
+
+  const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [isMintLinkInputFocused, setIsMintLinkInputFocused] = useState(false);
 
   const {
     aliasKeyword,
@@ -151,6 +155,10 @@ function PostComposerScreenInner() {
     token,
   ]);
 
+  const isPostButtonDisabled = useMemo(() => {
+    return isPosting || isInvalidMintLink || isMintLinkInputFocused;
+  }, [isInvalidMintLink, isPosting, isMintLinkInputFocused]);
+
   return (
     <View className="flex flex-col flex-grow space-y-8">
       <View className="px-4 relative flex-row items-center justify-between">
@@ -167,10 +175,13 @@ function PostComposerScreenInner() {
           eventElementId="Post Button"
           eventName="Post button clicked"
           eventContext={contexts.Posts}
-          disabled={isPosting}
+          disabled={isPostButtonDisabled}
         >
           <Typography
-            className="text-sm text-activeBlue"
+            className={clsx('text-sm', {
+              'text-activeBlue': !isPostButtonDisabled,
+              'text-metal': isPostButtonDisabled,
+            })}
             font={{
               family: 'ABCDiatype',
               weight: 'Bold',
@@ -189,7 +200,13 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
-        <PostMintLinkInput defaultValue={mintURL} />
+        <PostMintLinkInput
+          defaultValue={mintURL}
+          invalid={isInvalidMintLink}
+          onSetInvalid={setIsInvalidMintLink}
+          isFocused={isMintLinkInputFocused}
+          onSetIsFocused={setIsMintLinkInputFocused}
+        />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">
