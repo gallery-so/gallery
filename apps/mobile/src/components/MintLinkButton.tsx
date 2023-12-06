@@ -8,6 +8,7 @@ import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import colors from '~/shared/theme/colors';
+import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 
 import { Button, ButtonProps } from './Button';
 
@@ -18,6 +19,8 @@ type Props = {
 } & ButtonProps;
 
 type MintProvider = 'Zora' | 'MintFun' | '';
+
+const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
 export function MintLinkButton({
   tokenRef,
@@ -34,6 +37,10 @@ export function MintLinkButton({
           community {
             contract {
               mintURL
+              contractAddress {
+                chain
+                address
+              }
             }
           }
         }
@@ -42,6 +49,10 @@ export function MintLinkButton({
     tokenRef
   );
   const { colorScheme } = useColorScheme();
+
+  const tokenContractAddress =
+    token?.definition?.community?.contract?.contractAddress?.address ?? '';
+  const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
 
   const mintProviderType = useMemo((): MintProvider => {
     const mintFunRegex = new RegExp('https://mint.fun/');
@@ -119,6 +130,14 @@ export function MintLinkButton({
 
     return colorMap[variant as 'primary' | 'secondary'][colorScheme === 'dark' ? 'dark' : 'light'];
   }, [variant, colorScheme]);
+
+  if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
+    return null;
+  }
+
+  if (CHAIN_ENABLED.indexOf(tokenChain) < 0) {
+    return null;
+  }
 
   return (
     <Button
