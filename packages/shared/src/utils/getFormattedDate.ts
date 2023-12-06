@@ -12,11 +12,6 @@ export const getFormattedDate = (
   inputDateString: string,
   formatOption: DateFormatOption
 ): string => {
-  // TODO: investigate why inputeDateString is invalid
-  if (!inputDateString || isNaN(new Date(inputDateString).getTime())) {
-    return 'Invalid Date';
-  }
-
   const date: Date = new Date(inputDateString);
   return format(date, formatOption);
 };
