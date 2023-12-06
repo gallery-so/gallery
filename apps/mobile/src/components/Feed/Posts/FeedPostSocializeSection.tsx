@@ -119,7 +119,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
 
   return (
     <>
-      <View className="px-3 pb-8 pt-2">
+      <View className="px-3 pt-2">
         <View className="flex flex-row justify-between">
           <View className="flex-1 pr-4 pt-1">
             <Admires
