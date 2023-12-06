@@ -373,9 +373,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
           <MintLinkButton
             tokenRef={token}
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
+            eventElementId="Press Mint Link Button"
+            eventName="Press Mint Link"
+            eventContext={contexts['NFT Detail']}
           />
         </View>
 

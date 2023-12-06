@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { MintLinkButton } from '~/components/MintLinkButton';
 import { PostListMintButtonSectionFragment$key } from '~/generated/PostListMintButtonSectionFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
   postRef: PostListMintButtonSectionFragment$key;
@@ -29,9 +30,9 @@ export function PostListMintButtonSection({ postRef }: Props) {
       <MintLinkButton
         tokenRef={token}
         variant="secondary"
-        eventElementId={null}
-        eventName={null}
-        eventContext={null}
+        eventElementId="Press Mint Link Button"
+        eventName="Press Mint Link Button"
+        eventContext={contexts.Feed}
       />
     </View>
   );
