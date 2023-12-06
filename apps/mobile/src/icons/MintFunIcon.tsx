@@ -1,8 +1,19 @@
-import Svg, { Path,SvgProps } from 'react-native-svg';
+import Svg, { Path, SvgProps } from 'react-native-svg';
 
-export function MintFunIcon(props: SvgProps) {
+type Props = {
+  height?: number;
+  width?: number;
+} & SvgProps;
+
+const originalWidth = 25;
+const originalHeight = 22;
+
+export function MintFunIcon({ width = originalWidth, height = originalHeight, ...props }: Props) {
+  const scaledWidth = (height * originalWidth) / originalHeight;
+  const scaledHeight = (width * originalHeight) / originalWidth;
+
   return (
-    <Svg width={25} height={22} fill="none" {...props}>
+    <Svg width={scaledWidth} height={scaledHeight} fill="none" {...props} viewBox="0 0 22 22">
       <Path
         fill="#7348F6"
         fillRule="evenodd"

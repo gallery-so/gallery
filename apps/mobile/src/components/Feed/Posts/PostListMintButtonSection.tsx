@@ -12,7 +12,6 @@ export function PostListMintButtonSection({ postRef }: Props) {
   const post = useFragment(
     graphql`
       fragment PostListMintButtonSectionFragment on Post {
-        dbid
         tokens {
           ...MintLinkButtonFragment
         }
@@ -27,7 +26,13 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   return (
     <View className="px-3 pb-8 pt-2">
-      <MintLinkButton tokenRef={token} variant="secondary" />
+      <MintLinkButton
+        tokenRef={token}
+        variant="secondary"
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+      />
     </View>
   );
 }

@@ -6,16 +6,22 @@ import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
+import colors from '~/shared/theme/colors';
 
-import { Button, Variant } from './Button';
+import { Button, ButtonProps } from './Button';
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
   style?: ViewStyle;
-  variant?: Variant;
-};
+} & ButtonProps;
 
-export function MintLinkButton({ tokenRef, style, variant = 'primary' }: Props) {
+export function MintLinkButton({
+  tokenRef,
+  style,
+  variant = 'primary',
+  size = 'md',
+  ...props
+}: Props) {
   const token = useFragment(
     graphql`
       fragment MintLinkButtonFragment on Token {
@@ -37,20 +43,29 @@ export function MintLinkButton({ tokenRef, style, variant = 'primary' }: Props) 
     const mintFunRegex = new RegExp('https://mint.fun/');
     const zoraRegex = new RegExp('https://zora.co/');
 
-    if (zoraRegex.test(mintURL)) {
-      return {
-        name: 'zora',
-        icon: <ZoraIcon />,
-      };
+    const provider = {
+      name: '',
+      icon: null as React.ReactNode | null,
+    };
+
+    if (size === 'sm') {
+      provider.name = 'mint';
+    } else if (zoraRegex.test(mintURL)) {
+      provider.name = 'mint on zora';
     } else if (mintFunRegex.test(mintURL)) {
-      return {
-        name: 'mint.fun',
-        icon: <MintFunIcon />,
-      };
+      provider.name = 'mint on mint.fun';
     }
 
-    return null;
-  }, [mintURL]);
+    if (zoraRegex.test(mintURL)) {
+      provider.icon = <ZoraIcon />;
+    } else if (mintFunRegex.test(mintURL)) {
+      provider.icon = (
+        <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />
+      );
+    }
+
+    return provider;
+  }, [mintURL, size]);
 
   const handlePress = useCallback(() => {
     Linking.openURL(mintURL);
@@ -58,15 +73,16 @@ export function MintLinkButton({ tokenRef, style, variant = 'primary' }: Props) 
 
   return (
     <Button
-      text={`Mint on ${mintProvider?.name}`}
+      text={mintProvider?.name}
       variant={variant}
       onPress={handlePress}
-      eventElementId={null}
-      eventName={null}
-      eventContext={null}
       icon={mintProvider?.icon}
-      footerIcon={<TopRightArrowIcon />}
+      footerIcon={
+        <TopRightArrowIcon color={variant === 'primary' ? colors.white : colors.black[800]} />
+      }
       style={style}
+      size={size}
+      {...props}
     />
   );
 }

@@ -8,11 +8,11 @@ import colors from '~/shared/theme/colors';
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-export type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
+type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
 
-type ButtonProps = {
+export type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
   className?: string;
   loading?: boolean;
