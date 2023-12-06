@@ -14,6 +14,7 @@ import { Chain } from '~/generated/CommunityScreenQuery.graphql';
 import { CommunityScreenRefetchableFragment$key } from '~/generated/CommunityScreenRefetchableFragment.graphql';
 import { CommunityScreenRefetchableFragmentQuery } from '~/generated/CommunityScreenRefetchableFragmentQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+
 import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
 
 type CommunityScreenInnerProps = {

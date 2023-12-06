@@ -2,7 +2,6 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { BottomSheetRow } from '~/components/BottomSheetRow';
@@ -149,7 +148,7 @@ function PostBottomSheet(
   const handleShare = useCallback(() => {
     bottomSheetRef.current?.dismiss();
     setShowSharePostBottomSheet(true);
-  }, []);
+  }, [setShowSharePostBottomSheet]);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 

@@ -1,7 +1,8 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { forwardRef, ReactElement, useCallback, useRef, useMemo, useEffect } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { forwardRef, ReactElement, useCallback, useEffect,useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
 import LensIcon from 'src/icons/LensIcon';
 import { TwitterIcon } from 'src/icons/TwitterIcon';
@@ -9,25 +10,24 @@ import { noop } from 'swr/_internal';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
-import Clipboard from '@react-native-clipboard/clipboard';
-
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
-import { contexts } from '~/shared/analytics/constants';
 import { SharePostBottomSheetQuery } from '~/generated/SharePostBottomSheetQuery.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+
 import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {
-  title?: string;
   postId: string;
+  title?: string;
 };
 
 function SharePostBottomSheet({ title, postId }: Props) {

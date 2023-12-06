@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
 import clsx from 'clsx';
+import { ResizeMode } from 'expo-av';
+import { Text,View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import CloseBracket from 'src/icons/CloseBracket';
 import OpenBracket from 'src/icons/OpenBracket';
-import FastImage from 'react-native-fast-image';
-import { ResizeMode } from 'expo-av';
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { noop } from 'swr/_internal';
+
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 
 type Props = {
@@ -26,7 +27,6 @@ export default function MiniPostOpenGraphPreview({
     <RawProfilePicture
       eventElementId="ProfilePicture"
       eventName="ProfilePicture pressed"
-      // TODO analytics prop drill
       eventContext={null}
       size="xs"
       letter={letter ?? '?'}
@@ -38,14 +38,14 @@ export default function MiniPostOpenGraphPreview({
       <View className="flex flex-row items-center space-x-6">
         <OpenBracket />
         <View className="flex flex-row space-x-5">
-          <ImagePreview tokenUrl={imageUrl} onError={() => console.log('error flagged')} />
+          <ImagePreview tokenUrl={imageUrl} onError={noop} />
           <View className="flex flex-col justify-center">
             <View className="flex flex-row items-center space-x-1">
               {profileImageUrl ? (
                 <ImagePreview
                   isPfp
                   tokenUrl={profileImageUrl ?? ''}
-                  onError={() => console.log('error in pfp flagged')}
+                  onError={noop}
                 />
               ) : (
                 fallbackProfilePicture

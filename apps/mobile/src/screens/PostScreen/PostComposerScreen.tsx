@@ -13,7 +13,6 @@ import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
-import { useToastActions } from '~/contexts/ToastContext';
 import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
 import { PostComposerScreenTokenFragment$key } from '~/generated/PostComposerScreenTokenFragment.graphql';
 import {
@@ -27,7 +26,6 @@ import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
 import { usePost } from './usePost';
-import { usePostMutation$data } from '~/generated/usePostMutation.graphql';
 
 function PostComposerScreenInner() {
   const route = useRoute<RouteProp<PostStackNavigatorParamList, 'PostComposer'>>();
@@ -94,8 +92,6 @@ function PostComposerScreenInner() {
     bottomSheetRef.current?.present();
   }, [message, navigation]);
 
-  const { pushToast } = useToastActions();
-
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
@@ -137,7 +133,6 @@ function PostComposerScreenInner() {
     });
 
     if (route.params.redirectTo === 'Community') {
-      console.log('what');
       mainTabNavigation.navigate('Community', {
         contractAddress: token.contract?.contractAddress?.address ?? '',
         chain: token.chain ?? '',
@@ -158,7 +153,6 @@ function PostComposerScreenInner() {
     mainTabNavigation,
     mentions,
     post,
-    pushToast,
     resetMentions,
     route.params.redirectTo,
     token,

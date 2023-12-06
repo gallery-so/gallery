@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef, useState, Suspense } from 'react';
+import { Suspense,useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -12,12 +12,12 @@ import { Typography } from '~/components/Typography';
 import { PostListSectionHeaderFragment$key } from '~/generated/PostListSectionHeaderFragment.graphql';
 import { PostListSectionHeaderQueryFragment$key } from '~/generated/PostListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { SharePostBottomSheet } from '~/screens/PostScreen/SharePostBottomSheet';
 import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { PostBottomSheet } from './PostBottomSheet';
-import { SharePostBottomSheet } from '~/screens/PostScreen/SharePostBottomSheet';
 
 type PostListSectionHeaderProps = {
   feedPostRef: PostListSectionHeaderFragment$key;

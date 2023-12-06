@@ -1,9 +1,8 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
@@ -59,7 +58,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
   const showMarfaCheckIn = routeParams?.showMarfaCheckIn ?? false;
   const showSharePostBottomSheet = routeParams?.postId ?? false;
-  console.log('showSharePostBottomSheet', showSharePostBottomSheet);
 
   const curatedFeed = query.data.curatedFeed;
 
