@@ -7,6 +7,7 @@ import OpenBracket from 'src/icons/OpenBracket';
 import { noop } from 'swr/_internal';
 
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
+import { useColorScheme } from 'nativewind';
 import { Typography } from '~/components/Typography';
 
 type Props = {
@@ -22,6 +23,8 @@ export default function MiniPostOpenGraphPreview({
   imageUrl,
   profileImageUrl,
 }: Props) {
+  const { colorScheme } = useColorScheme();
+
   const letter = username?.[0]?.toUpperCase();
   const fallbackProfilePicture = (
     <RawProfilePicture
@@ -33,8 +36,10 @@ export default function MiniPostOpenGraphPreview({
     />
   );
 
+  const bgColor = colorScheme === 'dark' ? 'black-500' : '[#F9F9F9]';
+
   return (
-    <View className="flex w-[358]px h-[188px] bg-[#F9F9F9] items-center justify-center">
+    <View className={`flex w-[358]px h-[188px] bg-${bgColor} items-center justify-center`}>
       <View className="flex flex-row items-center space-x-5">
         <OpenBracket />
         <View className="flex flex-row space-x-4">
@@ -53,7 +58,7 @@ export default function MiniPostOpenGraphPreview({
               </Text>
             </View>
             {caption ? (
-              <View className="max-w-[160px]">
+              <View className="max-w-[140px]">
                 <Typography
                   numberOfLines={5}
                   style={{
@@ -109,7 +114,7 @@ function ImagePreview({ tokenUrl, stacked, onError, isPfp = false }: ImagePrevie
       }
       className={clsx(stacked && 'absolute -bottom-1 -right-1')}
       source={{ uri: tokenUrl }}
-      resizeMode={ResizeMode.COVER}
+      resizeMode={ResizeMode.CONTAIN}
       onError={onError}
     />
   );

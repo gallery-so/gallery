@@ -1,8 +1,10 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useColorScheme } from 'nativewind';
 import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import CopyIcon from 'src/icons/CopyIcon';
 import FarcasterIcon from 'src/icons/FarcasterIcon';
 import LensIcon from 'src/icons/LensIcon';
 import { TwitterIcon } from 'src/icons/TwitterIcon';
@@ -19,29 +21,11 @@ import { Typography } from '~/components/Typography';
 import { SharePostBottomSheetQuery } from '~/generated/SharePostBottomSheetQuery.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+import colors from '~/shared/theme/colors';
 
 import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
-import CopyIcon from 'src/icons/CopyIcon';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
-
-const shareButtonDetails = [
-  {
-    icon: <FarcasterIcon fill="FEFEFE" />,
-    title: 'WARPCAST',
-    baseComposePostUrl: 'https://warpcast.com/~/compose',
-  },
-  {
-    icon: <LensIcon width={22} height={22} fill="FEFEFE" />,
-    title: 'LENS',
-    baseComposePostUrl: 'https://hey.xyz/',
-  },
-  {
-    icon: <TwitterIcon fill="FEFEFE" />,
-    title: 'TWITTER',
-    baseComposePostUrl: 'https://twitter.com/intent/tweet',
-  },
-];
 
 type Props = {
   postId: string;
@@ -106,7 +90,7 @@ export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Pr
       onClose();
     }
     bottomSheetRef.current?.dismiss();
-  }, []);
+  }, [onClose]);
 
   const postUrl = `https://gallery.so/post/${postId}`;
 
@@ -119,6 +103,29 @@ export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Pr
     }
     return 'this';
   }, [post]);
+
+  const { colorScheme } = useColorScheme();
+
+  const shareButtonDetails = useMemo(() => {
+    const fill = colorScheme === 'dark' ? colors.black['800'] : '#FEFEFE';
+    return [
+      {
+        icon: <FarcasterIcon fill={fill} />,
+        title: 'WARPCAST',
+        baseComposePostUrl: 'https://warpcast.com/~/compose',
+      },
+      {
+        icon: <LensIcon width={22} height={22} fill={fill} />,
+        title: 'LENS',
+        baseComposePostUrl: 'https://hey.xyz/',
+      },
+      {
+        icon: <TwitterIcon fill={fill} />,
+        title: 'TWITTER',
+        baseComposePostUrl: 'https://twitter.com/intent/tweet',
+      },
+    ];
+  }, [colorScheme]);
 
   const handleShareButtonPress = useCallback(
     (baseComposePostUrl: string) => {
