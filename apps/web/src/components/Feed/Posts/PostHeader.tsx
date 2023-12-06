@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import Badge from '~/components/Badge/Badge';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -14,6 +15,7 @@ import LeafIcon from '~/icons/LeafIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import { StyledTime } from '../Events/EventStyles';
@@ -34,6 +36,10 @@ export default function PostHeader({ postRef, queryRef }: Props) {
         author @required(action: THROW) {
           ... on GalleryUser {
             username
+            badges {
+              name
+              ...BadgeFragment
+            }
             ...ProfilePictureFragment
             ...UserHoverCardFragment
           }
@@ -52,13 +58,25 @@ export default function PostHeader({ postRef, queryRef }: Props) {
     graphql`
       fragment PostHeaderQueryFragment on Query {
         ...PostDropdownQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
   const displayName = handleCustomDisplayName(post.author?.username ?? '');
   const nonNullMentions = useMemo(() => removeNullValues(post.mentions), [post.mentions]);
+
+  const activeBadge = useMemo(() => {
+    const badges = post.author?.badges ?? [];
+
+    if (!badges || !isActivityBadgeEnabled) {
+      return null;
+    }
+
+    return badges.filter((badge) => badge?.name === 'Top Member')[0];
+  }, [isActivityBadgeEnabled, post.author?.badges]);
 
   return (
     <VStack gap={6}>
@@ -67,9 +85,9 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <UserHoverCard userRef={post.author}>
             <HStack align="center" gap={6}>
               <ProfilePicture userRef={post.author} size="md" />
-              <VStack>
+              <HStack align="center" gap={4}>
                 <TitleDiatypeM>{displayName}</TitleDiatypeM>
-              </VStack>
+              </HStack>
             </HStack>
           </UserHoverCard>
           <HStack align="center">
@@ -83,6 +101,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
                 tooltipPlacement="right"
               />
             )}
+            {activeBadge && <Badge badgeRef={activeBadge} eventContext={contexts.Feed} />}
           </HStack>
         </HStack>
 
