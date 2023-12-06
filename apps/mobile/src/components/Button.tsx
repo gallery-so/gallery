@@ -19,6 +19,7 @@ type ButtonProps = {
   disabled?: boolean;
   text?: string;
   icon?: ReactNode;
+  footerIcon?: ReactNode;
   variant?: Variant;
   textClassName?: string;
   containerClassName?: string;
@@ -177,6 +178,7 @@ export function Button({
   containerClassName,
   size = 'md',
   fontWeight = 'Medium',
+  footerIcon,
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
@@ -220,16 +222,20 @@ export function Button({
         >
           {icon}
 
-          <Typography
-            font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx(
-              'text-xs uppercase text-center',
-              variantClassNames.textClassName,
-              textClassName
-            )}
-          >
-            {text}
-          </Typography>
+          <View className="flex-row items-center space-x-1">
+            <Typography
+              font={{ family: 'ABCDiatype', weight: fontWeight }}
+              className={clsx(
+                'text-xs uppercase text-center',
+                variantClassNames.textClassName,
+                textClassName
+              )}
+            >
+              {text}
+            </Typography>
+
+            {footerIcon}
+          </View>
         </View>
 
         {loading && (
