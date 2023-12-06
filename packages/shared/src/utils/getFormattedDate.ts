@@ -7,6 +7,7 @@ export enum DateFormatOption {
   ISO_8601 = 'yyyy-MM-dd HH:mm:ss', // e.g., "2023-07-28 15:47:51"
 }
 
+// Utility function to format a date string
 export const getFormattedDate = (
   inputDateString: string,
   formatOption: DateFormatOption
