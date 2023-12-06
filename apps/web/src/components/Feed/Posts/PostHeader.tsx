@@ -75,7 +75,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       return null;
     }
 
-    return badges.filter((badge) => badge?.name === 'Top Member')[0];
+    return badges.find((badge) => badge?.name === 'Top Member');
   }, [isActivityBadgeEnabled, post.author?.badges]);
 
   return (
@@ -91,6 +91,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
             </HStack>
           </UserHoverCard>
           <HStack align="center">
+            {activeBadge && <Badge badgeRef={activeBadge} eventContext={contexts.Feed} />}
             {post.isFirstPost && (
               <IconContainer
                 variant="stacked"
@@ -101,7 +102,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
                 tooltipPlacement="right"
               />
             )}
-            {activeBadge && <Badge badgeRef={activeBadge} eventContext={contexts.Feed} />}
           </HStack>
         </HStack>
 
