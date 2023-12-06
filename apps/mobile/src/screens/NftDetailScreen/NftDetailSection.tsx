@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
@@ -33,8 +32,8 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
-// import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { AdmireBottomSheet } from './AdmireBottomSheet';
+import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
 
@@ -97,6 +96,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 }
               }
             }
+
+            ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
             ...TokenFailureBoundaryFragment
             ...extractRelevantMetadataFromTokenFragment
@@ -317,7 +318,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               </View>
             </View>
           )}
-          {/* {CreatorComponent && (
+          {CreatorComponent && (
             <View className="w-1/2 gap-y-1">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
@@ -328,7 +329,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
               <View>{CreatorComponent}</View>
             </View>
-          )} */}
+          )}
         </View>
         {token.description && (
           <View>
@@ -353,7 +354,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           />
         )}
 
-        {/* <View className="flex-1">
         <Button
           variant="blue"
           icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
@@ -370,7 +370,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
-        </View> */}
+        </View>
       </View>
 
       <AdmireBottomSheet tokenId={token.dbid ?? ''} bottomSheetRef={admiresBottomSheetRef} />

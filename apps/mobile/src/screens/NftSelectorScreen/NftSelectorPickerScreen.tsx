@@ -1,14 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
+import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
@@ -163,6 +166,47 @@ export function NftSelectorPickerScreen() {
                 icon={<SearchIcon width={16} height={16} />}
                 placeholder="Search pieces"
               />
+            </View>
+
+            <View className="px-4 flex flex-row items-center justify-between">
+              <Select
+                className="w-32"
+                title="Network"
+                eventElementId="NftSelectorNetworkFilter"
+                onChange={handleNetworkChange}
+                selectedId={networkFilter}
+                options={decoratedNetworks}
+              />
+
+              <View className="flex flex-row space-x-1">
+                <AnimatedRefreshIcon
+                  onSync={handleSync}
+                  onRefresh={handleRefresh}
+                  isSyncing={
+                    ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens
+                  }
+                  eventElementId="NftSelectorSelectorRefreshButton"
+                  eventName="NftSelectorSelectorRefreshButton pressed"
+                />
+
+                <IconContainer
+                  size="sm"
+                  onPress={handleSettingsPress}
+                  icon={<SlidersIcon />}
+                  eventElementId="NftSelectorSelectorSettingsButton"
+                  eventName="NftSelectorSelectorSettingsButton pressed"
+                  eventContext={contexts.Posts}
+                />
+
+                <NftSelectorFilterBottomSheet
+                  ref={filterBottomSheetRef}
+                  ownerFilter={ownershipTypeFilter}
+                  onOwnerFilterChange={setFilter}
+                  sortView={sortView}
+                  onSortViewChange={setSortView}
+                  selectedNetwork={networkFilter}
+                />
+              </View>
             </View>
 
             <View className="flex-grow flex-1 w-full">

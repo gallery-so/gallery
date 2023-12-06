@@ -9,6 +9,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { FeedFilter } from './FeedFilter';
 import { FeedPostSocializeSection } from './Posts/FeedPostSocializeSection';
+import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
 
@@ -49,8 +50,7 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
         );
 
       case 'post-item-caption':
-        return null;
-      // return <PostListCaption feedPostRef={item.post} />;
+        return <PostListCaption feedPostRef={item.post} />;
       case 'post-item-event':
         return <PostListItem feedPostRef={item.post} queryRef={item.queryRef} />;
       case 'post-item-socialize':

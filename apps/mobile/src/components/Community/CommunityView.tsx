@@ -1,14 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, View } from 'react-native';
+import { Linking, Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
+import { GlobeIcon } from 'src/icons/GlobeIcon';
+import { ObjktIcon } from 'src/icons/ObjktIcon';
+import { OpenseaIcon } from 'src/icons/OpenseaIcon';
+import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
+import { IconContainer } from '../IconContainer';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
@@ -94,7 +99,7 @@ export function CommunityView({ queryRef }: Props) {
         <View className="flex flex-row justify-between">
           <BackButton />
 
-          {/* <View className="flex flex-row space-x-2">
+          <View className="flex flex-row space-x-2">
             {externalAddressUrl && (
               <IconContainer
                 eventElementId="Community Globe Icon"
@@ -129,7 +134,7 @@ export function CommunityView({ queryRef }: Props) {
               icon={<ShareIcon />}
               onPress={handleShare}
             />
-          </View> */}
+          </View>
         </View>
       </View>
 

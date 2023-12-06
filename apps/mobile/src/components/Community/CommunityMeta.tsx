@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
@@ -24,6 +23,8 @@ import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { CreatorProfilePictureAndUsernameOrAddress } from '../ProfilePicture/ProfilePictureAndUserOrAddress';
+import { Typography } from '../Typography';
 import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
 
 type Props = {
@@ -42,6 +43,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           address
         }
         creator {
+          ...ProfilePictureAndUserOrAddressCreatorFragment
           __typename
           ... on GalleryUser {
             username
@@ -145,7 +147,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   return (
     <View className="flex flex-row justify-between">
-      {/* {community.creator && community?.chain !== 'POAP' ? (
+      {community.creator && community?.chain !== 'POAP' ? (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -161,9 +163,9 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             />
           </View>
         </View>
-      ) : null} */}
+      ) : null}
 
-      {/* {community.chain && (
+      {community.chain && (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -182,7 +184,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             </Typography>
           </View>
         </View>
-      )} */}
+      )}
 
       <Button
         size="sm"
