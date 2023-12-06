@@ -19,6 +19,7 @@ import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './Notifications/SomeoneRepliedToYourComment';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 import { SomeoneYouFollowPostedTheirFirstPost } from './Notifications/SomeoneYouFollowPostedTheirFirstPost';
+import { YouReceivedTopActivityBadge } from './Notifications/YouReceivedTopActivityBadge';
 
 type NotificationInnerProps = {
   queryRef: NotificationQueryFragment$key;
@@ -41,6 +42,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeonePostedYourWorkQueryFragment
         ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
+        ...YouReceivedTopActivityBadgeQueryFragment
       }
     `,
     queryRef
@@ -122,6 +124,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
         }
+        ... on YouReceivedTopActivityBadgeNotification {
+          __typename
+          ...YouReceivedTopActivityBadgeFragment
+        }
       }
     `,
     notificationRef
@@ -162,6 +168,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return (
         <SomeoneYouFollowPostedTheirFirstPost queryRef={query} notificationRef={notification} />
       );
+    } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
+      return <YouReceivedTopActivityBadge queryRef={query} notificationRef={notification} />;
     }
     return <View />;
   }, [notification, query]);
