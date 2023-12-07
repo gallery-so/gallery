@@ -32,7 +32,7 @@ describe('getMintUrlWithReferrer', () => {
     const referrer = 'referrer4';
     const result = getMintUrlWithReferrer(url, referrer);
     expect(result.url).toBe('https://prohibition.art/project/heart-craft');
-    expect(result.provider).toBe('ProhibitionArt');
+    expect(result.provider).toBe('Prohibition');
   });
 
   it('should not append referrer if mint.fun already have ref', () => {

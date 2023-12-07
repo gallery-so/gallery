@@ -4,7 +4,7 @@ const providers = [
   { regex: '^https://(www\\.)?fxhash.xyz/?', name: 'FxHash' },
   {
     regex: '^https://(www\\.)?prohibition.art/?',
-    name: 'ProhibitionArt',
+    name: 'Prohibition',
   },
 ];
 

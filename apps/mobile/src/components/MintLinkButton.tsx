@@ -2,7 +2,9 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
+import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
@@ -71,6 +73,10 @@ export function MintLinkButton({
       provider.name = 'mint on zora';
     } else if (mintProviderType === 'MintFun') {
       provider.name = 'mint on mint.fun';
+    } else if (mintProviderType === 'FxHash') {
+      provider.name = 'mint on fxhash';
+    } else if (mintProviderType === 'Prohibition') {
+      provider.name = 'mint on prohibition';
     }
 
     if (mintProviderType === 'Zora') {
@@ -79,6 +85,10 @@ export function MintLinkButton({
       provider.icon = (
         <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />
       );
+    } else if (mintProviderType === 'FxHash') {
+      provider.icon = <FxHashIcon />;
+    } else if (mintProviderType === 'Prohibition') {
+      provider.icon = <ProhibitionIcon />;
     }
 
     return provider;
