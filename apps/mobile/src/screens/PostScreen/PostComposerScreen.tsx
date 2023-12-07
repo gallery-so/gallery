@@ -91,7 +91,6 @@ function PostComposerScreenInner() {
   const navigation = useNavigation();
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
-  const [isMintLinkInputFocused, setIsMintLinkInputFocused] = useState(false);
 
   const {
     aliasKeyword,
@@ -170,8 +169,8 @@ function PostComposerScreenInner() {
   ]);
 
   const isPostButtonDisabled = useMemo(() => {
-    return isPosting || isInvalidMintLink || isMintLinkInputFocused;
-  }, [isInvalidMintLink, isPosting, isMintLinkInputFocused]);
+    return isPosting || isInvalidMintLink;
+  }, [isInvalidMintLink, isPosting]);
 
   return (
     <View className="flex flex-col flex-grow space-y-8">
@@ -219,8 +218,6 @@ function PostComposerScreenInner() {
             defaultValue={mintURL}
             invalid={isInvalidMintLink}
             onSetInvalid={setIsInvalidMintLink}
-            isFocused={isMintLinkInputFocused}
-            onSetIsFocused={setIsMintLinkInputFocused}
           />
         )}
         <View className="py-4 flex-grow">

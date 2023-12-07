@@ -21,20 +21,9 @@ type Props = {
 
   invalid: boolean;
   onSetInvalid: (invalid: boolean) => void;
-
-  isFocused: boolean;
-  onSetIsFocused: (isFocused: boolean) => void;
 };
 
-export function PostMintLinkInput({
-  defaultValue,
-  invalid,
-  onSetInvalid,
-  isFocused,
-  onSetIsFocused,
-
-  style,
-}: Props) {
+export function PostMintLinkInput({ defaultValue, invalid, onSetInvalid, style }: Props) {
   const [includeMintLink, setIncludeMintLink] = useState(true);
   const [mintLink, setMintLink] = useState(defaultValue);
 
@@ -106,8 +95,6 @@ export function PostMintLinkInput({
             autoCapitalize="none"
             autoComplete="off"
             keyboardAppearance={colorScheme}
-            onFocus={() => onSetIsFocused(true)}
-            onBlur={() => onSetIsFocused(false)}
             style={{
               color: invalid
                 ? colors.red
@@ -116,52 +103,37 @@ export function PostMintLinkInput({
                 : colors.black['800'],
             }}
           />
-
-          {isFocused &&
-            (invalid ? (
-              <View className="flex-row items-center space-x-1">
-                <AlertIcon />
-                <Typography
-                  className="text-xs text-red"
-                  font={{
-                    family: 'ABCDiatype',
-                    weight: 'Regular',
-                  }}
+          {invalid && (
+            <View className="flex-row items-center space-x-1">
+              <AlertIcon />
+              <Typography
+                className="text-xs text-red"
+                font={{
+                  family: 'ABCDiatype',
+                  weight: 'Regular',
+                }}
+              >
+                This link isn’t valid. Try a {''}
+                <GalleryTouchableOpacity
+                  onPress={handleOpenBottomSheet}
+                  eventElementId="Press Supported Mint Link Bottom Sheet"
+                  eventName="Press Supported Mint Link Bottom Sheet"
+                  eventContext={contexts.Posts}
+                  withoutFeedback
                 >
-                  This link isn’t valid. Try a {''}
-                  <GalleryTouchableOpacity
-                    onPress={handleOpenBottomSheet}
-                    eventElementId="Press Supported Mint Link Bottom Sheet"
-                    eventName="Press Supported Mint Link Bottom Sheet"
-                    eventContext={contexts.Posts}
-                    withoutFeedback
+                  <Typography
+                    className="text-xs text-red"
+                    font={{
+                      family: 'ABCDiatype',
+                      weight: 'Bold',
+                    }}
                   >
-                    <Typography
-                      className="text-xs text-red"
-                      font={{
-                        family: 'ABCDiatype',
-                        weight: 'Bold',
-                      }}
-                    >
-                      supported platform.
-                    </Typography>
-                  </GalleryTouchableOpacity>
-                </Typography>
-              </View>
-            ) : (
-              <View className="flex-row items-center space-x-1">
-                <InfoCircleIcon />
-                <Typography
-                  className="text-xs text-metal"
-                  font={{
-                    family: 'ABCDiatype',
-                    weight: 'Regular',
-                  }}
-                >
-                  Note: only supported platforms
-                </Typography>
-              </View>
-            ))}
+                    supported platform.
+                  </Typography>
+                </GalleryTouchableOpacity>
+              </Typography>
+            </View>
+          )}
         </View>
       )}
 
