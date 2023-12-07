@@ -33,7 +33,7 @@ export default function MobileAppLandingPage() {
             </VStack>
             <VStack gap={8}>
               <StyledLink
-                href="https://apps.apple.com/jp/app/gallery/id6447068892?l=en-US"
+                href="https://apps.apple.com/app/gallery/id6447068892?l=en-US"
                 target="_blank"
                 rel="noreferrer"
               >
