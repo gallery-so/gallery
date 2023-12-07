@@ -71,7 +71,7 @@ export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props)
             <UserHoverCard userRef={commenter} onClick={onClose} />
             &nbsp;
             <BaseM as="span">
-              replied to your <strong>post</strong>
+              replied to your <strong>comment</strong>
             </BaseM>
           </StyledTextWrapper>
           <StyledCaption>{comment.comment}</StyledCaption>
