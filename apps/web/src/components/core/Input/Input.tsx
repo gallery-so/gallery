@@ -77,4 +77,21 @@ export const SlimInput = styled.input`
   }
 `;
 
+export const ReadOnlyInput = styled.input`
+  font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
+  line-height: 0px;
+  border: 0;
+  background-color: ${colors.faint};
+  padding: 6px 12px;
+  width: 100%;
+  height: 32px;
+  color: #707070;
+
+  font-size: 16px; // on mobile, if input font is < 16px, OS will zoom automatically on the input which we dont want
+
+  @media only screen and ${breakpoints.desktop} {
+    font-size: 14px;
+  }
+`;
+
 export default Input;

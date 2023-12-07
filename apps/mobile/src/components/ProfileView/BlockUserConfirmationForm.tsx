@@ -57,7 +57,7 @@ export function BlockUserConfirmationForm({ userId, username, onBlockUser, onDis
         </Typography>
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           {isBlocked
-            ? 'You won’t see this users posts in your feed anymore. They are now unable to view your profile or tag you in comments and posts.'
+            ? 'They are now unable to view your profile or tag you in comments and posts.'
             : 'You may now interact with the user and vice versa.'}
         </Typography>
       </View>

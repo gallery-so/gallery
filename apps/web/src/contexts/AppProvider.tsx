@@ -18,6 +18,7 @@ import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
 import PostComposerProvider from './postComposer/PostComposerContext';
+import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -57,13 +58,15 @@ export default function AppProvider({
                             <ModalProvider>
                               <SidebarDrawerProvider>
                                 <SearchProvider>
-                                  <GlobalLayoutContextProvider
-                                    preloadedQuery={globalLayoutContextPreloadedQuery}
-                                  >
-                                    <FullPageNftDetailModalListener />
-                                    {isProd ? null : <Debugger />}
-                                    {children}
-                                  </GlobalLayoutContextProvider>
+                                  <SnowProvider>
+                                    <GlobalLayoutContextProvider
+                                      preloadedQuery={globalLayoutContextPreloadedQuery}
+                                    >
+                                      <FullPageNftDetailModalListener />
+                                      {isProd ? null : <Debugger />}
+                                      {children}
+                                    </GlobalLayoutContextProvider>
+                                  </SnowProvider>
                                 </SearchProvider>
                               </SidebarDrawerProvider>
                             </ModalProvider>

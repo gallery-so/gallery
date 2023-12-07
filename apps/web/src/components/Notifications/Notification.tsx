@@ -21,6 +21,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
@@ -28,7 +29,9 @@ import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
 import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
+import { SomeoneRepliedToYourComment } from './notifications/SomeoneRepliedToYourComment';
 import { SomeoneYouFollowPostedTheirFirstPost } from './notifications/SomeoneYouFollowPostedTheirFirstPost';
+import YouReceivedTopActivityBadge from './notifications/YouReceivedTopActivityBadge';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -124,6 +127,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           }
         }
 
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          comment {
+            source {
+              ... on Post {
+                __typename
+                dbid
+              }
+            }
+          }
+        }
+
         ...NotificationInnerFragment
       }
     `,
@@ -144,10 +159,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
           }
         }
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
 
   const { push } = useRouter();
 
@@ -250,6 +268,33 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+      const postId =
+        notification.comment?.source?.__typename === 'Post'
+          ? notification.comment?.source?.dbid
+          : undefined;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (postId) {
+            push({ pathname: `/post/[postId]`, query: { postId } });
+          }
+          hideDrawer();
+        },
+      };
+    } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
+      const username = query.viewer?.user?.username;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToProfilePage() {
+          if (username) {
+            push({ pathname: '/[username]', query: { username } });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
@@ -300,6 +345,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeonePostedYourWorkNotification',
       'SomeoneMentionedYouNotification',
       'SomeoneYouFollowPostedTheirFirstPostNotification',
+      'SomeoneRepliedToYourCommentNotification',
+      'YouReceivedTopActivityBadgeNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -328,6 +375,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     if (!notification.post) {
       return null;
     }
+  }
+
+  if (
+    notification.__typename === 'YouReceivedTopActivityBadgeNotification' &&
+    !isActivityBadgeEnabled
+  ) {
+    return null;
   }
 
   return (
@@ -418,6 +472,15 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
         }
+
+        ... on SomeoneRepliedToYourCommentNotification {
+          __typename
+          ...SomeoneRepliedToYourCommentFragment
+        }
+
+        ... on YouReceivedTopActivityBadgeNotification {
+          __typename
+        }
       }
     `,
     notificationRef
@@ -465,6 +528,10 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return (
       <SomeoneYouFollowPostedTheirFirstPost notificationRef={notification} onClose={handleClose} />
     );
+  } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+    return <SomeoneRepliedToYourComment notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
+    return <YouReceivedTopActivityBadge />;
   }
 
   return null;

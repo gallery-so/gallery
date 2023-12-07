@@ -1,9 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
+import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { TopMemberBadgeIcon } from 'src/icons/TopMemberBadgeIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { ButtonChip } from '~/components/ButtonChip';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
@@ -20,12 +23,15 @@ import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragme
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 import { FollowButton } from '../FollowButton';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { BadgeProfileBottomSheet } from './BadgeProfileBottomSheet';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -181,6 +187,14 @@ type ProfileViewUsernameProps = {
   queryRef: ProfileViewUsernameFragment$key;
 };
 
+const BADGE_DESCRIPTIONS: Record<string, string> = {
+  'Top Member':
+    'Awarded for being one of the most active contributors on Gallery in the past week.',
+  'Community pillar badge': 'Awarded for high-quality engagement',
+  'Gallery Membership Cards':
+    'This exclusive badge on your profile signifies that you hold one of the coveted Gallery membership cards. This gives you early access to beta features and access to Members Only **Discord channel**.',
+};
+
 export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProps) {
   const query = useFragment(
     graphql`
@@ -188,21 +202,93 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
         userByUsername(username: $username) {
           ... on GalleryUser {
             username
+            badges {
+              name
+              imageURL
+              contract {
+                __typename
+                contractAddress {
+                  address
+                }
+              }
+            }
           }
         }
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
+  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
+
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const filteredBadges = useMemo(() => {
+    const badges = query.userByUsername?.badges ?? [];
+    return badges.filter((badge) => {
+      if (badge?.contract) {
+        return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(
+          badge?.contract?.contractAddress?.address ?? ''
+        );
+      }
+
+      return Boolean(badge?.imageURL);
+    });
+  }, [query.userByUsername?.badges]);
+
+  const [selectedBadge, setSelectedBadge] = useState<{
+    name: string;
+    description: string;
+  } | null>(null);
+
+  const handlePress = useCallback((badgeName: string) => {
+    setSelectedBadge({
+      name: badgeName,
+      description: BADGE_DESCRIPTIONS[badgeName] ?? '',
+    });
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
-    <View style={style}>
+    <View style={style} className="flex-row gap-1">
       <Typography
         className="bg-white dark:bg-black-900 text-2xl tracking-tighter"
         font={{ family: 'GTAlpina', weight: 'StandardLight' }}
       >
         {query.userByUsername?.username}
       </Typography>
+
+      {isActivityBadgeEnabled && (
+        <View className="flex flex-row items-center space-x-1">
+          {filteredBadges.map((badge, index) => (
+            <GalleryTouchableOpacity
+              onPress={() => handlePress(badge?.name ?? '')}
+              eventElementId={null}
+              eventName={null}
+              key={index}
+              eventContext={null}
+            >
+              {badge?.name === 'Top Member' ? (
+                <TopMemberBadgeIcon />
+              ) : (
+                <FastImage
+                  className="h-5 w-5 rounded-full"
+                  source={{
+                    uri: badge?.imageURL ?? '',
+                  }}
+                />
+              )}
+            </GalleryTouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      <BadgeProfileBottomSheet
+        ref={bottomSheetRef}
+        title={selectedBadge?.name ?? ''}
+        description={selectedBadge?.description ?? ''}
+      />
     </View>
   );
 }

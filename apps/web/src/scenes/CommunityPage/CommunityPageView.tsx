@@ -3,7 +3,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { IsMemberOfCommunityProvider } from '~/contexts/communityPage/IsMemberOfCommunityContext';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
@@ -88,7 +87,4 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
 const StyledCommunityPageContainer = styled.div`
   padding: 0;
-  @media only screen and ${breakpoints.tablet} {
-    padding: 80px 0 64px;
-  }
 `;

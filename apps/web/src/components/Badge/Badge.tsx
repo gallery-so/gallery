@@ -11,6 +11,9 @@ import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext'
 import { LowercaseChain } from '~/shared/utils/chains';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
+import { VStack } from '../core/Spacer/Stack';
+import { TopMemberBadge } from '../Notifications/notifications/YouReceivedTopActivityBadge';
+
 type Props = {
   badgeRef: BadgeFragment$key;
   eventContext: GalleryElementTrackingProps['eventContext'];
@@ -37,7 +40,11 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
   const { name, imageURL, contract } = badge;
 
-  const communityUrl = useMemo<Route>(() => {
+  const communityUrl = useMemo<Route | null>(() => {
+    if (!contract) {
+      return null;
+    }
+
     const contractAddress = contract?.contractAddress?.address as string;
 
     const chain = contract?.chain?.toLocaleLowerCase() as LowercaseChain;
@@ -57,20 +64,34 @@ export default function Badge({ badgeRef, eventContext }: Props) {
   }, []);
 
   const isEnabled = useMemo(() => {
-    return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '');
-  }, [contract?.contractAddress?.address]);
+    if (contract) {
+      return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '');
+    }
+    return Boolean(imageURL);
+  }, [contract, imageURL]);
 
   if (!isEnabled) {
     return null;
   }
 
-  return (
-    <StyledGalleryLink
-      eventElementId="Badge"
-      eventName="Badge Click"
-      eventContext={eventContext}
-      to={communityUrl}
-    >
+  if (badge.name === 'Top Member') {
+    return (
+      <>
+        <StyledTooltip text={name || ''} showTooltip={showTooltip} />
+        <VStack
+          align="center"
+          justify="center"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseExit}
+        >
+          <TopMemberBadge />
+        </VStack>
+      </>
+    );
+  }
+
+  const BadgeImage = () => (
+    <>
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <IconContainer
         size="md"
@@ -83,13 +104,29 @@ export default function Badge({ badgeRef, eventContext }: Props) {
           />
         }
       />
+    </>
+  );
+
+  if (!communityUrl) {
+    return <BadgeImage />;
+  }
+
+  return (
+    <StyledGalleryLink
+      eventElementId="Badge"
+      eventName="Badge Click"
+      eventContext={eventContext}
+      to={communityUrl}
+    >
+      <BadgeImage />
     </StyledGalleryLink>
   );
 }
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -28 : -24)}px);
+  transform: translateY(${({ showTooltip }) => (showTooltip ? 28 : 24)}px);
+  z-index: 5;
 `;
 
 const StyledGalleryLink = styled(GalleryLink)`

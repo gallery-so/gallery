@@ -33,7 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.33',
+  version: '1.0.36',
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -43,7 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       usesNonExemptEncryption: false,
     },
     associatedDomains: ['applinks:gallery.so', 'applinks:gallery-dev.vercel.app'],
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: 'com.usegallery.gallery',
     splash: {
       image: './assets/splash.png',

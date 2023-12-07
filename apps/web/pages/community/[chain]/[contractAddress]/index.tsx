@@ -3,6 +3,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import { REPLIES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentNoteSection';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from '~/constants/community';
 import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
@@ -38,6 +39,8 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
         $interactionsFirst: Int!
         $interactionsAfter: String
         $visibleTokensPerFeedEvent: Int!
+        $replyLast: Int!
+        $replyBefore: String
       ) {
         ...CommunityPageFragment
         ...CommunityNavbarFragment
@@ -56,6 +59,7 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
       communityPostsLast: ITEMS_PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
       visibleTokensPerFeedEvent: 1,
+      replyLast: REPLIES_PER_PAGE,
     }
   );
 

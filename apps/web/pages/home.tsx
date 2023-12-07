@@ -1,6 +1,7 @@
 import { graphql, loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
+import { REPLIES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentNoteSection';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -16,6 +17,8 @@ const homePageCuratedQueryNode = graphql`
     $curatedLast: Int!
     $curatedBefore: String
     $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
+    $replyLast: Int!
+    $replyBefore: String
   ) {
     ...CuratedHomePageFragment
     ...HomeNavbarFragment
@@ -52,6 +55,7 @@ Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       interactionsFirst: NOTES_PER_PAGE,
       curatedLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+      replyLast: REPLIES_PER_PAGE,
       // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
       // twitterListFirst: USER_PER_PAGE,
     },
