@@ -9,17 +9,24 @@ const providers = [
 ];
 
 export function getMintUrlWithReferrer(url: string, referrer: string) {
-  const provider = providers.find((p) => new RegExp(p.regex).test(url));
-  const urlObj = new URL(url);
+  try {
+    const urlObj = new URL(url);
+    const provider = providers.find((p) => new RegExp(p.regex).test(url));
 
-  if (provider && provider.param && !urlObj.searchParams.has(provider.param)) {
-    urlObj.searchParams.append(provider.param, referrer);
+    if (provider && provider.param && !urlObj.searchParams.has(provider.param)) {
+      urlObj.searchParams.append(provider.param, referrer);
+    }
+
+    return {
+      url: urlObj.toString(),
+      provider: provider ? provider.name : '',
+    };
+  } catch (e) {
+    return {
+      url: '',
+      provider: '',
+    };
   }
-
-  return {
-    url: urlObj.toString(),
-    provider: provider ? provider.name : '',
-  };
 }
 
 export function checkValidMintUrl(url: string) {
