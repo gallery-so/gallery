@@ -6,6 +6,7 @@ import { AlertIcon } from 'src/icons/AlertIcon';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 
 import colors from '~/shared/theme/colors';
+import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Toggle } from '../Toggle';
 import { Typography } from '../Typography';
@@ -39,11 +40,7 @@ export function PostMintLinkInput({
     (text: string) => {
       setMintLink(text);
 
-      // Make sure the link is consists of either https://mint.fun/ or https://zora.co
-      const mintFunRegex = new RegExp('https://mint.fun/');
-      const zoraRegex = new RegExp('https://zora.co/');
-
-      if (mintFunRegex.test(text) || zoraRegex.test(text)) {
+      if (checkValidMintUrl(text)) {
         onSetInvalid(false);
       } else {
         onSetInvalid(true);
