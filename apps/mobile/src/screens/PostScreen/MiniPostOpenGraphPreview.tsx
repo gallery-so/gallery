@@ -7,7 +7,6 @@ import OpenBracket from 'src/icons/OpenBracket';
 import { noop } from 'swr/_internal';
 
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
-import { useColorScheme } from 'nativewind';
 import { Typography } from '~/components/Typography';
 
 type Props = {
@@ -23,8 +22,6 @@ export default function MiniPostOpenGraphPreview({
   imageUrl,
   profileImageUrl,
 }: Props) {
-  const { colorScheme } = useColorScheme();
-
   const letter = username?.[0]?.toUpperCase();
   const fallbackProfilePicture = (
     <RawProfilePicture
@@ -42,18 +39,23 @@ export default function MiniPostOpenGraphPreview({
         <OpenBracket />
         <View className="flex flex-row space-x-4">
           <ImagePreview tokenUrl={imageUrl} onError={noop} />
-          <View className="flex flex-col justify-center">
+          <View className="flex flex-col justify-center space-y-0.5">
             <View className="flex flex-row items-center space-x-1">
               {profileImageUrl ? (
                 <ImagePreview isPfp tokenUrl={profileImageUrl ?? ''} onError={noop} />
               ) : (
                 fallbackProfilePicture
               )}
-              <Text>
-                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                  {username}
-                </Typography>
-              </Text>
+              <Typography
+                className="text-xs dark:text-black-500"
+                style={{
+                  fontSize: 9,
+                  lineHeight: 12,
+                }}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {username}
+              </Typography>
             </View>
             {caption ? (
               <View className="max-w-[140px]">
@@ -62,7 +64,7 @@ export default function MiniPostOpenGraphPreview({
                   className="dark:text-black-500"
                   style={{
                     fontSize: 8,
-                    lineHeight: 12,
+                    lineHeight: 10,
                   }}
                   font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 >
@@ -71,10 +73,16 @@ export default function MiniPostOpenGraphPreview({
               </View>
             ) : (
               <Text>
-                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                <Typography
+                  className="text-xs dark:text-black-500"
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                >
                   View this post on
                 </Typography>
-                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                <Typography
+                  className="text-xs dark:text-black-500"
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                >
                   {' '}
                   gallery.so
                 </Typography>
