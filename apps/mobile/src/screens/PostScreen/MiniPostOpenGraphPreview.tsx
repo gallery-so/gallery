@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
 import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -103,7 +102,7 @@ type ImagePreviewProps = {
   onError: () => void;
 };
 
-function ImagePreview({ tokenUrl, stacked, onError, isPfp = false }: ImagePreviewProps) {
+function ImagePreview({ tokenUrl, onError, isPfp = false }: ImagePreviewProps) {
   return (
     <FastImage
       style={
@@ -118,7 +117,6 @@ function ImagePreview({ tokenUrl, stacked, onError, isPfp = false }: ImagePrevie
               height: 109,
             }
       }
-      className={clsx(stacked && 'absolute -bottom-1 -right-1')}
       source={{ uri: tokenUrl }}
       resizeMode={ResizeMode.CONTAIN}
       onError={onError}
