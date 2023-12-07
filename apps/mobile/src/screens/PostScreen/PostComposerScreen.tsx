@@ -78,7 +78,10 @@ function PostComposerScreenInner() {
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
 
-  const mintURL = getMintUrlWithReferrer(token.contract?.mintURL ?? '', ownerWalletAddress).url;
+  const mintURLWithRef = getMintUrlWithReferrer(
+    token.contract?.mintURL ?? '',
+    ownerWalletAddress
+  ).url;
 
   const { post } = usePost({
     tokenRef: token,
@@ -91,6 +94,7 @@ function PostComposerScreenInner() {
   const navigation = useNavigation();
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
 
   const {
     aliasKeyword,
@@ -129,6 +133,7 @@ function PostComposerScreenInner() {
       tokenId,
       caption: message,
       mentions,
+      mintUrl: mintURL,
     });
 
     mainTabNavigation.reset({
@@ -161,6 +166,7 @@ function PostComposerScreenInner() {
     isPosting,
     mainTabNavigation,
     mentions,
+    mintURL,
     post,
     pushToast,
     resetMentions,
@@ -213,9 +219,10 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
-        {mintURL && (
+        {mintURLWithRef && (
           <PostMintLinkInput
-            defaultValue={mintURL}
+            value={mintURL}
+            setValue={setMintURL}
             invalid={isInvalidMintLink}
             onSetInvalid={setIsInvalidMintLink}
           />

@@ -16,16 +16,16 @@ import { Typography } from '../Typography';
 import { SupportedMintLinkBottomSheet } from './SupportedMintLinkBottomSheet';
 
 type Props = {
-  defaultValue?: string;
+  value: string;
+  setValue: (value: string) => void;
   style?: ViewProps['style'];
 
   invalid: boolean;
   onSetInvalid: (invalid: boolean) => void;
 };
 
-export function PostMintLinkInput({ defaultValue, invalid, onSetInvalid, style }: Props) {
+export function PostMintLinkInput({ value, setValue, invalid, onSetInvalid, style }: Props) {
   const [includeMintLink, setIncludeMintLink] = useState(true);
-  const [mintLink, setMintLink] = useState(defaultValue);
 
   const { colorScheme } = useColorScheme();
 
@@ -33,7 +33,7 @@ export function PostMintLinkInput({ defaultValue, invalid, onSetInvalid, style }
 
   const handleTextChange = useCallback(
     (text: string) => {
-      setMintLink(text);
+      setValue(text);
 
       if (checkValidMintUrl(text)) {
         onSetInvalid(false);
@@ -41,7 +41,7 @@ export function PostMintLinkInput({ defaultValue, invalid, onSetInvalid, style }
         onSetInvalid(true);
       }
     },
-    [onSetInvalid]
+    [setValue, onSetInvalid]
   );
 
   const handleToggle = useCallback(() => {
@@ -81,8 +81,7 @@ export function PostMintLinkInput({ defaultValue, invalid, onSetInvalid, style }
       {includeMintLink && (
         <View className="space-y-2">
           <TextInput
-            value={mintLink}
-            defaultValue={defaultValue}
+            value={value}
             onChangeText={handleTextChange}
             className={clsx(
               'py-2 px-3 border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500',

@@ -17,6 +17,7 @@ type Props = {
   tokenRef: MintLinkButtonFragment$key;
   style?: ViewStyle;
   referrerAddress?: string;
+  overwriteURL?: string;
 } & ButtonProps;
 
 const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
@@ -27,6 +28,7 @@ export function MintLinkButton({
   style,
   variant = 'primary',
   size = 'md',
+  overwriteURL,
   ...props
 }: Props) {
   const token = useFragment(
@@ -53,7 +55,7 @@ export function MintLinkButton({
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
   const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    token?.definition?.community?.contract?.mintURL ?? '',
+    overwriteURL ?? token?.definition?.community?.contract?.mintURL ?? '',
     referrerAddress ?? ''
   );
 

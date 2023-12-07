@@ -23,6 +23,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
             }
           }
         }
+        userAddedMintURL
       }
     `,
     postRef
@@ -31,6 +32,8 @@ export function PostListMintButtonSection({ postRef }: Props) {
   const token = post?.tokens?.[0];
 
   const ownerWalletAddress = post?.author?.primaryWallet?.chainAddress?.address ?? '';
+
+  const userAddedMintURL = post?.userAddedMintURL ?? '';
 
   if (!token) return null;
   return (
@@ -42,6 +45,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
         eventName="Press Mint Link Button"
         eventContext={contexts.Feed}
         referrerAddress={ownerWalletAddress}
+        overwriteURL={userAddedMintURL}
       />
     </View>
   );
