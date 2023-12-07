@@ -19,7 +19,7 @@ export function FadedInput({
 
   return (
     <View
-      className="bg-faint dark:bg-black-500 flex flex-row items-center space-x-2 py-1.5 px-3"
+      className="bg-faint dark:bg-black-700 flex flex-row items-center space-x-2 py-1.5 px-3"
       style={style}
     >
       {icon && <View>{icon}</View>}

@@ -127,6 +127,14 @@ export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Pr
     ];
   }, [colorScheme]);
 
+  const copyButtonBorderStyle = useMemo(
+    () => ({
+      inactive: colorScheme === 'dark' ? 'border border-metal' : '',
+      active: colorScheme === 'dark' ? 'border border-metal' : 'border border-[#141414]',
+    }),
+    [colorScheme]
+  );
+
   const handleShareButtonPress = useCallback(
     (baseComposePostUrl: string) => {
       const creatorInfo = creatorName ? ` by ${creatorName}` : '';
@@ -243,7 +251,7 @@ export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Pr
             icon={
               hasCopiedUrl ? (
                 <View className="ml-1.5">
-                  <CopyIcon />
+                  <CopyIcon stroke={colorScheme === 'dark' ? '#FEFEFE' : '#141414'} />
                 </View>
               ) : null
             }
@@ -253,7 +261,9 @@ export function SharePostBottomSheet({ title, creatorName, postId, onClose }: Pr
             eventName="Press Copy Post Url"
             eventElementId="Press Copy Post Url Button"
             text={!hasCopiedUrl ? 'COPY' : undefined}
-            containerClassName={hasCopiedUrl ? 'border border-[#141414]' : ''}
+            containerClassName={
+              hasCopiedUrl ? copyButtonBorderStyle.active : copyButtonBorderStyle.inactive
+            }
           />
         </View>
       </View>

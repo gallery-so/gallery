@@ -36,10 +36,8 @@ export default function MiniPostOpenGraphPreview({
     />
   );
 
-  const bgColor = colorScheme === 'dark' ? 'black-500' : '[#F9F9F9]';
-
   return (
-    <View className={`flex w-[358]px h-[188px] bg-${bgColor} items-center justify-center`}>
+    <View className="flex w-[358]px h-[188px] bg-[#F9F9F9] items-center justify-center">
       <View className="flex flex-row items-center space-x-5">
         <OpenBracket />
         <View className="flex flex-row space-x-4">
@@ -52,7 +50,7 @@ export default function MiniPostOpenGraphPreview({
                 fallbackProfilePicture
               )}
               <Text>
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                   {username}
                 </Typography>
               </Text>
@@ -61,6 +59,7 @@ export default function MiniPostOpenGraphPreview({
               <View className="max-w-[140px]">
                 <Typography
                   numberOfLines={5}
+                  className="dark:text-black-500"
                   style={{
                     fontSize: 8,
                     lineHeight: 12,
@@ -72,10 +71,10 @@ export default function MiniPostOpenGraphPreview({
               </View>
             ) : (
               <Text>
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                   View this post on
                 </Typography>
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                <Typography className="text-xs dark:text-black-500" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                   {' '}
                   gallery.so
                 </Typography>
@@ -83,7 +82,6 @@ export default function MiniPostOpenGraphPreview({
             )}
           </View>
         </View>
-
         <CloseBracket />
       </View>
     </View>
