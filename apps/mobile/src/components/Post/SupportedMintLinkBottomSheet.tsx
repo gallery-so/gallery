@@ -108,7 +108,6 @@ function SupportedMintLinkBottomSheet(
           eventElementId="Close Supported Mint Link Bottom Sheet"
           eventName="Close Supported Mint Link Bottom Sheet"
           eventContext={contexts.Posts}
-          variant="secondary"
         />
       </View>
     </GalleryBottomSheetModal>
