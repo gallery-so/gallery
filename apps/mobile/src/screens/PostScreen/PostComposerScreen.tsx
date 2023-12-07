@@ -4,7 +4,6 @@ import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { getMintUrlWithReferrer } from 'src/utils/getMintUrlWithReferrer';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -26,6 +25,7 @@ import {
 } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';

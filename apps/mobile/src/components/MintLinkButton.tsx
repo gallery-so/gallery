@@ -5,11 +5,11 @@ import { graphql, useFragment } from 'react-relay';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
-import { getMintUrlWithReferrer } from 'src/utils/getMintUrlWithReferrer';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './Button';
 
@@ -52,7 +52,6 @@ export function MintLinkButton({
   const tokenContractAddress =
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
   const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
-
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
     token?.definition?.community?.contract?.mintURL ?? '',
     referrerAddress ?? ''
