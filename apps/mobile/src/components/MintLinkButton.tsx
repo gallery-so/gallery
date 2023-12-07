@@ -115,8 +115,8 @@ export function MintLinkButton({
       text={mintProvider?.name}
       variant={variant}
       onPress={handlePress}
-      icon={mintProvider?.icon}
-      footerIcon={<TopRightArrowIcon color={arrowColor} />}
+      headerElement={mintProvider?.icon}
+      footerElement={<TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
       {...props}

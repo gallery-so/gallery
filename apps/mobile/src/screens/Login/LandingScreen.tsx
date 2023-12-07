@@ -112,7 +112,7 @@ export function LandingScreen() {
             eventName="Scan QR Code Button Clicked"
             eventContext={contexts.Authentication}
             onPress={handleBottomSheetQRCodePress}
-            icon={<QRCodeIcon />}
+            headerElement={<QRCodeIcon />}
             text="SCAN QR CODE"
           />
         </View>
@@ -129,7 +129,7 @@ export function LandingScreen() {
             <Button
               onPress={toggleOption}
               variant="secondary"
-              icon={<EllipsesIcon />}
+              headerElement={<EllipsesIcon />}
               eventElementId="Secondary Login Options Ellipses"
               eventName="Display Secondary Login Options"
               eventContext={contexts.Authentication}

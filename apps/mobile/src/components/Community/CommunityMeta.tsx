@@ -210,7 +210,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           text="Post"
           className="w-[100px]"
           variant={isMemberOfCommunity ? 'primary' : 'disabled'}
-          icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
+          headerElement={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
           onPress={handlePress}
           eventElementId="Attempt Create Post Button"
           eventName="Attempt Create Post"

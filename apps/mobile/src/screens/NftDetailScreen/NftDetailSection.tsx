@@ -348,7 +348,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
         {isTokenOwner && (
           <Button
-            icon={
+            headerElement={
               <PostIcon
                 width={24}
                 strokeWidth={1.5}
@@ -366,7 +366,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         <View className="space-y-2">
           <Button
             variant="blue"
-            icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
+            headerElement={<AdmireIcon active={hasViewerAdmiredEvent} />}
             eventElementId={'NFT Detail Token Admire'}
             eventName={'NFT Detail Token Admire Clicked'}
             eventContext={contexts['NFT Detail']}

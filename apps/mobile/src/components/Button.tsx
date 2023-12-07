@@ -18,8 +18,8 @@ export type ButtonProps = {
   loading?: boolean;
   disabled?: boolean;
   text?: string;
-  icon?: ReactNode;
-  footerIcon?: ReactNode;
+  headerElement?: ReactNode;
+  footerElement?: ReactNode;
   variant?: Variant;
   textClassName?: string;
   containerClassName?: string;
@@ -168,7 +168,7 @@ const buttonVariants: ButtonVariants = {
 };
 
 export function Button({
-  icon,
+  headerElement,
   text,
   variant = 'primary',
   loading,
@@ -178,7 +178,7 @@ export function Button({
   containerClassName,
   size = 'md',
   fontWeight = 'Medium',
-  footerIcon,
+  footerElement,
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
@@ -220,7 +220,7 @@ export function Button({
             'opacity-100': !loading,
           })}
         >
-          {icon}
+          {headerElement}
 
           <View className="flex-row items-center space-x-1">
             <Typography
@@ -234,7 +234,7 @@ export function Button({
               {text}
             </Typography>
 
-            {footerIcon}
+            {footerElement}
           </View>
         </View>
 
