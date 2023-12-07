@@ -4,6 +4,7 @@ import {
   memo,
   MutableRefObject,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -16,6 +17,7 @@ import { NftSelectorContractType } from '~/components/NftSelector/NftSelector';
 import { NftSelectorSortView } from '~/components/NftSelector/NftSelectorFilter/NftSelectorFilterSort';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { Chain, isSupportedChain } from '~/shared/utils/chains';
+import { useClearURLQueryParamsImperatively } from '~/utils/useClearURLQueryParams';
 
 type PostComposerState = {
   caption: string;
@@ -29,6 +31,8 @@ type PostComposerState = {
   setNetwork: (s: Chain) => void;
   selectedContract: NftSelectorContractType;
   setSelectedContract: (s: NftSelectorContractType) => void;
+  mintPageUrl: string;
+  clearUrlParamsAndSelections: () => void;
 };
 
 const PostComposerContext = createContext<PostComposerState | undefined>(undefined);
@@ -45,17 +49,19 @@ type Props = { children: ReactNode };
 
 const PostComposerProvider = memo(({ children }: Props) => {
   const {
+    // public docs for these fields: https://gallery-so.notion.site/Share-On-Gallery-Redirect-Scheme-ea74bddd819e4b0eab6c5f88dd850fe5?pvs=4
     query: {
       composer,
-      // required fields
+      //------ required fields
       // tokenId, // TODO: actually use this fallback
       // contractAddress, // TODO: auto-select contract.
       chain,
-      // optional fields
+      //------ optional fields
       // collection_title: collectionTitle, // TODO: actually use this fallback
       // token_title: tokenTitle, // TODO: actually use this fallback
       // image_url: imageUrl, // TODO: actually use this fallback
-      caption: caption,
+      caption,
+      mint_page_url,
     },
   } = useRouter();
 
@@ -67,6 +73,9 @@ const PostComposerProvider = memo(({ children }: Props) => {
   }, [caption]);
 
   const [_caption, setCaption] = useState(defaultCaption);
+  const [mintPageUrl, setMintPageUrl] = useState(
+    typeof mint_page_url === 'string' ? mint_page_url : ''
+  );
 
   const captionRef = useRef('');
 
@@ -88,6 +97,21 @@ const PostComposerProvider = memo(({ children }: Props) => {
       setNetwork(capitalizedChainName as Chain);
     }
   }, [chain, composer, isMobile]);
+
+  // after the user is done posting, we should clear out their presets so that – for example – we don't autopopulate
+  // an incorrect `mint_page_url` for a different NFT.
+  const clearURLQueryParams = useClearURLQueryParamsImperatively([
+    'composer',
+    'caption',
+    'mint_page_url',
+  ]);
+  const clearUrlParamsAndSelections = useCallback(() => {
+    clearURLQueryParams();
+
+    // we'll clear the caption and mint page URL, but we'll keep other presets like filter type, sort type, network
+    setCaption('');
+    setMintPageUrl('');
+  }, [clearURLQueryParams]);
 
   /**
    * TODO: we want to run autosync for certain chains when a user selects them from the dropdown.
@@ -129,8 +153,18 @@ const PostComposerProvider = memo(({ children }: Props) => {
       setNetwork,
       selectedContract,
       setSelectedContract,
+      mintPageUrl,
+      clearUrlParamsAndSelections,
     }),
-    [_caption, filterType, network, sortType, selectedContract]
+    [
+      _caption,
+      filterType,
+      sortType,
+      network,
+      selectedContract,
+      mintPageUrl,
+      clearUrlParamsAndSelections,
+    ]
   );
 
   return <PostComposerContext.Provider value={value}>{children}</PostComposerContext.Provider>;
