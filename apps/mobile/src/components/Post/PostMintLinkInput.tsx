@@ -52,8 +52,8 @@ export function PostMintLinkInput({
     [onSetInvalid]
   );
 
-  const handleToggle = useCallback((checked: boolean) => {
-    setIncludeMintLink(checked);
+  const handleToggle = useCallback(() => {
+    setIncludeMintLink((prev) => !prev);
   }, []);
 
   return (
@@ -68,7 +68,7 @@ export function PostMintLinkInput({
         >
           Mint link
         </Typography>
-        <Toggle checked={includeMintLink} onChange={handleToggle} />
+        <Toggle checked={includeMintLink} onToggle={handleToggle} />
       </View>
 
       {includeMintLink && (

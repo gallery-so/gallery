@@ -3,16 +3,12 @@ import { Pressable, View } from 'react-native';
 
 type Props = {
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onToggle: () => void;
 };
 
-export function Toggle({ checked, onChange }: Props) {
+export function Toggle({ checked, onToggle }: Props) {
   return (
-    <Pressable
-      onPress={() => {
-        onChange(!checked);
-      }}
-    >
+    <Pressable onPress={onToggle}>
       <View
         className={clsx(
           'relative h-4 w-6 px-0.5 border rounded-lg flex-row',
