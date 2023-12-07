@@ -1,15 +1,19 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { TextInput, View, ViewProps } from 'react-native';
 import { AlertIcon } from 'src/icons/AlertIcon';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
 
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Toggle } from '../Toggle';
 import { Typography } from '../Typography';
+import { SupportedMintLinkBottomSheet } from './SupportedMintLinkBottomSheet';
 
 type Props = {
   defaultValue?: string;
@@ -36,6 +40,8 @@ export function PostMintLinkInput({
 
   const { colorScheme } = useColorScheme();
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
   const handleTextChange = useCallback(
     (text: string) => {
       setMintLink(text);
@@ -53,18 +59,33 @@ export function PostMintLinkInput({
     setIncludeMintLink((prev) => !prev);
   }, []);
 
+  const handleOpenBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
     <View className="space-y-2" style={style}>
       <View className="flex-row items-center justify-between">
-        <Typography
-          className="text-lg"
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
+        <GalleryTouchableOpacity
+          onPress={handleOpenBottomSheet}
+          eventElementId="Press Supported Mint Link Bottom Sheet"
+          eventName="Press Supported Mint Link Bottom Sheet"
+          eventContext={contexts.Posts}
         >
-          Mint link
-        </Typography>
+          <View className="flex-row items-center gap-1">
+            <Typography
+              className="text-lg"
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Bold',
+              }}
+            >
+              Mint link
+            </Typography>
+            <InfoCircleIcon />
+          </View>
+        </GalleryTouchableOpacity>
+
         <Toggle checked={includeMintLink} onToggle={handleToggle} />
       </View>
 
@@ -107,7 +128,24 @@ export function PostMintLinkInput({
                     weight: 'Regular',
                   }}
                 >
-                  Invalid link. Only Mint.fun or Zora are currently supported
+                  This link isn’t valid. Try a {''}
+                  <GalleryTouchableOpacity
+                    onPress={handleOpenBottomSheet}
+                    eventElementId="Press Supported Mint Link Bottom Sheet"
+                    eventName="Press Supported Mint Link Bottom Sheet"
+                    eventContext={contexts.Posts}
+                    withoutFeedback
+                  >
+                    <Typography
+                      className="text-xs text-red"
+                      font={{
+                        family: 'ABCDiatype',
+                        weight: 'Bold',
+                      }}
+                    >
+                      supported platform.
+                    </Typography>
+                  </GalleryTouchableOpacity>
                 </Typography>
               </View>
             ) : (
@@ -120,12 +158,14 @@ export function PostMintLinkInput({
                     weight: 'Regular',
                   }}
                 >
-                  Note: only Mint.fun or Zora are currently supported
+                  Note: only supported platforms
                 </Typography>
               </View>
             ))}
         </View>
       )}
+
+      <SupportedMintLinkBottomSheet ref={bottomSheetRef} />
     </View>
   );
 }
