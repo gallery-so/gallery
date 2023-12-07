@@ -1,45 +1,24 @@
 export function getMintUrlWithReferrer(url: string, referrer: string) {
-  const mintFunRegex = new RegExp('^https://(www\\.)?mint.fun/');
-  const zoraRegex = new RegExp('^https://(www\\.)?zora.co/');
-  const fxhashRegex = new RegExp('^https://(www\\.)?fxhash.xyz/');
-  const prohibitionArtRegex = new RegExp('^https://(www\\.)?prohibition.art/');
+  const providers = [
+    { regex: '^https://(www\\.)?mint.fun/?', type: 'mintFun', name: 'MintFun', param: 'ref' },
+    { regex: '^https://(www\\.)?zora.co/?', type: 'zora', name: 'Zora', param: 'referrer' },
+    { regex: '^https://(www\\.)?fxhash.xyz/?', type: 'fxhash', name: 'FxHash' },
+    {
+      regex: '^https://(www\\.)?prohibition.art/?',
+      type: 'prohibitionArt',
+      name: 'ProhibitionArt',
+    },
+  ];
 
-  let mintProviderType = '';
+  let provider = providers.find((p) => new RegExp(p.regex).test(url));
+  let urlObj = new URL(url);
 
-  if (mintFunRegex.test(url)) {
-    mintProviderType = 'mintFun';
-  } else if (zoraRegex.test(url)) {
-    mintProviderType = 'zora';
-  } else if (fxhashRegex.test(url)) {
-    mintProviderType = 'fxhash';
-  } else if (prohibitionArtRegex.test(url)) {
-    mintProviderType = 'prohibitionArt';
+  if (provider && provider.param && !urlObj.searchParams.has(provider.param)) {
+    urlObj.searchParams.append(provider.param, referrer);
   }
 
-  if (mintProviderType === 'mintFun') {
-    return {
-      url: `${url}?ref=${referrer}`,
-      provider: 'MintFun',
-    };
-  } else if (mintProviderType === 'zora') {
-    return {
-      url: `${url}?referrer=${referrer}`,
-      provider: 'Zora',
-    };
-  } else if (mintProviderType === 'fxhash') {
-    return {
-      url: `${url}`,
-      provider: 'FxHash',
-    };
-  } else if (mintProviderType === 'prohibitionArt') {
-    return {
-      url: `${url}`,
-      provider: 'ProhibitionArt',
-    };
-  } else {
-    return {
-      url,
-      provider: '',
-    };
-  }
+  return {
+    url: urlObj.toString(),
+    provider: provider ? provider.name : '',
+  };
 }
