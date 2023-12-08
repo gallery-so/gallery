@@ -55,7 +55,7 @@ function FirstTimePosterBottomSheet(props: Props, ref: ForwardedRef<GalleryBotto
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            This is my first post, say hi!
+            This is my first post—gm!
           </Typography>
         </View>
 
