@@ -178,25 +178,10 @@ export function GalleryLinkNeedsVerification({
         name: eventName,
         eventContext,
         needsVerification: true,
-        clickThroughStatus: 'disclaimer-modal',
       });
 
       showModal({
-        content: (
-          <VerifyNavigationPopover
-            href={href}
-            onClickThrough={() => {
-              track('Link Click', {
-                to: href,
-                id: eventElementId,
-                name: eventName,
-                eventContext,
-                needsVerification: true,
-                clickThroughStatus: 'confirm-leave-gallery',
-              });
-            }}
-          />
-        ),
+        content: <VerifyNavigationPopover href={href} eventContext={eventContext} />,
         isFullPage: false,
         headerText: 'Leaving gallery.so?',
       });

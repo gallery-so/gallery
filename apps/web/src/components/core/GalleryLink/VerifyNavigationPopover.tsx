@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { VStack } from '../Spacer/Stack';
@@ -10,10 +11,10 @@ import { BaseM } from '../Text/Text';
 
 export default function VerifyNavigationPopover({
   href,
-  onClickThrough,
+  eventContext,
 }: {
   href: string;
-  onClickThrough: () => void;
+  eventContext: GalleryElementTrackingProps['eventContext'];
 }) {
   const { hideModal } = useModalActions();
 
@@ -28,7 +29,7 @@ export default function VerifyNavigationPopover({
         <StyledCancelButton
           eventElementId="Leave Gallery Navigation Cancel Button"
           eventName="Cancel Leave Gallery"
-          eventContext={null}
+          eventContext={eventContext}
           onClick={() => hideModal()}
         >
           Cancel
@@ -36,10 +37,9 @@ export default function VerifyNavigationPopover({
         <Button
           eventElementId="Leave Gallery Navigation Confirmation Button"
           eventName="Confirm Leave Gallery"
-          eventContext={null}
+          eventContext={eventContext}
           properties={{ externalLink: href }}
           onClick={() => {
-            onClickThrough();
             window.open(href);
             hideModal();
           }}
