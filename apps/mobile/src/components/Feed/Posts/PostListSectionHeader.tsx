@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -157,12 +157,15 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         userRef={feedPost.author}
         onShare={() => sharePostBottomSheetRef.current?.present()}
       />
-      <SharePostBottomSheet
-        ref={sharePostBottomSheetRef}
-        title="Share Post"
-        postId={feedPost.dbid}
-        creatorName={token?.definition?.community?.creator?.username ?? ''}
-      />
+
+      <Suspense fallback={null}>
+        <SharePostBottomSheet
+          ref={sharePostBottomSheetRef}
+          title="Share Post"
+          postId={feedPost.dbid}
+          creatorName={token?.definition?.community?.creator?.username ?? ''}
+        />
+      </Suspense>
     </View>
   );
 }

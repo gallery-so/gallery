@@ -76,12 +76,20 @@ export default function MiniPostOpenGraphPreview({
               <Text>
                 <Typography
                   className="text-xs dark:text-black-500"
+                  style={{
+                    fontSize: 8,
+                    lineHeight: 10,
+                  }}
                   font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 >
                   View this post on
                 </Typography>
                 <Typography
                   className="text-xs dark:text-black-500"
+                  style={{
+                    fontSize: 8,
+                    lineHeight: 10,
+                  }}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 >
                   {' '}

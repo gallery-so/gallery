@@ -2,15 +2,14 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useColorScheme } from 'nativewind';
 import {
-  ReactElement,
   ForwardedRef,
+  forwardRef,
+  ReactElement,
   useCallback,
   useEffect,
-  forwardRef,
   useMemo,
   useRef,
   useState,
-  Suspense,
 } from 'react';
 import { Linking, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -26,13 +25,13 @@ import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { SharePostBottomSheetQuery } from '~/generated/SharePostBottomSheetQuery.graphql';
 import { contexts } from '~/shared/analytics/constants';
-import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import colors from '~/shared/theme/colors';
 
 import MiniPostOpenGraphPreview from './MiniPostOpenGraphPreview';
@@ -227,88 +226,86 @@ function SharePostBottomSheet(
   const caption = post.caption ?? '';
 
   return (
-    <Suspense fallback={null}>
-      <GalleryBottomSheetModal
-        ref={(value) => {
-          bottomSheetRef.current = value;
+    <GalleryBottomSheetModal
+      ref={(value) => {
+        bottomSheetRef.current = value;
 
-          if (typeof ref === 'function') {
-            ref(value);
-          } else if (ref) {
-            ref.current = value;
-          }
-        }}
-        snapPoints={animatedSnapPoints}
-        handleHeight={animatedHandleHeight}
-        contentHeight={animatedContentHeight}
+        if (typeof ref === 'function') {
+          ref(value);
+        } else if (ref) {
+          ref.current = value;
+        }
+      }}
+      snapPoints={animatedSnapPoints}
+      handleHeight={animatedHandleHeight}
+      contentHeight={animatedContentHeight}
+    >
+      <View
+        onLayout={handleContentLayout}
+        style={{ paddingBottom: bottom }}
+        className="p-4 flex flex-col space-y-4"
       >
-        <View
-          onLayout={handleContentLayout}
-          style={{ paddingBottom: bottom }}
-          className="p-4 flex flex-col space-y-4"
-        >
-          <View className="flex flex-col space-y-4">
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              {title ? title : `Successfuly posted ${tokenName}`}
-            </Typography>
-            <View>
-              <MiniPostOpenGraphPreview
-                imageUrl={imageUrl}
-                username={username}
-                profileImageUrl={profileImageUrl ?? ''}
-                caption={caption}
-                onError={handleError}
-              />
-            </View>
-          </View>
-
-          <View className="flex flex-row justify-between">
-            {shareButtonDetails.map((btnDetails) => (
-              <ShareButton
-                key={btnDetails.title}
-                title={btnDetails.title}
-                icon={btnDetails.icon}
-                onPress={() => handleShareButtonPress(btnDetails.baseComposePostUrl)}
-              />
-            ))}
-          </View>
-
-          <View className="flex flex-row">
-            <View className="w-9/12 mr-2">
-              <FadedInput
-                textClassName="text-metal h-6"
-                value={postUrl}
-                onChange={noop}
-                editable={false}
-              />
-            </View>
-            <Button
-              className="w-[81px]"
-              onPress={handleCopyButtonPress}
-              icon={
-                hasCopiedUrl ? (
-                  <View className="ml-2">
-                    <CopyIcon stroke={colorScheme === 'dark' ? colors.white : colors.black[800]} />
-                  </View>
-                ) : null
-              }
-              size="sm"
-              variant="secondary"
-              eventContext={contexts.Posts}
-              eventName="Press Copy Post Url"
-              eventElementId="Press Copy Post Url Button"
-              text={!hasCopiedUrl ? 'COPY' : undefined}
-              containerClassName={
-                hasCopiedUrl ? copyButtonBorderStyle.active : copyButtonBorderStyle.inactive
-              }
+        <View className="flex flex-col space-y-4">
+          <Typography
+            className="text-lg text-black-900 dark:text-offWhite"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
+            {title ? title : `Successfuly posted ${tokenName}`}
+          </Typography>
+          <View>
+            <MiniPostOpenGraphPreview
+              imageUrl={imageUrl}
+              username={username}
+              profileImageUrl={profileImageUrl ?? ''}
+              caption={caption}
+              onError={handleError}
             />
           </View>
         </View>
-      </GalleryBottomSheetModal>
-    </Suspense>
+
+        <View className="flex flex-row justify-between">
+          {shareButtonDetails.map((btnDetails) => (
+            <ShareButton
+              key={btnDetails.title}
+              title={btnDetails.title}
+              icon={btnDetails.icon}
+              onPress={() => handleShareButtonPress(btnDetails.baseComposePostUrl)}
+            />
+          ))}
+        </View>
+
+        <View className="flex flex-row">
+          <View className="w-9/12 mr-2">
+            <FadedInput
+              textClassName="text-metal h-6"
+              value={postUrl}
+              onChange={noop}
+              editable={false}
+            />
+          </View>
+          <Button
+            className="w-[81px]"
+            onPress={handleCopyButtonPress}
+            icon={
+              hasCopiedUrl ? (
+                <View className="ml-2">
+                  <CopyIcon stroke={colorScheme === 'dark' ? colors.white : colors.black[800]} />
+                </View>
+              ) : null
+            }
+            size="sm"
+            variant="secondary"
+            eventContext={contexts.Posts}
+            eventName="Press Copy Post Url"
+            eventElementId="Press Copy Post Url Button"
+            text={!hasCopiedUrl ? 'COPY' : undefined}
+            containerClassName={
+              hasCopiedUrl ? copyButtonBorderStyle.active : copyButtonBorderStyle.inactive
+            }
+          />
+        </View>
+      </View>
+    </GalleryBottomSheetModal>
   );
 }
 
