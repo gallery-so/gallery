@@ -13,6 +13,7 @@ type Props = {
   caption?: string;
   imageUrl: string;
   profileImageUrl?: string;
+  onError: () => void;
 };
 
 export default function MiniPostOpenGraphPreview({
@@ -20,6 +21,7 @@ export default function MiniPostOpenGraphPreview({
   caption,
   imageUrl,
   profileImageUrl,
+  onError,
 }: Props) {
   const letter = username?.[0]?.toUpperCase();
   const fallbackProfilePicture = (
@@ -33,11 +35,11 @@ export default function MiniPostOpenGraphPreview({
   );
 
   return (
-    <View className="flex w-[358]px h-[188px] bg-[#F9F9F9] items-center justify-center">
+    <View className="flex w-[358]px h-[188px] bg-offWhite items-center justify-center">
       <View className="flex flex-row items-center space-x-5">
         <OpenBracket />
         <View className="flex flex-row space-x-4">
-          <ImagePreview tokenUrl={imageUrl} onError={noop} />
+          <ImagePreview tokenUrl={imageUrl} onError={onError} />
           <View className="flex flex-col justify-center space-y-0.5">
             <View className="flex flex-row items-center space-x-1">
               {profileImageUrl ? (

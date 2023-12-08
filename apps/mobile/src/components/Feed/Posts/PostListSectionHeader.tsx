@@ -78,7 +78,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const [showSharePostBottomSheet, setShowSharePostBottomSheet] = useState(false);
+  const sharePostBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const token = feedPost?.tokens?.[0];
   const loggedInUserId = useLoggedInUserId(query);
@@ -149,25 +149,20 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           </GalleryTouchableOpacity>
         </View>
       </View>
-
       <PostBottomSheet
         ref={bottomSheetRef}
         isOwnPost={isOwnPost}
         postRef={feedPost}
         queryRef={query}
         userRef={feedPost.author}
-        onShare={() => setShowSharePostBottomSheet(true)}
+        onShare={() => sharePostBottomSheetRef.current?.present()}
       />
-      {showSharePostBottomSheet && (
-        <Suspense fallback={null}>
-          <SharePostBottomSheet
-            title="Share Post"
-            postId={feedPost.dbid}
-            onClose={() => setShowSharePostBottomSheet(false)}
-            creatorName={token?.definition?.community?.creator?.username ?? ''}
-          />
-        </Suspense>
-      )}
+      <SharePostBottomSheet
+        ref={sharePostBottomSheetRef}
+        title="Share Post"
+        postId={feedPost.dbid}
+        creatorName={token?.definition?.community?.creator?.username ?? ''}
+      />
     </View>
   );
 }

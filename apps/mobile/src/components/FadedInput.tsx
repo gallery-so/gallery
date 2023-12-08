@@ -4,14 +4,13 @@ import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-type Props = TextInputProps & { icon?: ReactNode; editable?: boolean; textClassName?: string };
+type Props = TextInputProps & { icon?: ReactNode; textClassName?: string };
 
 export function FadedInput({
   value,
   onChange,
   icon,
   style,
-  editable = true,
   textClassName,
   ...props
 }: Props) {
@@ -28,7 +27,6 @@ export function FadedInput({
           fontSize: 14,
           flex: 1,
         }}
-        editable={editable}
         className={`dark:text-white ${textClassName}`}
         placeholderTextColor={colors.metal}
         selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
