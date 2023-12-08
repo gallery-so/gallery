@@ -346,7 +346,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         )}
 
-        {isTokenOwner && (
+        {isTokenOwner ? (
           <Button
             headerElement={
               <PostIcon
@@ -360,6 +360,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             eventContext={null}
             onPress={handleCreatePost}
             text="create post"
+          />
+        ) : (
+          <MintLinkButton
+            tokenRef={token}
+            eventElementId="Press Mint Link Button"
+            eventName="Press Mint Link"
+            eventContext={contexts['NFT Detail']}
+            referrerAddress={ownerWalletAddress}
           />
         )}
 
@@ -376,14 +384,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             containerClassName={
               hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
             }
-          />
-
-          <MintLinkButton
-            tokenRef={token}
-            eventElementId="Press Mint Link Button"
-            eventName="Press Mint Link"
-            eventContext={contexts['NFT Detail']}
-            referrerAddress={ownerWalletAddress}
           />
         </View>
 
