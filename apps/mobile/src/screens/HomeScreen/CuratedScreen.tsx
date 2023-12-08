@@ -3,6 +3,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
+import { TestflightDeprecationBottomSheet } from '~/components/TestflightDeprecationBottomSheet';
 import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
@@ -121,6 +122,9 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
           creatorName={routeParams?.postId ?? ''}
         />
       </Suspense>
+
+      {/* TESTFLIGHT ONLY */}
+      <TestflightDeprecationBottomSheet />
     </>
   );
 }
