@@ -6,14 +6,7 @@ import colors from '~/shared/theme/colors';
 
 type Props = TextInputProps & { icon?: ReactNode; textClassName?: string };
 
-export function FadedInput({
-  value,
-  onChange,
-  icon,
-  style,
-  textClassName,
-  ...props
-}: Props) {
+export function FadedInput({ value, onChange, icon, style, textClassName, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
