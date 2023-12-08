@@ -1,5 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
@@ -9,12 +9,10 @@ import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
 import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
-import { Button } from '~/components/Button';
 
 type CuratedScreenInnerProps = {
   queryRef: CuratedScreenFragment$key;
@@ -59,7 +57,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 
   const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
   const showMarfaCheckIn = routeParams?.showMarfaCheckIn ?? false;
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const curatedFeed = query.data.curatedFeed;
 
@@ -67,16 +64,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   const [showWelcome, setShowWelcome] = useState(false);
 
   const { isNewUser } = route.params ?? {};
-
-  useEffect(() => {
-    console.log('effect running');
-
-    if (routeParams?.postId) {
-      console.log('found postId in route params', routeParams?.postId);
-
-      bottomSheetRef.current?.present();
-    }
-  }, [routeParams?.postId]);
 
   useEffect(() => {
     if (isNewUser) {
@@ -116,7 +103,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 
   return (
     <>
-      <Button text="dummy" onPress={() => bottomSheetRef.current?.present()} />
       <FeedList
         isLoadingMore={query.isLoadingPrevious}
         isRefreshing={isRefreshing}
@@ -129,8 +115,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
       {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
 
       <SharePostBottomSheet
-        key={routeParams?.postId}
-        ref={bottomSheetRef}
+        shouldShowSheet
         postId={routeParams?.postId ?? ''}
         creatorName={routeParams?.postId ?? ''}
       />

@@ -43,10 +43,11 @@ type Props = {
   postId: string;
   title?: string;
   creatorName?: string;
+  shouldShowSheet?: boolean;
 };
 
 function SharePostBottomSheet(
-  { title, creatorName, postId }: Props,
+  { title, creatorName, postId, shouldShowSheet }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const queryResponse = useLazyLoadQuery<SharePostBottomSheetQuery>(
@@ -93,9 +94,14 @@ function SharePostBottomSheet(
   const { post } = queryResponse;
   const { bottom } = useSafeAreaPadding();
   const [hasCopiedUrl, setHasCopiedUrl] = useState(false);
-  console.log('triggered bottomSheet');
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  useEffect(() => {
+    if (shouldShowSheet) {
+      bottomSheetRef.current?.present();
+    }
+  }, [shouldShowSheet]);
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
