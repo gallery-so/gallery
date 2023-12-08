@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
@@ -8,6 +9,7 @@ import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
+import { PostMintLinkInput } from '~/components/Post/PostMintLinkInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
@@ -23,6 +25,7 @@ import {
 } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
@@ -42,10 +45,22 @@ function PostComposerScreenInner() {
               contractAddress {
                 address
               }
+              mintURL
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
             ...usePostTokenFragment
+          }
+        }
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+            }
           }
         }
       }
@@ -61,6 +76,13 @@ function PostComposerScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
+
+  const mintURLWithRef = getMintUrlWithReferrer(
+    token.contract?.mintURL ?? '',
+    ownerWalletAddress
+  ).url;
+
   const { post } = usePost({
     tokenRef: token,
   });
@@ -70,6 +92,9 @@ function PostComposerScreenInner() {
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
   const navigation = useNavigation();
+
+  const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
 
   const {
     aliasKeyword,
@@ -108,6 +133,7 @@ function PostComposerScreenInner() {
       tokenId,
       caption: message,
       mentions,
+      mintUrl: mintURL,
     });
 
     mainTabNavigation.reset({
@@ -140,12 +166,17 @@ function PostComposerScreenInner() {
     isPosting,
     mainTabNavigation,
     mentions,
+    mintURL,
     post,
     pushToast,
     resetMentions,
     route.params.redirectTo,
     token,
   ]);
+
+  const isPostButtonDisabled = useMemo(() => {
+    return isPosting || isInvalidMintLink;
+  }, [isInvalidMintLink, isPosting]);
 
   return (
     <View className="flex flex-col flex-grow space-y-8">
@@ -163,10 +194,13 @@ function PostComposerScreenInner() {
           eventElementId="Post Button"
           eventName="Post button clicked"
           eventContext={contexts.Posts}
-          disabled={isPosting}
+          disabled={isPostButtonDisabled}
         >
           <Typography
-            className="text-sm text-activeBlue"
+            className={clsx('text-sm', {
+              'text-activeBlue': !isPostButtonDisabled,
+              'text-metal': isPostButtonDisabled,
+            })}
             font={{
               family: 'ABCDiatype',
               weight: 'Bold',
@@ -185,6 +219,15 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
+        {mintURLWithRef && (
+          <PostMintLinkInput
+            value={mintURL}
+            defaultValue={mintURLWithRef}
+            setValue={setMintURL}
+            invalid={isInvalidMintLink}
+            onSetInvalid={setIsInvalidMintLink}
+          />
+        )}
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">

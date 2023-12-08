@@ -1235,6 +1235,7 @@ type Post implements Node {
   interactions(before: String, after: String, first: Int, last: Int): InteractionsConnection
   viewerAdmire: Admire
   isFirstPost: Boolean!
+  userAddedMintURL: String
 }
 
 type PostAdmireEdge {
@@ -1286,6 +1287,7 @@ input PostTokensInput {
   tokenIds: [DBID!]
   caption: String
   mentions: [MentionInput!]
+  mintURL: String
 }
 
 type PostTokensPayload {
@@ -1420,6 +1422,7 @@ union ReferralPostPreflightPayloadOrError = ReferralPostPreflightPayload | ErrIn
 input ReferralPostTokenInput {
   token: ChainAddressTokenInput!
   caption: String
+  mintURL: String
 }
 
 type ReferralPostTokenPayload {

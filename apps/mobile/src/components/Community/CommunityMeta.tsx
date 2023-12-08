@@ -23,6 +23,7 @@ import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { MintLinkButton } from '../MintLinkButton';
 import { CreatorProfilePictureAndUsernameOrAddress } from '../ProfilePicture/ProfilePictureAndUserOrAddress';
 import { Typography } from '../Typography';
 import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
@@ -47,6 +48,18 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           __typename
           ... on GalleryUser {
             username
+            primaryWallet {
+              chainAddress {
+                address
+              }
+            }
+          }
+        }
+        tokensInCommunity(first: 1) {
+          edges {
+            node {
+              ...MintLinkButtonFragment
+            }
           }
         }
         ...CommunityPostBottomSheetFragment
@@ -80,6 +93,10 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
+  const creatorWalletAddress = community?.creator?.primaryWallet?.chainAddress?.address ?? '';
+
+  const token = community?.tokensInCommunity?.edges?.[0]?.node;
 
   const { colorScheme } = useColorScheme();
   const { openManageWallet } = useManageWalletActions();
@@ -147,56 +164,71 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   return (
     <View className="flex flex-row justify-between">
-      {community.creator && community?.chain !== 'POAP' ? (
-        <View className="flex flex-column space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase"
-          >
-            CREATED BY
-          </Typography>
-          <View>
-            <CreatorProfilePictureAndUsernameOrAddress
-              userOrAddressRef={community.creator}
-              handlePress={handleUsernamePress}
-              eventContext={contexts['NFT Detail']}
-            />
-          </View>
-        </View>
-      ) : null}
-
-      {community.chain && (
-        <View className="flex flex-column space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase"
-          >
-            NETWORK
-          </Typography>
-
-          <View className="flex flex-row space-x-1 items-center">
-            <NetworkIcon chain={community.chain} />
+      <View className="space-y-3">
+        {community.creator && community?.chain !== 'POAP' ? (
+          <View className="flex flex-column space-y-0.5">
             <Typography
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              className="text-sm text-black-800 dark:text-offWhite"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="text-xs uppercase"
             >
-              {community.chain}
+              CREATED BY
             </Typography>
+            <View>
+              <CreatorProfilePictureAndUsernameOrAddress
+                userOrAddressRef={community.creator}
+                handlePress={handleUsernamePress}
+                eventContext={contexts['NFT Detail']}
+              />
+            </View>
           </View>
-        </View>
+        ) : null}
+
+        {community.chain && (
+          <View className="flex flex-column space-y-0.5">
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="text-xs uppercase"
+            >
+              NETWORK
+            </Typography>
+
+            <View className="flex flex-row space-x-1 items-center">
+              <NetworkIcon chain={community.chain} />
+              <Typography
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                className="text-sm text-black-800 dark:text-offWhite"
+              >
+                {community.chain}
+              </Typography>
+            </View>
+          </View>
+        )}
+      </View>
+      {isMemberOfCommunity ? (
+        <Button
+          size="sm"
+          text="Post"
+          className="w-[100px]"
+          variant={isMemberOfCommunity ? 'primary' : 'disabled'}
+          headerElement={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
+          onPress={handlePress}
+          eventElementId="Attempt Create Post Button"
+          eventName="Attempt Create Post"
+          eventContext={contexts.Community}
+        />
+      ) : (
+        token && (
+          <MintLinkButton
+            tokenRef={token}
+            size="sm"
+            eventElementId="Press Mint Link Button"
+            eventName="Press Mint Link"
+            eventContext={contexts.Community}
+            referrerAddress={creatorWalletAddress}
+          />
+        )
       )}
 
-      <Button
-        size="sm"
-        text="Post"
-        className="w-[100px]"
-        variant={isMemberOfCommunity ? 'primary' : 'disabled'}
-        icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
-        onPress={handlePress}
-        eventElementId="Attempt Create Post Button"
-        eventName="Attempt Create Post"
-        eventContext={contexts.Community}
-      />
       <CommunityPostBottomSheet
         ref={bottomSheetRef}
         communityRef={community}

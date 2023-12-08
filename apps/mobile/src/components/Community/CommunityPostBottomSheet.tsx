@@ -118,7 +118,7 @@ function CommunityPostBottomSheet(
             variant="secondary"
             loading={isSyncing}
             onPress={handleSync}
-            icon={<RefreshIcon />}
+            headerElement={<RefreshIcon />}
             eventElementId="Refresh Tokens From Community Screen Button"
             eventName="Refresh Tokens From Community Screen"
             eventContext={contexts.Posts}

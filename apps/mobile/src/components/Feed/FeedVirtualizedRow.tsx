@@ -11,6 +11,7 @@ import { FeedFilter } from './FeedFilter';
 import { FeedPostSocializeSection } from './Posts/FeedPostSocializeSection';
 import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
+import { PostListMintButtonSection } from './Posts/PostListMintButtonSection';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
 
 type Props = {
@@ -61,6 +62,8 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
             onCommentPress={item.onCommentPress}
           />
         );
+      case 'post-item-mint-link':
+        return <PostListMintButtonSection postRef={item.post} />;
     }
   }, [item]);
 

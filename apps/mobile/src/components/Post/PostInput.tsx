@@ -41,7 +41,7 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
 
   return (
     <View
-      className="relative border bg-offWhite dark:bg-black-900 border-porcelain dark:border-black-500 pb-10"
+      className="relative border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500 pb-10"
       style={{
         height: 117,
       }}

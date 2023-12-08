@@ -15,6 +15,7 @@ import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
+import { MintLinkButton } from '~/components/MintLinkButton';
 import { Pill } from '~/components/Pill';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import {
@@ -86,6 +87,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             owner {
               id
               username
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
               ...ProfilePictureAndUserOrAddressOwnerFragment
             }
             community {
@@ -102,6 +108,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             ...TokenFailureBoundaryFragment
             ...extractRelevantMetadataFromTokenFragment
             ...useToggleTokenAdmireFragment
+            ...MintLinkButtonFragment
           }
         }
         ...useLoggedInUserIdFragment
@@ -114,6 +121,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const { colorScheme } = useColorScheme();
 
   const token = query.tokenById;
+  const ownerWalletAddress =
+    token?.__typename === 'Token' ? token.owner?.primaryWallet?.chainAddress?.address ?? '' : '';
 
   const loggedInUserId = useLoggedInUserId(query);
 
@@ -337,9 +346,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         )}
 
-        {isTokenOwner && (
+        {isTokenOwner ? (
           <Button
-            icon={
+            headerElement={
               <PostIcon
                 width={24}
                 strokeWidth={1.5}
@@ -352,21 +361,31 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             onPress={handleCreatePost}
             text="create post"
           />
+        ) : (
+          <MintLinkButton
+            tokenRef={token}
+            eventElementId="Press Mint Link Button"
+            eventName="Press Mint Link"
+            eventContext={contexts['NFT Detail']}
+            referrerAddress={ownerWalletAddress}
+          />
         )}
 
-        <Button
-          variant="blue"
-          icon={<AdmireIcon active={hasViewerAdmiredEvent} />}
-          eventElementId={'NFT Detail Token Admire'}
-          eventName={'NFT Detail Token Admire Clicked'}
-          eventContext={contexts['NFT Detail']}
-          onPress={toggleTokenAdmire}
-          text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
-          textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : ''}
-          containerClassName={
-            hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
-          }
-        />
+        <View className="space-y-2">
+          <Button
+            variant="blue"
+            headerElement={<AdmireIcon active={hasViewerAdmiredEvent} />}
+            eventElementId={'NFT Detail Token Admire'}
+            eventName={'NFT Detail Token Admire Clicked'}
+            eventContext={contexts['NFT Detail']}
+            onPress={toggleTokenAdmire}
+            text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
+            textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : ''}
+            containerClassName={
+              hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+            }
+          />
+        </View>
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />

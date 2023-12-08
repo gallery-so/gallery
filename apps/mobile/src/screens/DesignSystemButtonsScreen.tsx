@@ -52,7 +52,7 @@ export function DesignSystemButtonsScreen() {
               <Button
                 loading
                 text="SCAN"
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="primary"
                 eventElementId={null}
                 eventName={null}
@@ -61,7 +61,7 @@ export function DesignSystemButtonsScreen() {
               <Button
                 loading
                 text="SCAN"
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="secondary"
                 eventElementId={null}
                 eventName={null}
@@ -70,7 +70,7 @@ export function DesignSystemButtonsScreen() {
               <Button
                 text="SCAN"
                 loading
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="danger"
                 eventElementId={null}
                 eventName={null}
@@ -81,7 +81,7 @@ export function DesignSystemButtonsScreen() {
             <View className="flex flex-row space-x-2">
               <Button
                 text="SCAN"
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="primary"
                 eventElementId={null}
                 eventName={null}
@@ -89,7 +89,7 @@ export function DesignSystemButtonsScreen() {
               />
               <Button
                 text="SCAN"
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="secondary"
                 eventElementId={null}
                 eventName={null}
@@ -97,7 +97,7 @@ export function DesignSystemButtonsScreen() {
               />
               <Button
                 text="SCAN"
-                icon={<QRCodeIcon />}
+                headerElement={<QRCodeIcon />}
                 variant="danger"
                 eventElementId={null}
                 eventName={null}
