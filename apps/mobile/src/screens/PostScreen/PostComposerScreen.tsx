@@ -15,7 +15,6 @@ import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
-import { useToastActions } from '~/contexts/ToastContext';
 import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
 import { PostComposerScreenTokenFragment$key } from '~/generated/PostComposerScreenTokenFragment.graphql';
 import {
@@ -46,6 +45,16 @@ function PostComposerScreenInner() {
                 address
               }
               mintURL
+            }
+            definition {
+              name
+              community {
+                creator {
+                  ... on GalleryUser {
+                    username
+                  }
+                }
+              }
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -118,8 +127,6 @@ function PostComposerScreenInner() {
     bottomSheetRef.current?.present();
   }, [message, navigation]);
 
-  const { pushToast } = useToastActions();
-
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
@@ -129,19 +136,38 @@ function PostComposerScreenInner() {
 
     setIsPosting(true);
 
-    await post({
+    const response = await post({
       tokenId,
       caption: message,
       mentions,
       mintUrl: mintURL,
     });
 
+    if (response?.postTokens?.post?.__typename !== 'Post') {
+      return null;
+    }
+
+    const createdPostId = response?.postTokens?.post?.dbid ?? '';
+    const creatorName = token?.definition?.community?.creator?.username ?? '';
+
     mainTabNavigation.reset({
       index: 0,
       routes: [
         {
           name: 'MainTabs',
-          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'For You' } } },
+          params: {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Home',
+              params: {
+                screen: 'For You',
+                params: {
+                  postId: createdPostId,
+                  creatorName: creatorName,
+                },
+              },
+            },
+          },
         },
       ],
     });
@@ -150,16 +176,18 @@ function PostComposerScreenInner() {
       mainTabNavigation.navigate('Community', {
         contractAddress: token.contract?.contractAddress?.address ?? '',
         chain: token.chain ?? '',
+        postId: createdPostId,
+        creatorName: creatorName,
       });
     } else {
-      feedTabNavigation.navigate('Latest');
+      feedTabNavigation.navigate('Latest', {
+        postId: createdPostId,
+        creatorName: creatorName,
+      });
     }
 
     setIsPosting(false);
     resetMentions();
-    pushToast({
-      children: <ToastMessage tokenRef={token} />,
-    });
   }, [
     message,
     feedTabNavigation,
@@ -168,7 +196,6 @@ function PostComposerScreenInner() {
     mentions,
     mintURL,
     post,
-    pushToast,
     resetMentions,
     route.params.redirectTo,
     token,

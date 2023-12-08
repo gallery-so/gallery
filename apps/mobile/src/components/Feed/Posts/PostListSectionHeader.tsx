@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -15,6 +15,7 @@ import { Typography } from '~/components/Typography';
 import { PostListSectionHeaderFragment$key } from '~/generated/PostListSectionHeaderFragment.graphql';
 import { PostListSectionHeaderQueryFragment$key } from '~/generated/PostListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { SharePostBottomSheet } from '~/screens/PostScreen/SharePostBottomSheet';
 import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
@@ -32,6 +33,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderFragment on Post {
         __typename
+        dbid
         isFirstPost
         author @required(action: THROW) {
           __typename
@@ -43,6 +45,18 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           }
           ...ProfilePictureFragment
           ...PostBottomSheetUserFragment
+        }
+        tokens {
+          definition {
+            community {
+              id
+              creator {
+                ... on GalleryUser {
+                  username
+                }
+              }
+            }
+          }
         }
         creationTime
         ...PostBottomSheetFragment
@@ -65,8 +79,10 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const sharePostBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const firstTimePosterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
+  const token = feedPost?.tokens?.[0];
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
 
@@ -145,7 +161,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           </GalleryTouchableOpacity>
         </View>
       </View>
-
       <FirstTimePosterBottomSheet ref={firstTimePosterBottomSheetRef} />
       <PostBottomSheet
         ref={bottomSheetRef}
@@ -153,7 +168,17 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         postRef={feedPost}
         queryRef={query}
         userRef={feedPost.author}
+        onShare={() => sharePostBottomSheetRef.current?.present()}
       />
+
+      <Suspense fallback={null}>
+        <SharePostBottomSheet
+          ref={sharePostBottomSheetRef}
+          title="Share Post"
+          postId={feedPost.dbid}
+          creatorName={token?.definition?.community?.creator?.username ?? ''}
+        />
+      </Suspense>
     </View>
   );
 }
