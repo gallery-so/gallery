@@ -56,4 +56,20 @@ describe('getMintUrlWithReferrer', () => {
     );
     expect(result.provider).toBe('Zora');
   });
+
+  it('should return original url if url is empty', () => {
+    const url = '';
+    const referrer = 'referrer';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe('');
+    expect(result.provider).toBeUndefined();
+  });
+
+  it('should return original url if url is not a provider url', () => {
+    const url = 'https://www.google.com';
+    const referrer = 'referrer';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe('https://www.google.com/');
+    expect(result.provider).toBeUndefined();
+  });
 });

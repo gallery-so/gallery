@@ -61,37 +61,33 @@ export function MintLinkButton({
     referrerAddress ?? ''
   );
 
-  const mintProvider = useMemo(() => {
-    const provider = {
-      name: '',
-      icon: null as React.ReactNode | null,
-    };
-
-    if (size === 'sm') {
-      provider.name = 'mint';
-    } else if (mintProviderType === 'Zora') {
-      provider.name = 'mint on zora';
-    } else if (mintProviderType === 'MintFun') {
-      provider.name = 'mint on mint.fun';
-    } else if (mintProviderType === 'FxHash') {
-      provider.name = 'mint on fxhash';
-    } else if (mintProviderType === 'Prohibition') {
-      provider.name = 'mint on prohibition';
-    }
-
+  const mintProvider: {
+    buttonText: string;
+    icon: React.ReactNode;
+  } | null = useMemo(() => {
     if (mintProviderType === 'Zora') {
-      provider.icon = <ZoraIcon />;
+      return {
+        buttonText: 'mint on zora',
+        icon: <ZoraIcon />,
+      };
     } else if (mintProviderType === 'MintFun') {
-      provider.icon = (
-        <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />
-      );
+      return {
+        buttonText: 'mint on mint.fun',
+        icon: <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+      };
     } else if (mintProviderType === 'FxHash') {
-      provider.icon = <FxHashIcon />;
+      return {
+        buttonText: 'mint on fxhash',
+        icon: <FxHashIcon />,
+      };
     } else if (mintProviderType === 'Prohibition') {
-      provider.icon = <ProhibitionIcon />;
+      return {
+        buttonText: 'mint on prohibition',
+        icon: <ProhibitionIcon />,
+      };
+    } else {
+      return null;
     }
-
-    return provider;
   }, [mintProviderType, size]);
 
   const handlePress = useCallback(() => {
@@ -121,12 +117,16 @@ export function MintLinkButton({
     return null;
   }
 
+  if (!mintProvider) {
+    return null;
+  }
+
   return (
     <Button
-      text={mintProvider?.name}
+      text={size === 'sm' ? 'mint' : mintProvider.buttonText}
       variant={variant}
       onPress={handlePress}
-      headerElement={mintProvider?.icon}
+      headerElement={mintProvider.icon}
       footerElement={<TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}

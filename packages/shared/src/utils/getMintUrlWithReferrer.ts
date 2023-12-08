@@ -19,12 +19,12 @@ export function getMintUrlWithReferrer(url: string, referrer: string) {
 
     return {
       url: urlObj.toString(),
-      provider: provider ? provider.name : '',
+      provider: provider ? provider.name : undefined,
     };
   } catch (e) {
     return {
       url: '',
-      provider: '',
+      provider: undefined,
     };
   }
 }
