@@ -286,7 +286,7 @@ function SharePostBottomSheet(
           <Button
             className="w-[81px]"
             onPress={handleCopyButtonPress}
-            icon={
+            headerElement={
               hasCopiedUrl ? (
                 <View className="ml-2">
                   <CopyIcon stroke={colorScheme === 'dark' ? colors.white : colors.black[800]} />
@@ -325,7 +325,7 @@ function ShareButton({ title, icon, onPress }: ButtonProps) {
       eventName="Press Share Post"
       eventElementId="Press Share Post Button"
       properties={{ variant: title }}
-      icon={icon}
+      headerElement={icon}
       text={title}
     />
   );
