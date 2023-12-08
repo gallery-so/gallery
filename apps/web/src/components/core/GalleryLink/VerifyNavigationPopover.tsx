@@ -8,7 +8,13 @@ import colors from '~/shared/theme/colors';
 import { VStack } from '../Spacer/Stack';
 import { BaseM } from '../Text/Text';
 
-export default function VerifyNavigationPopover({ href }: { href: string }) {
+export default function VerifyNavigationPopover({
+  href,
+  onClickThrough,
+}: {
+  href: string;
+  onClickThrough: () => void;
+}) {
   const { hideModal } = useModalActions();
 
   return (
@@ -33,6 +39,7 @@ export default function VerifyNavigationPopover({ href }: { href: string }) {
           eventContext={null}
           properties={{ externalLink: href }}
           onClick={() => {
+            onClickThrough();
             window.open(href);
             hideModal();
           }}

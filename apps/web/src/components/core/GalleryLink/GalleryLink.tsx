@@ -137,10 +137,16 @@ export function GalleryLinkNeedsVerification({
   inheritLinkStyling = false,
   href,
   children,
+  eventElementId = 'Unlabeled Link',
+  eventName = 'Unlabeled Link Click',
+  eventContext,
 }: {
   inheritLinkStyling?: boolean;
   href: string;
   children: ReactNode;
+  eventElementId: GalleryElementTrackingProps['eventElementId'];
+  eventName: GalleryElementTrackingProps['eventName'];
+  eventContext: GalleryElementTrackingProps['eventContext'];
 }) {
   const { showModal } = useModalActions();
   const track = useTrack();
@@ -154,24 +160,48 @@ export function GalleryLinkNeedsVerification({
     (e: MouseEvent, href: string) => {
       e.preventDefault();
 
-      track('Link Click', {
-        to: href,
-        needsVerification: true,
-      });
-
       // on certain routes like our content pages, we trust the external links displayed and thefore dont need to show a verification
       if (skipVerification && typeof window !== 'undefined') {
+        track('Link Click', {
+          to: href,
+          id: eventElementId,
+          name: eventName,
+          eventContext,
+        });
         window.open(href, '_blank', 'noopener,noreferrer');
         return;
       }
 
+      track('Link Click', {
+        to: href,
+        id: eventElementId,
+        name: eventName,
+        eventContext,
+        needsVerification: true,
+        clickThroughStatus: 'disclaimer-modal',
+      });
+
       showModal({
-        content: <VerifyNavigationPopover href={href} />,
+        content: (
+          <VerifyNavigationPopover
+            href={href}
+            onClickThrough={() => {
+              track('Link Click', {
+                to: href,
+                id: eventElementId,
+                name: eventName,
+                eventContext,
+                needsVerification: true,
+                clickThroughStatus: 'confirm-leave-gallery',
+              });
+            }}
+          />
+        ),
         isFullPage: false,
         headerText: 'Leaving gallery.so?',
       });
     },
-    [showModal, skipVerification, track]
+    [eventContext, eventElementId, eventName, showModal, skipVerification, track]
   );
   return (
     <GalleryLink

@@ -67,7 +67,13 @@ function BaseMarkdown({
               );
             }
             return (
-              <GalleryLinkNeedsVerification inheritLinkStyling={inheritLinkStyling} href={href}>
+              <GalleryLinkNeedsVerification
+                inheritLinkStyling={inheritLinkStyling}
+                href={href}
+                eventElementId="Markdown Link"
+                eventName="Markdown Link Click"
+                eventContext={eventContext}
+              >
                 {children}
               </GalleryLinkNeedsVerification>
             );
