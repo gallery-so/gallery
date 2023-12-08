@@ -2,12 +2,13 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneRepliedToYourCommentFragment$key } from '~/generated/SomeoneRepliedToYourCommentFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -22,6 +23,7 @@ export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props)
       fragment SomeoneRepliedToYourCommentFragment on SomeoneRepliedToYourCommentNotification {
         __typename
         dbid
+        updatedTime
         comment {
           commenter {
             ...UserHoverCardFragment
@@ -61,6 +63,7 @@ export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props)
   }
 
   const commenter = comment.commenter;
+  const timeAgo = getTimeSince(notification.updatedTime);
 
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
@@ -73,6 +76,8 @@ export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props)
             <BaseM as="span">
               replied to your <strong>comment</strong>
             </BaseM>
+            &nbsp;
+            <TimeAgoText as="span">{timeAgo}</TimeAgoText>
           </StyledTextWrapper>
           <StyledCaption>{comment.comment}</StyledCaption>
         </VStack>
@@ -96,6 +101,12 @@ const StyledCaption = styled(BaseM)`
   overflow: hidden;
   line-clamp: 1;
   -webkit-line-clamp: 1;
+`;
+
+const TimeAgoText = styled(BaseS)`
+  color: ${colors.metal};
+  white-space: nowrap;
+  flex-shrink: 0;
 `;
 
 const StyledTextWrapper = styled(HStack)`
