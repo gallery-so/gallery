@@ -19,6 +19,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
+import { FirstTimePosterBottomSheet } from './FirstTimePosterBottomSheet';
 import { PostBottomSheet } from './PostBottomSheet';
 
 type PostListSectionHeaderProps = {
@@ -64,6 +65,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const firstTimePosterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
@@ -111,7 +113,17 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
                 {feedPost?.author?.username}
               </Typography>
               {activeBadge && <TopMemberBadgeIcon />}
-              {feedPost.isFirstPost && <LeafIcon />}
+              {feedPost.isFirstPost && (
+                <GalleryTouchableOpacity
+                  className="flex"
+                  onPress={() => firstTimePosterBottomSheetRef.current?.present()}
+                  eventElementId="First Time Poster Leaf Icon Button"
+                  eventName="First Time Poster Leaf Icon Button Clicked"
+                  eventContext={contexts.Posts}
+                >
+                  <LeafIcon />
+                </GalleryTouchableOpacity>
+              )}
             </GalleryTouchableOpacity>
           </View>
         </View>
@@ -134,6 +146,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         </View>
       </View>
 
+      <FirstTimePosterBottomSheet ref={firstTimePosterBottomSheetRef} />
       <PostBottomSheet
         ref={bottomSheetRef}
         isOwnPost={isOwnPost}
