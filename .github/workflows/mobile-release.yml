@@ -1,42 +1,8 @@
 name: mobile-release
 
-on:
-  push:
-    branches:
-      - main
-    # We only want to run a build if things that could've affected mobile changed.
-    paths:
-      - yarn.lock
-      - package.json
-      - apps/mobile/**/*
-      - packages/shared/**/*
+on: [push]
 
 jobs:
-  release-android:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
-
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.5.0
-          cache: yarn
-
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📦 Install dependencies
-        run: yarn install
-
-      - name: 🚀 Build app
-        run: |
-          cd apps/mobile;
-          eas build -p android -e production --non-interactive --auto-submit
   release-ios:
     runs-on: ubuntu-latest
     steps:
