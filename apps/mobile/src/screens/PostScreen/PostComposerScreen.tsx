@@ -222,6 +222,7 @@ function PostComposerScreenInner() {
         {mintURLWithRef && (
           <PostMintLinkInput
             value={mintURL}
+            defaultValue={mintURLWithRef}
             setValue={setMintURL}
             invalid={isInvalidMintLink}
             onSetInvalid={setIsInvalidMintLink}

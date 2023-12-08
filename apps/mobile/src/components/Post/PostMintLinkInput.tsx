@@ -20,11 +20,20 @@ type Props = {
   setValue: (value: string) => void;
   style?: ViewProps['style'];
 
+  defaultValue: string;
+
   invalid: boolean;
   onSetInvalid: (invalid: boolean) => void;
 };
 
-export function PostMintLinkInput({ value, setValue, invalid, onSetInvalid, style }: Props) {
+export function PostMintLinkInput({
+  defaultValue,
+  value,
+  setValue,
+  invalid,
+  onSetInvalid,
+  style,
+}: Props) {
   const [includeMintLink, setIncludeMintLink] = useState(true);
 
   const { colorScheme } = useColorScheme();
@@ -45,8 +54,13 @@ export function PostMintLinkInput({ value, setValue, invalid, onSetInvalid, styl
   );
 
   const handleToggle = useCallback(() => {
-    setIncludeMintLink((prev) => !prev);
-  }, []);
+    setIncludeMintLink((prev) => {
+      if (!prev) {
+        handleTextChange(defaultValue);
+      }
+      return !prev;
+    });
+  }, [handleTextChange, defaultValue]);
 
   const handleOpenBottomSheet = useCallback(() => {
     bottomSheetRef.current?.present();
