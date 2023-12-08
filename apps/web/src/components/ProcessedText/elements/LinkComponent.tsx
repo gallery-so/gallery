@@ -28,7 +28,13 @@ export function LinkComponent({ url, value, eventContext }: LinkComponentProps) 
     );
   }
   return (
-    <GalleryLinkNeedsVerification inheritLinkStyling href={url}>
+    <GalleryLinkNeedsVerification
+      inheritLinkStyling
+      href={url}
+      eventElementId="Markdown Link"
+      eventName="Markdown Link Click"
+      eventContext={eventContext}
+    >
       {value ?? url}
     </GalleryLinkNeedsVerification>
   );
