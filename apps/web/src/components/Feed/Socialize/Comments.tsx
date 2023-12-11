@@ -34,9 +34,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
         # we want to be sure that we can show another comment beneath
         ... on FeedEvent {
           comments(last: 5) @connection(key: "Interactions_comments") {
-            pageInfo {
-              total
-            }
             edges {
               node {
                 dbid
@@ -47,13 +44,11 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
           }
 
           ...RemainingCommentCountFragment
+          totalComments
         }
 
         ... on Post {
           comments(last: 5) @connection(key: "Interactions_comments") {
-            pageInfo {
-              total
-            }
             edges {
               node {
                 dbid
@@ -62,6 +57,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
               }
             }
           }
+          totalComments
           ...RemainingCommentCountFragment
         }
 
@@ -132,7 +128,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     return comments;
   }, [feedItem.comments?.edges]);
 
-  const totalComments = feedItem.comments?.pageInfo.total ?? 0;
+  const totalComments = feedItem.totalComments ?? 0;
 
   const isFirstMount = useRef(true);
   useLayoutEffect(() => {
