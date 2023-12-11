@@ -334,16 +334,16 @@ type Community implements Node {
   dbid: DBID!
   id: ID!
   lastUpdated: Time
-contract: Contract
+  contract: Contract
   contractAddress: ChainAddress
   creatorAddress: ChainAddress
   creator: GalleryUserOrAddress
   chain: Chain
   name: String
   description: String
-previewImage: String
+  previewImage: String
   profileImageURL: String
-profileBannerURL: String
+  profileBannerURL: String
   badgeURL: String
   parentCommunity: CommunityLink
   subCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
@@ -1396,7 +1396,7 @@ type Query {
   socialQueries: SocialQueriesOrError
   topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
   postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
-  }
+}
 
 input RedeemMerchInput {
   tokenIds: [String!]!
