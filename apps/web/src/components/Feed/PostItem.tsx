@@ -13,6 +13,7 @@ import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { MintLinkButton } from '../MintLinkButton';
 import { PostCreatorAndCollectionSection } from './Posts/PostCreatorAndCollectionSection';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
@@ -37,11 +38,13 @@ export function PostItem({
     graphql`
       fragment PostItemFragment on Post {
         dbid
+        userAddedMintURL
         author {
           __typename
         }
         tokens {
           ...PostCreatorAndCollectionSectionFragment
+          ...MintLinkButtonFragment
         }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
@@ -64,6 +67,7 @@ export function PostItem({
   const isDesktop = useIsDesktopWindowWidth();
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
+  const userAddedMintURL = post?.userAddedMintURL ?? '';
 
   const token = post.tokens?.[0];
 
@@ -107,6 +111,7 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
+          <MintLinkButton tokenRef={token} overwriteURL={userAddedMintURL} />
         </VStack>
       </StyledDesktopPostData>
     </StyledPostItem>

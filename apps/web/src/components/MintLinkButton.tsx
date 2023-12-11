@@ -1,0 +1,122 @@
+import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+
+import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
+import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
+import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
+import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
+import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
+import { contexts } from '~/shared/analytics/constants';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
+
+import { Button } from './core/Button/Button';
+import { HStack } from './core/Spacer/Stack';
+import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
+
+const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
+
+type Props = {
+  tokenRef: MintLinkButtonFragment$key;
+  overwriteURL?: string;
+  referrerAddress?: string;
+};
+
+export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Props) {
+  const token = useFragment(
+    graphql`
+      fragment MintLinkButtonFragment on Token {
+        definition {
+          community {
+            contract {
+              mintURL
+              contractAddress {
+                chain
+                address
+              }
+            }
+          }
+        }
+      }
+    `,
+    tokenRef
+  );
+
+  const tokenContractAddress =
+    token?.definition?.community?.contract?.contractAddress?.address ?? '';
+  const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
+  const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
+    overwriteURL ?? token?.definition?.community?.contract?.mintURL ?? '',
+    referrerAddress ?? ''
+  );
+
+  const mintProvider: {
+    buttonText: string;
+    icon: React.ReactNode;
+  } | null = useMemo(() => {
+    if (mintProviderType === 'Zora') {
+      return {
+        buttonText: 'mint on zora',
+        icon: <ZoraLogoIcon />,
+      };
+    } else if (mintProviderType === 'MintFun') {
+      return {
+        buttonText: 'mint on mint.fun',
+        icon: <MintFunLogoIcon />,
+      };
+    } else if (mintProviderType === 'FxHash') {
+      return {
+        buttonText: 'mint on fxhash',
+        icon: <FxHashLogoIcon />,
+      };
+    } else if (mintProviderType === 'Prohibition') {
+      return {
+        buttonText: 'mint on prohibition',
+        icon: <ProhibitionLogoIcon />,
+      };
+    } else {
+      return null;
+    }
+  }, [mintProviderType]);
+
+  const handleMintButtonClick = useCallback(() => {}, []);
+
+  if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
+    return null;
+  }
+
+  if (CHAIN_ENABLED.indexOf(tokenChain) < 0) {
+    return null;
+  }
+
+  if (!mintProvider) {
+    return null;
+  }
+
+  return (
+    <Button
+      eventElementId="Skip Gallery Title and Description Button"
+      eventName="Skip Gallery Title and Dsescription"
+      eventContext={contexts.Editor}
+      variant="secondary"
+      onClick={handleMintButtonClick}
+    >
+      <HStack gap={4} align="center">
+        <HStack gap={8} align="center">
+          {mintProvider?.icon}
+          {mintProvider?.buttonText}
+        </HStack>
+
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 11 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M3 1.33301H9.66667V7.99967" stroke="#141414" stroke-miterlimit="10" />
+          <path d="M9.66667 1.33301L1 9.99967" stroke="#141414" stroke-miterlimit="10" />
+        </svg>
+      </HStack>
+    </Button>
+  );
+}
