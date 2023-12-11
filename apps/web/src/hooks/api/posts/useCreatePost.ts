@@ -16,6 +16,7 @@ type InputProps = {
   tokens: TokenToPost[];
   caption?: string;
   mentions?: MentionInput[];
+  mintUrl?: string;
 };
 
 export default function useCreatePost() {
@@ -123,6 +124,7 @@ export default function useCreatePost() {
               tokenIds: [token.dbid],
               caption: input.caption,
               mentions: input.mentions ?? [],
+              mintURL: input.mintUrl,
             },
           },
         });

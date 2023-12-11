@@ -14,12 +14,14 @@ import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/Analyti
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
+import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
@@ -38,6 +40,17 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           ... on Token {
             __typename
             ...PostComposerTokenFragment
+          }
+        }
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+            }
           }
         }
       }
@@ -62,6 +75,9 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
                 username
               }
             }
+            contract {
+              mintURL
+            }
           }
         }
         ...PostComposerNftFragment
@@ -85,6 +101,15 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
 
+  const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
+  const mintURLWithRef = getMintUrlWithReferrer(
+    token.definition.community?.contract?.mintURL ?? '',
+    ownerWalletAddress
+  ).url;
+
+  const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
+
   const createPost = useCreatePost();
 
   const { showModal, hideModal } = useModalActions();
@@ -105,6 +130,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         tokens: [{ dbid: token.dbid, communityId: token.definition?.community?.id || '' }],
         caption: message,
         mentions,
+        mintUrl: mintURL,
       });
       hideModal();
       showModal({
@@ -142,6 +168,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     showModal,
     resetMentions,
     reportError,
+    mintURL,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -164,16 +191,27 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         </StyledHeader>
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
-          <PostComposerTextArea
-            tokenRef={token}
-            isSelectingMentions={isSelectingMentions}
-            aliasKeyword={aliasKeyword}
-            selectMention={selectMention}
-            setMessage={setMessage}
-            message={message}
-            handleSelectionChange={handleSelectionChange}
-            closeMention={closeMention}
-          />
+          <VStack grow gap={8}>
+            <PostComposerTextArea
+              tokenRef={token}
+              isSelectingMentions={isSelectingMentions}
+              aliasKeyword={aliasKeyword}
+              selectMention={selectMention}
+              setMessage={setMessage}
+              message={message}
+              handleSelectionChange={handleSelectionChange}
+              closeMention={closeMention}
+            />
+            {mintURLWithRef && (
+              <PostComposerMintLinkInput
+                value={mintURL}
+                defaultValue={mintURLWithRef}
+                setValue={setMintURL}
+                invalid={isInvalidMintLink}
+                onSetInvalid={setIsInvalidMintLink}
+              />
+            )}
+          </VStack>
         </ContentContainer>
       </VStack>
       <StyledHStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">

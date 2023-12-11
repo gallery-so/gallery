@@ -136,7 +136,7 @@ export function PostComposerTextArea({
   );
 
   return (
-    <VStack grow>
+    <VStack>
       <AutoResizingTextAreaWithCharCount
         defaultValue={caption}
         placeholder={`Say something about ${inputPlaceholderTokenName}`}

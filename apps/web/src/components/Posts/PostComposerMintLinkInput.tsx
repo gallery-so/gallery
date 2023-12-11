@@ -1,0 +1,160 @@
+import { useCallback, useState } from 'react';
+import styled from 'styled-components';
+
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import AlertIcon from '~/icons/AlertIcon';
+import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import colors from '~/shared/theme/colors';
+import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
+
+import IconContainer from '../core/IconContainer';
+import { SlimInput } from '../core/Input/Input';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { BaseM, BaseXL } from '../core/Text/Text';
+import Toggle from '../core/Toggle/Toggle';
+
+type Props = {
+  value: string;
+  setValue: (value: string) => void;
+  defaultValue: string;
+  invalid: boolean;
+  onSetInvalid: (invalid: boolean) => void;
+};
+
+export function PostComposerMintLinkInput({
+  defaultValue,
+  value,
+  setValue,
+  invalid,
+  onSetInvalid,
+}: Props) {
+  const [includeMintLink, setIncludeMintLink] = useState(true);
+  const { showModal } = useModalActions();
+
+  const handleShowSupportedMintLinkModal = useCallback(() => {
+    showModal({
+      content: <SupportedMintLinkModal />,
+    });
+  }, [showModal]);
+
+  const handleInputChange = useCallback(
+    (text: string) => {
+      setValue(text);
+
+      if (checkValidMintUrl(text)) {
+        onSetInvalid(false);
+      } else {
+        onSetInvalid(true);
+      }
+    },
+    [setValue, onSetInvalid]
+  );
+
+  const handleToggle = useCallback(() => {
+    setIncludeMintLink((prev) => {
+      if (!prev) {
+        handleInputChange(defaultValue);
+      }
+      return !prev;
+    });
+  }, [defaultValue, handleInputChange]);
+
+  return (
+    <div>
+      <VStack gap={4}>
+        <HStack align="center" justify="space-between">
+          <HStack gap={4} align="center">
+            <StyledTitle>Mint link</StyledTitle>
+            <IconContainer
+              size="xs"
+              variant="stacked"
+              onClick={handleShowSupportedMintLinkModal}
+              icon={<InfoCircleIcon height={12} width={12} color={colors.black.DEFAULT} />}
+            />
+          </HStack>
+
+          <Toggle checked={includeMintLink} onChange={handleToggle} />
+        </HStack>
+
+        {includeMintLink && (
+          <VStack gap={4}>
+            <StyledSlimInput
+              placeholder="https://..."
+              value={value}
+              onChange={(e) => handleInputChange(e.target.value)}
+              type="url"
+              invalid={invalid}
+            />
+            {invalid && (
+              <HStack gap={4} align="center">
+                <AlertIcon height={16} width={16} />
+                <StyledInvalidText>
+                  This link isn’t valid. Try a{' '}
+                  <StyledSupportedPlatforms onClick={handleShowSupportedMintLinkModal} as="span">
+                    supported platform
+                  </StyledSupportedPlatforms>
+                  .
+                </StyledInvalidText>
+              </HStack>
+            )}
+          </VStack>
+        )}
+      </VStack>
+    </div>
+  );
+}
+
+const StyledTitle = styled(BaseM)`
+  font-weight: 700;
+`;
+
+const StyledSlimInput = styled(SlimInput)<{ invalid?: boolean }>`
+  border: 1px solid transparent;
+  ${({ invalid }) =>
+    invalid &&
+    `
+        border-color: ${colors.red};
+        color: ${colors.red};
+  `}
+`;
+
+const StyledInvalidText = styled(BaseM)`
+  color: ${colors.red};
+`;
+
+const StyledSupportedPlatforms = styled(BaseM)`
+  font-weight: 700;
+  cursor: pointer;
+  color: ${colors.red};
+`;
+
+function SupportedMintLinkModal() {
+  return (
+    <StyledModalWrapper>
+      <VStack gap={16}>
+        <StyledModalTitle>Mint Links</StyledModalTitle>
+
+        <VStack gap={8}>
+          <BaseM>
+            Gallery embeds your wallet in mint links for eligible collections, ensuring you get 100%
+            of referral rewards on supported platforms.
+          </BaseM>
+
+          <BaseM>
+            Only <strong>Mint.fun</strong>, <strong>Zora</strong>, <strong>Prohibition</strong>, and
+            <strong> FxHash</strong> links are currently supported.
+          </BaseM>
+        </VStack>
+      </VStack>
+    </StyledModalWrapper>
+  );
+}
+
+const StyledModalWrapper = styled.div`
+  width: 375px;
+  height: 100%;
+`;
+
+const StyledModalTitle = styled(BaseXL)`
+  font-weight: 700;
+`;
