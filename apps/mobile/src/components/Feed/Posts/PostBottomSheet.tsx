@@ -2,7 +2,6 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { BottomSheetRow } from '~/components/BottomSheetRow';
@@ -30,10 +29,11 @@ type Props = {
   postRef: PostBottomSheetFragment$key;
   queryRef: PostBottomSheetQueryFragment$key;
   userRef: PostBottomSheetUserFragment$key;
+  onShare: () => void;
 };
 
 function PostBottomSheet(
-  { isOwnPost, postRef, queryRef, userRef }: Props,
+  { isOwnPost, postRef, queryRef, userRef, onShare }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const post = useFragment(
@@ -146,9 +146,9 @@ function PostBottomSheet(
   }, [imageUrl, navigation, token.dbid]);
 
   const handleShare = useCallback(() => {
-    const url = `https://gallery.so/post/${post.dbid}`;
-    Share.share({ url });
-  }, [post.dbid]);
+    bottomSheetRef.current?.dismiss();
+    onShare();
+  }, [onShare]);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 

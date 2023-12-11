@@ -4,10 +4,13 @@ import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export default function FarcasterIcon(props: SvgProps) {
-  const { colorScheme } = useColorScheme();
+type Props = {
+  fill?: string;
+} & SvgProps;
 
-  const strokeColor = colorScheme === 'dark' ? colors.white : colors.black['800'];
+export default function FarcasterIcon({ fill, ...props }: Props) {
+  const { colorScheme } = useColorScheme();
+  const strokeColor = fill ? fill : colorScheme === 'dark' ? colors.white : colors.black['800'];
 
   return (
     <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...props}>

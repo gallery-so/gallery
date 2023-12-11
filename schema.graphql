@@ -685,6 +685,7 @@ type FeedEvent implements Node {
   eventData: FeedEventData
   admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection
   comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection
+  totalComments: Int
   caption: String
   interactions(before: String, after: String, first: Int, last: Int): InteractionsConnection
   viewerAdmire: Admire
@@ -1232,9 +1233,11 @@ type Post implements Node {
   mentions: [Mention]
   admires(before: String, after: String, first: Int, last: Int): PostAdmiresConnection
   comments(before: String, after: String, first: Int, last: Int): PostCommentsConnection
+  totalComments: Int
   interactions(before: String, after: String, first: Int, last: Int): InteractionsConnection
   viewerAdmire: Admire
   isFirstPost: Boolean!
+  userAddedMintURL: String
 }
 
 type PostAdmireEdge {
@@ -1286,6 +1289,7 @@ input PostTokensInput {
   tokenIds: [DBID!]
   caption: String
   mentions: [MentionInput!]
+  mintURL: String
 }
 
 type PostTokensPayload {
@@ -1420,6 +1424,7 @@ union ReferralPostPreflightPayloadOrError = ReferralPostPreflightPayload | ErrIn
 input ReferralPostTokenInput {
   token: ChainAddressTokenInput!
   caption: String
+  mintURL: String
 }
 
 type ReferralPostTokenPayload {

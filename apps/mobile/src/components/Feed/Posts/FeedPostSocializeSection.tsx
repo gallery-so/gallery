@@ -26,6 +26,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     graphql`
       fragment FeedPostSocializeSectionFragment on Post {
         dbid
+        totalComments
 
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
@@ -88,7 +89,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     return comments;
   }, [post.comments?.edges]);
 
-  const totalComments = post.comments?.pageInfo?.total ?? 0;
+  const totalComments = post.totalComments ?? 0;
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -119,7 +120,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
 
   return (
     <>
-      <View className="px-3 pb-8 pt-2">
+      <View className="px-3 pt-2">
         <View className="flex flex-row justify-between">
           <View className="flex-1 pr-4 pt-1">
             <Admires

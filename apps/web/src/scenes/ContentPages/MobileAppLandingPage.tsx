@@ -28,13 +28,12 @@ export default function MobileAppLandingPage() {
                   We’re building a fresh approach to creativity and self expression, and that starts
                   with a mobile app.
                 </BaseXL>
-                <BaseXL>TestFlight access on iOS is now open to all Gallery users.</BaseXL>
-                {/* <BaseXL>Join the waitlist to be the first to try it out.</BaseXL> */}
+                <BaseXL>Available now for iOS via the App Store.</BaseXL>
               </BodyText>
             </VStack>
             <VStack gap={8}>
               <StyledLink
-                href="https://testflight.apple.com/join/rc0NcVih"
+                href="https://apps.apple.com/app/gallery/id6447068892"
                 target="_blank"
                 rel="noreferrer"
               >

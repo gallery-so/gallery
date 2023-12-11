@@ -10,6 +10,7 @@ import { SomeoneRepliedToYourCommentFragment$key } from '~/generated/SomeoneRepl
 import { SomeoneRepliedToYourCommentQueryFragment$key } from '~/generated/SomeoneRepliedToYourCommentQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   queryRef: SomeoneRepliedToYourCommentQueryFragment$key;
@@ -33,6 +34,7 @@ export function SomeoneRepliedToYourComment({
     graphql`
       fragment SomeoneRepliedToYourCommentFragment on SomeoneRepliedToYourCommentNotification {
         __typename
+        updatedTime
 
         comment {
           dbid
@@ -96,6 +98,12 @@ export function SomeoneRepliedToYourComment({
             className="text-sm"
           >
             comment
+          </Typography>{' '}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
           </Typography>
         </Text>
 

@@ -12,13 +12,14 @@ type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
 
-type ButtonProps = {
+export type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
   className?: string;
   loading?: boolean;
   disabled?: boolean;
   text?: string;
-  icon?: ReactNode;
+  headerElement?: ReactNode;
+  footerElement?: ReactNode;
   variant?: Variant;
   textClassName?: string;
   containerClassName?: string;
@@ -167,7 +168,7 @@ const buttonVariants: ButtonVariants = {
 };
 
 export function Button({
-  icon,
+  headerElement,
   text,
   variant = 'primary',
   loading,
@@ -177,6 +178,7 @@ export function Button({
   containerClassName,
   size = 'md',
   fontWeight = 'Medium',
+  footerElement,
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
@@ -218,18 +220,22 @@ export function Button({
             'opacity-100': !loading,
           })}
         >
-          {icon}
+          {headerElement}
 
-          <Typography
-            font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx(
-              'text-xs uppercase text-center',
-              variantClassNames.textClassName,
-              textClassName
-            )}
-          >
-            {text}
-          </Typography>
+          <View className="flex-row items-center space-x-1">
+            <Typography
+              font={{ family: 'ABCDiatype', weight: fontWeight }}
+              className={clsx(
+                'text-xs uppercase text-center',
+                variantClassNames.textClassName,
+                textClassName
+              )}
+            >
+              {text}
+            </Typography>
+
+            {footerElement}
+          </View>
         </View>
 
         {loading && (

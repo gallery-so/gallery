@@ -12,6 +12,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
+import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
 
 type CuratedScreenInnerProps = {
   queryRef: CuratedScreenFragment$key;
@@ -112,6 +113,14 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
       />
       {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
       {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
+
+      <Suspense fallback={null}>
+        <SharePostBottomSheet
+          shouldShowSheet
+          postId={routeParams?.postId ?? ''}
+          creatorName={routeParams?.postId ?? ''}
+        />
+      </Suspense>
     </>
   );
 }

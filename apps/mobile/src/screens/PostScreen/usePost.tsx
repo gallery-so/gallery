@@ -13,6 +13,7 @@ type PostTokensInput = {
   tokenId: string;
   caption?: string;
   mentions?: MentionInput[];
+  mintUrl?: string;
 };
 
 type Props = {
@@ -74,7 +75,7 @@ export function usePost({ tokenRef }: Props) {
   );
 
   const handlePost = useCallback(
-    ({ tokenId, caption, mentions = [] }: PostTokensInput) => {
+    ({ tokenId, caption, mentions = [], mintUrl }: PostTokensInput) => {
       const updater: SelectorStoreUpdater<usePostMutation['response']> = (store, response) => {
         if (response.postTokens?.post?.__typename === 'Post') {
           // Get the new post
@@ -128,6 +129,7 @@ export function usePost({ tokenRef }: Props) {
             tokenIds: [tokenId],
             caption,
             mentions,
+            mintURL: mintUrl,
           },
         },
       }).catch((error) => {

@@ -99,6 +99,14 @@ export type FeedListItemType = { key: string } & (
       postId: string;
       itemType: itemType;
     }
+  | {
+      kind: 'post-item-mint-link';
+      event: null;
+      post: createVirtualizedFeedEventItemsPostFragment$data;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      postId: string;
+      itemType: itemType;
+    }
 );
 
 export type createVirtualizedItemsFromFeedEventsArgs = {
@@ -202,6 +210,8 @@ export function createVirtualizedFeedEventItems({
                 ...PostListItemFragment
                 # eslint-disable-next-line relay/must-colocate-fragment-spreads
                 ...FeedPostSocializeSectionFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...PostListMintButtonSectionFragment
               }
             `,
             itemRef
@@ -272,6 +282,16 @@ export function createVirtualizedFeedEventItems({
       onCommentPress: function () {
         listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
       },
+      itemType: 'Post',
+    });
+
+    items.push({
+      kind: 'post-item-mint-link',
+      post,
+      event: null,
+      queryRef: query,
+      key: `post-item-mint-link-${post.dbid}-${uniqueKey}`,
+      postId: post.dbid,
       itemType: 'Post',
     });
   };

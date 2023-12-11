@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
@@ -8,12 +9,12 @@ import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
+import { PostMintLinkInput } from '~/components/Post/PostMintLinkInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
-import { useToastActions } from '~/contexts/ToastContext';
 import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
 import { PostComposerScreenTokenFragment$key } from '~/generated/PostComposerScreenTokenFragment.graphql';
 import {
@@ -23,6 +24,7 @@ import {
 } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 import { noop } from '~/shared/utils/noop';
 
 import { PostComposerNftFallback } from './PostComposerNftFallback';
@@ -42,10 +44,32 @@ function PostComposerScreenInner() {
               contractAddress {
                 address
               }
+              mintURL
+            }
+            definition {
+              name
+              community {
+                creator {
+                  ... on GalleryUser {
+                    username
+                  }
+                }
+              }
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
             ...usePostTokenFragment
+          }
+        }
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+            }
           }
         }
       }
@@ -61,6 +85,13 @@ function PostComposerScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
+
+  const mintURLWithRef = getMintUrlWithReferrer(
+    token.contract?.mintURL ?? '',
+    ownerWalletAddress
+  ).url;
+
   const { post } = usePost({
     tokenRef: token,
   });
@@ -70,6 +101,9 @@ function PostComposerScreenInner() {
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
   const navigation = useNavigation();
+
+  const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
 
   const {
     aliasKeyword,
@@ -93,8 +127,6 @@ function PostComposerScreenInner() {
     bottomSheetRef.current?.present();
   }, [message, navigation]);
 
-  const { pushToast } = useToastActions();
-
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
@@ -104,18 +136,38 @@ function PostComposerScreenInner() {
 
     setIsPosting(true);
 
-    await post({
+    const response = await post({
       tokenId,
       caption: message,
       mentions,
+      mintUrl: mintURL,
     });
+
+    if (response?.postTokens?.post?.__typename !== 'Post') {
+      return null;
+    }
+
+    const createdPostId = response?.postTokens?.post?.dbid ?? '';
+    const creatorName = token?.definition?.community?.creator?.username ?? '';
 
     mainTabNavigation.reset({
       index: 0,
       routes: [
         {
           name: 'MainTabs',
-          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'For You' } } },
+          params: {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Home',
+              params: {
+                screen: 'For You',
+                params: {
+                  postId: createdPostId,
+                  creatorName: creatorName,
+                },
+              },
+            },
+          },
         },
       ],
     });
@@ -124,28 +176,34 @@ function PostComposerScreenInner() {
       mainTabNavigation.navigate('Community', {
         contractAddress: token.contract?.contractAddress?.address ?? '',
         chain: token.chain ?? '',
+        postId: createdPostId,
+        creatorName: creatorName,
       });
     } else {
-      feedTabNavigation.navigate('Latest');
+      feedTabNavigation.navigate('Latest', {
+        postId: createdPostId,
+        creatorName: creatorName,
+      });
     }
 
     setIsPosting(false);
     resetMentions();
-    pushToast({
-      children: <ToastMessage tokenRef={token} />,
-    });
   }, [
     message,
     feedTabNavigation,
     isPosting,
     mainTabNavigation,
     mentions,
+    mintURL,
     post,
-    pushToast,
     resetMentions,
     route.params.redirectTo,
     token,
   ]);
+
+  const isPostButtonDisabled = useMemo(() => {
+    return isPosting || isInvalidMintLink;
+  }, [isInvalidMintLink, isPosting]);
 
   return (
     <View className="flex flex-col flex-grow space-y-8">
@@ -163,10 +221,13 @@ function PostComposerScreenInner() {
           eventElementId="Post Button"
           eventName="Post button clicked"
           eventContext={contexts.Posts}
-          disabled={isPosting}
+          disabled={isPostButtonDisabled}
         >
           <Typography
-            className="text-sm text-activeBlue"
+            className={clsx('text-sm', {
+              'text-activeBlue': !isPostButtonDisabled,
+              'text-metal': isPostButtonDisabled,
+            })}
             font={{
               family: 'ABCDiatype',
               weight: 'Bold',
@@ -185,6 +246,15 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
+        {mintURLWithRef && (
+          <PostMintLinkInput
+            value={mintURL}
+            defaultValue={mintURLWithRef}
+            setValue={setMintURL}
+            invalid={isInvalidMintLink}
+            onSetInvalid={setIsInvalidMintLink}
+          />
+        )}
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">

@@ -15,6 +15,8 @@ import { CommunityScreenRefetchableFragment$key } from '~/generated/CommunityScr
 import { CommunityScreenRefetchableFragmentQuery } from '~/generated/CommunityScreenRefetchableFragmentQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
+import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
+
 type CommunityScreenInnerProps = {
   chain: Chain;
   contractAddress: string;
@@ -100,13 +102,18 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
 
 export function CommunityScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Community'>>();
-  const { chain, contractAddress } = route.params;
+  const { chain, contractAddress, postId, creatorName } = route.params;
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
       <Suspense fallback={<CommunityViewFallback />}>
         <CommunityScreenInner contractAddress={contractAddress} chain={chain as Chain} />
       </Suspense>
+      {postId && (
+        <Suspense fallback={null}>
+          <SharePostBottomSheet postId={postId} creatorName={creatorName} />
+        </Suspense>
+      )}
     </View>
   );
 }
