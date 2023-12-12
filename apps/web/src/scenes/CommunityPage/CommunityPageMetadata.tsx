@@ -165,9 +165,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
             <StyledMintButton
               size="sm"
               tokenRef={token}
-              eventElementId={null}
-              eventName={null}
-              eventContext={null}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link Button"
+              eventContext={contexts.Community}
             />
           )
         ))}

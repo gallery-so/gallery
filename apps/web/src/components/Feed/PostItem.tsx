@@ -10,6 +10,7 @@ import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.gra
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
@@ -114,9 +115,9 @@ export function PostItem({
           <MintLinkButton
             tokenRef={token}
             overwriteURL={userAddedMintURL}
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
+            eventElementId="Click Mint Link Button"
+            eventName="Click Mint Link Button"
+            eventContext={contexts.Feed}
           />
         </VStack>
       </StyledDesktopPostData>

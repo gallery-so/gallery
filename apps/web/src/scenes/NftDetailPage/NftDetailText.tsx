@@ -357,9 +357,9 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           ) : (
             <MintLinkButton
               tokenRef={token}
-              eventElementId={null}
-              eventName={null}
-              eventContext={null}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link"
+              eventContext={contexts['NFT Detail']}
             />
           )}
         </StyledButtonContainer>
