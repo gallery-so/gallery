@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
 import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
@@ -15,6 +16,7 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -25,8 +27,6 @@ import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
-import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
-import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 type Props = {
   tokenId: string;

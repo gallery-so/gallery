@@ -12,8 +12,8 @@ import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.g
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import {
-  MINT_LINK_CHAIN_ENABLED,
   getMintUrlWithReferrer,
+  MINT_LINK_CHAIN_ENABLED,
 } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './Button';
