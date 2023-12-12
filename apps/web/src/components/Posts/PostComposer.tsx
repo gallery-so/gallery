@@ -180,8 +180,6 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     onBackClick?.();
   }, [onBackClick]);
 
-  console.log(mintURL);
-
   return (
     <StyledPostComposer grow justify="space-between">
       <VStack gap={24}>
@@ -235,7 +233,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           eventContext={null}
           variant="primary"
           onClick={handlePostClick}
-          disabled={isSubmitting || descriptionOverLengthLimit}
+          disabled={isSubmitting || descriptionOverLengthLimit || isInvalidMintLink}
         >
           POST
         </Button>
