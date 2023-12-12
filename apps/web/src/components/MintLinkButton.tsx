@@ -79,17 +79,17 @@ export function MintLinkButton({
     } else if (mintProviderType === 'FxHash') {
       return {
         buttonText: 'mint on fxhash',
-        icon: <FxHashLogoIcon />,
+        icon: <FxHashLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else if (mintProviderType === 'Prohibition') {
       return {
         buttonText: 'mint on prohibition',
-        icon: <ProhibitionLogoIcon />,
+        icon: <ProhibitionLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else {
       return null;
     }
-  }, [mintProviderType]);
+  }, [mintProviderType, variant]);
 
   const handleMintButtonClick = useCallback(() => {
     showModal({
