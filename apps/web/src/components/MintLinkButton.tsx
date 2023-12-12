@@ -1,17 +1,20 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
 import { contexts } from '~/shared/analytics/constants';
+import colors from '~/shared/theme/colors';
+import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
 
-import { Button } from './core/Button/Button';
+import { Button, ButtonProps } from './core/Button/Button';
+import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
 import { HStack } from './core/Spacer/Stack';
-import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 
 const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
@@ -19,9 +22,16 @@ type Props = {
   tokenRef: MintLinkButtonFragment$key;
   overwriteURL?: string;
   referrerAddress?: string;
-};
+  size?: 'sm' | 'md';
+} & ButtonProps;
 
-export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Props) {
+export function MintLinkButton({
+  overwriteURL,
+  referrerAddress,
+  tokenRef,
+  size = 'md',
+  ...props
+}: Props) {
   const token = useFragment(
     graphql`
       fragment MintLinkButtonFragment on Token {
@@ -40,6 +50,8 @@ export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Prop
     `,
     tokenRef
   );
+
+  const { showModal } = useModalActions();
 
   const tokenContractAddress =
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
@@ -78,7 +90,20 @@ export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Prop
     }
   }, [mintProviderType]);
 
-  const handleMintButtonClick = useCallback(() => {}, []);
+  const handleMintButtonClick = useCallback(() => {
+    showModal({
+      content: <VerifyNavigationPopover href={mintURL} eventContext={contexts.Feed} />,
+      isFullPage: false,
+      headerText: 'Leaving gallery.so?',
+    });
+  }, [mintURL, showModal]);
+
+  const arrowColor = useMemo(() => {
+    if (props.variant === 'primary') {
+      return colors.black[800];
+    }
+    return colors.white;
+  }, [props.variant]);
 
   if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
     return null;
@@ -93,17 +118,12 @@ export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Prop
   }
 
   return (
-    <Button
-      eventElementId="Skip Gallery Title and Description Button"
-      eventName="Skip Gallery Title and Dsescription"
-      eventContext={contexts.Editor}
-      variant="secondary"
-      onClick={handleMintButtonClick}
-    >
+    <Button onClick={handleMintButtonClick} {...props}>
       <HStack gap={4} align="center">
         <HStack gap={8} align="center">
           {mintProvider?.icon}
-          {mintProvider?.buttonText}
+
+          {size === 'sm' ? 'mint' : mintProvider?.buttonText}
         </HStack>
 
         <svg
@@ -113,8 +133,8 @@ export function MintLinkButton({ overwriteURL, referrerAddress, tokenRef }: Prop
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M3 1.33301H9.66667V7.99967" stroke="#141414" stroke-miterlimit="10" />
-          <path d="M9.66667 1.33301L1 9.99967" stroke="#141414" stroke-miterlimit="10" />
+          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} stroke-miterlimit="10" />
+          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} stroke-miterlimit="10" />
         </svg>
       </HStack>
     </Button>

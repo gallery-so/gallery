@@ -6,6 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { MintLinkButton } from '~/components/MintLinkButton';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import { CreatorProfilePictureAndUsernameOrAddress } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
 import { useIsMemberOfCommunity } from '~/contexts/communityPage/IsMemberOfCommunityContext';
@@ -41,6 +42,17 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
         creator {
           ...ProfilePictureAndUserOrAddressCreatorFragment
         }
+        tokensInCommunity(
+          first: $tokenCommunityFirst
+          after: $tokenCommunityAfter
+          onlyGalleryUsers: $onlyGalleryUsers
+        ) {
+          edges {
+            node {
+              ...MintLinkButtonFragment
+            }
+          }
+        }
         ...CommunityPageOwnershipRequiredModalFragment
       }
     `,
@@ -66,9 +78,27 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
 
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
+  const token = community?.tokensInCommunity?.edges?.[0]?.node;
+
+  const handleDisabledPostButtonClick = useCallback(() => {
+    showModal({
+      content: (
+        <CommunityPageOwnershipRequiredModal
+          communityRef={community}
+          refetchIsMemberOfCommunity={refetchIsMemberOfCommunity}
+        />
+      ),
+      headerText: 'Ownership required',
+    });
+  }, [community, refetchIsMemberOfCommunity, showModal]);
 
   const handleCreatePostClick = useCallback(() => {
     if (query?.viewer?.__typename !== 'Viewer') {
+      return;
+    }
+
+    if (!isMemberOfCommunity) {
+      handleDisabledPostButtonClick();
       return;
     }
 
@@ -87,6 +117,8 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       isFullPage: isMobile,
     });
   }, [
+    handleDisabledPostButtonClick,
+    isMemberOfCommunity,
     showModal,
     query,
     community.name,
@@ -94,18 +126,6 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     community.contract?.dbid,
     isMobile,
   ]);
-
-  const handleDisabledPostButtonClick = useCallback(() => {
-    showModal({
-      content: (
-        <CommunityPageOwnershipRequiredModal
-          communityRef={community}
-          refetchIsMemberOfCommunity={refetchIsMemberOfCommunity}
-        />
-      ),
-      headerText: 'Ownership required',
-    });
-  }, [community, refetchIsMemberOfCommunity, showModal]);
 
   const showPostButton = query.viewer?.__typename === 'Viewer';
 
@@ -141,17 +161,15 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
             </HStack>
           </StyledPostButton>
         ) : (
-          <StyledDisabledPostButton
-            eventElementId="Community Page Disabled Post Button"
-            eventName="Community Page Disabled Post Click"
-            eventContext={contexts.Community}
-            onClick={handleDisabledPostButtonClick}
-          >
-            <HStack align="center" gap={4}>
-              <PlusSquareIcon stroke={colors.metal} height={16} width={16} />
-              Post
-            </HStack>
-          </StyledDisabledPostButton>
+          token && (
+            <StyledMintButton
+              size="sm"
+              tokenRef={token}
+              eventElementId={null}
+              eventName={null}
+              eventContext={null}
+            />
+          )
         ))}
     </StyledMetadata>
   );
@@ -185,9 +203,7 @@ const StyledPostButton = styled(Button)`
   height: 32px;
 `;
 
-const StyledDisabledPostButton = styled(Button)`
+const StyledMintButton = styled(MintLinkButton)`
   width: 100px;
   height: 32px;
-  background-color: ${colors.porcelain};
-  color: ${colors.metal};
 `;

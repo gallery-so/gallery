@@ -146,7 +146,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   }}
 `;
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   StyledButtonProps & {
     pending?: boolean;
   } & GalleryElementTrackingProps;

@@ -111,7 +111,13 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
-          <MintLinkButton tokenRef={token} overwriteURL={userAddedMintURL} />
+          <MintLinkButton
+            tokenRef={token}
+            overwriteURL={userAddedMintURL}
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          />
         </VStack>
       </StyledDesktopPostData>
     </StyledPostItem>
