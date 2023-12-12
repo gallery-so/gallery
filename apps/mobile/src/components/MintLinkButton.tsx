@@ -11,7 +11,10 @@ import { ZoraIcon } from 'src/icons/ZoraIcon';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
-import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
+import {
+  MINT_LINK_CHAIN_ENABLED,
+  getMintUrlWithReferrer,
+} from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './Button';
 
@@ -21,8 +24,6 @@ type Props = {
   referrerAddress?: string;
   overwriteURL?: string;
 } & ButtonProps;
-
-const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
 export function MintLinkButton({
   tokenRef,
@@ -113,7 +114,7 @@ export function MintLinkButton({
     return null;
   }
 
-  if (CHAIN_ENABLED.indexOf(tokenChain) < 0) {
+  if (MINT_LINK_CHAIN_ENABLED.indexOf(tokenChain) < 0) {
     return null;
   }
 

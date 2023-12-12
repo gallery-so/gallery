@@ -126,6 +126,7 @@ export function PostItem({
             eventElementId="Click Mint Link Button"
             eventName="Click Mint Link Button"
             eventContext={contexts.Feed}
+            variant="secondary"
           />
         </VStack>
       </StyledDesktopPostData>

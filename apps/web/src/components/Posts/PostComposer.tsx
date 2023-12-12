@@ -25,6 +25,8 @@ import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 type Props = {
   tokenId: string;
@@ -57,6 +59,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     `,
     { tokenId }
   );
+
+  const { mintPageUrl } = usePostComposerContext();
 
   if (query.tokenById?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
@@ -102,13 +106,14 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
-  const mintURLWithRef = getMintUrlWithReferrer(
-    token.definition.community?.contract?.mintURL ?? '',
-    ownerWalletAddress
-  ).url;
+  const mintUrlFromQueryOrToken =
+    mintPageUrl ?? token.definition.community?.contract?.mintURL ?? '';
+  const mintURLWithRef = getMintUrlWithReferrer(mintUrlFromQueryOrToken, ownerWalletAddress).url;
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
+
+  useClearURLQueryParams('mint_page_url');
 
   const createPost = useCreatePost();
 

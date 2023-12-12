@@ -10,13 +10,14 @@ import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
-import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
+import {
+  MINT_LINK_CHAIN_ENABLED,
+  getMintUrlWithReferrer,
+} from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './core/Button/Button';
 import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
 import { HStack } from './core/Spacer/Stack';
-
-const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
@@ -110,7 +111,7 @@ export function MintLinkButton({
     return null;
   }
 
-  if (CHAIN_ENABLED.indexOf(tokenChain) < 0) {
+  if (MINT_LINK_CHAIN_ENABLED.indexOf(tokenChain) < 0) {
     return null;
   }
 
