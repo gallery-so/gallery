@@ -12,17 +12,16 @@ export default function NftDetailPageFallback() {
         <StyledSkeleton />
         <StyledOwnerAndCreator>
           <VStack gap={2}>
-            <StyledDetailsHeaderSkeleton />
+            <StyledHeaderSkeleton />
           </VStack>
-
           <VStack gap={2}>
-            <StyledDetailsHeaderSkeleton />
+            <StyledHeaderSkeleton />
           </VStack>
         </StyledOwnerAndCreator>
         <StyledDescriptionSkeleton />
         <StyledThinSkeleton />
-        <StyledSmallSkeleton />
-        <StyledSmallSkeleton />
+        <StyledButtonSkeleton />
+        <StyledButtonSkeleton />
       </VStack>
     </StyledFullPageLoader>
   );
@@ -69,7 +68,7 @@ const StyledThinSkeleton = styled(Skeleton)`
   }
 `;
 
-const StyledSmallSkeleton = styled(Skeleton)`
+const StyledButtonSkeleton = styled(Skeleton)`
   width: 100%;
   height: 45px;
 
@@ -87,7 +86,7 @@ const StyledDescriptionSkeleton = styled(Skeleton)`
   }
 `;
 
-const StyledDetailsHeaderSkeleton = styled(Skeleton)`
+const StyledHeaderSkeleton = styled(Skeleton)`
   height: 50px;
   width: 65%;
 `;
