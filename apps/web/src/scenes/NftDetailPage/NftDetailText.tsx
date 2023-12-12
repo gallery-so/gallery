@@ -355,7 +355,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
               </HStack>
             </StyledInteractionButton>
           ) : (
-            <MintLinkButton
+            <StyledMintLinkButton
               tokenRef={token}
               eventElementId="Click Mint Link Button"
               eventName="Click Mint Link"
@@ -406,6 +406,10 @@ const StyledOwnerAndCreator = styled(HStack)`
 
 const StyledButtonContainer = styled(HStack)`
   gap: 12px;
+  flex-wrap: wrap;
+  @media only screen and ${breakpoints.tablet} {
+    flex-wrap: nowrap;
+  }
 `;
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
@@ -467,6 +471,10 @@ const StyledContractName = styled(TitleDiatypeM)`
   white-space: nowrap;
   width: 100%;
   text-overflow: ellipsis;
+`;
+
+const StyledMintLinkButton = styled(MintLinkButton)`
+  width: 100%;
 `;
 
 export default NftDetailText;

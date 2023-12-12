@@ -30,6 +30,7 @@ export function MintLinkButton({
   referrerAddress,
   tokenRef,
   size = 'md',
+  variant = 'primary',
   ...props
 }: Props) {
   const token = useFragment(
@@ -99,11 +100,11 @@ export function MintLinkButton({
   }, [mintURL, showModal]);
 
   const arrowColor = useMemo(() => {
-    if (props.variant === 'primary') {
-      return colors.black[800];
+    if (variant === 'primary') {
+      return colors.white;
     }
-    return colors.white;
-  }, [props.variant]);
+    return colors.black[800];
+  }, [variant]);
 
   if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
     return null;
@@ -118,7 +119,7 @@ export function MintLinkButton({
   }
 
   return (
-    <Button onClick={handleMintButtonClick} {...props}>
+    <Button onClick={handleMintButtonClick} variant={variant} {...props}>
       <HStack gap={4} align="center">
         <HStack gap={8} align="center">
           {mintProvider?.icon}

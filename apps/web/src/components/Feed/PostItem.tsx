@@ -94,6 +94,14 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
+          <MintLinkButton
+            tokenRef={token}
+            overwriteURL={userAddedMintURL}
+            eventElementId="Click Mint Link Button"
+            eventName="Click Mint Link Button"
+            eventContext={contexts.Feed}
+            variant="secondary"
+          />
         </VStack>
       </StyledPostItem>
     );
