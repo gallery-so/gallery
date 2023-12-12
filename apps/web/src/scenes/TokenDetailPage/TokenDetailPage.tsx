@@ -4,10 +4,10 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { TokenDetailPageQuery } from '~/generated/TokenDetailPageQuery.graphql';
 
+import NftDetailPageFallback from '../NftDetailPage/NftDetailPageFallback';
 import NotFound from '../NotFound/NotFound';
 import TokenDetailView from './TokenDetailView';
 
@@ -67,7 +67,7 @@ const StyledTokenDetailPage = styled.div`
 export default function TokenDetailPageWithBoundary({ tokenId }: TokenDetailPageProps) {
   return (
     <StyledTokenDetailPageWithBoundary>
-      <Suspense fallback={<FullPageLoader />}>
+      <Suspense fallback={<NftDetailPageFallback />}>
         <ErrorBoundary>
           <TokenDetailPage tokenId={tokenId} />
         </ErrorBoundary>

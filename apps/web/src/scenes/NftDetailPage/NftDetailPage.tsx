@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
-import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from '~/components/core/transitions';
@@ -23,6 +22,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
+import NftDetailPageFallback from './NftDetailPageFallback';
 import NftDetailView from './NftDetailView';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
 
@@ -347,7 +347,7 @@ const StyledNftDetailPage = styled.div`
 function NftDetailPageWithBoundary({ username, collectionId, tokenId }: NftDetailPageWrapperProps) {
   return (
     <StyledNftDetailPageWithBoundary>
-      <Suspense fallback={<FullPageLoader />}>
+      <Suspense fallback={<NftDetailPageFallback />}>
         <ErrorBoundary>
           <NftDetailPageWrapper username={username} collectionId={collectionId} tokenId={tokenId} />
         </ErrorBoundary>

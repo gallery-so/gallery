@@ -3,8 +3,8 @@ import { Suspense, useEffect } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import NftDetailPage from '~/scenes/NftDetailPage/NftDetailPage';
+import NftDetailPageFallback from '~/scenes/NftDetailPage/NftDetailPageFallback';
 import { LoadableTokenDetailView } from '~/scenes/TokenDetailPage/TokenDetailView';
 
 import { useModalActions, useModalState } from '../modal/ModalContext';
@@ -41,7 +41,7 @@ export default function FullPageNftDetailModalListener() {
     }
 
     const content = collectionId ? (
-      <Suspense fallback={<FullPageLoader />}>
+      <Suspense fallback={<NftDetailPageFallback />}>
         <NftDetailPage
           username={username as string}
           collectionId={collectionId as string}
@@ -50,7 +50,7 @@ export default function FullPageNftDetailModalListener() {
       </Suspense>
     ) : (
       <StyledTokenPreviewModal>
-        <Suspense fallback={<FullPageLoader />}>
+        <Suspense fallback={<NftDetailPageFallback />}>
           <LoadableTokenDetailView tokenId={tokenId as string} />
         </Suspense>
       </StyledTokenPreviewModal>
