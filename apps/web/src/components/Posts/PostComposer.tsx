@@ -107,7 +107,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
   const mintUrlFromQueryOrToken =
-    mintPageUrl ?? token.definition.community?.contract?.mintURL ?? '';
+    mintPageUrl || (token.definition.community?.contract?.mintURL ?? '');
   const mintURLWithRef = getMintUrlWithReferrer(mintUrlFromQueryOrToken, ownerWalletAddress).url;
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
@@ -179,6 +179,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   const handleBackClick = useCallback(() => {
     onBackClick?.();
   }, [onBackClick]);
+
+  console.log(mintURL);
 
   return (
     <StyledPostComposer grow justify="space-between">
