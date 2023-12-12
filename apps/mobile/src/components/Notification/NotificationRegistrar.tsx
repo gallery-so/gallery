@@ -31,6 +31,7 @@ export function NotificationRegistrar() {
           context: contexts['Push Notifications'],
           actionIdentifier: event?.actionIdentifier,
           userText: event?.userText,
+          notificationType: event?.notification?.request?.content?.data?.event,
         });
 
         navigation.navigate('MainTabs', {
