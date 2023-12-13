@@ -135,7 +135,7 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
-  const { captionRef, setCaption } = usePostComposerContext();
+  const { captionRef, clearUrlParamsAndSelections } = usePostComposerContext();
 
   const handleOpenPostComposer = useCallback(
     (eventFlow: GalleryElementTrackingProps['eventFlow']) => {
@@ -158,8 +158,8 @@ export function StandardSidebar({ queryRef }: Props) {
                   onClose();
                 }}
                 onDiscard={() => {
-                  setCaption('');
                   onClose();
+                  clearUrlParamsAndSelections();
                 }}
               />
             ),
@@ -168,7 +168,7 @@ export function StandardSidebar({ queryRef }: Props) {
         },
       });
     },
-    [captionRef, isMobile, setCaption, showModal]
+    [captionRef, clearUrlParamsAndSelections, isMobile, showModal]
   );
 
   const handleCreatePostClick = useCallback(() => {

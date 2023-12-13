@@ -60,7 +60,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     { tokenId }
   );
 
-  const { mintPageUrl } = usePostComposerContext();
+  const { mintPageUrl, clearUrlParamsAndSelections } = usePostComposerContext();
 
   if (query.tokenById?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
@@ -159,6 +159,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         isFullPage: false,
       });
       resetMentions();
+      clearUrlParamsAndSelections();
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -170,18 +171,19 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     track,
     eventFlow,
     message,
-    createPost,
     token.dbid,
     token.definition.community?.id,
     token.definition.community?.creator?.username,
     token.definition.name,
     mentions,
+    includeMintLink,
+    createPost,
     hideModal,
     showModal,
     resetMentions,
-    reportError,
+    clearUrlParamsAndSelections,
     mintURL,
-    includeMintLink,
+    reportError,
   ]);
 
   const handleBackClick = useCallback(() => {

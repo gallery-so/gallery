@@ -104,6 +104,12 @@ const PostComposerProvider = memo(({ children }: Props) => {
     'composer',
     'caption',
     'mint_page_url',
+    'contractAddress',
+    'tokenId',
+    'collection_title',
+    'token_title',
+    'image_url',
+    'platform',
   ]);
   const clearUrlParamsAndSelections = useCallback(() => {
     clearURLQueryParams();
