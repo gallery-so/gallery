@@ -18,13 +18,18 @@ export function useClearURLQueryParams(param: string | string[]) {
     if (hasRenderedOnce.current) return;
     const params = new URLSearchParams(urlQuery as Record<string, string>);
     const paramsToClear = typeof param === 'string' ? [param] : param;
+    let paramDeleted = false;
     for (const p of paramsToClear) {
       if (params.has(p)) {
         params.delete(p);
+        paramDeleted = true;
       }
     }
-    // @ts-expect-error we're simply replacing the current page with the same path
-    replace({ pathname, query: params.toString() }, undefined, { shallow: true });
+    if (paramDeleted) {
+      // @ts-expect-error we're simply replacing the current page with the same path
+      replace({ pathname, query: params.toString() }, undefined, { shallow: true });
+    }
+
     hasRenderedOnce.current = true;
   }, [param, pathname, replace, urlQuery]);
 }
