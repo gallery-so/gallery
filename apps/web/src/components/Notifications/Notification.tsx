@@ -21,7 +21,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
@@ -159,13 +158,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
           }
         }
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-
-  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
 
   const { push } = useRouter();
 
@@ -375,13 +371,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     if (!notification.post) {
       return null;
     }
-  }
-
-  if (
-    notification.__typename === 'YouReceivedTopActivityBadgeNotification' &&
-    !isActivityBadgeEnabled
-  ) {
-    return null;
   }
 
   return (
