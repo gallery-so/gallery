@@ -110,11 +110,12 @@ const PostComposerProvider = memo(({ children }: Props) => {
     'token_title',
     'image_url',
     'platform',
+    'chain',
   ]);
   const clearUrlParamsAndSelections = useCallback(() => {
     clearURLQueryParams();
 
-    // we'll clear the caption and mint page URL, but we'll keep other presets like filter type, sort type, network
+    // we'll clear the caption and mint page URL, but we'll keep other presets like filter type, sort type
     setCaption('');
     setMintPageUrl('');
   }, [clearURLQueryParams]);
