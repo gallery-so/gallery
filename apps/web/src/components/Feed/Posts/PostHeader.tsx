@@ -97,7 +97,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
                 variant="stacked"
                 icon={<LeafIcon />}
                 tooltipLabel="First-time poster"
-                tooltipDescription="This is their first post here - say hi!"
+                tooltipDescription="This is their first post here - say hi 👋"
                 disableHoverPadding
                 disabled
                 tooltipPlacement="right"
