@@ -221,8 +221,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           <MintLinkButton
             tokenRef={token}
             size="sm"
-            eventElementId="Press Mint Link Button"
-            eventName="Press Mint Link"
             eventContext={contexts.Community}
             referrerAddress={creatorWalletAddress}
           />

@@ -9,6 +9,7 @@ import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
@@ -20,18 +21,21 @@ type Props = {
   style?: ViewStyle;
   referrerAddress?: string;
   overwriteURL?: string;
-} & ButtonProps;
+  variant?: ButtonProps['variant'];
+  size?: ButtonProps['size'];
+  eventContext: GalleryElementTrackingProps['eventContext'];
+};
 
 const CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora'];
 
 export function MintLinkButton({
   tokenRef,
-  referrerAddress,
   style,
+  referrerAddress,
+  overwriteURL,
   variant = 'primary',
   size = 'md',
-  overwriteURL,
-  ...props
+  eventContext,
 }: Props) {
   const token = useFragment(
     graphql`
@@ -130,7 +134,9 @@ export function MintLinkButton({
       footerElement={<TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
-      {...props}
+      eventElementId="Mint Link Button"
+      eventName="Press Mint Link Button"
+      eventContext={eventContext}
     />
   );
 }
