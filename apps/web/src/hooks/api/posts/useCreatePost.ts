@@ -36,6 +36,7 @@ export default function useCreatePost() {
                   }
                 }
               }
+              userAddedMintURL
               ...PostHeaderFragment
               ...PostNftsFragment
             }
