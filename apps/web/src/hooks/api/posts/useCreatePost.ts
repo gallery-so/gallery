@@ -124,7 +124,7 @@ export default function useCreatePost() {
               tokenIds: [token.dbid],
               caption: input.caption,
               mentions: input.mentions ?? [],
-              mintURL: input.mintUrl,
+              mintURL: input.mintUrl ?? null,
             },
           },
         });

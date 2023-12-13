@@ -68,7 +68,7 @@ export function PostItem({
   const isDesktop = useIsDesktopWindowWidth();
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
-  const userAddedMintURL = post?.userAddedMintURL ?? '';
+  const userAddedMintURL = post?.userAddedMintURL ?? null;
 
   const token = post.tokens?.[0];
 
@@ -94,14 +94,16 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
-          <MintLinkButton
-            tokenRef={token}
-            overwriteURL={userAddedMintURL}
-            eventElementId="Click Mint Link Button"
-            eventName="Click Mint Link Button"
-            eventContext={contexts.Feed}
-            variant="secondary"
-          />
+          {userAddedMintURL && (
+            <MintLinkButton
+              tokenRef={token}
+              overwriteURL={userAddedMintURL}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link Button"
+              eventContext={contexts.Feed}
+              variant="secondary"
+            />
+          )}
         </VStack>
       </StyledPostItem>
     );
@@ -120,14 +122,16 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
-          <MintLinkButton
-            tokenRef={token}
-            overwriteURL={userAddedMintURL}
-            eventElementId="Click Mint Link Button"
-            eventName="Click Mint Link Button"
-            eventContext={contexts.Feed}
-            variant="secondary"
-          />
+          {userAddedMintURL && (
+            <MintLinkButton
+              tokenRef={token}
+              overwriteURL={userAddedMintURL}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link Button"
+              eventContext={contexts.Feed}
+              variant="secondary"
+            />
+          )}
         </VStack>
       </StyledDesktopPostData>
     </StyledPostItem>

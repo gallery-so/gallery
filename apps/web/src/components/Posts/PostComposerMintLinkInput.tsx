@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -21,6 +21,8 @@ type Props = {
   defaultValue: string;
   invalid: boolean;
   onSetInvalid: (invalid: boolean) => void;
+  includeMintLink: boolean;
+  setIncludeMintLink: (includeMintLink: boolean) => void;
 };
 
 export function PostComposerMintLinkInput({
@@ -29,8 +31,9 @@ export function PostComposerMintLinkInput({
   setValue,
   invalid,
   onSetInvalid,
+  includeMintLink,
+  setIncludeMintLink,
 }: Props) {
-  const [includeMintLink, setIncludeMintLink] = useState(true);
   const { showModal, hideModal } = useModalActions();
 
   const handleCloseModal = useCallback(() => {
@@ -57,13 +60,12 @@ export function PostComposerMintLinkInput({
   );
 
   const handleToggle = useCallback(() => {
-    setIncludeMintLink((prev) => {
-      if (!prev) {
-        handleInputChange(defaultValue);
-      }
-      return !prev;
-    });
-  }, [defaultValue, handleInputChange]);
+    const newValue = !includeMintLink;
+    if (!newValue) {
+      handleInputChange(defaultValue);
+    }
+    setIncludeMintLink(newValue);
+  }, [defaultValue, handleInputChange, includeMintLink, setIncludeMintLink]);
 
   return (
     <div>

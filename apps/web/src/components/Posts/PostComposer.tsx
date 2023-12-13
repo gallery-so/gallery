@@ -112,6 +112,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
+  const [includeMintLink, setIncludeMintLink] = useState(true);
 
   useClearURLQueryParams('mint_page_url');
 
@@ -131,12 +132,18 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       added_description: Boolean(message),
     });
     try {
-      const responsePost = await createPost({
+      const payload = {
         tokens: [{ dbid: token.dbid, communityId: token.definition?.community?.id || '' }],
         caption: message,
         mentions,
-        mintUrl: mintURL,
-      });
+        mintUrl: '',
+      };
+
+      if (includeMintLink) {
+        payload.mintUrl = mintURL;
+      }
+
+      const responsePost = await createPost(payload);
       hideModal();
       showModal({
         headerText: `Successfully posted ${token.definition.name || 'item'}`,
@@ -174,6 +181,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     resetMentions,
     reportError,
     mintURL,
+    includeMintLink,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -214,6 +222,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
                 setValue={setMintURL}
                 invalid={isInvalidMintLink}
                 onSetInvalid={setIsInvalidMintLink}
+                includeMintLink={includeMintLink}
+                setIncludeMintLink={setIncludeMintLink}
               />
             )}
           </VStack>

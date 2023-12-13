@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
+import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
@@ -18,7 +19,6 @@ import {
 import { Button, ButtonProps } from './core/Button/Button';
 import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
 import { HStack } from './core/Spacer/Stack';
-import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
