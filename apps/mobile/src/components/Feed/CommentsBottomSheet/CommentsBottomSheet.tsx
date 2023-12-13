@@ -319,7 +319,7 @@ function ConnectedEventCommentsList({
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
+    { feedEventId: feedId, last: 10, replyLast: 1 },
     { fetchPolicy: 'store-and-network' }
   );
 
@@ -405,7 +405,7 @@ function ConnectedPostCommentsList({
         ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
-    { feedEventId: feedId, last: 10, replyLast: REPLIES_PER_PAGE },
+    { feedEventId: feedId, last: 10, replyLast: 1 },
     { fetchPolicy: 'store-and-network' }
   );
 

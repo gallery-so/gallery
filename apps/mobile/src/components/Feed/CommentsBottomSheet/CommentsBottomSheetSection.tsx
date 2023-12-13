@@ -65,6 +65,12 @@ export function CommentsBottomSheetSection({
     return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment.replies?.edges]);
 
+  useEffect(() => {
+    if (replies.length > 0) {
+      setShowReplies(true);
+    }
+  }, [replies]);
+
   const totalReplies = comment.replies?.pageInfo.total ?? 0;
 
   const totalRepliesShown = useMemo(() => {
