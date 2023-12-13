@@ -117,7 +117,7 @@ export function MintLinkButton({
     return null;
   }
 
-  if (MINT_LINK_CHAIN_ENABLED.indexOf(tokenChain) < 0) {
+  if (MINT_LINK_CHAIN_ENABLED.has(tokenChain)) {
     return null;
   }
 

@@ -1,4 +1,10 @@
-export const MINT_LINK_CHAIN_ENABLED = ['Ethereum', 'Optimism', 'Base', 'Zora', 'Arbitrum'];
+export const MINT_LINK_CHAIN_ENABLED = new Set([
+  'Ethereum',
+  'Optimism',
+  'Base',
+  'Zora',
+  'Arbitrum',
+]);
 
 const providers = [
   { regex: '^https://(www\\.)?mint.fun/?', name: 'MintFun', param: 'ref' },
