@@ -80,6 +80,16 @@ type AdmireTokenPayload {
 
 union AdmireTokenPayloadOrError = AdmireTokenPayload | ErrTokenNotFound | ErrInvalidInput | ErrNotAuthorized
 
+type ArtBlocksCommunity {
+  contract: Contract
+  projectID: String
+}
+
+input ArtBlocksCommunityKeyInput {
+  contract: ChainAddressInput!
+  projectID: String!
+}
+
 type AudioMedia implements Media {
   previewURLs: PreviewURLSet
   mediaURL: String
@@ -334,39 +344,39 @@ type Community implements Node {
   dbid: DBID!
   id: ID!
   lastUpdated: Time
-  contract: Contract
-  contractAddress: ChainAddress
-  creatorAddress: ChainAddress
-  creator: GalleryUserOrAddress
-  chain: Chain
   name: String
   description: String
-  previewImage: String
   profileImageURL: String
-  profileBannerURL: String
   badgeURL: String
-  parentCommunity: CommunityLink
-  subCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
-  tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection
-  owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection
+  mintURL: String
+  subtype: CommunitySubtype
+  creators: [GalleryUserOrAddress]
+  holders(before: String, after: String, first: Int, last: Int): TokenHoldersConnection
+  tokens(before: String, after: String, first: Int, last: Int): TokensConnection
   posts(before: String, after: String, first: Int, last: Int): PostsConnection
-  tmpPostsWithProjectID(projectID: Int!, before: String, after: String, first: Int, last: Int): PostsConnection
+  contract: Contract @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
+  contractAddress: ChainAddress @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
+  chain: Chain @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
+  creatorAddress: ChainAddress @deprecated(reason: "Use Community.creators to get an address")
+  creator: GalleryUserOrAddress @deprecated(reason: "Use Community.creators")
+  tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @deprecated(reason: "Use Community.tokens")
+  owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
+
+union CommunityByKeyOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
 type CommunityEdge {
   node: Community
   cursor: String
 }
 
-type CommunityLink {
-  node: Community
-}
-
 type CommunitySearchResult {
   community: Community
 }
+
+union CommunitySubtype = ContractCommunity | ArtBlocksCommunity
 
 type ConnectSocialAccountPayload {
   viewer: Viewer
@@ -387,6 +397,14 @@ type Contract implements Node {
   badgeURL: String
   mintURL: String
   isSpam: Boolean
+}
+
+type ContractCommunity {
+  contract: Contract
+}
+
+input ContractCommunityKeyInput {
+  contract: ChainAddressInput!
 }
 
 input CreateCollectionInGalleryInput {
@@ -1396,6 +1414,8 @@ type Query {
   socialQueries: SocialQueriesOrError
   topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
   postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
+  contractCommunityByKey(key: ContractCommunityKeyInput!): CommunityByKeyOrError
+  artBlocksCommunityByKey(key: ArtBlocksCommunityKeyInput!): CommunityByKeyOrError
 }
 
 input RedeemMerchInput {
@@ -1884,12 +1904,14 @@ type TokenDefinition implements Node {
   lastUpdated: Time
   media: MediaSubtype
   tokenType: TokenType
+  contract: Contract
   chain: Chain
   name: String
   description: String
   tokenId: String
   tokenMetadata: String
   community: Community
+  communities: [Community]
   externalUrl: String
 }
 
