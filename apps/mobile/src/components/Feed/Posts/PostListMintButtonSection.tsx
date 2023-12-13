@@ -41,8 +41,6 @@ export function PostListMintButtonSection({ postRef }: Props) {
       <MintLinkButton
         tokenRef={token}
         variant="secondary"
-        eventElementId="Press Mint Link Button"
-        eventName="Press Mint Link Button"
         eventContext={contexts.Feed}
         referrerAddress={ownerWalletAddress}
         overwriteURL={userAddedMintURL}
