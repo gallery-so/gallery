@@ -78,7 +78,7 @@ export default function Badge({ badgeRef, eventContext }: Props) {
         variant="stacked"
         icon={<TopActivityBadgeIcon />}
         tooltipLabel="Top Member Badge"
-        tooltipDescription="This user is one of the most active on Gallery."
+        tooltipDescription="This is one of the most active users on Gallery."
         disableHoverPadding
         disabled
         tooltipPlacement="right"
