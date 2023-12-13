@@ -35,7 +35,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   const userAddedMintURL = post?.userAddedMintURL ?? '';
 
-  if (!token) return null;
+  if (!token || !userAddedMintURL) return null;
   return (
     <View className="px-3 pb-8 pt-2">
       <MintLinkButton

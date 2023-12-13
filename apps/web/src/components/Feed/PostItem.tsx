@@ -10,9 +10,11 @@ import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.gra
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { MintLinkButton } from '../MintLinkButton';
 import { PostCreatorAndCollectionSection } from './Posts/PostCreatorAndCollectionSection';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
@@ -37,11 +39,13 @@ export function PostItem({
     graphql`
       fragment PostItemFragment on Post {
         dbid
+        userAddedMintURL
         author {
           __typename
         }
         tokens {
           ...PostCreatorAndCollectionSectionFragment
+          ...MintLinkButtonFragment
         }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
@@ -64,6 +68,7 @@ export function PostItem({
   const isDesktop = useIsDesktopWindowWidth();
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
+  const userAddedMintURL = post?.userAddedMintURL ?? null;
 
   const token = post.tokens?.[0];
 
@@ -89,6 +94,16 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
+          {userAddedMintURL && (
+            <MintLinkButton
+              tokenRef={token}
+              overwriteURL={userAddedMintURL}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link Button"
+              eventContext={contexts.Feed}
+              variant="secondary"
+            />
+          )}
         </VStack>
       </StyledPostItem>
     );
@@ -107,6 +122,16 @@ export function PostItem({
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
           </ReportingErrorBoundary>
+          {userAddedMintURL && (
+            <MintLinkButton
+              tokenRef={token}
+              overwriteURL={userAddedMintURL}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link Button"
+              eventContext={contexts.Feed}
+              variant="secondary"
+            />
+          )}
         </VStack>
       </StyledDesktopPostData>
     </StyledPostItem>

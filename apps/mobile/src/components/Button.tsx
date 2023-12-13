@@ -56,7 +56,7 @@ const buttonVariants: ButtonVariants = {
     },
     secondary: {
       inactive: {
-        containerClassName: 'bg-white border border-faint',
+        containerClassName: 'bg-white border border-porcelain',
         textClassName: 'text-black-800',
         loadingColor: 'black',
       },

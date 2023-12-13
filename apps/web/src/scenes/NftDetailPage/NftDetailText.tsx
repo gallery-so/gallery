@@ -12,6 +12,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
 import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
+import { MintLinkButton } from '~/components/MintLinkButton';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
@@ -107,6 +108,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         ...getCommunityUrlForTokenFragment
         ...extractRelevantMetadataFromTokenFragment
         ...AdmireTokenModalFragment
+        ...MintLinkButtonFragment
       }
     `,
     tokenRef
@@ -340,7 +342,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
               {hasViewerAdmiredToken ? 'Admired' : 'Admire'}
             </StyledAdmireButtonContainer>
           </StyledAdmireButton>
-          {authenticatedUserOwnsAsset && (
+          {authenticatedUserOwnsAsset ? (
             <StyledInteractionButton
               eventElementId="Create Post Button"
               eventName="Create Post"
@@ -352,6 +354,13 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
                 Create Post
               </HStack>
             </StyledInteractionButton>
+          ) : (
+            <StyledMintLinkButton
+              tokenRef={token}
+              eventElementId="Click Mint Link Button"
+              eventName="Click Mint Link"
+              eventContext={contexts['NFT Detail']}
+            />
           )}
         </StyledButtonContainer>
 
@@ -398,6 +407,9 @@ const StyledOwnerAndCreator = styled(HStack)`
 const StyledButtonContainer = styled(HStack)`
   gap: 12px;
   flex-wrap: wrap;
+  @media only screen and ${breakpoints.tablet} {
+    flex-wrap: nowrap;
+  }
 `;
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
@@ -459,6 +471,10 @@ const StyledContractName = styled(TitleDiatypeM)`
   white-space: nowrap;
   width: 100%;
   text-overflow: ellipsis;
+`;
+
+const StyledMintLinkButton = styled(MintLinkButton)`
+  width: 100%;
 `;
 
 export default NftDetailText;

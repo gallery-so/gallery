@@ -91,6 +91,13 @@ function SupportedMintLinkBottomSheet(
             >
               Prohibition
             </Typography>
+            ,{' '}
+            <Typography
+              className="text-lg text-black-900 dark:text-offWhite"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              Ensemble
+            </Typography>
             , and{' '}
             <Typography
               className="text-lg text-black-900 dark:text-offWhite"

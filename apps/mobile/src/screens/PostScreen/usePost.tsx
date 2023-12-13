@@ -41,6 +41,7 @@ export function usePost({ tokenRef }: Props) {
             __typename
             dbid
             id
+            userAddedMintURL
             ...FeedListFragment
             ...createVirtualizedFeedEventItemsPostFragment
           }
