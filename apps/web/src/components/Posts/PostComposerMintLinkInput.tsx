@@ -4,9 +4,11 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import AlertIcon from '~/icons/AlertIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
 
+import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { SlimInput } from '../core/Input/Input';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -29,13 +31,17 @@ export function PostComposerMintLinkInput({
   onSetInvalid,
 }: Props) {
   const [includeMintLink, setIncludeMintLink] = useState(true);
-  const { showModal } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
+
+  const handleCloseModal = useCallback(() => {
+    hideModal();
+  }, [hideModal]);
 
   const handleShowSupportedMintLinkModal = useCallback(() => {
     showModal({
-      content: <SupportedMintLinkModal />,
+      content: <SupportedMintLinkModal onClose={handleCloseModal} />,
     });
-  }, [showModal]);
+  }, [handleCloseModal, showModal]);
 
   const handleInputChange = useCallback(
     (text: string) => {
@@ -128,9 +134,9 @@ const StyledSupportedPlatforms = styled(BaseM)`
   color: ${colors.red};
 `;
 
-function SupportedMintLinkModal() {
+function SupportedMintLinkModal({ onClose }: { onClose: () => void }) {
   return (
-    <StyledModalWrapper>
+    <StyledModalWrapper gap={12}>
       <VStack gap={16}>
         <StyledModalTitle>Mint Links</StyledModalTitle>
 
@@ -146,15 +152,31 @@ function SupportedMintLinkModal() {
           </BaseM>
         </VStack>
       </VStack>
+      <HStack gap={16} justify="flex-end">
+        <StyledCloseButton
+          variant="primary"
+          onClick={onClose}
+          eventElementId="Click close supported mint link modal"
+          eventName="Click close supported mint link modal"
+          eventContext={contexts.Posts}
+        >
+          Close
+        </StyledCloseButton>
+      </HStack>
     </StyledModalWrapper>
   );
 }
 
-const StyledModalWrapper = styled.div`
+const StyledModalWrapper = styled(VStack)`
   width: 375px;
   height: 100%;
 `;
 
 const StyledModalTitle = styled(BaseXL)`
   font-weight: 700;
+`;
+
+const StyledCloseButton = styled(Button)`
+  width: 72px;
+  height: 32px;
 `;
