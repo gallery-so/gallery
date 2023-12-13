@@ -39,6 +39,10 @@ export default function useCommentOnPost() {
               __typename
               dbid
             }
+
+            post {
+              totalComments
+            }
           }
         }
       }
