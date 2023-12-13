@@ -79,6 +79,7 @@ type Props = {
   icon: React.ReactElement;
   disableHoverPadding?: boolean;
   tooltipLabel?: string;
+  tooltipDescription?: string;
   tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
@@ -95,6 +96,7 @@ function IconContainer(
     disableHoverPadding = false,
     tooltipLabel,
     tooltipPlacement = 'bottom',
+    tooltipDescription,
     ...props
   }: Props,
   ref: ForwardedRef<HTMLDivElement>
@@ -132,6 +134,7 @@ function IconContainer(
           style={floatingStyle}
           ref={floating}
           text={tooltipLabel}
+          description={tooltipDescription}
         />
       )}
     </div>

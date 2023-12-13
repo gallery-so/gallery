@@ -81,7 +81,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
-        <HStack gap={6}>
+        <HStack gap={4}>
           <UserHoverCard userRef={post.author}>
             <HStack align="center" gap={6}>
               <ProfilePicture userRef={post.author} size="md" />
@@ -97,6 +97,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
                 variant="stacked"
                 icon={<LeafIcon />}
                 tooltipLabel="First-time poster"
+                tooltipDescription="This is their first post here — say hi 👋"
                 disableHoverPadding
                 disabled
                 tooltipPlacement="right"

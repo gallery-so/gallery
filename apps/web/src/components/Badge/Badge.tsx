@@ -7,12 +7,10 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import IconContainer from '~/components/core/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
+import TopActivityBadgeIcon from '~/icons/TopActivityBadgeIcon';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
-
-import { VStack } from '../core/Spacer/Stack';
-import { TopMemberBadge } from '../Notifications/notifications/YouReceivedTopActivityBadge';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -76,17 +74,15 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
   if (badge.name === 'Top Member') {
     return (
-      <>
-        <StyledTooltip text={name || ''} showTooltip={showTooltip} />
-        <VStack
-          align="center"
-          justify="center"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseExit}
-        >
-          <TopMemberBadge />
-        </VStack>
-      </>
+      <IconContainer
+        variant="stacked"
+        icon={<TopActivityBadgeIcon />}
+        tooltipLabel="Top Member Badge"
+        tooltipDescription="This is one of the most active users on Gallery."
+        disableHoverPadding
+        disabled
+        tooltipPlacement="right"
+      />
     );
   }
 
