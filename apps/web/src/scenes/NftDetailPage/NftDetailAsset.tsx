@@ -2,11 +2,14 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
+import { useCallback } from 'react';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
@@ -22,10 +25,11 @@ import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
-  onLoad: () => void;
+  onLoad: ContentIsLoadedEvent;
 };
 
 export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
@@ -65,7 +69,7 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
-  onLoad: () => void;
+  onLoad: ContentIsLoadedEvent;
 };
 
 function NftDetailAssetComponentWithouFallback({
@@ -75,7 +79,9 @@ function NftDetailAssetComponentWithouFallback({
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
+        dbid
         name
+        ...useGetPreviewImagesSingleFragment
 
         media @required(action: THROW) {
           ... on VideoMedia {
@@ -175,9 +181,10 @@ function NftDetailAssetComponentWithouFallback({
 type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
+  visibility?: string; // prop to pass the visibility state of the selected NFT
 };
 
-function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
+function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props) {
   const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
@@ -195,6 +202,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     graphql`
       fragment NftDetailAssetTokenFragment on Token {
         dbid
+        ...useGetPreviewImagesSingleFragment
         contract {
           contractAddress {
             address
@@ -228,6 +236,29 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     tokenId: token.dbid,
   });
 
+  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
+
+  const tokenId = token.dbid;
+
+  const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
+  const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
+
+  console.log("what's in cache", cachedUrls);
+  console.log("what's in cache[tokenId]", cachedUrls[tokenId]);
+  console.log('hasPreviewUrl', hasPreviewUrl);
+
+  // only update the state if the selected token is set to 'visible'
+  const handleRawLoad = useCallback(() => {
+    console.log('handleRawLoad reached');
+    if (visibility === 'visible') {
+      cacheLoadedImageUrls(tokenId, 'raw', imageUrl);
+      console.log('raw image url loaded');
+    }
+    handleNftLoaded();
+  }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId]);
+
   return (
     <StyledAssetContainer
       data-tokenid={token.dbid}
@@ -240,7 +271,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         {/*
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
-        <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
+        <VisibilityContainer>
+          <StyledImageWrapper className={hasPreviewUrl ? 'visible' : ''}>
+            <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
+          </StyledImageWrapper>
+          <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
+            <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+          </NftDetailAssetWrapper>
+        </VisibilityContainer>{' '}
       </NftFailureBoundary>
     </StyledAssetContainer>
   );
@@ -281,6 +319,47 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
+  }
+`;
+
+export const StyledImage = styled.img`
+  width: inherit;
+  border: none;
+`;
+
+const VisibilityContainer = styled.div`
+  position: relative;
+  width: inherit;
+  padding-top: 100%; /* This creates a square container based on aspect ratio */
+`;
+
+const StyledImageWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease-in-out;
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+`;
+
+const NftDetailAssetWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease-in-out;
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 `;
 
