@@ -15,7 +15,6 @@ import LeafIcon from '~/icons/LeafIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import { StyledTime } from '../Events/EventStyles';
@@ -58,25 +57,19 @@ export default function PostHeader({ postRef, queryRef }: Props) {
     graphql`
       fragment PostHeaderQueryFragment on Query {
         ...PostDropdownQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
-  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
   const displayName = handleCustomDisplayName(post.author?.username ?? '');
   const nonNullMentions = useMemo(() => removeNullValues(post.mentions), [post.mentions]);
 
   const activeBadge = useMemo(() => {
     const badges = post.author?.badges ?? [];
 
-    if (!badges || !isActivityBadgeEnabled) {
-      return null;
-    }
-
     return badges.find((badge) => badge?.name === 'Top Member');
-  }, [isActivityBadgeEnabled, post.author?.badges]);
+  }, [post.author?.badges]);
 
   return (
     <VStack gap={6}>

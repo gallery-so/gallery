@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { TopMemberBadgeIcon } from 'src/icons/TopMemberBadgeIcon';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
@@ -32,7 +31,6 @@ export function YouReceivedTopActivityBadge({
           }
         }
         ...NotificationSkeletonQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -49,7 +47,6 @@ export function YouReceivedTopActivityBadge({
     notificationRef
   );
 
-  const isActivityBadgeEnabled = isFeatureEnabled(FeatureFlag.ACTIVITY_BADGE, query);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const username = query.viewer?.user?.username;
@@ -59,10 +56,6 @@ export function YouReceivedTopActivityBadge({
     }
     navigation.navigate('Profile', { username });
   }, [navigation, username]);
-
-  if (!isActivityBadgeEnabled) {
-    return null;
-  }
 
   return (
     <NotificationSkeleton

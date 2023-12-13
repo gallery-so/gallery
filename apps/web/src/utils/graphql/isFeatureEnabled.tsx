@@ -7,31 +7,25 @@ import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   KOALA = 'KOALA',
-  ACTIVITY_BADGE = 'ACTIVITY_BADGE',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   KOALA: true,
-  ACTIVITY_BADGE: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   KOALA: true,
-  ACTIVITY_BADGE: true,
 };
 
 export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     KOALA: true,
-    ACTIVITY_BADGE: true,
   },
   BETA_TESTER: {
     KOALA: true,
-    ACTIVITY_BADGE: false,
   },
   EARLY_ACCESS: {
     KOALA: true,
-    ACTIVITY_BADGE: false,
   },
 };
 
