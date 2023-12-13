@@ -8,6 +8,7 @@ const providers = [
     regex: '^https://(www\\.)?prohibition.art/?',
     name: 'Prohibition',
   },
+  { regex: '^https://(www\\.)?ensemble.art/?', name: 'Ensemble' },
 ];
 
 export function getMintUrlWithReferrer(url: string, referrer: string) {

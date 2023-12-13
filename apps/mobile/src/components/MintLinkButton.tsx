@@ -2,6 +2,7 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
@@ -85,6 +86,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on prohibition',
         icon: <ProhibitionIcon />,
+      };
+    } else if (mintProviderType === 'Ensemble') {
+      return {
+        buttonText: 'mint on ensemble',
+        icon: <EnsembleIcon />,
       };
     } else {
       return null;

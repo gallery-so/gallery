@@ -18,6 +18,7 @@ import {
 import { Button, ButtonProps } from './core/Button/Button';
 import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
 import { HStack } from './core/Spacer/Stack';
+import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
@@ -86,6 +87,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on prohibition',
         icon: <ProhibitionLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
+      };
+    } else if (mintProviderType === 'Ensemble') {
+      return {
+        buttonText: 'mint on ensemble',
+        icon: <EnsembleLogoIcon />,
       };
     } else {
       return null;
