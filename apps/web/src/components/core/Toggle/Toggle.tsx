@@ -12,7 +12,7 @@ type Props = {
 export default function Toggle({ checked, isPending, onChange, ...inputProps }: Props) {
   return (
     <IconContainer
-      variant="default"
+      variant="transparent"
       disableHoverPadding
       size="md"
       icon={

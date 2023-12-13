@@ -9,7 +9,7 @@ import { useTooltipHover } from '../Tooltip/useTooltipHover';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg';
 
-export type ColorVariant = 'blue' | 'default' | 'stacked';
+export type ColorVariant = 'blue' | 'default' | 'stacked' | 'transparent';
 
 type ColorState = {
   disabledBackground: string;
@@ -66,6 +66,19 @@ const COLOR_STATES: ColorStates = {
 
     activeBackground: 'transparent',
     activeForeground: colors.black['800'],
+  },
+  transparent: {
+    disabledBackground: 'transparent',
+    disabledForeground: colors.porcelain,
+
+    idleBackground: 'transparent',
+    idleForeground: colors.white,
+
+    hoverBackground: 'transparent',
+    hoverForeground: colors.white,
+
+    activeBackground: 'transparent',
+    activeForeground: colors.white,
   },
 };
 
