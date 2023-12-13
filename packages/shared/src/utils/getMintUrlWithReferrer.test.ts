@@ -35,6 +35,16 @@ describe('getMintUrlWithReferrer', () => {
     expect(result.provider).toBe('Prohibition');
   });
 
+  it('should not append referrer to ensemble.art URLs', () => {
+    const url = 'https://www.ensemble.art/sketch/0x0d656e3ecfa3d9a9b9792ff33f09ff5f55cb8316/30';
+    const referrer = 'referrer5';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe(
+      'https://www.ensemble.art/sketch/0x0d656e3ecfa3d9a9b9792ff33f09ff5f55cb8316/30'
+    );
+    expect(result.provider).toBe('Ensemble');
+  });
+
   it('should not append referrer if mint.fun already have ref', () => {
     const url =
       'https://mint.fun/op/0xcA1cb17d65CeF28087Bf1f65B4D599c768F870Ac?ref=0x517AEa67196C8975dd100236689D0CA10B928F58';

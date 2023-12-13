@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { TextInput, View, ViewProps } from 'react-native';
 import { AlertIcon } from 'src/icons/AlertIcon';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
@@ -24,6 +24,9 @@ type Props = {
 
   invalid: boolean;
   onSetInvalid: (invalid: boolean) => void;
+
+  includeMintLink: boolean;
+  setIncludeMintLink: (includeMintLink: boolean) => void;
 };
 
 export function PostMintLinkInput({
@@ -32,10 +35,10 @@ export function PostMintLinkInput({
   setValue,
   invalid,
   onSetInvalid,
+  includeMintLink,
+  setIncludeMintLink,
   style,
 }: Props) {
-  const [includeMintLink, setIncludeMintLink] = useState(true);
-
   const { colorScheme } = useColorScheme();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -54,13 +57,12 @@ export function PostMintLinkInput({
   );
 
   const handleToggle = useCallback(() => {
-    setIncludeMintLink((prev) => {
-      if (!prev) {
-        handleTextChange(defaultValue);
-      }
-      return !prev;
-    });
-  }, [handleTextChange, defaultValue]);
+    const newValue = !includeMintLink;
+    if (!newValue) {
+      handleTextChange(defaultValue);
+    }
+    setIncludeMintLink(newValue);
+  }, [defaultValue, handleTextChange, includeMintLink, setIncludeMintLink]);
 
   const handleOpenBottomSheet = useCallback(() => {
     bottomSheetRef.current?.present();

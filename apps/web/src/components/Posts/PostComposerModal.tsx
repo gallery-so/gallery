@@ -47,7 +47,7 @@ export function PostComposerModalWithSelector({ preSelectedContract, eventFlow }
 
   const { showModal } = useModalActions();
 
-  const { captionRef, setCaption } = usePostComposerContext();
+  const { captionRef, clearUrlParamsAndSelections } = usePostComposerContext();
 
   const onBackClick = useCallback(() => {
     track('Back Click on Post Composer Modal', {
@@ -69,13 +69,20 @@ export function PostComposerModalWithSelector({ preSelectedContract, eventFlow }
           }}
           onDiscard={() => {
             returnUserToSelectorStep();
-            setCaption('');
+            clearUrlParamsAndSelections();
           }}
         />
       ),
       isFullPage: false,
     });
-  }, [track, eventFlow, captionRef, showModal, returnUserToSelectorStep, setCaption]);
+  }, [
+    track,
+    eventFlow,
+    captionRef,
+    showModal,
+    returnUserToSelectorStep,
+    clearUrlParamsAndSelections,
+  ]);
 
   return (
     <StyledPostComposerModal>

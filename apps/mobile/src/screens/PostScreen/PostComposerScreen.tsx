@@ -104,6 +104,7 @@ function PostComposerScreenInner() {
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
+  const [includeMintLink, setIncludeMintLink] = useState(true);
 
   const {
     aliasKeyword,
@@ -136,12 +137,18 @@ function PostComposerScreenInner() {
 
     setIsPosting(true);
 
-    const response = await post({
+    const payload = {
       tokenId,
       caption: message,
       mentions,
-      mintUrl: mintURL,
-    });
+      mintUrl: '',
+    };
+
+    if (includeMintLink) {
+      payload.mintUrl = mintURL;
+    }
+
+    const response = await post(payload);
 
     if (response?.postTokens?.post?.__typename !== 'Post') {
       return null;
@@ -191,6 +198,7 @@ function PostComposerScreenInner() {
   }, [
     message,
     feedTabNavigation,
+    includeMintLink,
     isPosting,
     mainTabNavigation,
     mentions,
@@ -253,6 +261,8 @@ function PostComposerScreenInner() {
             setValue={setMintURL}
             invalid={isInvalidMintLink}
             onSetInvalid={setIsInvalidMintLink}
+            includeMintLink={includeMintLink}
+            setIncludeMintLink={setIncludeMintLink}
           />
         )}
         <View className="py-4 flex-grow">

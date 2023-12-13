@@ -1,16 +1,14 @@
-import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
-import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { EnsembleIcon } from 'src/icons/EnsembleIcon';
-import { FxHashIcon } from 'src/icons/FxHashIcon';
-import { MintFunIcon } from 'src/icons/MintFunIcon';
-import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
-import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
-import { ZoraIcon } from 'src/icons/ZoraIcon';
 
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
-import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
+import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
+import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
+import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
+import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
+import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import {
@@ -18,26 +16,24 @@ import {
   MINT_LINK_CHAIN_ENABLED,
 } from '~/shared/utils/getMintUrlWithReferrer';
 
-import { Button, ButtonProps } from './Button';
+import { Button, ButtonProps } from './core/Button/Button';
+import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
+import { HStack } from './core/Spacer/Stack';
 
 type Props = {
   tokenRef: MintLinkButtonFragment$key;
-  style?: ViewStyle;
-  referrerAddress?: string;
   overwriteURL?: string;
-  variant?: ButtonProps['variant'];
-  size?: ButtonProps['size'];
-  eventContext: GalleryElementTrackingProps['eventContext'];
-};
+  referrerAddress?: string;
+  size?: 'sm' | 'md';
+} & ButtonProps;
 
 export function MintLinkButton({
-  tokenRef,
-  style,
-  referrerAddress,
   overwriteURL,
-  variant = 'primary',
+  referrerAddress,
+  tokenRef,
   size = 'md',
-  eventContext,
+  variant = 'primary',
+  ...props
 }: Props) {
   const token = useFragment(
     graphql`
@@ -57,7 +53,8 @@ export function MintLinkButton({
     `,
     tokenRef
   );
-  const { colorScheme } = useColorScheme();
+
+  const { showModal } = useModalActions();
 
   const tokenContractAddress =
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
@@ -74,51 +71,47 @@ export function MintLinkButton({
     if (mintProviderType === 'Zora') {
       return {
         buttonText: 'mint on zora',
-        icon: <ZoraIcon />,
+        icon: <ZoraLogoIcon />,
       };
     } else if (mintProviderType === 'MintFun') {
       return {
         buttonText: 'mint on mint.fun',
-        icon: <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+        icon: <MintFunLogoIcon />,
       };
     } else if (mintProviderType === 'FxHash') {
       return {
         buttonText: 'mint on fxhash',
-        icon: <FxHashIcon />,
+        icon: <FxHashLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else if (mintProviderType === 'Prohibition') {
       return {
         buttonText: 'mint on prohibition',
-        icon: <ProhibitionIcon />,
+        icon: <ProhibitionLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else if (mintProviderType === 'Ensemble') {
       return {
         buttonText: 'mint on ensemble',
-        icon: <EnsembleIcon />,
+        icon: <EnsembleLogoIcon />,
       };
     } else {
       return null;
     }
-  }, [mintProviderType, size]);
+  }, [mintProviderType, variant]);
 
-  const handlePress = useCallback(() => {
-    Linking.openURL(mintURL);
-  }, [mintURL]);
+  const handleMintButtonClick = useCallback(() => {
+    showModal({
+      content: <VerifyNavigationPopover href={mintURL} eventContext={contexts.Feed} />,
+      isFullPage: false,
+      headerText: 'Leaving gallery.so?',
+    });
+  }, [mintURL, showModal]);
 
   const arrowColor = useMemo(() => {
-    const colorMap = {
-      primary: {
-        dark: colors.black[800],
-        light: colors.white,
-      },
-      secondary: {
-        dark: colors.white,
-        light: colors.black[800],
-      },
-    };
-
-    return colorMap[variant as 'primary' | 'secondary'][colorScheme === 'dark' ? 'dark' : 'light'];
-  }, [variant, colorScheme]);
+    if (variant === 'primary') {
+      return colors.white;
+    }
+    return colors.black[800];
+  }, [variant]);
 
   if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
     return null;
@@ -133,17 +126,25 @@ export function MintLinkButton({
   }
 
   return (
-    <Button
-      text={size === 'sm' ? 'mint' : mintProvider.buttonText}
-      variant={variant}
-      onPress={handlePress}
-      headerElement={mintProvider.icon}
-      footerElement={<TopRightArrowIcon color={arrowColor} />}
-      style={style}
-      size={size}
-      eventElementId="Mint Link Button"
-      eventName="Press Mint Link Button"
-      eventContext={eventContext}
-    />
+    <Button onClick={handleMintButtonClick} variant={variant} {...props}>
+      <HStack gap={4} align="center">
+        <HStack gap={8} align="center">
+          {mintProvider?.icon}
+
+          {size === 'sm' ? 'mint' : mintProvider?.buttonText}
+        </HStack>
+
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 11 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} stroke-miterlimit="10" />
+          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} stroke-miterlimit="10" />
+        </svg>
+      </HStack>
+    </Button>
   );
 }

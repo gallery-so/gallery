@@ -1,3 +1,11 @@
+export const MINT_LINK_CHAIN_ENABLED = new Set([
+  'Ethereum',
+  'Optimism',
+  'Base',
+  'Zora',
+  'Arbitrum',
+]);
+
 const providers = [
   { regex: '^https://(www\\.)?mint.fun/?', name: 'MintFun', param: 'ref' },
   { regex: '^https://(www\\.)?zora.co/?', name: 'Zora', param: 'referrer' },
@@ -6,6 +14,7 @@ const providers = [
     regex: '^https://(www\\.)?prohibition.art/?',
     name: 'Prohibition',
   },
+  { regex: '^https://(www\\.)?ensemble.art/?', name: 'Ensemble' },
 ];
 
 export function getMintUrlWithReferrer(url: string, referrer: string) {

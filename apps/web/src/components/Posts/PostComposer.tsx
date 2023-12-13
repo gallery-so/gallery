@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
 import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
@@ -14,12 +15,15 @@ import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/Analyti
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
+import { getMintUrlWithReferrer } from '~/shared/utils/getMintUrlWithReferrer';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
+import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
 import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
@@ -40,10 +44,23 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             ...PostComposerTokenFragment
           }
         }
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+            }
+          }
+        }
       }
     `,
     { tokenId }
   );
+
+  const { mintPageUrl, clearUrlParamsAndSelections } = usePostComposerContext();
 
   if (query.tokenById?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
@@ -61,6 +78,9 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
               ... on GalleryUser {
                 username
               }
+            }
+            contract {
+              mintURL
             }
           }
         }
@@ -85,6 +105,17 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
 
   const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
 
+  const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
+  const mintUrlFromQueryOrToken =
+    mintPageUrl || (token.definition.community?.contract?.mintURL ?? '');
+  const mintURLWithRef = getMintUrlWithReferrer(mintUrlFromQueryOrToken, ownerWalletAddress).url;
+
+  const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
+  const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
+  const [includeMintLink, setIncludeMintLink] = useState(true);
+
+  useClearURLQueryParams('mint_page_url');
+
   const createPost = useCreatePost();
 
   const { showModal, hideModal } = useModalActions();
@@ -101,11 +132,18 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
       added_description: Boolean(message),
     });
     try {
-      const responsePost = await createPost({
+      const payload = {
         tokens: [{ dbid: token.dbid, communityId: token.definition?.community?.id || '' }],
         caption: message,
         mentions,
-      });
+        mintUrl: '',
+      };
+
+      if (includeMintLink) {
+        payload.mintUrl = mintURL;
+      }
+
+      const responsePost = await createPost(payload);
       hideModal();
       showModal({
         headerText: `Successfully posted ${token.definition.name || 'item'}`,
@@ -121,6 +159,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         isFullPage: false,
       });
       resetMentions();
+      clearUrlParamsAndSelections();
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -132,15 +171,18 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     track,
     eventFlow,
     message,
-    createPost,
     token.dbid,
     token.definition.community?.id,
     token.definition.community?.creator?.username,
     token.definition.name,
     mentions,
+    includeMintLink,
+    createPost,
     hideModal,
     showModal,
     resetMentions,
+    clearUrlParamsAndSelections,
+    mintURL,
     reportError,
   ]);
 
@@ -164,16 +206,29 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
         </StyledHeader>
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
-          <PostComposerTextArea
-            tokenRef={token}
-            isSelectingMentions={isSelectingMentions}
-            aliasKeyword={aliasKeyword}
-            selectMention={selectMention}
-            setMessage={setMessage}
-            message={message}
-            handleSelectionChange={handleSelectionChange}
-            closeMention={closeMention}
-          />
+          <VStack grow gap={8}>
+            <PostComposerTextArea
+              tokenRef={token}
+              isSelectingMentions={isSelectingMentions}
+              aliasKeyword={aliasKeyword}
+              selectMention={selectMention}
+              setMessage={setMessage}
+              message={message}
+              handleSelectionChange={handleSelectionChange}
+              closeMention={closeMention}
+            />
+            {mintURLWithRef && (
+              <PostComposerMintLinkInput
+                value={mintURL}
+                defaultValue={mintURLWithRef}
+                setValue={setMintURL}
+                invalid={isInvalidMintLink}
+                onSetInvalid={setIsInvalidMintLink}
+                includeMintLink={includeMintLink}
+                setIncludeMintLink={setIncludeMintLink}
+              />
+            )}
+          </VStack>
         </ContentContainer>
       </VStack>
       <StyledHStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
@@ -190,7 +245,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
           eventContext={null}
           variant="primary"
           onClick={handlePostClick}
-          disabled={isSubmitting || descriptionOverLengthLimit}
+          disabled={isSubmitting || descriptionOverLengthLimit || isInvalidMintLink}
         >
           POST
         </Button>
