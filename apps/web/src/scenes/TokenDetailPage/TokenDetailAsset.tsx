@@ -83,8 +83,8 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     }
 
     return {
-      height: 600,
-      width: 600,
+      height: DESKTOP_TOKEN_SIZE,
+      width: DESKTOP_TOKEN_SIZE,
     };
   }, [token.media?.dimensions]);
 
@@ -96,8 +96,6 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
-
-  console.log('resultDimensions', resultDimensions);
 
   const handleRawLoad = useCallback(() => {
     cacheLoadedImageUrls(tokenId, 'raw', imageUrl);

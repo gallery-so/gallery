@@ -275,8 +275,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     }
 
     return {
-      height: 600,
-      width: 600,
+      height: DESKTOP_TOKEN_SIZE,
+      width: DESKTOP_TOKEN_SIZE,
     };
   }, [token.media?.dimensions]);
 
