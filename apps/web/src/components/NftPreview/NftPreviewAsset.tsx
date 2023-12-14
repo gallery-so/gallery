@@ -31,9 +31,6 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
   const handleAssetLoad = useCallback(() => {
     if (token.dbid && imageUrl) {
       cacheLoadedImageUrls(token.dbid, 'preview', imageUrl);
-      console.log('preview image url is cached');
-
-      console.log(imageUrl);
     }
     onLoad();
   }, [token.dbid, imageUrl, cacheLoadedImageUrls, onLoad]);

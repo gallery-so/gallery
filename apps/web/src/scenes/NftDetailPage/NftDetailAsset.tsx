@@ -2,7 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
@@ -26,11 +26,14 @@ import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   onLoad: ContentIsLoadedEvent;
 };
+
+const DESKTOP_TOKEN_SIZE = 600;
 
 export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
@@ -202,18 +205,24 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     graphql`
       fragment NftDetailAssetTokenFragment on Token {
         dbid
-        ...useGetPreviewImagesSingleFragment
         contract {
           contractAddress {
             address
           }
         }
         media @required(action: THROW) {
+          ... on Media {
+            dimensions {
+              width
+              height
+            }
+          }
           ... on HtmlMedia {
             __typename
           }
         }
 
+        ...useGetPreviewImagesSingleFragment
         ...NftDetailAssetComponentFragment
       }
     `,
@@ -245,19 +254,31 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
 
-  console.log("what's in cache", cachedUrls);
-  console.log("what's in cache[tokenId]", cachedUrls[tokenId]);
-  console.log('hasPreviewUrl', hasPreviewUrl);
-
   // only update the state if the selected token is set to 'visible'
   const handleRawLoad = useCallback(() => {
-    console.log('handleRawLoad reached');
     if (visibility === 'visible') {
       cacheLoadedImageUrls(tokenId, 'raw', imageUrl);
-      console.log('raw image url loaded');
     }
     handleNftLoaded();
   }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId]);
+
+  const resultDimensions = useMemo(() => {
+    const serverSourcedDimensions = token.media?.dimensions;
+    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
+      return fitDimensionsToContainerContain({
+        container: { width: DESKTOP_TOKEN_SIZE, height: DESKTOP_TOKEN_SIZE },
+        source: {
+          width: serverSourcedDimensions.width,
+          height: serverSourcedDimensions.height,
+        },
+      });
+    }
+
+    return {
+      height: 600,
+      width: 600,
+    };
+  }, [token.media?.dimensions]);
 
   return (
     <StyledAssetContainer
@@ -273,12 +294,17 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
         */}
         <VisibilityContainer>
           <StyledImageWrapper className={hasPreviewUrl ? 'visible' : ''}>
-            <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
+            <StyledImage
+              src={cachedUrls[tokenId]?.url}
+              onLoad={handleNftLoaded}
+              height={resultDimensions.height}
+              width={resultDimensions.width}
+            />
           </StyledImageWrapper>
           <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </NftDetailAssetWrapper>
-        </VisibilityContainer>{' '}
+        </VisibilityContainer>
       </NftFailureBoundary>
     </StyledAssetContainer>
   );
@@ -322,8 +348,9 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-export const StyledImage = styled.img`
-  width: inherit;
+export const StyledImage = styled.img<{ height: number; width: number }>`
+  height: ${({ height }) => height}px;
+  width: ${({ width }) => width}px;
   border: none;
 `;
 
@@ -334,6 +361,9 @@ const VisibilityContainer = styled.div`
 `;
 
 const StyledImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 0;
   left: 0;
@@ -349,6 +379,9 @@ const StyledImageWrapper = styled.div`
 `;
 
 const NftDetailAssetWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 0;
   left: 0;

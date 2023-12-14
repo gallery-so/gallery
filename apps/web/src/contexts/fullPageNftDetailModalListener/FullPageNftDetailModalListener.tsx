@@ -8,7 +8,6 @@ import NftDetailPageFallback from '~/scenes/NftDetailPage/NftDetailPageFallback'
 import { LoadableTokenDetailView } from '~/scenes/TokenDetailPage/TokenDetailView';
 
 import { useModalActions, useModalState } from '../modal/ModalContext';
-import FullPageLoaderVariant from '~/components/core/Loader/FullPageLoaderVariant';
 
 /**
  * IMPORTANT! The mechanics of this listener is tied to `LinkToFullPageNftDetailModal.tsx`
@@ -42,7 +41,7 @@ export default function FullPageNftDetailModalListener() {
     }
 
     const content = collectionId ? (
-      <Suspense fallback={<FullPageLoaderVariant />}>
+      <Suspense fallback={<NftDetailPageFallback />}>
         <NftDetailPage
           username={username as string}
           collectionId={collectionId as string}
@@ -51,7 +50,7 @@ export default function FullPageNftDetailModalListener() {
       </Suspense>
     ) : (
       <StyledTokenPreviewModal>
-        <Suspense fallback={<FullPageLoaderVariant />}>
+        <Suspense fallback={<NftDetailPageFallback />}>
           <LoadableTokenDetailView tokenId={tokenId as string} />
         </Suspense>
       </StyledTokenPreviewModal>
