@@ -153,13 +153,16 @@ export function CommentsBottomSheetLine({
           >
             {totalAdmires > 0 && (
               <Typography
-                className="text-xs text-activeBlue"
+                className={clsx('text-xs', {
+                  'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
+                  'text-shadow dark:text-metal': !hasViewerAdmiredComment,
+                })}
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               >
                 {totalAdmires}
               </Typography>
             )}
-            <AdmireIcon height={16} active={hasViewerAdmiredComment} />
+            <AdmireIcon variant="secondary" height={16} active={hasViewerAdmiredComment} />
           </GalleryTouchableOpacity>
         </View>
         <View className="flex mr-5 space-y-1">
