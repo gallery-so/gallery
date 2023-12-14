@@ -17,6 +17,7 @@ const providers = [
   { regex: '^https://(www\\.)?ensemble.art/?', name: 'Ensemble' },
 ];
 
+// TODO: perhaps this can be baked into `extractRelevantMetadataFromToken`
 export function getMintUrlWithReferrer(url: string, referrer: string) {
   try {
     const urlObj = new URL(url);

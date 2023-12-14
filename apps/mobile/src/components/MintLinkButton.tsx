@@ -13,6 +13,7 @@ import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.g
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import {
   getMintUrlWithReferrer,
   MINT_LINK_CHAIN_ENABLED,
@@ -42,28 +43,18 @@ export function MintLinkButton({
   const token = useFragment(
     graphql`
       fragment MintLinkButtonFragment on Token {
-        definition {
-          community {
-            contract {
-              mintURL
-              contractAddress {
-                chain
-                address
-              }
-            }
-          }
-        }
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
+
   const { colorScheme } = useColorScheme();
 
-  const tokenContractAddress =
-    token?.definition?.community?.contract?.contractAddress?.address ?? '';
-  const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
+  const { contractAddress, chain, mintUrl } = extractRelevantMetadataFromToken(token);
+
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL || (token?.definition?.community?.contract?.mintURL ?? ''),
+    overwriteURL || mintUrl,
     referrerAddress ?? ''
   );
 
@@ -120,11 +111,11 @@ export function MintLinkButton({
     return colorMap[variant as 'primary' | 'secondary'][colorScheme === 'dark' ? 'dark' : 'light'];
   }, [variant, colorScheme]);
 
-  if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
+  if (MINT_LINK_DISABLED_CONTRACTS.has(contractAddress)) {
     return null;
   }
 
-  if (!MINT_LINK_CHAIN_ENABLED.has(tokenChain)) {
+  if (!MINT_LINK_CHAIN_ENABLED.has(chain)) {
     return null;
   }
 

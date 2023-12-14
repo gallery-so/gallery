@@ -22,15 +22,21 @@ export function extractRelevantMetadataFromToken(
   const token = readInlineData(
     graphql`
       fragment extractRelevantMetadataFromTokenFragment on Token @inline {
-        tokenId
-        tokenMetadata
-        externalUrl
-        chain
-        lastUpdated
-        contract {
-          name
-          contractAddress {
-            address
+        definition {
+          tokenId
+          tokenMetadata
+          externalUrl
+          chain
+          lastUpdated
+          community {
+            name
+            mintURL
+          }
+          contract {
+            name
+            contractAddress {
+              address
+            }
           }
         }
       }
@@ -41,19 +47,22 @@ export function extractRelevantMetadataFromToken(
   const {
     tokenId,
     contract,
+    community,
     externalUrl,
     tokenMetadata,
     chain,
     lastUpdated: lastUpdatedRaw,
-  } = token;
+  } = token.definition;
 
-  const contractAddress = contract?.contractAddress?.address;
+  const contractAddress = contract?.contractAddress?.address ?? '';
 
   const result = {
     tokenId: '',
+    chain: chain ?? '',
     contractAddress,
     contractName: '',
     lastUpdated: '',
+    mintUrl: community?.mintURL ?? '',
     openseaUrl: '',
     mirrorUrl: '',
     prohibitionUrl: '',
@@ -84,8 +93,8 @@ export function extractRelevantMetadataFromToken(
 
   if (isFxHashContractAddress(contractAddress)) {
     result.contractName = 'fx(hash)';
-  } else if (contract?.name) {
-    result.contractName = contract.name;
+  } else if (community?.name) {
+    result.contractName = community.name;
   } else if (contractAddress) {
     result.contractName = truncateAddress(contractAddress);
   } else {

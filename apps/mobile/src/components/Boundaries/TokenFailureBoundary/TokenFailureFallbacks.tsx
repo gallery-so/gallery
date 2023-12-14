@@ -54,9 +54,11 @@ export function TokenPreviewErrorFallback({
     graphql`
       fragment TokenFailureFallbacksErrorFallbackFragment on Token {
         dbid
-        tokenId
-        contract {
-          name
+        definition {
+          tokenId
+          community {
+            name
+          }
         }
       }
     `,
@@ -88,7 +90,7 @@ export function TokenPreviewErrorFallback({
         className={`text-${variantToTextSize(variant)} text-metal text-center`}
         numberOfLines={2}
       >
-        {token.contract?.name ?? token.tokenId}
+        {token.definition?.community?.name ?? token.definition?.tokenId}
       </Text>
       {variant === 'tiny' ? null : (
         <View className="p-1">{refreshable ? <RefreshIcon /> : <ErrorIcon />}</View>
