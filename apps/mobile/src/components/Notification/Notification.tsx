@@ -7,6 +7,7 @@ import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFrag
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { NewTokens } from './Notifications/NewTokens';
+import { SomeoneAdmiredYourComment } from './Notifications/SomeoneAdmiredYourComment';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
 import { SomeoneAdmiredYourToken } from './Notifications/SomeoneAdmiredYourToken';
@@ -43,6 +44,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
         ...YouReceivedTopActivityBadgeQueryFragment
+        ...SomeoneAdmiredYourCommentQueryFragment
       }
     `,
     queryRef
@@ -128,6 +130,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...YouReceivedTopActivityBadgeFragment
         }
+        ... on SomeoneAdmiredYourCommentNotification {
+          __typename
+          ...SomeoneAdmiredYourCommentFragment
+        }
       }
     `,
     notificationRef
@@ -170,6 +176,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       );
     } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
       return <YouReceivedTopActivityBadge queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
+      return <SomeoneAdmiredYourComment queryRef={query} notificationRef={notification} />;
     }
     return <View />;
   }, [notification, query]);
