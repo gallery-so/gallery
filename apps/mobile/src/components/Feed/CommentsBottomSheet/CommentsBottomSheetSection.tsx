@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import {
   GalleryTouchableOpacity,
@@ -8,6 +8,7 @@ import {
 } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetSectionFragment$key } from '~/generated/CommentsBottomSheetSectionFragment.graphql';
+import { CommentsBottomSheetSectionQueryFragment$key } from '~/generated/CommentsBottomSheetSectionQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -17,6 +18,7 @@ import { REPLIES_PER_PAGE } from './constants';
 type Props = {
   activeCommentId?: string;
   commentRef: CommentsBottomSheetSectionFragment$key;
+  queryRef: CommentsBottomSheetSectionQueryFragment$key;
   onReplyPress: (params: OnReplyPressParams) => void;
   onExpandReplies: () => void;
 };
@@ -24,6 +26,7 @@ type Props = {
 export function CommentsBottomSheetSection({
   activeCommentId,
   commentRef,
+  queryRef,
   onReplyPress,
   onExpandReplies,
 }: Props) {
@@ -57,6 +60,15 @@ export function CommentsBottomSheetSection({
       }
     `,
     commentRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommentsBottomSheetSectionQueryFragment on Query {
+        ...CommentsBottomSheetLineQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const [showReplies, setShowReplies] = useState(false);
@@ -119,6 +131,7 @@ export function CommentsBottomSheetSection({
         <CommentsBottomSheetLine
           activeCommentId={activeCommentId}
           commentRef={comment}
+          queryRef={query}
           onReplyPress={handleReplyPressWithTopCommentId}
           footerElement={
             !showReplies && (
@@ -139,6 +152,7 @@ export function CommentsBottomSheetSection({
               key={reply.dbid}
               activeCommentId={activeCommentId}
               commentRef={reply}
+              queryRef={query}
               onReplyPress={handleReplyPressWithTopCommentId}
               isReply
             />
