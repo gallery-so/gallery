@@ -7,6 +7,7 @@ import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
+import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
@@ -92,6 +93,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on ensemble',
         icon: <EnsembleLogoIcon />,
+      };
+    } else if (mintProviderType === 'SuperRare') {
+      return {
+        buttonText: 'mint on superrare',
+        icon: <SuperRareLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else {
       return null;
