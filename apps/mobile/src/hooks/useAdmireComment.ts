@@ -259,7 +259,7 @@ export function useAdmireComment({ commentRef, queryRef }: Props) {
       });
       if (
         response.removeAdmire?.__typename !== 'RemoveAdmirePayload' &&
-        // We can silently fail if the post was already not admired
+        // We can silently fail if the comment was already not admired
         response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
       ) {
         reportError(
