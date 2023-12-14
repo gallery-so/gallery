@@ -147,9 +147,9 @@ export function CommentsBottomSheetLine({
           <GalleryTouchableOpacity
             className="flex-row items-center gap-0.5"
             onPress={handleAdmirePress}
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
+            eventElementId="Press Admire Comment"
+            eventName="Press Admire Comment"
+            eventContext={contexts.Posts}
           >
             {totalAdmires > 0 && (
               <Typography
