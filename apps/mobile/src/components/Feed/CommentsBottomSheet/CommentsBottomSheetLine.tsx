@@ -125,9 +125,9 @@ export function CommentsBottomSheetLine({
           </GalleryTouchableOpacity>
         </View>
       )}
-      <View className="flex flex-col w-full flex-1">
-        <View className="flex-row justify-between">
-          <View>
+      <View className="flex-1">
+        <View className="flex-row space-x-3 w-full justify-between">
+          <View className="flex-1">
             <View className="flex-row space-x-1">
               <Typography
                 className="text-sm leading-4"
@@ -145,7 +145,7 @@ export function CommentsBottomSheetLine({
             <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
           </View>
           <GalleryTouchableOpacity
-            className="flex-row items-center gap-0.5"
+            className="flex-row justify-end items-center gap-0.5"
             onPress={handleAdmirePress}
             eventElementId="Admire Comment Button"
             eventName="Press Admire Comment Button"
@@ -165,7 +165,7 @@ export function CommentsBottomSheetLine({
             <AdmireIcon variant="secondary" height={16} active={hasViewerAdmiredComment} />
           </GalleryTouchableOpacity>
         </View>
-        <View className="flex mr-5 space-y-1">
+        <View className="flex mr-5 space-y-1 pl-2">
           <GalleryTouchableOpacity
             eventElementId={'Reply to Comment'}
             eventName={'Reply to Comment Press'}
