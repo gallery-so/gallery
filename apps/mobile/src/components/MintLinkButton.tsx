@@ -6,6 +6,7 @@ import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
+import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
@@ -95,6 +96,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on ensemble',
         icon: <EnsembleIcon />,
+      };
+    } else if (mintProviderType === 'SuperRare') {
+      return {
+        buttonText: 'mint on superrare',
+        icon: <SuperRareIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else {
       return null;
