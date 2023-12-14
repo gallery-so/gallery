@@ -38,7 +38,6 @@ import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
 import { OnReplyPressParams } from './CommentsBottomSheetLine';
 import { CommentsRepliedBanner } from './CommentsRepliedBanner';
-import { REPLIES_PER_PAGE } from './constants';
 
 type CommentsBottomSheetProps = {
   activeCommentId?: string;
