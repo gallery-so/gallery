@@ -219,8 +219,8 @@ export function NotificationSkeleton({
             <UnseenDot />
           </View>
         )}
-        <View className="mr-2">
-          {overridePfpElement ?? (
+        {overridePfpElement ?? (
+          <View className="mr-2">
             <ProfilePictureBubblesWithCount
               eventElementId="Notification Row PFP Bubbles"
               eventName="Notification Row PFP Bubbles Pressed"
@@ -230,8 +230,8 @@ export function NotificationSkeleton({
               totalCount={responsibleUserRefs.length}
               size="md"
             />
-          )}
-        </View>
+          </View>
+        )}
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
 
