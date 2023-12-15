@@ -4,11 +4,23 @@ export type CacheParams = {
   [tokenId: string]: {
     type: 'preview' | 'raw';
     url: string;
+    dimensions: Dimensions;
   };
 };
 
+type Dimensions = {
+  width?: number;
+  height?: number;
+};
+
 type NftPreviewFallbackState = {
-  cacheLoadedImageUrls: (tokenId: string, type: 'preview' | 'raw', url: string) => void;
+  cacheLoadedImageUrls: (
+    tokenId: string,
+    type: 'preview' | 'raw',
+    url: string,
+    dimensions: Dimensions
+  ) => void;
+
   cachedUrls: CacheParams;
 };
 
@@ -36,12 +48,13 @@ const NftPreviewFallbackProvider = ({ children }: Props) => {
   const [cachedUrls, setCachedUrls] = useState<CacheParams>({});
 
   const cacheLoadedImageUrls = useCallback(
-    (tokenId: string, type: 'preview' | 'raw', url: string) => {
+    (tokenId: string, type: 'preview' | 'raw', url: string, dimensions: Dimensions) => {
       setCachedUrls((prevCachedUrls) => ({
         ...prevCachedUrls,
         [tokenId]: {
           type: type,
           url: url,
+          dimensions: dimensions,
         },
       }));
     },

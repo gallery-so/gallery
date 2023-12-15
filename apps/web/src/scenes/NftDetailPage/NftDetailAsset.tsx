@@ -19,6 +19,8 @@ import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
+
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailGif from './NftDetailGif';
@@ -230,7 +232,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   );
 
   const breakpoint = useBreakpoint();
-  const { aspectRatioType } = useContentState();
+  //  const { aspectRatioType } = useContentState();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -238,8 +240,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = token.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
-    !isIframe &&
-    (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
+    !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
   const { handleNftLoaded } = useNftRetry({
     tokenId: token.dbid,
@@ -253,14 +254,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
-
-  // only update the state if the selected token is set to 'visible'
-  const handleRawLoad = useCallback(() => {
-    if (visibility === 'visible') {
-      cacheLoadedImageUrls(tokenId, 'raw', imageUrl);
-    }
-    handleNftLoaded();
-  }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId]);
 
   const resultDimensions = useMemo(() => {
     const serverSourcedDimensions = token.media?.dimensions;
@@ -279,6 +272,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
       width: DESKTOP_TOKEN_SIZE,
     };
   }, [token.media?.dimensions]);
+
+  // only update the state if the selected token is set to 'visible'
+  const handleRawLoad = useCallback(() => {
+    if (visibility === 'visible') {
+      cacheLoadedImageUrls(tokenId, 'raw', imageUrl, resultDimensions);
+    }
+    handleNftLoaded();
+  }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
 
   return (
     <StyledAssetContainer
@@ -301,6 +302,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
               width={resultDimensions.width}
             />
           </StyledImageWrapper>
+
           <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </NftDetailAssetWrapper>
@@ -348,7 +350,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-export const StyledImage = styled.img<{ height: number; width: number }>`
+const StyledImage = styled.img<{ height: number; width: number }>`
   height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;
   border: none;
@@ -371,7 +373,6 @@ const StyledImageWrapper = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 1s ease-in-out;
   &.visible {
     opacity: 1;
     pointer-events: auto;
@@ -389,7 +390,6 @@ const NftDetailAssetWrapper = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 1s ease-in-out;
   &.visible {
     opacity: 1;
     pointer-events: auto;

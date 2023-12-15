@@ -348,7 +348,7 @@ const StyledNftDetailPage = styled.div`
 function NftDetailPageWithBoundary({ username, collectionId, tokenId }: NftDetailPageWrapperProps) {
   return (
     <StyledNftDetailPageWithBoundary>
-      <Suspense fallback={<NftDetailPageFallback />}>
+      <Suspense fallback={<NftDetailPageFallback tokenId={tokenId} />}>
         <ErrorBoundary>
           <NftDetailPageWrapper username={username} collectionId={collectionId} tokenId={tokenId} />
         </ErrorBoundary>

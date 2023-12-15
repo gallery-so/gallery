@@ -102,13 +102,13 @@ export default function NftDetailView({
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
-          <ShimmerProvider>
+          <Container>
             <NftDetailAsset
               tokenRef={collectionNft}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
               visibility={visibility}
             />
-          </ShimmerProvider>
+          </Container>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
             <NftDetailNote
               tokenId={token.dbid}
@@ -164,6 +164,20 @@ const StyledContentContainer = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: initial;
   }
+`;
+
+const Container = styled.div`
+  // Ensures that grid columns don't grow to fit their children
+  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
+  min-width: 0;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledAssetAndNoteContainer = styled.div`
