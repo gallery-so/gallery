@@ -146,11 +146,11 @@ function SupportedMintLinkModal({ onClose }: { onClose: () => void }) {
         <VStack gap={8}>
           <BaseM>
             Gallery automatically adds your primary wallet address in mint links, ensuring you get
-            100% of referral rewards on supported platforms
+            100% of referral rewards on supported platforms.
           </BaseM>
 
           <BaseM>
-            View the supported platforms{' '}
+            View our supported platforms{' '}
             <StyledGalleryLink
               href="https://gallery-so.notion.site/Supported-Mint-Link-Domains-b4420f096413498d8aa24d857561817b"
               eventElementId="Supported Mint Link Modal"
@@ -159,6 +159,7 @@ function SupportedMintLinkModal({ onClose }: { onClose: () => void }) {
             >
               here
             </StyledGalleryLink>
+            .
           </BaseM>
         </VStack>
       </VStack>

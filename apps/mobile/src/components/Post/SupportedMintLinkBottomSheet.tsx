@@ -71,13 +71,13 @@ function SupportedMintLinkBottomSheet(
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
             Gallery automatically adds your primary wallet address in mint links, ensuring you get
-            100% of referral rewards on supported platforms
+            100% of referral rewards on supported platforms.
           </Typography>
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            View the supported platforms{' '}
+            View our supported platforms{' '}
             <GalleryTouchableOpacity
               onPress={handlePress}
               eventElementId="Supported Mint Link Bottom Sheet"
@@ -92,6 +92,7 @@ function SupportedMintLinkBottomSheet(
                 here
               </Typography>
             </GalleryTouchableOpacity>
+            .
           </Typography>
         </View>
 
