@@ -1,14 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
+import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
-import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import {
@@ -17,7 +16,6 @@ import {
 } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './core/Button/Button';
-import VerifyNavigationPopover from './core/GalleryLink/VerifyNavigationPopover';
 import { HStack } from './core/Spacer/Stack';
 
 type Props = {
@@ -53,8 +51,6 @@ export function MintLinkButton({
     `,
     tokenRef
   );
-
-  const { showModal } = useModalActions();
 
   const tokenContractAddress =
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
@@ -93,18 +89,19 @@ export function MintLinkButton({
         buttonText: 'mint on ensemble',
         icon: <EnsembleLogoIcon />,
       };
+    } else if (mintProviderType === 'SuperRare') {
+      return {
+        buttonText: 'mint on superrare',
+        icon: <SuperRareLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
+      };
     } else {
       return null;
     }
   }, [mintProviderType, variant]);
 
   const handleMintButtonClick = useCallback(() => {
-    showModal({
-      content: <VerifyNavigationPopover href={mintURL} eventContext={contexts.Feed} />,
-      isFullPage: false,
-      headerText: 'Leaving gallery.so?',
-    });
-  }, [mintURL, showModal]);
+    window.open(mintURL);
+  }, [mintURL]);
 
   const arrowColor = useMemo(() => {
     if (variant === 'primary') {

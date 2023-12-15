@@ -45,6 +45,16 @@ describe('getMintUrlWithReferrer', () => {
     expect(result.provider).toBe('Ensemble');
   });
 
+  it('should not append referrer to superrare.com URLs', () => {
+    const url = 'https://superrare.com/0x109c5a04ef63395ea09a2062f9ac30bf2978c609/hue-haven-46';
+    const referrer = 'referrer6';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe(
+      'https://superrare.com/0x109c5a04ef63395ea09a2062f9ac30bf2978c609/hue-haven-46'
+    );
+    expect(result.provider).toBe('SuperRare');
+  });
+
   it('should not append referrer if mint.fun already have ref', () => {
     const url =
       'https://mint.fun/op/0xcA1cb17d65CeF28087Bf1f65B4D599c768F870Ac?ref=0x517AEa67196C8975dd100236689D0CA10B928F58';

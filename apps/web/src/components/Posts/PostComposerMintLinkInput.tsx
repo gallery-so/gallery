@@ -150,7 +150,7 @@ function SupportedMintLinkModal({ onClose }: { onClose: () => void }) {
 
           <BaseM>
             Only <strong>Mint.fun</strong>, <strong>Zora</strong>, <strong>Prohibition</strong>,{' '}
-            <strong>Ensemble</strong> and
+            <strong>Ensemble</strong>, <strong>SuperRare</strong> and
             <strong> FxHash</strong> links are currently supported.
           </BaseM>
         </VStack>
