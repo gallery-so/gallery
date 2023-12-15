@@ -22,6 +22,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 
+import { GalleryAnnouncement } from './notifications/GalleryAnnouncement';
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
@@ -136,6 +137,11 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
               }
             }
           }
+        }
+
+        ... on GalleryAnnouncementNotification {
+          __typename
+          ctaLink
         }
 
         ...NotificationInnerFragment
@@ -291,6 +297,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (
+      notification.__typename === 'GalleryAnnouncementNotification' &&
+      notification.ctaLink
+    ) {
+      return {
+        showCaret: false,
+        handleClick: function navigateToGalleryAnnouncementLink() {
+          if (!notification.ctaLink) return;
+          window.open(notification.ctaLink, '_blank');
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
@@ -343,6 +361,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneYouFollowPostedTheirFirstPostNotification',
       'SomeoneRepliedToYourCommentNotification',
       'YouReceivedTopActivityBadgeNotification',
+      'GalleryAnnouncementNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -470,6 +489,12 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
         ... on YouReceivedTopActivityBadgeNotification {
           __typename
         }
+
+        ... on GalleryAnnouncementNotification {
+          __typename
+          platform
+          ...GalleryAnnouncementFragment
+        }
       }
     `,
     notificationRef
@@ -521,6 +546,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneRepliedToYourComment notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
     return <YouReceivedTopActivityBadge />;
+  } else if (
+    notification.__typename === 'GalleryAnnouncementNotification' &&
+    notification.platform !== 'Mobile'
+  ) {
+    return <GalleryAnnouncement notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;
