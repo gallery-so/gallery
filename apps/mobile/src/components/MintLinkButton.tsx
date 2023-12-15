@@ -4,6 +4,7 @@ import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
+import { HighlightIcon } from 'src/icons/HighlightIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
@@ -101,6 +102,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on superrare',
         icon: <SuperRareIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+      };
+    } else if (mintProviderType === 'Highlight') {
+      return {
+        buttonText: 'mint on highlight',
+        icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else {
       return null;
