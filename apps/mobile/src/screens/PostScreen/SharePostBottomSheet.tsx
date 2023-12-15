@@ -180,7 +180,10 @@ function SharePostBottomSheet(
   const handleCopyButtonPress = useCallback(() => {
     Clipboard.setString(postUrl);
     setHasCopiedUrl(true);
-    setTimeout(() => bottomSheetRef.current?.dismiss(), 800);
+    setTimeout(() => {
+      bottomSheetRef.current?.dismiss();
+      setHasCopiedUrl(false);
+    }, 800);
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
