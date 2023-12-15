@@ -89,21 +89,23 @@ export function NftSelectorPickerGrid({
   const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
     graphql`
       fragment NftSelectorPickerGridTokensFragment on Token @relay(plural: true) {
-        chain
-        isSpamByUser
-        isSpamByProvider
-        creationTime
-
-        contract {
-          # Keeping name in the cache so the contract picker screen
-          # already has the name in the cache
-          # eslint-disable-next-line relay/unused-fields
-          name
-          contractAddress {
-            address
+        definition {
+          chain
+          contract {
+            isSpam
+            contractAddress {
+              address
+            }
+          }
+          community {
+            # Keeping name in the cache so the contract picker screen
+            # already has the name in the cache
+            # eslint-disable-next-line relay/unused-fields
+            name
           }
         }
-
+        creationTime
+        isSpamByUser
         ownerIsHolder
         ownerIsCreator
 
@@ -119,7 +121,7 @@ export function NftSelectorPickerGrid({
   const filteredTokens = useMemo(() => {
     return tokens
       .filter((token) => {
-        const isSpam = token.isSpamByProvider || token.isSpamByUser;
+        const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
 
         return !isSpam;
       })
@@ -128,12 +130,12 @@ export function NftSelectorPickerGrid({
           return true;
         }
 
-        return token?.contract?.name
+        return token.definition?.community?.name
           ?.toLowerCase()
           .includes(searchCriteria.searchQuery.toLowerCase());
       })
       .filter((token) => {
-        return token.chain === searchCriteria.networkFilter;
+        return token.definition?.chain === searchCriteria.networkFilter;
       })
       .filter((token) => {
         if (searchCriteria.ownerFilter === 'Collected') {
@@ -162,8 +164,8 @@ export function NftSelectorPickerGrid({
       });
     } else if (searchCriteria.sortView === 'Alphabetical') {
       sortedTokens.sort((a, b) => {
-        const contractA = a.contract?.name?.toLocaleLowerCase();
-        const contractB = b.contract?.name?.toLocaleLowerCase();
+        const contractA = a.definition?.community?.name?.toLocaleLowerCase();
+        const contractB = b.definition?.community?.name?.toLocaleLowerCase();
 
         if (contractA && contractB) {
           if (contractA < contractB) {
@@ -192,7 +194,7 @@ export function NftSelectorPickerGrid({
     const groups: GroupedTokens = {};
 
     for (const token of sortedTokens) {
-      const address = token?.contract?.contractAddress?.address;
+      const address = token?.definition?.contract?.contractAddress?.address;
 
       if (!address) {
         continue;

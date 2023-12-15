@@ -39,16 +39,16 @@ function PostComposerScreenInner() {
           ... on Token {
             __typename
             dbid
-            chain
-            contract {
-              contractAddress {
-                address
-              }
-              mintURL
-            }
             definition {
               name
+              chain
+              contract {
+                contractAddress {
+                  address
+                }
+              }
               community {
+                mintURL
                 creator {
                   ... on GalleryUser {
                     username
@@ -88,7 +88,7 @@ function PostComposerScreenInner() {
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
 
   const mintURLWithRef = getMintUrlWithReferrer(
-    token.contract?.mintURL ?? '',
+    token.definition?.community?.mintURL ?? '',
     ownerWalletAddress
   ).url;
 
@@ -181,8 +181,8 @@ function PostComposerScreenInner() {
 
     if (route.params.redirectTo === 'Community') {
       mainTabNavigation.navigate('Community', {
-        contractAddress: token.contract?.contractAddress?.address ?? '',
-        chain: token.chain ?? '',
+        contractAddress: token.definition.contract?.contractAddress?.address ?? '',
+        chain: token.definition?.chain ?? '',
         postId: createdPostId,
         creatorName: creatorName,
       });
@@ -324,7 +324,9 @@ export function ToastMessage({ tokenRef }: ToastMessageProps) {
   const token = useFragment(
     graphql`
       fragment PostComposerScreenTokenFragment on Token {
-        name
+        definition {
+          name
+        }
       }
     `,
     tokenRef
@@ -342,7 +344,7 @@ export function ToastMessage({ tokenRef }: ToastMessageProps) {
         className="text-sm text-offBlack dark:text-offWhite"
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >
-        {token.name}
+        {token.definition?.name}
       </Typography>
     </View>
   );

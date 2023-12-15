@@ -33,7 +33,6 @@ export function extractRelevantMetadataFromToken(
             mintURL
           }
           contract {
-            name
             contractAddress {
               address
             }

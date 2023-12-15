@@ -25,8 +25,10 @@ export function usePost({ tokenRef }: Props) {
     graphql`
       fragment usePostTokenFragment on Token {
         __typename
-        community {
-          dbid
+        definition {
+          community {
+            dbid
+          }
         }
       }
     `,
@@ -71,7 +73,7 @@ export function usePost({ tokenRef }: Props) {
   const { pushToast } = useToastActions();
 
   const communityConnection = ConnectionHandler.getConnectionID(
-    `Community:${token?.community?.dbid}`,
+    `Community:${token?.definition.community?.dbid}`,
     'CommunityViewPostsTabFragment_posts'
   );
 

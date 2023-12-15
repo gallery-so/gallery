@@ -36,7 +36,9 @@ export function SomeoneAdmiredYourToken({
         count
         token {
           dbid
-          name
+          definition {
+            name
+          }
 
           ...useGetPreviewImagesSingleFragment
         }
@@ -127,7 +129,7 @@ export function SomeoneAdmiredYourToken({
           className="text-sm"
           numberOfLines={2}
         >
-          {token.name ?? 'item'}
+          {token.definition?.name ?? 'item'}
         </Typography>
       </Text>
     </NotificationSkeleton>

@@ -24,7 +24,9 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
   const token = useFragment(
     graphql`
       fragment PostInputTokenFragment on Token {
-        name
+        definition {
+          name
+        }
       }
     `,
     tokenRef
@@ -36,8 +38,8 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
   const characterCount = value.length;
 
   const inputPlaceHolder = useMemo(() => {
-    return `Say something about "${token.name ?? 'this item'}"`;
-  }, [token.name]);
+    return `Say something about "${token.definition?.name ?? 'this item'}"`;
+  }, [token.definition?.name]);
 
   return (
     <View

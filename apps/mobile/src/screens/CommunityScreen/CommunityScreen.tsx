@@ -49,7 +49,6 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         $communityAddress: ChainAddressInput!
         $listOwnersFirst: Int!
         $listOwnersAfter: String
-        $onlyGalleryUsers: Boolean
         $postLast: Int!
         $postBefore: String
         $communityID: DBID!
@@ -63,7 +62,6 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         chain: chain,
       },
       listOwnersFirst: 200,
-      onlyGalleryUsers: true,
       postLast: POSTS_PER_PAGE,
       communityID: communityQuery.community.dbid ?? '',
     },

@@ -21,18 +21,16 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment PostCreatorAndCollectionSectionFragment on Token {
-        community {
-          creator {
-            ... on GalleryUser {
-              __typename
-              username
-              universal
+        definition {
+          community {
+            creator {
+              ... on GalleryUser {
+                __typename
+                username
+                universal
+              }
+              ...ProfilePictureAndUserOrAddressCreatorFragment
             }
-            ...ProfilePictureAndUserOrAddressCreatorFragment
-          }
-          contractAddress {
-            address
-            chain
           }
         }
         ...extractRelevantMetadataFromTokenFragment
@@ -41,13 +39,13 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     tokenRef
   );
 
-  const { contractName } = extractRelevantMetadataFromToken(token);
+  const { chain, contractAddress, contractName } = extractRelevantMetadataFromToken(token);
   const creatorUsernameCharCount = useMemo(() => {
-    if (token.community?.creator?.__typename === 'GalleryUser') {
-      return token.community.creator.username?.length ?? 0;
+    if (token.definition?.community?.creator?.__typename === 'GalleryUser') {
+      return token.definition?.community.creator.username?.length ?? 0;
     }
     return 0;
-  }, [token.community?.creator]);
+  }, [token.definition?.community?.creator]);
 
   const { contractNameContainerStyle, creatorNameContainerStyle } = useMemo(() => {
     const contractNameCharCount = contractName.length;
@@ -76,24 +74,27 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleUsernamePress = useCallback(() => {
-    if (token.community?.creator?.__typename === 'GalleryUser') {
-      navigation.navigate('Profile', { username: token.community.creator?.username ?? '' });
+    if (token.definition?.community?.creator?.__typename === 'GalleryUser') {
+      navigation.navigate('Profile', {
+        username: token.definition.community.creator.username ?? '',
+      });
     }
-  }, [token.community?.creator, navigation]);
+  }, [token.definition.community, navigation]);
 
   const handleCommunityPress = useCallback(() => {
-    if (token.community?.contractAddress?.address && token.community?.contractAddress?.chain) {
+    if (contractAddress && chain) {
       navigation.push('Community', {
-        contractAddress: token.community.contractAddress?.address ?? '',
-        chain: token.community.contractAddress?.chain ?? '',
+        contractAddress,
+        chain,
       });
     }
 
     return;
-  }, [token.community, navigation]);
+  }, [contractAddress, chain, navigation]);
 
   const isLegitGalleryUser =
-    token.community?.creator?.__typename === 'GalleryUser' && !token.community.creator.universal;
+    token.definition?.community?.creator?.__typename === 'GalleryUser' &&
+    !token.definition?.community.creator.universal;
 
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
@@ -114,7 +115,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
           </Typography>
 
           <CreatorProfilePictureAndUsernameOrAddress
-            userOrAddressRef={token.community.creator}
+            userOrAddressRef={token.definition?.community.creator}
             eventContext={contexts.Posts}
             handlePress={handleUsernamePress}
             pfpDisabled
@@ -122,7 +123,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
         </GalleryTouchableOpacity>
       ) : null}
 
-      {token.community && (
+      {token.definition?.community && (
         <GalleryTouchableOpacity
           className="flex"
           style={contractNameContainerStyle}
