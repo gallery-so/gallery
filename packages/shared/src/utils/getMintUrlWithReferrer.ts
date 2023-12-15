@@ -19,6 +19,10 @@ const providers = [
     regex: '^https://(www\\.)?superrare.com/?',
     name: 'SuperRare',
   },
+  {
+    regex: '^https://(www\\.)?highlight.xyz/?',
+    name: 'Highlight',
+  },
 ];
 
 export function getMintUrlWithReferrer(url: string, referrer: string) {
