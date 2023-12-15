@@ -1,5 +1,5 @@
 import { useColorScheme } from 'nativewind';
-import Svg, { Path,SvgProps } from 'react-native-svg';
+import Svg, { Path, SvgProps } from 'react-native-svg';
 export function HighlightIcon(props: SvgProps) {
   const { colorScheme } = useColorScheme();
 
