@@ -1,16 +1,9 @@
-import { useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
-
-type Dimensions = {
-  width?: number;
-  height?: number;
-};
 
 type Props = {
   tokenId: string;
@@ -21,7 +14,6 @@ export default function NftDetailPageFallback({ tokenId }: Props) {
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const dimensions = cachedUrls[tokenId]?.dimensions;
-  console.log('dimensions', dimensions);
 
   return (
     <StyledFullPageLoader>

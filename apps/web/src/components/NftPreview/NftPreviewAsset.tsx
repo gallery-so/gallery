@@ -1,10 +1,10 @@
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useCallback, useMemo } from 'react';
 
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
-import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
@@ -35,10 +35,9 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
     tokenRef
   );
 
+  const DESKTOP_TOKEN_SIZE = 600;
 
-const DESKTOP_TOKEN_SIZE = 600;
-
-const resultDimensions = useMemo(() => {
+  const resultDimensions = useMemo(() => {
     const serverSourcedDimensions = token.media?.dimensions;
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
@@ -167,8 +166,6 @@ const StyledContentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  // Ensures that grid columns don't grow to fit their children
-  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
   min-width: 0;
 
   position: relative;

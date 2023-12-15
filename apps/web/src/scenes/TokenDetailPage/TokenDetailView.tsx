@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
 import { TokenDetailViewQuery } from '~/generated/TokenDetailViewQuery.graphql';
 import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
@@ -101,12 +100,12 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
-          <ShimmerProvider>
+          <Container>
             <TokenDetailAsset
               tokenRef={token}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
-          </ShimmerProvider>
+          </Container>
           {token?.collectorsNote && (
             <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
               <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
@@ -151,6 +150,19 @@ const StyledContentContainer = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: initial;
   }
+`;
+
+const Container = styled.div`
+  // Ensures that grid columns don't grow to fit their children
+  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
+  min-width: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledAssetAndNoteContainer = styled.div`

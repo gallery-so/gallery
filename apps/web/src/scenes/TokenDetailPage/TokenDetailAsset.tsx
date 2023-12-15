@@ -1,20 +1,19 @@
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { useCallback, useMemo } from 'react';
 import breakpoints, { size } from '~/components/core/breakpoints';
-import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { NftDetailAssetComponent } from '~/scenes/NftDetailPage/NftDetailAsset';
-import { getBackgroundColorOverrideForContract } from '~/utils/token';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
   tokenRef: TokenDetailAssetFragment$key;
@@ -55,7 +54,6 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   );
 
   const breakpoint = useBreakpoint();
-  const { aspectRatioType } = useContentState();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -63,8 +61,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
   const isIframe = token.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
-    !isIframe &&
-    (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
+    !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
   const { handleNftLoaded } = useNftRetry({
     tokenId: token.dbid,
@@ -98,9 +95,10 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
 
   const handleRawLoad = useCallback(() => {
-    cacheLoadedImageUrls(tokenId, 'raw', imageUrl);
+    cacheLoadedImageUrls(tokenId, 'raw', imageUrl, resultDimensions);
+
     handleNftLoaded();
-  }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId]);
+  }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
 
   return (
     <StyledAssetContainer
@@ -183,7 +181,6 @@ const StyledImageWrapper = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 1s ease-in-out;
   &.visible {
     opacity: 1;
     pointer-events: auto;
@@ -201,7 +198,6 @@ const NftDetailAssetWrapper = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 1s ease-in-out;
   &.visible {
     opacity: 1;
     pointer-events: auto;

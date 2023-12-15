@@ -98,6 +98,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
             <NftDetailView
               queryRef={query}
               authenticatedUserOwnsAsset={false}
+              visibility="visible"
               collectionTokenRef={event.token}
             />
           </StyledNftDetailViewPopover>

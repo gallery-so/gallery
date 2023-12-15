@@ -1,15 +1,13 @@
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
-import { useCallback, useMemo } from 'react';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
-import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
@@ -17,9 +15,9 @@ import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
-
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
@@ -27,12 +25,10 @@ import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
-import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
-  onLoad: ContentIsLoadedEvent;
+  onLoad: () => void;
 };
 
 const DESKTOP_TOKEN_SIZE = 600;
@@ -74,7 +70,7 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
-  onLoad: ContentIsLoadedEvent;
+  onLoad: () => void;
 };
 
 function NftDetailAssetComponentWithouFallback({
@@ -232,7 +228,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   );
 
   const breakpoint = useBreakpoint();
-  //  const { aspectRatioType } = useContentState();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);

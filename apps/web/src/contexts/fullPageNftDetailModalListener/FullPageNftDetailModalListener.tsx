@@ -41,7 +41,7 @@ export default function FullPageNftDetailModalListener() {
     }
 
     const content = collectionId ? (
-      <Suspense fallback={<NftDetailPageFallback />}>
+      <Suspense fallback={<NftDetailPageFallback tokenId={tokenId as string} />}>
         <NftDetailPage
           username={username as string}
           collectionId={collectionId as string}
@@ -50,7 +50,7 @@ export default function FullPageNftDetailModalListener() {
       </Suspense>
     ) : (
       <StyledTokenPreviewModal>
-        <Suspense fallback={<NftDetailPageFallback />}>
+        <Suspense fallback={<NftDetailPageFallback tokenId={tokenId as string} />}>
           <LoadableTokenDetailView tokenId={tokenId as string} />
         </Suspense>
       </StyledTokenPreviewModal>

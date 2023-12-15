@@ -1,5 +1,10 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
+export type Dimensions = {
+  width?: number;
+  height?: number;
+};
+
 export type CacheParams = {
   [tokenId: string]: {
     type: 'preview' | 'raw';
@@ -8,15 +13,11 @@ export type CacheParams = {
   };
 };
 
-type Dimensions = {
-  width?: number;
-  height?: number;
-};
-
 type NftPreviewFallbackState = {
   cacheLoadedImageUrls: (
     tokenId: string,
     type: 'preview' | 'raw',
+
     url: string,
     dimensions: Dimensions
   ) => void;
