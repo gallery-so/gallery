@@ -55,16 +55,17 @@ export function GalleryAnnouncement({ queryRef, notificationRef }: Props) {
       onPress={handlePress}
       responsibleUserRefs={[]}
       notificationRef={notification}
+      overridePfpElement={
+        imageUrl ? (
+          <FastImage source={{ uri: imageUrl }} style={{ width: 64, height: 64 }} />
+        ) : (
+          <View className="w-16 h-16 bg-gray-200 " />
+        )
+      }
     >
       <View className="flex flex-row items-center">
         <View className={clsx('flex-row items-center space-x-2', ctaText ? 'flex-1' : null)}>
-          {imageUrl ? (
-            <FastImage source={{ uri: imageUrl }} style={{ width: 64, height: 64 }} />
-          ) : (
-            <View className="w-16 h-16 bg-gray-200 " />
-          )}
-
-          <View className="flex-1">
+          <View className="flex-1 pl-2">
             <Typography
               font={{
                 family: 'ABCDiatype',
