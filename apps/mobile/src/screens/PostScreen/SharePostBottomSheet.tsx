@@ -181,6 +181,7 @@ function SharePostBottomSheet(
     Clipboard.setString(postUrl);
     setHasCopiedUrl(true);
     setTimeout(() => bottomSheetRef.current?.dismiss(), 800);
+    setTimeout(() => setHasCopiedUrl(false), 800);
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
