@@ -44,6 +44,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
         ...YouReceivedTopActivityBadgeQueryFragment
+        ...GalleryAnnouncementQueryFragment
       }
     `,
     queryRef
@@ -178,7 +179,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <YouReceivedTopActivityBadge queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'GalleryAnnouncementNotification') {
       return notification.platform === 'Web' ? null : (
-        <GalleryAnnouncement notificationRef={notification} />
+        <GalleryAnnouncement notificationRef={notification} queryRef={query} />
       );
     }
     return <View />;
