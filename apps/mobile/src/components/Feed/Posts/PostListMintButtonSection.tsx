@@ -35,16 +35,17 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   const userAddedMintURL = post?.userAddedMintURL ?? '';
 
-  if (!token || !userAddedMintURL) return null;
   return (
     <View className="px-3 pb-8 pt-2">
-      <MintLinkButton
-        tokenRef={token}
-        variant="secondary"
-        eventContext={contexts.Feed}
-        referrerAddress={ownerWalletAddress}
-        overwriteURL={userAddedMintURL}
-      />
+      {token && userAddedMintURL && (
+        <MintLinkButton
+          tokenRef={token}
+          variant="secondary"
+          eventContext={contexts.Feed}
+          referrerAddress={ownerWalletAddress}
+          overwriteURL={userAddedMintURL}
+        />
+      )}
     </View>
   );
 }

@@ -6,6 +6,7 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { GalleryAnnouncement } from './Notifications/GalleryAnnouncement';
 import { NewTokens } from './Notifications/NewTokens';
 import { SomeoneAdmiredYourComment } from './Notifications/SomeoneAdmiredYourComment';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
@@ -45,6 +46,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
         ...YouReceivedTopActivityBadgeQueryFragment
         ...SomeoneAdmiredYourCommentQueryFragment
+        ...GalleryAnnouncementQueryFragment
       }
     `,
     queryRef
@@ -134,6 +136,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneAdmiredYourCommentFragment
         }
+        ... on GalleryAnnouncementNotification {
+          __typename
+          platform
+          ...GalleryAnnouncementFragment
+        }
       }
     `,
     notificationRef
@@ -178,6 +185,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <YouReceivedTopActivityBadge queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
       return <SomeoneAdmiredYourComment queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'GalleryAnnouncementNotification') {
+      return notification.platform === 'Web' ? null : (
+        <GalleryAnnouncement notificationRef={notification} queryRef={query} />
+      );
     }
     return <View />;
   }, [notification, query]);

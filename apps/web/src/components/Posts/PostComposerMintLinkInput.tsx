@@ -9,6 +9,7 @@ import colors from '~/shared/theme/colors';
 import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button } from '../core/Button/Button';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import IconContainer from '../core/IconContainer';
 import { SlimInput } from '../core/Input/Input';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -144,14 +145,21 @@ function SupportedMintLinkModal({ onClose }: { onClose: () => void }) {
 
         <VStack gap={8}>
           <BaseM>
-            Gallery embeds your wallet in mint links for eligible collections, ensuring you get 100%
-            of referral rewards on supported platforms.
+            Gallery automatically adds your primary wallet address in mint links, ensuring you get
+            100% of referral rewards on supported platforms.
           </BaseM>
 
           <BaseM>
-            Only <strong>Mint.fun</strong>, <strong>Zora</strong>, <strong>Prohibition</strong>,{' '}
-            <strong>Ensemble</strong>, <strong>SuperRare</strong> and
-            <strong> FxHash</strong> links are currently supported.
+            View our supported platforms{' '}
+            <StyledGalleryLink
+              href="https://gallery-so.notion.site/Supported-Mint-Link-Domains-b4420f096413498d8aa24d857561817b"
+              eventElementId="Supported Mint Link Modal"
+              eventName="Click Supported Mint Link Modal"
+              eventContext={contexts.Posts}
+            >
+              here
+            </StyledGalleryLink>
+            .
           </BaseM>
         </VStack>
       </VStack>
@@ -182,4 +190,9 @@ const StyledModalTitle = styled(BaseXL)`
 const StyledCloseButton = styled(Button)`
   width: 72px;
   height: 32px;
+`;
+
+const StyledGalleryLink = styled(GalleryLink)`
+  color: ${colors.black[800]};
+  font-weight: 700;
 `;
