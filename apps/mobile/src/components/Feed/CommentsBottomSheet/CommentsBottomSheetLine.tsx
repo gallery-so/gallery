@@ -4,16 +4,20 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useAdmireComment } from 'src/hooks/useAdmireComment';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
+import { CommentsBottomSheetLineQueryFragment$key } from '~/generated/CommentsBottomSheetLineQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
+
+import { AdmireIcon } from '../Socialize/AdmireIcon';
 
 export type OnReplyPressParams = {
   username?: string;
@@ -28,6 +32,7 @@ type CommentLineProps = {
   onReplyPress: (params: OnReplyPressParams) => void;
   footerElement?: React.ReactNode;
   isReply?: boolean;
+  queryRef: CommentsBottomSheetLineQueryFragment$key;
 };
 
 export function CommentsBottomSheetLine({
@@ -36,7 +41,17 @@ export function CommentsBottomSheetLine({
   onReplyPress,
   footerElement,
   isReply,
+  queryRef,
 }: CommentLineProps) {
+  const query = useFragment(
+    graphql`
+      fragment CommentsBottomSheetLineQueryFragment on Query {
+        ...useAdmireCommentQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const comment = useFragment(
     graphql`
       fragment CommentsBottomSheetLineFragment on Comment {
@@ -52,10 +67,17 @@ export function CommentsBottomSheetLine({
         mentions {
           ...ProcessedTextFragment
         }
+        ...useAdmireCommentFragment
       }
     `,
     commentRef
   );
+
+  const { toggleAdmire, totalAdmires, hasViewerAdmiredComment } = useAdmireComment({
+    commentRef: comment,
+    queryRef: query,
+  });
+
   const timeAgo = getTimeSince(comment.creationTime);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -75,6 +97,10 @@ export function CommentsBottomSheetLine({
       commentId: comment.dbid,
     });
   }, [comment?.commenter?.username, comment.dbid, comment.comment, onReplyPress]);
+
+  const handleAdmirePress = useCallback(() => {
+    toggleAdmire();
+  }, [toggleAdmire]);
 
   if (!comment.comment) {
     return null;
@@ -99,21 +125,47 @@ export function CommentsBottomSheetLine({
           </GalleryTouchableOpacity>
         </View>
       )}
-      <View className="flex flex-col grow-0">
-        <View className="flex flex-row space-x-1">
-          <Typography className="text-sm leading-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {comment.commenter?.username}
-          </Typography>
-          <Typography
-            className="text-xxs text-metal leading-4"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      <View className="flex-1">
+        <View className="flex-row space-x-3 w-full justify-between">
+          <View className="flex-1">
+            <View className="flex-row space-x-1">
+              <Typography
+                className="text-sm leading-4"
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {comment.commenter?.username}
+              </Typography>
+              <Typography
+                className="text-xxs text-metal leading-4"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                {timeAgo}
+              </Typography>
+            </View>
+            <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+          </View>
+          <GalleryTouchableOpacity
+            className="flex-row justify-end items-center gap-0.5"
+            onPress={handleAdmirePress}
+            eventElementId="Admire Comment Button"
+            eventName="Press Admire Comment Button"
+            eventContext={contexts.Posts}
           >
-            {timeAgo}
-          </Typography>
+            {totalAdmires > 0 && (
+              <Typography
+                className={clsx('text-xs', {
+                  'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
+                  'text-shadow dark:text-metal': !hasViewerAdmiredComment,
+                })}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {totalAdmires}
+              </Typography>
+            )}
+            <AdmireIcon variant="secondary" height={16} active={hasViewerAdmiredComment} />
+          </GalleryTouchableOpacity>
         </View>
-        <View className="flex mr-5 space-y-1">
-          <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
-
+        <View className="flex mr-5 space-y-1 pl-2">
           <GalleryTouchableOpacity
             eventElementId={'Reply to Comment'}
             eventName={'Reply to Comment Press'}

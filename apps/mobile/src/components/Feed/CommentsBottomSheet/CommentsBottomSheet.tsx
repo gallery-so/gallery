@@ -346,6 +346,7 @@ function ConnectedEventCommentsList({
             }
           }
         }
+        ...CommentsBottomSheetListQueryFragment
       }
     `,
     queryRef
@@ -369,6 +370,7 @@ function ConnectedEventCommentsList({
         <CommentsBottomSheetList
           onLoadMore={handleLoadMore}
           commentRefs={comments}
+          queryRef={query}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
           onExpandReplies={onExpandReplies}
@@ -432,6 +434,7 @@ function ConnectedPostCommentsList({
             }
           }
         }
+        ...CommentsBottomSheetListQueryFragment
       }
     `,
     queryRef
@@ -453,6 +456,7 @@ function ConnectedPostCommentsList({
         <CommentsBottomSheetList
           onLoadMore={handleLoadMore}
           commentRefs={comments}
+          queryRef={query}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
           onExpandReplies={onExpandReplies}

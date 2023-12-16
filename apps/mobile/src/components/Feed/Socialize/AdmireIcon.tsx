@@ -4,13 +4,31 @@ import Svg, { G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
+const colorMap = {
+  primary: {
+    dark: colors.white,
+    light: colors.black['800'],
+  },
+  secondary: {
+    dark: colors.metal,
+    light: colors.shadow,
+  },
+};
+
 type Props = {
   active?: boolean;
   style?: SvgProps['style'];
   height?: number;
+  variant?: keyof typeof colorMap;
 } & SvgProps;
 
-export function AdmireIcon({ active = false, style, height = 28, ...props }: Props) {
+export function AdmireIcon({
+  variant = 'primary',
+  active = false,
+  style,
+  height = 28,
+  ...props
+}: Props) {
   const { colorScheme } = useColorScheme();
 
   const originalHeight = 24;
@@ -27,8 +45,8 @@ export function AdmireIcon({ active = false, style, height = 28, ...props }: Pro
       return blueToDisplay;
     }
 
-    return colorScheme === 'dark' ? colors.white : colors.black['800'];
-  }, [active, blueToDisplay, colorScheme]);
+    return colorMap[variant][colorScheme];
+  }, [active, blueToDisplay, colorScheme, variant]);
 
   const fillColor = useMemo(() => {
     return blueToDisplay;
