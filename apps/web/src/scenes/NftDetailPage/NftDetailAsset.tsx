@@ -18,6 +18,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
+import Shimmer from '~/components/Shimmer/Shimmer';
 
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
@@ -298,6 +299,12 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
             />
           </StyledImageWrapper>
 
+          {!hasPreviewUrl && !hasRawUrl ? (
+            <PreviewContainer>
+              <Shimmer />
+            </PreviewContainer>
+          ) : null}
+
           <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </NftDetailAssetWrapper>
@@ -372,6 +379,17 @@ const StyledImageWrapper = styled.div`
     opacity: 1;
     pointer-events: auto;
   }
+`;
+
+const PreviewContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 `;
 
 const NftDetailAssetWrapper = styled.div`
