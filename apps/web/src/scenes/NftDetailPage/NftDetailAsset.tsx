@@ -250,6 +250,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
+  const shouldShowShimmer = !(hasPreviewUrl || hasRawUrl);
 
   const resultDimensions = useMemo(() => {
     const serverSourcedDimensions = token.media?.dimensions;
@@ -298,13 +299,11 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
               width={resultDimensions.width}
             />
           </StyledImageWrapper>
-
-          {!hasPreviewUrl && !hasRawUrl ? (
+          {shouldShowShimmer && (
             <PreviewContainer>
               <Shimmer />
             </PreviewContainer>
-          ) : null}
-
+          )}
           <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </NftDetailAssetWrapper>

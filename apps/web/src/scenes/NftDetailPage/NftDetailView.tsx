@@ -18,7 +18,7 @@ type Props = {
   authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewQueryFragment$key;
   collectionTokenRef: NftDetailViewFragment$key;
-  visibility: string;
+  visibility?: string;
 };
 
 type LoadableNftDetailViewProps = {
@@ -59,7 +59,7 @@ export default function NftDetailView({
   authenticatedUserOwnsAsset,
   queryRef,
   collectionTokenRef,
-  visibility,
+  visibility = "visible",
 }: Props) {
   const collectionNft = useFragment(
     graphql`

@@ -9,6 +9,9 @@ import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
+
+const DESKTOP_TOKEN_SIZE = 600;
+
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;
   onLoad: ContentIsLoadedEvent;
@@ -34,8 +37,6 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
     `,
     tokenRef
   );
-
-  const DESKTOP_TOKEN_SIZE = 600;
 
   const resultDimensions = useMemo(() => {
     const serverSourcedDimensions = token.media?.dimensions;
