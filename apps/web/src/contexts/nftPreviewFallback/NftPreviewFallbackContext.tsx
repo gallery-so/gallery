@@ -17,7 +17,6 @@ type NftPreviewFallbackState = {
   cacheLoadedImageUrls: (
     tokenId: string,
     type: 'preview' | 'raw',
-
     url: string,
     dimensions: Dimensions
   ) => void;

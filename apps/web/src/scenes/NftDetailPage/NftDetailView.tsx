@@ -59,7 +59,7 @@ export default function NftDetailView({
   authenticatedUserOwnsAsset,
   queryRef,
   collectionTokenRef,
-  visibility = "visible",
+  visibility = 'visible',
 }: Props) {
   const collectionNft = useFragment(
     graphql`

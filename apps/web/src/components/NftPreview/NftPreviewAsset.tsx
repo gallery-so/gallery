@@ -9,7 +9,6 @@ import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
-
 const DESKTOP_TOKEN_SIZE = 600;
 
 type Props = {

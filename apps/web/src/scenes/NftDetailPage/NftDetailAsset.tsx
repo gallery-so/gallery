@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import Shimmer from '~/components/Shimmer/Shimmer';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
@@ -18,7 +19,6 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
-import Shimmer from '~/components/Shimmer/Shimmer';
 
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
@@ -242,10 +242,9 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     tokenId: token.dbid,
   });
 
-  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
-
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
+  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
   const tokenId = token.dbid;
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
@@ -291,22 +290,22 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
         <VisibilityContainer>
-          <StyledImageWrapper className={hasPreviewUrl ? 'visible' : ''}>
+          <AssetContainer className={hasPreviewUrl ? 'visible' : ''}>
             <StyledImage
               src={cachedUrls[tokenId]?.url}
               onLoad={handleNftLoaded}
               height={resultDimensions.height}
               width={resultDimensions.width}
             />
-          </StyledImageWrapper>
+          </AssetContainer>
           {shouldShowShimmer && (
-            <PreviewContainer>
+            <ShimmerContainer>
               <Shimmer />
-            </PreviewContainer>
+            </ShimmerContainer>
           )}
-          <NftDetailAssetWrapper className={hasRawUrl ? 'visible' : ''}>
+          <AssetContainer className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
-          </NftDetailAssetWrapper>
+          </AssetContainer>
         </VisibilityContainer>
       </NftFailureBoundary>
     </StyledAssetContainer>
@@ -363,7 +362,7 @@ const VisibilityContainer = styled.div`
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 
-const StyledImageWrapper = styled.div`
+const AssetContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -380,7 +379,7 @@ const StyledImageWrapper = styled.div`
   }
 `;
 
-const PreviewContainer = styled.div`
+const ShimmerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,23 +388,6 @@ const PreviewContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-`;
-
-const NftDetailAssetWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  &.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
 `;
 
 export default NftDetailAsset;
