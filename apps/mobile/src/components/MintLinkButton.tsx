@@ -54,6 +54,7 @@ export function MintLinkButton({
               }
             }
           }
+          mintUrl
         }
       }
     `,
@@ -65,7 +66,8 @@ export function MintLinkButton({
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
   const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL || (token?.definition?.community?.contract?.mintURL ?? ''),
+    overwriteURL ||
+      (token?.definition?.mintUrl ?? token.definition?.community?.contract?.mintURL ?? ''),
     referrerAddress ?? ''
   );
 

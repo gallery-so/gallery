@@ -32,6 +32,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       fragment CommunityPageMetadataFragment on Community {
         name
         chain
+        mintURL
         contract {
           dbid
         }
@@ -79,6 +80,8 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
   const token = community?.tokensInCommunity?.edges?.[0]?.node;
+
+  const communityMintURL = community?.mintURL ?? '';
 
   const handleDisabledPostButtonClick = useCallback(() => {
     showModal({
@@ -168,6 +171,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
               eventElementId="Click Mint Link Button"
               eventName="Click Mint Link Button"
               eventContext={contexts.Community}
+              overwriteURL={communityMintURL}
             />
           )
         ))}

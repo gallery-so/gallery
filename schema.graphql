@@ -1935,6 +1935,7 @@ type TokenDefinition implements Node {
   community: Community
   communities: [Community]
   externalUrl: String
+  mintUrl: String
 }
 
 type TokenEdge {

@@ -79,10 +79,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
                 username
               }
             }
-            contract {
-              mintURL
-            }
           }
+          mintUrl
         }
         ...PostComposerNftFragment
         ...PostComposerTextAreaFragment
@@ -106,8 +104,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
-  const mintUrlFromQueryOrToken =
-    mintPageUrl || (token.definition.community?.contract?.mintURL ?? '');
+  const mintUrlFromQueryOrToken = mintPageUrl || (token.definition.mintUrl ?? '');
   const mintURLWithRef = getMintUrlWithReferrer(mintUrlFromQueryOrToken, ownerWalletAddress).url;
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
