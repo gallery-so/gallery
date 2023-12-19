@@ -62,6 +62,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             }
           }
         }
+        mintURL
         ...CommunityPostBottomSheetFragment
       }
     `,
@@ -93,6 +94,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
+  const communityMintURL = community?.mintURL ?? '';
 
   const creatorWalletAddress = community?.creator?.primaryWallet?.chainAddress?.address ?? '';
 
@@ -220,6 +223,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         token && (
           <MintLinkButton
             tokenRef={token}
+            overwriteURL={communityMintURL}
             size="sm"
             eventContext={contexts.Community}
             referrerAddress={creatorWalletAddress}
