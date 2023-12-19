@@ -44,7 +44,6 @@ function PostComposerScreenInner() {
               contractAddress {
                 address
               }
-              mintURL
             }
             definition {
               name
@@ -55,6 +54,7 @@ function PostComposerScreenInner() {
                   }
                 }
               }
+              mintUrl
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -88,7 +88,7 @@ function PostComposerScreenInner() {
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
 
   const mintURLWithRef = getMintUrlWithReferrer(
-    token.contract?.mintURL ?? '',
+    token.definition.mintUrl ?? '',
     ownerWalletAddress
   ).url;
 
