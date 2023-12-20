@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
-import web3 from 'web3';
+import web3Utils from 'web3-utils';
 
 import { useConnectEthereum } from '~/components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from '~/constants/transaction';
@@ -63,7 +63,7 @@ export default function useMintContractWithQuantity({
       if (contract && address) {
         try {
           const balance = await contract.read.balanceOfType([tokenId, address]);
-          return web3.utils.hexToNumber(balance);
+          return web3Utils.hexToNumber(balance);
         } catch {
           return 0;
         }
@@ -205,8 +205,8 @@ export default function useMintContractWithQuantity({
           setTransactionStatus(TransactionStatus.SUCCESS);
           if (onMintSuccess) {
             const supplies = await updateSupplies(contract, tokenId);
-            const sup = web3.utils.hexToNumber(supplies?.[0]);
-            const used = web3.utils.hexToNumber(supplies?.[1]);
+            const sup = web3Utils.hexToNumber(supplies?.[0]);
+            const used = web3Utils.hexToNumber(supplies?.[1]);
             setPublicSupply(sup);
             setUsedPublicSupply(used);
             setSoldOut(sup - used === 0);
