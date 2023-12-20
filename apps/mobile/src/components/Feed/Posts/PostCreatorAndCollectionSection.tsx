@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CreatorProfilePictureAndUsernameOrAddress } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
@@ -31,6 +32,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
               }
               ...ProfilePictureAndUserOrAddressCreatorFragment
             }
+            ...useNavigateToCommunityScreenFragment
           }
         }
         ...extractRelevantMetadataFromTokenFragment
@@ -39,7 +41,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     tokenRef
   );
 
-  const { chain, contractAddress, contractName } = extractRelevantMetadataFromToken(token);
+  const { contractName } = extractRelevantMetadataFromToken(token);
   const creatorUsernameCharCount = useMemo(() => {
     if (token.definition?.community?.creator?.__typename === 'GalleryUser') {
       return token.definition?.community.creator.username?.length ?? 0;
@@ -81,16 +83,13 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     }
   }, [token.definition.community, navigation]);
 
-  const handleCommunityPress = useCallback(() => {
-    if (contractAddress && chain) {
-      navigation.push('Community', {
-        contractAddress,
-        chain,
-      });
-    }
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
-    return;
-  }, [contractAddress, chain, navigation]);
+  const handleCommunityPress = useCallback(() => {
+    if (token.definition.community) {
+      navigateToCommunity(token.definition.community);
+    }
+  }, [navigateToCommunity, token.definition.community]);
 
   const isLegitGalleryUser =
     token.definition?.community?.creator?.__typename === 'GalleryUser' &&

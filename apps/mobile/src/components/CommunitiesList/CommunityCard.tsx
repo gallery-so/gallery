@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { Typography } from '~/components/Typography';
 import { CommunityCardFragment$key } from '~/generated/CommunityCardFragment.graphql';
@@ -10,37 +11,29 @@ import { contexts } from '~/shared/analytics/constants';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
 import { CommunityProfilePicture } from '../ProfilePicture/CommunityProfilePicture';
-type ContractAddress = {
-  address: string | null;
-  chain: string | null;
-};
 
 type CommunityCardProps = {
   communityRef: CommunityCardFragment$key;
-  onPress: (contractAddress: ContractAddress) => void;
 };
 
-export function CommunityCard({ communityRef, onPress }: CommunityCardProps) {
+export function CommunityCard({ communityRef }: CommunityCardProps) {
   const community = useFragment(
     graphql`
       fragment CommunityCardFragment on Community {
         name
         description
-        contractAddress {
-          address
-          chain
-        }
         ...CommunityProfilePictureFragment
+        ...useNavigateToCommunityScreenFragment
       }
     `,
     communityRef
   );
 
+  const navigateToCommunity = useNavigateToCommunityScreen();
+
   const handlePress = useCallback(() => {
-    if (community.contractAddress?.address && community?.contractAddress?.chain) {
-      onPress(community.contractAddress);
-    }
-  }, [onPress, community.contractAddress]);
+    navigateToCommunity(community);
+  }, [community, navigateToCommunity]);
 
   const descriptionFirstLine = community.description?.split('\n')[0];
   return (

@@ -16,6 +16,8 @@ import processProjectUrl from './processProjectUrl';
 import { getProhibitionUrlDangerously } from './prohibition';
 import { truncateAddress } from './wallet';
 
+export type CommunitySubtype = 'ContractCommunity' | 'ArtBlocksCommunity';
+
 export function extractRelevantMetadataFromToken(
   tokenRef: extractRelevantMetadataFromTokenFragment$key
 ) {
@@ -31,6 +33,12 @@ export function extractRelevantMetadataFromToken(
           community {
             name
             mintURL
+            subtype {
+              __typename
+              ... on ArtBlocksCommunity {
+                projectID
+              }
+            }
           }
           contract {
             contractAddress {
@@ -54,12 +62,20 @@ export function extractRelevantMetadataFromToken(
   } = token.definition;
 
   const contractAddress = contract?.contractAddress?.address ?? '';
+  const communitySubtype = (community?.subtype?.__typename ??
+    'ContractCommunity') as CommunitySubtype;
+  const communityProjectId =
+    community?.subtype?.__typename === 'ArtBlocksCommunity'
+      ? community.subtype.projectID ?? ''
+      : '';
 
   const result = {
     tokenId: '',
     chain: chain ?? '',
     contractAddress,
     contractName: '',
+    communitySubtype,
+    communityProjectId,
     lastUpdated: '',
     mintUrl: community?.mintURL ?? '',
     openseaUrl: '',

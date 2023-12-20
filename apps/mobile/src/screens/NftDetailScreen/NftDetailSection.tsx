@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
@@ -58,12 +59,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               chain
               tokenId
               description
-              contract {
-                contractAddress {
-                  address
-                  chain
-                }
-              }
               community {
                 name
                 badgeURL
@@ -73,6 +68,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                     username
                   }
                 }
+                ...useNavigateToCommunityScreenFragment
               }
             }
 
@@ -137,16 +133,13 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const isTokenOwner = loggedInUserId === token.owner?.id;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
-  const handleOpenCommunityScreen = useCallback(() => {
-    const contractAddress = tokenDefinition?.contract?.contractAddress;
-    const { address, chain } = contractAddress ?? {};
-    if (!address || !chain) return;
-    navigation.push('Community', {
-      contractAddress: address,
-      chain,
-    });
-  }, [tokenDefinition?.contract?.contractAddress, navigation]);
+  const handleNavigateToCommunityScreen = useCallback(() => {
+    if (tokenDefinition?.community) {
+      navigateToCommunity(tokenDefinition.community);
+    }
+  }, [navigateToCommunity, tokenDefinition.community]);
 
   const handleCreatePost = useCallback(() => {
     if (token.dbid) {
@@ -302,7 +295,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 />
               )}
               <GalleryTouchableOpacity
-                onPress={handleOpenCommunityScreen}
+                onPress={handleNavigateToCommunityScreen}
                 eventElementId="Community Pill"
                 eventName="Community Pill Clicked"
                 eventContext={contexts['NFT Detail']}

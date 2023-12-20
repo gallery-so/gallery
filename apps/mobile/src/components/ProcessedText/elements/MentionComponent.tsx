@@ -23,6 +23,7 @@ export function MentionComponent({ mention, mentionData }: Props) {
       return;
     }
     if (mentionData.__typename === 'Community') {
+      // [subcomref] TODO: make this compatible with new community key
       navigation.navigate('Community', {
         contractAddress: mentionData.contractAddress?.address ?? '',
         chain: mentionData.contractAddress?.chain ?? '',

@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -41,12 +42,6 @@ function PostComposerScreenInner() {
             dbid
             definition {
               name
-              chain
-              contract {
-                contractAddress {
-                  address
-                }
-              }
               community {
                 mintURL
                 creator {
@@ -54,6 +49,7 @@ function PostComposerScreenInner() {
                     username
                   }
                 }
+                ...useNavigateToCommunityScreenFragment
               }
             }
             ...PostComposerScreenTokenFragment
@@ -128,6 +124,8 @@ function PostComposerScreenInner() {
     bottomSheetRef.current?.present();
   }, [message, navigation]);
 
+  const navigateToCommunity = useNavigateToCommunityScreen();
+
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
@@ -180,12 +178,9 @@ function PostComposerScreenInner() {
     });
 
     if (route.params.redirectTo === 'Community') {
-      mainTabNavigation.navigate('Community', {
-        contractAddress: token.definition.contract?.contractAddress?.address ?? '',
-        chain: token.definition?.chain ?? '',
-        postId: createdPostId,
-        creatorName: creatorName,
-      });
+      if (token.definition.community) {
+        navigateToCommunity(token.definition.community, 'navigate');
+      }
     } else {
       feedTabNavigation.navigate('Latest', {
         postId: createdPostId,
@@ -196,17 +191,19 @@ function PostComposerScreenInner() {
     setIsPosting(false);
     resetMentions();
   }, [
-    message,
-    feedTabNavigation,
-    includeMintLink,
+    token.dbid,
+    token.definition.community,
     isPosting,
-    mainTabNavigation,
+    message,
     mentions,
-    mintURL,
+    includeMintLink,
     post,
-    resetMentions,
+    mainTabNavigation,
     route.params.redirectTo,
-    token,
+    resetMentions,
+    mintURL,
+    navigateToCommunity,
+    feedTabNavigation,
   ]);
 
   const isPostButtonDisabled = useMemo(() => {

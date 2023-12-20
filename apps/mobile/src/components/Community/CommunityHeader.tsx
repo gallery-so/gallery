@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { truncateAddress } from '~/shared/utils/wallet';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
@@ -21,12 +22,10 @@ export function CommunityHeader({ communityRef }: Props) {
     graphql`
       fragment CommunityHeaderFragment on Community {
         name
-        contractAddress {
-          address
-        }
         description
         ...CommunityProfilePictureFragment
         ...CommunityBottomSheetFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -45,7 +44,9 @@ export function CommunityHeader({ communityRef }: Props) {
   const cleanedSentences = community.description?.trim().replace(/\s+/g, ' ');
   const formattedDescription = cleanedSentences?.split(/[.!?]\s+/).join(' ');
 
-  const displayName = community.name || truncateAddress(community.contractAddress?.address ?? '');
+  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
+
+  const displayName = community.name || truncateAddress(contractAddress);
 
   return (
     <View className="mb-2">
