@@ -61,4 +61,22 @@ export namespace CmsTypes {
     faqModule: FaqModule;
     externalLink: string;
   }
+
+  export interface Testimonial {
+    _type: 'testimonial';
+    pfp: Media;
+    username: string;
+    handle: string;
+    date: string;
+    platformIcon: 'twitter' | 'lens' | 'farcaster';
+    caption: string;
+  }
+
+  export interface FeaturedProfile {
+    _type: 'featuredProfile';
+    coverImages: Image[];
+    profilePicture: Media;
+    username: string;
+    profileType: 'collector' | 'creator';
+  }
 }

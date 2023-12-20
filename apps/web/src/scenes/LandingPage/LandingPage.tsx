@@ -1,23 +1,44 @@
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { DeprecatedButtonLink } from '~/components/core/Button/Button';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseS, BlueLabel, TitleM } from '~/components/core/Text/Text';
+import {
+  BaseS,
+  BlueLabel,
+  TitleDiatypeL,
+  TitleDiatypeM,
+  TitleM,
+} from '~/components/core/Text/Text';
 import GalleryIntro from '~/components/GalleryTitleIntro/GalleryTitleIntro';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
+import { CmsTypes } from '../ContentPages/cms_types';
+import FeaturedProfiles from '../ContentPages/ContentModules/FeaturedProfiles';
+import FeatureHighlight from '../ContentPages/ContentModules/FeatureHighlight';
+import Testimonials from '../ContentPages/ContentModules/Testimonials';
+
 const GALLERY_OF_THE_WEEK_USER = 'masisus';
 
-export default function LandingPage() {
+const MOBILE_PAGE_GUTTER = 32;
+const DESKTOP_PAGE_GUTTER = 60;
+
+type Props = {
+  pageContent: any;
+};
+
+export default function LandingPage({ pageContent }: Props) {
   const track = useTrack();
+
+  console.log(pageContent);
 
   return (
     <StyledLandingPage>
-      <VStack gap={12} justify="center" align="center">
+      <VStack gap={130} justify="center" align="center">
         <GalleryIntro />
         <HStack gap={12}>
           <DeprecatedButtonLink
@@ -35,8 +56,31 @@ export default function LandingPage() {
             Explore
           </DeprecatedButtonLink>
         </HStack>
+        {/* <FeatureHighlight content={pageContent.highlight1} />
+        <HStack gap={16}>
+          {pageContent.miniFeatureHighlights.map((featureHighlight: CmsTypes.FeatureHighlight) => (
+            <FeatureHighlight
+              key={featureHighlight._type}
+              content={featureHighlight}
+              variant="condensed"
+            />
+          ))}
+        </HStack> */}
+        <FullWidthWrapper gap={45}>
+          <PageGutterWrapper gap={16}>
+            <StyledTitle>Featured</StyledTitle>
+            <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle>
+          </PageGutterWrapper>
+          <FeaturedProfiles profiles={pageContent.featuredProfiles} />
+        </FullWidthWrapper>
+        {/* <FeatureHighlight content={pageContent.highlight2} /> */}
+        <PageGutterWrapper gap={32}>
+          <StyledTitle>What our users say</StyledTitle>
+          <Testimonials testimonials={pageContent.testimonials} />
+        </PageGutterWrapper>
       </VStack>
-      <StyledBottomContainer gap={12}>
+
+      {/* <StyledBottomContainer gap={12}>
         <HStack gap={8}>
           <NavLink to={{ pathname: '/members' }}>Members</NavLink>
           <BaseS>·</BaseS>
@@ -55,10 +99,18 @@ export default function LandingPage() {
             <BlueLabel>New</BlueLabel>
           </HStack>
         </NavLink>
-      </StyledBottomContainer>
+      </StyledBottomContainer> */}
     </StyledLandingPage>
   );
 }
+
+const PageGutterWrapper = styled(VStack)`
+  padding: 0 ${MOBILE_PAGE_GUTTER}px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0 ${DESKTOP_PAGE_GUTTER}px;
+  }
+`;
 
 const StyledLandingPage = styled.div`
   display: flex;
@@ -66,8 +118,22 @@ const StyledLandingPage = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 16px 0;
+`;
 
-  height: 100vh;
+const StyledTitle = styled(TitleDiatypeL)`
+  font-size: 40px;
+  line-height: 56px;
+  font-weight: 400;
+`;
+
+const StyledSubTitle = styled(TitleDiatypeM)`
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+`;
+
+const FullWidthWrapper = styled(VStack)`
+  width: 100%;
 `;
 
 const StyledBottomContainer = styled(VStack)`

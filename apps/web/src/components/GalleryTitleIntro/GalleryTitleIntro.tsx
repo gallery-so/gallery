@@ -9,7 +9,7 @@ function GalleryTitleIntro() {
     <VStack gap={8}>
       <StyledLogo />
       <TitleM>
-        <strong>Share your </strong>collection <strong>with the world.</strong>
+        <strong>Gallery is the easiest way to express yourself </strong>onchain
       </TitleM>
     </VStack>
   );

@@ -52,11 +52,12 @@ function FeatureHighlightMedia({ media }: FeatureHighlightMediaProps) {
 
 type Props = {
   content: CmsTypes.FeatureHighlight;
+  variant?: 'full' | 'condensed';
 };
 
-export default function FeatureHighlight({ content }: Props) {
+export default function FeatureHighlight({ content, variant = 'full' }: Props) {
   return (
-    <StyledHighlight gap={24} orientation={content.orientation}>
+    <StyledHighlight gap={24} orientation={variant == 'full' ? content.orientation : 'vertical'}>
       <StyledTextSection align="flex-start">
         <StyledTitle>{content.heading}</StyledTitle>
         <FeatureHighlightBullets bullets={content.body} />
@@ -75,9 +76,15 @@ const StyledHighlight = styled(VStack)<{ orientation: string }>`
   margin: 0 32px;
 
   @media only screen and ${breakpoints.desktop} {
-    flex-direction: ${({ orientation }) => (orientation === 'right' ? 'row-reverse' : 'row')};
-    gap: 0 32px;
+    flex-direction: ${({ orientation }) =>
+      orientation === 'vertical'
+        ? 'column-reverse'
+        : orientation === 'right'
+        ? 'row-reverse'
+        : 'row'};
+    gap: 32px;
     margin: 0;
+    justify-content: flex-end;
   }
 `;
 
