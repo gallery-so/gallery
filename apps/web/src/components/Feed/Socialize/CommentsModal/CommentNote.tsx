@@ -11,6 +11,9 @@ import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/Username
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import { CommentNoteQueryFragment$key } from '~/generated/CommentNoteQueryFragment.graphql';
+import useAdmireComment from '~/hooks/api/posts/useAdmireComment';
+import { AdmireIcon } from '~/icons/SocializeIcons';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -25,6 +28,7 @@ export type OnReplyClickParams = {
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
+  queryRef: CommentNoteQueryFragment$key;
   activeCommentId?: string;
   isReply?: boolean;
   footerElement?: React.ReactNode;
@@ -37,6 +41,7 @@ export function CommentNote({
   footerElement,
   isReply,
   onReplyClick,
+  queryRef,
 }: CommentNoteProps) {
   const comment = useFragment(
     graphql`
@@ -54,10 +59,25 @@ export function CommentNote({
         mentions {
           ...ProcessedTextFragment
         }
+        ...useAdmireCommentFragment
       }
     `,
     commentRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CommentNoteQueryFragment on Query {
+        ...useAdmireCommentQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { toggleAdmireComment, totalAdmires, hasViewerAdmiredComment } = useAdmireComment({
+    commentRef: comment,
+    queryRef: query,
+  });
 
   const handleReplyClick = useCallback(() => {
     onReplyClick({
@@ -88,30 +108,48 @@ export function CommentNote({
       isHighlighted={isCommentActive}
       isReply={isReply}
     >
-      <HStack gap={8}>
-        {comment.commenter && (
-          <StyledProfilePictureWrapper>
-            <ProfilePicture size="sm" userRef={comment.commenter} />
-          </StyledProfilePictureWrapper>
-        )}
+      <VStack gap={8} grow>
+        <HStack align="center" justify="space-between">
+          <HStack gap={8}>
+            {comment.commenter && (
+              <StyledProfilePictureWrapper>
+                <ProfilePicture size="sm" userRef={comment.commenter} />
+              </StyledProfilePictureWrapper>
+            )}
 
-        <VStack>
-          <HStack gap={4} align="center">
-            <UsernameLink
-              username={comment.commenter?.username ?? null}
-              eventContext={contexts.Posts}
-            />
-            <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
+            <VStack>
+              <HStack gap={4} align="center">
+                <UsernameLink
+                  username={comment.commenter?.username ?? null}
+                  eventContext={contexts.Posts}
+                />
+                <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
+              </HStack>
+              <StyledBaseM as="span">
+                <ProcessedText
+                  text={comment.comment ?? ''}
+                  mentionsRef={nonNullMentions}
+                  eventContext={contexts.Social}
+                />
+              </StyledBaseM>
+            </VStack>
           </HStack>
+          <HStack gap={2} align="items-center">
+            {totalAdmires > 0 && (
+              <StyledAdmiredTotal as="span" active={hasViewerAdmiredComment}>
+                {totalAdmires}
+              </StyledAdmiredTotal>
+            )}
+            <AdmireIcon
+              onClick={toggleAdmireComment}
+              width={16}
+              height={16}
+              active={hasViewerAdmiredComment}
+            />
+          </HStack>
+        </HStack>
+        <VStack>
           <StyledCommentAndReplyButtonContainer gap={2}>
-            <StyledBaseM as="span">
-              <ProcessedText
-                text={comment.comment ?? ''}
-                mentionsRef={nonNullMentions}
-                eventContext={contexts.Social}
-              />
-            </StyledBaseM>
-
             <StyledReplyText role="button" onClick={handleReplyClick}>
               Reply
             </StyledReplyText>
@@ -119,7 +157,7 @@ export function CommentNote({
             {footerElement}
           </StyledCommentAndReplyButtonContainer>
         </VStack>
-      </HStack>
+      </VStack>
     </StyledListItem>
   );
 }
@@ -166,4 +204,10 @@ const StyledReplyText = styled(BaseS)`
 
 const StyledCommentAndReplyButtonContainer = styled(VStack)`
   margin-top: -2px;
+  margin-left: 32px;
+`;
+
+const StyledAdmiredTotal = styled(BaseS)<{ active?: boolean }>`
+  font-weight: 700;
+  ${({ active }) => active && `color: ${colors.activeBlue};`}
 `;
