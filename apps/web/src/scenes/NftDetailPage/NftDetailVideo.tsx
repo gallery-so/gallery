@@ -6,16 +6,24 @@ import styled from 'styled-components';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+  fitDimensionsToContainerContain,
+} from '~/shared/utils/fitDimensionsToContainer';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
 
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
   hideControls?: boolean;
+  tokenId?: string;
   onLoad: ContentIsLoadedEvent;
 };
 
-function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
+function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -25,6 +33,10 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
         previewURLs {
           large
         }
+        dimensions {
+          width
+          height
+        }
       }
     `,
     mediaRef
@@ -32,6 +44,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
 
   const [errored, setErrored] = useState(false);
 
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
   const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
 
   const handleVideoLoadError = useCallback(
@@ -57,6 +70,37 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     return token.previewURLs.large;
   }, [token?.previewURLs?.large]);
 
+  const resultDimensions = useMemo(() => {
+    const TOKEN_SIZE = isMobileOrMobileLarge
+      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
+      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
+    const serverSourcedDimensions = token.dimensions;
+
+    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
+      return fitDimensionsToContainerContain({
+        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
+        source: {
+          width: serverSourcedDimensions.width,
+          height: serverSourcedDimensions.height,
+        },
+      });
+    }
+
+    return {
+      height: TOKEN_SIZE,
+      width: TOKEN_SIZE,
+    };
+  }, [token.dimensions, isMobileOrMobileLarge]);
+
+  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
+
+  const handleLoad = useCallback(() => {
+    if (poster && tokenId) {
+      cacheLoadedImageUrls(tokenId, 'preview', poster, resultDimensions);
+    }
+    onLoad();
+  }, [poster, cacheLoadedImageUrls, onLoad, tokenId, resultDimensions]);
+
   // if there's an issue loading the video, controls need to be disabled in order
   // to render the poster fallback
   const shouldHideControls = hideControls || errored;
@@ -74,7 +118,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
        * to several gigabytes being fetched (which is really bad on mobile devices)
        */
       loop={!isSafari()}
-      onLoadedData={onLoad}
+      onLoadedData={handleLoad}
       /**
        * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
        * Upon inspecting the simulator's logs, the network request for the video asset

@@ -17,8 +17,13 @@ import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+  fitDimensionsToContainerContain,
+} from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
@@ -31,8 +36,6 @@ type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   onLoad: () => void;
 };
-
-const DESKTOP_TOKEN_SIZE = 600;
 
 export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
   const token = useFragment(
@@ -229,6 +232,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   );
 
   const breakpoint = useBreakpoint();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -252,10 +256,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   const shouldShowShimmer = !(hasPreviewUrl || hasRawUrl);
 
   const resultDimensions = useMemo(() => {
+
+    const TOKEN_SIZE = isMobileOrMobileLarge
+      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
+      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
     const serverSourcedDimensions = token.media?.dimensions;
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
-        container: { width: DESKTOP_TOKEN_SIZE, height: DESKTOP_TOKEN_SIZE },
+        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
         source: {
           width: serverSourcedDimensions.width,
           height: serverSourcedDimensions.height,
@@ -264,10 +272,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     }
 
     return {
-      height: DESKTOP_TOKEN_SIZE,
-      width: DESKTOP_TOKEN_SIZE,
+      height: TOKEN_SIZE,
+      width: TOKEN_SIZE,
     };
-  }, [token.media?.dimensions]);
+  }, [token.media?.dimensions, isMobileOrMobileLarge]);
 
   // only update the state if the selected token is set to 'visible'
   const handleRawLoad = useCallback(() => {
@@ -276,6 +284,9 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     }
     handleNftLoaded();
   }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
+
+  console.log("hasPreviewUrl", hasPreviewUrl);
+  console.log("src", cachedUrls[tokenId]?.url);
 
   return (
     <StyledAssetContainer

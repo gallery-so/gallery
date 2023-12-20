@@ -7,9 +7,12 @@ import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPre
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
-
-const DESKTOP_TOKEN_SIZE = 600;
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+  fitDimensionsToContainerContain,
+} from '~/shared/utils/fitDimensionsToContainer';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;
@@ -37,11 +40,17 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
     tokenRef
   );
 
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
+
   const resultDimensions = useMemo(() => {
+    const TOKEN_SIZE = isMobileOrMobileLarge
+      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
+      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
     const serverSourcedDimensions = token.media?.dimensions;
+
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
-        container: { width: DESKTOP_TOKEN_SIZE, height: DESKTOP_TOKEN_SIZE },
+        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
         source: {
           width: serverSourcedDimensions.width,
           height: serverSourcedDimensions.height,
@@ -50,10 +59,10 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
     }
 
     return {
-      height: DESKTOP_TOKEN_SIZE,
-      width: DESKTOP_TOKEN_SIZE,
+      height: TOKEN_SIZE,
+      width: TOKEN_SIZE,
     };
-  }, [token.media?.dimensions]);
+  }, [token.media?.dimensions, isMobileOrMobileLarge]);
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
   const { cacheLoadedImageUrls } = useNftPreviewFallbackState();

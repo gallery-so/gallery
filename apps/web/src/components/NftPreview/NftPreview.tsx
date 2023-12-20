@@ -140,7 +140,7 @@ function NftPreview({
       return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
     }
     if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo onLoad={onNftLoad} mediaRef={token.media} hideControls />;
+      return <NftDetailVideo onLoad={onNftLoad} mediaRef={token.media} tokenId={token.dbid} hideControls />;
     }
     if (shouldLiveRender && token.media?.__typename === 'GIFMedia') {
       return <NftDetailGif onLoad={onNftLoad} tokenRef={token} />;

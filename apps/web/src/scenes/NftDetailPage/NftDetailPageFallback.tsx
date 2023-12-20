@@ -54,25 +54,41 @@ const StyledFullPageLoader = styled.div`
   display: flex;
   height: 100vh;
   width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 
-  @media only screen and ${breakpoints.tablet} {
-    justify-content: center;
-    align-items: center;
+  @media only screen and (max-width: 760px) {
+    flex-direction: column;
+    padding-top: 160px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 `;
 
 const VisibilityContainer = styled.div`
-  margin-left: 84px;
   position: relative;
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: 84px;
+  }
 `;
 
 const StyledTextContainer = styled(VStack)`
   margin-left: 56px;
+
+  @media only screen and (max-width: 760px) {
+    margin-top: 56px;
+    margin-left: 0px;
+    padding-right: 10%;
+    padding-left: 10%;
+    width: 400px;
+  }
 `;
 
 export const StyledNftSkeleton = styled(Skeleton)`
-  width: 500px;
-  height: 500px;
+  width: 350px;
+  height: 350px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 600px;
