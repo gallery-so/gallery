@@ -94,7 +94,7 @@ export default function useMintContractWithQuantity({
       setSoldOut(sup - used === 0);
 
       const userOwned = await getUserOwnedSupply(contract);
-      setUserOwnedSupply(userOwned || 0);
+      setUserOwnedSupply(Number(userOwned) || 0);
 
       const price = await getTokenPrice(contract);
       setTokenPrice(price);
@@ -205,8 +205,8 @@ export default function useMintContractWithQuantity({
           setTransactionStatus(TransactionStatus.SUCCESS);
           if (onMintSuccess) {
             const supplies = await updateSupplies(contract, tokenId);
-            const sup = web3Utils.hexToNumber(supplies?.[0]);
-            const used = web3Utils.hexToNumber(supplies?.[1]);
+            const sup = Number(web3Utils.hexToNumber(supplies?.[0]));
+            const used = Number(web3Utils.hexToNumber(supplies?.[1]));
             setPublicSupply(sup);
             setUsedPublicSupply(used);
             setSoldOut(sup - used === 0);
