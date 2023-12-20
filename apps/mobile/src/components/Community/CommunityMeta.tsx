@@ -52,13 +52,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             }
           }
         }
-        tokens(first: 1) {
-          edges {
-            node {
-              ...MintLinkButtonFragment
-            }
-          }
-        }
         ...CommunityPostBottomSheetFragment
         ...extractRelevantMetadataFromCommunityFragment
       }
@@ -66,7 +59,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     communityRef
   );
 
-  const { chain, contractAddress } = extractRelevantMetadataFromCommunity(community);
+  const { chain, contractAddress, mintUrl } = extractRelevantMetadataFromCommunity(community);
 
   const [query, refetch] = useRefetchableFragment<
     CommunityMetaRefetchQuery,
@@ -95,8 +88,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   const creatorWalletAddress = community?.creator?.primaryWallet?.chainAddress?.address ?? '';
-
-  const token = community?.tokens?.edges?.[0]?.node;
 
   const { colorScheme } = useColorScheme();
   const { openManageWallet } = useManageWalletActions();
@@ -217,14 +208,17 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           eventContext={contexts.Community}
         />
       ) : (
-        token && (
-          <MintLinkButton
-            tokenRef={token}
-            size="sm"
-            eventContext={contexts.Community}
-            referrerAddress={creatorWalletAddress}
-          />
-        )
+        <MintLinkButton
+          tokenRef={null}
+          overrideMetadata={{
+            contractAddress,
+            chain,
+            mintUrl,
+          }}
+          size="sm"
+          eventContext={contexts.Community}
+          referrerAddress={creatorWalletAddress}
+        />
       )}
 
       <CommunityPostBottomSheet

@@ -43,7 +43,6 @@ function PostComposerScreenInner() {
             definition {
               name
               community {
-                mintURL
                 creator {
                   ... on GalleryUser {
                     username
@@ -51,6 +50,7 @@ function PostComposerScreenInner() {
                 }
                 ...useNavigateToCommunityScreenFragment
               }
+              mintUrl
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -84,7 +84,7 @@ function PostComposerScreenInner() {
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
 
   const mintURLWithRef = getMintUrlWithReferrer(
-    token.definition?.community?.mintURL ?? '',
+    token.definition.mintUrl ?? '',
     ownerWalletAddress
   ).url;
 

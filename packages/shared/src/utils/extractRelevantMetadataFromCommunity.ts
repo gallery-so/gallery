@@ -36,6 +36,7 @@ export function extractRelevantMetadataFromCommunity(
             projectID
           }
         }
+        mintURL
       }
     `,
     communityRef
@@ -49,6 +50,7 @@ export function extractRelevantMetadataFromCommunity(
     externalAddressUrl: '',
     projectId: '',
     subtype: 'ContractCommunity' as CommunitySubtype,
+    mintUrl: community.mintURL ?? '',
   };
 
   if (!community.subtype || community.subtype?.__typename === '%other') {

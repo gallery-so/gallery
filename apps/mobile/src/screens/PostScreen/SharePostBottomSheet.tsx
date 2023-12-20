@@ -182,7 +182,10 @@ function SharePostBottomSheet(
   const handleCopyButtonPress = useCallback(() => {
     Clipboard.setString(postUrl);
     setHasCopiedUrl(true);
-    setTimeout(() => bottomSheetRef.current?.dismiss(), 800);
+    setTimeout(() => {
+      bottomSheetRef.current?.dismiss();
+      setHasCopiedUrl(false);
+    }, 800);
   }, [postUrl]);
 
   const profileImageUrl = useMemo(() => {
@@ -252,7 +255,7 @@ function SharePostBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {title ? title : `Successfuly posted ${tokenName}`}
+            {title ? title : `Successfully posted ${tokenName}`}
           </Typography>
           <View>
             <MiniPostOpenGraphPreview

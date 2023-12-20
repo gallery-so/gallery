@@ -61,7 +61,7 @@ const TextContainer = styled.div`
 `;
 
 const StyledBaseM = styled(BaseM)`
-  word-break: break-all;
+  word-break: break-word;
 `;
 
 const StyledCancelButton = styled(Button).attrs({ variant: 'secondary' })`

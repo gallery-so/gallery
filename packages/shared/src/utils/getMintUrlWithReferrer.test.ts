@@ -55,6 +55,14 @@ describe('getMintUrlWithReferrer', () => {
     expect(result.provider).toBe('SuperRare');
   });
 
+  it('should not append referrer to highlight.xyz URLs', () => {
+    const url = 'https://highlight.xyz/mint/657191e2452b7c1626dcd551';
+    const referrer = 'referrer7';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe('https://highlight.xyz/mint/657191e2452b7c1626dcd551');
+    expect(result.provider).toBe('Highlight');
+  });
+
   it('should not append referrer if mint.fun already have ref', () => {
     const url =
       'https://mint.fun/op/0xcA1cb17d65CeF28087Bf1f65B4D599c768F870Ac?ref=0x517AEa67196C8975dd100236689D0CA10B928F58';

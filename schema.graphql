@@ -771,6 +771,22 @@ type Gallery implements Node {
   collections: [Collection]
 }
 
+type GalleryAnnouncementNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  platform: Platform!
+  internalId: String!
+  imageUrl: String
+  title: String
+  description: String
+  ctaText: String
+  ctaLink: String
+  pushNotificationText: String
+}
+
 union GalleryByIdPayloadOrError = Gallery | ErrGalleryNotFound
 
 type GalleryInfoUpdatedFeedEventData implements FeedEventData {
@@ -1239,6 +1255,12 @@ type PdfMedia implements Media {
   contentRenderURL: String
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
+}
+
+enum Platform {
+  Web
+  Mobile
+  All
 }
 
 type Post implements Node {
@@ -1913,6 +1935,7 @@ type TokenDefinition implements Node {
   community: Community
   communities: [Community]
   externalUrl: String
+  mintUrl: String
 }
 
 type TokenEdge {

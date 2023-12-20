@@ -12,6 +12,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
+import NftDetailImage from '~/scenes/NftDetailPage/NftDetailImage';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
@@ -56,6 +57,7 @@ function NftPreview({
       fragment NftPreviewFragment on Token {
         dbid
         tokenId
+        name
         contract {
           contractAddress {
             address
@@ -71,6 +73,7 @@ function NftPreview({
           }
           ... on GIFMedia {
             __typename
+            contentRenderURL
           }
           ... on HtmlMedia {
             __typename
@@ -78,6 +81,10 @@ function NftPreview({
           ... on GltfMedia {
             __typename
             ...NftDetailModelFragment
+          }
+          ... on ImageMedia {
+            __typename
+            contentRenderURL
           }
         }
 
@@ -147,6 +154,15 @@ function NftPreview({
     }
     if (shouldLiveRender && token.media?.__typename === 'GltfMedia') {
       return <NftDetailModel onLoad={onNftLoad} mediaRef={token.media} fullHeight={fullHeight} />;
+    }
+    if (shouldLiveRender && token.media?.__typename === 'ImageMedia') {
+      return (
+        <NftDetailImage
+          alt={token.name}
+          onLoad={onNftLoad}
+          imageUrl={token.media.contentRenderURL}
+        />
+      );
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={onNftLoad} mediaRef={token} />;

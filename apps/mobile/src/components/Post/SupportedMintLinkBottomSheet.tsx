@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
-import { View } from 'react-native';
+import { Linking, View } from 'react-native';
 
 import { contexts } from '~/shared/analytics/constants';
 
@@ -9,6 +9,7 @@ import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
 
@@ -30,6 +31,12 @@ function SupportedMintLinkBottomSheet(
 
   const handleClose = useCallback(() => {
     bottomSheetRef.current?.dismiss();
+  }, []);
+
+  const handlePress = useCallback(() => {
+    Linking.openURL(
+      'https://gallery-so.notion.site/Supported-Mint-Link-Domains-b4420f096413498d8aa24d857561817b'
+    );
   }, []);
 
   return (
@@ -63,56 +70,29 @@ function SupportedMintLinkBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            Gallery embeds your wallet in mint links for eligible collections, ensuring you get 100%
-            of referral rewards on supported platforms.
+            Gallery automatically adds your primary wallet address in mint links, ensuring you get
+            100% of referral rewards on supported platforms.
           </Typography>
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            Only {''}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            View our supported platforms{' '}
+            <GalleryTouchableOpacity
+              onPress={handlePress}
+              eventElementId="Supported Mint Link Bottom Sheet"
+              eventName="Press Supported Mint Link Bottom Sheet"
+              eventContext={contexts.Posts}
+              withoutFeedback
             >
-              Mint.fun
-            </Typography>
-            ,{' '}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              Zora
-            </Typography>
-            ,{' '}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              Prohibition
-            </Typography>
-            ,{' '}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              SuperRare
-            </Typography>
-            ,{' '}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              Ensemble
-            </Typography>
-            , and{' '}
-            <Typography
-              className="text-lg text-black-900 dark:text-offWhite"
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            >
-              FxHash
-            </Typography>{' '}
-            links are currently supported.
+              <Typography
+                className="text-lg text-black-900 dark:text-offWhite"
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                here
+              </Typography>
+            </GalleryTouchableOpacity>
+            .
           </Typography>
         </View>
 

@@ -19,6 +19,10 @@ const providers = [
     regex: '^https://(www\\.)?superrare.com/?',
     name: 'SuperRare',
   },
+  {
+    regex: '^https://(www\\.)?highlight.xyz/?',
+    name: 'Highlight',
+  },
 ];
 
 // TODO: perhaps this can be baked into `extractRelevantMetadataFromToken`

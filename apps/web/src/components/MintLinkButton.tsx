@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
+import { HighlightLogoIcon } from '~/icons/HighlightLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
 import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
@@ -46,6 +47,7 @@ export function MintLinkButton({
               }
             }
           }
+          mintUrl
         }
       }
     `,
@@ -56,7 +58,8 @@ export function MintLinkButton({
     token?.definition?.community?.contract?.contractAddress?.address ?? '';
   const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL || (token?.definition?.community?.contract?.mintURL ?? ''),
+    overwriteURL ||
+      (token?.definition?.mintUrl ?? token?.definition?.community?.contract?.mintURL ?? ''),
     referrerAddress ?? ''
   );
 
@@ -93,6 +96,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on superrare',
         icon: <SuperRareLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
+      };
+    } else if (mintProviderType === 'Highlight') {
+      return {
+        buttonText: 'mint on highlight',
+        icon: <HighlightLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else {
       return null;

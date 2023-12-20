@@ -4,6 +4,7 @@ import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
+import { HighlightIcon } from 'src/icons/HighlightIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
@@ -13,6 +14,7 @@ import { ZoraIcon } from 'src/icons/ZoraIcon';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { Chain } from '~/shared/utils/chains';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import {
@@ -23,10 +25,19 @@ import {
 import { Button, ButtonProps } from './Button';
 
 type Props = {
-  tokenRef: MintLinkButtonFragment$key;
+  // in order to generate the mint URL with the correct params, we either grab it
+  // from the token metadata, or if a token is not available (e.g. community page),
+  // we use the community metadata. finally, we take into account a mint URL override
+  // in the case of a user-provided post.
+  tokenRef: MintLinkButtonFragment$key | null;
+  overrideMetadata?: {
+    contractAddress: string;
+    chain: Chain;
+    mintUrl: string;
+  };
+  overrideMintUrl?: string;
   style?: ViewStyle;
   referrerAddress?: string;
-  overwriteURL?: string;
   variant?: ButtonProps['variant'];
   size?: ButtonProps['size'];
   eventContext: GalleryElementTrackingProps['eventContext'];
@@ -34,9 +45,10 @@ type Props = {
 
 export function MintLinkButton({
   tokenRef,
+  overrideMetadata,
+  overrideMintUrl,
   style,
   referrerAddress,
-  overwriteURL,
   variant = 'primary',
   size = 'md',
   eventContext,
@@ -52,10 +64,22 @@ export function MintLinkButton({
 
   const { colorScheme } = useColorScheme();
 
-  const { contractAddress, chain, mintUrl } = extractRelevantMetadataFromToken(token);
+  const { contractAddress, chain, mintUrl } = useMemo(() => {
+    if (token) {
+      return extractRelevantMetadataFromToken(token);
+    }
+    if (overrideMetadata) {
+      return overrideMetadata;
+    }
+    return {
+      contractAddress: '',
+      chain: '',
+      mintUrl: '',
+    };
+  }, [overrideMetadata, token]);
 
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL || mintUrl,
+    overrideMintUrl || mintUrl,
     referrerAddress ?? ''
   );
 
@@ -92,6 +116,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on superrare',
         icon: <SuperRareIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+      };
+    } else if (mintProviderType === 'Highlight') {
+      return {
+        buttonText: 'mint on highlight',
+        icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else {
       return null;
