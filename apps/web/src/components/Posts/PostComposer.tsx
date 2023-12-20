@@ -193,7 +193,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
   return (
     <StyledPostComposer grow justify="space-between">
       <VStack gap={24}>
-        <StyledHeader align="center" gap={8}>
+        <HStack align="center" gap={8}>
           {onBackClick && (
             <IconContainer
               onClick={handleBackClick}
@@ -203,7 +203,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             />
           )}
           <TitleS>New post</TitleS>
-        </StyledHeader>
+        </HStack>
         <ContentContainer>
           <PostComposerNft tokenRef={token} />
           <VStack grow gap={8}>
@@ -264,10 +264,6 @@ const StyledPostComposer = styled(VStack)`
 `;
 
 const StyledHStack = styled(HStack)`
-  padding-top: 16px;
-`;
-
-const StyledHeader = styled(HStack)`
   padding-top: 16px;
 `;
 
