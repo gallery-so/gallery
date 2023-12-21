@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+import breakpoints, { size } from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -69,7 +69,7 @@ const StyledFullPageLoader = styled.div`
   align-items: center;
   flex-direction: row;
 
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: ${size.tablet}px) {
     flex-direction: column;
     padding-top: 110px;
     padding-left: 24px;
@@ -87,7 +87,7 @@ const VisibilityContainer = styled.div`
 const StyledTextContainer = styled(VStack)`
   margin-left: 56px;
 
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: ${size.tablet}px) {
     margin-top: 56px;
     margin-left: 0px;
     padding-right: 10%;

@@ -2,7 +2,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+import breakpoints, { size } from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
@@ -168,7 +168,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: ${size.tablet}px) {
     margin-top: 48px;
     height: 296px;
     width: 296px;
@@ -180,7 +180,7 @@ const StyledAssetAndNoteContainer = styled.div`
   width: 100%;
   height: 100%;
 
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: ${size.tablet}px) {
     display: flex;
     justify-content: center;
   }

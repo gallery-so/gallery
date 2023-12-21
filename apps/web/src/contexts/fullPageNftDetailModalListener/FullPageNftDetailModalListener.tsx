@@ -45,7 +45,7 @@ export default function FullPageNftDetailModalListener() {
         <NftDetailPage
           username={username as string}
           collectionId={collectionId as string}
-          tokenId={tokenId as string}
+          tokenId={tokenId}
         />
       </Suspense>
     ) : (

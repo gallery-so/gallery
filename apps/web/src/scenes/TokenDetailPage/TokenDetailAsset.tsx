@@ -207,7 +207,7 @@ const AssetContainer = styled.div`
     pointer-events: auto;
   }
 
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: ${size.tablet}px) {
     height: 296px;
     width: 296px;
   }
