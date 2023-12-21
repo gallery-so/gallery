@@ -112,10 +112,10 @@ const StyledMedia = styled.div`
   background-color: ${colors.faint};
 
   @media only screen and ${breakpoints.desktop} {
-    min-width: 500px;
-    min-height: 500px;
-    max-width: 500px;
-    max-height: 500px;
+    // min-width: 500px;
+    // min-height: 500px;
+    // max-width: 500px;
+    // max-height: 500px;
   }
 `;
 const StyledVideo = styled.video`

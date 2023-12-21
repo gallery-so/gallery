@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { DeprecatedButtonLink } from '~/components/core/Button/Button';
+import { Button, DeprecatedButtonLink } from '~/components/core/Button/Button';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import {
@@ -21,6 +21,8 @@ import { CmsTypes } from '../ContentPages/cms_types';
 import FeaturedProfiles from '../ContentPages/ContentModules/FeaturedProfiles';
 import FeatureHighlight from '../ContentPages/ContentModules/FeatureHighlight';
 import Testimonials from '../ContentPages/ContentModules/Testimonials';
+import WelcomeAnimation from '../WelcomeAnimation/WelcomeAnimation';
+import LandingCoverAnimation from './LandingCoverAnimation';
 
 const GALLERY_OF_THE_WEEK_USER = 'masisus';
 
@@ -39,7 +41,8 @@ export default function LandingPage({ pageContent }: Props) {
   return (
     <StyledLandingPage>
       <VStack gap={130} justify="center" align="center">
-        <GalleryIntro />
+        <LandingCoverAnimation />
+        {/* <GalleryIntro />
         <HStack gap={12}>
           <DeprecatedButtonLink
             href={{ pathname: '/auth' }}
@@ -55,17 +58,23 @@ export default function LandingPage({ pageContent }: Props) {
           >
             Explore
           </DeprecatedButtonLink>
-        </HStack>
-        {/* <FeatureHighlight content={pageContent.highlight1} />
-        <HStack gap={16}>
-          {pageContent.miniFeatureHighlights.map((featureHighlight: CmsTypes.FeatureHighlight) => (
-            <FeatureHighlight
-              key={featureHighlight._type}
-              content={featureHighlight}
-              variant="condensed"
-            />
-          ))}
         </HStack> */}
+        {/* <WelcomeAnimation /> */}
+
+        <FeatureHighlight content={pageContent.highlight1} />
+        <PageGutterWrapper gap={16}>
+          <HStack gap={16}>
+            {pageContent.miniFeatureHighlights.map(
+              (featureHighlight: CmsTypes.FeatureHighlight) => (
+                <FeatureHighlight
+                  key={featureHighlight._type}
+                  content={featureHighlight}
+                  variant="condensed"
+                />
+              )
+            )}
+          </HStack>
+        </PageGutterWrapper>
         <FullWidthWrapper gap={45}>
           <PageGutterWrapper gap={16}>
             <StyledTitle>Featured</StyledTitle>
@@ -73,11 +82,15 @@ export default function LandingPage({ pageContent }: Props) {
           </PageGutterWrapper>
           <FeaturedProfiles profiles={pageContent.featuredProfiles} />
         </FullWidthWrapper>
-        {/* <FeatureHighlight content={pageContent.highlight2} /> */}
+        <FeatureHighlight content={pageContent.highlight2} />
         <PageGutterWrapper gap={32}>
           <StyledTitle>What our users say</StyledTitle>
           <Testimonials testimonials={pageContent.testimonials} />
         </PageGutterWrapper>
+        <VStack gap={32}>
+          <StyledSubTitle>Start your journey today</StyledSubTitle>
+          <Button>Get Started</Button>
+        </VStack>
       </VStack>
 
       {/* <StyledBottomContainer gap={12}>

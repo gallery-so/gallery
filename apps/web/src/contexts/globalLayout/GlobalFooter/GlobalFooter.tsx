@@ -5,7 +5,7 @@ import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseS, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
 import {
   GALLERY_BLOG,
   GALLERY_DISCORD,
@@ -26,7 +26,7 @@ function GlobalFooter() {
   return (
     <StyledGlobalFooter isMobile={isMobile}>
       {isMobile && <StyledHr />}
-      <VStack gap={4}>
+      <VStack gap={110}>
         <HStack gap={4}>
           <GalleryLink to={{ pathname: '/' }}>
             <StyledLogo />
@@ -55,12 +55,11 @@ function GlobalFooter() {
       </VStack>
       <StyledFooterLinkContainer isMobile={isMobile}>
         <HStack gap={8}>
-          <BaseS color={colors.black['800']}>
-            © {new Date().getFullYear()} All rights reserved
-          </BaseS>
-          <BaseS color={colors.metal}>·</BaseS>
           <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
           <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
+          <StyledPlainText color={colors.metal}>
+            © Gallery Labs, {new Date().getFullYear()}{' '}
+          </StyledPlainText>
         </HStack>
       </StyledFooterLinkContainer>
     </StyledGlobalFooter>
@@ -107,13 +106,14 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   align-items: ${({ isMobile }) => (isMobile ? 'inherit' : 'flex-end')};
   flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
 
-  height: ${({ isMobile }) => `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
+  // height: ${({ isMobile }) =>
+    `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
-  background-color: ${colors.white};
+  background-color: ${colors.black['800']};
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 0 32px 24px;
+    padding: 80px 180px;
   }
 `;
 
@@ -126,6 +126,7 @@ const StyledHr = styled.hr`
 const StyledLogo = styled(LogoLarge)`
   height: 24px;
   cursor: pointer;
+  color: ${colors.white};
 `;
 
 const StyledFooterLinkContainer = styled.div<{ isMobile: boolean }>`
@@ -133,8 +134,19 @@ const StyledFooterLinkContainer = styled.div<{ isMobile: boolean }>`
 `;
 
 const StyledFooterLink = styled(NavLink)`
+  font-size: 16px;
+  line-height: 20px;
   display: flex;
   text-transform: capitalize;
+  color: ${colors.white};
+
+  &:hover {
+    color: ${colors.shadow};
+  }
+`;
+
+const StyledPlainText = styled(BaseM)`
+  font-size: 16px;
 `;
 
 export default GlobalFooter;
