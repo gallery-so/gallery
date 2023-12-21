@@ -73,9 +73,9 @@ export const AdmireIcon = forwardRef<HTMLDivElement, Props>(
 
 AdmireIcon.displayName = 'AdmireIcon';
 
-const StyledSvg = styled.svg`
-  width: 24px;
-  height: 24px;
+const StyledSvg = styled.svg<{ height: number; width: number }>`
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
 
   pointer-events: none;
 

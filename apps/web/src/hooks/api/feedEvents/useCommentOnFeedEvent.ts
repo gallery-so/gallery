@@ -109,6 +109,21 @@ export default function useCommentOnFeedEvent() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                admires: {
+                  edges: [],
+                  pageInfo: {
+                    endCursor: '',
+                    hasNextPage: false,
+                    total: 0,
+                  },
+                },
+                source: {
+                  __typename: 'FeedEvent',
+                  __isNode: 'FeedEvent',
+                  id: `FeedEvent:${eventDbid}`,
+                  dbid: eventDbid,
+                },
+                viewerAdmire: null,
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,

@@ -66,6 +66,7 @@ export function CommentsModal({
   const query = useFragment(
     graphql`
       fragment CommentsModalQueryFragment on Query {
+        ...CommentNoteSectionQueryFragment
         ...CommentBoxQueryFragment
       }
     `,
@@ -231,6 +232,7 @@ export function CommentsModal({
                   onRowRepliesExpand={setRowRepliesExpanded}
                   isRowRepliesExpanded={getRowRepliesExpanded(index)}
                   onExpandModal={recalculateHeightsWhenCommentsChange}
+                  queryRef={query}
                 />
               </div>
             );
@@ -246,6 +248,7 @@ export function CommentsModal({
       handleReplyClick,
       recalculateHeightsWhenCommentsChange,
       setRowRepliesExpanded,
+      query,
     ]
   );
 

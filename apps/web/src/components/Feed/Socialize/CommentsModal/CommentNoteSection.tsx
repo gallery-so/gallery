@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { CommentNoteSectionFragment$key } from '~/generated/CommentNoteSectionFragment.graphql';
+import { CommentNoteSectionQueryFragment$key } from '~/generated/CommentNoteSectionQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
@@ -13,6 +14,7 @@ import { CommentNote, OnReplyClickParams } from './CommentNote';
 type Props = {
   index: number;
   commentRef: CommentNoteSectionFragment$key;
+  queryRef: CommentNoteSectionQueryFragment$key;
   activeCommentId?: string;
   onReplyClick: (params: OnReplyClickParams) => void;
 
@@ -26,6 +28,7 @@ export const REPLIES_PER_PAGE = 6;
 export function CommentNoteSection({
   index,
   commentRef,
+  queryRef,
   activeCommentId,
   onReplyClick,
   onRowRepliesExpand,
@@ -61,6 +64,15 @@ export function CommentNoteSection({
       }
     `,
     commentRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommentNoteSectionQueryFragment on Query {
+        ...CommentNoteQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const replies = useMemo(() => {
@@ -111,6 +123,7 @@ export function CommentNoteSection({
     <VStack>
       <CommentNote
         commentRef={comment}
+        queryRef={query}
         onReplyClick={handleReplyClickWithTopCommentId}
         activeCommentId={activeCommentId}
         footerElement={
@@ -133,6 +146,7 @@ export function CommentNoteSection({
               onReplyClick={handleReplyClickWithTopCommentId}
               isReply
               activeCommentId={activeCommentId}
+              queryRef={query}
             />
           ))}
 
