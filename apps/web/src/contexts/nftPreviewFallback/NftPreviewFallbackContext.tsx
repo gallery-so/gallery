@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
+type LoadedNftAssetType = 'preview' | 'raw';
+
 export type Dimensions = {
   width?: number;
   height?: number;
@@ -7,7 +9,7 @@ export type Dimensions = {
 
 export type CacheParams = {
   [tokenId: string]: {
-    type: 'preview' | 'raw';
+    type: LoadedNftAssetType;
     url: string;
     dimensions: Dimensions;
   };
@@ -16,7 +18,7 @@ export type CacheParams = {
 type NftPreviewFallbackState = {
   cacheLoadedImageUrls: (
     tokenId: string,
-    type: 'preview' | 'raw',
+    type:LoadedNftAssetType,
     url: string,
     dimensions: Dimensions
   ) => void;
@@ -48,7 +50,7 @@ const NftPreviewFallbackProvider = ({ children }: Props) => {
   const [cachedUrls, setCachedUrls] = useState<CacheParams>({});
 
   const cacheLoadedImageUrls = useCallback(
-    (tokenId: string, type: 'preview' | 'raw', url: string, dimensions: Dimensions) => {
+    (tokenId: string, type: LoadedNftAssetType, url: string, dimensions: Dimensions) => {
       setCachedUrls((prevCachedUrls) => ({
         ...prevCachedUrls,
         [tokenId]: {

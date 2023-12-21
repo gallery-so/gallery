@@ -4,6 +4,11 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+} from '~/shared/utils/fitDimensionsToContainer';
 
 type Props = {
   tokenId: string;
@@ -14,6 +19,11 @@ export default function NftDetailPageFallback({ tokenId }: Props) {
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const dimensions = cachedUrls[tokenId]?.dimensions;
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
+
+  const TOKEN_SIZE = isMobileOrMobileLarge
+    ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
+    : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
 
   return (
     <StyledFullPageLoader>
@@ -22,8 +32,8 @@ export default function NftDetailPageFallback({ tokenId }: Props) {
           <StyledImageWrapper className={'visible'}>
             <StyledImage
               src={cachedUrls[tokenId]?.url}
-              height={dimensions?.height ?? 600}
-              width={dimensions?.width ?? 600}
+              height={dimensions?.height ?? TOKEN_SIZE}
+              width={dimensions?.width ?? TOKEN_SIZE}
             />
           </StyledImageWrapper>
         </VisibilityContainer>

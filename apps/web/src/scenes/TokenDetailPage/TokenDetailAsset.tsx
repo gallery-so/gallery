@@ -136,7 +136,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
               <Shimmer />
             </ShimmerContainer>
           )}
-          <AssetContainer className={hasRawUrl ? 'visible' : ''} isMobile={isMobileOrMobileLarge}>
+          <AssetContainer className={hasRawUrl ? 'visible' : ''}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </AssetContainer>
         </VisibilityContainer>
@@ -195,7 +195,7 @@ const VisibilityContainer = styled.div`
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 
-const AssetContainer = styled.div<{ isMobile: boolean }>`
+const AssetContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
