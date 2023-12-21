@@ -146,13 +146,6 @@ export function CommentsModal({
     [rowRepliesExpanded]
   );
 
-  const getRowRepliesExpanded = useCallback(
-    (index: number) => {
-      return rowRepliesExpanded[0][index] ?? false;
-    },
-    [rowRepliesExpanded]
-  );
-
   const [contentHeight, setContentHeight] = useState(0);
 
   const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
@@ -230,7 +223,6 @@ export function CommentsModal({
                   activeCommentId={highlightCommentId}
                   onReplyClick={handleReplyClick}
                   onRowRepliesExpand={setRowRepliesExpanded}
-                  isRowRepliesExpanded={getRowRepliesExpanded(index)}
                   onExpandModal={recalculateHeightsWhenCommentsChange}
                   queryRef={query}
                 />
@@ -241,7 +233,6 @@ export function CommentsModal({
       );
     },
     [
-      getRowRepliesExpanded,
       highlightCommentId,
       measurerCache,
       comments,
