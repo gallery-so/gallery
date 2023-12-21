@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
@@ -20,7 +20,6 @@ type Props = {
   commentRef: CommentsBottomSheetSectionFragment$key;
   queryRef: CommentsBottomSheetSectionQueryFragment$key;
   onReplyPress: (params: OnReplyPressParams) => void;
-  onExpandReplies: () => void;
 };
 
 export function CommentsBottomSheetSection({
@@ -28,7 +27,6 @@ export function CommentsBottomSheetSection({
   commentRef,
   queryRef,
   onReplyPress,
-  onExpandReplies,
 }: Props) {
   const {
     data: comment,
@@ -71,8 +69,6 @@ export function CommentsBottomSheetSection({
     queryRef
   );
 
-  const [showReplies, setShowReplies] = useState(false);
-
   const replies = useMemo(() => {
     return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment.replies?.edges]);
@@ -80,12 +76,8 @@ export function CommentsBottomSheetSection({
   const totalReplies = comment.replies?.pageInfo.total ?? 0;
 
   const totalRepliesShown = useMemo(() => {
-    if (!showReplies) {
-      return totalReplies;
-    }
-
     return totalReplies - replies.length;
-  }, [replies, showReplies, totalReplies]);
+  }, [replies, totalReplies]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {
@@ -94,13 +86,8 @@ export function CommentsBottomSheetSection({
   }, [hasPrevious, loadPrevious]);
 
   const handleViewRepliesPress = useCallback(() => {
-    if (!showReplies) {
-      setShowReplies(true);
-      onExpandReplies();
-    } else {
-      loadMore();
-    }
-  }, [loadMore, onExpandReplies, showReplies]);
+    loadMore();
+  }, [loadMore]);
 
   const handleReplyPressWithTopCommentId = useCallback(
     (params: OnReplyPressParams) => {
@@ -113,13 +100,6 @@ export function CommentsBottomSheetSection({
     },
     [comment.dbid, onReplyPress]
   );
-
-  useEffect(() => {
-    // if the active commentId is in a reply, we want to show the replies
-    if (activeCommentId && replies.find((reply) => reply.dbid === activeCommentId)) {
-      setShowReplies(true);
-    }
-  }, [activeCommentId, replies]);
 
   if (!comment.comment) {
     return null;
@@ -134,50 +114,35 @@ export function CommentsBottomSheetSection({
           queryRef={query}
           onReplyPress={handleReplyPressWithTopCommentId}
           footerElement={
-            !showReplies && (
-              <ViewRepliesButton
-                totalReplies={totalRepliesShown}
-                showReplies={showReplies}
-                onPress={handleViewRepliesPress}
-              />
-            )
+            <ViewRepliesButton totalReplies={totalRepliesShown} onPress={handleViewRepliesPress} />
           }
         />
       </View>
 
-      {showReplies && (
-        <>
-          {replies.map((reply) => (
-            <CommentsBottomSheetLine
-              key={reply.dbid}
-              activeCommentId={activeCommentId}
-              commentRef={reply}
-              queryRef={query}
-              onReplyPress={handleReplyPressWithTopCommentId}
-              isReply
-            />
-          ))}
-          <View className="pl-12">
-            <ViewRepliesButton
-              totalReplies={totalRepliesShown}
-              showReplies={showReplies}
-              onPress={handleViewRepliesPress}
-            />
-          </View>
-        </>
-      )}
+      {replies.map((reply) => (
+        <CommentsBottomSheetLine
+          key={reply.dbid}
+          activeCommentId={activeCommentId}
+          commentRef={reply}
+          queryRef={query}
+          onReplyPress={handleReplyPressWithTopCommentId}
+          isReply
+        />
+      ))}
+      <View className="pl-12">
+        <ViewRepliesButton totalReplies={totalRepliesShown} onPress={handleViewRepliesPress} />
+      </View>
     </View>
   );
 }
 
 type ViewRepliesButtonProps = {
   totalReplies: number;
-  showReplies: boolean;
   onPress: () => void;
   style?: GalleryTouchableOpacityProps['style'];
 };
 
-function ViewRepliesButton({ totalReplies, showReplies, onPress, style }: ViewRepliesButtonProps) {
+function ViewRepliesButton({ totalReplies, onPress, style }: ViewRepliesButtonProps) {
   if (totalReplies < 1) {
     return null;
   }
@@ -193,7 +158,7 @@ function ViewRepliesButton({ totalReplies, showReplies, onPress, style }: ViewRe
       <View className="flex-row items-center space-x-1">
         <View className="h-1 w-1 rounded-full bg-shadow" />
         <Typography className="text-xs text-shadow" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          View {totalReplies} {showReplies ? 'more ' : ''}
+          View {totalReplies} more
           {totalReplies === 1 ? 'reply' : 'replies'}
         </Typography>
       </View>
