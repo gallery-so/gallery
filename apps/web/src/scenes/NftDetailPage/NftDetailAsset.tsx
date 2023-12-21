@@ -14,16 +14,16 @@ import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.g
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import {
   DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
-  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
   fitDimensionsToContainerContain,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
 } from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
@@ -246,21 +246,12 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     tokenId: token.dbid,
   });
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
-
-  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
-  const tokenId = token.dbid;
-
-  const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
-  const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
-  const shouldShowShimmer = !(hasPreviewUrl || hasRawUrl);
-
   const resultDimensions = useMemo(() => {
-
     const TOKEN_SIZE = isMobileOrMobileLarge
       ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
       : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
     const serverSourcedDimensions = token.media?.dimensions;
+
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
         container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
@@ -277,6 +268,15 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     };
   }, [token.media?.dimensions, isMobileOrMobileLarge]);
 
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
+
+  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
+  const tokenId = token.dbid;
+
+  const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
+  const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
+  const shouldShowShimmer = !(hasPreviewUrl || hasRawUrl);
+
   // only update the state if the selected token is set to 'visible'
   const handleRawLoad = useCallback(() => {
     if (visibility === 'visible') {
@@ -284,9 +284,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     }
     handleNftLoaded();
   }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
-
-  console.log("hasPreviewUrl", hasPreviewUrl);
-  console.log("src", cachedUrls[tokenId]?.url);
 
   return (
     <StyledAssetContainer

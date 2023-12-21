@@ -163,12 +163,23 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media only screen and (max-width: 760px) {
+    margin-top: 48px;
+    height: 296px;
+    width: 296px;
+  }
 `;
 
 const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+
+  @media only screen and (max-width: 760px) {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)

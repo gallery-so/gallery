@@ -333,7 +333,7 @@ const StyledNftDetailPage = styled.div`
 
   @media only screen and ${breakpoints.mobile} {
     ${_DirectionalFade} {
-      padding: 80px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
+      padding: 48px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
     }
   }
 

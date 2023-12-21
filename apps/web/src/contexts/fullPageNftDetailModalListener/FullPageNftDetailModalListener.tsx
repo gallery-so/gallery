@@ -89,7 +89,6 @@ const StyledTokenPreviewModal = styled.div`
   display: flex;
   justify-content: center;
   height: 100%;
-  padding: 80px 0;
 
   @media only screen and ${breakpoints.desktop} {
     padding: 0;

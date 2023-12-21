@@ -6,13 +6,13 @@ import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import {
   DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
-  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
   fitDimensionsToContainerContain,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
 } from '~/shared/utils/fitDimensionsToContainer';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   tokenRef: NftPreviewAssetFragment$key;

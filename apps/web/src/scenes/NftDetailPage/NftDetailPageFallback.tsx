@@ -61,7 +61,6 @@ const StyledFullPageLoader = styled.div`
 
   @media only screen and (max-width: 760px) {
     flex-direction: column;
-    padding-top: 160px;
     padding-left: 24px;
     padding-right: 24px;
   }

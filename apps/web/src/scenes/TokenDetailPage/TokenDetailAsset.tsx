@@ -11,12 +11,15 @@ import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPre
 import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NftDetailAssetComponent } from '~/scenes/NftDetailPage/NftDetailAsset';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  fitDimensionsToContainerContain,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+} from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
-
-const DESKTOP_TOKEN_SIZE = 600;
 
 type Props = {
   tokenRef: TokenDetailAssetFragment$key;
@@ -55,6 +58,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   );
 
   const breakpoint = useBreakpoint();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -69,10 +73,14 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   });
 
   const resultDimensions = useMemo(() => {
+    const TOKEN_SIZE = isMobileOrMobileLarge
+      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
+      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
     const serverSourcedDimensions = token.media?.dimensions;
+
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
-        container: { width: DESKTOP_TOKEN_SIZE, height: DESKTOP_TOKEN_SIZE },
+        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
         source: {
           width: serverSourcedDimensions.width,
           height: serverSourcedDimensions.height,
@@ -81,10 +89,10 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     }
 
     return {
-      height: DESKTOP_TOKEN_SIZE,
-      width: DESKTOP_TOKEN_SIZE,
+      height: TOKEN_SIZE,
+      width: TOKEN_SIZE,
     };
-  }, [token.media?.dimensions]);
+  }, [token.media?.dimensions, isMobileOrMobileLarge]);
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
 
@@ -99,7 +107,11 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const handleRawLoad = useCallback(() => {
     cacheLoadedImageUrls(tokenId, 'raw', imageUrl, resultDimensions);
     handleNftLoaded();
+    console.log('handleRawLoad firing');
   }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
+
+  console.log('hasRawUrl', hasRawUrl);
+  console.log('resultDimensions', resultDimensions);
 
   return (
     <StyledAssetContainer
@@ -124,7 +136,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
               <Shimmer />
             </ShimmerContainer>
           )}
-          <AssetContainer className={hasRawUrl ? 'visible' : ''}>
+          <AssetContainer className={hasRawUrl ? 'visible' : ''} isMobile={isMobileOrMobileLarge}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </AssetContainer>
         </VisibilityContainer>
@@ -147,6 +159,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   justify-content: center;
   position: relative;
   z-index: 2; /* Above footer in event they overlap */
+  width: 100%;
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
@@ -155,7 +168,13 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   @media only screen and ${breakpoints.tablet} {
+    width: 450px;
+    min-height: 450px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     width: 600px;
+    min-height: 600px;
   }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
@@ -164,7 +183,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-export const StyledImage = styled.img<{ height: number; width: number }>`
+const StyledImage = styled.img<{ height: number; width: number }>`
   height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;
   border: none;
@@ -176,7 +195,7 @@ const VisibilityContainer = styled.div`
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 
-const AssetContainer = styled.div`
+const AssetContainer = styled.div<{ isMobile: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,6 +209,11 @@ const AssetContainer = styled.div`
   &.visible {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  @media only screen and (max-width: 760px) {
+    height: 296px;
+    width: 296px;
   }
 `;
 
