@@ -107,11 +107,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const handleRawLoad = useCallback(() => {
     cacheLoadedImageUrls(tokenId, 'raw', imageUrl, resultDimensions);
     handleNftLoaded();
-    console.log('handleRawLoad firing');
   }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
-
-  console.log('hasRawUrl', hasRawUrl);
-  console.log('resultDimensions', resultDimensions);
 
   return (
     <StyledAssetContainer

@@ -18,7 +18,7 @@ export type CacheParams = {
 type NftPreviewFallbackState = {
   cacheLoadedImageUrls: (
     tokenId: string,
-    type:LoadedNftAssetType,
+    type: LoadedNftAssetType,
     url: string,
     dimensions: Dimensions
   ) => void;

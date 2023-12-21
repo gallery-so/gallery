@@ -106,18 +106,24 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
           </Container>
-          {token?.collectorsNote && (
+
+          {!isMobileOrMobileLarge && token?.collectorsNote && (
             <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
               <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
             </StyledContainer>
           )}
         </StyledAssetAndNoteContainer>
-
         <NftDetailText
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
         />
+
+        {isMobileOrMobileLarge && token?.collectorsNote && (
+          <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+            <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
+          </StyledContainer>
+        )}
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
@@ -153,8 +159,6 @@ const StyledContentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  // Ensures that grid columns don't grow to fit their children
-  // https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
   min-width: 0;
   position: relative;
   width: 100%;
