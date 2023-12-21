@@ -36,15 +36,7 @@ export default function FullPageNftDetailModalListener() {
     }
 
     // all NFT Detail routes must have have both provided
-    if (!username || !tokenId) {
-      return;
-    }
-
-    if (!username) {
-      return;
-    }
-
-    if (typeof tokenId !== 'string') {
+    if (!username || !tokenId || typeof tokenId !== 'string') {
       return;
     }
 
