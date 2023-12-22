@@ -13,14 +13,12 @@ type CommentsListProps = {
   onLoadMore: () => void;
   commentRefs: CommentsBottomSheetList$key;
   onReply: (params: OnReplyPressParams) => void;
-  onExpandReplies: () => void;
   queryRef: CommentsBottomSheetListQueryFragment$key;
 };
 
 export function CommentsBottomSheetList({
   activeCommentId,
   commentRefs,
-  onExpandReplies,
   onLoadMore,
   onReply,
   queryRef,
@@ -68,11 +66,10 @@ export function CommentsBottomSheetList({
           commentRef={comment}
           queryRef={query}
           onReplyPress={onReply}
-          onExpandReplies={onExpandReplies}
         />
       );
     },
-    [activeCommentId, onExpandReplies, onReply, query]
+    [activeCommentId, onReply, query]
   );
 
   return (

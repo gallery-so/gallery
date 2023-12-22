@@ -217,7 +217,7 @@ export function CommentsBottomSheetLine({
                 </View>
               )}
             </View>
-            <View className="flex mr-5 space-y-1 pl-2">
+            <View className="flex mr-5 space-y-1">
               <GalleryTouchableOpacity
                 eventElementId={'Reply to Comment'}
                 eventName={'Reply to Comment Press'}
