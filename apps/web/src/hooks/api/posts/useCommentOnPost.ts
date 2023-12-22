@@ -148,6 +148,7 @@ export default function useCommentOnPost() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                deleted: false,
                 admires: {
                   edges: [],
                   pageInfo: {
