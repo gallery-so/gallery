@@ -82,6 +82,8 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
             id: 'Token:testTokenId',
             media: {
               __typename: 'ImageMedia',
+              mediaType: 'image',
+              mediaURL: 'http://someurl.com',
               previewURLs: {
                 small: 'http://someurl.com',
                 medium: 'http://someurl.com',
@@ -159,6 +161,8 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
                     id: 'Token:testTokenId',
                     media: {
                       __typename: 'ImageMedia',
+                      mediaType: 'image',
+                      mediaURL: 'http://someurl.com',
                       previewURLs: {
                         small: 'http://someurl.com',
                         medium: 'http://someurl.com',
@@ -193,6 +197,8 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
                     id: 'Token:testTokenId',
                     media: {
                       __typename: 'ImageMedia',
+                      mediaType: 'image',
+                      mediaURL: 'http://someurl.com',
                       previewURLs: {
                         small: 'http://someurl.com',
                         medium: 'http://someurl.com',
@@ -256,6 +262,8 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
         __typename: 'ImageMedia',
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
+        mediaType: 'image',
+        mediaURL: 'http://someurl.com',
         previewURLs: {
           small: 'http://someimage.com',
           medium: 'http://someimage.com',

@@ -63,6 +63,8 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
                   id: `Token:testTokenId-${index}`,
                   media: {
                     __typename: 'ImageMedia',
+                    mediaType: 'image',
+                    mediaURL: 'http://someurl.com',
                     previewURLs: {
                       small: 'http://someurl.com',
                       medium: 'http://someurl.com',
