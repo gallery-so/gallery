@@ -96,6 +96,8 @@ export function getPreviewImageUrlsInlineDangerously({
 
           ... on ImageMedia {
             __typename
+            mediaURL
+            mediaType
             previewURLs {
               small
               medium
@@ -232,6 +234,14 @@ export function getPreviewImageUrlsInlineDangerously({
     } else if (media.__typename === 'SyncingMedia' && !media.fallbackMedia?.mediaURL) {
       return { type: SyncingMediaWithoutFallback };
     }
+  }
+
+  if (media.__typename === 'ImageMedia' && media.mediaType === 'svg') {
+    previewUrls = {
+      small: media.mediaURL,
+      medium: media.mediaURL,
+      large: media.mediaURL,
+    };
   }
 
   if (!previewUrls) {
