@@ -109,6 +109,7 @@ export default function useCommentOnFeedEvent() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                deleted: false,
                 admires: {
                   edges: [],
                   pageInfo: {
