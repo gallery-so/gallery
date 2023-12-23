@@ -40,7 +40,9 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
             ...NotificationSkeletonResponsibleUsersFragment
           }
           tokens {
-            name
+            definition {
+              name
+            }
           }
         }
 
@@ -121,7 +123,7 @@ export function SomeonePostedYourWork({ notificationRef, queryRef }: SomeonePost
             }}
             className="text-sm"
           >
-            {token?.name}
+            {token?.definition?.name}
           </Typography>
         </Text>
       </View>

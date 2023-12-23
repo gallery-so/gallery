@@ -33,11 +33,8 @@ export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityCollectorsListFragment on Community
       @refetchable(queryName: "CommunityCollectorsListRefetchableFragment") {
-        owners(
-          first: $listOwnersFirst
-          after: $listOwnersAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) @connection(key: "CommunityPageView_owners") {
+        holders(first: $listOwnersFirst, after: $listOwnersAfter)
+          @connection(key: "CommunityPageView_holders") {
           edges {
             node {
               __typename
@@ -55,8 +52,8 @@ export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
   );
 
   const holders = useMemo(() => {
-    return removeNullValues(community?.owners?.edges?.map((edge) => edge?.node?.user));
-  }, [community?.owners?.edges]);
+    return removeNullValues(community?.holders?.edges?.map((edge) => edge?.node?.user));
+  }, [community?.holders?.edges]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const loadMore = useCallback(() => {

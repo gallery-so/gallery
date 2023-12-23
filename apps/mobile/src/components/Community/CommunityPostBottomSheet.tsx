@@ -8,6 +8,7 @@ import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { CommunityPostBottomSheetFragment$key } from '~/generated/CommunityPostBottomSheetFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { Button } from '../Button';
 import {
@@ -32,7 +33,7 @@ function CommunityPostBottomSheet(
     graphql`
       fragment CommunityPostBottomSheetFragment on Community {
         name
-        chain
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -51,10 +52,12 @@ function CommunityPostBottomSheet(
     bottomSheetRef.current?.close();
   }, []);
 
-  const handleSync = useCallback(async () => {
-    if (!community.chain) return;
+  const { chain } = extractRelevantMetadataFromCommunity(community);
 
-    await syncTokens(community.chain);
+  const handleSync = useCallback(async () => {
+    if (!chain) return;
+
+    await syncTokens(chain);
 
     closeBottomSheet();
 
@@ -62,7 +65,7 @@ function CommunityPostBottomSheet(
     pushToast({
       message: 'Successfully refreshed your collection',
     });
-  }, [closeBottomSheet, community.chain, onRefresh, pushToast, syncTokens]);
+  }, [closeBottomSheet, chain, onRefresh, pushToast, syncTokens]);
 
   return (
     <GalleryBottomSheetModal

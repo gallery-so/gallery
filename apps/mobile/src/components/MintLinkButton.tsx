@@ -14,7 +14,9 @@ import { ZoraIcon } from 'src/icons/ZoraIcon';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { Chain } from '~/shared/utils/chains';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import {
   getMintUrlWithReferrer,
   MINT_LINK_CHAIN_ENABLED,
@@ -23,10 +25,19 @@ import {
 import { Button, ButtonProps } from './Button';
 
 type Props = {
-  tokenRef: MintLinkButtonFragment$key;
+  // in order to generate the mint URL with the correct params, we either grab it
+  // from the token metadata, or if a token is not available (e.g. community page),
+  // we use the community metadata. finally, we take into account a mint URL override
+  // in the case of a user-provided post.
+  tokenRef: MintLinkButtonFragment$key | null;
+  overrideMetadata?: {
+    contractAddress: string;
+    chain: Chain;
+    mintUrl: string;
+  };
+  overrideMintUrl?: string;
   style?: ViewStyle;
   referrerAddress?: string;
-  overwriteURL?: string;
   variant?: ButtonProps['variant'];
   size?: ButtonProps['size'];
   eventContext: GalleryElementTrackingProps['eventContext'];
@@ -34,9 +45,10 @@ type Props = {
 
 export function MintLinkButton({
   tokenRef,
+  overrideMetadata,
+  overrideMintUrl,
   style,
   referrerAddress,
-  overwriteURL,
   variant = 'primary',
   size = 'md',
   eventContext,
@@ -44,30 +56,30 @@ export function MintLinkButton({
   const token = useFragment(
     graphql`
       fragment MintLinkButtonFragment on Token {
-        definition {
-          community {
-            contract {
-              mintURL
-              contractAddress {
-                chain
-                address
-              }
-            }
-          }
-          mintUrl
-        }
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
+
   const { colorScheme } = useColorScheme();
 
-  const tokenContractAddress =
-    token?.definition?.community?.contract?.contractAddress?.address ?? '';
-  const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
+  const { contractAddress, chain, mintUrl } = useMemo(() => {
+    if (token) {
+      return extractRelevantMetadataFromToken(token);
+    }
+    if (overrideMetadata) {
+      return overrideMetadata;
+    }
+    return {
+      contractAddress: '',
+      chain: '',
+      mintUrl: '',
+    };
+  }, [overrideMetadata, token]);
+
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL ||
-      (token?.definition?.mintUrl ?? token.definition?.community?.contract?.mintURL ?? ''),
+    overrideMintUrl || mintUrl,
     referrerAddress ?? ''
   );
 
@@ -134,11 +146,11 @@ export function MintLinkButton({
     return colorMap[variant as 'primary' | 'secondary'][colorScheme === 'dark' ? 'dark' : 'light'];
   }, [variant, colorScheme]);
 
-  if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
+  if (MINT_LINK_DISABLED_CONTRACTS.has(contractAddress)) {
     return null;
   }
 
-  if (!MINT_LINK_CHAIN_ENABLED.has(tokenChain)) {
+  if (!MINT_LINK_CHAIN_ENABLED.has(chain)) {
     return null;
   }
 

@@ -44,154 +44,156 @@ export function getPreviewImageUrlsInlineDangerously({
     graphql`
       fragment getPreviewImageUrlsInlineDangerouslyFragment on Token @inline {
         dbid
-        media {
-          ... on VideoMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+        definition {
+          media {
+            ... on VideoMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+
+              fallbackMedia {
+                mediaURL
+              }
             }
 
-            fallbackMedia {
-              mediaURL
+            ... on AudioMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-          }
 
-          ... on AudioMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on GltfMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on GltfMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on HtmlMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on HtmlMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on ImageMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on ImageMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on GIFMedia {
+              __typename
+              staticPreviewURLs {
+                small
+                medium
+                large
+              }
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on GIFMedia {
-            __typename
-            staticPreviewURLs {
-              small
-              medium
-              large
+            ... on JsonMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            previewURLs {
-              small
-              medium
-              large
-            }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on JsonMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on TextMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on TextMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on PdfMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on PdfMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on UnknownMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on UnknownMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
+            ... on InvalidMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
-            fallbackMedia {
-              mediaURL
-            }
-          }
 
-          ... on InvalidMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
-            }
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
-          ... on SyncingMedia {
-            __typename
-            previewURLs {
-              small
-              medium
-              large
-            }
-            fallbackMedia {
-              mediaURL
+            ... on SyncingMedia {
+              __typename
+              previewURLs {
+                small
+                medium
+                large
+              }
+              fallbackMedia {
+                mediaURL
+              }
             }
           }
         }
@@ -200,7 +202,7 @@ export function getPreviewImageUrlsInlineDangerously({
     tokenRef
   );
 
-  const media = token?.media;
+  const media = token?.definition?.media;
 
   if (!media) {
     return {

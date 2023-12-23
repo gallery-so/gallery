@@ -22,11 +22,7 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
             total
           }
         }
-        owners(
-          first: $listOwnersFirst
-          after: $listOwnersAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) {
+        holders(first: $listOwnersFirst, after: $listOwnersAfter) {
           pageInfo {
             total
           }
@@ -36,7 +32,7 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
     communityRef
   );
 
-  const totalOwners = community.owners?.pageInfo?.total ?? 0;
+  const totalOwners = community.holders?.pageInfo?.total ?? 0;
   const totalPosts = community.posts?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {

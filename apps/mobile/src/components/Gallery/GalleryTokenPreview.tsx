@@ -24,11 +24,13 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
         __typename
 
         token @required(action: THROW) {
-          media {
-            ... on Media {
-              dimensions {
-                width
-                height
+          definition {
+            media {
+              ... on Media {
+                dimensions {
+                  width
+                  height
+                }
               }
             }
           }
@@ -74,7 +76,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
       return null;
     }
 
-    const serverSourcedDimensions = token.token.media?.dimensions;
+    const serverSourcedDimensions = token.token.definition?.media?.dimensions;
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
         container: { width: containerWidth, height: screenDimensions.height / 2 },
@@ -93,13 +95,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
     }
 
     return null;
-  }, [
-    containerWidth,
-    measuredDimensions,
-    screenDimensions.height,
-    token.token.media?.dimensions,
-    tokenUrl,
-  ]);
+  }, [containerWidth, measuredDimensions, screenDimensions.height, token, tokenUrl]);
 
   return (
     <View

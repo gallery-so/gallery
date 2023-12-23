@@ -31,19 +31,22 @@ export function groupNftSelectorCollectionsByAddress({
           dbid
           # tokenId is used by NftSelectorTokenPreview.tsx
           # eslint-disable-next-line relay/unused-fields
-          tokenId
-          name
-          chain
-          isSpamByProvider
-          isSpamByUser
-          contract {
-            dbid
-            chain
+          definition {
+            tokenId
             name
-            contractAddress {
-              address
+            chain
+            contract {
+              dbid
+              contractAddress {
+                address
+              }
+              isSpam
+            }
+            community {
+              name
             }
           }
+          isSpamByUser
 
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...NftSelectorTokenFragment
@@ -56,20 +59,26 @@ export function groupNftSelectorCollectionsByAddress({
   const map: Record<string, NftSelectorCollectionGroup> = {};
   for (const token of tokens) {
     if (ignoreSpam) {
-      if (token.isSpamByProvider || token.isSpamByUser) {
+      if (token.definition.contract?.isSpam || token.isSpamByUser) {
         continue;
       }
     }
 
-    if (token.contract?.contractAddress?.address) {
-      const title = token.chain === 'POAP' ? 'POAP' : token.contract.name || '<untitled>';
-      const address = token.chain === 'POAP' ? 'POAP' : token.contract.contractAddress.address;
+    if (token.definition?.contract?.contractAddress?.address) {
+      const title =
+        token.definition.chain === 'POAP'
+          ? 'POAP'
+          : token.definition.community?.name || '<untitled>';
+      const address =
+        token.definition.chain === 'POAP'
+          ? 'POAP'
+          : token.definition.contract?.contractAddress.address;
 
       const group = map[address] ?? {
         title,
         tokens: [],
-        address: token.contract.contractAddress.address,
-        dbid: token.contract.dbid,
+        address: token.definition.contract.contractAddress.address,
+        dbid: token.definition.contract.dbid,
       };
 
       map[address] = group;

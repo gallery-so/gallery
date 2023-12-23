@@ -47,16 +47,16 @@ export function NftPreviewContextMenuPopup({
 
         token @required(action: THROW) {
           dbid
-          name
-
-          contract {
+          definition {
             name
-          }
-
-          media {
-            ... on Media {
-              previewURLs {
-                large
+            community {
+              name
+            }
+            media {
+              ... on Media {
+                previewURLs {
+                  large
+                }
               }
             }
           }
@@ -74,7 +74,7 @@ export function NftPreviewContextMenuPopup({
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const windowDimensions = useWindowDimensions();
 
-  const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
+  const tokenUrl = token.definition?.media?.previewURLs?.large ?? fallbackTokenUrl;
 
   const [popupAssetLoaded, setPopupAssetLoaded] = useState(false);
 
@@ -179,16 +179,16 @@ export function NftPreviewContextMenuPopup({
               )}
             </View>
             <View className="flex flex-col py-3 px-4 bg-black/90">
-              {token.name && (
+              {token.definition?.name && (
                 <Typography
                   className="text-offWhite"
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 >
-                  {token.name}
+                  {token.definition.name}
                 </Typography>
               )}
 
-              {token.contract?.name && (
+              {token.definition?.community?.name && (
                 <Typography
                   font={{
                     family: 'ABCDiatype',
@@ -196,7 +196,7 @@ export function NftPreviewContextMenuPopup({
                   }}
                   className="text-sm"
                 >
-                  <Text className="text-porcelain">{token.contract.name}</Text>
+                  <Text className="text-porcelain">{token.definition.community.name}</Text>
                   {ENABLED_ARTIST && <Text className="text-metal"> by riley.eth</Text>}
                 </Typography>
               )}

@@ -29,11 +29,13 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
         tokens {
           dbid
-          media {
-            ... on Media {
-              dimensions {
-                width
-                height
+          definition {
+            media {
+              ... on Media {
+                dimensions {
+                  width
+                  height
+                }
               }
             }
           }
@@ -106,7 +108,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   }, [hasViewerAdmiredEvent, toggleAdmire, navigation, imageUrl, firstToken.dbid]);
 
   const resultDimensions = useMemo(() => {
-    const serverSourcedDimensions = firstToken.media?.dimensions;
+    const serverSourcedDimensions = firstToken.definition?.media?.dimensions;
     if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
       return fitDimensionsToContainerContain({
         container: { width: dimensions.width, height: dimensions.width },
@@ -121,7 +123,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
       height: dimensions.width,
       width: dimensions.width,
     };
-  }, [firstToken.media?.dimensions, dimensions.width]);
+  }, [firstToken, dimensions.width]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>

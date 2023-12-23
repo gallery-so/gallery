@@ -1,10 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
 import { SearchResult } from '../SearchResult';
@@ -22,21 +21,16 @@ export function CommunitySearchResult({ communityRef, keyword, onSelect, isMenti
         dbid
         name
         description
-        contractAddress {
-          address
-          chain
-        }
         ...CommunityProfilePictureFragment
+        ...useNavigateToCommunityScreenFragment
       }
     `,
     communityRef
   );
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handlePress = useCallback(() => {
-    const contractAddress = community.contractAddress;
-    const { address, chain } = contractAddress ?? {};
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
+  const handlePress = useCallback(() => {
     if (onSelect) {
       onSelect({
         type: 'Community',
@@ -46,15 +40,8 @@ export function CommunitySearchResult({ communityRef, keyword, onSelect, isMenti
       return;
     }
 
-    if (!address || !chain) {
-      return;
-    }
-
-    navigation.push('Community', {
-      contractAddress: address,
-      chain,
-    });
-  }, [community, navigation, onSelect]);
+    navigateToCommunity(community);
+  }, [community, navigateToCommunity, onSelect]);
 
   return (
     <SearchResult

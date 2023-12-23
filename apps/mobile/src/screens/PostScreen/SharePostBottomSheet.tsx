@@ -79,7 +79,9 @@ function SharePostBottomSheet(
             }
             caption
             tokens {
-              name
+              definition {
+                name
+              }
               dbid
               ...getPreviewImageUrlsInlineDangerouslyFragment
             }
@@ -111,7 +113,7 @@ function SharePostBottomSheet(
     if (post?.__typename === 'Post') {
       const token = post?.tokens?.[0];
       if (token) {
-        return token.name;
+        return token.definition.name;
       }
     }
     return 'this';

@@ -20,6 +20,7 @@ import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPost
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { noop } from '~/shared/utils/noop';
 
 import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
@@ -40,9 +41,6 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
       @refetchable(queryName: "CommunityViewPostsTabFragmentPaginationQuery") {
         dbid
         name
-        contractAddress {
-          address
-        }
         posts(last: $postLast, before: $postBefore)
           @connection(key: "CommunityViewPostsTabFragment_posts") {
           edges {
@@ -55,6 +53,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
           }
         }
         ...CommunityPostBottomSheetFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -126,6 +125,8 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
+  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
+
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleCreatePost = useCallback(() => {
     if (!isMemberOfCommunity) {
@@ -133,12 +134,12 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
       return;
     }
 
-    if (!community?.contractAddress?.address) return;
+    if (!contractAddress) return;
     navigation.navigate('NftSelectorContractScreen', {
-      contractAddress: community?.contractAddress?.address,
+      contractAddress,
       page: 'Community',
     });
-  }, [isMemberOfCommunity, navigation, community?.contractAddress?.address]);
+  }, [isMemberOfCommunity, contractAddress, navigation]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {

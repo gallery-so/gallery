@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CreatorProfilePictureAndUsernameOrAddress } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
@@ -21,18 +22,17 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment PostCreatorAndCollectionSectionFragment on Token {
-        community {
-          creator {
-            ... on GalleryUser {
-              __typename
-              username
-              universal
+        definition {
+          community {
+            creator {
+              ... on GalleryUser {
+                __typename
+                username
+                universal
+              }
+              ...ProfilePictureAndUserOrAddressCreatorFragment
             }
-            ...ProfilePictureAndUserOrAddressCreatorFragment
-          }
-          contractAddress {
-            address
-            chain
+            ...useNavigateToCommunityScreenFragment
           }
         }
         ...extractRelevantMetadataFromTokenFragment
@@ -43,11 +43,11 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
 
   const { contractName } = extractRelevantMetadataFromToken(token);
   const creatorUsernameCharCount = useMemo(() => {
-    if (token.community?.creator?.__typename === 'GalleryUser') {
-      return token.community.creator.username?.length ?? 0;
+    if (token.definition?.community?.creator?.__typename === 'GalleryUser') {
+      return token.definition?.community.creator.username?.length ?? 0;
     }
     return 0;
-  }, [token.community?.creator]);
+  }, [token.definition?.community?.creator]);
 
   const { contractNameContainerStyle, creatorNameContainerStyle } = useMemo(() => {
     const contractNameCharCount = contractName.length;
@@ -76,24 +76,24 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleUsernamePress = useCallback(() => {
-    if (token.community?.creator?.__typename === 'GalleryUser') {
-      navigation.navigate('Profile', { username: token.community.creator?.username ?? '' });
-    }
-  }, [token.community?.creator, navigation]);
-
-  const handleCommunityPress = useCallback(() => {
-    if (token.community?.contractAddress?.address && token.community?.contractAddress?.chain) {
-      navigation.push('Community', {
-        contractAddress: token.community.contractAddress?.address ?? '',
-        chain: token.community.contractAddress?.chain ?? '',
+    if (token.definition?.community?.creator?.__typename === 'GalleryUser') {
+      navigation.navigate('Profile', {
+        username: token.definition.community.creator.username ?? '',
       });
     }
+  }, [token.definition.community, navigation]);
 
-    return;
-  }, [token.community, navigation]);
+  const navigateToCommunity = useNavigateToCommunityScreen();
+
+  const handleCommunityPress = useCallback(() => {
+    if (token.definition.community) {
+      navigateToCommunity(token.definition.community);
+    }
+  }, [navigateToCommunity, token.definition.community]);
 
   const isLegitGalleryUser =
-    token.community?.creator?.__typename === 'GalleryUser' && !token.community.creator.universal;
+    token.definition?.community?.creator?.__typename === 'GalleryUser' &&
+    !token.definition?.community.creator.universal;
 
   return (
     <View className="flex flex-row mt-2.5 ml-3 mr-3 justify-between">
@@ -114,7 +114,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
           </Typography>
 
           <CreatorProfilePictureAndUsernameOrAddress
-            userOrAddressRef={token.community.creator}
+            userOrAddressRef={token.definition?.community.creator}
             eventContext={contexts.Posts}
             handlePress={handleUsernamePress}
             pfpDisabled
@@ -122,7 +122,7 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
         </GalleryTouchableOpacity>
       ) : null}
 
-      {token.community && (
+      {token.definition?.community && (
         <GalleryTouchableOpacity
           className="flex"
           style={contractNameContainerStyle}
