@@ -42,10 +42,25 @@ export function getMentionElements(
             }
             ... on Community {
               __typename
-              contractAddress {
+              subtype {
                 __typename
-                address
-                chain
+                ... on ContractCommunity {
+                  communityKey {
+                    contract {
+                      address
+                      chain
+                    }
+                  }
+                }
+                ... on ArtBlocksCommunity {
+                  communityKey {
+                    contract {
+                      address
+                      chain
+                    }
+                  }
+                  projectID
+                }
               }
             }
           }

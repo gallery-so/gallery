@@ -17,19 +17,19 @@ export function extractRelevantMetadataFromCommunity(
         subtype {
           __typename
           ... on ContractCommunity {
-            contract {
-              chain
-              contractAddress {
+            communityKey {
+              contract {
                 address
+                chain
                 ...walletGetExternalAddressLinkFragment
               }
             }
           }
           ... on ArtBlocksCommunity {
-            contract {
-              chain
-              contractAddress {
+            communityKey {
+              contract {
                 address
+                chain
                 ...walletGetExternalAddressLinkFragment
               }
             }
@@ -63,9 +63,9 @@ export function extractRelevantMetadataFromCommunity(
     result.projectId = community.subtype?.projectID ?? '';
   }
 
-  if (community.subtype?.contract?.contractAddress?.address) {
-    const chain = community.subtype.contract.chain;
-    const address = community.subtype.contract.contractAddress.address;
+  if (community.subtype?.communityKey?.contract?.address) {
+    const chain = community.subtype.communityKey.contract.chain;
+    const address = community.subtype.communityKey.contract.address;
 
     // @ts-expect-error: relay error, no need to check for %future added value
     result.chain = chain ?? 'Ethereum';
@@ -76,7 +76,7 @@ export function extractRelevantMetadataFromCommunity(
     }
 
     result.externalAddressUrl =
-      getExternalAddressLink(community.subtype.contract.contractAddress) ?? '';
+      getExternalAddressLink(community.subtype.communityKey.contract) ?? '';
 
     if (
       chain &&
