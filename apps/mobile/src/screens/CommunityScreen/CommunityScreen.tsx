@@ -9,6 +9,8 @@ import { CommunityView } from '~/components/Community/CommunityView';
 import { CommunityViewFallback } from '~/components/Community/CommunityViewFallback';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { CommunityScreenArtBlocksCommunityQuery } from '~/generated/CommunityScreenArtBlocksCommunityQuery.graphql';
+import { CommunityScreenCommunityViewWrapperFragment$key } from '~/generated/CommunityScreenCommunityViewWrapperFragment.graphql';
+import { CommunityScreenCommunityViewWrapperQuery } from '~/generated/CommunityScreenCommunityViewWrapperQuery.graphql';
 import { CommunityScreenContractCommunityQuery } from '~/generated/CommunityScreenContractCommunityQuery.graphql';
 import { Chain } from '~/generated/CommunityScreenContractCommunityQuery.graphql';
 import { CommunityScreenRefetchableFragment$key } from '~/generated/CommunityScreenRefetchableFragment.graphql';
@@ -138,7 +140,11 @@ function ArtBlocksCommunityView({
   return <CommunityViewWrapper communityRef={initializerQuery.community} />;
 }
 
-function CommunityViewWrapper({ communityRef }: { communityRef: any }) {
+function CommunityViewWrapper({
+  communityRef,
+}: {
+  communityRef: CommunityScreenCommunityViewWrapperFragment$key;
+}) {
   const community = useFragment(
     graphql`
       fragment CommunityScreenCommunityViewWrapperFragment on Community {
