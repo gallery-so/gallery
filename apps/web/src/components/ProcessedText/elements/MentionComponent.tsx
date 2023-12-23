@@ -5,6 +5,7 @@ import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { GalleryTextElementParserMentionsFragment$data } from '~/generated/GalleryTextElementParserMentionsFragment.graphql';
 import { MentionComponentFragment$key } from '~/generated/MentionComponentFragment.graphql';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 type Props = {
   mention: string;
@@ -28,9 +29,7 @@ export function MentionComponent({ mention, mentionData, mentionsRef }: Props) {
           ... on Community {
             __typename
             name
-            contractAddress {
-              address
-            }
+            ...extractRelevantMetadataFromCommunityFragment
             ...CommunityHoverCardFragment
           }
         }
@@ -58,11 +57,17 @@ export function MentionComponent({ mention, mentionData, mentionsRef }: Props) {
   }
 
   if (mentionData.__typename === 'Community') {
-    const community = query.find(
-      (mention) =>
+    const community = query.find((mention) => {
+      if (mentionData.subtype?.__typename === '%other') {
+        return null;
+      }
+
+      return (
         mention.entity?.__typename === 'Community' &&
-        mention.entity.contractAddress?.address === mentionData.contractAddress?.address
-    )?.entity;
+        extractRelevantMetadataFromCommunity(mention.entity)?.contractAddress ===
+          mentionData.subtype?.communityKey?.contract?.address
+      );
+    })?.entity;
 
     if (community?.__typename !== 'Community') return null;
 

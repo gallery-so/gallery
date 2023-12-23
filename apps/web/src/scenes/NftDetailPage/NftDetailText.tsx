@@ -59,31 +59,26 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       fragment NftDetailTextFragment on Token {
         id
         dbid
-        name
-        chain
-        description
-        tokenId
+        definition {
+          description
+          community {
+            creator {
+              ... on GalleryUser {
+                __typename
+              }
+              ...ProfilePictureAndUserOrAddressCreatorFragment
+            }
+            ...CommunityHoverCardFragment
+          }
+          contract {
+            badgeURL
+          }
+        }
         owner {
           username
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
-        contract {
-          name
-          chain
-          contractAddress {
-            address
-          }
-          badgeURL
-        }
-        community {
-          creator {
-            ... on GalleryUser {
-              __typename
-            }
-            ...ProfilePictureAndUserOrAddressCreatorFragment
-          }
-          ...CommunityHoverCardFragment
-        }
+
         viewerAdmire {
           dbid
         }
@@ -187,33 +182,28 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const { openseaUrl, contractName } = extractRelevantMetadataFromToken(token);
+  const { tokenId, name, contractName, contractAddress, chain, openseaUrl } =
+    extractRelevantMetadataFromToken(token);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
-      contractAddress: token.contract?.contractAddress?.address,
-      tokenId: token.tokenId,
+      contractAddress,
+      tokenId,
       externaUrl: openseaUrl,
     });
-  }, [
-    track,
-    token.owner?.username,
-    token.contract?.contractAddress?.address,
-    token.tokenId,
-    openseaUrl,
-  ]);
+  }, [track, token.owner?.username, contractAddress, tokenId, openseaUrl]);
 
   const communityUrl = getCommunityUrlForToken(token);
 
   const navbarHeight = useGlobalNavbarHeight();
   const decodedTokenName = useMemo(() => {
-    if (token.name) {
-      return unescape(token.name);
+    if (name) {
+      return unescape(name);
     }
 
     return null;
-  }, [token.name]);
+  }, [name]);
 
   const handleCreatePostClick = useCallback(() => {
     showModal({
@@ -240,18 +230,18 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             />
           </VStack>
         )}
-        {token.community?.creator && (
+        {token.definition.community?.creator && (
           <VStack gap={2}>
             <TitleXS>CREATOR</TitleXS>
             <CreatorProfilePictureAndUsernameOrAddress
-              userOrAddressRef={token.community.creator}
+              userOrAddressRef={token.definition.community.creator}
               eventContext={contexts['NFT Detail']}
             />
           </VStack>
         )}
       </>
     );
-  }, [token.owner, token.community?.creator]);
+  }, [token.owner, token.definition.community?.creator]);
 
   const OwnerAndCreatorSection = useMemo(() => {
     const ownerUsernameLength = token.owner?.username?.length ?? 0;
@@ -274,7 +264,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       <VStack gap={isMobile ? 32 : 24}>
         <VStack gap={8}>
           <HStack gap={8} justify="space-between">
-            {token.name && <TitleM>{decodedTokenName}</TitleM>}
+            {name && <TitleM>{decodedTokenName}</TitleM>}
             <HStack gap={8} align="flex-start">
               <ProfilePictureStack
                 onClick={openAdmireModal}
@@ -294,8 +284,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             </HStack>
           </HStack>
           <HStack align="center" gap={4}>
-            {communityUrl && token.community ? (
-              <CommunityHoverCard communityRef={token.community} communityName={contractName}>
+            {communityUrl && token.definition.community ? (
+              <CommunityHoverCard
+                communityRef={token.definition.community}
+                communityName={contractName}
+              >
                 <GalleryPill
                   eventElementId="NFT Detail Community Pill"
                   eventName="NFT Detail Community Pill Click"
@@ -303,8 +296,10 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
                   to={communityUrl}
                 >
                   <StyledPillContent gap={4} align="center" justify="flex-end">
-                    {token.chain === 'POAP' && <PoapLogo />}
-                    {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+                    {chain === 'POAP' && <PoapLogo />}
+                    {token.definition.contract?.badgeURL && (
+                      <StyledBadge src={token.definition.contract.badgeURL} />
+                    )}
                     <StyledContractName>{contractName}</StyledContractName>
                   </StyledPillContent>
                 </GalleryPill>
@@ -322,9 +317,9 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           </HStack>
         </VStack>
         {OwnerAndCreatorSection}
-        {token.description && (
+        {token.definition.description && (
           <BaseM>
-            <Markdown text={token.description} eventContext={contexts['NFT Detail']} />
+            <Markdown text={token.definition.description} eventContext={contexts['NFT Detail']} />
           </BaseM>
         )}
 

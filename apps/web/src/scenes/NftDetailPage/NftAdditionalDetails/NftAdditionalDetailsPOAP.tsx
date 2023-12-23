@@ -14,18 +14,20 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsPOAPFragment on Token {
-        tokenMetadata
+        definition {
+          tokenMetadata
+        }
       }
     `,
     tokenRef
   );
 
-  if (!token.tokenMetadata) {
+  if (!token.definition.tokenMetadata) {
     return null;
   }
 
   const { id, location, createdDate, supply, chain, poapUrl, projectUrl } = extractPoapMetadata(
-    token.tokenMetadata
+    token.definition.tokenMetadata
   );
 
   return (

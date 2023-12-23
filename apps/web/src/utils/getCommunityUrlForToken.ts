@@ -18,10 +18,12 @@ export function getCommunityUrlForToken(
   const token = readInlineData(
     graphql`
       fragment getCommunityUrlForTokenFragment on Token @inline {
-        contract {
-          chain
-          contractAddress {
-            address
+        definition {
+          contract {
+            chain
+            contractAddress {
+              address
+            }
           }
         }
       }
@@ -29,8 +31,8 @@ export function getCommunityUrlForToken(
     tokenRef
   );
 
-  const contractAddress = token.contract?.contractAddress?.address;
-  const chain = token.contract?.chain || null;
+  const contractAddress = token.definition.contract?.contractAddress?.address;
+  const chain = token.definition.contract?.chain || null;
   const lowercaseChain = chain?.toLowerCase();
   if (!contractAddress) {
     return null;

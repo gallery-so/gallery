@@ -25,11 +25,13 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
-        tokenId
         lastUpdated
-        community {
-          contractAddress {
-            ...LinkableAddressFragment
+        definition {
+          tokenId
+          contract {
+            contractAddress {
+              ...LinkableAddressFragment
+            }
           }
         }
 
@@ -45,7 +47,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const { tokenId, lastUpdated, fxhashUrl, objktUrl, projectUrl } =
     extractRelevantMetadataFromToken(token);
 
-  const { community } = token;
+  const { contract } = token.definition;
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -54,11 +56,11 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
   return (
     <VStack gap={16}>
-      {community?.contractAddress && (
+      {contract?.contractAddress && (
         <div>
           <TitleXS>Contract address</TitleXS>
           <LinkableAddress
-            chainAddressRef={community.contractAddress}
+            chainAddressRef={contract.contractAddress}
             eventContext={contexts['NFT Detail']}
           />
         </div>

@@ -17,10 +17,11 @@ export default function OpenGraphCollectionPage() {
           }
           ... on Token {
             __typename
-
-            name
             collectorsNote
-            description
+            definition {
+              name
+              description
+            }
             ...getPreviewImageUrlsInlineDangerouslyFragment
           }
         }
@@ -50,8 +51,8 @@ export default function OpenGraphCollectionPage() {
         <div id="opengraph-image" style={{ width, height }}>
           {token && (
             <SingleOpenGraphPreview
-              title={token.name ?? ''}
-              description={token.description ?? ''}
+              title={token.definition.name ?? ''}
+              description={token.definition.description ?? ''}
               collectorsNote={token.collectorsNote ?? ''}
               imageUrls={result.urls.large ? [result.urls.large] : []}
             />

@@ -28,7 +28,9 @@ export default function SomeonePostedYourWork({ notificationRef, onClose }: Prop
             ...ProfilePictureFragment
           }
           tokens {
-            name
+            definition {
+              name
+            }
             ...NotificationPostPreviewWithBoundaryFragment
           }
         }
@@ -64,7 +66,7 @@ export default function SomeonePostedYourWork({ notificationRef, onClose }: Prop
             <BaseM as="span">shared your work</BaseM>
           </StyledTextWrapper>
           <StyledCaption as="span">
-            <strong>{token?.name}</strong>
+            <strong>{token?.definition.name}</strong>
           </StyledCaption>
         </VStack>
       </HStack>

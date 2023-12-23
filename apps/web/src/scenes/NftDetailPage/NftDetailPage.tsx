@@ -65,13 +65,17 @@ function NftDetailPage({
         __typename
         token @required(action: THROW) {
           dbid
-          name
+          definition {
+            name
+          }
         }
         collection {
           tokens {
             token @required(action: THROW) {
               dbid
-              name
+              definition {
+                name
+              }
             }
             ...NftDetailViewFragment
           }
@@ -102,7 +106,7 @@ function NftDetailPage({
     throw new Error('NFT Detail Page: username not found in page query params');
   }
 
-  const headTitle = `${selectedNft?.token?.name} - ${username} | Gallery`;
+  const headTitle = `${selectedNft?.token?.definition.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
     query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username === username;

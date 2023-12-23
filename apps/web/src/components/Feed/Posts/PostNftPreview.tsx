@@ -25,9 +25,11 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     graphql`
       fragment PostNftPreviewFragment on Token {
         ...NftPreviewFragment
-        media @required(action: THROW) {
-          ... on Media {
-            ...useContainedDimensionsForTokenFragment
+        definition {
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
           }
         }
       }
@@ -36,7 +38,7 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   );
 
   const resultDimensions = useContainedDimensionsForToken({
-    mediaRef: token.media,
+    mediaRef: token.definition.media,
     tokenSize: DESKTOP_TOKEN_SIZE,
   });
   const isMobile = useIsMobileOrMobileLargeWindowWidth();

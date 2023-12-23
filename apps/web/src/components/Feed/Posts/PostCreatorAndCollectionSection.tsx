@@ -22,17 +22,19 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment PostCreatorAndCollectionSectionFragment on Token {
-        community {
-          creator {
-            ... on GalleryUser {
-              __typename
-              username
-              universal
-              ...UserHoverCardFragment
+        definition {
+          community {
+            creator {
+              ... on GalleryUser {
+                __typename
+                username
+                universal
+                ...UserHoverCardFragment
+              }
+              ...ProfilePictureAndUserOrAddressCreatorFragment
             }
-            ...ProfilePictureAndUserOrAddressCreatorFragment
+            ...CommunityHoverCardFragment
           }
-          ...CommunityHoverCardFragment
         }
         ...extractRelevantMetadataFromTokenFragment
       }
@@ -40,14 +42,15 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
     tokenRef
   );
 
+  const { community } = token.definition;
   const { contractName } = extractRelevantMetadataFromToken(token);
   const contractNameCharCount = contractName.length;
   const creatorUsernameCharCount = useMemo(() => {
-    if (token.community?.creator?.__typename === 'GalleryUser') {
-      return token.community.creator.username?.length ?? 0;
+    if (community?.creator?.__typename === 'GalleryUser') {
+      return community.creator.username?.length ?? 0;
     }
     return 0;
-  }, [token.community?.creator]);
+  }, [community?.creator]);
 
   const containerStyles = useMemo(() => {
     let collectionWidth = 66;
@@ -78,16 +81,16 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
   }, [contractNameCharCount, creatorUsernameCharCount]);
 
   const isLegitGalleryUser =
-    token.community?.creator?.__typename === 'GalleryUser' && !token.community.creator.universal;
+    community?.creator?.__typename === 'GalleryUser' && !community.creator.universal;
 
   return (
     <StyledWrapper spaceBetween={!containerStyles} gap={16}>
       {isLegitGalleryUser ? (
         <StyledCreatorContainer widthPercentage={containerStyles?.creatorWidth}>
           <StyledLabel>Creator</StyledLabel>
-          <UserHoverCard userRef={token.community.creator}>
+          <UserHoverCard userRef={community.creator}>
             <CreatorProfilePictureAndUsernameOrAddress
-              userOrAddressRef={token.community.creator}
+              userOrAddressRef={community.creator}
               eventContext={contexts.Posts}
               pfpDisabled
             />
@@ -95,10 +98,10 @@ export function PostCreatorAndCollectionSection({ tokenRef }: Props) {
         </StyledCreatorContainer>
       ) : null}
 
-      {token.community && (
+      {community && (
         <StyledCollectionContainer widthPercentage={containerStyles?.collectionWidth}>
           <StyledLabel>Collection</StyledLabel>
-          <CommunityHoverCard communityRef={token.community} communityName={contractName}>
+          <CommunityHoverCard communityRef={community} communityName={contractName}>
             <StyledText>{contractName}</StyledText>
           </CommunityHoverCard>
         </StyledCollectionContainer>

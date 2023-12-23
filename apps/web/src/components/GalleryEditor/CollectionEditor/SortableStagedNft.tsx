@@ -31,13 +31,15 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     graphql`
       fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
-        }
-        media {
-          __typename
+          media {
+            __typename
+          }
         }
         ...StagedNftImageFragment
       }
@@ -58,8 +60,8 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     [isDragging, transform, transition]
   );
 
-  const isLiveType = isLiveMediaType(token.media?.__typename);
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const isLiveType = isLiveMediaType(token.definition.media?.__typename);
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   return (

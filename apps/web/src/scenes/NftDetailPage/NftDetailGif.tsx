@@ -20,11 +20,13 @@ function NftDetailGif({ tokenRef, onClick = noop, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailGifFragment on Token {
-        name
-        media @required(action: THROW) {
-          ... on GIFMedia {
-            __typename
-            contentRenderURL
+        definition {
+          name
+          media @required(action: THROW) {
+            ... on GIFMedia {
+              __typename
+              contentRenderURL
+            }
           }
         }
       }
@@ -34,12 +36,12 @@ function NftDetailGif({ tokenRef, onClick = noop, onLoad }: Props) {
   const breakpoint = useBreakpoint();
 
   const contentRenderURL = useMemo(() => {
-    if (token.media.__typename === 'GIFMedia') {
-      return token.media.contentRenderURL;
+    if (token.definition.media.__typename === 'GIFMedia') {
+      return token.definition.media.contentRenderURL;
     }
 
     return '';
-  }, [token.media]);
+  }, [token.definition.media]);
 
   const resizedImage = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
 
@@ -54,7 +56,7 @@ function NftDetailGif({ tokenRef, onClick = noop, onLoad }: Props) {
   return (
     <ImageWithLoading
       src={url}
-      alt={token.name ?? ''}
+      alt={token.definition.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
       onClick={onClick}
       onLoad={onLoad}

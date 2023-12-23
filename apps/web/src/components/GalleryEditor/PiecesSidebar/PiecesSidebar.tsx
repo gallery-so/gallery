@@ -42,9 +42,13 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     graphql`
       fragment PiecesSidebarFragment on Token @relay(plural: true) {
         dbid
-        chain
+        definition {
+          chain
+          contract {
+            isSpam
+          }
+        }
         isSpamByUser
-        isSpamByProvider
         ownerIsHolder
         ownerIsCreator
         ownedByWallets {
@@ -116,7 +120,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         return true;
       }
 
-      if (token.chain !== selectedChain.name) {
+      if (token.definition.chain !== selectedChain.name) {
         return false;
       }
 
@@ -142,7 +146,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       }
 
       // ...but incorporate with spam filtering logic for Collected view
-      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      const isSpam =
+        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
       if (selectedView === 'Hidden') {
         return isSpam;
       }

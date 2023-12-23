@@ -30,9 +30,11 @@ export default function useCreatePost() {
               __typename
               dbid
               tokens {
-                community {
-                  contractAddress {
-                    address
+                definition {
+                  contract {
+                    contractAddress {
+                      address
+                    }
                   }
                 }
               }
@@ -136,7 +138,7 @@ export default function useCreatePost() {
           // We current only support posting one token at a time, so we currently use the first token in the list.
           const communityAddressOfPostedToken =
             response.postTokens.post.tokens &&
-            response.postTokens.post.tokens[0]?.community?.contractAddress?.address;
+            response.postTokens.post.tokens[0]?.definition?.contract?.contractAddress?.address;
 
           // If the user is on the community page of the token they posted, stay on that page.
           const stayOnCommunityPage =
