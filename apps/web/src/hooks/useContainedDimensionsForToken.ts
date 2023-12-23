@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
 import { useContainedDimensionsForTokenFragment$key } from '~/generated/useContainedDimensionsForTokenFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
