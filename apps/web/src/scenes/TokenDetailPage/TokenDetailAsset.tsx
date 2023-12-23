@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -9,16 +9,11 @@ import Shimmer from '~/components/Shimmer/Shimmer';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NftDetailAssetComponent } from '~/scenes/NftDetailPage/NftDetailAsset';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import {
-  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
-  fitDimensionsToContainerContain,
-  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
-} from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
@@ -40,10 +35,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         }
         media @required(action: THROW) {
           ... on Media {
-            dimensions {
-              width
-              height
-            }
+            ...useContainedDimensionsForTokenFragment
           }
           ... on HtmlMedia {
             __typename
@@ -58,7 +50,6 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   );
 
   const breakpoint = useBreakpoint();
-  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -72,27 +63,9 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     tokenId: token.dbid,
   });
 
-  const resultDimensions = useMemo(() => {
-    const TOKEN_SIZE = isMobileOrMobileLarge
-      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
-      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
-    const serverSourcedDimensions = token.media?.dimensions;
-
-    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
-      return fitDimensionsToContainerContain({
-        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
-        source: {
-          width: serverSourcedDimensions.width,
-          height: serverSourcedDimensions.height,
-        },
-      });
-    }
-
-    return {
-      height: TOKEN_SIZE,
-      width: TOKEN_SIZE,
-    };
-  }, [token.media?.dimensions, isMobileOrMobileLarge]);
+  const resultDimensions = useContainedDimensionsForToken({
+    mediaRef: token.media,
+  });
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
 
@@ -119,7 +92,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     >
       <NftFailureBoundary tokenId={token.dbid}>
         <VisibilityContainer>
-          <AssetContainer className={hasPreviewUrl ? 'visible' : ''}>
+          <AssetContainer isVisible={hasPreviewUrl}>
             <StyledImage
               src={cachedUrls[tokenId]?.url}
               onLoad={handleNftLoaded}
@@ -132,7 +105,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
               <Shimmer />
             </ShimmerContainer>
           )}
-          <AssetContainer className={hasRawUrl ? 'visible' : ''}>
+          <AssetContainer isVisible={hasRawUrl}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </AssetContainer>
         </VisibilityContainer>
@@ -191,7 +164,7 @@ const VisibilityContainer = styled.div`
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 
-const AssetContainer = styled.div`
+const AssetContainer = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,10 +175,12 @@ const AssetContainer = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  &.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  ${({ isVisible }) =>
+    isVisible &&
+    `
+  opacity: 1;
+  pointer-events: auto;
+  `}
 
   @media only screen and (max-width: ${size.tablet}px) {
     height: 296px;

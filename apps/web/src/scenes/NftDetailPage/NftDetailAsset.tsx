@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -12,17 +12,12 @@ import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetC
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import {
-  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
-  fitDimensionsToContainerContain,
-  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
-} from '~/shared/utils/fitDimensionsToContainer';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftDetailAnimation from './NftDetailAnimation';
@@ -213,12 +208,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
           }
         }
         media @required(action: THROW) {
-          ... on Media {
-            dimensions {
-              width
-              height
-            }
-          }
+          ...useContainedDimensionsForTokenFragment
           ... on HtmlMedia {
             __typename
           }
@@ -232,7 +222,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   );
 
   const breakpoint = useBreakpoint();
-  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
@@ -246,28 +235,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     tokenId: token.dbid,
   });
 
-  const resultDimensions = useMemo(() => {
-    const TOKEN_SIZE = isMobileOrMobileLarge
-      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
-      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
-    const serverSourcedDimensions = token.media?.dimensions;
-
-    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
-      return fitDimensionsToContainerContain({
-        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
-        source: {
-          width: serverSourcedDimensions.width,
-          height: serverSourcedDimensions.height,
-        },
-      });
-    }
-
-    return {
-      height: TOKEN_SIZE,
-      width: TOKEN_SIZE,
-    };
-  }, [token.media?.dimensions, isMobileOrMobileLarge]);
-
+  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.media });
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
@@ -298,7 +266,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
         <VisibilityContainer>
-          <AssetContainer className={hasPreviewUrl ? 'visible' : ''}>
+          <AssetContainer isVisible={hasPreviewUrl}>
             <StyledImage
               src={cachedUrls[tokenId]?.url}
               onLoad={handleNftLoaded}
@@ -311,7 +279,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
               <Shimmer />
             </ShimmerContainer>
           )}
-          <AssetContainer className={hasRawUrl ? 'visible' : ''}>
+          <AssetContainer isVisible={hasRawUrl}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </AssetContainer>
         </VisibilityContainer>
@@ -370,7 +338,7 @@ const VisibilityContainer = styled.div`
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 
-const AssetContainer = styled.div`
+const AssetContainer = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -381,10 +349,12 @@ const AssetContainer = styled.div`
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  &.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  ${({ isVisible }) =>
+    isVisible &&
+    `
+  opacity: 1;
+  pointer-events: auto;
+  `}
 `;
 
 const ShimmerContainer = styled.div`

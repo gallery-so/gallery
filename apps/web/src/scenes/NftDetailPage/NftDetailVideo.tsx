@@ -6,13 +6,8 @@ import styled from 'styled-components';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import {
-  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
-  fitDimensionsToContainerContain,
-  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
-} from '~/shared/utils/fitDimensionsToContainer';
 import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
 
@@ -33,10 +28,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
         previewURLs {
           large
         }
-        dimensions {
-          width
-          height
-        }
+        ...useContainedDimensionsForTokenFragment
       }
     `,
     mediaRef
@@ -44,7 +36,6 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
 
   const [errored, setErrored] = useState(false);
 
-  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
   const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
 
   const handleVideoLoadError = useCallback(
@@ -70,27 +61,9 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
     return token.previewURLs.large;
   }, [token?.previewURLs?.large]);
 
-  const resultDimensions = useMemo(() => {
-    const TOKEN_SIZE = isMobileOrMobileLarge
-      ? MOBILE_TOKEN_DETAIL_VIEW_SIZE
-      : DESKTOP_TOKEN_DETAIL_VIEW_SIZE;
-    const serverSourcedDimensions = token.dimensions;
-
-    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
-      return fitDimensionsToContainerContain({
-        container: { width: TOKEN_SIZE, height: TOKEN_SIZE },
-        source: {
-          width: serverSourcedDimensions.width,
-          height: serverSourcedDimensions.height,
-        },
-      });
-    }
-
-    return {
-      height: TOKEN_SIZE,
-      width: TOKEN_SIZE,
-    };
-  }, [token.dimensions, isMobileOrMobileLarge]);
+  const resultDimensions = useContainedDimensionsForToken({
+    mediaRef: token,
+  });
 
   const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
 

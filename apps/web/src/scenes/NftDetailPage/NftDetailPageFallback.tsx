@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 
-import breakpoints, { size } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -29,7 +29,7 @@ export default function NftDetailPageFallback({ tokenId }: Props) {
     <StyledFullPageLoader>
       {hasPreviewUrl ? (
         <VisibilityContainer>
-          <StyledImageWrapper className={'visible'}>
+          <StyledImageWrapper isVisible={true}>
             <StyledImage
               src={cachedUrls[tokenId]?.url}
               height={dimensions?.height ?? TOKEN_SIZE}
@@ -64,16 +64,16 @@ const StyledFullPageLoader = styled.div`
   display: flex;
   height: 100vh;
   width: 100%;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    flex-direction: column;
-    padding-top: 110px;
-    padding-left: 24px;
-    padding-right: 24px;
+  flex-direction: column;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+    flex-direction: row;
   }
 `;
 
@@ -85,14 +85,17 @@ const VisibilityContainer = styled.div`
 `;
 
 const StyledTextContainer = styled(VStack)`
-  margin-left: 56px;
+  margin-top: 56px;
+  padding-right: 10%;
+  padding-left: 10%;
+  width: 400px;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    margin-top: 56px;
-    margin-left: 0px;
-    padding-right: 10%;
-    padding-left: 10%;
-    width: 400px;
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: 56px;
+    margin-top: 0px;
+    padding-right: 0%;
+    padding-left: 0%;
+    width: auto;
   }
 `;
 
@@ -160,7 +163,7 @@ const StyledImage = styled.img<{ height: number; width: number }>`
   border: none;
 `;
 
-const StyledImageWrapper = styled.div`
+const StyledImageWrapper = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,8 +172,10 @@ const StyledImageWrapper = styled.div`
   opacity: 0;
   pointer-events: none;
   transition: opacity 1s ease-in-out;
-  &.visible {
+  ${({ isVisible }) =>
+    isVisible &&
+    `
     opacity: 1;
     pointer-events: auto;
-  }
+  `}
 `;
