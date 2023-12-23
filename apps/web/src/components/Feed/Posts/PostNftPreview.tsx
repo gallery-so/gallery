@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,10 +7,10 @@ import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoadi
 import NftPreview from '~/components/NftPreview/NftPreview';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { PostNftPreviewFragment$key } from '~/generated/PostNftPreviewFragment.graphql';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
 import { contexts } from '~/shared/analytics/constants';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
 type Props = {
   tokenRef: PostNftPreviewFragment$key;
@@ -26,12 +25,9 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     graphql`
       fragment PostNftPreviewFragment on Token {
         ...NftPreviewFragment
-        media {
+        media @required(action: THROW) {
           ... on Media {
-            dimensions {
-              width
-              height
-            }
+            ...useContainedDimensionsForTokenFragment
           }
         }
       }
@@ -39,24 +35,10 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     tokenRef
   );
 
-  const resultDimensions = useMemo(() => {
-    const serverSourcedDimensions = token.media?.dimensions;
-    if (serverSourcedDimensions?.width && serverSourcedDimensions.height) {
-      return fitDimensionsToContainerContain({
-        container: { width: DESKTOP_TOKEN_SIZE, height: DESKTOP_TOKEN_SIZE },
-        source: {
-          width: serverSourcedDimensions.width,
-          height: serverSourcedDimensions.height,
-        },
-      });
-    }
-
-    return {
-      height: DESKTOP_TOKEN_SIZE,
-      width: DESKTOP_TOKEN_SIZE,
-    };
-  }, [token.media?.dimensions]);
-
+  const resultDimensions = useContainedDimensionsForToken({
+    mediaRef: token.media,
+    tokenSize: DESKTOP_TOKEN_SIZE,
+  });
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (

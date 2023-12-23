@@ -43,6 +43,7 @@ function Fixture() {
       queryRef={query}
       authenticatedUserOwnsAsset={false}
       collectionTokenRef={query.collectionTokenById}
+      visibility="visible"
     />
   );
 }
@@ -101,6 +102,15 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       collectorsNote: 'Test Collectors Note',
       media: {
         __typename: 'UnknownMedia',
+        previewURLs: {
+          small: 'http://someurl.com',
+          medium: 'http://someurl.com',
+          large: 'http://someurl.com',
+        },
+        dimensions: {
+          height: 600,
+          width: 600,
+        },
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
       },
@@ -256,6 +266,10 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
         __typename: 'ImageMedia',
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
+        dimensions: {
+          height: 600,
+          width: 400,
+        },
         previewURLs: {
           small: 'http://someimage.com',
           medium: 'http://someimage.com',

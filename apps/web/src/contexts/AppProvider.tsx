@@ -17,6 +17,7 @@ import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingPro
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
+import NftPreviewFallbackProvider from './nftPreviewFallback/NftPreviewFallbackContext';
 import PostComposerProvider from './postComposer/PostComposerContext';
 import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
@@ -52,27 +53,29 @@ export default function AppProvider({
                 <WebErrorReportingProvider>
                   <SwrProvider>
                     <GalleryNavigationProvider>
-                      <NftErrorProvider>
-                        <SyncTokensLockProvider>
-                          <PostComposerProvider>
-                            <ModalProvider>
-                              <SidebarDrawerProvider>
-                                <SearchProvider>
-                                  <SnowProvider>
-                                    <GlobalLayoutContextProvider
-                                      preloadedQuery={globalLayoutContextPreloadedQuery}
-                                    >
-                                      <FullPageNftDetailModalListener />
-                                      {isProd ? null : <Debugger />}
-                                      {children}
-                                    </GlobalLayoutContextProvider>
-                                  </SnowProvider>
-                                </SearchProvider>
-                              </SidebarDrawerProvider>
-                            </ModalProvider>
-                          </PostComposerProvider>
-                        </SyncTokensLockProvider>
-                      </NftErrorProvider>
+                      <NftPreviewFallbackProvider>
+                        <NftErrorProvider>
+                          <SyncTokensLockProvider>
+                            <PostComposerProvider>
+                              <ModalProvider>
+                                <SidebarDrawerProvider>
+                                  <SearchProvider>
+                                    <SnowProvider>
+                                      <GlobalLayoutContextProvider
+                                        preloadedQuery={globalLayoutContextPreloadedQuery}
+                                      >
+                                        <FullPageNftDetailModalListener />
+                                        {isProd ? null : <Debugger />}
+                                        {children}
+                                      </GlobalLayoutContextProvider>
+                                    </SnowProvider>
+                                  </SearchProvider>
+                                </SidebarDrawerProvider>
+                              </ModalProvider>
+                            </PostComposerProvider>
+                          </SyncTokensLockProvider>
+                        </NftErrorProvider>
+                      </NftPreviewFallbackProvider>
                     </GalleryNavigationProvider>
                   </SwrProvider>
                 </WebErrorReportingProvider>

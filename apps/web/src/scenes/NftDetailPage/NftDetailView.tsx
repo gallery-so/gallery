@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
@@ -19,6 +18,7 @@ type Props = {
   authenticatedUserOwnsAsset: boolean;
   queryRef: NftDetailViewQueryFragment$key;
   collectionTokenRef: NftDetailViewFragment$key;
+  visibility?: string;
 };
 
 type LoadableNftDetailViewProps = {
@@ -59,6 +59,7 @@ export default function NftDetailView({
   authenticatedUserOwnsAsset,
   queryRef,
   collectionTokenRef,
+  visibility = 'visible',
 }: Props) {
   const collectionNft = useFragment(
     graphql`
@@ -100,12 +101,13 @@ export default function NftDetailView({
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
-          <ShimmerProvider>
+          <Container>
             <NftDetailAsset
               tokenRef={collectionNft}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
+              visibility={visibility}
             />
-          </ShimmerProvider>
+          </Container>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
             <NftDetailNote
               tokenId={token.dbid}
@@ -161,6 +163,18 @@ const StyledContentContainer = styled.div`
   @media only screen and ${breakpoints.desktop} {
     width: initial;
   }
+`;
+
+const Container = styled.div`
+  min-width: 0;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledAssetAndNoteContainer = styled.div`
