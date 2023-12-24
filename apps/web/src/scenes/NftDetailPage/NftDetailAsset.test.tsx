@@ -61,8 +61,63 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       __typename: 'Token',
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
-      chain: Chain.Ethereum,
-      tokenMetadata: '{}',
+      definition: {
+        id: 'Token:testTokenId',
+        chain: Chain.Ethereum,
+        tokenMetadata: '{}',
+        name: 'Test Token Name',
+        description: 'Test Description',
+        tokenId: '1',
+        media: {
+          __typename: 'UnknownMedia',
+          previewURLs: {
+            small: 'http://someurl.com',
+            medium: 'http://someurl.com',
+            large: 'http://someurl.com',
+          },
+          dimensions: {
+            height: 600,
+            width: 600,
+          },
+          fallbackMedia: null,
+          contentRenderURL: 'bad url here',
+        },
+        contract: {
+          __typename: 'Contract',
+          id: 'Contract:someContractId',
+          // name: 'Test Contract Name',
+          chain: Chain.Ethereum,
+          contractAddress: {
+            chain: Chain.Ethereum,
+            address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+          },
+          badgeURL: 'http://someurl.com',
+        },
+        community: {
+          __typename: 'Community',
+          id: 'Contract:someCommunityId',
+          contractAddress: {
+            chain: Chain.Ethereum,
+            address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+          },
+          // @ts-expect-error creator can be either GalleryUser or ChainAddress, not sure
+          // how to satisfy __typename here
+          creator: {
+            // __typename: 'GalleryUserOrAddress',
+            username: 'Test Username',
+            universal: false,
+            primaryWallet: {
+              id: 'Wallet:testWalletId',
+              chainAddress: {
+                address: '2',
+                chain: Chain.Ethereum,
+              },
+            },
+            address: '2',
+            chain: Chain.Ethereum,
+          },
+        },
+      },
       lastUpdated: '2023-07-25T11:47:41.83653Z',
       ownerIsCreator: false,
       owner: {
@@ -81,73 +136,26 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           token: {
             dbid: 'testTokenId',
             id: 'Token:testTokenId',
-            media: {
-              __typename: 'ImageMedia',
-              previewURLs: {
-                small: 'http://someurl.com',
-                medium: 'http://someurl.com',
-                large: 'http://someurl.com',
-              },
-              fallbackMedia: {
-                mediaURL: 'http://someurl.com',
+            definition: {
+              id: 'Token:testTokenId',
+              media: {
+                __typename: 'ImageMedia',
+                previewURLs: {
+                  small: 'http://someurl.com',
+                  medium: 'http://someurl.com',
+                  large: 'http://someurl.com',
+                },
+                fallbackMedia: {
+                  mediaURL: 'http://someurl.com',
+                },
               },
             },
           },
         },
       },
-      name: 'Test Token Name',
-      description: 'Test Description',
-      tokenId: '1',
       externalUrl: 'http://someurl.com',
       collectorsNote: 'Test Collectors Note',
-      media: {
-        __typename: 'UnknownMedia',
-        previewURLs: {
-          small: 'http://someurl.com',
-          medium: 'http://someurl.com',
-          large: 'http://someurl.com',
-        },
-        dimensions: {
-          height: 600,
-          width: 600,
-        },
-        fallbackMedia: null,
-        contentRenderURL: 'bad url here',
-      },
-      contract: {
-        __typename: 'Contract',
-        id: 'Contract:someContractId',
-        name: 'Test Contract Name',
-        chain: Chain.Ethereum,
-        contractAddress: {
-          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
-        },
-        badgeURL: 'http://someurl.com',
-      },
-      community: {
-        __typename: 'Community',
-        id: 'Contract:someCommunityId',
-        contractAddress: {
-          chain: Chain.Ethereum,
-          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
-        },
-        // @ts-expect-error creator can be either GalleryUser or ChainAddress, not sure
-        // how to satisfy __typename here
-        creator: {
-          // __typename: 'GalleryUserOrAddress',
-          username: 'Test Username',
-          universal: false,
-          primaryWallet: {
-            id: 'Wallet:testWalletId',
-            chainAddress: {
-              address: '2',
-              chain: Chain.Ethereum,
-            },
-          },
-          address: '2',
-          chain: Chain.Ethereum,
-        },
-      },
+
       viewerAdmire: {
         dbid: 'testAdmireId',
         __typename: 'Admire',
@@ -167,15 +175,18 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
                   token: {
                     dbid: 'testTokenId',
                     id: 'Token:testTokenId',
-                    media: {
-                      __typename: 'ImageMedia',
-                      previewURLs: {
-                        small: 'http://someurl.com',
-                        medium: 'http://someurl.com',
-                        large: 'http://someurl.com',
-                      },
-                      fallbackMedia: {
-                        mediaURL: 'http://someurl.com',
+                    definition: {
+                      id: 'Token:testTokenId',
+                      media: {
+                        __typename: 'ImageMedia',
+                        previewURLs: {
+                          small: 'http://someurl.com',
+                          medium: 'http://someurl.com',
+                          large: 'http://someurl.com',
+                        },
+                        fallbackMedia: {
+                          mediaURL: 'http://someurl.com',
+                        },
                       },
                     },
                   },
@@ -201,15 +212,18 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
                   token: {
                     dbid: 'testTokenId',
                     id: 'Token:testTokenId',
-                    media: {
-                      __typename: 'ImageMedia',
-                      previewURLs: {
-                        small: 'http://someurl.com',
-                        medium: 'http://someurl.com',
-                        large: 'http://someurl.com',
-                      },
-                      fallbackMedia: {
-                        mediaURL: 'http://someurl.com',
+                    definition: {
+                      id: 'Token:testTokenId',
+                      media: {
+                        __typename: 'ImageMedia',
+                        previewURLs: {
+                          small: 'http://someurl.com',
+                          medium: 'http://someurl.com',
+                          large: 'http://someurl.com',
+                        },
+                        fallbackMedia: {
+                          mediaURL: 'http://someurl.com',
+                        },
                       },
                     },
                   },
@@ -257,34 +271,37 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
     __typename: 'RefreshTokenPayload',
     token: {
       __typename: 'Token',
-      id: 'Token:testTokenId',
-      tokenId: 'testTokenId',
       dbid: 'testTokenId',
-      name: 'Test Token Name',
-      chain: Chain.Ethereum,
-      media: {
-        __typename: 'ImageMedia',
-        fallbackMedia: null,
-        contentRenderURL: 'bad url here',
-        dimensions: {
-          height: 600,
-          width: 400,
-        },
-        previewURLs: {
-          small: 'http://someimage.com',
-          medium: 'http://someimage.com',
-          large: 'http://someimage.com',
-        },
-      },
-      contract: {
-        __typename: 'Contract',
-        id: 'Contract:someContractId',
+      id: 'Token:testTokenId',
+      definition: {
+        id: 'Token:testTokenId',
+        tokenId: 'testTokenId',
+        name: 'Test Token Name',
         chain: Chain.Ethereum,
-        name: 'Test Contract Name',
-        contractAddress: {
-          address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+        media: {
+          __typename: 'ImageMedia',
+          fallbackMedia: null,
+          contentRenderURL: 'bad url here',
+          dimensions: {
+            height: 600,
+            width: 400,
+          },
+          previewURLs: {
+            small: 'http://someimage.com',
+            medium: 'http://someimage.com',
+            large: 'http://someimage.com',
+          },
         },
-        badgeURL: 'http://someimage.com',
+        contract: {
+          __typename: 'Contract',
+          id: 'Contract:someContractId',
+          chain: Chain.Ethereum,
+          name: 'Test Contract Name',
+          contractAddress: {
+            address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
+          },
+          badgeURL: 'http://someimage.com',
+        },
       },
       owner: {
         id: 'testOwnerId',

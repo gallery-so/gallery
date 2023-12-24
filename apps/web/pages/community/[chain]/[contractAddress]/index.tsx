@@ -33,7 +33,6 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
         $tokenCommunityAfter: String
         $listOwnersFirst: Int!
         $listOwnersAfter: String
-        $onlyGalleryUsers: Boolean
         $communityPostsLast: Int!
         $communityPostsBefore: String
         $interactionsFirst: Int!
@@ -55,7 +54,6 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
       forceRefresh: false,
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
       listOwnersFirst: LIST_ITEM_PER_PAGE,
-      onlyGalleryUsers: true,
       communityPostsLast: ITEMS_PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
       visibleTokensPerFeedEvent: 1,

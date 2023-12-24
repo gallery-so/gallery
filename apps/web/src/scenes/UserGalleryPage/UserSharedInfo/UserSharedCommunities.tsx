@@ -13,6 +13,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { LowercaseChain } from '~/shared/utils/chains';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 
 import PaginatedCommunitiesList from './UserSharedInfoList/SharedCommunitiesList';
@@ -35,11 +36,8 @@ export default function UserSharedCommunities({ userRef }: Props) {
               ... on Community {
                 __typename
                 name
-                chain
-                contractAddress {
-                  address
-                }
                 ...CommunityProfilePictureStackFragment
+                ...extractRelevantMetadataFromCommunityFragment
               }
             }
           }
@@ -84,11 +82,9 @@ export default function UserSharedCommunities({ userRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
-      if (community.contractAddress?.address && community.chain) {
-        const url = getUrlForCommunity(
-          community.contractAddress?.address,
-          community.chain?.toLowerCase() as LowercaseChain
-        );
+      const { chain, contractAddress } = extractRelevantMetadataFromCommunity(community);
+      if (contractAddress && chain) {
+        const url = getUrlForCommunity(contractAddress, chain?.toLowerCase() as LowercaseChain);
 
         if (url) {
           return (
