@@ -36,7 +36,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
-import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { AdmireTokenModal } from './AdmireTokenModal';
@@ -69,6 +69,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
               ...ProfilePictureAndUserOrAddressCreatorFragment
             }
             ...CommunityHoverCardFragment
+            ...getCommunityUrlFromCommunityFragment
           }
           contract {
             badgeURL
@@ -100,7 +101,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         }
 
         ...NftAdditionalDetailsFragment
-        ...getCommunityUrlForTokenFragment
         ...extractRelevantMetadataFromTokenFragment
         ...AdmireTokenModalFragment
         ...MintLinkButtonFragment
@@ -194,7 +194,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     });
   }, [track, token.owner?.username, contractAddress, tokenId, openseaUrl]);
 
-  const communityUrl = getCommunityUrlForToken(token);
+  if (!token.definition.community) {
+    throw new Error('Community not returned for token in NftDetailText');
+  }
+
+  const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
 
   const navbarHeight = useGlobalNavbarHeight();
   const decodedTokenName = useMemo(() => {

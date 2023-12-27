@@ -1,4 +1,3 @@
-import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { PreloadedQuery, useFragment, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -11,7 +10,7 @@ import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
@@ -28,8 +27,8 @@ const CommunityHoverCardQueryNode = graphql`
       __typename
       ... on Community {
         description
-        ...extractRelevantMetadataFromCommunityFragment
         ...CommunityProfilePictureFragment
+        ...getCommunityUrlFromCommunityFragment
 
         holders(first: 10) {
           edges {
@@ -72,27 +71,17 @@ export default function CommunityHoverCard({
     graphql`
       fragment CommunityHoverCardFragment on Community {
         dbid
-        ...extractRelevantMetadataFromCommunityFragment
+        ...getCommunityUrlFromCommunityFragment
       }
     `,
     communityRef
   );
 
-  const { chain, contractAddress } = extractRelevantMetadataFromCommunity(community);
+  const communityProfileLink = getCommunityUrlFromCommunity(community);
 
   const [preloadedHoverCardQuery, preloadHoverCardQuery] = useQueryLoader<CommunityHoverCardQuery>(
     CommunityHoverCardQueryNode
   );
-
-  const communityProfileLink = useMemo((): Route => {
-    return {
-      pathname: '/community/[chain]/[contractAddress]',
-      query: {
-        contractAddress,
-        chain,
-      },
-    };
-  }, [chain, contractAddress]);
 
   const handlePreloadQuery = useCallback(() => {
     preloadHoverCardQuery({ id: community.dbid });
@@ -130,15 +119,12 @@ function CommunityHoverCardContent({
   const community = communityQuery.communityById;
 
   if (community?.__typename !== 'Community') {
-    throw new ErrorWithSentryMetadata(
-      'Expected communityByAddress to return w/ typename Community',
-      {
-        typename: community?.__typename,
-      }
-    );
+    throw new ErrorWithSentryMetadata('Expected communityById to return w/ typename Community', {
+      typename: community?.__typename,
+    });
   }
 
-  const { chain, contractAddress } = extractRelevantMetadataFromCommunity(community);
+  const communityProfileLink = getCommunityUrlFromCommunity(community);
 
   const owners = useMemo(() => {
     const list = community?.holders?.edges?.map((edge) => edge?.node?.user) ?? [];
@@ -187,16 +173,6 @@ function CommunityHoverCardContent({
 
     return result;
   }, [loggedInUserId, ownersToDisplay, totalOwners]);
-
-  const communityProfileLink = useMemo((): Route => {
-    return {
-      pathname: '/community/[chain]/[contractAddress]',
-      query: {
-        contractAddress,
-        chain,
-      },
-    };
-  }, [chain, contractAddress]);
 
   const hasDescription = Boolean(community.description);
   return (

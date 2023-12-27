@@ -85,8 +85,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         contract: {
           __typename: 'Contract',
           id: 'Contract:someContractId',
-          // name: 'Test Contract Name',
-          chain: Chain.Ethereum,
           contractAddress: {
             chain: Chain.Ethereum,
             address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
@@ -278,6 +276,10 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
         tokenId: 'testTokenId',
         name: 'Test Token Name',
         chain: Chain.Ethereum,
+        // @ts-expect-error: fill out community fields
+        community: {
+          id: 'testCommunityId',
+        },
         media: {
           __typename: 'ImageMedia',
           fallbackMedia: null,
@@ -295,7 +297,6 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
         contract: {
           __typename: 'Contract',
           id: 'Contract:someContractId',
-          chain: Chain.Ethereum,
           name: 'Test Contract Name',
           contractAddress: {
             address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',

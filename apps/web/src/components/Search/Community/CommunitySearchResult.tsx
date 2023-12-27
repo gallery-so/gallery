@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
-import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import SearchResult from '../SearchResult';
 import { SearchItemType, SearchResultVariant } from '../types';
@@ -23,24 +23,23 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
         name
         description
         ...CommunityProfilePictureFragment
-        ...extractRelevantMetadataFromCommunityFragment
+        ...getCommunityUrlFromCommunityFragment
       }
     `,
     communityRef
   );
 
-  const { chain, contractAddress } = extractRelevantMetadataFromCommunity(community);
+  const communityPageUrl = getCommunityUrlFromCommunity(community);
 
   const handleClick = useCallback(() => {
     onSelect({
       type: 'Community',
       label: community.name ?? '',
       value: community.dbid,
-      contractAddress: contractAddress,
-      chain: chain,
+      communityPageUrl,
     });
     return;
-  }, [onSelect, community.name, community.dbid, contractAddress, chain]);
+  }, [onSelect, community.name, community.dbid, communityPageUrl]);
 
   return (
     <SearchResult

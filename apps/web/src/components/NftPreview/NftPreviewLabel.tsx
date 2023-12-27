@@ -8,7 +8,7 @@ import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPrevie
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
-import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 
@@ -78,16 +78,21 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
             name
             badgeURL
           }
+          community {
+            ...getCommunityUrlFromCommunityFragment
+          }
         }
-
-        ...getCommunityUrlForTokenFragment
       }
     `,
     tokenRef
   );
 
+  if (!token.definition.community) {
+    throw new Error('Community not returned for token in NftPreviewLabel');
+  }
+
   const collectionName = token.definition.contract?.name;
-  const communityUrl = getCommunityUrlForToken(token);
+  const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
 
   if (!collectionName) {
     return null;
