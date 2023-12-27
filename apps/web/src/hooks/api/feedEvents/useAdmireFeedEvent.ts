@@ -71,15 +71,18 @@ export default function useAdmireFeedEvent() {
             token: {
               dbid: 'unknown',
               id: 'unknown',
-              media: {
-                __typename: 'ImageMedia',
-                fallbackMedia: {
-                  mediaURL: optimisticUserInfo.profileImageUrl,
-                },
-                previewURLs: {
-                  large: optimisticUserInfo.profileImageUrl,
-                  medium: optimisticUserInfo.profileImageUrl,
-                  small: optimisticUserInfo.profileImageUrl,
+              definition: {
+                id: 'unknown2',
+                media: {
+                  __typename: 'ImageMedia',
+                  fallbackMedia: {
+                    mediaURL: optimisticUserInfo.profileImageUrl,
+                  },
+                  previewURLs: {
+                    large: optimisticUserInfo.profileImageUrl,
+                    medium: optimisticUserInfo.profileImageUrl,
+                    small: optimisticUserInfo.profileImageUrl,
+                  },
                 },
               },
             },
