@@ -8,23 +8,25 @@ import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/Commen
 import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from '~/constants/community';
 import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
-import { ContractAddressByCommunityKeyQuery } from '~/generated/ContractAddressByCommunityKeyQuery.graphql';
-import { Chain } from '~/generated/enums';
+import { ProjectIdArtBlocksCommunityByKeyQuery } from '~/generated/ProjectIdArtBlocksCommunityByKeyQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import CommunityPageScene from '~/scenes/CommunityPage/CommunityPage';
 
-type CommunityPageProps = MetaTagProps & {
+type ArtBlocksCommunityPageProps = MetaTagProps & {
   contractAddress: string;
-  chain: Chain;
+  projectId: string;
 };
 
-export default function CommunityPage({ contractAddress, chain }: CommunityPageProps) {
-  const query = useLazyLoadQuery<ContractAddressByCommunityKeyQuery>(
+export default function ArtBlocksCommunityPage({
+  contractAddress,
+  projectId,
+}: ArtBlocksCommunityPageProps) {
+  const query = useLazyLoadQuery<ProjectIdArtBlocksCommunityByKeyQuery>(
     graphql`
-      query ContractAddressByCommunityKeyQuery(
-        $contractCommunityKey: ContractCommunityKeyInput!
+      query ProjectIdArtBlocksCommunityByKeyQuery(
+        $artBlocksCommunityKey: ArtBlocksCommunityKeyInput!
         $tokenCommunityFirst: Int!
         $tokenCommunityAfter: String
         $listOwnersFirst: Int!
@@ -40,17 +42,18 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
         ...CommunityPageFragment
         ...CommunityNavbarFragment
         ...StandardSidebarFragment
-        community: contractCommunityByKey(key: $contractCommunityKey) {
+        community: artBlocksCommunityByKey(key: $artBlocksCommunityKey) {
           ...CommunityPageCommunityFragment
         }
       }
     `,
     {
-      contractCommunityKey: {
+      artBlocksCommunityKey: {
         contract: {
           address: contractAddress,
-          chain,
+          chain: 'Ethereum',
         },
+        projectID: projectId,
       },
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
       listOwnersFirst: LIST_ITEM_PER_PAGE,
@@ -75,14 +78,16 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
   );
 }
 
-export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps<ArtBlocksCommunityPageProps> = async ({
+  query,
+}) => {
   const contractAddress = query?.contractAddress ? (query.contractAddress as string) : '';
-  const chain = query?.chain as Chain;
+  const projectId = query?.projectId ? (query.projectId as string) : '';
 
   return {
     props: {
       contractAddress,
-      chain,
+      projectId,
     },
   };
 };

@@ -28,17 +28,19 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     graphql`
       fragment TokenDetailAssetFragment on Token {
         dbid
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
-        }
-        media @required(action: THROW) {
-          ... on Media {
-            ...useContainedDimensionsForTokenFragment
-          }
-          ... on HtmlMedia {
-            __typename
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
+            ... on HtmlMedia {
+              __typename
+            }
           }
         }
 
@@ -51,11 +53,11 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const breakpoint = useBreakpoint();
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = token.media.__typename === 'HtmlMedia';
+  const isIframe = token.definition.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
@@ -64,7 +66,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   });
 
   const resultDimensions = useContainedDimensionsForToken({
-    mediaRef: token.media,
+    mediaRef: token.definition.media,
   });
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();

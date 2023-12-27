@@ -61,15 +61,18 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
                 token: {
                   dbid: `testTokenId-${index}`,
                   id: `Token:testTokenId-${index}`,
-                  media: {
-                    __typename: 'ImageMedia',
-                    previewURLs: {
-                      small: 'http://someurl.com',
-                      medium: 'http://someurl.com',
-                      large: 'http://someurl.com',
-                    },
-                    fallbackMedia: {
-                      mediaURL: 'http://someurl.com',
+                  definition: {
+                    id: `Token:testTokenId-${index}`,
+                    media: {
+                      __typename: 'ImageMedia',
+                      previewURLs: {
+                        small: 'http://someurl.com',
+                        medium: 'http://someurl.com',
+                        large: 'http://someurl.com',
+                      },
+                      fallbackMedia: {
+                        mediaURL: 'http://someurl.com',
+                      },
                     },
                   },
                 },

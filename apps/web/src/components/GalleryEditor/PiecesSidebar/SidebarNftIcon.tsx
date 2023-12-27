@@ -22,9 +22,11 @@ function SidebarNftIcon({ tokenRef }: SidebarNftIconProps) {
     graphql`
       fragment SidebarNftIconFragment on Token {
         dbid
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
         }
         ...SidebarNftIconPreviewAssetNew
@@ -49,7 +51,7 @@ function SidebarNftIcon({ tokenRef }: SidebarNftIconProps) {
     mountRef.current = true;
   }, [token.dbid, isSelected]);
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
 
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 

@@ -1,16 +1,16 @@
-import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { PreloadedQuery, useFragment, usePreloadedQuery, useQueryLoader } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { CommunityHoverCardFragment$key } from '~/generated/CommunityHoverCardFragment.graphql';
-import { Chain, CommunityHoverCardQuery } from '~/generated/CommunityHoverCardQuery.graphql';
+import { CommunityHoverCardQuery } from '~/generated/CommunityHoverCardQuery.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
@@ -20,18 +20,17 @@ import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
 import HoverCard, { HoverCardProps } from './HoverCard';
 
+// update to use communityById
 const CommunityHoverCardQueryNode = graphql`
-  query CommunityHoverCardQuery($communityAddress: ChainAddressInput!) {
-    communityByAddress(communityAddress: $communityAddress) {
+  query CommunityHoverCardQuery($id: DBID!) {
+    communityById(id: $id) {
       __typename
       ... on Community {
         description
-        contractAddress {
-          address
-          chain
-        }
         ...CommunityProfilePictureFragment
-        owners(onlyGalleryUsers: true, first: 10) {
+        ...getCommunityUrlFromCommunityFragment
+
+        holders(first: 10) {
           edges {
             node {
               user {
@@ -71,37 +70,22 @@ export default function CommunityHoverCard({
   const community = useFragment(
     graphql`
       fragment CommunityHoverCardFragment on Community {
-        contractAddress {
-          address
-          chain
-        }
+        dbid
+        ...getCommunityUrlFromCommunityFragment
       }
     `,
     communityRef
   );
 
+  const communityProfileLink = getCommunityUrlFromCommunity(community);
+
   const [preloadedHoverCardQuery, preloadHoverCardQuery] = useQueryLoader<CommunityHoverCardQuery>(
     CommunityHoverCardQueryNode
   );
 
-  const communityProfileLink = useMemo((): Route => {
-    return {
-      pathname: '/community/[chain]/[contractAddress]',
-      query: {
-        contractAddress: community.contractAddress?.address as string,
-        chain: community.contractAddress?.chain as string,
-      },
-    };
-  }, [community]);
-
   const handlePreloadQuery = useCallback(() => {
-    preloadHoverCardQuery({
-      communityAddress: {
-        address: community.contractAddress?.address as string,
-        chain: community.contractAddress?.chain as Chain,
-      },
-    });
-  }, [community.contractAddress?.address, community.contractAddress?.chain, preloadHoverCardQuery]);
+    preloadHoverCardQuery({ id: community.dbid });
+  }, [community.dbid, preloadHoverCardQuery]);
 
   return (
     <HoverCard
@@ -132,25 +116,24 @@ function CommunityHoverCardContent({
 }) {
   const communityQuery = usePreloadedQuery(CommunityHoverCardQueryNode, preloadedQuery);
 
-  const community = communityQuery.communityByAddress;
+  const community = communityQuery.communityById;
 
   if (community?.__typename !== 'Community') {
-    throw new ErrorWithSentryMetadata(
-      'Expected communityByAddress to return w/ typename Community',
-      {
-        typename: community?.__typename,
-      }
-    );
+    throw new ErrorWithSentryMetadata('Expected communityById to return w/ typename Community', {
+      typename: community?.__typename,
+    });
   }
 
+  const communityProfileLink = getCommunityUrlFromCommunity(community);
+
   const owners = useMemo(() => {
-    const list = community?.owners?.edges?.map((edge) => edge?.node?.user) ?? [];
+    const list = community?.holders?.edges?.map((edge) => edge?.node?.user) ?? [];
     return removeNullValues(list);
-  }, [community.owners?.edges]);
+  }, [community.holders?.edges]);
 
   const loggedInUserId = useLoggedInUserId(communityQuery);
 
-  const totalOwners = community?.owners?.pageInfo?.total ?? 0;
+  const totalOwners = community?.holders?.pageInfo?.total ?? 0;
 
   const ownersToDisplay = useMemo(() => {
     const maxUsernamesToDisplay = totalOwners === 3 ? 3 : 2;
@@ -190,16 +173,6 @@ function CommunityHoverCardContent({
 
     return result;
   }, [loggedInUserId, ownersToDisplay, totalOwners]);
-
-  const communityProfileLink = useMemo((): Route => {
-    return {
-      pathname: '/community/[chain]/[contractAddress]',
-      query: {
-        contractAddress: community.contractAddress?.address as string,
-        chain: community.contractAddress?.chain as string,
-      },
-    };
-  }, [community]);
 
   const hasDescription = Boolean(community.description);
   return (

@@ -22,11 +22,8 @@ export default function CommunityHolderList({ communityRef }: Props) {
     graphql`
       fragment CommunityHolderListFragment on Community
       @refetchable(queryName: "CommunityHolderListRefetchableFragment") {
-        owners(
-          first: $listOwnersFirst
-          after: $listOwnersAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) @connection(key: "CommunityPageView_owners") {
+        holders(first: $listOwnersFirst, after: $listOwnersAfter)
+          @connection(key: "CommunityPageView_holders") {
           edges {
             node {
               __typename
@@ -72,14 +69,14 @@ export default function CommunityHolderList({ communityRef }: Props) {
   const nonNullTokenHolders = useMemo(() => {
     const holders = [];
 
-    for (const owner of community?.owners?.edges ?? []) {
+    for (const owner of community?.holders?.edges ?? []) {
       if (owner?.node) {
         holders.push(owner.node);
       }
     }
 
     return holders;
-  }, [community?.owners?.edges]);
+  }, [community?.holders?.edges]);
 
   const galleryMembers = useMemo(() => {
     return nonNullTokenHolders.filter((holder) => {

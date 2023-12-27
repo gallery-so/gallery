@@ -26,6 +26,7 @@ export function extractRelevantMetadataFromToken(
       fragment extractRelevantMetadataFromTokenFragment on Token @inline {
         definition {
           tokenId
+          name
           tokenMetadata
           externalUrl
           chain
@@ -53,6 +54,7 @@ export function extractRelevantMetadataFromToken(
 
   const {
     tokenId,
+    name,
     contract,
     community,
     externalUrl,
@@ -71,6 +73,7 @@ export function extractRelevantMetadataFromToken(
 
   const result = {
     tokenId: '',
+    name: name ?? '',
     chain: chain ?? '',
     contractAddress,
     contractName: '',

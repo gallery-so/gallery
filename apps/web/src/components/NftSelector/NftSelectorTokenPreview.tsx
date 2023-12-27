@@ -46,7 +46,7 @@ export function NftSelectorTokenPreview({
   const singleTokenTitle = useMemo(() => {
     const token = tokens[0];
     if (token && hasSelectedContract) {
-      return token.name || `#${token.tokenId}`;
+      return token.definition.name || `#${token.definition.tokenId}`;
     }
     return group.title;
   }, [group.title, hasSelectedContract, tokens]);

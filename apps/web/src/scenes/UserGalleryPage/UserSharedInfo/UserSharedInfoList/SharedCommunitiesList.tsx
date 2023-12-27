@@ -8,9 +8,9 @@ import CommunityHoverCard from '~/components/HoverCard/CommunityHoverCard';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import { LowercaseChain } from '~/shared/utils/chains';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import unescape from '~/shared/utils/unescape';
-import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import { COMMUNITIES_PER_PAGE } from '../UserSharedCommunities';
 import PaginatedListRow from './SharedInfoListRow';
@@ -34,12 +34,10 @@ export default function SharedCommunitiesList({ userRef }: Props) {
               __typename
               name
               description
-              contractAddress {
-                address
-              }
-              chain
               ...CommunityProfilePictureFragment
               ...CommunityHoverCardFragment
+              ...extractRelevantMetadataFromCommunityFragment
+              ...getCommunityUrlFromCommunityFragment
             }
           }
         }
@@ -77,18 +75,13 @@ export default function SharedCommunitiesList({ userRef }: Props) {
         return null;
       }
 
+      const { contractAddress } = extractRelevantMetadataFromCommunity(community);
+      const communityUrlPath = getCommunityUrlFromCommunity(community);
+
       const unescapedDescription = community.description ? unescape(community.description) : '';
       const descriptionFirstLine = unescapedDescription.split('\n')[0] ?? '';
-      const communityUrlPath =
-        community.contractAddress?.address && community.chain
-          ? getUrlForCommunity(
-              community.contractAddress?.address,
-              community.chain?.toLowerCase() as LowercaseChain
-            )
-          : null;
 
-      const displayName =
-        community.name || community.contractAddress?.address || 'Untitled Contract';
+      const displayName = community.name || contractAddress || 'Untitled Contract';
 
       if (!displayName && !descriptionFirstLine) {
         return null;

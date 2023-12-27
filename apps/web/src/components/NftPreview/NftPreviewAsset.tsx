@@ -19,19 +19,21 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
     graphql`
       fragment NftPreviewAssetFragment on Token {
         ...useGetPreviewImagesSingleFragment
-        media @required(action: THROW) {
-          ... on Media {
-            ...useContainedDimensionsForTokenFragment
-          }
-        }
         dbid
-        name
+        definition {
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
+          }
+          name
+        }
       }
     `,
     tokenRef
   );
 
-  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.media });
+  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.definition.media });
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
   const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
 
@@ -47,7 +49,7 @@ function NftPreviewAsset({ tokenRef, onLoad }: Props) {
       onLoad={handleAssetLoad}
       src={imageUrl}
       heightType="maxHeightScreen"
-      alt={token.name ?? ''}
+      alt={token.definition.name ?? ''}
     />
   );
 }

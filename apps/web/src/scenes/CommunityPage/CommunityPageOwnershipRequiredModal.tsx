@@ -10,6 +10,7 @@ import { CommunityPageOwnershipRequiredModalFragment$key } from '~/generated/Com
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts } from '~/shared/analytics/constants';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 type Props = {
   communityRef: CommunityPageOwnershipRequiredModalFragment$key;
@@ -24,7 +25,7 @@ export default function CommunityPageOwnershipRequiredModal({
     graphql`
       fragment CommunityPageOwnershipRequiredModalFragment on Community {
         name
-        chain
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -36,16 +37,18 @@ export default function CommunityPageOwnershipRequiredModal({
   }, [hideModal]);
   const { isLocked, syncTokens } = useSyncTokens();
 
+  const { chain } = extractRelevantMetadataFromCommunity(community);
+
   // Acknowledgment: This could let a user refresh a chain they can't access in the Editor
   const handleRefreshCollectionClick = useCallback(async () => {
-    if (!community.chain) {
+    if (!chain) {
       return;
     }
 
-    await syncTokens({ type: 'Collected', chain: community.chain });
+    await syncTokens({ type: 'Collected', chain: chain });
     refetchIsMemberOfCommunity();
     hideModal();
-  }, [community.chain, hideModal, refetchIsMemberOfCommunity, syncTokens]);
+  }, [chain, hideModal, refetchIsMemberOfCommunity, syncTokens]);
 
   return (
     <StyledModal gap={16}>
