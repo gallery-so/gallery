@@ -59,18 +59,15 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
         eventTime
         owner @required(action: THROW) {
-          username
           ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
         newCollectorsNote
         token @required(action: THROW) {
           token @required(action: THROW) {
-            dbid
-            name
-          }
-          collection {
-            dbid
+            definition {
+              name
+            }
           }
           ...EventMediaFragment
           ...NftDetailViewFragment
@@ -121,7 +118,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                 </HStack>
               )}
               <BaseM>add a collector's note to</BaseM>
-              <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
+              <StyledEventLabel>{event.token.token?.definition?.name}</StyledEventLabel>
             </StyledEventText>
             {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>

@@ -13,13 +13,15 @@ import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
+import { CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
 import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
+import { Chain } from '~/shared/utils/chains';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { Button } from '../Button';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
@@ -38,11 +40,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityMetaFragment on Community {
         dbid
-        chain
-        contractAddress {
-          chain
-          address
-        }
         creator {
           ...ProfilePictureAndUserOrAddressCreatorFragment
           __typename
@@ -55,18 +52,14 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             }
           }
         }
-        tokensInCommunity(first: 1) {
-          edges {
-            node {
-              ...MintLinkButtonFragment
-            }
-          }
-        }
         ...CommunityPostBottomSheetFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
   );
+
+  const { chain, contractAddress, mintUrl } = extractRelevantMetadataFromCommunity(community);
 
   const [query, refetch] = useRefetchableFragment<
     CommunityMetaRefetchQuery,
@@ -96,8 +89,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   const creatorWalletAddress = community?.creator?.primaryWallet?.chainAddress?.address ?? '';
 
-  const token = community?.tokensInCommunity?.edges?.[0]?.node;
-
   const { colorScheme } = useColorScheme();
   const { openManageWallet } = useManageWalletActions();
 
@@ -116,12 +107,12 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
       return;
     }
 
-    if (!community?.contractAddress?.address) return;
+    if (!contractAddress) return;
     navigation.navigate('NftSelectorContractScreen', {
-      contractAddress: community?.contractAddress?.address,
+      contractAddress,
       page: 'Community',
     });
-  }, [community?.contractAddress?.address, isMemberOfCommunity, navigation]);
+  }, [contractAddress, isMemberOfCommunity, navigation]);
 
   const handlePress = useCallback(() => {
     if (!userHasWallet) {
@@ -165,7 +156,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   return (
     <View className="flex flex-row justify-between">
       <View className="space-y-3">
-        {community.creator && community?.chain !== 'POAP' ? (
+        {community.creator && chain !== 'POAP' ? (
           <View className="flex flex-column space-y-0.5">
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -183,7 +174,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           </View>
         ) : null}
 
-        {community.chain && (
+        {chain && (
           <View className="flex flex-column space-y-0.5">
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -193,12 +184,12 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             </Typography>
 
             <View className="flex flex-row space-x-1 items-center">
-              <NetworkIcon chain={community.chain} />
+              <NetworkIcon chain={chain} />
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 className="text-sm text-black-800 dark:text-offWhite"
               >
-                {community.chain}
+                {chain}
               </Typography>
             </View>
           </View>
@@ -217,14 +208,17 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           eventContext={contexts.Community}
         />
       ) : (
-        token && (
-          <MintLinkButton
-            tokenRef={token}
-            size="sm"
-            eventContext={contexts.Community}
-            referrerAddress={creatorWalletAddress}
-          />
-        )
+        <MintLinkButton
+          tokenRef={null}
+          overrideMetadata={{
+            contractAddress,
+            chain,
+            mintUrl,
+          }}
+          size="sm"
+          eventContext={contexts.Community}
+          referrerAddress={creatorWalletAddress}
+        />
       )}
 
       <CommunityPostBottomSheet

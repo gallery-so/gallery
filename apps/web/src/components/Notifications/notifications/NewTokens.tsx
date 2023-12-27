@@ -30,7 +30,9 @@ export function NewTokens({ notificationRef, onClose }: Props) {
           ... on Token {
             __typename
             dbid
-            name
+            definition {
+              name
+            }
             ...NewTokensTokenPreviewFragment
           }
         }
@@ -76,7 +78,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
           <StyledTextWrapper align="center" as="span" wrap="wrap">
             <BaseM>Collected {quantity > 1 && `${quantity}x`}</BaseM>
             <BaseM as="span">
-              <strong>{token?.name ? token.name : 'Unknown'}</strong>
+              <strong>{token?.definition.name ? token.definition.name : 'Unknown'}</strong>
             </BaseM>
           </StyledTextWrapper>
         </VStack>

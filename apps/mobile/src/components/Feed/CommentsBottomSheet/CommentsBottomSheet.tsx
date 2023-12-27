@@ -67,7 +67,6 @@ export function CommentsBottomSheet({
     };
   });
 
-  const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
   const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(null);
   const topCommentId = useRef<string | null>(null);
 
@@ -75,13 +74,7 @@ export function CommentsBottomSheet({
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
 
-  const snapPoints = useMemo(() => {
-    if (isBottomSheetExpanded) {
-      return [700];
-    }
-
-    return [400];
-  }, [isBottomSheetExpanded]);
+  const snapPoints = [600];
 
   const {
     aliasKeyword,
@@ -169,12 +162,7 @@ export function CommentsBottomSheet({
     resetMentions();
     setSelectedComment(null);
     topCommentId.current = null;
-    setIsBottomSheetExpanded(false);
   }, [resetMentions]);
-
-  const handleExpandReplies = useCallback(() => {
-    setIsBottomSheetExpanded(true);
-  }, []);
 
   return (
     <GalleryBottomSheetModal
@@ -225,7 +213,6 @@ export function CommentsBottomSheet({
                       feedId={feedId}
                       activeCommentId={highlightCommentId}
                       onReplyPress={handleReplyPress}
-                      onExpandReplies={handleExpandReplies}
                     />
                   )}
                 </Suspense>
@@ -263,14 +250,12 @@ type ConnectedCommentsListProps = {
   feedId: string;
   activeCommentId?: string;
   onReplyPress: (params: OnReplyPressParams) => void;
-  onExpandReplies: () => void;
 };
 
 function ConnectedCommentsList({
   type,
   feedId,
   activeCommentId,
-  onExpandReplies,
   onReplyPress,
 }: ConnectedCommentsListProps) {
   if (type === 'Post') {
@@ -279,7 +264,6 @@ function ConnectedCommentsList({
         feedId={feedId}
         activeCommentId={activeCommentId}
         onReplyPress={onReplyPress}
-        onExpandReplies={onExpandReplies}
       />
     );
   }
@@ -289,7 +273,6 @@ function ConnectedCommentsList({
       feedId={feedId}
       activeCommentId={activeCommentId}
       onReplyPress={onReplyPress}
-      onExpandReplies={onExpandReplies}
     />
   );
 }
@@ -298,13 +281,11 @@ type ConnectedCommentsProps = {
   activeCommentId?: string;
   feedId: string;
   onReplyPress: (params: OnReplyPressParams) => void;
-  onExpandReplies: () => void;
 };
 
 function ConnectedEventCommentsList({
   activeCommentId,
   feedId,
-  onExpandReplies,
   onReplyPress,
 }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
@@ -346,6 +327,7 @@ function ConnectedEventCommentsList({
             }
           }
         }
+        ...CommentsBottomSheetListQueryFragment
       }
     `,
     queryRef
@@ -369,9 +351,9 @@ function ConnectedEventCommentsList({
         <CommentsBottomSheetList
           onLoadMore={handleLoadMore}
           commentRefs={comments}
+          queryRef={query}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
-          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">
@@ -391,7 +373,6 @@ function ConnectedPostCommentsList({
   activeCommentId,
   feedId,
   onReplyPress,
-  onExpandReplies,
 }: ConnectedCommentsProps) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
     graphql`
@@ -432,6 +413,7 @@ function ConnectedPostCommentsList({
             }
           }
         }
+        ...CommentsBottomSheetListQueryFragment
       }
     `,
     queryRef
@@ -453,9 +435,9 @@ function ConnectedPostCommentsList({
         <CommentsBottomSheetList
           onLoadMore={handleLoadMore}
           commentRefs={comments}
+          queryRef={query}
           activeCommentId={activeCommentId}
           onReply={onReplyPress}
-          onExpandReplies={onExpandReplies}
         />
       ) : (
         <View className="flex items-center justify-center h-full">

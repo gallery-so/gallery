@@ -148,6 +148,22 @@ export default function useCommentOnPost() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                deleted: false,
+                admires: {
+                  edges: [],
+                  pageInfo: {
+                    endCursor: '',
+                    hasNextPage: false,
+                    total: 0,
+                  },
+                },
+                source: {
+                  __typename: 'Post',
+                  __isNode: 'Post',
+                  id: `Post:${postDbid}`,
+                  dbid: postDbid,
+                },
+                viewerAdmire: null,
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,

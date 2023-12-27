@@ -42,11 +42,15 @@ export function NftSelectorContractScreen() {
             user {
               tokens {
                 dbid
-                contract {
-                  dbid
-                  name
-                  contractAddress {
-                    address
+                definition {
+                  community {
+                    name
+                  }
+                  contract {
+                    dbid
+                    contractAddress {
+                      address
+                    }
                   }
                 }
 
@@ -72,13 +76,16 @@ export function NftSelectorContractScreen() {
   const tokens = useMemo(() => {
     return removeNullValues(
       data.viewer?.user?.tokens?.filter((token) => {
-        return token?.contract?.contractAddress?.address === route.params.contractAddress;
+        return (
+          token?.definition?.contract?.contractAddress?.address === route.params.contractAddress
+        );
       })
     );
   }, [data.viewer?.user?.tokens, route.params.contractAddress]);
 
-  const contractName = tokens[0]?.contract?.name;
-  const contractId = tokens[0]?.contract?.dbid ?? '';
+  const contractName = tokens[0]?.definition?.community?.name;
+  // [TODO-subcomref] might switch this to community ID
+  const contractId = tokens[0]?.definition?.contract?.dbid ?? '';
 
   const { isSyncingCreatedTokensForContract, syncCreatedTokensForExistingContract } =
     useSyncTokensActions();

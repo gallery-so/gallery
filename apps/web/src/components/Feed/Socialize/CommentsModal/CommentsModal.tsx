@@ -66,6 +66,7 @@ export function CommentsModal({
   const query = useFragment(
     graphql`
       fragment CommentsModalQueryFragment on Query {
+        ...CommentNoteSectionQueryFragment
         ...CommentBoxQueryFragment
       }
     `,
@@ -141,13 +142,6 @@ export function CommentsModal({
           [index]: value,
         };
       });
-    },
-    [rowRepliesExpanded]
-  );
-
-  const getRowRepliesExpanded = useCallback(
-    (index: number) => {
-      return rowRepliesExpanded[0][index] ?? false;
     },
     [rowRepliesExpanded]
   );
@@ -229,8 +223,8 @@ export function CommentsModal({
                   activeCommentId={highlightCommentId}
                   onReplyClick={handleReplyClick}
                   onRowRepliesExpand={setRowRepliesExpanded}
-                  isRowRepliesExpanded={getRowRepliesExpanded(index)}
                   onExpandModal={recalculateHeightsWhenCommentsChange}
+                  queryRef={query}
                 />
               </div>
             );
@@ -239,13 +233,13 @@ export function CommentsModal({
       );
     },
     [
-      getRowRepliesExpanded,
       highlightCommentId,
       measurerCache,
       comments,
       handleReplyClick,
       recalculateHeightsWhenCommentsChange,
       setRowRepliesExpanded,
+      query,
     ]
   );
 

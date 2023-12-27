@@ -33,7 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.38',
+  version: '1.0.39',
   updates: {
     fallbackToCacheTimeout: 0,
   },

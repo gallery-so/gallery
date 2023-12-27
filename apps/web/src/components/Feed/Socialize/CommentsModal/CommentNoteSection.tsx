@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { CommentNoteSectionFragment$key } from '~/generated/CommentNoteSectionFragment.graphql';
+import { CommentNoteSectionQueryFragment$key } from '~/generated/CommentNoteSectionQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
@@ -13,23 +14,23 @@ import { CommentNote, OnReplyClickParams } from './CommentNote';
 type Props = {
   index: number;
   commentRef: CommentNoteSectionFragment$key;
+  queryRef: CommentNoteSectionQueryFragment$key;
   activeCommentId?: string;
   onReplyClick: (params: OnReplyClickParams) => void;
 
   onRowRepliesExpand: (index: number, value: boolean) => void;
-  isRowRepliesExpanded: boolean;
   onExpandModal: () => void;
 };
 
-export const REPLIES_PER_PAGE = 6;
+export const REPLIES_PER_PAGE = 10;
 
 export function CommentNoteSection({
   index,
   commentRef,
+  queryRef,
   activeCommentId,
   onReplyClick,
   onRowRepliesExpand,
-  isRowRepliesExpanded,
   onExpandModal,
 }: Props) {
   const {
@@ -63,6 +64,15 @@ export function CommentNoteSection({
     commentRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CommentNoteSectionQueryFragment on Query {
+        ...CommentNoteQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const replies = useMemo(() => {
     return removeNullValues(comment.replies?.edges?.map((edge) => edge?.node));
   }, [comment?.replies?.edges]);
@@ -70,12 +80,8 @@ export function CommentNoteSection({
   const totalReplies = comment?.replies?.pageInfo.total ?? 0;
 
   const totalRepliesShown = useMemo(() => {
-    if (!isRowRepliesExpanded) {
-      return totalReplies;
-    }
-
     return totalReplies - replies.length;
-  }, [replies, isRowRepliesExpanded, totalReplies]);
+  }, [replies, totalReplies]);
 
   const loadMore = useCallback(async () => {
     if (hasPrevious) {
@@ -87,13 +93,9 @@ export function CommentNoteSection({
   }, [hasPrevious, loadPrevious, onExpandModal]);
 
   const handleViewRepliesClick = useCallback(() => {
-    if (!isRowRepliesExpanded) {
-      onRowRepliesExpand(index, true);
-      onExpandModal();
-    } else {
-      loadMore();
-    }
-  }, [loadMore, isRowRepliesExpanded, onRowRepliesExpand, index, onExpandModal]);
+    loadMore();
+    onRowRepliesExpand(index, true);
+  }, [loadMore, onRowRepliesExpand, index]);
 
   const handleReplyClickWithTopCommentId = useCallback(
     (params: OnReplyClickParams) => {
@@ -111,50 +113,34 @@ export function CommentNoteSection({
     <VStack>
       <CommentNote
         commentRef={comment}
+        queryRef={query}
         onReplyClick={handleReplyClickWithTopCommentId}
         activeCommentId={activeCommentId}
-        footerElement={
-          !isRowRepliesExpanded && (
-            <ViewRepliesButton
-              totalReplies={totalRepliesShown}
-              showReplies={isRowRepliesExpanded}
-              onClick={handleViewRepliesClick}
-            />
-          )
-        }
       />
 
-      {isRowRepliesExpanded && (
-        <>
-          {replies.map((reply) => (
-            <CommentNote
-              key={reply.dbid}
-              commentRef={reply}
-              onReplyClick={handleReplyClickWithTopCommentId}
-              isReply
-              activeCommentId={activeCommentId}
-            />
-          ))}
+      {replies.map((reply) => (
+        <CommentNote
+          key={reply.dbid}
+          commentRef={reply}
+          onReplyClick={handleReplyClickWithTopCommentId}
+          isReply
+          activeCommentId={activeCommentId}
+          queryRef={query}
+        />
+      ))}
 
-          <StyledViewRepliesButtonWrapper>
-            <ViewRepliesButton
-              totalReplies={totalRepliesShown}
-              showReplies={isRowRepliesExpanded}
-              onClick={handleViewRepliesClick}
-            />
-          </StyledViewRepliesButtonWrapper>
-        </>
-      )}
+      <StyledViewRepliesButtonWrapper>
+        <ViewRepliesButton totalReplies={totalRepliesShown} onClick={handleViewRepliesClick} />
+      </StyledViewRepliesButtonWrapper>
     </VStack>
   );
 }
 
 type ViewRepliesButtonProps = {
   totalReplies: number;
-  showReplies: boolean;
   onClick: () => void;
 };
-function ViewRepliesButton({ totalReplies, showReplies, onClick }: ViewRepliesButtonProps) {
+function ViewRepliesButton({ totalReplies, onClick }: ViewRepliesButtonProps) {
   if (totalReplies < 1) {
     return null;
   }
@@ -163,7 +149,7 @@ function ViewRepliesButton({ totalReplies, showReplies, onClick }: ViewRepliesBu
     <HStack gap={4} align="center" onClick={onClick}>
       <StyledReplyDot />
       <StyledReplyText role="button">
-        View {totalReplies} {showReplies ? 'more ' : ''}
+        View {totalReplies} more {''}
         {totalReplies === 1 ? 'reply' : 'replies'}
       </StyledReplyText>
     </HStack>

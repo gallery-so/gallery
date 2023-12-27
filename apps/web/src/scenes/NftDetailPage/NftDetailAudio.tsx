@@ -17,14 +17,16 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAudioFragment on Token {
-        name
-        media @required(action: THROW) {
-          ... on AudioMedia {
-            __typename
-            previewURLs @required(action: THROW) {
-              large @required(action: THROW)
+        definition {
+          name
+          media @required(action: THROW) {
+            ... on AudioMedia {
+              __typename
+              previewURLs @required(action: THROW) {
+                large @required(action: THROW)
+              }
+              contentRenderURL @required(action: THROW)
             }
-            contentRenderURL @required(action: THROW)
           }
         }
       }
@@ -34,7 +36,7 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
 
   const { handleError } = useThrowOnMediaFailure('NftDetailAudio');
 
-  if (token.media.__typename !== 'AudioMedia') {
+  if (token.definition.media.__typename !== 'AudioMedia') {
     throw new CouldNotRenderNftError(
       'NftDetailAudio',
       'Using an NftDetailAudio component without an audio media type'
@@ -46,8 +48,8 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
       {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
       <ImageWithLoading
         onLoad={onLoad}
-        src={token.media?.previewURLs.large}
-        alt={token.name ?? ''}
+        src={token.definition.media?.previewURLs.large}
+        alt={token.definition.name ?? ''}
       />
       <StyledAudio
         controls
@@ -55,7 +57,7 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
         controlsList="nodownload"
         preload="none"
         onError={handleError}
-        src={token.media.contentRenderURL}
+        src={token.definition.media.contentRenderURL}
       />
     </StyledAudioContainer>
   );

@@ -22,7 +22,9 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 
+import { GalleryAnnouncement } from './notifications/GalleryAnnouncement';
 import { NewTokens } from './notifications/NewTokens';
+import SomeoneAdmiredYourComment from './notifications/SomeoneAdmiredYourComment';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
@@ -132,6 +134,29 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             source {
               ... on Post {
                 __typename
+                dbid
+              }
+            }
+          }
+        }
+
+        ... on GalleryAnnouncementNotification {
+          __typename
+          ctaLink
+        }
+
+        ... on SomeoneAdmiredYourCommentNotification {
+          __typename
+          dbid
+          comment {
+            dbid
+            source {
+              ... on Post {
+                id
+                dbid
+              }
+              ... on FeedEvent {
+                id
                 dbid
               }
             }
@@ -291,6 +316,36 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (
+      notification.__typename === 'GalleryAnnouncementNotification' &&
+      notification.ctaLink
+    ) {
+      return {
+        showCaret: false,
+        handleClick: function navigateToGalleryAnnouncementLink() {
+          if (!notification.ctaLink) return;
+          window.open(notification.ctaLink, '_blank');
+          hideDrawer();
+        },
+      };
+    } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
+      const postId = notification.comment?.source?.dbid;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (postId) {
+            push({
+              pathname: `/post/[postId]`,
+              query: {
+                postId,
+                commentId: notification.comment?.dbid,
+              },
+            });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
@@ -343,6 +398,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneYouFollowPostedTheirFirstPostNotification',
       'SomeoneRepliedToYourCommentNotification',
       'YouReceivedTopActivityBadgeNotification',
+      'GalleryAnnouncementNotification',
+      'SomeoneAdmiredYourCommentNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -470,6 +527,17 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
         ... on YouReceivedTopActivityBadgeNotification {
           __typename
         }
+
+        ... on GalleryAnnouncementNotification {
+          __typename
+          platform
+          ...GalleryAnnouncementFragment
+        }
+
+        ... on SomeoneAdmiredYourCommentNotification {
+          __typename
+          ...SomeoneAdmiredYourCommentFragment
+        }
       }
     `,
     notificationRef
@@ -521,6 +589,13 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneRepliedToYourComment notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
     return <YouReceivedTopActivityBadge />;
+  } else if (
+    notification.__typename === 'GalleryAnnouncementNotification' &&
+    notification.platform !== 'Mobile'
+  ) {
+    return <GalleryAnnouncement notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
+    return <SomeoneAdmiredYourComment notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;

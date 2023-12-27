@@ -18,6 +18,10 @@ import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
+import {
+  extractContractIdFromCommunity,
+  extractRelevantMetadataFromCommunity,
+} from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import CommunityPageOwnershipRequiredModal from './CommunityPageOwnershipRequiredModal';
 
@@ -31,33 +35,26 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     graphql`
       fragment CommunityPageMetadataFragment on Community {
         name
-        chain
-        contract {
-          dbid
-        }
-        contractAddress {
-          chain
-          address
-        }
         creator {
           ...ProfilePictureAndUserOrAddressCreatorFragment
         }
-        tokensInCommunity(
-          first: $tokenCommunityFirst
-          after: $tokenCommunityAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) {
+        tokens(first: $tokenCommunityFirst, after: $tokenCommunityAfter) {
           edges {
             node {
               ...MintLinkButtonFragment
             }
           }
         }
+        ...extractRelevantMetadataFromCommunityContractIdFragment
+        ...extractRelevantMetadataFromCommunityFragment
         ...CommunityPageOwnershipRequiredModalFragment
       }
     `,
     communityRef
   );
+
+  const { chain, contractAddress, mintUrl } = extractRelevantMetadataFromCommunity(community);
+  const contractId = extractContractIdFromCommunity(community);
 
   const query = useFragment(
     graphql`
@@ -71,14 +68,14 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
   );
 
   const networkIcon = useMemo(() => {
-    return chains.find((chain) => chain.name === community.contractAddress?.chain)?.icon;
-  }, [community.contractAddress?.chain]);
+    return chains.find((_chain) => _chain.name === chain)?.icon;
+  }, [chain]);
 
   const { isMemberOfCommunity, refetchIsMemberOfCommunity } = useIsMemberOfCommunity();
 
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
-  const token = community?.tokensInCommunity?.edges?.[0]?.node;
+  const token = community?.tokens?.edges?.[0]?.node;
 
   const handleDisabledPostButtonClick = useCallback(() => {
     showModal({
@@ -106,9 +103,9 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
-            dbid: community.contract?.dbid ?? '',
+            dbid: contractId,
             title: community.name ?? '',
-            address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
+            address: contractAddress, // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
           eventFlow={flows['Community Page Post Create Flow']}
         />
@@ -117,21 +114,21 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       isFullPage: isMobile,
     });
   }, [
-    handleDisabledPostButtonClick,
+    query?.viewer?.__typename,
     isMemberOfCommunity,
     showModal,
-    query,
+    contractId,
     community.name,
-    community.contractAddress?.address,
-    community.contract?.dbid,
+    contractAddress,
     isMobile,
+    handleDisabledPostButtonClick,
   ]);
 
   const showPostButton = query.viewer?.__typename === 'Viewer';
 
   return (
     <StyledMetadata align="center">
-      {community.creator && community?.chain !== 'POAP' ? (
+      {community.creator && chain !== 'POAP' ? (
         <VStack gap={2}>
           <TitleXS>CREATED BY</TitleXS>
           <CreatorProfilePictureAndUsernameOrAddress
@@ -144,7 +141,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
         <TitleXS>NETWORK</TitleXS>
         <HStack align="center" gap={4}>
           <StyledNetworkIcon src={networkIcon} />
-          <BaseM color={colors.shadow}>{community.contractAddress?.chain}</BaseM>
+          <BaseM color={colors.shadow}>{chain}</BaseM>
         </HStack>
       </VStack>
       {showPostButton &&
@@ -168,6 +165,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
               eventElementId="Click Mint Link Button"
               eventName="Click Mint Link Button"
               eventContext={contexts.Community}
+              overwriteURL={mintUrl}
             />
           )
         ))}

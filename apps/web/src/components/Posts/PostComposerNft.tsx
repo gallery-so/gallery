@@ -26,9 +26,11 @@ export default function PostComposerNft({ tokenRef }: Props) {
     graphql`
       fragment PostComposerNftFragment on Token {
         __typename
-        name
-        contract {
+        definition {
           name
+          contract {
+            name
+          }
         }
         ...PostComposerAssetFragment
       }
@@ -47,9 +49,9 @@ export default function PostComposerNft({ tokenRef }: Props) {
       </StyledAssetContainer>
 
       <VStack>
-        <TitleS>{token.name}</TitleS>
+        <TitleS>{token.definition.name}</TitleS>
 
-        <BaseS color={colors.metal}>{token.contract?.name}</BaseS>
+        <BaseS color={colors.metal}>{token.definition.contract?.name}</BaseS>
       </VStack>
     </StyledTokenContainer>
   );

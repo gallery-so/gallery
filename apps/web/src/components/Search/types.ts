@@ -1,3 +1,5 @@
+import { Route } from 'nextjs-routes';
+
 type BaseSearchItem = {
   label: string;
   value: string;
@@ -14,8 +16,7 @@ type GallerySearchItem = BaseSearchItem & {
 
 type CommunitySearchItem = BaseSearchItem & {
   type: 'Community';
-  contractAddress: string;
-  chain: string;
+  communityPageUrl: Route;
 };
 
 export type SearchItemType = UserSearchItem | GallerySearchItem | CommunitySearchItem;

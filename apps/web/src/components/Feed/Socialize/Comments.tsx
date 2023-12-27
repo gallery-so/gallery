@@ -37,7 +37,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
             edges {
               node {
                 dbid
-
+                deleted
                 ...CommentLineFragment
               }
             }
@@ -52,7 +52,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
             edges {
               node {
                 dbid
-
+                deleted
                 ...CommentLineFragment
               }
             }
@@ -128,6 +128,11 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     return comments;
   }, [feedItem.comments?.edges]);
 
+  const lastComment = useMemo(() => {
+    const nonDeletedComments = nonNullComments.filter((comment) => !comment.deleted);
+    return nonDeletedComments.slice(-1);
+  }, [nonNullComments]);
+
   const totalComments = feedItem.totalComments ?? 0;
 
   const isFirstMount = useRef(true);
@@ -174,9 +179,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
    * to show, so we'll have to fallback to some other UI here. In this case, we'll just show
    * the total number of comments / admires that links to the NotesModal
    */
-  if (totalComments > 0) {
-    const lastComment = nonNullComments.slice(-1);
-
+  if (totalComments > 0 && lastComment.length > 0) {
     if (lastComment.length > 0) {
       return (
         <VStack gap={4}>

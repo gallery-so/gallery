@@ -8,7 +8,7 @@ import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPrevie
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
-import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 
@@ -24,8 +24,10 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewLabelFragment on Token {
-        name
-        chain
+        definition {
+          name
+          chain
+        }
 
         ...NftPreviewLabelCollectionNameFragment
       }
@@ -33,15 +35,15 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
     tokenRef
   );
 
-  const showCollectionName = Boolean(token.name);
+  const showCollectionName = Boolean(token.definition.name);
 
   const decodedTokenName = useMemo(() => {
-    if (token.name) {
-      return unescape(token.name);
+    if (token.definition.name) {
+      return unescape(token.definition.name);
     }
 
     return null;
-  }, [token.name]);
+  }, [token.definition.name]);
 
   if (!decodedTokenName) {
     return null;
@@ -52,7 +54,7 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
       {
         // Since POAPs' collection names are the same as the
         // token name, we don't want to show duplicate information
-        token.chain === 'POAP' ? null : (
+        token.definition.chain === 'POAP' ? null : (
           <StyledBaseM color={colors.white}>{decodedTokenName}</StyledBaseM>
         )
       }
@@ -70,20 +72,27 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   const token = useFragment(
     graphql`
       fragment NftPreviewLabelCollectionNameFragment on Token {
-        chain
-        contract {
-          name
-          badgeURL
+        definition {
+          chain
+          contract {
+            name
+            badgeURL
+          }
+          community {
+            ...getCommunityUrlFromCommunityFragment
+          }
         }
-
-        ...getCommunityUrlForTokenFragment
       }
     `,
     tokenRef
   );
 
-  const collectionName = token.contract?.name;
-  const communityUrl = getCommunityUrlForToken(token);
+  if (!token.definition.community) {
+    throw new Error('Community not returned for token in NftPreviewLabel');
+  }
+
+  const collectionName = token.definition.contract?.name;
+  const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
 
   if (!collectionName) {
     return null;
@@ -91,7 +100,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   const shouldDisplayLinkToCommunityPage = communityUrl && interactive;
 
-  if (token.chain === 'POAP') {
+  if (token.definition.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
       <StyledGalleryLink
         to={communityUrl}
@@ -116,7 +125,9 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   return shouldDisplayLinkToCommunityPage ? (
     <StyledGalleryLink to={communityUrl}>
       <HStack gap={4} align="center">
-        {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+        {token.definition.contract?.badgeURL && (
+          <StyledBadge src={token.definition.contract.badgeURL} />
+        )}
         <StyledBaseM color={colors.porcelain}>{collectionName}</StyledBaseM>
       </HStack>
     </StyledGalleryLink>

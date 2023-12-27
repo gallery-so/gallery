@@ -26,7 +26,9 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
-        name
+        definition {
+          name
+        }
         owner @required(action: THROW) {
           username @required(action: THROW)
           universal
@@ -91,7 +93,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
         <StyledNftImage src={imageUrl} />
       </StyledGalleryLink>
       <VStack>
-        <BaseM>{token?.name}</BaseM>
+        <BaseM>{token?.definition?.name}</BaseM>
         {owner?.universal ? (
           <GalleryLink href={openseaProfileLink}>{usernameWithFallback}</GalleryLink>
         ) : (

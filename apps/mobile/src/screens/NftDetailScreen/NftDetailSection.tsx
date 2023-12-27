@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
@@ -53,10 +54,34 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           ... on Token {
             __typename
             dbid
-            name
-            chain
-            tokenId
-            description
+            definition {
+              name
+              chain
+              tokenId
+              description
+              community {
+                name
+                badgeURL
+                creator {
+                  ...ProfilePictureAndUserOrAddressCreatorFragment
+                  ... on GalleryUser {
+                    username
+                  }
+                }
+                ...useNavigateToCommunityScreenFragment
+              }
+            }
+
+            owner {
+              id
+              username
+              primaryWallet {
+                chainAddress {
+                  address
+                }
+              }
+              ...ProfilePictureAndUserOrAddressOwnerFragment
+            }
 
             # We only show 1 but in case the user deletes something
             # we want to be sure that we can show another admire beneath
@@ -72,33 +97,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                     username
                     ...ProfileViewSharedFollowersBubblesFragment
                   }
-                }
-              }
-            }
-
-            contract {
-              name
-              badgeURL
-              contractAddress {
-                address
-                chain
-              }
-            }
-            owner {
-              id
-              username
-              primaryWallet {
-                chainAddress {
-                  address
-                }
-              }
-              ...ProfilePictureAndUserOrAddressOwnerFragment
-            }
-            community {
-              creator {
-                ...ProfilePictureAndUserOrAddressCreatorFragment
-                ... on GalleryUser {
-                  username
                 }
               }
             }
@@ -130,26 +128,25 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const { definition: tokenDefinition } = token;
+
   const isTokenOwner = loggedInUserId === token.owner?.id;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
-  const handleOpenCommunityScreen = useCallback(() => {
-    const contractAddress = token.contract?.contractAddress;
-    const { address, chain } = contractAddress ?? {};
-    if (!address || !chain) return;
-    navigation.push('Community', {
-      contractAddress: address,
-      chain,
-    });
-  }, [navigation, token.contract?.contractAddress]);
+  const handleNavigateToCommunityScreen = useCallback(() => {
+    if (tokenDefinition?.community) {
+      navigateToCommunity(tokenDefinition.community);
+    }
+  }, [navigateToCommunity, tokenDefinition.community]);
 
   const handleCreatePost = useCallback(() => {
-    if (!token.dbid) return;
-
-    navigation.navigate('PostComposer', {
-      tokenId: token.dbid,
-    });
+    if (token.dbid) {
+      navigation.navigate('PostComposer', {
+        tokenId: token.dbid,
+      });
+    }
   }, [navigation, token.dbid]);
 
   const handleOwnerUsernamePress = useCallback(() => {
@@ -159,16 +156,16 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   }, [navigation, token.owner?.username]);
 
   const handleCreatorUsernamePress = useCallback(() => {
-    if (token.community?.creator?.username) {
-      navigation.push('Profile', { username: token.community?.creator?.username ?? '' });
+    if (tokenDefinition?.community?.creator?.username) {
+      navigation.push('Profile', { username: tokenDefinition.community.creator.username ?? '' });
     }
-  }, [token.community?.creator?.username, navigation]);
+  }, [tokenDefinition?.community?.creator?.username, navigation]);
 
   const CreatorComponent = useMemo(() => {
-    if (token.community?.creator) {
+    if (tokenDefinition?.community?.creator) {
       return (
         <CreatorProfilePictureAndUsernameOrAddress
-          userOrAddressRef={token.community.creator}
+          userOrAddressRef={tokenDefinition.community.creator}
           handlePress={handleCreatorUsernamePress}
           eventContext={contexts['NFT Detail']}
         />
@@ -176,7 +173,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     }
 
     return null;
-  }, [token.community?.creator, handleCreatorUsernamePress]);
+  }, [tokenDefinition?.community?.creator, handleCreatorUsernamePress]);
 
   const { hasViewerAdmiredEvent, toggleTokenAdmire } = useToggleTokenAdmire({
     tokenRef: token,
@@ -260,7 +257,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 className="text-2xl"
                 font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
               >
-                {token.name}
+                {tokenDefinition.name}
               </Typography>
             </View>
             <View className="flex flex-row space-x-2 items-center">
@@ -290,12 +287,15 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             eventContext={contexts['NFT Detail']}
           >
             <Pill className="flex flex-row space-x-1 self-start">
-              {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
-              {token.contract?.badgeURL && (
-                <FastImage className="h-6 w-6" source={{ uri: token.contract.badgeURL }} />
+              {tokenDefinition.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
+              {tokenDefinition.community?.badgeURL && (
+                <FastImage
+                  className="h-6 w-6"
+                  source={{ uri: tokenDefinition.community.badgeURL }}
+                />
               )}
               <GalleryTouchableOpacity
-                onPress={handleOpenCommunityScreen}
+                onPress={handleNavigateToCommunityScreen}
                 eventElementId="Community Pill"
                 eventName="Community Pill Clicked"
                 eventContext={contexts['NFT Detail']}
@@ -340,9 +340,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             </View>
           )}
         </View>
-        {token.description && (
+        {tokenDefinition?.description && (
           <View>
-            <ProcessedText text={token.description} />
+            <ProcessedText text={tokenDefinition.description} />
           </View>
         )}
 

@@ -35,25 +35,26 @@ export const SidebarTokens = ({
         id
         dbid
 
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        chain
+        definition {
+          # Escape hatch for data processing in util files
+          # eslint-disable-next-line relay/unused-fields
+          chain
+          contract {
+            # Escape hatch for data processing in util files
+            # eslint-disable-next-line relay/unused-fields
+            name
+            dbid
+            contractAddress {
+              address
+            }
+            # Escape hatch for data processing in util files
+            # eslint-disable-next-line relay/unused-fields
+            isSpam
+          }
+        }
         # Escape hatch for data processing in util files
         # eslint-disable-next-line relay/unused-fields
         isSpamByUser
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        isSpamByProvider
-
-        contract {
-          # Escape hatch for data processing in util files
-          # eslint-disable-next-line relay/unused-fields
-          name
-          dbid
-          contractAddress {
-            address
-          }
-        }
 
         ...SidebarListTokenFragment
       }
@@ -64,7 +65,7 @@ export const SidebarTokens = ({
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
       const filteredTokens = tokens
-        .filter((token) => token.contract?.contractAddress?.address === address)
+        .filter((token) => token.definition.contract?.contractAddress?.address === address)
         .map(({ id, dbid }) => ({ id, dbid }));
 
       if (filteredTokens.length === 0) {

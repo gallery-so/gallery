@@ -15,7 +15,9 @@ export function NftAdditionalDetails({ tokenRef }: NftAdditionalDetailsProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsFragment on Token {
-        chain
+        definition {
+          chain
+        }
 
         ...NftAdditionalDetailsPOAPFragment
         ...NftAdditionalDetailsTezosFragment
@@ -25,9 +27,9 @@ export function NftAdditionalDetails({ tokenRef }: NftAdditionalDetailsProps) {
     tokenRef
   );
 
-  if (token.chain === 'POAP') {
+  if (token.definition.chain === 'POAP') {
     return <NftAdditionalDetailsPOAP tokenRef={token} />;
-  } else if (token.chain === 'Tezos') {
+  } else if (token.definition.chain === 'Tezos') {
     return <NftAdditionalDetailsTezos tokenRef={token} />;
   } else {
     return <NftAdditionalDetailsEth tokenRef={token} />;

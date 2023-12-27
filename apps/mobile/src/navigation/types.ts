@@ -3,6 +3,7 @@ import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigatio
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AuthPayloadVariables } from '~/shared/hooks/useAuthPayloadQuery';
+import { CommunitySubtype } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
@@ -37,7 +38,14 @@ export type MainTabStackNavigatorParamList = {
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
-  Community: { contractAddress: string; chain: string; postId?: string; creatorName?: string };
+  Community: {
+    contractAddress: string;
+    chain: string;
+    postId?: string;
+    creatorName?: string;
+    subtype: CommunitySubtype;
+    projectId?: string;
+  };
 
   ProfilePicturePicker: {
     fullScreen?: boolean;

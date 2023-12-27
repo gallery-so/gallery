@@ -91,16 +91,18 @@ export function TokenFailureBoundary({
             query TokenFailureBoundaryPollerQuery($id: DBID!) {
               tokenById(id: $id) {
                 ... on Token {
-                  media {
-                    __typename
-                    ... on SyncingMedia {
-                      previewURLs {
-                        small
-                        medium
-                        large
-                      }
-                      fallbackMedia {
-                        mediaURL
+                  definition {
+                    media {
+                      __typename
+                      ... on SyncingMedia {
+                        previewURLs {
+                          small
+                          medium
+                          large
+                        }
+                        fallbackMedia {
+                          mediaURL
+                        }
                       }
                     }
                   }
@@ -114,7 +116,7 @@ export function TokenFailureBoundary({
           { id: tokenId }
         ).toPromise();
 
-        const media = fetchedToken?.tokenById?.media;
+        const media = fetchedToken?.tokenById?.definition?.media;
 
         if (
           media?.__typename === 'SyncingMedia' &&

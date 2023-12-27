@@ -17,15 +17,24 @@ export function MentionComponent({ mention, mentionData }: Props) {
     if (!mentionData) return;
 
     if (mentionData.__typename === 'GalleryUser') {
-      navigation.navigate('Profile', {
+      navigation.push('Profile', {
         username: mentionData.username ?? '',
       });
       return;
     }
     if (mentionData.__typename === 'Community') {
+      if (!mentionData.subtype || mentionData.subtype?.__typename === '%other') {
+        return;
+      }
+
       navigation.navigate('Community', {
-        contractAddress: mentionData.contractAddress?.address ?? '',
-        chain: mentionData.contractAddress?.chain ?? '',
+        subtype: mentionData.subtype.__typename,
+        contractAddress: mentionData.subtype.communityKey?.contract?.address ?? '',
+        chain: mentionData.subtype.communityKey?.contract?.chain ?? 'Ethereum',
+        projectId:
+          mentionData.subtype?.__typename === 'ArtBlocksCommunity'
+            ? mentionData.subtype.projectID ?? ''
+            : '',
       });
     }
   }, [mentionData, navigation]);

@@ -20,11 +20,13 @@ export function PostTokenPreview() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
-            name
-            tokenId
-
-            contract {
+            definition {
               name
+              tokenId
+
+              community {
+                name
+              }
             }
 
             ...NftDetailAssetFragment
@@ -71,13 +73,13 @@ export function PostTokenPreview() {
           className="text-lg text-black-800 dark:text-offWhite"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
-          {token.name}
+          {token.definition?.name}
         </Typography>
         <Typography
           className="text-lg text-metal leading-[20px]"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
-          {token.contract?.name}
+          {token.definition?.community?.name}
         </Typography>
       </View>
     </View>

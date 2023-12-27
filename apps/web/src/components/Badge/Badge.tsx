@@ -11,6 +11,7 @@ import TopActivityBadgeIcon from '~/icons/TopActivityBadgeIcon';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { LowercaseChain } from '~/shared/utils/chains';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
+import { getUrlForCommunityDangerously } from '~/utils/getCommunityUrl';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -47,10 +48,7 @@ export default function Badge({ badgeRef, eventContext }: Props) {
 
     const chain = contract?.chain?.toLocaleLowerCase() as LowercaseChain;
 
-    return {
-      pathname: `/community/[chain]/[contractAddress]`,
-      query: { contractAddress, chain },
-    };
+    return getUrlForCommunityDangerously(contractAddress, chain);
   }, [contract]);
 
   const handleMouseEnter = useCallback(() => {

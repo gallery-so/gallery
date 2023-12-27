@@ -48,7 +48,9 @@ export function PostComposerTextArea({
   const token = useFragment(
     graphql`
       fragment PostComposerTextAreaFragment on Token {
-        name
+        definition {
+          name
+        }
       }
     `,
     tokenRef
@@ -88,11 +90,11 @@ export function PostComposerTextArea({
   }, [caption]);
 
   const inputPlaceholderTokenName = useMemo(() => {
-    if (!token.name || token.name.length > 30) {
+    if (!token.definition.name || token.definition.name.length > 30) {
       return 'this item';
     }
-    return `"${token.name}"`;
-  }, [token.name]);
+    return `"${token.definition.name}"`;
+  }, [token.definition.name]);
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {

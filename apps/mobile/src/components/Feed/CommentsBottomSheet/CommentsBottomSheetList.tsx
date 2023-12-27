@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { OnReplyPressParams } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetLine';
 import { CommentsBottomSheetList$key } from '~/generated/CommentsBottomSheetList.graphql';
+import { CommentsBottomSheetListQueryFragment$key } from '~/generated/CommentsBottomSheetListQueryFragment.graphql';
 
 import { CommentsBottomSheetSection } from './CommentsBottomSheetSection';
 
@@ -12,16 +13,25 @@ type CommentsListProps = {
   onLoadMore: () => void;
   commentRefs: CommentsBottomSheetList$key;
   onReply: (params: OnReplyPressParams) => void;
-  onExpandReplies: () => void;
+  queryRef: CommentsBottomSheetListQueryFragment$key;
 };
 
 export function CommentsBottomSheetList({
   activeCommentId,
   commentRefs,
-  onExpandReplies,
   onLoadMore,
   onReply,
+  queryRef,
 }: CommentsListProps) {
+  const query = useFragment(
+    graphql`
+      fragment CommentsBottomSheetListQueryFragment on Query {
+        ...CommentsBottomSheetSectionQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const comments = useFragment(
     graphql`
       fragment CommentsBottomSheetList on Comment @relay(plural: true) {
@@ -54,12 +64,12 @@ export function CommentsBottomSheetList({
         <CommentsBottomSheetSection
           activeCommentId={activeCommentId}
           commentRef={comment}
+          queryRef={query}
           onReplyPress={onReply}
-          onExpandReplies={onExpandReplies}
         />
       );
     },
-    [activeCommentId, onExpandReplies, onReply]
+    [activeCommentId, onReply, query]
   );
 
   return (

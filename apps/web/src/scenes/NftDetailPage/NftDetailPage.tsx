@@ -65,13 +65,17 @@ function NftDetailPage({
         __typename
         token @required(action: THROW) {
           dbid
-          name
+          definition {
+            name
+          }
         }
         collection {
           tokens {
             token @required(action: THROW) {
               dbid
-              name
+              definition {
+                name
+              }
             }
             ...NftDetailViewFragment
           }
@@ -102,7 +106,7 @@ function NftDetailPage({
     throw new Error('NFT Detail Page: username not found in page query params');
   }
 
-  const headTitle = `${selectedNft?.token?.name} - ${username} | Gallery`;
+  const headTitle = `${selectedNft?.token?.definition.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
     query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username === username;
@@ -212,6 +216,7 @@ function NftDetailPage({
             queryRef={query}
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+            visibility={visibility}
           />
         </_DirectionalFade>
       ))}
@@ -332,7 +337,7 @@ const StyledNftDetailPage = styled.div`
 
   @media only screen and ${breakpoints.mobile} {
     ${_DirectionalFade} {
-      padding: 80px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
+      padding: 48px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
     }
   }
 
@@ -347,7 +352,7 @@ const StyledNftDetailPage = styled.div`
 function NftDetailPageWithBoundary({ username, collectionId, tokenId }: NftDetailPageWrapperProps) {
   return (
     <StyledNftDetailPageWithBoundary>
-      <Suspense fallback={<NftDetailPageFallback />}>
+      <Suspense fallback={<NftDetailPageFallback tokenId={tokenId} />}>
         <ErrorBoundary>
           <NftDetailPageWrapper username={username} collectionId={collectionId} tokenId={tokenId} />
         </ErrorBoundary>

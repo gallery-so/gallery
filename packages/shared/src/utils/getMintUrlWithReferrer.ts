@@ -19,8 +19,13 @@ const providers = [
     regex: '^https://(www\\.)?superrare.com/?',
     name: 'SuperRare',
   },
+  {
+    regex: '^https://(www\\.)?highlight.xyz/?',
+    name: 'Highlight',
+  },
 ];
 
+// TODO: perhaps this can be baked into `extractRelevantMetadataFromToken`
 export function getMintUrlWithReferrer(url: string, referrer: string) {
   try {
     const urlObj = new URL(url);

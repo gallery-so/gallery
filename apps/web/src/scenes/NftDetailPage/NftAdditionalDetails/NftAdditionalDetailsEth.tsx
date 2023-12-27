@@ -17,11 +17,13 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
-        tokenId
-        community {
-          contractAddress {
-            address
-            ...LinkableAddressFragment
+        definition {
+          tokenId
+          contract {
+            contractAddress {
+              address
+              ...LinkableAddressFragment
+            }
           }
         }
 
@@ -31,15 +33,15 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     tokenRef
   );
 
-  const { tokenId, community } = token;
+  const { tokenId, contract } = token.definition;
 
   return (
     <VStack gap={16}>
-      {community?.contractAddress?.address && (
+      {contract?.contractAddress?.address && (
         <div>
           <TitleXS>Contract address</TitleXS>
           <LinkableAddress
-            chainAddressRef={community.contractAddress}
+            chainAddressRef={contract.contractAddress}
             eventContext={contexts['NFT Detail']}
           />
         </div>

@@ -2,10 +2,9 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+import breakpoints, { size } from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
 import { TokenDetailViewQuery } from '~/generated/TokenDetailViewQuery.graphql';
 import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
@@ -101,24 +100,30 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
-          <ShimmerProvider>
+          <Container>
             <TokenDetailAsset
               tokenRef={token}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
-          </ShimmerProvider>
-          {token?.collectorsNote && (
+          </Container>
+
+          {!isMobileOrMobileLarge && token?.collectorsNote && (
             <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
               <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
             </StyledContainer>
           )}
         </StyledAssetAndNoteContainer>
-
         <NftDetailText
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
         />
+
+        {isMobileOrMobileLarge && token?.collectorsNote && (
+          <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+            <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
+          </StyledContainer>
+        )}
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
@@ -153,10 +158,32 @@ const StyledContentContainer = styled.div`
   }
 `;
 
+const Container = styled.div`
+  min-width: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media only screen and (max-width: ${size.tablet}px) {
+    margin-top: 48px;
+    height: 296px;
+    width: 296px;
+  }
+`;
+
 const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+
+  @media only screen and (max-width: ${size.tablet}px) {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)

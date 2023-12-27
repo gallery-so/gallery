@@ -16,21 +16,35 @@ import processProjectUrl from './processProjectUrl';
 import { getProhibitionUrlDangerously } from './prohibition';
 import { truncateAddress } from './wallet';
 
+export type CommunitySubtype = 'ContractCommunity' | 'ArtBlocksCommunity';
+
 export function extractRelevantMetadataFromToken(
   tokenRef: extractRelevantMetadataFromTokenFragment$key
 ) {
   const token = readInlineData(
     graphql`
       fragment extractRelevantMetadataFromTokenFragment on Token @inline {
-        tokenId
-        tokenMetadata
-        externalUrl
-        chain
-        lastUpdated
-        contract {
+        definition {
+          tokenId
           name
-          contractAddress {
-            address
+          tokenMetadata
+          externalUrl
+          chain
+          lastUpdated
+          community {
+            name
+            mintURL
+            subtype {
+              __typename
+              ... on ArtBlocksCommunity {
+                projectID
+              }
+            }
+          }
+          contract {
+            contractAddress {
+              address
+            }
           }
         }
       }
@@ -40,20 +54,33 @@ export function extractRelevantMetadataFromToken(
 
   const {
     tokenId,
+    name,
     contract,
+    community,
     externalUrl,
     tokenMetadata,
     chain,
     lastUpdated: lastUpdatedRaw,
-  } = token;
+  } = token.definition;
 
-  const contractAddress = contract?.contractAddress?.address;
+  const contractAddress = contract?.contractAddress?.address ?? '';
+  const communitySubtype = (community?.subtype?.__typename ??
+    'ContractCommunity') as CommunitySubtype;
+  const communityProjectId =
+    community?.subtype?.__typename === 'ArtBlocksCommunity'
+      ? community.subtype.projectID ?? ''
+      : '';
 
   const result = {
     tokenId: '',
+    name: name ?? '',
+    chain: chain ?? '',
     contractAddress,
     contractName: '',
+    communitySubtype,
+    communityProjectId,
     lastUpdated: '',
+    mintUrl: community?.mintURL ?? '',
     openseaUrl: '',
     mirrorUrl: '',
     prohibitionUrl: '',
@@ -84,8 +111,8 @@ export function extractRelevantMetadataFromToken(
 
   if (isFxHashContractAddress(contractAddress)) {
     result.contractName = 'fx(hash)';
-  } else if (contract?.name) {
-    result.contractName = contract.name;
+  } else if (community?.name) {
+    result.contractName = community.name;
   } else if (contractAddress) {
     result.contractName = truncateAddress(contractAddress);
   } else {

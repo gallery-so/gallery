@@ -19,12 +19,12 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
-        tokenId
-        chain
-        contract {
-          contractAddress {
-            address
-            ...LinkableAddressFragment
+        definition {
+          contract {
+            contractAddress {
+              address
+              ...LinkableAddressFragment
+            }
           }
         }
         ...extractRelevantMetadataFromTokenFragment
@@ -34,19 +34,20 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   );
 
   const { colorScheme } = useColorScheme();
-  const { tokenId, fxhashUrl, objktUrl, projectUrl } = extractRelevantMetadataFromToken(token);
+  const { tokenId, chain, fxhashUrl, objktUrl, projectUrl } =
+    extractRelevantMetadataFromToken(token);
 
-  const { contract } = token;
+  const { definition } = token;
 
   return (
     <View className="flex flex-col space-y-4">
       <View className="flex flex-row space-x-16">
-        {contract?.contractAddress?.address && (
+        {definition?.contract?.contractAddress?.address && (
           <DetailSection>
             <DetailLabelText>CONTRACT</DetailLabelText>
             <LinkableAddress
               textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
-              chainAddressRef={contract.contractAddress}
+              chainAddressRef={definition.contract.contractAddress}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               eventElementId="NFT Detail Contract Address"
               eventName="NFT Detail Contract Address Press"
@@ -71,10 +72,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       </View>
 
       <View className="flex flex-row">
-        {token.chain && (
+        {chain && (
           <DetailSection>
             <DetailLabelText>NETWORK</DetailLabelText>
-            <DetailValue>{token.chain}</DetailValue>
+            <DetailValue>{chain}</DetailValue>
           </DetailSection>
         )}
         {fxhashUrl && (
