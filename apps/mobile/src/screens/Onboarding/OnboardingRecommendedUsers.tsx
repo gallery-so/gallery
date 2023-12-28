@@ -38,12 +38,15 @@ export function OnboardingRecommendedUsers() {
   return <OnboardingRecommendedUsersInner queryRef={query} />;
 }
 
-function OnboardingRecommendedUsersInner({ queryRef }) {
+type OnboardingRecommendedUsersInnerProps = {
+  queryRef: OnboardingRecommendedUsersInnerFragment$key;
+};
+
+function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUsersInnerProps) {
   const {
     data: followingPagination,
     loadPrevious,
     hasPrevious,
-    isLoadingPrevious,
   } = usePaginationFragment(
     graphql`
       fragment OnboardingRecommendedUsersInnerFragment on Query
@@ -138,12 +141,12 @@ function OnboardingRecommendedUsersInner({ queryRef }) {
           </Suspense>
         </View>
 
-        <View className="flex flex-1 justify-end">
+        <View className="flex justify-end">
           <Button
             onPress={handleNext}
             variant="primary"
             size="custom"
-            className="w-full"
+            className="w-full mt-4"
             eventElementId="Next button on onboarding recommended screen"
             eventName="Next button on onboarding recommended screen"
             eventContext={contexts.Onboarding}

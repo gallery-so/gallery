@@ -15,11 +15,20 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
+  styleChip?: ViewProps['style'];
+  flipVariant?: boolean;
   source?: string; // where the FollowButton is being used, for analytics
   width?: 'fixed' | 'grow';
 };
 
-export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Props) {
+export function FollowButton({
+  queryRef,
+  userRef,
+  style,
+  width = 'fixed',
+  styleChip,
+  flipVariant = false,
+}: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -101,23 +110,38 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
       return null;
     } else if (isFollowing) {
       return (
-        <ButtonChip variant="secondary" onPress={handleUnfollowPress} width={width}>
+        <ButtonChip
+          variant={flipVariant ? 'primary' : 'secondary'}
+          onPress={handleUnfollowPress}
+          width={width}
+          style={styleChip}
+        >
           Following
         </ButtonChip>
       );
     } else {
       return (
         <ButtonChip
-          variant="primary"
+          variant={flipVariant ? 'secondary' : 'primary'}
           width={width}
           onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
+          style={styleChip}
         >
           {followsYou ? 'Follow back' : 'Follow'}
         </ButtonChip>
       );
     }
-  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress, followsYou]);
+  }, [
+    isSelf,
+    isFollowing,
+    handleUnfollowPress,
+    width,
+    handleFollowPress,
+    followsYou,
+    styleChip,
+    flipVariant,
+  ]);
 
   return <View style={style}>{followChip}</View>;
 }

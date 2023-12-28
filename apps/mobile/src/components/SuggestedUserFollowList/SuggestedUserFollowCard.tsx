@@ -2,9 +2,9 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Typography } from '../Typography';
-import { FollowButton } from '../FollowButton';
 import { ButtonChip } from '~/components/ButtonChip';
-import { Markdown } from '../Markdown';
+import ProcessedText from '../ProcessedText/ProcessedText';
+import { FollowButton } from '../FollowButton';
 
 type SuggestedUserFollowCardProps = {
   userRef: SuggestedUserFollowCardFragment$key;
@@ -35,7 +35,6 @@ export function SuggestedUserFollowCard({ userRef, queryRef }: SuggestedUserFoll
   );
 
   const bioFirstLine = user.bio?.split('\n')[0];
-  const handleFollowPress = () => {};
 
   return (
     <View className="flex w-full flex-row items-center space-x-8 overflow-hidden">
@@ -46,23 +45,21 @@ export function SuggestedUserFollowCard({ userRef, queryRef }: SuggestedUserFoll
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>}
+            {bioFirstLine && <ProcessedText numberOfLines={1} text={bioFirstLine} />}
           </View>
         </View>
       </View>
-      <ButtonChip
-        variant="secondary"
-        style={{
-          width: 69,
-          backgroundColor: '#FEFEFE',
-          borderWidth: 1,
-          borderColor: '#F2F2F2',
-          borderStyle: 'solid',
-        }}
-        onPress={handleFollowPress}
-      >
-        Follow
-      </ButtonChip>
+
+      <View className="flex mr-2">
+        <FollowButton
+          queryRef={query}
+          userRef={user}
+          flipVariant={true}
+          styleChip={{
+            width: 80,
+          }}
+        />
+      </View>
     </View>
   );
 }
