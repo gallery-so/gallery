@@ -7,8 +7,10 @@ import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { Typography } from '~/components/Typography';
+import { Markdown } from '~/components/Markdown';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 import { OnboardingRecommendedUsersQuery } from '~/generated/OnboardingRecommendedUsersQuery.graphql';
@@ -17,6 +19,8 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
 import colors from '~/shared/theme/colors';
+import { FollowButton } from '~/components/FollowButton';
+import { SuggestedUserFollowList } from '~/components/SuggestedUserFollowList/SuggestedUserFollowList';
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -54,14 +58,14 @@ function OnboardingRecommendedUsersInner({ queryRef }) {
                 node {
                   id
                   __typename
-                  ...UserFollowListFragment
+                  ...SuggestedUserFollowListFragment
                 }
               }
             }
           }
         }
 
-        ...UserFollowListQueryFragment
+        ...SuggestedUserFollowListQueryFragment
       }
     `,
     queryRef
@@ -103,12 +107,12 @@ function OnboardingRecommendedUsersInner({ queryRef }) {
           <BackButton onPress={handleBack} />
           <View className="flex flex-row items-center space-x-2">
             <Typography
-              className="text-sm text-shadow"
+              className="text-sm text-metal"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
               {hasFollowedSomeone ? 'Next' : 'Skip'}
             </Typography>
-            <RightArrowIcon color={colors.shadow} />
+            <RightArrowIcon color={colors.metal} />
           </View>
         </View>
 
@@ -124,18 +128,17 @@ function OnboardingRecommendedUsersInner({ queryRef }) {
           </Typography>
         </View>
 
-        <View className="h-4/6">
+        <View className="h-4/6 mb-14">
           <Suspense fallback={<UserFollowListFallback />}>
-            <UserFollowList
+            <SuggestedUserFollowList
               onLoadMore={handleLoadMore}
               userRefs={recommendedUsers}
               queryRef={followingPagination}
-              onUserPress={() => {}}
             />
           </Suspense>
         </View>
 
-        <View className="">
+        <View className="flex flex-1 justify-end">
           <Button
             onPress={handleNext}
             variant="primary"
@@ -149,23 +152,5 @@ function OnboardingRecommendedUsersInner({ queryRef }) {
         </View>
       </View>
     </View>
-  );
-}
-
-type SuggestedUserListProps = {
-  userRefs: SuggestedUserListFragment$key;
-  queryRef: SuggestedUserListQueryFragment$key;
-  onLoadMore?: () => void;
-  onUserPress: (username: string) => void;
-};
-
-function SuggestedUserList({ userRefs, queryRef, onLoadMore }) {
-  const query = useFragment(
-    graphql`
-      fragment UserFollowListQueryFragment on Query {
-        ...UserFollowCardQueryFragment
-      }
-    `,
-    queryRef
   );
 }
