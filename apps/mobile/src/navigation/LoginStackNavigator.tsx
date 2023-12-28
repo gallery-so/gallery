@@ -12,6 +12,7 @@ import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
 import { QRCodeScreen } from '../screens/Login/QRCodeScreen';
 import { WaitingForConfirmationScreen } from '../screens/Login/WaitingForConfirmationScreen';
+import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecommendedUsers';
 
 const Stack = createNativeStackNavigator<LoginStackNavigatorParamList>();
 
@@ -20,6 +21,7 @@ function Empty() {
 }
 
 export function LoginStackNavigator() {
+
   return (
     <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="Landing">
       <Stack.Screen name="Landing" component={LandingScreen} />
@@ -33,6 +35,7 @@ export function LoginStackNavigator() {
       <Stack.Screen name="OnboardingEmail" component={OnboardingEmailScreen} />
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
+      <Stack.Screen name="OnboardingRecommendedUsers" component={OnboardingRecommendedUsers} />
       <Stack.Screen name="OnboardingNftSelector" component={NftSelectorPickerScreen} />
     </Stack.Navigator>
   );

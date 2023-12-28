@@ -95,6 +95,10 @@ export function OnboardingProfileBioScreen() {
     await navigateToNotificationUpsellOrHomeScreen(navigation, true);
   }, [bio, navigation, updateUser, user]);
 
+  const handleNextForNow = () => {
+    navigation.navigate('OnboardingRecommendedUsers');
+  }
+
   if (user?.__typename !== 'GalleryUser') {
     throw new Error(`Unable to fetch the logged in user`);
   }
@@ -164,7 +168,7 @@ export function OnboardingProfileBioScreen() {
 
           {bio.length > 0 ? (
             <Button
-              onPress={handleNext}
+              onPress={handleNextForNow}
               className="w-full"
               eventElementId="Next button on onboarding bio screen"
               eventName="Next button on onboarding bio screen"
@@ -175,7 +179,7 @@ export function OnboardingProfileBioScreen() {
             />
           ) : (
             <Button
-              onPress={handleNext}
+              onPress={handleNextForNow}
               variant="secondary"
               className="w-full"
               eventElementId="Skip onboarding bio & profile picture"
