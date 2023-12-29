@@ -65,19 +65,6 @@ export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
   return useCallback(
     async (unfolloweeId: string) => {
       await unfollowUserMutate({
-        optimisticUpdater: (store, response) => {
-          const viewer = store.getRoot().getLinkedRecord('viewer');
-          const user = viewer?.getLinkedRecord('user');
-          if (response.unfollowUser?.__typename === 'UnfollowUserPayload') {
-            const userFollowing = user?.getLinkedRecords('following');
-            if (userFollowing) {
-              const newFollowingList = userFollowing.filter(
-                (following) => following.getValue('id') !== unfolloweeId
-              );
-              user?.setLinkedRecords(newFollowingList, 'following');
-            }
-          }
-        },
         optimisticResponse: {
           unfollowUser: {
             __typename: 'UnfollowUserPayload',
@@ -89,7 +76,7 @@ export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
                 id: query.viewer?.user?.id as string,
                 following:
                   query.viewer?.user?.following?.filter(
-                    (followee) => followee?.id !== unfolloweeId
+                    (followee) => followee?.id !== `GalleryUser:${unfolloweeId}`
                   ) ?? [],
               },
             },
