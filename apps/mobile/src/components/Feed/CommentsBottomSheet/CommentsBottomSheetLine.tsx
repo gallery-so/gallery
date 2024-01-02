@@ -166,56 +166,62 @@ export function CommentsBottomSheetLine({
           <View className="flex-1">
             <View className="flex-row space-x-3 w-full justify-between">
               <View className="flex-1">
-                <View className="flex-row space-x-1">
-                  <Typography
-                    className="text-sm leading-4"
-                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                  >
-                    {comment.commenter?.username}
-                  </Typography>
-                  <Typography
-                    className="text-xxs text-metal leading-4"
-                    font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  >
-                    {timeAgo}
-                  </Typography>
+                <View className="flex-row justify-between">
+                  <View className="flex-row space-x-1 items-start">
+                    <Typography
+                      className="text-sm leading-4"
+                      font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                    >
+                      {comment.commenter?.username}
+                    </Typography>
+                    <Typography
+                      className="text-xxs text-metal leading-4"
+                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                    >
+                      {timeAgo}
+                    </Typography>
+                  </View>
+                  <View className="flex-row items-center space-x-1">
+                    <GalleryTouchableOpacity
+                      className="flex-row justify-end items-center gap-0.5"
+                      onPress={handleAdmirePress}
+                      eventElementId="Admire Comment Button"
+                      eventName="Press Admire Comment Button"
+                      eventContext={contexts.Posts}
+                    >
+                      {totalAdmires > 0 && (
+                        <Typography
+                          className={clsx('text-xs', {
+                            'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
+                            'text-shadow dark:text-metal': !hasViewerAdmiredComment,
+                          })}
+                          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                        >
+                          {totalAdmires}
+                        </Typography>
+                      )}
+                      <AdmireIcon
+                        variant="secondary"
+                        height={16}
+                        active={hasViewerAdmiredComment}
+                      />
+                    </GalleryTouchableOpacity>
+
+                    {isAuthUserComment && (
+                      <GalleryTouchableOpacity
+                        className="flex-row justify-end items-center gap-0.5"
+                        onPress={handleRemoveCommentPress}
+                        eventElementId="Delete Comment Button"
+                        eventName="Press Delete Comment Button"
+                        eventContext={contexts.Posts}
+                      >
+                        <TrashIcon color={colors.metal} height={16} />
+                      </GalleryTouchableOpacity>
+                    )}
+                  </View>
                 </View>
                 <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
               </View>
-              {isAuthUserComment && (
-                <View className="flex-row items-center space-x-1">
-                  <GalleryTouchableOpacity
-                    className="flex-row justify-end items-center gap-0.5"
-                    onPress={handleAdmirePress}
-                    eventElementId="Admire Comment Button"
-                    eventName="Press Admire Comment Button"
-                    eventContext={contexts.Posts}
-                  >
-                    {totalAdmires > 0 && (
-                      <Typography
-                        className={clsx('text-xs', {
-                          'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
-                          'text-shadow dark:text-metal': !hasViewerAdmiredComment,
-                        })}
-                        font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                      >
-                        {totalAdmires}
-                      </Typography>
-                    )}
-                    <AdmireIcon variant="secondary" height={16} active={hasViewerAdmiredComment} />
-                  </GalleryTouchableOpacity>
-
-                  <GalleryTouchableOpacity
-                    className="flex-row justify-end items-center gap-0.5"
-                    onPress={handleRemoveCommentPress}
-                    eventElementId="Delete Comment Button"
-                    eventName="Press Delete Comment Button"
-                    eventContext={contexts.Posts}
-                  >
-                    <TrashIcon color={colors.metal} height={16} />
-                  </GalleryTouchableOpacity>
-                </View>
-              )}
             </View>
             <View className="flex mr-5 space-y-1">
               <GalleryTouchableOpacity
