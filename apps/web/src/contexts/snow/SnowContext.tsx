@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import usePersistedState from '~/hooks/usePersistedState';
 
-import AnimatedSnowfall from './AnimatedSnowfall';
+// import AnimatedSnowfall from './AnimatedSnowfall';
 
 type SnowState = {
   isSnowEnabled: boolean;
@@ -63,7 +63,7 @@ const SnowProvider = memo(({ children }: Props) => {
   return (
     <SnowContext.Provider value={value}>
       <VisibilityWrapper isVisible={isSnowEnabled}>
-        <AnimatedSnowfall amount={50} />
+        {/* <AnimatedSnowfall amount={50} /> */}
       </VisibilityWrapper>
       {children}
     </SnowContext.Provider>

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import GalleryLeftContent from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';
@@ -13,7 +12,6 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
 import { GalleryNavbarGalleryFragment$key } from '~/generated/GalleryNavbarGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -78,21 +76,9 @@ export function GalleryNavbar({
         </NavbarCenterContent>
 
         <NavbarRightContent>
-          {isMobile ? (
-            <SnowToggleIcon />
-          ) : (
-            <PaddingRight>
-              <SnowToggleIcon />
-            </PaddingRight>
-          )}
-
           <GalleryRightContent galleryRef={gallery} username={username} queryRef={query} />
         </NavbarRightContent>
       </StandardNavbarContainer>
     </VStack>
   );
 }
-
-const PaddingRight = styled.div`
-  padding-right: 8px;
-`;
