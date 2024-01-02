@@ -60,7 +60,7 @@ export default function AppProvider({
                               <ModalProvider>
                                 <SidebarDrawerProvider>
                                   <SearchProvider>
-                                    <SnowProvider>
+                                    <SnowProvider enabled={false}>
                                       <GlobalLayoutContextProvider
                                         preloadedQuery={globalLayoutContextPreloadedQuery}
                                       >
