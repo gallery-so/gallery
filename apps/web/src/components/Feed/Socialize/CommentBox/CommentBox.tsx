@@ -220,7 +220,10 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
 
         <HStack gap={12} align="center">
           <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - message.length}</BaseM>
-          <SendButton enabled={message.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
+          <SendButton
+            enabled={message.length > 0 && message.length < MAX_TEXT_LENGTH && !isSubmittingComment}
+            onClick={handleSubmit}
+          />
         </HStack>
       </InputWrapper>
 
