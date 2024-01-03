@@ -8,7 +8,6 @@ import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNav
 import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFragment.graphql';
 import { UserGalleryHeaderQueryFragment$key } from '~/generated/UserGalleryHeaderQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { useIsChristinaFromLens } from '~/shared/hooks/useIsChristinaFromLens';
 import colors from '~/shared/theme/colors';
 
 import UserFarcasterSection from './UserFarcasterSection';
@@ -32,12 +31,15 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         socialAccounts {
           lens {
             username
+            display
           }
           farcaster {
             username
+            display
           }
           twitter {
             username
+            display
           }
         }
 
@@ -47,7 +49,6 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         ...UserSharedInfoFragment
         ...GalleryNavLinksFragment
         ...UserLensSectionFragment
-        ...useIsChristinaFromLensFragment
       }
     `,
     userRef
@@ -74,19 +75,14 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isLoggedIn = Boolean(loggedInUserId);
   const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
-  const isChristinaFromLens = useIsChristinaFromLens(user);
 
   const numberOfConnectedAccounts = useMemo(() => {
     return [
-      user.socialAccounts?.farcaster?.username,
-      user.socialAccounts?.lens?.username,
-      user.socialAccounts?.twitter?.username,
+      user.socialAccounts?.farcaster?.display && user.socialAccounts?.farcaster?.username,
+      user.socialAccounts?.lens?.display && user.socialAccounts?.lens?.username,
+      user.socialAccounts?.twitter?.display && user.socialAccounts?.twitter?.username,
     ].filter((username) => Boolean(username)).length;
-  }, [
-    user.socialAccounts?.farcaster?.username,
-    user.socialAccounts?.lens?.username,
-    user.socialAccounts?.twitter?.username,
-  ]);
+  }, [user.socialAccounts]);
 
   return (
     <VStack gap={24}>
@@ -96,7 +92,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         {numberOfConnectedAccounts > 0 ? (
           <SocialConnectionsSection numPills={numberOfConnectedAccounts}>
             <UserTwitterSection userRef={user} queryRef={query} />
-            {isChristinaFromLens ? null : <UserFarcasterSection userRef={user} />}
+            <UserFarcasterSection userRef={user} />
             <UserLensSection userRef={user} />
           </SocialConnectionsSection>
         ) : (
