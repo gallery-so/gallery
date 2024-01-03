@@ -26,14 +26,12 @@ export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
 
   return (
     <Container>
-      <VStack gap={16} justify="center">
-        <WalletSelector queryRef={query} variant={variant} showEmail={variant !== 'sign-up'} />
-      </VStack>
+      <WalletSelector queryRef={query} variant={variant} showEmail={variant !== 'sign-up'} />
     </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled(VStack)`
   display: flex;
   justify-content: center;
 
