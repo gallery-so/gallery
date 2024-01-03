@@ -108,7 +108,7 @@ export default function LinkToFullPageNftDetailModal({
   );
 }
 
-const StyledAnchor = styled.div`
+const StyledAnchor = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
