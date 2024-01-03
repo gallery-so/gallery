@@ -119,5 +119,10 @@ export default function useFollowAllRecommendedUsers({
         },
       },
     });
-  }, [followAllRecommendationsMutate]);
+  }, [
+    followAllRecommendationsMutate,
+    query.viewer?.user?.following,
+    suggestedFollowing,
+    query.viewer?.user?.id,
+  ]);
 }
