@@ -25,8 +25,8 @@ export function FollowButton({
   queryRef,
   userRef,
   style,
-  width = 'fixed',
   styleChip,
+  width = 'fixed',
   flipVariant = false,
 }: Props) {
   const loggedInUserQuery = useFragment(
@@ -75,6 +75,7 @@ export function FollowButton({
     const followingIds = new Set(
       followingList.map((following: { id: string } | null) => following?.id)
     );
+
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
 

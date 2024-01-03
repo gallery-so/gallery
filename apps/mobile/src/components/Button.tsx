@@ -10,7 +10,7 @@ import { Typography } from './Typography';
 
 type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
-type Size = 'xs' | 'sm' | 'md' | 'custom';
+type Size = 'xs' | 'sm' | 'md';
 
 export type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
@@ -193,7 +193,6 @@ export function Button({
   const sizeVariants: { [size in Size]: string } = {
     xs: 'h-[24] px-2',
     sm: 'h-[36] px-4',
-    custom: 'h-[40] px-4',
     md: 'h-[44] px-6',
   };
 

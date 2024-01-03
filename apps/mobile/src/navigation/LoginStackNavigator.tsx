@@ -5,6 +5,7 @@ import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScre
 import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { OnboardingProfileBioScreen } from '~/screens/Onboarding/OnboardingProfileBioScreen';
+import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecommendedUsers';
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
 import { OnboardingVideoScreen } from '~/screens/Onboarding/OnboardingVideoScreen';
 
@@ -12,7 +13,6 @@ import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
 import { QRCodeScreen } from '../screens/Login/QRCodeScreen';
 import { WaitingForConfirmationScreen } from '../screens/Login/WaitingForConfirmationScreen';
-import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecommendedUsers';
 
 const Stack = createNativeStackNavigator<LoginStackNavigatorParamList>();
 

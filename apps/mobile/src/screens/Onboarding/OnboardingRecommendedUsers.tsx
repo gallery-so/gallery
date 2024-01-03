@@ -1,26 +1,26 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { graphql, useLazyLoadQuery, usePaginationFragment, useFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
-import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { SuggestedUserFollowList } from '~/components/SuggestedUserFollowList/SuggestedUserFollowList';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { Typography } from '~/components/Typography';
-import { Markdown } from '~/components/Markdown';
-import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
+import { OnboardingRecommendedUsersInnerFragment$key } from '~/generated/OnboardingRecommendedUsersInnerFragment.graphql';
 import { OnboardingRecommendedUsersQuery } from '~/generated/OnboardingRecommendedUsersQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
 import colors from '~/shared/theme/colors';
-import { FollowButton } from '~/components/FollowButton';
-import { SuggestedUserFollowList } from '~/components/SuggestedUserFollowList/SuggestedUserFollowList';
+
+import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -67,27 +67,50 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
             }
           }
         }
-
+        ...useFollowAllRecommendedUsersQueryFragment
         ...SuggestedUserFollowListQueryFragment
       }
     `,
     queryRef
   );
 
-  const [hasFollowedSomeone, setHasFollowedSomeone] = useState(false);
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
-  const followAllRecommendedUsers = useFollowAllRecommendedUsers();
+  const user = followingPagination?.viewer?.id;
 
-  const handleNext = useCallback(() => {
+  const suggestedFollowing = useMemo(() => {
+    const users = [];
+
+    for (const edge of followingPagination.viewer?.suggestedUsers?.edges ?? []) {
+      if (edge?.node?.__typename === 'GalleryUser') {
+        users.push(edge?.node);
+      }
+    }
+
+    return users;
+  }, [followingPagination]);
+
+  const followAllRecommendedUsers = useFollowAllRecommendedUsers({
+    suggestedFollowing: suggestedFollowing,
+    queryRef: followingPagination,
+  });
+
+  const handleNext = useCallback(async () => {
+    if (!user) return null;
+    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
+  }, [navigation, user]);
+
+  const handleFollowAll = useCallback(async () => {
+    if (!user) return null;
     followAllRecommendedUsers();
-  }, []);
+    setTimeout(async () => await handleNext(), 800);
+  }, [user, followAllRecommendedUsers, handleNext]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const { top, bottom } = useSafeAreaInsets();
+  const { top } = useSafeAreaInsets();
 
   const handleLoadMore = useCallback(() => {
     if (hasPrevious) {
@@ -100,23 +123,26 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
     return removeNullValues(list);
   }, [followingPagination.viewer?.suggestedUsers?.edges]);
 
-  // console.log('suggestedUsers', followingPagination.viewer?.suggestedUsers);
-  // console.log('recommendedUsers', recommendedUsers);
-
   return (
     <View style={{ paddingTop: top }}>
       <View className="flex flex-col flex-grow space-y-4 px-4">
         <View className="relative flex-row items-center justify-between ">
           <BackButton onPress={handleBack} />
-          <View className="flex flex-row items-center space-x-2">
+          <GalleryTouchableOpacity
+            onPress={handleNext}
+            className="flex flex-row items-center space-x-2"
+            eventElementId="Next button on onboarding recommended users screen"
+            eventName="Next button on onboarding recommended users screen"
+            eventContext={contexts.Onboarding}
+          >
             <Typography
               className="text-sm text-metal"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              {hasFollowedSomeone ? 'Next' : 'Skip'}
+              Skip
             </Typography>
             <RightArrowIcon color={colors.metal} />
-          </View>
+          </GalleryTouchableOpacity>
         </View>
 
         <View className="flex flex-col">
@@ -143,9 +169,9 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
 
         <View className="flex justify-end">
           <Button
-            onPress={handleNext}
+            onPress={handleFollowAll}
             variant="primary"
-            size="custom"
+            size="md"
             className="w-full mt-4"
             eventElementId="Next button on onboarding recommended screen"
             eventName="Next button on onboarding recommended screen"

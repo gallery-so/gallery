@@ -17,8 +17,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
 
-import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
-
 export function OnboardingProfileBioScreen() {
   const query = useLazyLoadQuery<OnboardingProfileBioScreenQuery>(
     graphql`
@@ -92,12 +90,8 @@ export function OnboardingProfileBioScreen() {
       await updateUser(user.dbid, user.username ?? '', bio);
     }
 
-    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
-  }, [bio, navigation, updateUser, user]);
-
-  const handleNextForNow = () => {
     navigation.navigate('OnboardingRecommendedUsers');
-  }
+  }, [bio, navigation, updateUser, user]);
 
   if (user?.__typename !== 'GalleryUser') {
     throw new Error(`Unable to fetch the logged in user`);
@@ -168,7 +162,7 @@ export function OnboardingProfileBioScreen() {
 
           {bio.length > 0 ? (
             <Button
-              onPress={handleNextForNow}
+              onPress={handleNext}
               className="w-full"
               eventElementId="Next button on onboarding bio screen"
               eventName="Next button on onboarding bio screen"
@@ -179,7 +173,7 @@ export function OnboardingProfileBioScreen() {
             />
           ) : (
             <Button
-              onPress={handleNextForNow}
+              onPress={handleNext}
               variant="secondary"
               className="w-full"
               eventElementId="Skip onboarding bio & profile picture"

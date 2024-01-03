@@ -1,7 +1,11 @@
-import { useCallback } from "react";
-import { graphql, useFragment } from "react-relay";
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { SuggestedUserFollowCard } from "./SuggestedUserFollowCard";
+import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
+
+import { SuggestedUserListFragment$key } from '~/generated/SuggestedUserListFragment.graphql';
+import { SuggestedUserListQueryFragment$key } from '~/generated/SuggestedUserListQueryFragment.graphql';
+
+import { SuggestedUserFollowCard } from './SuggestedUserFollowCard';
 
 type SuggestedUserListProps = {
   userRefs: SuggestedUserListFragment$key;
@@ -9,7 +13,11 @@ type SuggestedUserListProps = {
   onLoadMore?: () => void;
 };
 
-export function SuggestedUserFollowList({ userRefs, queryRef, onLoadMore }: SuggestedUserListProps) {
+export function SuggestedUserFollowList({
+  userRefs,
+  queryRef,
+  onLoadMore,
+}: SuggestedUserListProps) {
   const query = useFragment(
     graphql`
       fragment SuggestedUserFollowListQueryFragment on Query {
@@ -28,9 +36,9 @@ export function SuggestedUserFollowList({ userRefs, queryRef, onLoadMore }: Sugg
     userRefs
   );
 
-    const renderItem = useCallback<ListRenderItem<(typeof users)[number]>>(
-        ({ item }) => {
-            return <SuggestedUserFollowCard userRef={item} queryRef={query} />;
+  const renderItem = useCallback<ListRenderItem<(typeof users)[number]>>(
+    ({ item }) => {
+      return <SuggestedUserFollowCard userRef={item} queryRef={query} />;
     },
     [query]
   );
@@ -45,4 +53,3 @@ export function SuggestedUserFollowList({ userRefs, queryRef, onLoadMore }: Sugg
     />
   );
 }
-

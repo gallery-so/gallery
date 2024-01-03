@@ -1,10 +1,13 @@
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+
+import { SuggestedUserFollowCardFragment$key } from '~/generated/SuggestedUserFollowCardFragment.graphql';
+import { SuggestedUserFollowCardQueryFragment$key } from '~/generated/SuggestedUserFollowCardQueryFragment.graphql';
+
+import { FollowButton } from '../FollowButton';
+import ProcessedText from '../ProcessedText/ProcessedText';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Typography } from '../Typography';
-import { ButtonChip } from '~/components/ButtonChip';
-import ProcessedText from '../ProcessedText/ProcessedText';
-import { FollowButton } from '../FollowButton';
 
 type SuggestedUserFollowCardProps = {
   userRef: SuggestedUserFollowCardFragment$key;
@@ -41,7 +44,7 @@ export function SuggestedUserFollowCard({ userRef, queryRef }: SuggestedUserFoll
       <View className="flex flex-1 flex-grow flex-col py-3">
         <View className="flex flex-row items-center">
           <ProfilePicture userRef={user} size="md" />
-          <View className="px-3 w-full">
+          <View className="px-2 w-full">
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
