@@ -145,7 +145,7 @@ export function CommentsBottomSheetLine({
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
         runOnJS(handleRemoveCommentPress)();
-        track('Delete Comment Swipe', {
+        runOnJS(track)('Delete Comment Swipe', {
           id: 'Delete Comment Swipe',
           name: 'Delete Comment Swipe',
           context: contexts.Posts,
