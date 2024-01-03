@@ -15,10 +15,11 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   onRemoveComment: () => void;
+  onDismiss: () => void;
 };
 
 function DeleteCommentWarningBottomSheet(
-  { onRemoveComment }: Props,
+  { onRemoveComment, onDismiss }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -29,8 +30,9 @@ function DeleteCommentWarningBottomSheet(
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const handleBack = useCallback(() => {
+    onDismiss();
     bottomSheetRef.current?.dismiss();
-  }, []);
+  }, [onDismiss]);
 
   const handleDelete = useCallback(() => {
     onRemoveComment();
@@ -51,6 +53,7 @@ function DeleteCommentWarningBottomSheet(
       snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
+      onDismiss={onDismiss}
     >
       <View
         onLayout={handleContentLayout}

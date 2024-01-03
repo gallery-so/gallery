@@ -1,8 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
-import { View } from 'react-native';
+import { Dimensions, View } from 'react-native';
+import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import { trigger } from 'react-native-haptic-feedback';
+import Animated, {
+  runOnJS,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { useAdmireComment } from 'src/hooks/useAdmireComment';
@@ -19,6 +29,7 @@ import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomS
 import { CommentsBottomSheetLineQueryFragment$key } from '~/generated/CommentsBottomSheetLineQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -98,14 +109,63 @@ export function CommentsBottomSheetLine({
     commentRef: comment,
   });
 
+  const track = useTrack();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const timeAgo = getTimeSince(comment.creationTime);
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-
   const isAuthUserComment = useMemo(() => {
     return comment?.commenter?.dbid === query?.viewer?.user?.dbid;
   }, [comment?.commenter?.dbid, query?.viewer?.user?.dbid]);
+
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
+  const TRANSLATE_X_THRESHOLD = SCREEN_WIDTH * 0.4;
+  const handleRemoveCommentPress = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
+  const translateX = useSharedValue(0);
+  const hasTriggered = useRef(false);
+  const panGesture = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
+    onActive: (event) => {
+      if (!isAuthUserComment || comment.deleted) return;
+
+      if (!hasTriggered.current && Math.abs(event.translationX) > TRANSLATE_X_THRESHOLD) {
+        runOnJS(trigger)('impactLight');
+        hasTriggered.current = true;
+      }
+
+      if (event.translationX > 0) {
+        translateX.value = 0;
+      } else {
+        translateX.value = event.translationX;
+      }
+    },
+    onEnd: (event) => {
+      const shouldBeDismissed =
+        Math.abs(event.translationX) > TRANSLATE_X_THRESHOLD && Math.abs(translateX.value) > 0;
+
+      if (shouldBeDismissed) {
+        translateX.value = withTiming(-SCREEN_WIDTH);
+        runOnJS(handleRemoveCommentPress)();
+        track('Delete Comment Swipe', {
+          id: 'Delete Comment Swipe',
+          name: 'Delete Comment Swipe',
+          context: contexts.Posts,
+          flow: 'Delete Comment Swipe',
+          screen: 'Comments Bottom Sheet',
+        });
+      } else {
+        translateX.value = withTiming(0);
+      }
+
+      hasTriggered.current = false;
+    },
+  });
+
+  const rStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const timeAgo = getTimeSince(comment.creationTime);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleUserPress = useCallback(() => {
     const username = comment?.commenter?.username;
@@ -128,123 +188,142 @@ export function CommentsBottomSheetLine({
     toggleAdmire();
   }, [toggleAdmire]);
 
-  const handleRemoveCommentPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
-
   const handleDelete = useCallback(() => {
     deleteComment();
   }, [deleteComment]);
+
+  const handleDismiss = useCallback(() => {
+    translateX.value = withTiming(0);
+    bottomSheetRef.current?.dismiss();
+    hasTriggered.current = false;
+  }, [translateX]);
 
   if (!comment.comment) {
     return null;
   }
 
   return (
-    <View
-      className={clsx('flex flex-row space-x-2 px-4 py-2', {
-        'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
-        'pl-12': isReply,
-      })}
-    >
-      {comment.deleted ? (
-        <DeletedComment isReply={isReply} />
-      ) : (
-        <>
-          {comment.commenter && (
-            <View className="mt-1">
-              <GalleryTouchableOpacity
-                onPress={handleUserPress}
-                eventElementId={'PFP in comment'}
-                eventName={'PFP in comment Press'}
-                eventContext={contexts.Posts}
-              >
-                <ProfilePicture userRef={comment.commenter} size="sm" />
-              </GalleryTouchableOpacity>
-            </View>
-          )}
-          <View className="flex-1">
-            <View className="flex-row space-x-3 w-full justify-between">
+    <View className="relative">
+      <PanGestureHandler onGestureEvent={panGesture}>
+        <Animated.View
+          className={clsx('flex flex-row space-x-2 bg-white dark:bg-black-900 px-4 py-2 z-10', {
+            'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
+            'pl-12': isReply,
+          })}
+          style={[rStyle]}
+        >
+          {comment.deleted ? (
+            <DeletedComment isReply={isReply} />
+          ) : (
+            <>
+              {comment.commenter && (
+                <View className="mt-1">
+                  <GalleryTouchableOpacity
+                    onPress={handleUserPress}
+                    eventElementId={'PFP in comment'}
+                    eventName={'PFP in comment Press'}
+                    eventContext={contexts.Posts}
+                  >
+                    <ProfilePicture userRef={comment.commenter} size="sm" />
+                  </GalleryTouchableOpacity>
+                </View>
+              )}
               <View className="flex-1">
-                <View className="flex-row justify-between">
-                  <View className="flex-row space-x-1 items-start">
-                    <Typography
-                      className="text-sm leading-4"
-                      font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                    >
-                      {comment.commenter?.username}
-                    </Typography>
-                    <Typography
-                      className="text-xxs text-metal leading-4"
-                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                    >
-                      {timeAgo}
-                    </Typography>
-                  </View>
-                  <View className="flex-row items-center space-x-1">
-                    <GalleryTouchableOpacity
-                      className="flex-row justify-end items-center gap-0.5"
-                      onPress={handleAdmirePress}
-                      eventElementId="Admire Comment Button"
-                      eventName="Press Admire Comment Button"
-                      eventContext={contexts.Posts}
-                    >
-                      {totalAdmires > 0 && (
+                <View className="flex-row space-x-3 w-full justify-between">
+                  <View className="flex-1">
+                    <View className="flex-row justify-between">
+                      <View className="flex-row space-x-1 items-start">
                         <Typography
-                          className={clsx('text-xs', {
-                            'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
-                            'text-shadow dark:text-metal': !hasViewerAdmiredComment,
-                          })}
+                          className="text-sm leading-4"
                           font={{ family: 'ABCDiatype', weight: 'Bold' }}
                         >
-                          {totalAdmires}
+                          {comment.commenter?.username}
                         </Typography>
-                      )}
-                      <AdmireIcon
-                        variant="secondary"
-                        height={16}
-                        active={hasViewerAdmiredComment}
-                      />
-                    </GalleryTouchableOpacity>
-
-                    {isAuthUserComment && (
-                      <GalleryTouchableOpacity
-                        className="flex-row justify-end items-center gap-0.5"
-                        onPress={handleRemoveCommentPress}
-                        eventElementId="Delete Comment Button"
-                        eventName="Press Delete Comment Button"
-                        eventContext={contexts.Posts}
-                      >
-                        <TrashIcon color={colors.metal} height={16} />
-                      </GalleryTouchableOpacity>
-                    )}
+                        <Typography
+                          className="text-xxs text-metal leading-4"
+                          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                        >
+                          {timeAgo}
+                        </Typography>
+                      </View>
+                      <View className="flex-row items-center space-x-1">
+                        <GalleryTouchableOpacity
+                          className="flex-row justify-end items-center gap-0.5"
+                          onPress={handleAdmirePress}
+                          eventElementId="Admire Comment Button"
+                          eventName="Press Admire Comment Button"
+                          eventContext={contexts.Posts}
+                        >
+                          {totalAdmires > 0 && (
+                            <Typography
+                              className={clsx('text-xs', {
+                                'text-activeBlue dark:text-darkModeBlue': hasViewerAdmiredComment,
+                                'text-shadow dark:text-metal': !hasViewerAdmiredComment,
+                              })}
+                              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                            >
+                              {totalAdmires}
+                            </Typography>
+                          )}
+                          <AdmireIcon
+                            variant="secondary"
+                            height={16}
+                            active={hasViewerAdmiredComment}
+                          />
+                        </GalleryTouchableOpacity>
+                      </View>
+                    </View>
+                    <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
                   </View>
                 </View>
-                <ProcessedText text={comment.comment} mentionsRef={nonNullMentions} />
+                <View className="flex mr-5 space-y-1">
+                  <GalleryTouchableOpacity
+                    eventElementId={'Reply to Comment'}
+                    eventName={'Reply to Comment Press'}
+                    eventContext={contexts.Posts}
+                    onPress={handleReplyPress}
+                  >
+                    <Typography
+                      className="text-xs text-shadow"
+                      font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                    >
+                      Reply
+                    </Typography>
+                  </GalleryTouchableOpacity>
+
+                  {footerElement}
+                </View>
               </View>
-            </View>
-            <View className="flex mr-5 space-y-1">
-              <GalleryTouchableOpacity
-                eventElementId={'Reply to Comment'}
-                eventName={'Reply to Comment Press'}
-                eventContext={contexts.Posts}
-                onPress={handleReplyPress}
-              >
-                <Typography
-                  className="text-xs text-shadow"
-                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                >
-                  Reply
-                </Typography>
-              </GalleryTouchableOpacity>
 
-              {footerElement}
-            </View>
-          </View>
+              <DeleteCommentWarningBottomSheet
+                ref={bottomSheetRef}
+                onRemoveComment={handleDelete}
+                onDismiss={handleDismiss}
+              />
+            </>
+          )}
+        </Animated.View>
+      </PanGestureHandler>
 
-          <DeleteCommentWarningBottomSheet ref={bottomSheetRef} onRemoveComment={handleDelete} />
-        </>
-      )}
+      <LinearGradient
+        colors={['#F00000', '#ea3131', '#e84d4d', '#f7aeae', '#fff']}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 0 }}
+        style={{
+          position: 'absolute',
+          paddingHorizontal: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Typography className="text-sm text-white" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          Delete comment
+        </Typography>
+        <TrashIcon color={colors.white} height={16} />
+      </LinearGradient>
     </View>
   );
 }
