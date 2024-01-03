@@ -117,7 +117,7 @@ export function CommentsBottomSheetLine({
 
   const { width: SCREEN_WIDTH } = Dimensions.get('window');
   const TRANSLATE_X_THRESHOLD = SCREEN_WIDTH * 0.4;
-  const handleRemoveCommentPress = useCallback(() => {
+  const handleSwipe = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
 
@@ -144,7 +144,7 @@ export function CommentsBottomSheetLine({
 
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
-        runOnJS(handleRemoveCommentPress)();
+        runOnJS(handleSwipe)();
         runOnJS(track)('Delete Comment Swipe', {
           id: 'Delete Comment Swipe',
           name: 'Delete Comment Swipe',
