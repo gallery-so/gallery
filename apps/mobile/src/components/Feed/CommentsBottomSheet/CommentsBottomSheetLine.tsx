@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { Dimensions, View } from 'react-native';
@@ -20,7 +19,6 @@ import { useDeleteComment } from 'src/hooks/useDeleteComment';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 import { TrashIcon } from 'src/icons/TrashIcon';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -35,7 +33,6 @@ import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { AdmireIcon } from '../Socialize/AdmireIcon';
-import { DeleteCommentWarningBottomSheet } from './DeleteCommentWarningBottomSheet';
 
 export type OnReplyPressParams = {
   username?: string;
@@ -110,16 +107,12 @@ export function CommentsBottomSheetLine({
   });
 
   const track = useTrack();
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const isAuthUserComment = useMemo(() => {
     return comment?.commenter?.dbid === query?.viewer?.user?.dbid;
   }, [comment?.commenter?.dbid, query?.viewer?.user?.dbid]);
 
   const { width: SCREEN_WIDTH } = Dimensions.get('window');
-  const TRANSLATE_X_THRESHOLD = SCREEN_WIDTH * 0.4;
-  const handleSwipe = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+  const TRANSLATE_X_THRESHOLD = SCREEN_WIDTH * 0.5;
 
   const translateX = useSharedValue(0);
   const hasTriggered = useRef(false);
@@ -144,7 +137,7 @@ export function CommentsBottomSheetLine({
 
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
-        runOnJS(handleSwipe)();
+        runOnJS(deleteComment)();
         runOnJS(track)('Delete Comment Swipe', {
           id: 'Delete Comment Swipe',
           name: 'Delete Comment Swipe',
@@ -157,6 +150,7 @@ export function CommentsBottomSheetLine({
       }
 
       hasTriggered.current = false;
+      translateX.value = withTiming(0);
     },
   });
 
@@ -187,16 +181,6 @@ export function CommentsBottomSheetLine({
   const handleAdmirePress = useCallback(() => {
     toggleAdmire();
   }, [toggleAdmire]);
-
-  const handleDelete = useCallback(() => {
-    deleteComment();
-  }, [deleteComment]);
-
-  const handleDismiss = useCallback(() => {
-    translateX.value = withTiming(0);
-    bottomSheetRef.current?.dismiss();
-    hasTriggered.current = false;
-  }, [translateX]);
 
   if (!comment.comment) {
     return null;
@@ -294,36 +278,16 @@ export function CommentsBottomSheetLine({
                   {footerElement}
                 </View>
               </View>
-
-              <DeleteCommentWarningBottomSheet
-                ref={bottomSheetRef}
-                onRemoveComment={handleDelete}
-                onDismiss={handleDismiss}
-              />
             </>
           )}
         </Animated.View>
       </PanGestureHandler>
-
-      <LinearGradient
-        colors={['#F00000', '#ea3131', '#e84d4d', '#f7aeae', '#fff']}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 0 }}
-        style={{
-          position: 'absolute',
-          paddingHorizontal: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          width: '100%',
-          height: '100%',
-        }}
-      >
+      <View className="absolute p-4 flex-row items-center justify-end w-full h-full bg-red">
         <Typography className="text-sm text-white" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Delete comment
         </Typography>
         <TrashIcon color={colors.white} height={16} />
-      </LinearGradient>
+      </View>
     </View>
   );
 }
