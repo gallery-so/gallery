@@ -38,6 +38,7 @@ export const WalletButton = ({
   );
 
   return (
+    // don't actually disable the button, otherwise onClick won't fire. we only need the button to appear disabled.
     <StyledButton data-testid="wallet-button" visuallyDisable={disabled} {...buttonProps}>
       <StyledContent align="center" justify="space-between">
         <VStack align="baseline">
