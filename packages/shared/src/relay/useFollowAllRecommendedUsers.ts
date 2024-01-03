@@ -12,7 +12,10 @@ type useFollowAllRecommendedUsersArgs = {
   queryRef: useFollowAllRecommendedUsersFragment$key;
 };
 
-export default function useFollowAllRecommendedUsers({ suggestedFollowing, queryRef }: useFollowAllRecommendedUsersArgs) {
+export default function useFollowAllRecommendedUsers({
+  suggestedFollowing,
+  queryRef,
+}: useFollowAllRecommendedUsersArgs) {
   const query = useFragment(
     graphql`
       fragment useFollowAllRecommendedUsersQueryFragment on Query {
@@ -96,29 +99,25 @@ export default function useFollowAllRecommendedUsers({ suggestedFollowing, query
       }
     };
 
-    try {
-      await followAllRecommendationsMutate({
-        variables: {},
-        updater,
-        optimisticResponse: {
-          followAllOnboardingRecommendations: {
-            __typename: 'FollowAllOnboardingRecommendationsPayload',
-            viewer: {
-              __typename: 'Viewer',
-              user: {
-                __typename: 'User',
-                id: query.viewer?.user?.id as string,
-                following: [
-                  ...(query.viewer?.user?.following ?? []),
-                  ...suggestedFollowing.map((user) => ({ id: `GalleryUser:${user.id}` })),
-                ],
-              },
+    await followAllRecommendationsMutate({
+      variables: {},
+      updater,
+      optimisticResponse: {
+        followAllOnboardingRecommendations: {
+          __typename: 'FollowAllOnboardingRecommendationsPayload',
+          viewer: {
+            __typename: 'Viewer',
+            user: {
+              __typename: 'User',
+              id: query.viewer?.user?.id as string,
+              following: [
+                ...(query.viewer?.user?.following ?? []),
+                ...suggestedFollowing.map((user) => ({ id: `GalleryUser:${user.id}` })),
+              ],
             },
           },
         },
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      },
+    });
   }, [followAllRecommendationsMutate]);
 }
