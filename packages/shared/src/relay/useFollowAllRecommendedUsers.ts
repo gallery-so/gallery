@@ -1,15 +1,15 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useFollowAllRecommendedUsersMutation } from '~/generated/useFollowAllRecommendedUsersMutation.graphql';
-import { useFollowAllRecommendedUsersFragment$key } from '~/generated/useFollowAllRecommendedUsersFragment.graphql';
+import { useFollowAllRecommendedUsersQueryFragment$key } from '~/generated/useFollowAllRecommendedUsersQueryFragment.graphql';
 
 import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type useFollowAllRecommendedUsersArgs = {
   suggestedFollowing: any[];
-  queryRef: useFollowAllRecommendedUsersFragment$key;
+  queryRef: useFollowAllRecommendedUsersQueryFragment$key;
 };
 
 export default function useFollowAllRecommendedUsers({

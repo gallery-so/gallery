@@ -2,14 +2,14 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { SuggestedUserListFragment$key } from '~/generated/SuggestedUserListFragment.graphql';
-import { SuggestedUserListQueryFragment$key } from '~/generated/SuggestedUserListQueryFragment.graphql';
+import { SuggestedUserFollowListFragment$key } from '~/generated/SuggestedUserFollowListFragment.graphql';
+import { SuggestedUserFollowListQueryFragment$key } from '~/generated/SuggestedUserFollowListQueryFragment.graphql';
 
 import { SuggestedUserFollowCard } from './SuggestedUserFollowCard';
 
 type SuggestedUserListProps = {
-  userRefs: SuggestedUserListFragment$key;
-  queryRef: SuggestedUserListQueryFragment$key;
+  userRefs: SuggestedUserFollowListFragment$key;
+  queryRef: SuggestedUserFollowListQueryFragment$key;
   onLoadMore?: () => void;
 };
 
