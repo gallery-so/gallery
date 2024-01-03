@@ -2,6 +2,7 @@ export type SupportedAuthMethodKey =
   | 'ethereum'
   | 'gnosisSafe'
   | 'tezos'
+  | 'solana'
   | 'delegateCash'
   | 'magicLink';
 
@@ -21,6 +22,9 @@ export const supportedAuthMethods: Readonly<
   },
   tezos: {
     name: 'Tezos',
+  },
+  solana: {
+    name: 'Solana',
   },
   delegateCash: {
     name: 'Delegate Cash',

@@ -23,6 +23,8 @@ import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import { useConnectEthereum } from './useConnectEthereum';
 import WalletButton from './WalletButton';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from 'shared/analytics/constants';
 
 export type WalletSelectorVariant = 'sign-in' | 'sign-up';
 
@@ -82,6 +84,8 @@ export default function MultichainWalletSelector({
       ),
     []
   );
+
+  const track = useTrack();
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -194,6 +198,20 @@ export default function MultichainWalletSelector({
                 });
             }}
           />
+
+          <WalletButton
+            label="Solana"
+            icon="solana"
+            disabled
+            onClick={() => {
+              track('Selected Auth Option', {
+                method: 'solana',
+                context:
+                  connectionMode === AUTH ? contexts.Authentication : contexts['Manage Wallets'],
+              });
+            }}
+          />
+
           {connectionMode !== CONNECT_WALLET_ONLY ? (
             <WalletButton
               label={supportedAuthMethods.gnosisSafe.name}
