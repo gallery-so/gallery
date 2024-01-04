@@ -1,22 +1,55 @@
 {
   "extends": "../../tsconfig.options.json",
-  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__", "env"],
+  "include": [
+    "persisted_queries.json",
+    "src",
+    "app.d.ts",
+    "__generated__",
+    "env"
+  ],
   "compilerOptions": {
-    "lib": ["DOM", "ESNext"],
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
     "baseUrl": ".",
     "allowJs": true,
     "jsx": "react-native",
     "paths": {
-      "~/contexts/*": ["src/contexts/*"],
-      "~/frames/*": ["../../packages/frames-dls/src/*"],
-      "~/generated/*": ["./__generated__/relay/*", "../../packages/shared/__generated__/relay/*"],
-      "~/navigation/*": ["src/navigation/*"],
-      "~/env/*": ["env/*"],
-      "~/screens/*": ["src/screens/*"],
-      "~/components/*": ["src/components/*"],
-      "~/shared/*": ["../../packages/shared/src/*"],
+      "shared/*": [
+        "../../packages/shared/src/*"
+      ],
+      "~/components/*": [
+        "src/components/*"
+      ],
+      "~/contexts/*": [
+        "src/contexts/*"
+      ],
+      "~/env/*": [
+        "env/*"
+      ],
+      "~/frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
+      "~/generated/*": [
+        "./__generated__/relay/*",
+        "../../packages/shared/__generated__/relay/*"
+      ],
+      "~/navigation/*": [
+        "src/navigation/*"
+      ],
+      "~/screens/*": [
+        "src/screens/*"
+      ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
+      ]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
   },
-  "references": [{ "path": "../../packages/shared" }]
+  "references": [
+    {
+      "path": "../../packages/shared"
+    }
+  ]
 }

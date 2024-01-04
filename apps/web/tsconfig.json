@@ -4,25 +4,67 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "paths": {
-      "~/abis/*": ["src/abis/*"],
-      "~/assets/*": ["src/assets/*"],
-      "~/components/*": ["src/components/*"],
-      "~/connectors/*": ["src/connectors/*"],
-      "~/constants/*": ["src/constants/*"],
-      "~/contexts/*": ["src/contexts/*"],
-      "~/errors/*": ["src/errors/*"],
-      "~/frames/*": ["../../packages/frames-dls/src/*"],
-      "~/generated/*": ["__generated__/relay/*", "__generated__/graphql-codegen/*"],
-      "~/hooks/*": ["src/hooks/*"],
-      "~/icons/*": ["src/icons/*"],
-      "~/mocks/*": ["src/mocks/*"],
-      "~/pages/*": ["pages/*"],
-      "~/scenes/*": ["src/scenes/*"],
-      "~/shared/*": ["../../packages/shared/src/*"],
-      "~/snapshots/*": ["src/snapshots/*"],
-      "~/tests/*": ["tests/*"],
-      "~/types/*": ["src/types/*"],
-      "~/utils/*": ["src/utils/*"]
+      "shared/*": [
+        "../../packages/shared/src/*"
+      ],
+      "~/abis/*": [
+        "src/abis/*"
+      ],
+      "~/assets/*": [
+        "src/assets/*"
+      ],
+      "~/components/*": [
+        "src/components/*"
+      ],
+      "~/connectors/*": [
+        "src/connectors/*"
+      ],
+      "~/constants/*": [
+        "src/constants/*"
+      ],
+      "~/contexts/*": [
+        "src/contexts/*"
+      ],
+      "~/errors/*": [
+        "src/errors/*"
+      ],
+      "~/frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
+      "~/generated/*": [
+        "__generated__/relay/*",
+        "__generated__/graphql-codegen/*"
+      ],
+      "~/hooks/*": [
+        "src/hooks/*"
+      ],
+      "~/icons/*": [
+        "src/icons/*"
+      ],
+      "~/mocks/*": [
+        "src/mocks/*"
+      ],
+      "~/pages/*": [
+        "pages/*"
+      ],
+      "~/scenes/*": [
+        "src/scenes/*"
+      ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
+      ],
+      "~/snapshots/*": [
+        "src/snapshots/*"
+      ],
+      "~/tests/*": [
+        "tests/*"
+      ],
+      "~/types/*": [
+        "src/types/*"
+      ],
+      "~/utils/*": [
+        "src/utils/*"
+      ]
     },
     "outDir": "../../.moon/cache/types/apps/web",
     "incremental": true,
@@ -43,5 +85,7 @@
       "path": "../../packages/shared"
     }
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
