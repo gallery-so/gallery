@@ -199,19 +199,6 @@ export default function MultichainWalletSelector({
             }}
           />
 
-          <WalletButton
-            label="Solana"
-            icon="solana"
-            disabled
-            onClick={() => {
-              track('Selected Auth Option', {
-                method: 'solana',
-                context:
-                  connectionMode === AUTH ? contexts.Authentication : contexts['Manage Wallets'],
-              });
-            }}
-          />
-
           {connectionMode !== CONNECT_WALLET_ONLY ? (
             <WalletButton
               label={supportedAuthMethods.gnosisSafe.name}
@@ -237,6 +224,18 @@ export default function MultichainWalletSelector({
               }}
             ></WalletButton>
           ) : null}
+          <WalletButton
+            label="Solana"
+            icon="solana"
+            disabled
+            onClick={() => {
+              track('Selected Auth Option', {
+                method: 'solana',
+                context:
+                  connectionMode === AUTH ? contexts.Authentication : contexts['Manage Wallets'],
+              });
+            }}
+          />
         </VStack>
       </VStack>
     </WalletSelectorWrapper>
