@@ -188,7 +188,7 @@ export function CommentsBottomSheetLine({
 
   return (
     <View className="relative">
-      <PanGestureHandler onGestureEvent={panGesture}>
+      <PanGestureHandler onGestureEvent={panGesture} activeOffsetX={[-10, 10]}>
         <Animated.View
           className={clsx('flex flex-row space-x-2 bg-white dark:bg-black-900 px-4 py-2 z-10', {
             'bg-offWhite dark:bg-black-800': activeCommentId === comment.dbid,
