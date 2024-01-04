@@ -311,6 +311,7 @@ function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPage
 
 const _DirectionalFade = styled.div<{ visibility: string }>`
   position: absolute;
+  width: 100%;
   opacity: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
   transform: ${({ visibility }) => {
     if (visibility === 'visible') {

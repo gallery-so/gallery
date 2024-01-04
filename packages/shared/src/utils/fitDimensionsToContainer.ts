@@ -1,6 +1,6 @@
 export type Dimensions = { width: number; height: number };
 
-export const DESKTOP_TOKEN_DETAIL_VIEW_SIZE = 600;
+export const DESKTOP_TOKEN_DETAIL_VIEW_SIZE = 800;
 export const MOBILE_TOKEN_DETAIL_VIEW_SIZE = 296;
 
 type fitDimensionToContainerArgs = {

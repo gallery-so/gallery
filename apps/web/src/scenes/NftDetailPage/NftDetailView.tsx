@@ -100,14 +100,16 @@ export default function NftDetailView({
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
-        <StyledAssetAndNoteContainer>
-          <Container>
-            <NftDetailAsset
-              tokenRef={collectionNft}
-              hasExtraPaddingForNote={showCollectorsNoteComponent}
-              visibility={visibility}
-            />
-          </Container>
+        <StyledVStack>
+          <StyledAssetAndNoteContainer>
+            <Container>
+              <NftDetailAsset
+                tokenRef={collectionNft}
+                hasExtraPaddingForNote={showCollectorsNoteComponent}
+                visibility={visibility}
+              />
+            </Container>
+          </StyledAssetAndNoteContainer>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
             <NftDetailNote
               tokenId={token.dbid}
@@ -116,7 +118,7 @@ export default function NftDetailView({
               collectionId={collection.dbid}
             />
           )}
-        </StyledAssetAndNoteContainer>
+        </StyledVStack>
 
         <NftDetailText
           queryRef={query}
@@ -132,7 +134,7 @@ export default function NftDetailView({
           />
         )}
       </StyledContentContainer>
-      {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+      {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
     </StyledBody>
   );
 }
@@ -140,38 +142,34 @@ export default function NftDetailView({
 const StyledBody = styled.div`
   display: flex;
   width: 100%;
+`;
 
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
+const StyledVStack = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: 100%;
+  max-width: min(80vh, 800px);
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
+    justify-content: center;
   }
 `;
 
 const Container = styled.div`
   min-width: 0;
-
   position: relative;
   width: 100%;
   height: 100%;
-
+  margin-top: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -181,6 +179,8 @@ const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)

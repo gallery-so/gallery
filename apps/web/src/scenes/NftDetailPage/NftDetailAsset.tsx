@@ -316,15 +316,15 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-  @media only screen and ${breakpoints.tablet} {
-    width: 450px;
-    min-height: 450px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: 600px;
-    min-height: 600px;
-  }
+    @media only screen and ${breakpoints.tablet} {
+      width: 100%;
+  
+    }
+  
+    @media only screen and ${breakpoints.desktop} {
+      max-width: 800px;
+  
+    }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
@@ -332,10 +332,10 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+const StyledImage = styled.img`
   border: none;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const VisibilityContainer = styled.div`

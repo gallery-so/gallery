@@ -79,9 +79,6 @@ const StyledFullPageLoader = styled.div`
 
 const VisibilityContainer = styled.div`
   position: relative;
-  @media only screen and ${breakpoints.tablet} {
-    margin-left: 84px;
-  }
 `;
 
 const StyledTextContainer = styled(VStack)`
@@ -104,9 +101,8 @@ export const StyledNftSkeleton = styled(Skeleton)`
   height: 350px;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 600px;
-    height: 600px;
-    margin-left: 80px;
+    width: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
+    height: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
   }
 `;
 

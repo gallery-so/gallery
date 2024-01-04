@@ -125,7 +125,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           </StyledContainer>
         )}
       </StyledContentContainer>
-      {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+      {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
     </StyledBody>
   );
 }
@@ -133,28 +133,17 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
 const StyledBody = styled.div`
   display: flex;
   width: 100%;
-
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
+    justify-content: center;
   }
 `;
 
@@ -179,10 +168,11 @@ const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    display: flex;
-    justify-content: center;
+  @media only screen and ${breakpoints.tablet} {
+    max-width: min(80vh, 800px);
   }
 `;
 
