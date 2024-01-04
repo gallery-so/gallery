@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Dimensions, View } from 'react-native';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { trigger } from 'react-native-haptic-feedback';
 import Animated, {
+  Easing,
+  FadeIn,
   runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -97,6 +99,8 @@ export function CommentsBottomSheetLine({
     commentRef
   );
 
+  const [justDeleted, setJustDeleted] = useState(false);
+
   const { toggleAdmire, totalAdmires, hasViewerAdmiredComment } = useAdmireComment({
     commentRef: comment,
     queryRef: query,
@@ -145,6 +149,7 @@ export function CommentsBottomSheetLine({
           flow: 'Delete Comment Swipe',
           screen: 'Comments Bottom Sheet',
         });
+        runOnJS(setJustDeleted)(true);
       } else {
         translateX.value = withTiming(0);
       }
@@ -197,7 +202,7 @@ export function CommentsBottomSheetLine({
           style={[rStyle]}
         >
           {comment.deleted ? (
-            <DeletedComment isReply={isReply} />
+            <DeletedComment isReply={isReply} justDeleted={justDeleted} />
           ) : (
             <>
               {comment.commenter && (
@@ -292,11 +297,16 @@ export function CommentsBottomSheetLine({
   );
 }
 
-function DeletedComment({ isReply }: { isReply?: boolean }) {
+function DeletedComment({ justDeleted, isReply }: { justDeleted: boolean; isReply?: boolean }) {
   const { colorScheme } = useColorScheme();
+  const transition = FadeIn.duration(300).easing(Easing.inOut(Easing.ease));
 
   return (
-    <View className="bg-offWhite dark:bg-black-800 flex-1 px-3 py-[10]">
+    <Animated.View
+      entering={justDeleted ? transition : undefined}
+      exiting={justDeleted ? transition : undefined}
+      className="bg-offWhite dark:bg-black-800 flex-1 px-3 py-[10]"
+    >
       <View className="flex-row items-center space-x-1">
         <InfoCircleIcon
           color={colorScheme === 'dark' ? colors.offWhite : colors.shadow}
@@ -311,6 +321,6 @@ function DeletedComment({ isReply }: { isReply?: boolean }) {
           has been deleted
         </Typography>
       </View>
-    </View>
+    </Animated.View>
   );
 }
