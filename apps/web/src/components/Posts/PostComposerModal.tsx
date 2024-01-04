@@ -120,11 +120,17 @@ export function PostComposerModal({ tokenId, eventFlow }: PostComposerModalProps
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
-        <PostComposer tokenId={tokenId} eventFlow={eventFlow} />
+        <Suspense fallback={<StyledInnerSuspenseFallback />}>
+          <PostComposer tokenId={tokenId} eventFlow={eventFlow} />
+        </Suspense>
       </ErrorBoundary>
     </StyledPostComposerModal>
   );
 }
+
+const StyledInnerSuspenseFallback = styled.div`
+  height: 310px;
+`;
 
 const StyledPostComposerModal = styled.div`
   width: 100%;
