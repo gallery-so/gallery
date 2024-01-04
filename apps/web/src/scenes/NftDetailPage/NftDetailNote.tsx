@@ -198,28 +198,19 @@ function NftDetailNote({
   authenticatedUserOwnsAsset,
 }: Props) {
   return (
-    <Wrapper>
-      <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
-        {authenticatedUserOwnsAsset ? (
-          <NoteEditor
-            nftCollectorsNote={nftCollectorsNote}
-            tokenId={tokenId}
-            collectionId={collectionId}
-          />
-        ) : (
-          <NoteViewer nftCollectorsNote={nftCollectorsNote} />
-        )}
-      </StyledContainer>
-    </Wrapper>
+    <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+      {authenticatedUserOwnsAsset ? (
+        <NoteEditor
+          nftCollectorsNote={nftCollectorsNote}
+          tokenId={tokenId}
+          collectionId={collectionId}
+        />
+      ) : (
+        <NoteViewer nftCollectorsNote={nftCollectorsNote} />
+      )}
+    </StyledContainer>
   );
 }
-
-const Wrapper = styled.div`
-  @media only screen and ${breakpoints.tablet} {
-    position: relative;
-    height: 0;
-  }
-`;
 
 export const StyledContainer = styled.div<{ footerHeight: number }>`
   padding-top: 12px;

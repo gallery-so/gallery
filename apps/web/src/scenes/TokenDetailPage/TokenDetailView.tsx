@@ -152,7 +152,6 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  margin-top: 8px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -316,15 +316,13 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-    @media only screen and ${breakpoints.tablet} {
-      width: 100%;
-  
-    }
-  
-    @media only screen and ${breakpoints.desktop} {
-      max-width: 800px;
-  
-    }
+  @media only screen and ${breakpoints.tablet} {
+    width: 100%;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: 800px;
+  }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {

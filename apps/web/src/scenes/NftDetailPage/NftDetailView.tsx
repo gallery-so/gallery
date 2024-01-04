@@ -111,12 +111,14 @@ export default function NftDetailView({
             </Container>
           </StyledAssetAndNoteContainer>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
-            <NftDetailNote
-              tokenId={token.dbid}
-              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              nftCollectorsNote={token.collectorsNote ?? ''}
-              collectionId={collection.dbid}
-            />
+            <NotePositionWrapper>
+              <NftDetailNote
+                tokenId={token.dbid}
+                authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+                nftCollectorsNote={token.collectorsNote ?? ''}
+                collectionId={collection.dbid}
+              />
+            </NotePositionWrapper>
           )}
         </StyledVStack>
 
@@ -169,7 +171,6 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  margin-top: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -181,6 +182,13 @@ const StyledAssetAndNoteContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
+`;
+
+const NotePositionWrapper = styled.div`
+  @media only screen and ${breakpoints.tablet} {
+    position: relative;
+    height: 0;
+  }
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)
