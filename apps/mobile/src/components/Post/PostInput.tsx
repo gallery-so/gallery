@@ -3,6 +3,7 @@ import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { getRemaningCharacterCount, MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
 
 import { PostInputTokenFragment$key } from '~/generated/PostInputTokenFragment.graphql';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
@@ -10,7 +11,6 @@ import colors from '~/shared/theme/colors';
 
 import MentionTextInput from '../MentionTextInput';
 import { Typography } from '../Typography';
-const MAX_LENGTH = 600;
 
 type Props = {
   value: string;
@@ -34,8 +34,9 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
 
   const { colorScheme } = useColorScheme();
 
-  const isTextTooLong = value.length >= MAX_LENGTH;
-  const characterCount = value.length;
+  const isTextTooLong = value.length >= MAX_POST_LENGTH;
+
+  const characterCount = useMemo(() => getRemaningCharacterCount(value, MAX_POST_LENGTH), [value]);
 
   const inputPlaceHolder = useMemo(() => {
     return `Say something about "${token.definition?.name ?? 'this item'}"`;
@@ -58,7 +59,7 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
         onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
           onSelectionChange(e.nativeEvent.selection);
         }}
-        maxLength={MAX_LENGTH}
+        maxLength={MAX_POST_LENGTH}
         autoCapitalize="none"
         autoComplete="off"
         keyboardAppearance={colorScheme}

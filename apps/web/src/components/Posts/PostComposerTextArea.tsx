@@ -10,6 +10,7 @@ import {
 import { AnimatePresence } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerTextAreaFragment$key } from '~/generated/PostComposerTextAreaFragment.graphql';
@@ -32,8 +33,6 @@ type Props = {
   handleSelectionChange: (selection: { start: number; end: number }) => void;
   closeMention: () => void;
 };
-
-export const DESCRIPTION_MAX_LENGTH = 600;
 
 export function PostComposerTextArea({
   tokenRef,
@@ -143,7 +142,7 @@ export function PostComposerTextArea({
         defaultValue={caption}
         placeholder={`Say something about ${inputPlaceholderTokenName}`}
         currentCharCount={message.length}
-        maxCharCount={DESCRIPTION_MAX_LENGTH}
+        maxCharCount={MAX_POST_LENGTH}
         textAreaHeight="117px"
         onChange={handleDescriptionChange}
         autoFocus

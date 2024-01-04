@@ -26,9 +26,10 @@ import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
-import { getRemaningCharacterCount } from '~/shared/utils/getRemaningCharacterCount';
-
-const MAX_TEXT_LENGTH = 300;
+import {
+  getRemaningCharacterCount,
+  MAX_COMMENT_LENGTH,
+} from '~/shared/utils/getRemaningCharacterCount';
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
@@ -198,14 +199,14 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
       const end = textareaRef.current?.selectionEnd || 0;
       const newText = message.substring(0, start) + pastedText + message.substring(end);
       const newMessage =
-        newText.length > MAX_TEXT_LENGTH ? newText.substring(0, MAX_TEXT_LENGTH) : newText;
+        newText.length > MAX_COMMENT_LENGTH ? newText.substring(0, MAX_COMMENT_LENGTH) : newText;
       setMessage(newMessage);
     },
     [setMessage, message, textareaRef]
   );
 
   const characterLeft = useMemo(
-    () => getRemaningCharacterCount(message, MAX_TEXT_LENGTH),
+    () => getRemaningCharacterCount(message, MAX_COMMENT_LENGTH),
     [message]
   );
 

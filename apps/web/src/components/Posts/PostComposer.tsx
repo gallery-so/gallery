@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -25,7 +26,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
 import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
-import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
+import { PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
 
 type Props = {
@@ -101,7 +102,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     closeMention,
   } = useMentionableMessage();
 
-  const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
+  const descriptionOverLengthLimit = message.length > MAX_POST_LENGTH;
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
   const mintUrlFromQueryOrToken = mintPageUrl || (token.definition.mintUrl ?? '');
