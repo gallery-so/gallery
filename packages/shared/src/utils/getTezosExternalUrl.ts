@@ -33,7 +33,7 @@ export function isFxHashContractAddress(address?: string | null) {
  */
 export const getFxHashExternalUrlDangerously = (contractAddress: string, tokenId: string) => {
   if (fxHashContractAddresses.has(contractAddress)) {
-    return `https://www.fxhash.xyz/gentk/${hexToDec(tokenId)}`;
+    return `https://www.fxhash.xyz/gentk/${contractAddress}-${hexToDec(tokenId)}`;
   }
   return '';
 };
