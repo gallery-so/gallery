@@ -4,9 +4,11 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
+import { getRemaningCharacterCount } from 'shared/utils/getRemaningCharacterCount';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -188,6 +190,11 @@ export function TextAreaWithCharCount({
     setFocus(false);
   }, []);
 
+  const characterLeft = useMemo(
+    () => getRemaningCharacterCount(textAreaProps.value ?? '', maxCharCount),
+    [textAreaProps.value, maxCharCount]
+  );
+
   return (
     <>
       <StyledTextAreaWithCharCount
@@ -201,7 +208,7 @@ export function TextAreaWithCharCount({
           hasError={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
-          {currentCharCount}/{maxCharCount}
+          {characterLeft}/{maxCharCount}
         </StyledCharacterCounter>
       </StyledTextAreaWithCharCount>
     </>
@@ -267,6 +274,11 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
     setFocus(false);
   }, []);
 
+  const characterLeft = useMemo(
+    () => getRemaningCharacterCount(textAreaProps.value ?? '', textAreaProps.maxCharCount),
+    [textAreaProps.value, textAreaProps.maxCharCount]
+  );
+
   return (
     <StyledTextAreaWithCharCount
       className={textAreaProps.className}
@@ -292,7 +304,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
           hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
-          {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
+          {characterLeft}/{textAreaProps.maxCharCount}
         </StyledCharacterCounter>
       </StyledParentContainer>
     </StyledTextAreaWithCharCount>

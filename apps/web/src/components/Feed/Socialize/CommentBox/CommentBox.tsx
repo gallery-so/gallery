@@ -7,7 +7,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { KeyboardEventHandler, useCallback, useEffect, useId, useRef } from 'react';
+import { KeyboardEventHandler, useCallback, useEffect, useId, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -26,6 +26,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
+import { getRemaningCharacterCount } from '~/shared/utils/getRemaningCharacterCount';
 
 const MAX_TEXT_LENGTH = 300;
 
@@ -203,6 +204,15 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
     [setMessage, message, textareaRef]
   );
 
+  const characterLeft = useMemo(
+    () => getRemaningCharacterCount(message, MAX_TEXT_LENGTH),
+    [message]
+  );
+
+  const isExceedingCharacterLimit = useMemo(() => {
+    return characterLeft < 0;
+  }, [characterLeft]);
+
   return (
     <Wrapper>
       <InputWrapper gap={12} ref={reference}>
@@ -219,11 +229,9 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
         />
 
         <HStack gap={12} align="center">
-          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - message.length}</BaseM>
+          <BaseM color={colors.metal}>{characterLeft}</BaseM>
           <SendButton
-            enabled={
-              message.length > 0 && message.length <= MAX_TEXT_LENGTH && !isSubmittingComment
-            }
+            enabled={message.length > 0 && !isExceedingCharacterLimit && !isSubmittingComment}
             onClick={handleSubmit}
           />
         </HStack>
