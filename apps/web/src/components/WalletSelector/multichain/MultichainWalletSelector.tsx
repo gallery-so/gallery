@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { contexts } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -8,6 +9,7 @@ import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/Wa
 import { Web3WalletProvider } from '~/contexts/auth/Web3WalletContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chains } from '~/shared/utils/chains';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
@@ -23,8 +25,6 @@ import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import { useConnectEthereum } from './useConnectEthereum';
 import WalletButton from './WalletButton';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { contexts } from 'shared/analytics/constants';
 
 export type WalletSelectorVariant = 'sign-in' | 'sign-up';
 
