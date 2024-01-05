@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
-import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
 
 import { PostInputTokenFragment$key } from '~/generated/PostInputTokenFragment.graphql';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
@@ -46,6 +46,13 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 
+  const handleSelectionChange = useCallback(
+    (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+      onSelectionChange(e.nativeEvent.selection);
+    },
+    [onSelectionChange]
+  );
+
   return (
     <View className="space-y-2">
       <View
@@ -67,9 +74,7 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
           multiline
-          onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
-            onSelectionChange(e.nativeEvent.selection);
-          }}
+          onSelectionChange={handleSelectionChange}
           maxLength={MAX_POST_LENGTH}
           autoCapitalize="none"
           autoComplete="off"
@@ -93,7 +98,7 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
                 weight: 'Medium',
               }}
             >
-              Max text level reached
+              Max text length reached
             </Typography>
           </Animated.View>
         ) : (

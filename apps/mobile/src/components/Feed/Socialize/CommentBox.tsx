@@ -5,9 +5,9 @@ import { NativeSyntheticEvent, Text, TextInputSelectionChangeEventData, View } f
 import { TextInput } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import {
-  getRemaningCharacterCount,
+  getRemainingCharacterCount,
   MAX_COMMENT_LENGTH,
-} from 'shared/utils/getRemaningCharacterCount';
+} from 'shared/utils/getRemainingCharacterCount';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import GalleryBottomSheetMentionTextInput from '~/components/GalleryBottomSheet/GalleryBottomSheetMentionTextInput';
@@ -55,7 +55,7 @@ export const CommentBox = forwardRef(
     const { colorScheme } = useColorScheme();
 
     const characterCount = useMemo(
-      () => getRemaningCharacterCount(value, MAX_COMMENT_LENGTH),
+      () => getRemainingCharacterCount(value, MAX_COMMENT_LENGTH),
       [value]
     );
 
