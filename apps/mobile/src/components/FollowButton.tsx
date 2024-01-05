@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { ButtonChip } from '~/components/ButtonChip';
+import { ButtonChip, ButtonChipProps } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
@@ -16,7 +16,7 @@ type Props = {
   userRef: FollowButtonUserFragment$key;
   className?: string;
   source?: string; // where the FollowButton is being used, for analytics
-  width?: 'fixed' | 'grow';
+  width?: ButtonChipProps['width'];
 };
 
 export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Props) {
@@ -96,13 +96,25 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
 
   const isSelf = loggedInUserId === userToFollow?.id;
 
+  const buttonText = useMemo(() => {
+    if (isFollowing) {
+      return 'Following';
+    }
+    if (width === 'fixed-tight') {
+      return 'Follow';
+    }
+    if (followsYou) {
+      return 'Follow Back';
+    }
+  }, [followsYou, isFollowing, width]);
+
   const followChip = useMemo(() => {
     if (isSelf) {
       return null;
     } else if (isFollowing) {
       return (
         <ButtonChip variant="secondary" onPress={handleUnfollowPress} width={width}>
-          Following
+          {buttonText}
         </ButtonChip>
       );
     } else {
@@ -113,11 +125,11 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
           onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
         >
-          {followsYou ? 'Follow back' : 'Follow'}
+          {buttonText}
         </ButtonChip>
       );
     }
-  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress, followsYou]);
+  }, [isSelf, isFollowing, handleUnfollowPress, width, buttonText, handleFollowPress, followsYou]);
 
   return <View style={style}>{followChip}</View>;
 }
