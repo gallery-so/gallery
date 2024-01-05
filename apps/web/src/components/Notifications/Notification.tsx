@@ -252,7 +252,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
-    } else if (notification.token && notification.__typename !== 'NewTokensNotification') {
+    } else if (
+      notification.__typename === 'SomeoneAdmiredYourTokenNotification' &&
+      notification.token
+    ) {
       const username = query.viewer?.user?.username;
       const tokenId = notification.token.dbid;
 
@@ -273,7 +276,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       }
 
       return undefined;
-    } else if (notification.count && notification.count > 1) {
+    } else if (
+      notification.__typename === 'GroupedNotification' &&
+      Number(notification.count) > 1
+    ) {
       return { showCaret: true, handleClick: showUserListModal };
     } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
       const postId =
