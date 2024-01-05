@@ -7,7 +7,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { KeyboardEventHandler, useCallback, useEffect, useId, useRef } from 'react';
+import { KeyboardEventHandler, useCallback, useEffect, useId, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -26,8 +26,10 @@ import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
-
-const MAX_TEXT_LENGTH = 300;
+import {
+  getRemainingCharacterCount,
+  MAX_COMMENT_LENGTH,
+} from '~/shared/utils/getRemainingCharacterCount';
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
@@ -197,11 +199,20 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
       const end = textareaRef.current?.selectionEnd || 0;
       const newText = message.substring(0, start) + pastedText + message.substring(end);
       const newMessage =
-        newText.length > MAX_TEXT_LENGTH ? newText.substring(0, MAX_TEXT_LENGTH) : newText;
+        newText.length > MAX_COMMENT_LENGTH ? newText.substring(0, MAX_COMMENT_LENGTH) : newText;
       setMessage(newMessage);
     },
     [setMessage, message, textareaRef]
   );
+
+  const characterLeft = useMemo(
+    () => getRemainingCharacterCount(message, MAX_COMMENT_LENGTH),
+    [message]
+  );
+
+  const isExceedingCharacterLimit = useMemo(() => {
+    return characterLeft < 0;
+  }, [characterLeft]);
 
   return (
     <Wrapper>
@@ -219,11 +230,9 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
         />
 
         <HStack gap={12} align="center">
-          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - message.length}</BaseM>
+          <BaseM color={colors.metal}>{characterLeft}</BaseM>
           <SendButton
-            enabled={
-              message.length > 0 && message.length <= MAX_TEXT_LENGTH && !isSubmittingComment
-            }
+            enabled={message.length > 0 && !isExceedingCharacterLimit && !isSubmittingComment}
             onClick={handleSubmit}
           />
         </HStack>

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { TextInput, View, ViewProps } from 'react-native';
 import { AlertIcon } from 'src/icons/AlertIcon';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
@@ -40,6 +40,7 @@ export function PostMintLinkInput({
   style,
 }: Props) {
   const { colorScheme } = useColorScheme();
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -100,7 +101,10 @@ export function PostMintLinkInput({
             value={value}
             onChangeText={handleTextChange}
             className={clsx(
-              'py-2 px-3 border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500',
+              'py-2 px-3 border bg-faint dark:bg-black-900',
+              isInputFocused
+                ? 'border-porcelain dark:border-black-500'
+                : 'border-transparent dark:border-transparent',
               {
                 'border-red': invalid,
               }
@@ -117,6 +121,8 @@ export function PostMintLinkInput({
                 ? colors.white
                 : colors.black['800'],
             }}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
           />
           {invalid && (
             <View className="flex-row items-center space-x-1">

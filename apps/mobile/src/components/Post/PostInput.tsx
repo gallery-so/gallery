@@ -1,8 +1,10 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native';
+import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
 
 import { PostInputTokenFragment$key } from '~/generated/PostInputTokenFragment.graphql';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
@@ -10,7 +12,6 @@ import colors from '~/shared/theme/colors';
 
 import MentionTextInput from '../MentionTextInput';
 import { Typography } from '../Typography';
-const MAX_LENGTH = 600;
 
 type Props = {
   value: string;
@@ -19,6 +20,9 @@ type Props = {
   mentions: MentionDataType[];
   onSelectionChange: (selection: { start: number; end: number }) => void;
 };
+
+const transitionFadeIn = FadeIn.duration(300).easing(Easing.ease);
+const transitionFadeOut = FadeOut.duration(300).easing(Easing.ease);
 
 export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChange }: Props) {
   const token = useFragment(
@@ -34,67 +38,86 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
 
   const { colorScheme } = useColorScheme();
 
-  const isTextTooLong = value.length >= MAX_LENGTH;
-  const characterCount = value.length;
+  const isTextTooLong = value.length >= MAX_POST_LENGTH;
 
   const inputPlaceHolder = useMemo(() => {
     return `Say something about "${token.definition?.name ?? 'this item'}"`;
   }, [token.definition?.name]);
 
-  return (
-    <View
-      className="relative border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500 pb-10"
-      style={{
-        height: 117,
-      }}
-    >
-      <MentionTextInput
-        value={value}
-        onChangeText={onChange}
-        className="px-3 pt-3 text-sm"
-        selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
-        placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
-        multiline
-        onSelectionChange={(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
-          onSelectionChange(e.nativeEvent.selection);
-        }}
-        maxLength={MAX_LENGTH}
-        autoCapitalize="none"
-        autoComplete="off"
-        keyboardAppearance={colorScheme}
-        placeholder={inputPlaceHolder}
-        style={{
-          flex: 1,
-          color: colorScheme === 'dark' ? colors.white : colors.black['800'],
-        }}
-        mentions={mentions}
-      />
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
-      {isTextTooLong && (
-        <Typography
-          className="text-sm text-red absolute bottom-2 left-2"
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Medium',
+  const handleSelectionChange = useCallback(
+    (e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+      onSelectionChange(e.nativeEvent.selection);
+    },
+    [onSelectionChange]
+  );
+
+  return (
+    <View className="space-y-2">
+      <View
+        className={clsx(
+          'relative border bg-faint dark:bg-black-900 ',
+          isInputFocused
+            ? 'border-porcelain dark:border-black-500'
+            : 'border-transparent dark:border-transparent'
+        )}
+        style={{
+          minHeight: 117,
+          height: 'auto',
+        }}
+      >
+        <MentionTextInput
+          value={value}
+          onChangeText={onChange}
+          className="p-3 text-sm"
+          selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
+          placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
+          multiline
+          onSelectionChange={handleSelectionChange}
+          maxLength={MAX_POST_LENGTH}
+          autoCapitalize="none"
+          autoComplete="off"
+          keyboardAppearance={colorScheme}
+          placeholder={inputPlaceHolder}
+          style={{
+            color: colorScheme === 'dark' ? colors.white : colors.black['800'],
           }}
-        >
-          Your text is too long
-        </Typography>
-      )}
-      {value.length > 0 && (
-        <Typography
-          className={clsx(
-            'text-sm absolute bottom-3 right-3',
-            isTextTooLong ? 'text-red' : 'text-metal'
-          )}
-          font={{
-            family: 'ABCDiatype',
-            weight: isTextTooLong ? 'Medium' : 'Regular',
-          }}
-        >
-          {characterCount}/600
-        </Typography>
-      )}
+          mentions={mentions}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
+        />
+      </View>
+      <View className="flex-row items-center justify-between">
+        {isTextTooLong ? (
+          <Animated.View entering={transitionFadeIn} exiting={transitionFadeOut}>
+            <Typography
+              className="text-sm text-red"
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Medium',
+              }}
+            >
+              Max text length reached
+            </Typography>
+          </Animated.View>
+        ) : (
+          <View />
+        )}
+        {value.length > MAX_POST_LENGTH - 100 && (
+          <Animated.View entering={transitionFadeIn} exiting={transitionFadeOut}>
+            <Typography
+              className={clsx('text-sm', isTextTooLong ? 'text-red' : 'text-metal')}
+              font={{
+                family: 'ABCDiatype',
+                weight: isTextTooLong ? 'Medium' : 'Regular',
+              }}
+            >
+              {value.length}/600
+            </Typography>
+          </Animated.View>
+        )}
+      </View>
     </View>
   );
 }

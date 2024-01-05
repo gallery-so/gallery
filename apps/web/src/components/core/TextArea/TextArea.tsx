@@ -4,9 +4,11 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
+import { getRemainingCharacterCount } from 'shared/utils/getRemainingCharacterCount';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -178,6 +180,7 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(textAreaProps.value ?? '');
   const [isFocused, setFocus] = useState(false);
 
   const handleFocus = useCallback(() => {
@@ -188,6 +191,15 @@ export function TextAreaWithCharCount({
     setFocus(false);
   }, []);
 
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(event.target.value);
+  }, []);
+
+  const characterLeft = useMemo(
+    () => getRemainingCharacterCount(value ?? '', maxCharCount),
+    [value, maxCharCount]
+  );
+
   return (
     <>
       <StyledTextAreaWithCharCount
@@ -195,13 +207,19 @@ export function TextAreaWithCharCount({
         hasError={currentCharCount > maxCharCount}
         isFocused={isFocused}
       >
-        <TextArea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} />
+        <TextArea
+          ref={textAreaRef}
+          {...textAreaProps}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChange}
+        />
 
         <StyledCharacterCounter
           hasError={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
-          {currentCharCount}/{maxCharCount}
+          {characterLeft}/{maxCharCount}
         </StyledCharacterCounter>
       </StyledTextAreaWithCharCount>
     </>
@@ -267,6 +285,11 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
     setFocus(false);
   }, []);
 
+  const characterLeft = useMemo(
+    () => getRemainingCharacterCount(textAreaProps.value ?? '', textAreaProps.maxCharCount),
+    [textAreaProps.value, textAreaProps.maxCharCount]
+  );
+
   return (
     <StyledTextAreaWithCharCount
       className={textAreaProps.className}
@@ -292,7 +315,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
           hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
-          {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
+          {characterLeft}/{textAreaProps.maxCharCount}
         </StyledCharacterCounter>
       </StyledParentContainer>
     </StyledTextAreaWithCharCount>
