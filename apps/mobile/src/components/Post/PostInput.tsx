@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
@@ -44,10 +44,17 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
     return `Say something about "${token.definition?.name ?? 'this item'}"`;
   }, [token.definition?.name]);
 
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
   return (
     <View className="space-y-2">
       <View
-        className="relative border bg-faint dark:bg-black-900 border-porcelain dark:border-black-500"
+        className={clsx(
+          'relative border bg-faint dark:bg-black-900 ',
+          isInputFocused
+            ? 'border-porcelain dark:border-black-500'
+            : 'border-transparent dark:border-transparent'
+        )}
         style={{
           minHeight: 117,
           height: 'auto',
@@ -72,6 +79,8 @@ export function PostInput({ value, onChange, tokenRef, mentions, onSelectionChan
             color: colorScheme === 'dark' ? colors.white : colors.black['800'],
           }}
           mentions={mentions}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
         />
       </View>
       <View className="flex-row items-center justify-between">
