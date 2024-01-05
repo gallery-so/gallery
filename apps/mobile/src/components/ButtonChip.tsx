@@ -11,12 +11,12 @@ import { Typography } from '~/components/Typography';
 
 type ButtonChipVariant = 'primary' | 'secondary';
 
-type ButtonChipProps = PropsWithChildren<{
+export type ButtonChipProps = PropsWithChildren<{
   style?: ViewProps['style'];
   eventProperties?: GalleryTouchableOpacityProps['properties'];
   variant: ButtonChipVariant;
   onPress: TouchableOpacityProps['onPress'];
-  width?: 'fixed' | 'grow';
+  width?: 'fixed-tight' | 'fixed' | 'grow';
 }>;
 
 type ChipContainerVariants = {
@@ -109,6 +109,7 @@ export function ButtonChip({
         'flex h-6 items-center justify-center rounded-sm px-2 bg-black',
         chipContainerClassNames.containerClassName,
         {
+          'w-20': width === 'fixed-tight',
           'w-24': width === 'fixed',
           'w-auto': width === 'grow',
         }
@@ -116,7 +117,7 @@ export function ButtonChip({
       style={style}
     >
       <Typography
-        className={clsx('text-sm', chipContainerClassNames.textClassName)}
+        className={clsx('text-xs', chipContainerClassNames.textClassName)}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >
         {children}

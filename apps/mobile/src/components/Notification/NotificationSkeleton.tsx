@@ -237,7 +237,7 @@ export function NotificationSkeleton({
 
       {shouldShowFollowBackButton && lastFollower && (
         <View className="flex justify-center">
-          <FollowButton queryRef={query} userRef={lastFollower} />
+          <FollowButton queryRef={query} userRef={lastFollower} width="fixed-tight" />
         </View>
       )}
 
