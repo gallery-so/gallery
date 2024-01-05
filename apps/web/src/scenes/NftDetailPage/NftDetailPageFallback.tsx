@@ -70,10 +70,12 @@ const StyledFullPageLoader = styled.div`
   flex-direction: column;
   padding-left: 24px;
   padding-right: 24px;
+  margin-top: 48px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
     flex-direction: row;
+    margin-top: 0;
   }
 `;
 

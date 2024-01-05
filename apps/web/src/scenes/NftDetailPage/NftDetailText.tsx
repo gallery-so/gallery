@@ -413,8 +413,9 @@ const StyledButtonContainer = styled(HStack)`
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
   display: block;
-  max-width: 296px;
-  min-width: 296px;
+  width: 100%;
+  padding: 0 16px;
+
   word-wrap: break-word;
 
   ${({ horizontalLayout, navbarHeight }) =>
@@ -430,6 +431,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
     `}
 
   @media only screen and ${breakpoints.tablet} {
+    padding: 0;
     max-width: 420px;
     min-width: 420px;
     margin-left: 56px;

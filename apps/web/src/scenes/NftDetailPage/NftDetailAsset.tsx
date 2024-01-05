@@ -316,10 +316,6 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-  @media only screen and ${breakpoints.tablet} {
-    width: 100%;
-  }
-
   @media only screen and ${breakpoints.desktop} {
     max-width: 800px;
   }

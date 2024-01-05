@@ -16,6 +16,7 @@ import { NftDetailPageFragment$key } from '~/generated/NftDetailPageFragment.gra
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
 import { NftDetailPageQueryFragment$key } from '~/generated/NftDetailPageQueryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import NotFound from '~/scenes/NotFound/NotFound';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -202,6 +203,7 @@ function NftDetailPage({
 
   useKeyDown('ArrowRight', handleNextPress);
   useKeyDown('ArrowLeft', handlePrevPress);
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
     <>
@@ -209,7 +211,9 @@ function NftDetailPage({
         <title>{headTitle}</title>
       </Head>
       <GalleryViewEmitter queryRef={query} />
-      {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
+      {!isMobile && prevNft && (
+        <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />
+      )}
       {mountedNfts.map(({ token, visibility }) => (
         <_DirectionalFade key={token.token.dbid} visibility={visibility}>
           <NftDetailView
@@ -220,7 +224,9 @@ function NftDetailPage({
           />
         </_DirectionalFade>
       ))}
-      {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
+      {!isMobile && nextNft && (
+        <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />
+      )}
     </>
   );
 }
@@ -335,12 +341,6 @@ const StyledNftDetailPage = styled.div`
 
   display: flex;
   justify-content: center;
-
-  @media only screen and ${breakpoints.mobile} {
-    ${_DirectionalFade} {
-      padding: 48px ${pageGutter.tablet}px 0px ${pageGutter.tablet}px;
-    }
-  }
 
   @media only screen and ${breakpoints.tablet} {
     align-items: center;

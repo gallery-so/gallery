@@ -216,21 +216,20 @@ export const StyledContainer = styled.div<{ footerHeight: number }>`
   padding-top: 12px;
   // On tablet and smaller, the note will have the same styling as the NftDetailText (it will be directly on top of it)
   display: block;
-  max-width: 296px;
-  min-width: 296px;
+  padding: 0 16px 16px;
+  width: 100%;
+  min-width: 0;
   margin: auto;
   word-wrap: break-word;
 
   // On larger screens, the note will be sized according to its parent container and will be flush with the asset
   @media only screen and ${breakpoints.tablet} {
+    padding: 0;
     width: 100%;
     min-width: 0;
     max-width: none;
     position: absolute; // So that it does not affect height of the flex container
-  }
-
-  // We only apply padding to account for footer, which is not fixed on mobile
-  @media only screen and ${breakpoints.tablet} {
+    // We only apply padding to account for footer, which is not fixed on mobile
     padding-bottom: ${({ footerHeight }) =>
       footerHeight + 20}px; // 20px is roughly the height of character counter/Markdown container
   }

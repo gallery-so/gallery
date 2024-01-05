@@ -155,11 +155,11 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 16px;
+  margin-top: 24px;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    margin-top: 48px;
-    height: 296px;
-    width: 296px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
   }
 `;
 

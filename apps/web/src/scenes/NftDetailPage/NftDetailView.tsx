@@ -174,6 +174,12 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 16px;
+  margin-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
 `;
 
 const StyledAssetAndNoteContainer = styled.div`
