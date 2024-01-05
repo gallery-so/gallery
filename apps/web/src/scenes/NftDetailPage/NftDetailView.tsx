@@ -179,6 +179,7 @@ const Container = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
+    margin: 0;
   }
 `;
 

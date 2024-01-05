@@ -156,8 +156,8 @@ const StyledOwnerAndCreator = styled(HStack)`
 `;
 
 const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+  height: min(80vh, ${({ height }) => height}px);
+  width: min(80vh, ${({ height }) => height}px);
   border: none;
 `;
 
