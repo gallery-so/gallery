@@ -434,7 +434,6 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
     padding: 0;
     max-width: 420px;
     min-width: 420px;
-    margin-left: 56px;
     margin-top: 0;
   }
 `;

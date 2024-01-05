@@ -163,6 +163,7 @@ const StyledContentContainer = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
     justify-content: center;
+    gap: 0 48px;
   }
 `;
 
