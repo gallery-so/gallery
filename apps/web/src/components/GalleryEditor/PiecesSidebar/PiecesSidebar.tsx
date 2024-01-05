@@ -25,7 +25,6 @@ import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWall
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { AddWalletSidebar } from './AddWalletSidebar';
-import CreatorEmptyStateSidebar from './CreatorEmptyStateSidebar';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarViewSelector, TokenFilterType } from './SidebarViewSelector';
