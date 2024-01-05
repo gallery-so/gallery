@@ -5,7 +5,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,

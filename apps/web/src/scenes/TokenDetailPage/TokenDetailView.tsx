@@ -2,7 +2,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints, { size } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
