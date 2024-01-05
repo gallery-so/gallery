@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -36,6 +36,7 @@ export function PostComposerMintLinkInput({
   setIncludeMintLink,
 }: Props) {
   const { showModal, hideModal } = useModalActions();
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const handleCloseModal = useCallback(() => {
     hideModal();
@@ -93,6 +94,9 @@ export function PostComposerMintLinkInput({
               onChange={(e) => handleInputChange(e.target.value)}
               type="url"
               invalid={invalid}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              isFocused={isInputFocused}
             />
             {invalid && (
               <HStack gap={4} align="center">
@@ -117,8 +121,8 @@ const StyledTitle = styled(BaseM)`
   font-weight: 700;
 `;
 
-const StyledSlimInput = styled(SlimInput)<{ invalid?: boolean }>`
-  border: 1px solid transparent;
+const StyledSlimInput = styled(SlimInput)<{ invalid?: boolean; isFocused: boolean }>`
+  border: 1px solid ${({ isFocused }) => (isFocused ? colors.porcelain : 'transparent')};
   ${({ invalid }) =>
     invalid &&
     `

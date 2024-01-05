@@ -8,7 +8,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import colors from 'shared/theme/colors';
 import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
@@ -72,6 +72,7 @@ export function PostComposerTextArea({
   const { getReferenceProps, getFloatingProps } = useInteractions([role]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const { caption } = usePostComposerContext();
 
@@ -148,7 +149,7 @@ export function PostComposerTextArea({
   return (
     <VStack>
       <VStack gap={8}>
-        <StyledTextAreaWrapper>
+        <StyledTextAreaWrapper isFocused={isInputFocused}>
           <TextArea
             placeholder={`Say something about ${inputPlaceholderTokenName}`}
             textAreaHeight="117px"
@@ -159,6 +160,8 @@ export function PostComposerTextArea({
             ref={setRefs}
             onSelect={handleOnSelect}
             {...getReferenceProps()}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
           />
         </StyledTextAreaWrapper>
 
@@ -205,10 +208,11 @@ const StyledCharacterCounter = styled(BaseM)<{ hasError: boolean; showCharacterC
   opacity: ${({ showCharacterCount }) => (showCharacterCount ? 1 : 0)};
 `;
 
-const StyledTextAreaWrapper = styled.div`
+const StyledTextAreaWrapper = styled.div<{ isFocused?: boolean }>`
   position: relative;
   background-color: ${colors.faint};
   height: 117px;
+  border: 1px solid ${({ isFocused }) => (isFocused ? colors.porcelain : 'transparent')};
 `;
 
 const StyledMaxTextLengthWrapper = styled.div<{ hasError: boolean }>`
