@@ -131,6 +131,7 @@ const StyledCollectionEditInfoForm = styled(VStack)`
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
+  padding-bottom: 32px;
 `;
 
 const ButtonContainer = styled(HStack)<{ isNewCollection: boolean }>`

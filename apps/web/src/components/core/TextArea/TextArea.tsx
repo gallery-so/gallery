@@ -180,6 +180,7 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(textAreaProps.value ?? '');
   const [isFocused, setFocus] = useState(false);
 
   const handleFocus = useCallback(() => {
@@ -190,9 +191,13 @@ export function TextAreaWithCharCount({
     setFocus(false);
   }, []);
 
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(event.target.value);
+  }, []);
+
   const characterLeft = useMemo(
-    () => getRemainingCharacterCount(textAreaProps.value ?? '', maxCharCount),
-    [textAreaProps.value, maxCharCount]
+    () => getRemainingCharacterCount(value ?? '', maxCharCount),
+    [value, maxCharCount]
   );
 
   return (
@@ -202,7 +207,13 @@ export function TextAreaWithCharCount({
         hasError={currentCharCount > maxCharCount}
         isFocused={isFocused}
       >
-        <TextArea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} />
+        <TextArea
+          ref={textAreaRef}
+          {...textAreaProps}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChange}
+        />
 
         <StyledCharacterCounter
           hasError={currentCharCount > maxCharCount}
