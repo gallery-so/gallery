@@ -234,7 +234,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           />
         );
       }
-      return <CreatorEmptyStateSidebar />;
     }
 
     if ((ownsWalletFromSelectedChainFamily && tokensToDisplay.length) || isSearching) {
