@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { contexts } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -8,6 +9,7 @@ import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/Wa
 import { Web3WalletProvider } from '~/contexts/auth/Web3WalletContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chains } from '~/shared/utils/chains';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
@@ -82,6 +84,8 @@ export default function MultichainWalletSelector({
       ),
     []
   );
+
+  const track = useTrack();
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -194,6 +198,7 @@ export default function MultichainWalletSelector({
                 });
             }}
           />
+
           {connectionMode !== CONNECT_WALLET_ONLY ? (
             <WalletButton
               label={supportedAuthMethods.gnosisSafe.name}
@@ -219,6 +224,18 @@ export default function MultichainWalletSelector({
               }}
             ></WalletButton>
           ) : null}
+          <WalletButton
+            label="Solana"
+            icon="solana"
+            disabled
+            onClick={() => {
+              track('Selected Auth Option', {
+                method: 'solana',
+                context:
+                  connectionMode === AUTH ? contexts.Authentication : contexts['Manage Wallets'],
+              });
+            }}
+          />
         </VStack>
       </VStack>
     </WalletSelectorWrapper>
