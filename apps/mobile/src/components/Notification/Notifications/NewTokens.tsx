@@ -96,6 +96,7 @@ export function NewTokens({ notificationRef }: Props) {
         onPress={handlePress}
         className="w-20"
         text="Post"
+        textClassName="normal-case"
         size="xs"
         fontWeight="Bold"
         // manually tracking this to be the same params as `NotificationSkeleton`,
