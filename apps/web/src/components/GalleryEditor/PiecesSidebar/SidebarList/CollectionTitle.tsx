@@ -13,6 +13,7 @@ import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../../GalleryOnboardingGuide/OnboardingDialogContext';
 import { ExpandedIcon } from '../ExpandedIcon';
 import { TokenFilterType } from '../SidebarViewSelector';
+import AddAllIcon from './AddAllIcon';
 import RefreshContractIcon from './RefreshContractIcon';
 import { CollectionTitleRow } from './SidebarList';
 import ToggleSpamIcon, { SetSpamFn } from './ToggleSpamIcon';
@@ -40,15 +41,23 @@ export default function CollectionTitle({
 
   const rightContent = useMemo(() => {
     if (selectedView === 'Created' && isMouseHovering) {
-      return <RefreshContractIcon contractId={row.contractId} />;
+      return (
+        <>
+          <AddAllIcon row={row} />
+          <RefreshContractIcon contractId={row.contractId} />
+        </>
+      );
     }
     if (selectedView !== 'Created' && isMouseHovering) {
       return (
-        <ToggleSpamIcon
-          row={row}
-          selectedView={selectedView}
-          setSpamPreferenceForCollection={setSpamPreferenceForCollection}
-        />
+        <>
+          <AddAllIcon row={row} />
+          <ToggleSpamIcon
+            row={row}
+            selectedView={selectedView}
+            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+          />
+        </>
       );
     }
     return <CollectionCount>{row.count}</CollectionCount>;
@@ -69,7 +78,7 @@ export default function CollectionTitle({
           <ExpandedIcon expanded={row.expanded} />
           <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
         </LeftContent>
-        {rightContent}
+        <RightContent>{rightContent}</RightContent>
       </CollectionTitleContainer>
 
       {step === 4 && index === 0 && (
@@ -95,6 +104,8 @@ export default function CollectionTitle({
 const LeftContent = styled(HStack)`
   overflow: hidden;
 `;
+
+const RightContent = styled(HStack)``;
 
 const CollectionTitleText = styled(TitleXS)`
   white-space: nowrap;
