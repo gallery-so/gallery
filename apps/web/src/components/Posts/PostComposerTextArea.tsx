@@ -11,7 +11,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import colors from 'shared/theme/colors';
-import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';

@@ -1,6 +1,6 @@
 import { Suspense, useCallback, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import { MAX_POST_LENGTH } from 'shared/utils/getRemaningCharacterCount';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';

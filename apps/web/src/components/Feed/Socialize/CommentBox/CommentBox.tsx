@@ -27,9 +27,9 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
 import colors from '~/shared/theme/colors';
 import {
-  getRemaningCharacterCount,
+  getRemainingCharacterCount,
   MAX_COMMENT_LENGTH,
-} from '~/shared/utils/getRemaningCharacterCount';
+} from '~/shared/utils/getRemainingCharacterCount';
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
@@ -206,7 +206,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
   );
 
   const characterLeft = useMemo(
-    () => getRemaningCharacterCount(message, MAX_COMMENT_LENGTH),
+    () => getRemainingCharacterCount(message, MAX_COMMENT_LENGTH),
     [message]
   );
 

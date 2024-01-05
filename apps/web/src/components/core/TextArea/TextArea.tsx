@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { getRemaningCharacterCount } from 'shared/utils/getRemaningCharacterCount';
+import { getRemainingCharacterCount } from 'shared/utils/getRemainingCharacterCount';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -191,7 +191,7 @@ export function TextAreaWithCharCount({
   }, []);
 
   const characterLeft = useMemo(
-    () => getRemaningCharacterCount(textAreaProps.value ?? '', maxCharCount),
+    () => getRemainingCharacterCount(textAreaProps.value ?? '', maxCharCount),
     [textAreaProps.value, maxCharCount]
   );
 
@@ -275,7 +275,7 @@ export const AutoResizingTextAreaWithCharCount = forwardRef<
   }, []);
 
   const characterLeft = useMemo(
-    () => getRemaningCharacterCount(textAreaProps.value ?? '', textAreaProps.maxCharCount),
+    () => getRemainingCharacterCount(textAreaProps.value ?? '', textAreaProps.maxCharCount),
     [textAreaProps.value, textAreaProps.maxCharCount]
   );
 
