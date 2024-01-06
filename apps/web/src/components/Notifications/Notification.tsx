@@ -32,6 +32,7 @@ import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
+import { SomeoneMentionedYourCommunity } from './notifications/SomeoneMentionedYourCommunity';
 import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './notifications/SomeoneRepliedToYourComment';
 import { SomeoneYouFollowPostedTheirFirstPost } from './notifications/SomeoneYouFollowPostedTheirFirstPost';
@@ -101,6 +102,27 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         }
 
         ... on SomeoneMentionedYouNotification {
+          __typename
+          mentionSource {
+            __typename
+            ... on Post {
+              __typename
+              dbid
+            }
+            ... on Comment {
+              __typename
+              dbid
+              source {
+                ... on Post {
+                  __typename
+                  dbid
+                }
+              }
+            }
+          }
+        }
+
+        ... on SomeoneMentionedYourCommunityNotification {
           __typename
           mentionSource {
             __typename
@@ -281,7 +303,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       Number(notification.count) > 1
     ) {
       return { showCaret: true, handleClick: showUserListModal };
-    } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
+    } else if (
+      notification.__typename === 'SomeoneMentionedYouNotification' ||
+      notification.__typename === 'SomeoneMentionedYourCommunityNotification'
+    ) {
       const postId =
         notification.mentionSource?.__typename === 'Post'
           ? notification.mentionSource?.dbid
@@ -438,6 +463,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'NewTokensNotification',
       'SomeonePostedYourWorkNotification',
       'SomeoneMentionedYouNotification',
+      'SomeoneMentionedYourCommunityNotification',
       'SomeoneYouFollowPostedTheirFirstPostNotification',
       'SomeoneRepliedToYourCommentNotification',
       'YouReceivedTopActivityBadgeNotification',
@@ -563,6 +589,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           ...SomeoneMentionedYouFragment
         }
 
+        ... on SomeoneMentionedYourCommunityNotification {
+          __typename
+          ...SomeoneMentionedYourCommunityFragment
+        }
+
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
@@ -630,6 +661,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeonePostedYourWork notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
     return <SomeoneMentionedYou notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneMentionedYourCommunityNotification') {
+    return <SomeoneMentionedYourCommunity notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneYouFollowPostedTheirFirstPostNotification') {
     return (
       <SomeoneYouFollowPostedTheirFirstPost notificationRef={notification} onClose={handleClose} />
