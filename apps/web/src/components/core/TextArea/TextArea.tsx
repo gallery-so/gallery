@@ -191,9 +191,13 @@ export function TextAreaWithCharCount({
     setFocus(false);
   }, []);
 
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(event.target.value);
-  }, []);
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      textAreaProps.onChange?.(event);
+      setValue(event.target.value);
+    },
+    [textAreaProps]
+  );
 
   const characterLeft = useMemo(
     () => getRemainingCharacterCount(value ?? '', maxCharCount),
