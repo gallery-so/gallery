@@ -138,14 +138,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-  @media only screen and ${breakpoints.tablet} {
-    width: 450px;
-    min-height: 450px;
-  }
-
   @media only screen and ${breakpoints.desktop} {
-    width: 600px;
-    min-height: 600px;
+    max-width: 800px;
   }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
@@ -154,10 +148,10 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+const StyledImage = styled.img`
   border: none;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const VisibilityContainer = styled.div`
@@ -183,11 +177,6 @@ const AssetContainer = styled.div<{ isVisible: boolean }>`
   opacity: 1;
   pointer-events: auto;
   `}
-
-  @media only screen and (max-width: ${size.tablet}px) {
-    height: 296px;
-    width: 296px;
-  }
 `;
 
 const ShimmerContainer = styled.div`

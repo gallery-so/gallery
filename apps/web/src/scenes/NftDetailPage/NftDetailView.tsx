@@ -100,23 +100,27 @@ export default function NftDetailView({
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
-        <StyledAssetAndNoteContainer>
-          <Container>
-            <NftDetailAsset
-              tokenRef={collectionNft}
-              hasExtraPaddingForNote={showCollectorsNoteComponent}
-              visibility={visibility}
-            />
-          </Container>
+        <StyledVStack>
+          <StyledAssetAndNoteContainer>
+            <Container>
+              <NftDetailAsset
+                tokenRef={collectionNft}
+                hasExtraPaddingForNote={showCollectorsNoteComponent}
+                visibility={visibility}
+              />
+            </Container>
+          </StyledAssetAndNoteContainer>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
-            <NftDetailNote
-              tokenId={token.dbid}
-              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-              nftCollectorsNote={token.collectorsNote ?? ''}
-              collectionId={collection.dbid}
-            />
+            <NotePositionWrapper>
+              <NftDetailNote
+                tokenId={token.dbid}
+                authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+                nftCollectorsNote={token.collectorsNote ?? ''}
+                collectionId={collection.dbid}
+              />
+            </NotePositionWrapper>
           )}
-        </StyledAssetAndNoteContainer>
+        </StyledVStack>
 
         <NftDetailText
           queryRef={query}
@@ -132,7 +136,7 @@ export default function NftDetailView({
           />
         )}
       </StyledContentContainer>
-      {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+      {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
     </StyledBody>
   );
 }
@@ -140,47 +144,59 @@ export default function NftDetailView({
 const StyledBody = styled.div`
   display: flex;
   width: 100%;
+`;
 
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
+const StyledVStack = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: 100%;
+  max-width: min(80vh, 800px);
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
+    justify-content: center;
+    gap: 0 48px;
   }
 `;
 
 const Container = styled.div`
   min-width: 0;
-
   position: relative;
   width: 100%;
   height: 100%;
-
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 16px;
+  margin-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+    margin: 0;
+  }
 `;
 
 const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const NotePositionWrapper = styled.div`
+  @media only screen and ${breakpoints.tablet} {
+    position: relative;
+    height: 0;
+  }
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)

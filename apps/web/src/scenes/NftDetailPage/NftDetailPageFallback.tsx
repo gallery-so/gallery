@@ -70,18 +70,17 @@ const StyledFullPageLoader = styled.div`
   flex-direction: column;
   padding-left: 24px;
   padding-right: 24px;
+  margin-top: 48px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
     flex-direction: row;
+    margin-top: 0;
   }
 `;
 
 const VisibilityContainer = styled.div`
   position: relative;
-  @media only screen and ${breakpoints.tablet} {
-    margin-left: 84px;
-  }
 `;
 
 const StyledTextContainer = styled(VStack)`
@@ -104,9 +103,8 @@ export const StyledNftSkeleton = styled(Skeleton)`
   height: 350px;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 600px;
-    height: 600px;
-    margin-left: 80px;
+    width: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
+    height: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
   }
 `;
 
@@ -158,8 +156,8 @@ const StyledOwnerAndCreator = styled(HStack)`
 `;
 
 const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+  height: min(80vh, ${({ height }) => height}px);
+  width: min(80vh, ${({ height }) => height}px);
   border: none;
 `;
 

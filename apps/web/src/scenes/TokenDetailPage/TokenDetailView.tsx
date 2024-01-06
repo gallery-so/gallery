@@ -2,7 +2,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints, { size } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
@@ -125,7 +125,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           </StyledContainer>
         )}
       </StyledContentContainer>
-      {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+      {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
     </StyledBody>
   );
 }
@@ -133,28 +133,18 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
 const StyledBody = styled.div`
   display: flex;
   width: 100%;
-
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
+    justify-content: center;
+    gap: 0 48px;
   }
 `;
 
@@ -163,15 +153,15 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  margin-top: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 16px;
+  margin-top: 24px;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    margin-top: 48px;
-    height: 296px;
-    width: 296px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+    margin-top: 0;
   }
 `;
 
@@ -179,10 +169,11 @@ const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 
-  @media only screen and (max-width: ${size.tablet}px) {
-    display: flex;
-    justify-content: center;
+  @media only screen and ${breakpoints.tablet} {
+    max-width: min(80vh, 800px);
   }
 `;
 

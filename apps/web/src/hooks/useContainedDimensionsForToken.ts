@@ -4,10 +4,11 @@ import { graphql } from 'relay-runtime';
 
 import { useContainedDimensionsForTokenFragment$key } from '~/generated/useContainedDimensionsForTokenFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
-
-const DESKTOP_TOKEN_DETAIL_VIEW_SIZE = 600;
-const MOBILE_TOKEN_DETAIL_VIEW_SIZE = 296;
+import {
+  DESKTOP_TOKEN_DETAIL_VIEW_SIZE,
+  fitDimensionsToContainerContain,
+  MOBILE_TOKEN_DETAIL_VIEW_SIZE,
+} from '~/shared/utils/fitDimensionsToContainer';
 
 type useContainedDimensionsForTokenArgs = {
   mediaRef: useContainedDimensionsForTokenFragment$key;
