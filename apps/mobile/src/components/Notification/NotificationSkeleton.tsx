@@ -111,6 +111,25 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneMentionedYourCommunityNotification {
+          mentionSource {
+            __typename
+            ... on Post {
+              tokens {
+                ...NotificationPostPreviewWithBoundaryFragment
+              }
+            }
+            ... on Comment {
+              source {
+                ... on Post {
+                  tokens {
+                    ...NotificationPostPreviewWithBoundaryFragment
+                  }
+                }
+              }
+            }
+          }
+        }
         ... on SomeonePostedYourWorkNotification {
           post {
             tokens {
@@ -178,7 +197,10 @@ export function NotificationSkeleton({
       return notification.post?.tokens?.[0];
     }
 
-    if (notification.__typename === 'SomeoneMentionedYouNotification') {
+    if (
+      notification.__typename === 'SomeoneMentionedYouNotification' ||
+      notification.__typename === 'SomeoneMentionedYourCommunityNotification'
+    ) {
       if (notification.mentionSource?.__typename === 'Post') {
         return notification.mentionSource.tokens?.[0];
       }
