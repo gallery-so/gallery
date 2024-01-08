@@ -415,7 +415,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
   display: block;
   width: 100%;
   padding: 0 16px;
-
+  position: relative; // the content can be scrollable, so this ensures the taller content height doesnt affect the page height
   word-wrap: break-word;
 
   ${({ horizontalLayout, navbarHeight }) =>
