@@ -106,6 +106,8 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
     if (followsYou) {
       return 'Follow Back';
     }
+
+    return 'Follow';
   }, [followsYou, isFollowing, width]);
 
   const followChip = useMemo(() => {
