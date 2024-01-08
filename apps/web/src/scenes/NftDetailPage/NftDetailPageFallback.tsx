@@ -84,12 +84,14 @@ const VisibilityContainer = styled.div`
 `;
 
 const StyledTextContainer = styled(VStack)`
-  margin-top: 56px;
-  padding-right: 10%;
-  padding-left: 10%;
-  width: 400px;
+  width: 100%;
+  margin-top: 24px;
 
   @media only screen and ${breakpoints.tablet} {
+    margin-top: 56px;
+    padding-right: 10%;
+    padding-left: 10%;
+    width: 400px;
     margin-left: 56px;
     margin-top: 0px;
     padding-right: 0%;
@@ -157,6 +159,8 @@ const StyledOwnerAndCreator = styled(HStack)`
 
 const StyledImage = styled.img<{ height: number; width: number }>`
   border: none;
+  height: min(100%, ${({ width }) => width}px);
+  width: min(100%, ${({ width }) => width}px);
 
   @media only screen and ${breakpoints.tablet} {
     height: min(80vh, ${({ height }) => height}px);
