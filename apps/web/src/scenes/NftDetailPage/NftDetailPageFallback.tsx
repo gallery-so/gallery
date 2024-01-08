@@ -156,16 +156,19 @@ const StyledOwnerAndCreator = styled(HStack)`
 `;
 
 const StyledImage = styled.img<{ height: number; width: number }>`
-  height: min(80vh, ${({ height }) => height}px);
-  width: min(80vh, ${({ height }) => height}px);
   border: none;
+
+  @media only screen and ${breakpoints.tablet} {
+    height: min(80vh, ${({ height }) => height}px);
+    width: min(80vh, ${({ height }) => height}px);
+  }
 `;
 
 const StyledImageWrapper = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 600px;
+  width: 100%;
   height: 100%;
   opacity: 0;
   pointer-events: none;
