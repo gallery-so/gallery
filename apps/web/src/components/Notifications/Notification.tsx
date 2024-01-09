@@ -162,6 +162,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on SomeoneRepliedToYourCommentNotification {
           __typename
           comment {
+            dbid
             source {
               ... on Post {
                 __typename
@@ -337,11 +338,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           ? notification.comment?.source?.dbid
           : undefined;
 
+      const commentId = notification.comment?.dbid;
+
       return {
         showCaret: false,
         handleClick: function navigateToPostPage() {
           if (postId) {
-            push({ pathname: `/post/[postId]`, query: { postId } });
+            push({ pathname: `/post/[postId]`, query: { postId, commentId } });
           }
           hideDrawer();
         },
