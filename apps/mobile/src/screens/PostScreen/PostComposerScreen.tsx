@@ -51,6 +51,7 @@ function PostComposerScreenInner() {
                 ...useNavigateToCommunityScreenFragment
               }
               mintUrl
+              chain
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -100,7 +101,15 @@ function PostComposerScreenInner() {
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
-  const [includeMintLink, setIncludeMintLink] = useState(true);
+
+  // only toggle the mint link on by default if it's on zora network. disable it by defalut on any other chain.
+  // NOTE: on web, if a mint link is manually provided via params (e.g. share-on-gallery from another chain), it'll
+  // enable the mint link. we'll need to do this here too once we support better deeplinks.
+  const shouldEnableMintLinkByDefault = useMemo(() => {
+    return token.definition.chain === 'Zora';
+  }, [token.definition.chain]);
+
+  const [includeMintLink, setIncludeMintLink] = useState(shouldEnableMintLinkByDefault);
 
   const {
     aliasKeyword,
