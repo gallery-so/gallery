@@ -28,7 +28,9 @@ export function NewTokens({ notificationRef }: Props) {
           ... on Token {
             __typename
             dbid
-            name
+            definition {
+              name
+            }
             ...NotificationTokenPreviewWithBoundaryFragment
           }
         }
@@ -86,7 +88,7 @@ export function NewTokens({ notificationRef }: Props) {
             numberOfLines={2}
             className="text-sm"
           >
-            {token.name ? token.name : 'Unknown'}
+            {token.definition?.name ? token.definition.name : 'Unknown'}
           </Typography>
         </View>
       </View>
@@ -94,6 +96,7 @@ export function NewTokens({ notificationRef }: Props) {
         onPress={handlePress}
         className="w-20"
         text="Post"
+        textClassName="normal-case"
         size="xs"
         fontWeight="Bold"
         // manually tracking this to be the same params as `NotificationSkeleton`,

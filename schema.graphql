@@ -81,7 +81,13 @@ type AdmireTokenPayload {
 union AdmireTokenPayloadOrError = AdmireTokenPayload | ErrTokenNotFound | ErrInvalidInput | ErrNotAuthorized
 
 type ArtBlocksCommunity {
+  communityKey: ArtBlocksCommunityKey
   contract: Contract
+  projectID: String
+}
+
+type ArtBlocksCommunityKey {
+  contract: ChainAddress
   projectID: String
 }
 
@@ -358,12 +364,14 @@ type Community implements Node {
   contractAddress: ChainAddress @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   chain: Chain @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   creatorAddress: ChainAddress @deprecated(reason: "Use Community.creators to get an address")
-  creator: GalleryUserOrAddress @deprecated(reason: "Use Community.creators")
+  creator: GalleryUserOrAddress
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @deprecated(reason: "Use Community.tokens")
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
+
+union CommunityByIdOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
 union CommunityByKeyOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
@@ -400,7 +408,12 @@ type Contract implements Node {
 }
 
 type ContractCommunity {
+  communityKey: ContractCommunityKey
   contract: Contract
+}
+
+type ContractCommunityKey {
+  contract: ChainAddress
 }
 
 input ContractCommunityKeyInput {
@@ -517,11 +530,13 @@ scalar Email
 type EmailNotificationSettings {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
+  unsubscribedFromDigest: Boolean
 }
 
 enum EmailUnsubscriptionType {
   All
   Notifications
+  Digest
 }
 
 enum EmailVerificationStatus {
@@ -740,6 +755,12 @@ interface FeedEventData {
 
 """Can return posts as well"""
 union FeedEventOrError = FeedEvent | Post | ErrPostNotFound | ErrFeedEventNotFound | ErrUnknownAction
+
+type FollowAllOnboardingRecommendationsPayload {
+  viewer: Viewer
+}
+
+union FollowAllOnboardingRecommendationsPayloadOrError = FollowAllOnboardingRecommendationsPayload | ErrInvalidInput | ErrNotAuthorized
 
 type FollowAllSocialConnectionsPayload {
   viewer: Viewer
@@ -1124,6 +1145,13 @@ type Mutation {
   updateSocialAccountDisplayed(input: UpdateSocialAccountDisplayedInput!): UpdateSocialAccountDisplayedPayloadOrError
   followUser(userId: DBID!): FollowUserPayloadOrError
   followAllSocialConnections(accountType: SocialAccountType!): FollowAllSocialConnectionsPayloadOrError
+  followAllOnboardingRecommendations(
+    """
+    A cursor returned from `Viewer.suggestedUsers` can be provided to follow all users from when the
+    cursor was generated. Otherwise, all users from the current recommendation set will be followed instead.
+    """
+    cursor: String
+  ): FollowAllOnboardingRecommendationsPayloadOrError
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
   admirePost(postId: DBID!): AdmirePostPayloadOrError
@@ -1395,6 +1423,7 @@ type Query {
   tokenById(id: DBID!): TokenByIdOrError
   collectionTokenById(tokenId: DBID!, collectionId: DBID!): CollectionTokenByIdOrError
   communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
+  communityById(id: DBID!): CommunityByIdOrError
   generalAllowlist: [ChainAddress!]
   galleryOfTheWeekWinners: [GalleryUser!]
   globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
@@ -1425,12 +1454,14 @@ type Query {
 
   """
   Search for communities with optional weighting. Weights are floats in the [0.0. 1.0] range
-  that help determine how matches will be ranked. nameWeight defaults to 0.4, descriptionWeight
-  defaults to 0.2, and poapAddressWeight defaults to 0.1, meaning that a search result matching
-  a community name is considered twice as relevant as a search result matching a community
-  description, and four times as relevant as a search result matching a POAP address string.
+  that help determine how matches will be ranked. nameWeight defaults to 0.4, providerNameWeight
+  defaults to 0.3, descriptionWeight defaults to 0.2, and poapAddressWeight defaults to 0.1,
+  meaning that a search result matching a community name is considered twice as relevant as a
+  search result matching a community description, and four times as relevant as a search result
+  matching a POAP address string. providerNameWeight is used to return communities provided by
+  a provider (e.g. Art Blocks) when searching for that provider's name (e.g. "art blocks").
   """
-  searchCommunities(query: String!, limit: Int, nameWeight: Float, descriptionWeight: Float, poapAddressWeight: Float): SearchCommunitiesPayloadOrError
+  searchCommunities(query: String!, limit: Int, nameWeight: Float, descriptionWeight: Float, poapAddressWeight: Float, providerNameWeight: Float): SearchCommunitiesPayloadOrError
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
@@ -1821,6 +1852,7 @@ union SyncCreatedTokensForExistingContractPayloadOrError = SyncCreatedTokensForE
 
 input SyncCreatedTokensForNewContractsInput {
   includeChains: [Chain!]
+  incrementally: Boolean
 }
 
 type SyncCreatedTokensForNewContractsPayload {
@@ -1935,6 +1967,7 @@ type TokenDefinition implements Node {
   community: Community
   communities: [Community]
   externalUrl: String
+  mintUrl: String
 }
 
 type TokenEdge {
@@ -2118,6 +2151,7 @@ input UpdateEmailInput {
 input UpdateEmailNotificationSettingsInput {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
+  unsubscribedFromDigest: Boolean
 }
 
 type UpdateEmailNotificationSettingsPayload {

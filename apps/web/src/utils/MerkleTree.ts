@@ -5,7 +5,7 @@
 // from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
 
 import { bufferToHex } from 'ethereumjs-util';
-import web3 from 'web3';
+import web3Utils from 'web3-utils';
 
 export default class MerkleTree {
   elements: Buffer[];
@@ -15,7 +15,7 @@ export default class MerkleTree {
     // Filter empty strings and hash elements
     this.elements = elements
       .filter((el) => el)
-      .map((el) => Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el, { encoding: 'hex' }))));
+      .map((el) => Buffer.from(web3Utils.hexToBytes(web3Utils.sha3(el, { encoding: 'hex' }))));
     // Sort elements
     this.elements.sort(Buffer.compare);
 
@@ -62,7 +62,7 @@ export default class MerkleTree {
     }
 
     return Buffer.from(
-      web3.utils.hexToBytes(web3.utils.sha3(this.sortAndConcat(first, second), { encoding: 'hex' }))
+      web3Utils.hexToBytes(web3Utils.sha3(this.sortAndConcat(first, second), { encoding: 'hex' }))
     );
   }
 
@@ -115,7 +115,7 @@ export default class MerkleTree {
 
     // Convert element to 32 byte hash if it is not one already
     if (el.length !== 32 || !Buffer.isBuffer(el)) {
-      hash = Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el, { encoding: 'hex' })));
+      hash = Buffer.from(web3Utils.hexToBytes(web3Utils.sha3(el, { encoding: 'hex' })));
     } else {
       hash = el;
     }

@@ -67,7 +67,7 @@ const StyledTokenDetailPage = styled.div`
 export default function TokenDetailPageWithBoundary({ tokenId }: TokenDetailPageProps) {
   return (
     <StyledTokenDetailPageWithBoundary>
-      <Suspense fallback={<NftDetailPageFallback />}>
+      <Suspense fallback={<NftDetailPageFallback tokenId={tokenId} />}>
         <ErrorBoundary>
           <TokenDetailPage tokenId={tokenId} />
         </ErrorBoundary>

@@ -19,9 +19,11 @@ export default function useTokenSearchResults<T>({ tokensRef, rawTokensToDisplay
     graphql`
       fragment useTokenSearchResultsFragment on Token @relay(plural: true) {
         dbid
-        name
-        contract {
+        definition {
           name
+          community {
+            name
+          }
         }
       }
     `,
@@ -39,11 +41,11 @@ export default function useTokenSearchResults<T>({ tokensRef, rawTokensToDisplay
 
     const searchResults = tokens
       .filter((token) => {
-        if (token.name?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.definition.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 
-        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.definition.community?.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 

@@ -7,6 +7,7 @@ import { ObjktIcon } from 'src/icons/ObjktIcon';
 import { OpenseaIcon } from 'src/icons/OpenseaIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
+import { CommunityViewCommunityFragment$key } from '~/generated/CommunityViewCommunityFragment.graphql';
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
@@ -22,32 +23,29 @@ import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
+  communityRef: CommunityViewCommunityFragment$key;
 };
 
-export function CommunityView({ queryRef }: Props) {
+export function CommunityView({ queryRef, communityRef }: Props) {
+  const community = useFragment(
+    graphql`
+      fragment CommunityViewCommunityFragment on Community {
+        __typename
+        ...CommunityCollectorsListFragment
+        ...CommunityHeaderFragment
+        ...CommunityCollectorsFragment
+        ...CommunityMetaFragment
+        ...CommunityViewPostsTabFragment
+        ...CommunityTabsHeaderFragment
+        ...extractRelevantMetadataFromCommunityFragment
+      }
+    `,
+    communityRef
+  );
+
   const query = useFragment(
     graphql`
       fragment CommunityViewFragment on Query {
-        community: communityByAddress(communityAddress: $communityAddress)
-          @required(action: THROW) {
-          ... on ErrCommunityNotFound {
-            __typename
-          }
-          ... on Community {
-            __typename
-            ...CommunityCollectorsListFragment
-            ...CommunityHeaderFragment
-            ...CommunityCollectorsFragment
-            ...CommunityMetaFragment
-            ...CommunityViewPostsTabFragment
-            ...CommunityTabsHeaderFragment
-            chain
-            contractAddress {
-              address
-            }
-          }
-          ...extractRelevantMetadataFromCommunityFragment
-        }
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
         ...CommunityViewPostsTabQueryFragment
@@ -56,8 +54,6 @@ export function CommunityView({ queryRef }: Props) {
     `,
     queryRef
   );
-
-  const { community } = query;
 
   if (!community) {
     throw new Error(`Unable to fetch the community`);
@@ -72,13 +68,14 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
+  const { openseaUrl, objktUrl, externalAddressUrl, chain, contractAddress } =
+    extractRelevantMetadataFromCommunity(community);
+
   const handleShare = useCallback(() => {
     Share.share({
-      url: `https://gallery.so/community/${community.chain?.toLowerCase()}/${
-        community.contractAddress?.address
-      }`,
+      url: `https://gallery.so/community/${chain.toLowerCase()}/${contractAddress}`,
     });
-  }, [community.chain, community.contractAddress?.address]);
+  }, [chain, contractAddress]);
 
   const TabBar = useCallback(() => {
     return (
@@ -89,9 +86,6 @@ export function CommunityView({ queryRef }: Props) {
       />
     );
   }, [community, setSelectedRoute, selectedRoute]);
-
-  const { openseaUrl, objktUrl, externalAddressUrl } =
-    extractRelevantMetadataFromCommunity(community);
 
   return (
     <View className="flex-1">

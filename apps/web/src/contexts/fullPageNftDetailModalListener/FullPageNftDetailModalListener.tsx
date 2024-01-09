@@ -36,22 +36,22 @@ export default function FullPageNftDetailModalListener() {
     }
 
     // all NFT Detail routes must have have both provided
-    if (!username || !tokenId) {
+    if (!username || !tokenId || typeof tokenId !== 'string') {
       return;
     }
 
     const content = collectionId ? (
-      <Suspense fallback={<NftDetailPageFallback />}>
+      <Suspense fallback={<NftDetailPageFallback tokenId={tokenId} />}>
         <NftDetailPage
           username={username as string}
           collectionId={collectionId as string}
-          tokenId={tokenId as string}
+          tokenId={tokenId}
         />
       </Suspense>
     ) : (
       <StyledTokenPreviewModal>
-        <Suspense fallback={<NftDetailPageFallback />}>
-          <LoadableTokenDetailView tokenId={tokenId as string} />
+        <Suspense fallback={<NftDetailPageFallback tokenId={tokenId} />}>
+          <LoadableTokenDetailView tokenId={tokenId} />
         </Suspense>
       </StyledTokenPreviewModal>
     );
@@ -89,7 +89,6 @@ const StyledTokenPreviewModal = styled.div`
   display: flex;
   justify-content: center;
   height: 100%;
-  padding: 80px 0;
 
   @media only screen and ${breakpoints.desktop} {
     padding: 0;

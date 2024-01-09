@@ -76,15 +76,18 @@ export default function useCommentOnFeedEvent() {
               token: {
                 dbid: 'unknown',
                 id: 'unknown',
-                media: {
-                  __typename: 'ImageMedia',
-                  fallbackMedia: {
-                    mediaURL: optimisticUserInfo.profileImageUrl,
-                  },
-                  previewURLs: {
-                    large: optimisticUserInfo.profileImageUrl,
-                    medium: optimisticUserInfo.profileImageUrl,
-                    small: optimisticUserInfo.profileImageUrl,
+                definition: {
+                  id: 'unknown2',
+                  media: {
+                    __typename: 'ImageMedia',
+                    fallbackMedia: {
+                      mediaURL: optimisticUserInfo.profileImageUrl,
+                    },
+                    previewURLs: {
+                      large: optimisticUserInfo.profileImageUrl,
+                      medium: optimisticUserInfo.profileImageUrl,
+                      small: optimisticUserInfo.profileImageUrl,
+                    },
                   },
                 },
               },
@@ -109,6 +112,22 @@ export default function useCommentOnFeedEvent() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                deleted: false,
+                admires: {
+                  edges: [],
+                  pageInfo: {
+                    endCursor: '',
+                    hasNextPage: false,
+                    total: 0,
+                  },
+                },
+                source: {
+                  __typename: 'FeedEvent',
+                  __isNode: 'FeedEvent',
+                  id: `FeedEvent:${eventDbid}`,
+                  dbid: eventDbid,
+                },
+                viewerAdmire: null,
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,

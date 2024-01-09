@@ -74,7 +74,10 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
               user: {
                 __typename: 'GalleryUser',
                 id: query.viewer?.user?.id as string,
-                following: [...(query.viewer?.user?.following ?? []), { id: followeeId }],
+                following: [
+                  ...(query.viewer?.user?.following ?? []),
+                  { id: `GalleryUser:${followeeId}` },
+                ],
               },
             },
           },

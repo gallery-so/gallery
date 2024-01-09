@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
-import { createContext, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
 
 import AnimatedSnowfall from './AnimatedSnowfall';
@@ -21,11 +22,11 @@ export const useSnowContext = (): SnowState => {
   return context;
 };
 
-type Props = { children: ReactNode };
+type Props = { enabled: boolean; children: ReactNode };
 
 const userProfilesWhereItDoesntSnow = new Set(['digen_art']);
 
-const SnowProvider = memo(({ children }: Props) => {
+const SnowProvider = memo(({ enabled: publiclyEnabled, children }: Props) => {
   const [isEnabledBasedOnUserPreference, setIsEnabledBasedOnUserPreference] = usePersistedState(
     'gallery_snowfall_enabled',
     true
@@ -46,7 +47,17 @@ const SnowProvider = memo(({ children }: Props) => {
     return true;
   }, [pathname, query.username]);
 
-  const isSnowEnabled = isEnabledBasedOnUserPreference && isEnabledBasedOnRoute;
+  const [isEnabledBasedOnSecretOverride, setIsEnabledBasedOnSecretOverride] = useState(false);
+
+  const handleSecretlyToggleSnow = useCallback(() => {
+    setIsEnabledBasedOnSecretOverride((prev) => !prev);
+  }, []);
+
+  useMultiKeyDown(['Control', 's'], handleSecretlyToggleSnow);
+
+  const isSnowVisibilityEnabled =
+    isEnabledBasedOnSecretOverride ||
+    (publiclyEnabled && isEnabledBasedOnUserPreference && isEnabledBasedOnRoute);
 
   const toggleSnow = useCallback(() => {
     setIsEnabledBasedOnUserPreference((prev) => !prev);
@@ -54,15 +65,15 @@ const SnowProvider = memo(({ children }: Props) => {
 
   const value = useMemo(
     () => ({
-      isSnowEnabled,
+      isSnowEnabled: isSnowVisibilityEnabled,
       toggleSnow,
     }),
-    [isSnowEnabled, toggleSnow]
+    [isSnowVisibilityEnabled, toggleSnow]
   );
 
   return (
     <SnowContext.Provider value={value}>
-      <VisibilityWrapper isVisible={isSnowEnabled}>
+      <VisibilityWrapper isVisible={isSnowVisibilityEnabled}>
         <AnimatedSnowfall amount={50} />
       </VisibilityWrapper>
       {children}

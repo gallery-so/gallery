@@ -40,10 +40,6 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         name
         description
         badgeURL
-        contractAddress {
-          address
-          ...walletGetExternalAddressLinkFragment
-        }
         ...CommunityPageMetadataFragment
         ...CommunityProfilePictureFragment
         ...extractRelevantMetadataFromCommunityFragment
@@ -63,7 +59,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const isMobile = useIsMobileWindowWidth();
 
-  const { name, description, contractAddress, badgeURL } = community;
+  const { name, description, badgeURL } = community;
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -87,7 +83,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const formattedDescription = replaceUrlsWithMarkdownFormat(description || '');
 
-  const { openseaUrl, objktUrl, externalAddressUrl } =
+  const { contractAddress, openseaUrl, objktUrl, externalAddressUrl } =
     extractRelevantMetadataFromCommunity(community);
 
   const track = useTrack();
@@ -123,7 +119,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             >
               <IconContainer
                 variant="default"
-                tooltipLabel="View official site"
+                tooltipLabel="View on explorer"
                 icon={<GlobeIcon />}
                 onClick={handleExternalLinkClick}
               />
@@ -212,7 +208,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     showExpandedDescription,
   ]);
 
-  const displayName = name || truncateAddress(contractAddress?.address ?? '');
+  const displayName = name || truncateAddress(contractAddress);
 
   if (isMobile) {
     return (

@@ -115,15 +115,18 @@ export default function useCommentOnPost() {
               token: {
                 dbid: 'unknown',
                 id: 'unknown',
-                media: {
-                  __typename: 'ImageMedia',
-                  fallbackMedia: {
-                    mediaURL: optimisticUserInfo.profileImageUrl,
-                  },
-                  previewURLs: {
-                    large: optimisticUserInfo.profileImageUrl,
-                    medium: optimisticUserInfo.profileImageUrl,
-                    small: optimisticUserInfo.profileImageUrl,
+                definition: {
+                  id: 'unknown2',
+                  media: {
+                    __typename: 'ImageMedia',
+                    fallbackMedia: {
+                      mediaURL: optimisticUserInfo.profileImageUrl,
+                    },
+                    previewURLs: {
+                      large: optimisticUserInfo.profileImageUrl,
+                      medium: optimisticUserInfo.profileImageUrl,
+                      small: optimisticUserInfo.profileImageUrl,
+                    },
                   },
                 },
               },
@@ -148,6 +151,22 @@ export default function useCommentOnPost() {
                     ...tokenProfileImagePayload,
                   },
                 },
+                deleted: false,
+                admires: {
+                  edges: [],
+                  pageInfo: {
+                    endCursor: '',
+                    hasNextPage: false,
+                    total: 0,
+                  },
+                },
+                source: {
+                  __typename: 'Post',
+                  __isNode: 'Post',
+                  id: `Post:${postDbid}`,
+                  dbid: postDbid,
+                },
+                viewerAdmire: null,
                 creationTime: new Date().toISOString(),
                 dbid: optimisticId,
                 id: `Comment:${optimisticId}`,

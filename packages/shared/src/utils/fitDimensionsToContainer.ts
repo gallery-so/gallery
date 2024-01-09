@@ -1,5 +1,8 @@
 export type Dimensions = { width: number; height: number };
 
+export const DESKTOP_TOKEN_DETAIL_VIEW_SIZE = 800;
+export const MOBILE_TOKEN_DETAIL_VIEW_SIZE = 394;
+
 type fitDimensionToContainerArgs = {
   container: Dimensions;
   source: Dimensions;

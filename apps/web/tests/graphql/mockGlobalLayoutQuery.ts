@@ -6,18 +6,17 @@ import { mockGraphqlQuery } from './mockGraphqlQuery';
 export function mockGlobalLayoutQuery() {
   const response: GlobalLayoutContextQueryQuery = {
     __typename: 'Query',
-    collections: [],
+    // collections: [],
     viewer: {
       __typename: 'Viewer',
       id: GALLERY_VIEWER_ID,
+      userExperiences: [],
       user: {
         __typename: 'GalleryUser',
         id: GALLERY_USER_ID,
-        username: 'Test Gallery User',
-        // @ts-expect-error not sure what the issue is
-        userExperiences: [],
-        wallets: [],
-        roles: ['ADMIN'],
+        // username: 'Test Gallery User',
+        // wallets: [],
+        // roles: ['ADMIN'],
         primaryWallet: {
           __typename: 'Wallet',
           id: '123',

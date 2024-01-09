@@ -8,15 +8,20 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
+import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerTextAreaFragment$key } from '~/generated/PostComposerTextAreaFragment.graphql';
 import { MentionType } from '~/shared/hooks/useMentionableMessage';
 
-import { VStack } from '../core/Spacer/Stack';
-import { AutoResizingTextAreaWithCharCount } from '../core/TextArea/TextArea';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { BaseM } from '../core/Text/Text';
+import { TextArea } from '../core/TextArea/TextArea';
+import transitions from '../core/transitions';
 import { FloatingCard } from '../Mention/FloatingCard';
 import { MentionModal } from '../Mention/MentionModal';
 
@@ -33,8 +38,6 @@ type Props = {
   closeMention: () => void;
 };
 
-export const DESCRIPTION_MAX_LENGTH = 600;
-
 export function PostComposerTextArea({
   tokenRef,
   isSelectingMentions,
@@ -48,7 +51,9 @@ export function PostComposerTextArea({
   const token = useFragment(
     graphql`
       fragment PostComposerTextAreaFragment on Token {
-        name
+        definition {
+          name
+        }
       }
     `,
     tokenRef
@@ -67,6 +72,7 @@ export function PostComposerTextArea({
   const { getReferenceProps, getFloatingProps } = useInteractions([role]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const { caption } = usePostComposerContext();
 
@@ -88,11 +94,11 @@ export function PostComposerTextArea({
   }, [caption]);
 
   const inputPlaceholderTokenName = useMemo(() => {
-    if (!token.name || token.name.length > 30) {
+    if (!token.definition.name || token.definition.name.length > 30) {
       return 'this item';
     }
-    return `"${token.name}"`;
-  }, [token.name]);
+    return `"${token.definition.name}"`;
+  }, [token.definition.name]);
 
   const handleDescriptionChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -135,23 +141,44 @@ export function PostComposerTextArea({
     [selectMention]
   );
 
+  const showPreviewMaxCharacterReached = useMemo(
+    () => message.length > MAX_POST_LENGTH - 100,
+    [message.length]
+  );
+
   return (
     <VStack>
-      <AutoResizingTextAreaWithCharCount
-        defaultValue={caption}
-        placeholder={`Say something about ${inputPlaceholderTokenName}`}
-        currentCharCount={message.length}
-        maxCharCount={DESCRIPTION_MAX_LENGTH}
-        textAreaHeight="117px"
-        onChange={handleDescriptionChange}
-        autoFocus
-        hasPadding
-        value={message}
-        ref={setRefs}
-        onSelect={handleOnSelect}
-        {...getReferenceProps()}
-      />
+      <VStack gap={8}>
+        <StyledTextAreaWrapper isFocused={isInputFocused}>
+          <TextArea
+            placeholder={`Say something about ${inputPlaceholderTokenName}`}
+            textAreaHeight="117px"
+            onChange={handleDescriptionChange}
+            autoFocus
+            hasPadding
+            value={message}
+            ref={setRefs}
+            onSelect={handleOnSelect}
+            {...getReferenceProps()}
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
+          />
+        </StyledTextAreaWrapper>
 
+        {showPreviewMaxCharacterReached && (
+          <StyledErrorTextWrapper align="center" justify="space-between">
+            <StyledMaxTextLengthWrapper hasError={message.length > MAX_POST_LENGTH}>
+              <BaseM color={colors.red}>Max text length reached</BaseM>
+            </StyledMaxTextLengthWrapper>
+            <StyledCharacterCounter
+              hasError={message.length > MAX_POST_LENGTH}
+              showCharacterCount={showPreviewMaxCharacterReached}
+            >
+              {message.length}/{MAX_POST_LENGTH}
+            </StyledCharacterCounter>
+          </StyledErrorTextWrapper>
+        )}
+      </VStack>
       <AnimatePresence>
         {isSelectingMentions && (
           <FloatingCard
@@ -174,3 +201,26 @@ export function PostComposerTextArea({
     </VStack>
   );
 }
+
+const StyledCharacterCounter = styled(BaseM)<{ hasError: boolean; showCharacterCount: boolean }>`
+  transition: opacity ${transitions.cubic};
+  color: ${({ hasError }) => (hasError ? colors.red : colors.metal)};
+  opacity: ${({ showCharacterCount }) => (showCharacterCount ? 1 : 0)};
+`;
+
+const StyledTextAreaWrapper = styled.div<{ isFocused?: boolean }>`
+  position: relative;
+  background-color: ${colors.faint};
+  height: 117px;
+  border: 1px solid ${({ isFocused }) => (isFocused ? colors.porcelain : 'transparent')};
+`;
+
+const StyledMaxTextLengthWrapper = styled.div<{ hasError: boolean }>`
+  transition: all ${transitions.cubic};
+  opacity: ${({ hasError }) => (hasError ? 1 : 0)};
+  transition: opacity ${transitions.cubic};
+`;
+
+const StyledErrorTextWrapper = styled(HStack)`
+  padding-bottom: 8px;
+`;

@@ -64,7 +64,7 @@ export function YouReceivedTopActivityBadge({
       responsibleUserRefs={[]}
       notificationRef={notification}
       overridePfpElement={
-        <View className="h-8 w-8 rounded-full border border-activeBlue items-center justify-center">
+        <View className="h-8 w-8 rounded-full border border-activeBlue items-center justify-center mr-2">
           <TopMemberBadgeIcon />
         </View>
       }

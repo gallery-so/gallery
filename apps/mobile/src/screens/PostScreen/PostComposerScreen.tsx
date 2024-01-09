@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -39,13 +40,6 @@ function PostComposerScreenInner() {
           ... on Token {
             __typename
             dbid
-            chain
-            contract {
-              contractAddress {
-                address
-              }
-              mintURL
-            }
             definition {
               name
               community {
@@ -54,7 +48,10 @@ function PostComposerScreenInner() {
                     username
                   }
                 }
+                ...useNavigateToCommunityScreenFragment
               }
+              mintUrl
+              chain
             }
             ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
@@ -88,7 +85,7 @@ function PostComposerScreenInner() {
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
 
   const mintURLWithRef = getMintUrlWithReferrer(
-    token.contract?.mintURL ?? '',
+    token.definition.mintUrl ?? '',
     ownerWalletAddress
   ).url;
 
@@ -104,7 +101,15 @@ function PostComposerScreenInner() {
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
-  const [includeMintLink, setIncludeMintLink] = useState(true);
+
+  // only toggle the mint link on by default if it's on zora network. disable it by defalut on any other chain.
+  // NOTE: on web, if a mint link is manually provided via params (e.g. share-on-gallery from another chain), it'll
+  // enable the mint link. we'll need to do this here too once we support better deeplinks.
+  const shouldEnableMintLinkByDefault = useMemo(() => {
+    return token.definition.chain === 'Zora';
+  }, [token.definition.chain]);
+
+  const [includeMintLink, setIncludeMintLink] = useState(shouldEnableMintLinkByDefault);
 
   const {
     aliasKeyword,
@@ -127,6 +132,8 @@ function PostComposerScreenInner() {
 
     bottomSheetRef.current?.present();
   }, [message, navigation]);
+
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
@@ -180,12 +187,9 @@ function PostComposerScreenInner() {
     });
 
     if (route.params.redirectTo === 'Community') {
-      mainTabNavigation.navigate('Community', {
-        contractAddress: token.contract?.contractAddress?.address ?? '',
-        chain: token.chain ?? '',
-        postId: createdPostId,
-        creatorName: creatorName,
-      });
+      if (token.definition.community) {
+        navigateToCommunity(token.definition.community, 'navigate');
+      }
     } else {
       feedTabNavigation.navigate('Latest', {
         postId: createdPostId,
@@ -196,17 +200,19 @@ function PostComposerScreenInner() {
     setIsPosting(false);
     resetMentions();
   }, [
-    message,
-    feedTabNavigation,
-    includeMintLink,
+    token.dbid,
+    token.definition.community,
     isPosting,
-    mainTabNavigation,
+    message,
     mentions,
-    mintURL,
+    includeMintLink,
     post,
-    resetMentions,
+    mainTabNavigation,
     route.params.redirectTo,
-    token,
+    resetMentions,
+    mintURL,
+    navigateToCommunity,
+    feedTabNavigation,
   ]);
 
   const isPostButtonDisabled = useMemo(() => {
@@ -324,7 +330,9 @@ export function ToastMessage({ tokenRef }: ToastMessageProps) {
   const token = useFragment(
     graphql`
       fragment PostComposerScreenTokenFragment on Token {
-        name
+        definition {
+          name
+        }
       }
     `,
     tokenRef
@@ -342,7 +350,7 @@ export function ToastMessage({ tokenRef }: ToastMessageProps) {
         className="text-sm text-offBlack dark:text-offWhite"
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >
-        {token.name}
+        {token.definition?.name}
       </Typography>
     </View>
   );

@@ -3,8 +3,10 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
@@ -12,10 +14,11 @@ import isVideoUrl from '~/utils/isVideoUrl';
 type Props = {
   mediaRef: NftDetailVideoFragment$key;
   hideControls?: boolean;
+  tokenId?: string;
   onLoad: ContentIsLoadedEvent;
 };
 
-function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
+function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -25,6 +28,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
         previewURLs {
           large
         }
+        ...useContainedDimensionsForTokenFragment
       }
     `,
     mediaRef
@@ -57,6 +61,19 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     return token.previewURLs.large;
   }, [token?.previewURLs?.large]);
 
+  const resultDimensions = useContainedDimensionsForToken({
+    mediaRef: token,
+  });
+
+  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
+
+  const handleLoad = useCallback(() => {
+    if (poster && tokenId) {
+      cacheLoadedImageUrls(tokenId, 'preview', poster, resultDimensions);
+    }
+    onLoad();
+  }, [poster, cacheLoadedImageUrls, onLoad, tokenId, resultDimensions]);
+
   // if there's an issue loading the video, controls need to be disabled in order
   // to render the poster fallback
   const shouldHideControls = hideControls || errored;
@@ -74,7 +91,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
        * to several gigabytes being fetched (which is really bad on mobile devices)
        */
       loop={!isSafari()}
-      onLoadedData={onLoad}
+      onLoadedData={handleLoad}
       /**
        * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
        * Upon inspecting the simulator's logs, the network request for the video asset

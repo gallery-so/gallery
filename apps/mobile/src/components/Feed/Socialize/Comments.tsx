@@ -21,13 +21,17 @@ export default function Comments({ commentRefs, totalComments, onCommentPress }:
     graphql`
       fragment CommentsFragment on Comment @relay(plural: true) {
         dbid
+        deleted
         ...CommentLineFragment
       }
     `,
     commentRefs
   );
 
-  const previewComments = useMemo(() => comments.slice(-1), [comments]);
+  const previewComments = useMemo(() => {
+    const nonDeletedComments = comments.filter((comment) => !comment.deleted);
+    return nonDeletedComments.slice(-1);
+  }, [comments]);
 
   return (
     <View className="flex flex-col space-y-1">
@@ -37,10 +41,10 @@ export default function Comments({ commentRefs, totalComments, onCommentPress }:
         );
       })}
 
-      {totalComments > 1 && (
+      {totalComments > 1 && previewComments.length > 0 && (
         <RemainingCommentCount totalCount={totalComments} onPress={onCommentPress} />
       )}
-      {totalComments === 0 && (
+      {(totalComments === 0 || previewComments.length === 0) && (
         <GalleryTouchableOpacity
           onPress={onCommentPress}
           eventElementId="Add Comment Button"

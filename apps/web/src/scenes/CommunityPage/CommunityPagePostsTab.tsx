@@ -15,6 +15,10 @@ import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPag
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { contexts, flows } from '~/shared/analytics/constants';
+import {
+  extractContractIdFromCommunity,
+  extractRelevantMetadataFromCommunity,
+} from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
@@ -42,16 +46,15 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           }
         }
         name
-        contract {
-          dbid
-        }
-        contractAddress {
-          address
-        }
+        ...extractRelevantMetadataFromCommunityContractIdFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
   );
+
+  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
+  const contractId = extractContractIdFromCommunity(community);
 
   const feedData = useMemo(() => {
     const events = [];
@@ -97,9 +100,9 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       content: (
         <PostComposerModalWithSelector
           preSelectedContract={{
-            dbid: community.contract?.dbid ?? '',
+            dbid: contractId,
             title: community.name ?? '',
-            address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
+            address: contractAddress, // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
           }}
           eventFlow={flows['Community Page Post Create Flow']}
         />
@@ -107,14 +110,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [
-    showModal,
-    query,
-    community.name,
-    community.contractAddress?.address,
-    community.contract?.dbid,
-    isMobile,
-  ]);
+  }, [query?.viewer?.__typename, showModal, contractId, community.name, contractAddress, isMobile]);
 
   const { isMemberOfCommunity } = useIsMemberOfCommunity();
 

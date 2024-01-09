@@ -11,6 +11,7 @@ import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
 import colors from '~/shared/theme/colors';
 import { MINT_LINK_DISABLED_CONTRACTS } from '~/shared/utils/communities';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import {
   getMintUrlWithReferrer,
   MINT_LINK_CHAIN_ENABLED,
@@ -38,26 +39,24 @@ export function MintLinkButton({
     graphql`
       fragment MintLinkButtonFragment on Token {
         definition {
-          community {
-            contract {
-              mintURL
-              contractAddress {
-                chain
-                address
-              }
-            }
+          community @required(action: THROW) {
+            ...extractRelevantMetadataFromCommunityFragment
           }
+          mintUrl
         }
       }
     `,
     tokenRef
   );
 
-  const tokenContractAddress =
-    token?.definition?.community?.contract?.contractAddress?.address ?? '';
-  const tokenChain = token?.definition?.community?.contract?.contractAddress?.chain ?? '';
+  const {
+    chain,
+    contractAddress,
+    mintUrl: serverMintUrl,
+  } = extractRelevantMetadataFromCommunity(token.definition.community);
+
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
-    overwriteURL || (token?.definition?.community?.contract?.mintURL ?? ''),
+    overwriteURL || token?.definition?.mintUrl || serverMintUrl || '',
     referrerAddress ?? ''
   );
 
@@ -116,11 +115,11 @@ export function MintLinkButton({
     return colors.black[800];
   }, [variant]);
 
-  if (MINT_LINK_DISABLED_CONTRACTS.has(tokenContractAddress)) {
+  if (MINT_LINK_DISABLED_CONTRACTS.has(contractAddress)) {
     return null;
   }
 
-  if (!MINT_LINK_CHAIN_ENABLED.has(tokenChain)) {
+  if (!MINT_LINK_CHAIN_ENABLED.has(chain)) {
     return null;
   }
 

@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
@@ -10,7 +9,6 @@ import {
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesSheetFragment$key } from '~/generated/ProfileViewSharedCommunitiesSheetFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { useListContentStyle } from '../Tabs/useListContentStyle';
 
@@ -64,19 +62,6 @@ function ProfileViewSharedCommunitiesSheet(
   }, [data.sharedCommunities?.edges]);
 
   const contentContainerStyle = useListContentStyle();
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleCommunityPress = useCallback(
-    (contractAddress: ContractAddress) => {
-      const { address, chain } = contractAddress ?? {};
-
-      if (!address || !chain) return;
-      navigation.push('Community', {
-        contractAddress: address,
-        chain,
-      });
-    },
-    [navigation]
-  );
 
   const loadMore = useCallback(() => {
     if (hasNext) {
@@ -98,11 +83,7 @@ function ProfileViewSharedCommunitiesSheet(
         </Typography>
 
         <View className="flex-grow">
-          <CommunityList
-            onCommunityPress={handleCommunityPress}
-            onLoadMore={loadMore}
-            communityRefs={nonNullCommunities}
-          />
+          <CommunityList onLoadMore={loadMore} communityRefs={nonNullCommunities} />
         </View>
       </View>
     </GalleryBottomSheetModal>

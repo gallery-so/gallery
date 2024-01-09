@@ -29,11 +29,8 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
             total
           }
         }
-        owners(
-          first: $listOwnersFirst
-          after: $listOwnersAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) @connection(key: "CommunityPageView_owners") {
+        holders(first: $listOwnersFirst, after: $listOwnersAfter)
+          @connection(key: "CommunityPageView_holders") {
           # Relay doesn't allow @connection w/o edges so we must query for it
           # eslint-disable-next-line relay/unused-fields
           edges {
@@ -49,7 +46,7 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
   );
 
   const totalPosts = community.posts?.pageInfo.total;
-  const totalOwners = community.owners?.pageInfo.total;
+  const totalOwners = community.holders?.pageInfo.total;
 
   const handleTabClick = useCallback(
     (tab: CommunityPageTab) => {

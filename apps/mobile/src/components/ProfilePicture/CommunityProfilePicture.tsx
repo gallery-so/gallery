@@ -4,12 +4,13 @@ import { graphql } from 'relay-runtime';
 
 import { CommunityProfilePictureFragment$key } from '~/generated/CommunityProfilePictureFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 export type ProfilePictureProps = {
   style?: ViewProps['style'];
-  communityRef: CommunityProfilePictureFragment$key | null;
+  communityRef: CommunityProfilePictureFragment$key;
 } & Pick<RawProfilePictureProps, 'size' | 'isEditable' | 'onPress' | 'hasInset' | 'style'>;
 
 export function CommunityProfilePicture({ communityRef, style, ...rest }: ProfilePictureProps) {
@@ -17,10 +18,8 @@ export function CommunityProfilePicture({ communityRef, style, ...rest }: Profil
     graphql`
       fragment CommunityProfilePictureFragment on Community {
         name
-        contractAddress {
-          address
-        }
         profileImageURL
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -28,8 +27,9 @@ export function CommunityProfilePicture({ communityRef, style, ...rest }: Profil
 
   const imageUrl = community?.profileImageURL;
 
-  const letter =
-    community?.name?.[0]?.toUpperCase() || community?.contractAddress?.address?.[0]?.toUpperCase();
+  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
+
+  const letter = community?.name?.[0]?.toUpperCase() || contractAddress[0]?.toUpperCase();
 
   const fallbackProfilePicture = (
     <RawProfilePicture

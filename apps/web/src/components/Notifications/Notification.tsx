@@ -12,22 +12,27 @@ import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
-import { contexts } from '~/shared/analytics/constants';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 
+import { PostComposerModal } from '../Posts/PostComposerModal';
 import { GalleryAnnouncement } from './notifications/GalleryAnnouncement';
-import { NewTokens } from './notifications/NewTokens';
+import { NewTokens, StyledPostPreview } from './notifications/NewTokens';
+import SomeoneAdmiredYourComment from './notifications/SomeoneAdmiredYourComment';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneAdmiredYourToken from './notifications/SomeoneAdmiredYourToken';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
+import { SomeoneMentionedYourCommunity } from './notifications/SomeoneMentionedYourCommunity';
 import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './notifications/SomeoneRepliedToYourComment';
 import { SomeoneYouFollowPostedTheirFirstPost } from './notifications/SomeoneYouFollowPostedTheirFirstPost';
@@ -117,8 +122,35 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           }
         }
 
+        ... on SomeoneMentionedYourCommunityNotification {
+          __typename
+          mentionSource {
+            __typename
+            ... on Post {
+              __typename
+              dbid
+            }
+            ... on Comment {
+              __typename
+              dbid
+              source {
+                ... on Post {
+                  __typename
+                  dbid
+                }
+              }
+            }
+          }
+        }
+
         ... on NewTokensNotification {
           __typename
+          count
+          token {
+            ... on Token {
+              dbid
+            }
+          }
         }
 
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
@@ -130,6 +162,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on SomeoneRepliedToYourCommentNotification {
           __typename
           comment {
+            dbid
             source {
               ... on Post {
                 __typename
@@ -142,6 +175,24 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on GalleryAnnouncementNotification {
           __typename
           ctaLink
+        }
+
+        ... on SomeoneAdmiredYourCommentNotification {
+          __typename
+          dbid
+          comment {
+            dbid
+            source {
+              ... on Post {
+                id
+                dbid
+              }
+              ... on FeedEvent {
+                id
+                dbid
+              }
+            }
+          }
         }
 
         ...NotificationInnerFragment
@@ -172,7 +223,9 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const { push } = useRouter();
 
   const clearAllNotifications = useClearNotifications();
+  const { showModal } = useModalActions();
   const { hideDrawer } = useDrawerActions();
+  const isMobile = useIsMobileWindowWidth();
 
   /**
    * Bear with me here, this `useMemo` returns a stable function
@@ -222,7 +275,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
-    } else if (notification.token) {
+    } else if (
+      notification.__typename === 'SomeoneAdmiredYourTokenNotification' &&
+      notification.token
+    ) {
       const username = query.viewer?.user?.username;
       const tokenId = notification.token.dbid;
 
@@ -243,9 +299,15 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       }
 
       return undefined;
-    } else if (notification.count && notification.count > 1) {
+    } else if (
+      notification.__typename === 'GroupedNotification' &&
+      Number(notification.count) > 1
+    ) {
       return { showCaret: true, handleClick: showUserListModal };
-    } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
+    } else if (
+      notification.__typename === 'SomeoneMentionedYouNotification' ||
+      notification.__typename === 'SomeoneMentionedYourCommunityNotification'
+    ) {
       const postId =
         notification.mentionSource?.__typename === 'Post'
           ? notification.mentionSource?.dbid
@@ -276,11 +338,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           ? notification.comment?.source?.dbid
           : undefined;
 
+      const commentId = notification.comment?.dbid;
+
       return {
         showCaret: false,
         handleClick: function navigateToPostPage() {
           if (postId) {
-            push({ pathname: `/post/[postId]`, query: { postId } });
+            push({ pathname: `/post/[postId]`, query: { postId, commentId } });
           }
           hideDrawer();
         },
@@ -297,6 +361,24 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.__typename === 'NewTokensNotification') {
+      const tokenId = notification.token?.dbid ?? '';
+      return {
+        showCaret: false,
+        handleClick: function openPostComposer() {
+          showModal({
+            content: (
+              <PostComposerModal
+                tokenId={tokenId}
+                eventFlow={flows['Web Notifications Post Create Flow']}
+              />
+            ),
+            headerVariant: 'thicc',
+            isFullPage: isMobile,
+          });
+          hideDrawer();
+        },
+      };
     } else if (
       notification.__typename === 'GalleryAnnouncementNotification' &&
       notification.ctaLink
@@ -309,10 +391,36 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
+      const postId = notification.comment?.source?.dbid;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (postId) {
+            push({
+              pathname: `/post/[postId]`,
+              query: {
+                postId,
+                commentId: notification.comment?.dbid,
+              },
+            });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
-  }, [hideDrawer, notification, push, query.viewer?.user?.username, toggleSubView]);
+  }, [
+    hideDrawer,
+    isMobile,
+    notification,
+    push,
+    query.viewer?.user?.username,
+    showModal,
+    toggleSubView,
+  ]);
 
   const isClickable = Boolean(handleNotificationClick);
 
@@ -358,10 +466,12 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'NewTokensNotification',
       'SomeonePostedYourWorkNotification',
       'SomeoneMentionedYouNotification',
+      'SomeoneMentionedYourCommunityNotification',
       'SomeoneYouFollowPostedTheirFirstPostNotification',
       'SomeoneRepliedToYourCommentNotification',
       'YouReceivedTopActivityBadgeNotification',
       'GalleryAnnouncementNotification',
+      'SomeoneAdmiredYourCommentNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -394,7 +504,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   return (
     <ReportingErrorBoundary fallback={null}>
-      <Container isClickable={isClickable} onClick={handleClick}>
+      <Container
+        isClickable={isClickable}
+        onClick={handleClick}
+        hasMultipleTokens={
+          notification.__typename === 'NewTokensNotification' && Number(notification.count) > 1
+        }
+      >
         <HStack gap={8} align="center">
           {!notification.seen && (
             <StyledDotContainer align="center">
@@ -476,6 +592,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           ...SomeoneMentionedYouFragment
         }
 
+        ... on SomeoneMentionedYourCommunityNotification {
+          __typename
+          ...SomeoneMentionedYourCommunityFragment
+        }
+
         ... on SomeoneYouFollowPostedTheirFirstPostNotification {
           __typename
           ...SomeoneYouFollowPostedTheirFirstPostFragment
@@ -494,6 +615,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           platform
           ...GalleryAnnouncementFragment
+        }
+
+        ... on SomeoneAdmiredYourCommentNotification {
+          __typename
+          ...SomeoneAdmiredYourCommentFragment
         }
       }
     `,
@@ -538,6 +664,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeonePostedYourWork notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
     return <SomeoneMentionedYou notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneMentionedYourCommunityNotification') {
+    return <SomeoneMentionedYourCommunity notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneYouFollowPostedTheirFirstPostNotification') {
     return (
       <SomeoneYouFollowPostedTheirFirstPost notificationRef={notification} onClose={handleClose} />
@@ -551,6 +679,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     notification.platform !== 'Mobile'
   ) {
     return <GalleryAnnouncement notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
+    return <SomeoneAdmiredYourComment notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;
@@ -564,7 +694,7 @@ const UnseenDot = styled.div`
   border-radius: 9999px;
 `;
 
-const Container = styled.div<{ isClickable: boolean }>`
+const Container = styled.div<{ isClickable: boolean; hasMultipleTokens: boolean }>`
   padding: 16px;
 
   ${({ isClickable }) =>
@@ -576,4 +706,12 @@ const Container = styled.div<{ isClickable: boolean }>`
           }
         `
       : css``};
+  ${({ hasMultipleTokens }) =>
+    hasMultipleTokens
+      ? `
+      :hover ${StyledPostPreview} {
+        border: 1px solid ${colors.faint};
+      }
+    `
+      : ''}
 `;

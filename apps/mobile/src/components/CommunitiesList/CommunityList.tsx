@@ -7,18 +7,12 @@ import { CommunityListFragment$key } from '~/generated/CommunityListFragment.gra
 
 import { CommunityCard } from './CommunityCard';
 
-type ContractAddress = {
-  address: string | null;
-  chain: string | null;
-};
-
 type CommunityListProps = {
   communityRefs: CommunityListFragment$key;
   onLoadMore?: () => void;
-  onCommunityPress: (contractAddress: ContractAddress) => void;
 };
 
-export function CommunityList({ communityRefs, onLoadMore, onCommunityPress }: CommunityListProps) {
+export function CommunityList({ communityRefs, onLoadMore }: CommunityListProps) {
   const communities = useFragment(
     graphql`
       fragment CommunityListFragment on Community @relay(plural: true) {
@@ -28,12 +22,9 @@ export function CommunityList({ communityRefs, onLoadMore, onCommunityPress }: C
     communityRefs
   );
 
-  const renderItem = useCallback<ListRenderItem<(typeof communities)[number]>>(
-    ({ item }) => {
-      return <CommunityCard onPress={onCommunityPress} communityRef={item} />;
-    },
-    [onCommunityPress]
-  );
+  const renderItem = useCallback<ListRenderItem<(typeof communities)[number]>>(({ item }) => {
+    return <CommunityCard communityRef={item} />;
+  }, []);
 
   return (
     <FlashList

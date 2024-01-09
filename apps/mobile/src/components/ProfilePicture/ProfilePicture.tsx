@@ -21,10 +21,12 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
         profileImage {
           ... on TokenProfileImage {
             token {
-              media {
-                ... on Media {
-                  previewURLs {
-                    small
+              definition {
+                media {
+                  ... on Media {
+                    previewURLs {
+                      small
+                    }
                   }
                 }
               }
@@ -46,7 +48,7 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
   );
 
   const { token, profileImage: ensImage } = user?.profileImage ?? {};
-  const imageUrl = token?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
+  const imageUrl = token?.definition?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
 
   const letter = user?.username?.[0]?.toUpperCase();
 

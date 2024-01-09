@@ -9,6 +9,7 @@ import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { contexts } from '~/shared/analytics/constants';
+import { MAX_COLLECTION_DESCRIPTION_LENGTH } from '~/shared/utils/getRemainingCharacterCount';
 import unescape from '~/shared/utils/unescape';
 
 type Props = {
@@ -19,8 +20,6 @@ type Props = {
   name?: string;
   collectorsNote?: string;
 };
-
-export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 1200;
 
 export function CollectionCreateOrEditForm({
   onDone,
@@ -62,9 +61,9 @@ export function CollectionCreateOrEditForm({
   const handleClick = useCallback(async () => {
     setGeneralError('');
 
-    if (collectorsNote.length > COLLECTION_DESCRIPTION_MAX_CHAR_COUNT) {
+    if (collectorsNote.length > MAX_COLLECTION_DESCRIPTION_LENGTH) {
       setGeneralError(
-        `The collection name cannot be longer than ${COLLECTION_DESCRIPTION_MAX_CHAR_COUNT} characters.`
+        `The collection name cannot be longer than ${MAX_COLLECTION_DESCRIPTION_LENGTH} characters.`
       );
 
       return;
@@ -90,7 +89,7 @@ export function CollectionCreateOrEditForm({
             placeholder="Tell us about your items..."
             defaultValue={unescapedCollectorsNote}
             currentCharCount={collectorsNote.length}
-            maxCharCount={COLLECTION_DESCRIPTION_MAX_CHAR_COUNT}
+            maxCharCount={MAX_COLLECTION_DESCRIPTION_LENGTH}
             showMarkdownShortcuts
             hasPadding
           />
@@ -132,6 +131,7 @@ const StyledCollectionEditInfoForm = styled(VStack)`
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
+  padding-bottom: 32px;
 `;
 
 const ButtonContainer = styled(HStack)<{ isNewCollection: boolean }>`

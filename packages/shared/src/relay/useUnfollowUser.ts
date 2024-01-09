@@ -76,7 +76,7 @@ export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
                 id: query.viewer?.user?.id as string,
                 following:
                   query.viewer?.user?.following?.filter(
-                    (followee) => followee?.id !== unfolloweeId
+                    (followee) => followee?.id !== `GalleryUser:${unfolloweeId}`
                   ) ?? [],
               },
             },

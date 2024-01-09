@@ -22,10 +22,11 @@ export function createVirtualizedRowsFromGroups({
     rows.push({
       type: 'collection-title',
       expanded,
-      address: address,
-      contractId: contractId,
-      title: title,
+      address,
+      contractId,
+      title,
       count: tokens.length,
+      tokenIds: tokens.map((token) => token.dbid),
     });
 
     const COLUMNS_PER_ROW = 3;

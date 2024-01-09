@@ -25,6 +25,7 @@ export type CollectionTitleRow = {
   contractId: string;
   title: string;
   count: number;
+  tokenIds: string[];
 };
 
 export type VirtualizedRow =

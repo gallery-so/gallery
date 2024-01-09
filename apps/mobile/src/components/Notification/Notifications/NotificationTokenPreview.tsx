@@ -76,7 +76,7 @@ function NotificationTokenPreview({ tokenRef, count }: NotificationTokenPreviewP
   }, [markTokenAsFailed, token.dbid]);
 
   return (
-    <View className="relative">
+    <View className={clsx('relative', count > 1 && 'p-1.5')} style={{ ...sizes.single }}>
       {count > 1 ? (
         <ImagePreview tokenUrl={imageUrl} count={count} stacked onError={handleError} />
       ) : null}
@@ -99,8 +99,8 @@ function ImagePreview({ tokenUrl, count, stacked, onError }: ImagePreviewProps) 
         ...sizes[count > 1 ? 'double' : 'single'],
       }}
       className={clsx(
-        count > 1 && 'border border-offWhite dark:border-shadow',
-        stacked && 'absolute -bottom-1 -right-1'
+        count > 1 && 'border border-offWhite bg-offWhite dark:border-shadow',
+        stacked && 'absolute top-2.5 left-2.5'
       )}
       source={{ uri: tokenUrl }}
       resizeMode={ResizeMode.COVER}

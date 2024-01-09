@@ -94,12 +94,14 @@ type Props = {
   tooltipLabel?: string;
   tooltipDescription?: string;
   tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
+  stopPropagation?: boolean;
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
 function IconContainer(
   {
     icon,
     onClick,
+    stopPropagation = false,
     variant,
     // TODO: this is a temporary measure. need to refactor with official dark mode support
     mode = 'light',
@@ -121,7 +123,12 @@ function IconContainer(
       <StyledIcon
         {...getReferenceProps()}
         ref={reference}
-        onClick={onClick}
+        onClick={(e) => {
+          if (stopPropagation) {
+            e.stopPropagation();
+          }
+          onClick?.(e);
+        }}
         size={size}
         disabled={disabled}
         className={className}

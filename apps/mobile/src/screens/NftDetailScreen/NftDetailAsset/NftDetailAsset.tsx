@@ -24,32 +24,34 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
     graphql`
       fragment NftDetailAssetFragment on Token {
         dbid
-        media {
-          __typename
-
-          ... on InvalidMedia {
+        definition {
+          media {
             __typename
-          }
 
-          ... on AudioMedia {
-            __typename
-          }
+            ... on InvalidMedia {
+              __typename
+            }
 
-          ... on GIFMedia {
-            __typename
-          }
-          ... on ImageMedia {
-            __typename
-          }
+            ... on AudioMedia {
+              __typename
+            }
 
-          ... on HtmlMedia {
-            contentRenderURL
-          }
+            ... on GIFMedia {
+              __typename
+            }
+            ... on ImageMedia {
+              __typename
+            }
 
-          ... on VideoMedia {
-            __typename
-            contentRenderURLs {
-              large
+            ... on HtmlMedia {
+              contentRenderURL
+            }
+
+            ... on VideoMedia {
+              __typename
+              contentRenderURLs {
+                large
+              }
             }
           }
         }
@@ -82,10 +84,10 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
 
   const inner = useMemo(() => {
     if (
-      token.media?.__typename === 'GIFMedia' ||
-      token.media?.__typename === 'ImageMedia' ||
-      token.media?.__typename === 'AudioMedia' ||
-      token.media?.__typename === 'InvalidMedia'
+      token.definition.media?.__typename === 'GIFMedia' ||
+      token.definition.media?.__typename === 'ImageMedia' ||
+      token.definition.media?.__typename === 'AudioMedia' ||
+      token.definition.media?.__typename === 'InvalidMedia'
     ) {
       const result = getPreviewImageUrlsInlineDangerously({
         tokenRef: token,
@@ -109,8 +111,8 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
 
       // TODO [GAL-4229] loading view
       return <></>;
-    } else if (token.media?.__typename === 'VideoMedia') {
-      const videoUrl = token.media.contentRenderURLs?.large;
+    } else if (token.definition.media?.__typename === 'VideoMedia') {
+      const videoUrl = token.definition.media.contentRenderURLs?.large;
 
       if (!videoUrl) {
         throw new CouldNotRenderNftError('NftDetailAsset', 'Video had no contentRenderUrl');
@@ -124,8 +126,8 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
           outputDimensions={assetSizer.finalAssetDimensions}
         />
       );
-    } else if (token.media?.__typename === 'HtmlMedia') {
-      const htmlUrl = token.media.contentRenderURL;
+    } else if (token.definition.media?.__typename === 'HtmlMedia') {
+      const htmlUrl = token.definition.media.contentRenderURL;
 
       if (!htmlUrl) {
         throw new CouldNotRenderNftError(
@@ -138,7 +140,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
     }
 
     throw new CouldNotRenderNftError('NftDetailAsset', 'Unsupported media type', {
-      typename: token.media?.__typename,
+      typename: token.definition.media?.__typename,
     });
   }, [assetSizer.finalAssetDimensions, handleError, handleLoad, token]);
 

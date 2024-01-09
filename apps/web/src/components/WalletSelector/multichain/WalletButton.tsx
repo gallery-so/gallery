@@ -15,6 +15,7 @@ export const walletIconMap = {
   ethereum: '/icons/ethereum_logo.svg',
   tezos: '/icons/tezos_logo.svg',
   delegate_cash: '/icons/delegate_cash_logo.svg',
+  solana: '/icons/solana_logo.svg',
 };
 
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -37,10 +38,11 @@ export const WalletButton = ({
   );
 
   return (
-    <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
+    // don't actually disable the button, otherwise onClick won't fire. we only need the button to appear disabled.
+    <StyledButton data-testid="wallet-button" visuallyDisable={disabled} {...buttonProps}>
       <StyledContent align="center" justify="space-between">
         <VStack align="baseline">
-          <TitleS>{label}</TitleS>
+          <TitleS color={disabled ? colors.metal : colors.black['800']}>{label}</TitleS>
         </VStack>
         <StyledButtonIcon>
           {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
@@ -83,7 +85,7 @@ const StyledAdditionalIconContainer = styled.div`
 `;
 
 const StyledButton = styled.button<{
-  disabled: boolean;
+  visuallyDisable: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -91,29 +93,32 @@ const StyledButton = styled.button<{
   position: relative;
 
   background: ${colors.white};
-  border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.black['800'])};
+  border: 1px solid
+    ${({ visuallyDisable }) => (visuallyDisable ? colors.metal : colors.black['800'])};
   padding: 16px;
   font-size: 16px;
   transition: border-color ${transitions.cubic};
 
-  :enabled {
-    cursor: pointer;
-    &:hover {
-      border-color: ${colors.black['800']};
-      background: ${colors.faint};
-
-      ${StyledAdditionalIconContainer} {
+  ${({ visuallyDisable }) =>
+    !visuallyDisable &&
+    `  :enabled {
+      cursor: pointer;
+      &:hover {
+        border-color: ${colors.black['800']};
         background: ${colors.faint};
+  
+        ${StyledAdditionalIconContainer} {
+          background: ${colors.faint};
+        }
       }
-    }
-  }
+    }`}
 
   ${BaseM} {
-    color: ${({ disabled }) => (disabled ? colors.metal : colors.black['800'])};
+    color: ${({ visuallyDisable }) => (visuallyDisable ? colors.metal : colors.black['800'])};
   }
 
   ${Icon} {
-    filter: ${({ disabled }) => (disabled ? `grayscale(1)` : `grayscale(0)`)};
+    filter: ${({ visuallyDisable }) => (visuallyDisable ? `grayscale(1)` : `grayscale(0)`)};
   }
 `;
 

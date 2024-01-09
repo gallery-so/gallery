@@ -20,12 +20,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
-        tokenId
-        chain
-        contract {
-          contractAddress {
-            address
-            ...LinkableAddressFragment
+        definition {
+          contract {
+            contractAddress {
+              address
+              ...LinkableAddressFragment
+            }
           }
         }
 
@@ -37,10 +37,8 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
 
   const { colorScheme } = useColorScheme();
 
-  const { tokenId, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl } =
+  const { tokenId, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl, chain } =
     extractRelevantMetadataFromToken(token);
-
-  const { contract } = token;
 
   const numOfLinks = useMemo(
     () => [openseaUrl, projectUrl, mirrorUrl, prohibitionUrl].filter(Boolean).length,
@@ -51,11 +49,11 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
     <View className="flex flex-col space-y-4">
       <View className="flex flex-col space-y-4">
         <View className="flex flex-row space-x-3">
-          {contract?.contractAddress?.address && (
+          {token.definition?.contract?.contractAddress?.address && (
             <DetailSection>
               <DetailLabelText>CONTRACT</DetailLabelText>
               <LinkableAddress
-                chainAddressRef={contract.contractAddress}
+                chainAddressRef={token.definition.contract.contractAddress}
                 textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
                 style={{ paddingTop: 2 }}
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
@@ -73,10 +71,10 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
             </DetailSection>
           )}
 
-          {token.chain && (
+          {chain && (
             <DetailSection>
               <DetailLabelText>NETWORK</DetailLabelText>
-              <DetailValue>{token.chain}</DetailValue>
+              <DetailValue>{chain}</DetailValue>
             </DetailSection>
           )}
         </View>

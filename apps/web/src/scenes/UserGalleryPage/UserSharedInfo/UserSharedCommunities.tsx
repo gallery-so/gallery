@@ -12,8 +12,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { LowercaseChain } from '~/shared/utils/chains';
-import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
 import PaginatedCommunitiesList from './UserSharedInfoList/SharedCommunitiesList';
 
@@ -35,11 +34,8 @@ export default function UserSharedCommunities({ userRef }: Props) {
               ... on Community {
                 __typename
                 name
-                chain
-                contractAddress {
-                  address
-                }
                 ...CommunityProfilePictureStackFragment
+                ...getCommunityUrlFromCommunityFragment
               }
             }
           }
@@ -84,26 +80,21 @@ export default function UserSharedCommunities({ userRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
-      if (community.contractAddress?.address && community.chain) {
-        const url = getUrlForCommunity(
-          community.contractAddress?.address,
-          community.chain?.toLowerCase() as LowercaseChain
-        );
+      const url = getCommunityUrlFromCommunity(community);
 
-        if (url) {
-          return (
-            <StyledGalleryLink
-              to={url}
-              key={community.name}
-              eventElementId="Shared Community Name Link"
-              eventName="Shared Community Name Link Click"
-              // TODO analytics - this will be variable
-              eventContext={contexts.Community}
-            >
-              {community.name}
-            </StyledGalleryLink>
-          );
-        }
+      if (url) {
+        return (
+          <StyledGalleryLink
+            to={url}
+            key={community.name}
+            eventElementId="Shared Community Name Link"
+            eventName="Shared Community Name Link Click"
+            // TODO analytics - this will be variable
+            eventContext={contexts.Community}
+          >
+            {community.name}
+          </StyledGalleryLink>
+        );
       }
       return <BaseS key={community.name}>{community.name}</BaseS>;
     });

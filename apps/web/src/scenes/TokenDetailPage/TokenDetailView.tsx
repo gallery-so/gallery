@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
 import { TokenDetailViewQuery } from '~/generated/TokenDetailViewQuery.graphql';
 import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
@@ -101,26 +100,32 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
-          <ShimmerProvider>
+          <Container>
             <TokenDetailAsset
               tokenRef={token}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
             />
-          </ShimmerProvider>
-          {token?.collectorsNote && (
+          </Container>
+
+          {!isMobileOrMobileLarge && token?.collectorsNote && (
             <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
               <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
             </StyledContainer>
           )}
         </StyledAssetAndNoteContainer>
-
         <NftDetailText
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
         />
+
+        {isMobileOrMobileLarge && token?.collectorsNote && (
+          <StyledContainer footerHeight={GLOBAL_FOOTER_HEIGHT}>
+            <NoteViewer nftCollectorsNote={token?.collectorsNote || ''} />
+          </StyledContainer>
+        )}
       </StyledContentContainer>
-      {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
+      {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
     </StyledBody>
   );
 }
@@ -128,28 +133,35 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
 const StyledBody = styled.div`
   display: flex;
   width: 100%;
-
-  @media only screen and ${breakpoints.mobile} {
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: auto;
-  }
 `;
 
 const StyledContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
+    justify-content: center;
+    gap: 0 48px;
   }
+`;
 
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
+const Container = styled.div`
+  min-width: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  margin-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+    margin-top: 0;
   }
 `;
 
@@ -157,6 +169,12 @@ const StyledAssetAndNoteContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-width: min(80vh, 800px);
+  }
 `;
 
 // We position the arrows using position absolute (so they reach the page bounds)

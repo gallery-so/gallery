@@ -1,9 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
@@ -13,16 +13,12 @@ import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
-import {
-  ContractAddress,
-  ProfileViewSharedCommunitiesSheet,
-} from './ProfileViewSharedCommunitiesSheet';
+import { ProfileViewSharedCommunitiesSheet } from './ProfileViewSharedCommunitiesSheet';
 
 type Props = {
   userRef: ProfileViewSharedCommunitiesFragment$key;
@@ -40,12 +36,6 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
               __typename
               ... on Community {
                 __typename
-                name
-                chain
-                contractAddress {
-                  address
-                  chain
-                }
                 ...ProfileViewSharedCommunitiesBubblesFragment
                 ...ProfileViewSharedCommunitiesHoldsTextFragment
               }
@@ -113,10 +103,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
         __typename
         dbid
         name
-        contractAddress {
-          address
-          chain
-        }
+        ...useNavigateToCommunityScreenFragment
       }
     `,
     communityRefs
@@ -130,20 +117,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
     }
   }, [communities]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const handleCommunityPress = useCallback(
-    (contractAddress: ContractAddress) => {
-      const { address, chain } = contractAddress ?? {};
-
-      if (!address || !chain) return;
-      navigation.push('Community', {
-        contractAddress: address,
-        chain,
-      });
-    },
-    [navigation]
-  );
+  const navigateToCommunity = useNavigateToCommunityScreen();
 
   const { colorScheme } = useColorScheme();
 
@@ -158,9 +132,7 @@ function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProp
         return (
           <View key={community.dbid} className="flex flex-row items-center">
             <GalleryLink
-              onPress={() =>
-                community.contractAddress && handleCommunityPress(community.contractAddress)
-              }
+              onPress={() => navigateToCommunity(community)}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               textStyle={{
                 fontSize: 12,

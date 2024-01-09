@@ -34,6 +34,7 @@ export function UpsellBanner({ queryRef }: Props) {
       onConnectWalletSuccess: () => {
         updateUserExperience();
       },
+      displayUpsellText: true,
     });
   }, [showAddWalletModal, updateUserExperience]);
 

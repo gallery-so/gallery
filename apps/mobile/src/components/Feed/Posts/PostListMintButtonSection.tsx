@@ -43,7 +43,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
           variant="secondary"
           eventContext={contexts.Feed}
           referrerAddress={ownerWalletAddress}
-          overwriteURL={userAddedMintURL}
+          overrideMintUrl={userAddedMintURL}
         />
       )}
     </View>
