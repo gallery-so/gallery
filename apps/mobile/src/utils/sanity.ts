@@ -5,9 +5,9 @@ import {
   useSanityMaintenanceCheck as _useSanityMaintenanceCheck,
 } from '~/shared/utils/sanity';
 
-export const fetchSanityContent = _fetchSanityContent(env.SANITY_PROJECT_ID);
+export const fetchSanityContent = _fetchSanityContent(env.EXPO_PUBLIC_SANITY_PROJECT_ID);
 
 // NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
 export const useSanityMaintenanceCheck = () => {
-  return _useSanityMaintenanceCheck(env.SANITY_PROJECT_ID);
+  return _useSanityMaintenanceCheck(env.EXPO_PUBLIC_SANITY_PROJECT_ID);
 };

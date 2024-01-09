@@ -14,7 +14,7 @@ export function DevMenuItems() {
 
   useEffect(() => {
     const devMenuItems = [];
-    if (env.ENV !== 'prod') {
+    if (env.EXPO_PUBLIC_ENV !== 'prod') {
       devMenuItems.push({
         name: 'Debugger',
         callback: () => {
