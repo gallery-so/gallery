@@ -46,7 +46,7 @@ type TestimonialProps = {
 };
 
 function Testimonial({ testimonial }: TestimonialProps) {
-  console.log({ testimonial });
+  // console.log({ testimonial });
   const platformIcon = useMemo(() => {
     switch (testimonial.platformIcon) {
       case 'twitter':

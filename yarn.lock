@@ -6111,6 +6111,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@portabletext/react@npm:^3.0.11":
+  version: 3.0.11
+  resolution: "@portabletext/react@npm:3.0.11"
+  dependencies:
+    "@portabletext/toolkit": ^2.0.10
+    "@portabletext/types": ^2.0.8
+  peerDependencies:
+    react: ^17 || ^18
+  checksum: d63116bc73b6ea9f68e87d23fcd05400c16e36443b6251ac9a62821eaed3d4107f815318695eec527b27ca3213282e2c7b83a2a15e4383f52eadb5ff6a9e4dbe
+  languageName: node
+  linkType: hard
+
+"@portabletext/toolkit@npm:^2.0.10":
+  version: 2.0.10
+  resolution: "@portabletext/toolkit@npm:2.0.10"
+  dependencies:
+    "@portabletext/types": ^2.0.8
+  checksum: b0318f534bfac9d1e375ecd3699596b5cf7c9fb53d50425a0393150a5062f256730e4e8378adbdae6c141f3f2896344b6d61804625978736edf63c186439e687
+  languageName: node
+  linkType: hard
+
+"@portabletext/types@npm:^2.0.8":
+  version: 2.0.8
+  resolution: "@portabletext/types@npm:2.0.8"
+  checksum: 95c7e65e77fa6c91d00b85c36f777494aea65604b85e99be4ee17141c92cb0a9a472aa7909841c65736a1e87659787af3f9558e5e151340782b7eb68d0f66b5f
+  languageName: node
+  linkType: hard
+
 "@rainbow-me/rainbowkit@npm:^1.0.5":
   version: 1.0.5
   resolution: "@rainbow-me/rainbowkit@npm:1.0.5"
@@ -15183,6 +15211,34 @@ __metadata:
   version: 3.1.0
   resolution: "email-addresses@npm:3.1.0"
   checksum: e911985f096fa0198019caee4a12685146f677738d8ae1ebe25419181a37930a15be15447abef3612bdc3b88f72aaae4fd2cf1a95669705e638ebcfea4a15047
+  languageName: node
+  linkType: hard
+
+"embla-carousel-react@npm:^8.0.0-rc19":
+  version: 8.0.0-rc19
+  resolution: "embla-carousel-react@npm:8.0.0-rc19"
+  dependencies:
+    embla-carousel: 8.0.0-rc19
+    embla-carousel-reactive-utils: 8.0.0-rc19
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.1 || ^18.0.0
+  checksum: b870dad1180ea741d61e905d188a7c197716d7b90abcfa7adbd7072a6763051acd7511ca10e3a17c9a2c66482281e6d824a0af507c0f70eee14b9b5d600bb7ab
+  languageName: node
+  linkType: hard
+
+"embla-carousel-reactive-utils@npm:8.0.0-rc19":
+  version: 8.0.0-rc19
+  resolution: "embla-carousel-reactive-utils@npm:8.0.0-rc19"
+  peerDependencies:
+    embla-carousel: 8.0.0-rc19
+  checksum: b66c1601e75c8482af70a7b8476ac98b60995f6b759b9c76ae70a47192c0b14021aa2b4eadadb207d20485c16ef53f51f10148e8c5d8dfbf34538b62154e294a
+  languageName: node
+  linkType: hard
+
+"embla-carousel@npm:8.0.0-rc19":
+  version: 8.0.0-rc19
+  resolution: "embla-carousel@npm:8.0.0-rc19"
+  checksum: de531482ef3fe8b71e9f114cbed9066f0c3bcf261cdfdfb3686961409c02765b65ad137ab262f690bc1f5b4837e066f6bf9e749e19ef24555769559f01bbba5f
   languageName: node
   linkType: hard
 
@@ -31082,6 +31138,7 @@ __metadata:
     "@graphql-codegen/typescript": ^2.7.3
     "@moonrepo/cli": ^1.18.5
     "@next/bundle-analyzer": ^13.0.4
+    "@portabletext/react": ^3.0.11
     "@rainbow-me/rainbowkit": ^1.0.5
     "@sentry/nextjs": ^7.77.0
     "@svgr/webpack": ^5.5.0
@@ -31124,6 +31181,7 @@ __metadata:
     bufferutil: ^4.0.5
     cypress: ^10.7.0
     date-fns: ^2.29.3
+    embla-carousel-react: ^8.0.0-rc19
     eslint-config-next: ^13.1.6
     ethers: ^5.6.9
     framer-motion: ^7.10.2

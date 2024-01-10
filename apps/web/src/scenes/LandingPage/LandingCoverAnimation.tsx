@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
-import { animated, useSpring } from 'react-spring';
+import { useEffect, useRef, useState } from 'react';
+import { animated, SpringValue, useSpring } from 'react-spring';
+import colors from 'shared/theme/colors';
 import styled, { keyframes } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed } from '~/components/core/Text/Text';
@@ -10,7 +12,8 @@ import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton'
 import useWindowSize from '~/hooks/useWindowSize';
 
 import Image from '../WelcomeAnimation/Image';
-import { AnimatedImage, animatedImages } from '../WelcomeAnimation/Images';
+import { AnimatedImage } from '../WelcomeAnimation/Images';
+import { animatedImages } from './LandingCoverAnimationImages';
 
 type AspectRatio = 'vertical' | 'horizontal' | undefined;
 const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window.innerHeight) / 2];
@@ -66,8 +69,8 @@ export default function LandingCoverAnimation() {
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            <SignInButton />
-            <SignUpButton />
+            <StyledSignInButton size="lg" />
+            <SignUpButton size="lg" />
           </HStack>
         </VStack>
         {/* <StyledTextContainer shouldFadeOut={shouldFadeOut} gap={16}>
@@ -90,41 +93,104 @@ export default function LandingCoverAnimation() {
         </StyledTextContainer> */}
       </animated.div>
       {animatedImages.map((animatedImage) => (
-        <StyledMovementWrapper
+        <AnimatedImage
           animatedImage={animatedImage}
-          aspectRatio={aspectRatio}
           key={animatedImage.src}
-        >
-          <animated.div
-            className="animate"
-            style={{
-              transform: props.xy.interpolate(getTransformCallback(animatedImage)),
-            }}
-          >
-            <Image
-              alt="Welcome to Gallery"
-              width={animatedImage.width}
-              src={animatedImage.src ?? ''}
-              fadeInDelay={animatedImage.fadeInDelay}
-              shouldFadeOut={false}
-              fadeInGrow={fadeInGrow}
-              fadeOutGrow={fadeOutGrow}
-              imagesFaded={false}
-            />
-          </animated.div>
-        </StyledMovementWrapper>
+          aspectRatio={aspectRatio}
+          xy={props.xy}
+        />
       ))}
     </StyledContainer>
   );
 }
 
+function AnimatedImage({
+  animatedImage,
+  aspectRatio,
+  xy,
+}: {
+  animatedImage: AnimatedImage;
+  aspectRatio: AspectRatio;
+  xy: SpringValue<number[]>;
+}) {
+  const divRef = useRef(null); // Reference to your div
+
+  const updateOpacity = () => {
+    if (divRef.current) {
+      const rect = divRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      console.log(rect.bottom, windowHeight);
+
+      // if (rect.top > 100 || rect.top < 0) {
+      //   return;
+      // }
+
+      // Calculate opacity based on the div's position relative to the viewport
+      const opacity = Math.max(0, Math.min(1, (rect.top + 100) / 200));
+
+      // Apply the opacity to the div
+      divRef.current.style.opacity = opacity;
+    }
+  };
+
+  useEffect(() => {
+    // Function to handle scroll and resize events
+    const handleScrollAndResize = () => {
+      updateOpacity();
+    };
+
+    // Add event listeners for scroll and resize
+    window.addEventListener('scroll', handleScrollAndResize);
+    window.addEventListener('resize', handleScrollAndResize);
+
+    // Initial update for opacity
+    updateOpacity();
+
+    return () => {
+      // Cleanup event listeners
+      window.removeEventListener('scroll', handleScrollAndResize);
+      window.removeEventListener('resize', handleScrollAndResize);
+    };
+  }, []);
+
+  return (
+    <StyledMovementWrapper animatedImage={animatedImage} aspectRatio={aspectRatio}>
+      <animated.div
+        className="animate"
+        style={{
+          transform: xy.interpolate(getTransformCallback(animatedImage)),
+        }}
+      >
+        <div ref={divRef}>
+          <Image
+            alt="Welcome to Gallery"
+            width={animatedImage.width}
+            src={animatedImage.src ?? ''}
+            fadeInDelay={animatedImage.fadeInDelay}
+            shouldFadeOut={false}
+            fadeInGrow={fadeInGrow}
+            fadeOutGrow={fadeOutGrow}
+            imagesFaded={false}
+          />
+        </div>
+      </animated.div>
+    </StyledMovementWrapper>
+  );
+}
+
 const StyledTitle = styled(TitleCondensed)`
-  font-size: 96px;
-  line-height: 84px;
-  //   font-weight: 400;
-  width: 60%;
-  margin: auto;
+  font-size: 56px;
+  line-height: 48px;
+  margin: 0 20px;
   font-weight: 300;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 60%;
+    margin: auto;
+    font-size: 96px;
+    line-height: 84px;
+  }
 `;
 
 const fadeInGrow = keyframes`
@@ -164,4 +230,8 @@ const StyledMovementWrapper = styled.div<{
         ? animatedImage.verticalY
         : animatedImage.offsetY
     }px);`}
+`;
+
+const StyledSignInButton = styled(SignInButton)`
+  border: 1px solid ${colors.black['800']};
 `;

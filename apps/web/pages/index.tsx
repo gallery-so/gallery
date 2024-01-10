@@ -70,6 +70,7 @@ const queryString = `*[_type == "landingPage"]{
   ...,
   "highlight1": highlight1->{
     heading,
+    headingFont,
     body,
     media {
       mediaType,
@@ -89,6 +90,7 @@ const queryString = `*[_type == "landingPage"]{
   },
   "miniFeatureHighlights": miniFeatureHighlights[]->{
     heading,
+    headingFont,
     orientation,
     body,
     externalLink,
@@ -109,6 +111,7 @@ const queryString = `*[_type == "landingPage"]{
   },
   "highlight2": highlight2->{
     heading,
+    headingFont,
     body,
     media {
       mediaType,

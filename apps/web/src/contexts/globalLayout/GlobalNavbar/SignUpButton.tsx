@@ -1,10 +1,17 @@
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
+import { TitleDiatypeL } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import { contexts, flows } from '~/shared/analytics/constants';
 
-export function SignUpButton() {
+type Props = {
+  className?: string;
+  size?: 'md' | 'lg';
+};
+
+export function SignUpButton({ className, size = 'md' }: Props) {
   const showAuthModal = useAuthModal('sign-up');
 
   return (
@@ -14,12 +21,20 @@ export function SignUpButton() {
       eventContext={contexts.Authentication}
       eventFlow={flows['Web Signup Flow']}
       onClick={showAuthModal}
+      className={className}
     >
-      Sign up
+      <StyledButtonText size={size}>Sign up</StyledButtonText>
     </StyledButton>
   );
 }
 
-const StyledButton = styled(Button)`
-  padding: 8px 16px;
+const StyledButton = styled(Button)<{ size: string }>`
+  padding: ${({ size }) => (size === 'md' ? '8px 24px' : '12px 40px')};
+`;
+
+const StyledButtonText = styled(TitleDiatypeL)<{ size: string }>`
+  font-size: ${({ size }) => (size === 'md' ? '12px' : '18px')};
+  line-height: ${({ size }) => (size === 'md' ? '16px' : '24px')};
+  font-weight: 400;
+  color: ${colors.white};
 `;
