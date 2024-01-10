@@ -60,7 +60,8 @@ export default function useExperience({ type, queryRef }: Props): [boolean, user
         return;
       }
 
-      const { experienced } = props;
+      // if props aren't properly supplied, default to true to dismiss the experience
+      const experienced = props?.experienced ?? true;
 
       const optimisticExperiencesList = userExperiences.map((experience) => {
         if (experience.type === type) {
