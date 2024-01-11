@@ -1,13 +1,9 @@
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import TextButton from '~/components/core/Button/TextButton';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import transitions from '~/components/core/transitions';
 import useAuthModal from '~/hooks/useAuthModal';
 import { contexts } from '~/shared/analytics/constants';
-import colors from '~/shared/theme/colors';
 
 type Props = {
   className?: string;
@@ -25,6 +21,7 @@ export function SignInButton({ className, size = 'md' }: Props) {
       onClick={showAuthModal}
       className={className}
       variant="secondary"
+      size={size}
     >
       <StyledButtonText size={size}>Sign in</StyledButtonText>
     </StyledButton>

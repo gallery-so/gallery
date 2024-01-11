@@ -46,9 +46,10 @@ export namespace CmsTypes {
   export interface FeatureHighlight {
     _type: 'featureHighlight';
     heading: string;
+    headingFont: string;
     body: Block[];
     media: Media;
-    orientation: 'left' | 'right';
+    orientation: 'left' | 'right' | 'bottom';
   }
 
   export interface FeaturePage {
@@ -64,6 +65,7 @@ export namespace CmsTypes {
 
   export interface Testimonial {
     _type: 'testimonial';
+    id: string;
     pfp: Media;
     username: string;
     handle: string;
@@ -74,9 +76,19 @@ export namespace CmsTypes {
 
   export interface FeaturedProfile {
     _type: 'featuredProfile';
+    id: string;
     coverImages: Image[];
     profilePicture: Media;
     username: string;
     profileType: 'collector' | 'creator';
+  }
+
+  export interface LandingPage {
+    _type: 'landingPage';
+    title: string;
+    highlight1: FeatureHighlight;
+    miniFeatureHighlights: FeatureHighlight[];
+    featuredProfiles: FeaturedProfile[];
+    testimonials: Testimonial[];
   }
 }

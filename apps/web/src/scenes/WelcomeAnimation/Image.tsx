@@ -2,6 +2,8 @@ import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
 import styled, { css, Keyframes } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
+
 type Props = {
   alt: string;
   src: string;
@@ -14,14 +16,17 @@ type Props = {
 };
 
 const StyledImage = styled.img<{
-  width?: number;
+  width: number;
   fadeInDelay: number;
   fadeInGrow?: Keyframes;
   fadeOutGrow?: Keyframes;
   shouldFadeOut?: boolean;
   imagesFaded?: boolean;
 }>`
-  width: ${({ width }) => width}px;
+  width: ${({ width }) => 0.7 * width}px;
+  @media only screen and ${breakpoints.tablet} {
+    width: ${({ width }) => width}px;
+  }
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   opacity: 1;
 

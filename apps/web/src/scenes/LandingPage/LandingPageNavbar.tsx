@@ -6,18 +6,6 @@ import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton'
 import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton';
 
 export default function LandingPageNavbar() {
-  const [show, setShow] = useState(false);
-
-  const controlNavbar = () => {
-    if (window.scrollY > window.innerHeight * 0.6) {
-      console.log('hello');
-      // 100 is the scroll point you can adjust
-      setShow(true);
-    } else {
-      setShow(false);
-    }
-  };
-
   const [opacity, setOpacity] = useState(0);
 
   const adjustNavbarOpacity = () => {
@@ -37,10 +25,6 @@ export default function LandingPageNavbar() {
   };
 
   useEffect(() => {
-    console.log(opacity);
-  }, [opacity]);
-
-  useEffect(() => {
     window.addEventListener('scroll', adjustNavbarOpacity);
     return () => {
       window.removeEventListener('scroll', adjustNavbarOpacity);
@@ -48,17 +32,15 @@ export default function LandingPageNavbar() {
   }, []);
 
   return (
-    <StyledNavbar show={show} opacity={opacity}>
+    <StyledNavbar opacity={opacity}>
       <SignInButton />
       <SignUpButton />
     </StyledNavbar>
   );
 }
 
-const StyledNavbar = styled.div<{ show: boolean; opacity: number }>`
-  // opacity: ${({ show }) => (show ? '1' : '0')};
+const StyledNavbar = styled.div<{ opacity: number }>`
   opacity: ${({ opacity }) => opacity};
-  // transition: opacity 0.5s ease;
   position: fixed;
   top: 0;
   width: 100%;

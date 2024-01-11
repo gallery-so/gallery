@@ -4,12 +4,11 @@ import colors from 'shared/theme/colors';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed } from '~/components/core/Text/Text';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton';
-import useWindowSize from '~/hooks/useWindowSize';
+import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import Image from '../WelcomeAnimation/Image';
 import { AnimatedImage } from '../WelcomeAnimation/Images';
@@ -21,8 +20,8 @@ const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window
 const textAnimationOptions = {
   width: 300,
   zIndex: 2,
-  offsetX: 0,
-  offsetY: 0,
+  offsetX: { mobile: 0, desktop: 0 },
+  offsetY: { mobile: 0, desktop: 0 },
   offsetXStart: 0,
   offsetYStart: 0,
   fadeInDelay: 0,
@@ -56,6 +55,8 @@ export default function LandingCoverAnimation() {
     setAspectRatio('horizontal');
   }, [windowSize]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
       <animated.div
@@ -64,33 +65,15 @@ export default function LandingCoverAnimation() {
           transform: props.xy.to(getTransformCallback(textAnimationOptions)),
         }}
       >
-        <VStack align="center" gap={80}>
+        <VStack align="center" gap={isMobile ? 48 : 80}>
           <StyledTitle>
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            <StyledSignInButton size="lg" />
-            <SignUpButton size="lg" />
+            <StyledSignInButton size={isMobile ? 'md' : 'lg'} />
+            <SignUpButton size={isMobile ? 'md' : 'lg'} />
           </HStack>
         </VStack>
-        {/* <StyledTextContainer shouldFadeOut={shouldFadeOut} gap={16}>
-          <VStack gap={8} align="center">
-            <TitleL>Welcome to Gallery</TitleL>
-            <StyledBodyText>
-              This is your space to share your pieces and the stories that surround them. Curate,
-              arrange, and display your collection exactly how it was meant to be.
-            </StyledBodyText>
-          </VStack>
-          <StyledButton
-            // onboarding steps are instrumented elsewhere
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
-            onClick={handleClick}
-          >
-            Enter Gallery
-          </StyledButton>
-        </StyledTextContainer> */}
       </animated.div>
       {animatedImages.map((animatedImage) => (
         <AnimatedImage
@@ -113,24 +96,16 @@ function AnimatedImage({
   aspectRatio: AspectRatio;
   xy: SpringValue<number[]>;
 }) {
-  const divRef = useRef(null); // Reference to your div
+  const divRef = useRef<HTMLDivElement>(null);
 
   const updateOpacity = () => {
     if (divRef.current) {
       const rect = divRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
-      console.log(rect.bottom, windowHeight);
-
-      // if (rect.top > 100 || rect.top < 0) {
-      //   return;
-      // }
 
       // Calculate opacity based on the div's position relative to the viewport
       const opacity = Math.max(0, Math.min(1, (rect.top + 100) / 200));
 
-      // Apply the opacity to the div
-      divRef.current.style.opacity = opacity;
+      divRef.current.style.opacity = `${opacity}`;
     }
   };
 
@@ -220,16 +195,21 @@ const StyledMovementWrapper = styled.div<{
   position: relative;
   transition: transform 1000ms cubic-bezier(0, 0, 0, 1.07);
 
-  ${({ animatedImage, aspectRatio }) =>
-    `transform: translate(${
-      aspectRatio === 'vertical' && animatedImage.moveOnVertical
-        ? animatedImage.verticalX
-        : animatedImage.offsetX
-    }px, ${
-      aspectRatio === 'vertical' && animatedImage.moveOnVertical
-        ? animatedImage.verticalY
-        : animatedImage.offsetY
-    }px);`}
+  ${({ animatedImage }) =>
+    `transform: translate(${animatedImage.offsetX.mobile}px, ${animatedImage.offsetY.mobile}px);`}
+
+  @media only screen and ${breakpoints.desktop} {
+    ${({ animatedImage, aspectRatio }) =>
+      `transform: translate(${
+        aspectRatio === 'vertical' && animatedImage.moveOnVertical
+          ? animatedImage.verticalX
+          : animatedImage.offsetX.desktop
+      }px, ${
+        aspectRatio === 'vertical' && animatedImage.moveOnVertical
+          ? animatedImage.verticalY
+          : animatedImage.offsetY.desktop
+      }px);`}
+  }
 `;
 
 const StyledSignInButton = styled(SignInButton)`

@@ -6,12 +6,13 @@ import { pagesQuery } from '~/generated/pagesQuery.graphql';
 import { pagesRedirectFragment$key } from '~/generated/pagesRedirectFragment.graphql';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import LandingPageScene from '~/scenes/LandingPage/LandingPage';
 import { fetchSanityContent } from '~/utils/sanity';
 
 type LandingPageSceneWithRedirectProps = {
   queryRef: pagesRedirectFragment$key;
-  pageContent: any;
+  pageContent: CmsTypes.LandingPage;
 };
 
 function LandingPageSceneWithRedirect({
@@ -39,10 +40,10 @@ function LandingPageSceneWithRedirect({
 }
 
 type Props = {
-  document: any;
+  pageContent: CmsTypes.LandingPage;
 };
 
-export default function Index({ document }: Props) {
+export default function Index({ pageContent }: Props) {
   const query = useLazyLoadQuery<pagesQuery>(
     graphql`
       query pagesQuery {
@@ -57,8 +58,8 @@ export default function Index({ document }: Props) {
       element={
         // The idea here is to show the LandingPageScene when the  LandingPageSceneWithRedirect is loading
         // Basically just show them something while we're determining whether or not they should be redirected
-        <Suspense fallback={<LandingPageScene pageContent={document} />}>
-          <LandingPageSceneWithRedirect queryRef={query} pageContent={document} />
+        <Suspense fallback={<LandingPageScene pageContent={pageContent} />}>
+          <LandingPageSceneWithRedirect queryRef={query} pageContent={pageContent} />
         </Suspense>
       }
       navbar={false}
@@ -109,26 +110,6 @@ const queryString = `*[_type == "landingPage"]{
       }
     }
   },
-  "highlight2": highlight2->{
-    heading,
-    headingFont,
-    body,
-    media {
-      mediaType,
-      image{
-        asset->{
-          url
-        },
-        alt
-      },
-      video{
-        asset->{
-          url
-        }
-      }
-    },
-    orientation
-  },
   "testimonials": testimonials[]->{
     pfp{
       asset->{
@@ -161,12 +142,10 @@ const queryString = `*[_type == "landingPage"]{
 
 export const getServerSideProps = async () => {
   const content = await fetchSanityContent(queryString);
-  // const { req, res } = context;
-  console.log('content');
-  console.log(content);
+
   return {
     props: {
-      document: content[0],
+      pageContent: content[0],
     },
   };
 };

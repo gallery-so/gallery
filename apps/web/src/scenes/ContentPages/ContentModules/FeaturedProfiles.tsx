@@ -1,9 +1,8 @@
-import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { Carousel } from '~/components/core/Carousel/carousel';
+import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -51,7 +50,6 @@ const StyledContainer = styled(VStack)`
     flex-direction: row;
     gap: 16px;
     width: 100%;
-    // max-width: 100vw;
     overflow-x: hidden;
   }
 `;
@@ -61,7 +59,6 @@ type FeaturedProfileProps = {
 };
 
 function FeaturedProfile({ profile }: FeaturedProfileProps) {
-  // console.log({ profile });
   return (
     <GalleryLink href={`/${profile.username}`} target="_blank">
       <StyledProfile gap={16}>

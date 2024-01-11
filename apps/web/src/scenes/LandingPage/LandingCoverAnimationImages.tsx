@@ -2,11 +2,17 @@ import { AnimatedImage } from '../WelcomeAnimation/Images';
 
 export const animatedImages: AnimatedImage[] = [
   {
-    src: 'https://lh3.googleusercontent.com/AqK0M5EcGCytypy6t5VBclg2Pm66npq4Qpf-MlNox_l1BD8uhDhlircZ5mPCrKch3FAgacTbRO61Ur722W3g-ANWiTMQU6owrnOukQ', // Chair
-    width: 180,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/04.jpg', // Ringer
+    width: 200,
     zIndex: -40,
-    offsetX: 180,
-    offsetY: -370,
+    offsetX: {
+      mobile: 120,
+      desktop: 180,
+    },
+    offsetY: {
+      mobile: -350,
+      desktop: -370,
+    },
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 800,
@@ -15,11 +21,19 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -180,
   },
   {
-    src: 'https://lh3.googleusercontent.com/sxCl9E-dvfOq7UidBi-dO8TDXtU7QmbpVj8x4nXnJpDAujj2c74F1cTqvX5alvInLh9NkaoGFL1aFIvx8M2mRtqQ', // Punk
-    width: 100,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/06.jpg', // Monarch
+    width: 160,
     zIndex: -13,
-    offsetX: -105,
-    offsetY: 210,
+    //   offsetX: -105,
+    // offsetY: 210,
+    offsetX: {
+      mobile: 190,
+      desktop: 555,
+    },
+    offsetY: {
+      mobile: 0,
+      desktop: 130,
+    },
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 0,
@@ -28,11 +42,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -50,
   },
   {
-    src: 'https://lh3.googleusercontent.com/CpwTm306giMTU90lJrdEqs_SuUWa9DPT7r6CzDJZErJAdbLC8RoB-3GEh_QBtcmPrr6SmsywUPjbO9IN0i6VmwpteirK5ptSePYPzQ=w335', // Fidenza
-    width: 280,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/08.jpg', // squiggle
+    width: 260,
     zIndex: -18,
-    offsetX: 370,
-    offsetY: 80,
+    offsetX: {
+      mobile: -120,
+      desktop: -195,
+    },
+    offsetY: {
+      mobile: 280,
+      desktop: 200,
+    },
     offsetXStart: -20,
     offsetYStart: -12,
     fadeInDelay: 300,
@@ -41,11 +61,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: 100,
   },
   {
-    src: 'https://lh3.googleusercontent.com/kghKAvKiZ6dCQaPtfcyuNKnNDNtijiwoalY3ZGeo4WwOyLIZvDeX7auYyiVX2vNKI_GU8Wrt88pLTNNAi5n3ENwsaJ5y2ZWvH0rzMw=w335', // Squiggle
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/03.jpg', // swirl
     width: 200,
     zIndex: 20,
-    offsetX: -150,
-    offsetY: -390,
+    offsetX: {
+      mobile: -70,
+      desktop: -150,
+    },
+    offsetY: {
+      mobile: -440,
+      desktop: -390,
+    },
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 0,
@@ -54,11 +80,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: 400,
   },
   {
-    src: 'https://lh3.googleusercontent.com/dvrP8rJNswBrdAo4eYia2y808Od_vjtmxn3-41-WDxs2K5jElLUQEsIUGw7X0uGVLe8ywqrUg-70OlrpjIGKiiK4FBy1SyMCmpmIaA=w336', // Elementals
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/02.jpg', // gallery orb
     width: 200,
     zIndex: 11,
-    offsetX: -550,
-    offsetY: -340,
+    offsetX: {
+      mobile: -240,
+      desktop: -550,
+    },
+    offsetY: {
+      mobile: -340,
+      desktop: -340,
+    },
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 1200,
@@ -67,11 +99,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -350,
   },
   {
-    src: 'https://lh3.googleusercontent.com/kOnoQtIQslGFMlxXXGxPtnjCbUvOr1EuIePKC0DJsTsvvV__ytpVoywQ9Fkl8KAxWAwKP2coUj7N-Pk_e_hyTXEKgyzYPJKRcBrULQ=s500', // Brushpops
-    width: 250,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/10.jpg', // allstarz
+    width: 180,
     zIndex: 37,
-    offsetX: -510,
-    offsetY: 110,
+    offsetX: {
+      mobile: -290,
+      desktop: -510,
+    },
+    offsetY: {
+      mobile: 150,
+      desktop: 110,
+    },
     offsetXStart: 0,
     offsetYStart: 30,
     fadeInDelay: 500,
@@ -83,8 +121,14 @@ export const animatedImages: AnimatedImage[] = [
     src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
     width: 220,
     zIndex: 25,
-    offsetX: 440,
-    offsetY: -240,
+    offsetX: {
+      mobile: 440,
+      desktop: 440,
+    },
+    offsetY: {
+      mobile: -240,
+      desktop: -240,
+    },
     offsetXStart: -40,
     offsetYStart: 0,
     fadeInDelay: 0,
@@ -93,11 +137,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -600,
   },
   {
-    src: 'https://lh3.googleusercontent.com/eg2EsokhN7VkPzzHgO6QHYZHsUaGwhhagLiRhYVIi30Fw2WwudM0NFiGdTAZsLEY99dPuCEo0hdrK6BxZzy6EGXsgSdLL3wA4UMz=w500', // Wheatstacks
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/07.jpg', // Ghosts
     width: 200,
     zIndex: 30,
-    offsetX: 80,
-    offsetY: 150,
+    offsetX: {
+      mobile: 80,
+      desktop: 210,
+    },
+    offsetY: {
+      mobile: 150,
+      desktop: 60,
+    },
     offsetXStart: 0,
     offsetYStart: -40,
     fadeInDelay: 300,
@@ -106,11 +156,17 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: 150,
   },
   {
-    src: 'https://lh3.googleusercontent.com/G6eilbjTdOHxUcZC3y_O96beaUu_DGzyiduK3HB_7ki94QuZx02xQSz4S-KaDIg-Pw-0YkV1KgC3ECmflEzWq0HoZw', // Rebirth of Venus
-    width: 230,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/01.jpg', // Rebirth of Venus
+    width: 170,
     zIndex: -11,
-    offsetX: -660,
-    offsetY: -120,
+    offsetX: {
+      mobile: -660,
+      desktop: -660,
+    },
+    offsetY: {
+      mobile: -120,
+      desktop: -120,
+    },
     offsetXStart: 0,
     offsetYStart: 0,
     fadeInDelay: 0,

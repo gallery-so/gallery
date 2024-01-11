@@ -22,6 +22,7 @@ export function SignUpButton({ className, size = 'md' }: Props) {
       eventFlow={flows['Web Signup Flow']}
       onClick={showAuthModal}
       className={className}
+      size={size}
     >
       <StyledButtonText size={size}>Sign up</StyledButtonText>
     </StyledButton>

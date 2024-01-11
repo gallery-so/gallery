@@ -2,18 +2,10 @@ import AppStoreBadge from 'public/icons/Download_on_the_App_Store_US.svg';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { Button, DeprecatedButtonLink } from '~/components/core/Button/Button';
+import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import NavLink from '~/components/core/NavLink/NavLink';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import {
-  BaseS,
-  BlueLabel,
-  TitleDiatypeL,
-  TitleDiatypeM,
-  TitleM,
-} from '~/components/core/Text/Text';
-import GalleryIntro from '~/components/GalleryTitleIntro/GalleryTitleIntro';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeL, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
@@ -24,23 +16,19 @@ import { CmsTypes } from '../ContentPages/cms_types';
 import FeaturedProfiles from '../ContentPages/ContentModules/FeaturedProfiles';
 import FeatureHighlight from '../ContentPages/ContentModules/FeatureHighlight';
 import Testimonials from '../ContentPages/ContentModules/Testimonials';
-import WelcomeAnimation from '../WelcomeAnimation/WelcomeAnimation';
 import LandingCoverAnimation from './LandingCoverAnimation';
 import LandingPageNavbar from './LandingPageNavbar';
-
-const GALLERY_OF_THE_WEEK_USER = 'masisus';
 
 const MOBILE_PAGE_GUTTER = 32;
 const DESKTOP_PAGE_GUTTER = 60;
 
 type Props = {
-  pageContent: any;
+  pageContent: CmsTypes.LandingPage;
 };
 
 export default function LandingPage({ pageContent }: Props) {
   const track = useTrack();
 
-  // console.log(pageContent);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
@@ -48,25 +36,6 @@ export default function LandingPage({ pageContent }: Props) {
       <LandingPageNavbar />
       <FullWidthWrapper gap={isMobile ? 70 : 130} justify="center" align="center">
         <LandingCoverAnimation />
-        {/* <GalleryIntro />
-        <HStack gap={12}>
-          <DeprecatedButtonLink
-            href={{ pathname: '/auth' }}
-            onClick={() => track('Landing page Sign In button click')}
-            data-testid="sign-in-button"
-          >
-            Sign In
-          </DeprecatedButtonLink>
-          <DeprecatedButtonLink
-            href={{ pathname: '/home' }}
-            onClick={() => track('Landing page Explore button click')}
-            variant="secondary"
-          >
-            Explore
-          </DeprecatedButtonLink>
-        </HStack> */}
-        {/* <WelcomeAnimation /> */}
-
         <PageGutterWrapper gap={isMobile ? 70 : 120}>
           <FeatureHighlight content={pageContent.highlight1} />
           <StyledFeatureHighlightContainer>
@@ -87,8 +56,6 @@ export default function LandingPage({ pageContent }: Props) {
             </VStack>
           </StyledMobileAppCta>
         </PageGutterWrapper>
-        {/* <FeatureHighlight content={pageContent.highlight2} /> */}
-        {/* <FullWidthWrapper gap={45}> */}
         <FullWidthWrapper gap={45}>
           <PageGutterWrapper gap={16}>
             <StyledTitle>Featured</StyledTitle>
@@ -96,16 +63,15 @@ export default function LandingPage({ pageContent }: Props) {
           </PageGutterWrapper>
           <FeaturedProfiles profiles={pageContent.featuredProfiles} />
         </FullWidthWrapper>
-        {/* </FullWidthWrapper> */}
         <PageGutterWrapper gap={32}>
           <StyledTitle>What our users say</StyledTitle>
           <Testimonials testimonials={pageContent.testimonials} />
         </PageGutterWrapper>
         <VStack gap={32}>
           <StyledSubTitle>Start your journey today</StyledSubTitle>
-          <StyledGetStartedButton>
+          <Button>
             <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
-          </StyledGetStartedButton>
+          </Button>
         </VStack>
       </FullWidthWrapper>
     </StyledLandingPage>
@@ -216,10 +182,6 @@ const StyledLogoBracketLeft = styled(LogoBracketLeft)`
 const StyledLogoBracketRight = styled(LogoBracketRight)`
   width: 6px;
   height: 16px;
-`;
-
-const StyledGetStartedButton = styled(Button)`
-  // background: blue;
 `;
 
 const StyledGetStartedButtonText = styled(TitleDiatypeL)`

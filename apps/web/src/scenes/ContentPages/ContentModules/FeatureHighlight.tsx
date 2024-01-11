@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
-import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
 
@@ -61,11 +60,9 @@ function FeatureHighlightMedia({ media }: FeatureHighlightMediaProps) {
 
 type Props = {
   content: CmsTypes.FeatureHighlight;
-  // variant?: 'full' | 'condensed';
 };
 
 export default function FeatureHighlight({ content }: Props) {
-  console.log(content);
   return (
     <StyledHighlight gap={24} orientation={content.orientation}>
       {content.media && (
@@ -88,7 +85,6 @@ export default function FeatureHighlight({ content }: Props) {
 
 const StyledHighlight = styled(VStack)<{ orientation: string }>`
   align-items: center;
-  // margin: 0 32px;
   justify-content: space-between;
   gap: 32px 120px;
   width: 100%;
@@ -96,9 +92,7 @@ const StyledHighlight = styled(VStack)<{ orientation: string }>`
   @media only screen and ${breakpoints.desktop} {
     flex-direction: ${({ orientation }) =>
       orientation === 'bottom' ? 'column' : orientation === 'right' ? 'row' : 'row-reverse'};
-    // gap: 32px;
     margin: 0;
-    // justify-content: flex-end;
   }
 `;
 
@@ -125,22 +119,10 @@ const StyledDiatypeTitle = styled(TitleDiatypeL)`
 const StyledTextSection = styled(VStack)`
   align-items: flex-start;
   width: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    // max-width: 480px;
-  }
 `;
 
 const StyledMedia = styled.div`
-  // min-width: 326px;
-  // min-height: 326px;
-  // max-width: 326px;
-  // max-height: 326px;
-  // background-color: ${colors.faint};
-
   @media only screen and ${breakpoints.desktop} {
-    // min-width: 500px;
-    // min-height: 500px;
     max-width: 500px;
     max-height: 500px;
     width: 100%;
