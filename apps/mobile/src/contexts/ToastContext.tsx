@@ -14,13 +14,7 @@ type ToastProps = {
 };
 
 type ToastActions = {
-  pushToast: ({
-    message,
-    onDismiss,
-    autoClose,
-    children,
-    withoutNavbar = false,
-  }: ToastProps) => void;
+  pushToast: ({ message, onDismiss, autoClose, children, withoutNavbar }: ToastProps) => void;
   dismissToast: (id: string) => void;
   dismissAllToasts: () => void;
 };
@@ -51,7 +45,13 @@ const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
   const pushToast = useCallback(
-    ({ message, onDismiss = noop, autoClose = true, children, withoutNavbar }: ToastProps) => {
+    ({
+      message,
+      onDismiss = noop,
+      autoClose = true,
+      children,
+      withoutNavbar = false,
+    }: ToastProps) => {
       setToasts((previousMessages) => [
         ...previousMessages,
         { message, onDismiss, autoClose, id: Date.now().toString(), children, withoutNavbar },
