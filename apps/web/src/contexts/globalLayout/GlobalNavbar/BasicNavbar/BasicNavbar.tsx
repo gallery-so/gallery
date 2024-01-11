@@ -43,9 +43,9 @@ export function BasicNavbar({ queryRef }: Props) {
       <NavbarRightContent>
         {isLoggedIn ? null : (
           <HStack gap={8} align="center">
-            <SignInButton />
+            <SignInButton buttonLocation="Basic Navbar" />
             {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-            {!isMobile && <SignUpButton />}
+            {!isMobile && <SignUpButton buttonLocation="Basic Navbar" />}
           </HStack>
         )}
       </NavbarRightContent>

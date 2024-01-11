@@ -6,11 +6,12 @@ import useAuthModal from '~/hooks/useAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
+  buttonLocation: string;
   className?: string;
   size?: 'md' | 'lg';
 };
 
-export function SignInButton({ className, size = 'md' }: Props) {
+export function SignInButton({ className, buttonLocation, size = 'md' }: Props) {
   const showAuthModal = useAuthModal('sign-in');
 
   return (
@@ -18,6 +19,7 @@ export function SignInButton({ className, size = 'md' }: Props) {
       eventElementId="Sign In Button"
       eventName="Attempt Sign In"
       eventContext={contexts.Authentication}
+      properties={{ buttonLocation }}
       onClick={showAuthModal}
       className={className}
       variant="secondary"

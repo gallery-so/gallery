@@ -41,9 +41,9 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
 
       {query.viewer?.__typename === 'Viewer' ? null : (
         <HStack gap={8} align="center">
-          <SignInButton />
+          <SignInButton buttonLocation="Collection Page Navbar" />
           {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-          {!isMobile && <SignUpButton />}
+          {!isMobile && <SignUpButton buttonLocation="Collection Page Navbar" />}
         </HStack>
       )}
     </StandardNavbarContainer>

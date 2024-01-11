@@ -7,19 +7,21 @@ import useAuthModal from '~/hooks/useAuthModal';
 import { contexts, flows } from '~/shared/analytics/constants';
 
 type Props = {
+  buttonLocation: string;
   className?: string;
   size?: 'md' | 'lg';
 };
 
-export function SignUpButton({ className, size = 'md' }: Props) {
+export function SignUpButton({ className, buttonLocation, size = 'md' }: Props) {
   const showAuthModal = useAuthModal('sign-up');
 
   return (
     <StyledButton
       eventElementId="Sign Up Button"
       eventName="Attempt Sign Up"
-      eventContext={contexts.Authentication}
+      eventContext={contexts.Onboarding}
       eventFlow={flows['Web Signup Flow']}
+      properties={{ buttonLocation }}
       onClick={showAuthModal}
       className={className}
       size={size}

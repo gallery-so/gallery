@@ -72,7 +72,9 @@ export default function FeatureHighlight({ content }: Props) {
       )}
       <StyledTextSection align="flex-start" gap={content.orientation === 'bottom' ? 16 : 32}>
         {content.headingFont === 'abcDiatype' ? (
-          <StyledDiatypeTitle>{content.heading}</StyledDiatypeTitle>
+          <StyledDiatypeTitle orientation={content.orientation}>
+            {content.heading}
+          </StyledDiatypeTitle>
         ) : (
           <StyledGTAlpinaTitle>{content.heading}</StyledGTAlpinaTitle>
         )}
@@ -104,15 +106,15 @@ const StyledGTAlpinaTitle = styled(TitleCondensed)`
   }
 `;
 
-const StyledDiatypeTitle = styled(TitleDiatypeL)`
+const StyledDiatypeTitle = styled(TitleDiatypeL)<{ orientation: string }>`
   font-size: 32px;
   line-height: 36px;
   text-align: start;
   font-weight: 400;
   letter-spacing: -0.03em;
   @media only screen and ${breakpoints.desktop} {
-    font-size: 40px;
-    line-height: 46px;
+    font-size: ${({ orientation }) => (orientation === 'bottom' ? '32px' : '56px')};
+    line-height: ${({ orientation }) => (orientation === 'bottom' ? '46px' : '56px')};
   }
 `;
 
@@ -122,10 +124,10 @@ const StyledTextSection = styled(VStack)`
 `;
 
 const StyledMedia = styled.div`
+  width: 100%;
   @media only screen and ${breakpoints.desktop} {
     max-width: 500px;
     max-height: 500px;
-    width: 100%;
   }
 `;
 const StyledVideo = styled.video`

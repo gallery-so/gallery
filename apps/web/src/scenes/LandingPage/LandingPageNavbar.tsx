@@ -33,8 +33,8 @@ export default function LandingPageNavbar() {
 
   return (
     <StyledNavbar opacity={opacity}>
-      <SignInButton />
-      <SignUpButton />
+      <SignInButton buttonLocation="Landing Page Navbar" />
+      <SignUpButton buttonLocation="Landing Page Navbar" />
     </StyledNavbar>
   );
 }

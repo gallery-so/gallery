@@ -1,14 +1,14 @@
 import AppStoreBadge from 'public/icons/Download_on_the_App_Store_US.svg';
+import { contexts, flows } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeL, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
+import { TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
+import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import LogoBracketLeft from '~/icons/LogoBracketLeft';
-import LogoBracketRight from '~/icons/LogoBracketRight';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -30,6 +30,7 @@ export default function LandingPage({ pageContent }: Props) {
   const track = useTrack();
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const showAuthModal = useAuthModal('sign-up');
 
   return (
     <StyledLandingPage>
@@ -45,14 +46,17 @@ export default function LandingPage({ pageContent }: Props) {
               )
             )}
           </StyledFeatureHighlightContainer>
-          <StyledMobileAppCta gap={isMobile ? 70 : 110}>
-            <img />
-            <VStack gap={32}>
-              <StyledTitle>Download the mobile app</StyledTitle>
+          <StyledMobileAppCta>
+            <StyledMobileAppImage
+              src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/mobileapp.jpg"
+              alt="Image of Mobile App"
+            />
+            <VStack gap={32} justify="center">
+              <StyledTitleLarge>Download the mobile app</StyledTitleLarge>
               <StyledText>The mobile app is very cool and you should download it.</StyledText>
-              <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                <AppStoreBadge />
-              </GalleryLink>
+              <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                <AppStoreBadge width="160" height="53.5" />
+              </StyledAppStoreBadgeLink>
             </VStack>
           </StyledMobileAppCta>
         </PageGutterWrapper>
@@ -69,7 +73,13 @@ export default function LandingPage({ pageContent }: Props) {
         </PageGutterWrapper>
         <VStack gap={32}>
           <StyledSubTitle>Start your journey today</StyledSubTitle>
-          <Button>
+          <Button
+            eventElementId="Landing Page Get Started"
+            eventName="Clicked Landing Page Get Started"
+            eventContext={contexts.Onboarding}
+            eventFlow={flows['Web Signup Flow']}
+            onClick={showAuthModal}
+          >
             <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
           </Button>
         </VStack>
@@ -112,6 +122,20 @@ const StyledMobileAppCta = styled.div`
   }
 `;
 
+const StyledMobileAppImage = styled.img`
+  width: 100%;
+  height: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-width: 500px;
+    max-height: 500px;
+  }
+`;
+
+const StyledAppStoreBadgeLink = styled(GalleryLink)`
+  width: fit-content;
+`;
+
 const StyledLandingPage = styled.div`
   margin: 0 auto;
   max-width: 1436px;
@@ -130,6 +154,16 @@ const StyledTitle = styled(TitleDiatypeL)`
   letter-spacing: -0.03em;
 `;
 
+const StyledTitleLarge = styled(StyledTitle)`
+  font-size: 40px;
+  line-height: 42px;
+
+  @media only screen and ${breakpoints.desktop} {
+    font-size: 56px;
+    line-height: 56px;
+  }
+`;
+
 const StyledSubTitle = styled(TitleDiatypeM)`
   font-size: 24px;
   line-height: 32px;
@@ -140,49 +174,15 @@ const FullWidthWrapper = styled(VStack)`
   width: 100%;
 `;
 
-const StyledBottomContainer = styled(VStack)`
-  align-items: center;
-  justify-content: center;
-
-  position: absolute;
-  bottom: 16px;
-`;
-
 const StyledText = styled(TitleDiatypeL)`
   font-weight: 400;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.03em;
   @media only screen and ${breakpoints.desktop} {
-    font-size: 20px;
-    line-height: 28px;
+    font-size: 24px;
+    line-height: 32px;
   }
-`;
-const StyledShopText = styled(TitleM)`
-  font-family: 'GT Alpina Condensed';
-  display: inline;
-  height: 16px;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 14.4127px;
-  line-height: 16px;
-  color: inherit;
-`;
-
-const StyledObjectsContainer = styled.div`
-  height: 16px;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledLogoBracketLeft = styled(LogoBracketLeft)`
-  width: 6px;
-  height: 16px;
-`;
-
-const StyledLogoBracketRight = styled(LogoBracketRight)`
-  width: 6px;
-  height: 16px;
 `;
 
 const StyledGetStartedButtonText = styled(TitleDiatypeL)`

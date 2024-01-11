@@ -70,8 +70,14 @@ export default function LandingCoverAnimation() {
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            <StyledSignInButton size={isMobile ? 'md' : 'lg'} />
-            <SignUpButton size={isMobile ? 'md' : 'lg'} />
+            <StyledSignInButton
+              size={isMobile ? 'md' : 'lg'}
+              buttonLocation="Landing Page Splash Screen"
+            />
+            <SignUpButton
+              size={isMobile ? 'md' : 'lg'}
+              buttonLocation="Landing Page Splash Screen"
+            />
           </HStack>
         </VStack>
       </animated.div>
