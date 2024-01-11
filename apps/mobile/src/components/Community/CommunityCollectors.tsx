@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { CommunityCollectorsFragment$key } from '~/generated/CommunityCollectorsFragment.graphql';
 import { CommunityCollectorsQueryFragment$key } from '~/generated/CommunityCollectorsQueryFragment.graphql';
 
+import { useListContentStyle } from '../ProfileView/Tabs/useListContentStyle';
 import { CommunityCollectorsList } from './CommunityCollectorsList';
 
 type Props = {
@@ -30,8 +31,10 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
     queryRef
   );
 
+  const contentContainerStyle = useListContentStyle();
+
   return (
-    <View className="flex-1 pt-16">
+    <View style={contentContainerStyle}>
       <CommunityCollectorsList queryRef={query} communityRef={community} />
     </View>
   );
