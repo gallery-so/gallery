@@ -39,6 +39,10 @@ function FeatureHighlightText({ text }: FeatureHighlightBulletsProps) {
 const StyledHighlightText = styled(VStack)`
   ul {
     margin: 0;
+    padding-left: 24px;
+  }
+  a {
+    color: inherit;
   }
 `;
 

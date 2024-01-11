@@ -35,7 +35,7 @@ export default function LandingPage({ pageContent }: Props) {
   return (
     <StyledLandingPage>
       <LandingPageNavbar />
-      <FullWidthWrapper gap={isMobile ? 70 : 130} justify="center" align="center">
+      <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
         <LandingCoverAnimation />
         <PageGutterWrapper gap={isMobile ? 70 : 120}>
           <FeatureHighlight content={pageContent.highlight1} />
