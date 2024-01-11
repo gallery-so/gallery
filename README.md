@@ -63,7 +63,7 @@ If you need access to any of the following:
 - Sentry keys
 - Cypress dashboard
 
-Hit up a member of the core team!
+Hit up a member of the core team.
 
 ### Other commands
 
