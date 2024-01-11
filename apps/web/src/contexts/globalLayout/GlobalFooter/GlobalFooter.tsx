@@ -32,25 +32,31 @@ function GlobalFooter() {
             <StyledLogo />
           </GalleryLink>
         </HStack>
-        <HStack gap={8} wrap="wrap">
-          <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
-          <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
-          <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
-          <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
-          <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink>
-          <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-          <StyledFooterLink href={route({ pathname: '/shop' })}>
-            <HStack gap={4}>
-              Shop
-              <StyledObjectsContainer>
+        <HStack gap={72} wrap="wrap">
+          <VStack gap={8}>
+            <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
+            <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
+          </VStack>
+          <VStack gap={8}>
+            <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
+            <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
+          </VStack>
+          <VStack gap={8}>
+            {/* <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink> */}
+            <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
+            <StyledFooterLink href={route({ pathname: '/shop' })}>
+              <HStack gap={4}>
+                Shop
+                {/* <StyledObjectsContainer>
                 <StyledLogoBracketLeft color={colors.shadow} />
                 <HStack gap={1}>
                   <StyledShopText>OBJECTS</StyledShopText>
                   <StyledLogoBracketRight color={colors.shadow} />
                 </HStack>
-              </StyledObjectsContainer>
-            </HStack>
-          </StyledFooterLink>
+              </StyledObjectsContainer> */}
+              </HStack>
+            </StyledFooterLink>
+          </VStack>
         </HStack>
       </VStack>
       <StyledFooterLinkContainer isMobile={isMobile}>
@@ -124,7 +130,7 @@ const StyledHr = styled.hr`
 `;
 
 const StyledLogo = styled(LogoLarge)`
-  height: 24px;
+  height: 36px;
   cursor: pointer;
   color: ${colors.white};
 `;

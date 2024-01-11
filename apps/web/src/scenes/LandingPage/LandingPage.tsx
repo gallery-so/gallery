@@ -33,60 +33,70 @@ export default function LandingPage({ pageContent }: Props) {
   const showAuthModal = useAuthModal('sign-up');
 
   return (
-    <StyledLandingPage>
+    <StyledLandingPage gap={70}>
       <LandingPageNavbar />
-      <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
-        <LandingCoverAnimation />
-        <PageGutterWrapper gap={isMobile ? 70 : 120}>
-          <FeatureHighlight content={pageContent.highlight1} />
-          <StyledFeatureHighlightContainer>
-            {pageContent.miniFeatureHighlights.map(
-              (featureHighlight: CmsTypes.FeatureHighlight) => (
-                <FeatureHighlight key={featureHighlight._type} content={featureHighlight} />
-              )
-            )}
-          </StyledFeatureHighlightContainer>
-          <StyledMobileAppCta>
-            <StyledMobileAppImage
-              src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/mobileapp.jpg"
-              alt="Image of Mobile App"
-            />
-            <VStack gap={32} justify="center">
-              <StyledTitleLarge>Download the mobile app</StyledTitleLarge>
-              <StyledText>The mobile app is very cool and you should download it.</StyledText>
-              <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                <AppStoreBadge width="160" height="53.5" />
-              </StyledAppStoreBadgeLink>
-            </VStack>
-          </StyledMobileAppCta>
-        </PageGutterWrapper>
-        <FullWidthWrapper gap={45}>
-          <PageGutterWrapper gap={16}>
-            <StyledTitle>Featured</StyledTitle>
-            <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle>
+      <LandingCoverAnimation />
+      <StyledMainContent>
+        <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
+          <PageGutterWrapper gap={isMobile ? 70 : 120}>
+            <FeatureHighlight content={pageContent.highlight1} />
+            <StyledFeatureHighlightContainer>
+              {pageContent.miniFeatureHighlights.map(
+                (featureHighlight: CmsTypes.FeatureHighlight) => (
+                  <FeatureHighlight key={featureHighlight._type} content={featureHighlight} />
+                )
+              )}
+            </StyledFeatureHighlightContainer>
+            <StyledMobileAppCta>
+              <StyledMobileAppImage
+                src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/mobileapp.jpg"
+                alt="Image of Mobile App"
+              />
+              <VStack gap={32} justify="center">
+                <StyledTitleLarge>Download the mobile app</StyledTitleLarge>
+                <StyledText>The mobile app is very cool and you should download it.</StyledText>
+                <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                  <AppStoreBadge width="160" height="53.5" />
+                </StyledAppStoreBadgeLink>
+              </VStack>
+            </StyledMobileAppCta>
           </PageGutterWrapper>
-          <FeaturedProfiles profiles={pageContent.featuredProfiles} />
+          <FullWidthWrapper gap={45}>
+            <PageGutterWrapper gap={16}>
+              <StyledTitle>Featured</StyledTitle>
+              <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle>
+            </PageGutterWrapper>
+            <FeaturedProfiles profiles={pageContent.featuredProfiles} />
+          </FullWidthWrapper>
+          <PageGutterWrapper gap={32}>
+            <StyledTitle>What our users say</StyledTitle>
+            <Testimonials testimonials={pageContent.testimonials} />
+          </PageGutterWrapper>
+          <VStack gap={32}>
+            <StyledSubTitle>Start your journey today</StyledSubTitle>
+            <Button
+              eventElementId="Landing Page Get Started"
+              eventName="Clicked Landing Page Get Started"
+              eventContext={contexts.Onboarding}
+              eventFlow={flows['Web Signup Flow']}
+              onClick={showAuthModal}
+            >
+              <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
+            </Button>
+          </VStack>
         </FullWidthWrapper>
-        <PageGutterWrapper gap={32}>
-          <StyledTitle>What our users say</StyledTitle>
-          <Testimonials testimonials={pageContent.testimonials} />
-        </PageGutterWrapper>
-        <VStack gap={32}>
-          <StyledSubTitle>Start your journey today</StyledSubTitle>
-          <Button
-            eventElementId="Landing Page Get Started"
-            eventName="Clicked Landing Page Get Started"
-            eventContext={contexts.Onboarding}
-            eventFlow={flows['Web Signup Flow']}
-            onClick={showAuthModal}
-          >
-            <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
-          </Button>
-        </VStack>
-      </FullWidthWrapper>
+      </StyledMainContent>
     </StyledLandingPage>
   );
 }
+
+const StyledMainContent = styled(VStack)`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1436px;
+`;
 
 const PageGutterWrapper = styled(VStack)`
   padding: 0 ${MOBILE_PAGE_GUTTER}px;
@@ -136,9 +146,8 @@ const StyledAppStoreBadgeLink = styled(GalleryLink)`
   width: fit-content;
 `;
 
-const StyledLandingPage = styled.div`
+const StyledLandingPage = styled(VStack)`
   margin: 0 auto;
-  max-width: 1436px;
   display: flex;
   justify-content: center;
   align-items: center;
