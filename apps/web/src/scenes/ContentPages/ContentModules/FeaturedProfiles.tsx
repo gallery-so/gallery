@@ -67,9 +67,9 @@ function FeaturedProfile({ profile }: FeaturedProfileProps) {
       <StyledProfile gap={16}>
         <HStack gap={4}>
           {profile.coverImages.map((image) => (
-            <div key={image.asset.url}>
-              <StyledImage src={image.asset.url} />
-            </div>
+            <StyledImageContainer key={image.asset.url}>
+              <StyledImage key={image.asset.url} src={image.asset.url} />
+            </StyledImageContainer>
           ))}
         </HStack>
         <VStack gap={4}>
@@ -91,7 +91,10 @@ const StyledProfile = styled(VStack)`
   }
 `;
 
-const StyledImageContainer = styled.div``;
+const StyledImageContainer = styled.div`
+  display: flex;
+  width: 100%;
+`;
 
 const StyledUsername = styled(BaseM)`
   font-weight: 700;
