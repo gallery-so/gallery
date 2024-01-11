@@ -3,9 +3,11 @@ import React, { useCallback } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
 import ArrowRightIcon from '~/icons/ArrowRightIcon';
 
+import breakpoints from '../breakpoints';
 import { HStack } from '../Spacer/Stack';
 
 type Props = {
@@ -13,7 +15,11 @@ type Props = {
 };
 
 export const Carousel = ({ slideContent }: Props) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'center',
+    containScroll: false,
+    loop: true,
+  });
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -23,11 +29,15 @@ export const Carousel = ({ slideContent }: Props) => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <StyledCarouselContainer align="center" gap={12}>
-      <StyledButton onClick={scrollPrev}>
-        <ArrowLeftIcon />
-      </StyledButton>
+      {!isMobile && (
+        <StyledButton onClick={scrollPrev}>
+          <ArrowLeftIcon />
+        </StyledButton>
+      )}
       <StyledCarousel>
         <div ref={emblaRef}>
           <StyledSlidesContainer>
@@ -37,16 +47,20 @@ export const Carousel = ({ slideContent }: Props) => {
           </StyledSlidesContainer>
         </div>
       </StyledCarousel>
-      <StyledButton onClick={scrollNext}>
-        <ArrowRightIcon />
-      </StyledButton>
+      {!isMobile && (
+        <StyledButton onClick={scrollNext}>
+          <ArrowRightIcon />
+        </StyledButton>
+      )}
     </StyledCarouselContainer>
   );
 };
 
 const StyledCarouselContainer = styled(HStack)`
   width: 100%;
-  padding: 0 8px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0 8px;
+  }
 `;
 
 const StyledCarousel = styled.div`
@@ -57,8 +71,14 @@ const StyledSlidesContainer = styled.div`
 `;
 
 const StyledSlides = styled.div`
-  flex: 0 0 100%;
+  flex: 0 0 75%;
   min-width: 0;
+  margin: 0 8px;
+
+  @media only screen and ${breakpoints.tablet} {
+    flex: 0 0 100%;
+    margin: 0;
+  }
 `;
 
 const StyledButton = styled.button`
