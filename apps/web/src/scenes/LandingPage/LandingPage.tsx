@@ -20,7 +20,7 @@ import LandingCoverAnimation from './LandingCoverAnimation';
 import LandingPageNavbar from './LandingPageNavbar';
 
 const MOBILE_PAGE_GUTTER = 32;
-const DESKTOP_PAGE_GUTTER = 60;
+const DESKTOP_PAGE_GUTTER = 48;
 
 type Props = {
   pageContent: CmsTypes.LandingPage;
@@ -92,10 +92,11 @@ const StyledFeatureHighlightContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 16px;
+  gap: 56px 0;
 
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
+    gap: 0 16px;
   }
 `;
 

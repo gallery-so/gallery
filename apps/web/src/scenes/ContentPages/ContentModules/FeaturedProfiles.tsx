@@ -6,6 +6,7 @@ import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
@@ -15,12 +16,14 @@ type FeaturedProfilesProps = {
 };
 
 export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   const slideContent = useMemo(() => {
-    const itemsPerRow = 3;
+    const itemsPerSlide = isMobile ? 1 : 3;
     const rows = [];
 
-    for (let i = 0; i < profiles.length; i += itemsPerRow) {
-      const row = profiles.slice(i, i + itemsPerRow);
+    for (let i = 0; i < profiles.length; i += itemsPerSlide) {
+      const row = profiles.slice(i, i + itemsPerSlide);
       const rowElements = (
         <StyledProfileSet gap={16}>
           {row.map((profile) => (
@@ -33,7 +36,7 @@ export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
     }
 
     return rows;
-  }, [profiles]);
+  }, [isMobile, profiles]);
   return (
     <StyledContainer gap={16}>
       <Carousel slideContent={slideContent} />
@@ -64,7 +67,9 @@ function FeaturedProfile({ profile }: FeaturedProfileProps) {
       <StyledProfile gap={16}>
         <HStack gap={4}>
           {profile.coverImages.map((image) => (
-            <StyledImage key={image.asset.url} src={image.asset.url} />
+            <div key={image.asset.url}>
+              <StyledImage src={image.asset.url} />
+            </div>
           ))}
         </HStack>
         <VStack gap={4}>
@@ -78,13 +83,15 @@ function FeaturedProfile({ profile }: FeaturedProfileProps) {
 
 const StyledProfile = styled(VStack)`
   width: 100%;
+  background-color: ${colors.faint};
+  padding: 16px;
   @media only screen and ${breakpoints.tablet} {
     min-width: 436px;
     max-width: 436px;
   }
-  background-color: ${colors.faint};
-  padding: 16px;
 `;
+
+const StyledImageContainer = styled.div``;
 
 const StyledUsername = styled(BaseM)`
   font-weight: 700;

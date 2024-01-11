@@ -46,6 +46,7 @@ export const Carousel = ({ slideContent }: Props) => {
 
 const StyledCarouselContainer = styled(HStack)`
   width: 100%;
+  padding: 0 8px;
 `;
 
 const StyledCarousel = styled.div`
@@ -62,8 +63,8 @@ const StyledSlides = styled.div`
 
 const StyledButton = styled.button`
   border-radius: 50%;
-  height: 32px;
-  width: 32px;
+  height: 24px;
+  width: 24px;
   border: 1px solid ${colors.porcelain};
   display: flex;
   align-items: center;
