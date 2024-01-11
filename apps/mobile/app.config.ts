@@ -80,20 +80,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     commitHash,
   },
   owner: 'gallery',
-  // hooks: {
-  //   postPublish: [
-  //     {
-  //       file: 'sentry-expo/upload-sourcemaps',
-  //       config: {
-  //         organization: 'usegallery',
-  //         project: 'gallery-mobile',
-  //         authToken: 'b2ea4a67f0ed4409968c4725d550df82d5187c12908d441cbf4a43da145934b1',
-  //       },
-  //     },
-  //   ],
-  // },
-  plugins: [
-    // ['sentry-expo', { setCommits: true }],
-    'expo-barcode-scanner',
-  ],
+  hooks: {
+    postPublish: [
+      {
+        file: 'sentry-expo/upload-sourcemaps',
+        config: {
+          organization: 'usegallery',
+          project: 'gallery-mobile',
+          authToken: 'b2ea4a67f0ed4409968c4725d550df82d5187c12908d441cbf4a43da145934b1',
+        },
+      },
+    ],
+  },
+  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
 });
