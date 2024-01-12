@@ -49,9 +49,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
 
             ... on VideoMedia {
               __typename
-              contentRenderURLs {
-                large
-              }
+              ...NftDetailAssetVideoFragment
             }
           }
         }
@@ -118,17 +116,11 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
 
       const posterUrl = result.type === 'valid' ? result.urls.large ?? undefined : undefined;
 
-      const videoUrl = token.definition.media.contentRenderURLs?.large;
-
-      if (!videoUrl) {
-        throw new CouldNotRenderNftError('NftDetailAsset', 'Video had no contentRenderUrl');
-      }
-
       return (
         <NftDetailAssetVideo
+          mediaRef={token.definition.media}
           onLoad={handleLoad}
           onError={handleError}
-          videoUrl={videoUrl}
           posterUrl={posterUrl}
           outputDimensions={assetSizer.finalAssetDimensions}
         />
