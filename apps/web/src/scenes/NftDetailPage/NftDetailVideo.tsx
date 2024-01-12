@@ -85,12 +85,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
       autoPlay
       playsInline
       controls={!shouldHideControls}
-      /**
-       * Disable video looping if browser is Safari. As of Sept 2022, there's a bug on Safari
-       * where data will continuously download each time the video loops, at worst case leading
-       * to several gigabytes being fetched (which is really bad on mobile devices)
-       */
-      loop={!isSafari()}
+      loop
       onLoadedData={handleLoad}
       /**
        * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
