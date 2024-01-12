@@ -12,7 +12,7 @@
     "@react-navigation/material-top-tabs": "^6.6.0",
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",
-    "@sentry/react-native": "5.15.2",
+    "@sentry/react-native": "5.10.0",
     "@shopify/flash-list": "1.4.3",
     "@walletconnect/modal-react-native": "^1.0.0-rc.10",
     "clsx": "^1.2.1",
