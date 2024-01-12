@@ -1,3 +1,4 @@
+import AppleLogo from 'public/icons/apple_logo.svg';
 import AppStoreBadge from 'public/icons/Download_on_the_App_Store_US.svg';
 import { contexts, flows } from 'shared/analytics/constants';
 import styled from 'styled-components';
@@ -5,8 +6,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseXL, TitleDiatypeL, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -39,7 +40,7 @@ export default function LandingPage({ pageContent }: Props) {
       <StyledMainContent>
         <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
           <PageGutterWrapper gap={isMobile ? 70 : 120}>
-            <FeatureHighlight content={pageContent.highlight1} />
+            {/* <FeatureHighlight content={pageContent.highlight1} /> */}
             <StyledFeatureHighlightContainer>
               {pageContent.miniFeatureHighlights.map(
                 (featureHighlight: CmsTypes.FeatureHighlight) => (
@@ -47,32 +48,49 @@ export default function LandingPage({ pageContent }: Props) {
                 )
               )}
             </StyledFeatureHighlightContainer>
-            <StyledMobileAppCta>
-              <StyledMobileAppImage
+            {/* <StyledMobileAppCta> */}
+            {/* <StyledMobileAppImage
                 src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/mobileapp.jpg"
                 alt="Image of Mobile App"
-              />
-              <VStack gap={32} justify="center">
-                <StyledTitleLarge>Download the mobile app</StyledTitleLarge>
+              /> */}
+            <StyledMobileAppCta gap={64} justify="center" align="center">
+              <VStack gap={32} align="center" justify="center">
+                <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
                 <StyledText>The mobile app is very cool and you should download it.</StyledText>
-                <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                  <AppStoreBadge width="160" height="53.5" />
-                </StyledAppStoreBadgeLink>
+              </VStack>
+
+              {/* <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                <AppStoreBadge width="160" height="53.5" />
+              </StyledAppStoreBadgeLink> */}
+              <VStack gap={24} align="center">
+                <HStack gap={12}>
+                  <StyledCtaButton variant="secondary">
+                    <StyledCtaText>Sign up on web</StyledCtaText>
+                  </StyledCtaButton>
+                  <StyledCtaButton>
+                    <HStack gap={6} align="center">
+                      <AppleLogo width={27} height={27} />
+                      <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                    </HStack>
+                  </StyledCtaButton>
+                </HStack>
+                <BaseXL color={colors.metal}>Android coming soon</BaseXL>
               </VStack>
             </StyledMobileAppCta>
+            {/* </StyledMobileAppCta> */}
           </PageGutterWrapper>
           <FullWidthWrapper gap={45}>
             <PageGutterWrapper gap={16}>
-              <StyledTitle>Featured</StyledTitle>
-              <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle>
+              <StyledTitle>The best collectors and creators are already on Gallery</StyledTitle>
+              {/* <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle> */}
             </PageGutterWrapper>
             <FeaturedProfiles profiles={pageContent.featuredProfiles} />
           </FullWidthWrapper>
-          <PageGutterWrapper gap={32}>
+          {/* <PageGutterWrapper gap={32}>
             <StyledTitle>What our users say</StyledTitle>
             <Testimonials testimonials={pageContent.testimonials} />
-          </PageGutterWrapper>
-          <VStack gap={32}>
+          </PageGutterWrapper> */}
+          {/* <VStack gap={32}>
             <StyledSubTitle>Start your journey today</StyledSubTitle>
             <Button
               eventElementId="Landing Page Get Started"
@@ -83,7 +101,7 @@ export default function LandingPage({ pageContent }: Props) {
             >
               <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
             </Button>
-          </VStack>
+          </VStack> */}
         </FullWidthWrapper>
       </StyledMainContent>
     </StyledLandingPage>
@@ -96,6 +114,7 @@ const StyledMainContent = styled(VStack)`
   flex-direction: column;
   align-items: center;
   max-width: 1436px;
+  margin-bottom: 250px;
 `;
 
 const PageGutterWrapper = styled(VStack)`
@@ -115,20 +134,28 @@ const StyledFeatureHighlightContainer = styled.div`
   gap: 56px 0;
 
   @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-    gap: 0 16px;
+    // flex-direction: row;
+    // gap: 0 16px;
   }
 `;
 
-const StyledMobileAppCta = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px 0;
+const StyledMobileAppCta = styled(VStack)`
   width: 100%;
+`;
+
+const StyledCtaButton = styled(Button)`
+  padding: 8px 24px;
+  border: 1px solid ${colors.black['800']};
 
   @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-    gap: 0 70px;
+    padding: 13px 39px;
+  }
+`;
+
+const StyledCtaText = styled(TitleXS)`
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 20px;
+    line-height: 26px;
   }
 `;
 
@@ -166,6 +193,7 @@ const StyledTitle = styled(TitleDiatypeL)`
 const StyledTitleLarge = styled(StyledTitle)`
   font-size: 40px;
   line-height: 42px;
+  text-align: center;
 
   @media only screen and ${breakpoints.desktop} {
     font-size: 56px;
@@ -188,6 +216,7 @@ const StyledText = styled(TitleDiatypeL)`
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.03em;
+  text-align: center;
   @media only screen and ${breakpoints.desktop} {
     font-size: 24px;
     line-height: 32px;

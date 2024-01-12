@@ -20,18 +20,24 @@ import LogoBracketRight from '~/icons/LogoBracketRight';
 import { LogoLarge } from '~/icons/LogoLarge';
 import colors from '~/shared/theme/colors';
 
-function GlobalFooter() {
+type Props = {
+  theme?: 'light' | 'dark';
+};
+
+function GlobalFooter({ theme = 'light' }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <StyledGlobalFooter isMobile={isMobile}>
-      {isMobile && <StyledHr />}
-      <VStack gap={110}>
+    <StyledGlobalFooter theme={theme}>
+      {/* <VStack gap={110}> */}
+      <HStack>
         <HStack gap={4}>
           <GalleryLink to={{ pathname: '/' }}>
-            <StyledLogo />
+            <StyledLogo theme={theme} />
           </GalleryLink>
         </HStack>
+      </HStack>
+      <HStack justify="space-between" align="end">
         <HStack gap={72} wrap="wrap">
           <VStack gap={8}>
             <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
@@ -42,84 +48,62 @@ function GlobalFooter() {
             <StyledFooterLink href={GALLERY_BLOG}>Blog</StyledFooterLink>
           </VStack>
           <VStack gap={8}>
-            {/* <StyledFooterLink href={GALLERY_MEMBERSHIP_OPENSEA}>OpenSea</StyledFooterLink> */}
             <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
             <StyledFooterLink href={route({ pathname: '/shop' })}>
-              <HStack gap={4}>
-                Shop
-                {/* <StyledObjectsContainer>
-                <StyledLogoBracketLeft color={colors.shadow} />
-                <HStack gap={1}>
-                  <StyledShopText>OBJECTS</StyledShopText>
-                  <StyledLogoBracketRight color={colors.shadow} />
-                </HStack>
-              </StyledObjectsContainer> */}
-              </HStack>
+              <HStack gap={4}>Shop</HStack>
             </StyledFooterLink>
           </VStack>
         </HStack>
-      </VStack>
-      <StyledFooterLinkContainer isMobile={isMobile}>
-        <HStack gap={8}>
-          <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
-          <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
-          <StyledPlainText color={colors.metal}>
-            © Gallery Labs, {new Date().getFullYear()}{' '}
-          </StyledPlainText>
-        </HStack>
-      </StyledFooterLinkContainer>
+        <StyledFooterLinkContainer>
+          <HStack gap={8}>
+            <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
+            <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
+            <StyledPlainText color={colors.metal}>
+              © Gallery Labs, {new Date().getFullYear()}{' '}
+            </StyledPlainText>
+          </HStack>
+        </StyledFooterLinkContainer>
+      </HStack>
+      {/* </VStack> */}
     </StyledGlobalFooter>
   );
 }
 
-const StyledObjectsContainer = styled.div`
-  height: 16px;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledShopText = styled(TitleM)`
-  font-family: 'GT Alpina Condensed';
-  display: inline;
-  height: 16px;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 14.4127px;
-  line-height: 16px;
-  color: inherit;
-`;
-
-const StyledLogoBracketLeft = styled(LogoBracketLeft)`
-  width: 6px;
-  height: 14px;
-`;
-
-const StyledLogoBracketRight = styled(LogoBracketRight)`
-  width: 6px;
-  height: 14px;
-`;
-
 type StyledFooterProps = {
-  isMobile: boolean;
+  isMobile?: boolean;
+  theme: 'light' | 'dark';
 };
 
 export const GLOBAL_FOOTER_HEIGHT = 80;
 export const GLOBAL_FOOTER_HEIGHT_MOBILE = 134;
 
+const StyledFooterLink = styled(NavLink)<StyledFooterProps>`
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  text-transform: capitalize;
+`;
+
 const StyledGlobalFooter = styled.div<StyledFooterProps>`
   display: flex;
   justify-content: space-between;
-  align-items: ${({ isMobile }) => (isMobile ? 'inherit' : 'flex-end')};
-  flex-direction: ${({ isMobile }) => (isMobile ? 'column' : 'row')};
+  flex-direction: column;
+  gap: 110px 0;
 
-  // height: ${({ isMobile }) =>
-    `${isMobile ? GLOBAL_FOOTER_HEIGHT_MOBILE : GLOBAL_FOOTER_HEIGHT}px`};
   padding: 0 ${pageGutter.mobile}px 24px;
 
-  background-color: ${colors.black['800']};
+  background-color: ${({ theme }) => (theme === 'light' ? colors.offWhite : colors.black['800'])};
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 80px 180px;
+    padding: 80px;
+  }
+
+  ${StyledFooterLink} {
+    color: ${({ theme }) => (theme === 'light' ? colors.black['800'] : colors.white)};
+
+    &:hover {
+      color: ${colors.shadow};
+    }
   }
 `;
 
@@ -129,26 +113,16 @@ const StyledHr = styled.hr`
   margin: 16px 0px;
 `;
 
-const StyledLogo = styled(LogoLarge)`
+const StyledLogo = styled(LogoLarge)<StyledFooterProps>`
   height: 36px;
   cursor: pointer;
-  color: ${colors.white};
+  // color: ${colors.white};
+  color: ${({ theme }) => (theme === 'light' ? colors.black['800'] : colors.white)};
 `;
 
 const StyledFooterLinkContainer = styled.div<{ isMobile: boolean }>`
   padding-top: ${({ isMobile }) => (isMobile ? '4px' : '0px')};
-`;
-
-const StyledFooterLink = styled(NavLink)`
-  font-size: 16px;
-  line-height: 20px;
-  display: flex;
-  text-transform: capitalize;
-  color: ${colors.white};
-
-  &:hover {
-    color: ${colors.shadow};
-  }
+  height: fit-content;
 `;
 
 const StyledPlainText = styled(BaseM)`

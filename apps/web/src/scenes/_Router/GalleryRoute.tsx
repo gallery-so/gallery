@@ -9,6 +9,7 @@ export type Props = {
   navbar: JSX.Element | false;
   sidebar?: JSX.Element | false;
   footer?: boolean;
+  footerTheme?: 'dark' | 'light';
 };
 
 export default function GalleryRoute({
@@ -17,6 +18,7 @@ export default function GalleryRoute({
   navbar = false,
   sidebar = false,
   footer = true,
+  footerTheme,
 }: Props) {
   const { setTopNavContent, setSidebarContent, setIsBannerVisible } = useGlobalLayoutActions();
 
@@ -34,7 +36,7 @@ export default function GalleryRoute({
         // don't need to keep it fixed + visible as we navigate from page to page.
         // the navbar, on the other hand, is rendered @ GalleryLayoutContext since
         // there are cases in which it needs to carry through transitions.
-        footer && <GlobalFooter />
+        footer && <GlobalFooter theme={footerTheme} />
       }
     </>
   );

@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { animated, SpringValue, useSpring } from 'react-spring';
+import { contexts, flows } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed } from '~/components/core/Text/Text';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton';
+import useAuthModal from '~/hooks/useAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import Image from '../WelcomeAnimation/Image';
@@ -56,6 +59,7 @@ export default function LandingCoverAnimation() {
   }, [windowSize]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const showAuthModal = useAuthModal('sign-up');
 
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
@@ -70,14 +74,28 @@ export default function LandingCoverAnimation() {
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            <StyledSignInButton
+            {/* <StyledSignInButton
               size={isMobile ? 'md' : 'lg'}
               buttonLocation="Landing Page Splash Screen"
-            />
-            <SignUpButton
+            /> */}
+            {/* <SignUpButton
               size={isMobile ? 'md' : 'lg'}
               buttonLocation="Landing Page Splash Screen"
-            />
+            /> */}
+            <Button
+              eventElementId="Sign Up Button"
+              eventName="Attempt Sign Up"
+              eventContext={contexts.Onboarding}
+              eventFlow={flows['Web Signup Flow']}
+              properties={{ buttonLocation: 'Landing Page Splash Screen' }}
+              onClick={showAuthModal}
+              // className={className}
+              // size={size}
+            >
+              {/* <StyledButtonText size={size}> */}
+              Get started
+              {/* </StyledButtonText> */}
+            </Button>
           </HStack>
         </VStack>
       </animated.div>

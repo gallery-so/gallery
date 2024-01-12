@@ -63,6 +63,7 @@ export default function Index({ pageContent }: Props) {
         </Suspense>
       }
       navbar={false}
+      footerTheme="dark"
     />
   );
 }
@@ -136,6 +137,7 @@ const queryString = `*[_type == "landingPage"]{
       alt
     },
     username,
+    bio,
     profileType
   }
 }`;

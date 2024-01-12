@@ -5,7 +5,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
@@ -62,6 +62,7 @@ type FeaturedProfileProps = {
 };
 
 function FeaturedProfile({ profile }: FeaturedProfileProps) {
+  console.log(profile.pfp);
   return (
     <GalleryLink href={`/${profile.username}`} target="_blank">
       <StyledProfile gap={16}>
@@ -73,8 +74,16 @@ function FeaturedProfile({ profile }: FeaturedProfileProps) {
           ))}
         </HStack>
         <VStack gap={4}>
-          <StyledUsername>{profile.username}</StyledUsername>
-          <StyledProfileType>{profile.profileType}</StyledProfileType>
+          <HStack gap={4} align="center" justify="space-between">
+            <HStack gap={6} align="center">
+              <StyledPfp src={profile.pfp?.asset.url} />
+              <StyledUsername>{profile.username}</StyledUsername>
+            </HStack>
+            <StyledProfileType profileType={profile.profileType}>
+              {profile.profileType}
+            </StyledProfileType>
+          </HStack>
+          <StyledBio>{profile.bio}</StyledBio>
         </VStack>
       </StyledProfile>
     </GalleryLink>
@@ -85,10 +94,17 @@ const StyledProfile = styled(VStack)`
   width: 100%;
   background-color: ${colors.faint};
   padding: 16px;
+  border-radius: 16px;
   @media only screen and ${breakpoints.tablet} {
     min-width: 436px;
     max-width: 436px;
   }
+`;
+
+const StyledPfp = styled.img`
+  height: 34px;
+  width: 34px;
+  border-radius: 50%;
 `;
 
 const StyledImageContainer = styled.div`
@@ -101,11 +117,20 @@ const StyledUsername = styled(BaseM)`
   font-size: 18px;
 `;
 
+const StyledBio = styled(BaseM)`
+  height: 20px; // fix height to get consistent spacing across profiles even if bio is not present
+`;
+
 const StyledImage = styled.img`
   width: 100%;
   height: 100%;
 `;
 
-const StyledProfileType = styled(BaseM)`
-  text-transform: capitalize;
+const StyledProfileType = styled(TitleXS)<{ profileType: string }>`
+  text-transform: uppercase;
+  border: 1px solid
+    ${({ profileType }) => (profileType === 'creator' ? '#30AC48' : colors.activeBlue)};
+  border-radius: 24px;
+  padding: 3px 11px;
+  color: ${({ profileType }) => (profileType === 'creator' ? '#30AC48' : colors.activeBlue)};
 `;
