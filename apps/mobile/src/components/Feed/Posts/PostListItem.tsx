@@ -2,10 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import token from 'markdown-it/lib/token';
 import { useCallback, useContext, useMemo, useRef } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { CouldNotRenderNftError } from 'shared/errors/CouldNotRenderNftError';
+import { noop } from 'shared/utils/noop';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
 import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/UniversalNftPreview';
@@ -157,13 +158,15 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   const renderedAsset = useMemo(() => {
     if (firstToken.definition.media?.__typename === 'VideoMedia') {
       return (
-        <NftDetailAssetVideo
-          mediaRef={firstToken.definition.media}
-          onLoad={handleLoad}
-          onError={handleError}
-          posterUrl={imageUrl ?? undefined}
-          outputDimensions={resultDimensions}
-        />
+        <Pressable delayLongPress={100} onPress={handlePress} onLongPress={noop}>
+          <NftDetailAssetVideo
+            mediaRef={firstToken.definition.media}
+            onLoad={handleLoad}
+            onError={handleError}
+            posterUrl={imageUrl ?? undefined}
+            outputDimensions={resultDimensions}
+          />
+        </Pressable>
       );
     }
     return (
