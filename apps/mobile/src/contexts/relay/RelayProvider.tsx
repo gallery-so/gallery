@@ -14,11 +14,11 @@ import persistedQueries from '../../../persisted_queries.json';
 const persistedQueriesMap = persistedQueries as PersistedQueriesMap;
 
 const relaySubscribeFunction = createRelaySubscribeFunction({
-  url: env.GRAPHQL_SUBSCRIPTION_URL,
+  url: env.EXPO_PUBLIC_GRAPHQL_SUBSCRIPTION_URL,
 });
 
 export const relayFetchFunction = createRelayFetchFunctionWithDefer({
-  url: () => env.GRAPHQL_API_URL,
+  url: () => env.EXPO_PUBLIC_GRAPHQL_API_URL,
   headers: () => {
     return {
       'X-OS': Platform.OS,

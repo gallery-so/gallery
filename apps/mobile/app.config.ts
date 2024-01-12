@@ -17,9 +17,10 @@ function readEnvironmentFromFile(file: string) {
   }
 }
 
-const environmentVariablePath = path.join(__dirname, `./env/.env.${process.env.ENV ?? 'prod'}`);
-// eslint-disable-next-line no-console
-console.log(`Loading Environment Variables from: ${environmentVariablePath}`);
+const environmentVariablePath = path.join(
+  __dirname,
+  `./env/.env.${process.env.EXPO_PUBLIC_ENV ?? 'prod'}`
+);
 const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
 
 const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;

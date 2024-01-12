@@ -52,7 +52,7 @@ export default function CheckInEmailEntry({
     setStatus('SUBMITTING');
 
     try {
-      const response = await fetch(`https://formspree.io/f/${env.FORMSPREE_ID}`, {
+      const response = await fetch(`https://formspree.io/f/${env.EXPO_PUBLIC_FORMSPREE_ID}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

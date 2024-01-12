@@ -2,14 +2,14 @@
 const { z } = require('zod');
 
 const EnvironmentSchema = z.object({
-  ENV: z.string(),
-  GRAPHQL_API_URL: z.string(),
-  GRAPHQL_SUBSCRIPTION_URL: z.string(),
-  MAGIC_LINK_PUBLIC_KEY: z.string(),
-  MIXPANEL_API_URL: z.string(),
-  MIXPANEL_TOKEN: z.string(),
-  FORMSPREE_ID: z.string(),
-  SANITY_PROJECT_ID: z.string(),
+  EXPO_PUBLIC_ENV: z.string(),
+  EXPO_PUBLIC_GRAPHQL_API_URL: z.string(),
+  EXPO_PUBLIC_GRAPHQL_SUBSCRIPTION_URL: z.string(),
+  EXPO_PUBLIC_MAGIC_LINK_PUBLIC_KEY: z.string(),
+  EXPO_PUBLIC_MIXPANEL_API_URL: z.string(),
+  EXPO_PUBLIC_MIXPANEL_TOKEN: z.string(),
+  EXPO_PUBLIC_FORMSPREE_ID: z.string(),
+  EXPO_PUBLIC_SANITY_PROJECT_ID: z.string(),
 });
 
 module.exports = {
