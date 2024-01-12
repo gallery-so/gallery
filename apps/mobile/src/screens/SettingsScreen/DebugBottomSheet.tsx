@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { ForwardedRef, forwardRef, useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -22,7 +23,9 @@ function DebugBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModa
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await Notifications.getExpoPushTokenAsync();
+      const token = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas.projectId,
+      });
       setExpoPushToken(token.data);
     };
     getToken();
