@@ -112,6 +112,12 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       // TODO [GAL-4229] loading view
       return <></>;
     } else if (token.definition.media?.__typename === 'VideoMedia') {
+      const result = getPreviewImageUrlsInlineDangerously({
+        tokenRef: token,
+      });
+
+      const posterUrl = result.type === 'valid' ? result.urls.large ?? undefined : undefined;
+
       const videoUrl = token.definition.media.contentRenderURLs?.large;
 
       if (!videoUrl) {
@@ -123,6 +129,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
           onLoad={handleLoad}
           onError={handleError}
           videoUrl={videoUrl}
+          posterUrl={posterUrl}
           outputDimensions={assetSizer.finalAssetDimensions}
         />
       );
