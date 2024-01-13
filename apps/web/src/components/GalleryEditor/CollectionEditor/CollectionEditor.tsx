@@ -19,6 +19,9 @@ const collectionEditorViewerFragment = graphql`
       tokens(ownershipFilter: [Creator, Holder]) {
         ...StagingAreaFragment
 
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
+        # eslint-disable-next-line relay/unused-fields
         definition {
           # Escape hatch for data processing util files
           # CollectionEditor could use a refactor

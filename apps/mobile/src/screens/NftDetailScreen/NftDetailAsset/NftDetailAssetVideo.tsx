@@ -1,15 +1,42 @@
 import { ResizeMode, Video } from 'expo-av';
+import { graphql, useFragment } from 'react-relay';
+import { CouldNotRenderNftError } from 'shared/errors/CouldNotRenderNftError';
 
+import { NftDetailAssetVideoFragment$key } from '~/generated/NftDetailAssetVideoFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 
 type Props = {
-  videoUrl: string;
+  mediaRef: NftDetailAssetVideoFragment$key;
+  posterUrl?: string;
   outputDimensions: Dimensions;
   onLoad: (dimensions: Dimensions) => void;
   onError: () => void;
 };
 
-export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad, onError }: Props) {
+export function NftDetailAssetVideo({
+  mediaRef,
+  posterUrl,
+  outputDimensions,
+  onLoad,
+  onError,
+}: Props) {
+  const media = useFragment(
+    graphql`
+      fragment NftDetailAssetVideoFragment on VideoMedia {
+        contentRenderURLs {
+          large
+        }
+      }
+    `,
+    mediaRef
+  );
+
+  const videoUrl = media.contentRenderURLs?.large;
+
+  if (!videoUrl) {
+    throw new CouldNotRenderNftError('NftDetailAssetVideo', 'Video had no contentRenderUrl');
+  }
+
   return (
     <Video
       style={outputDimensions}
@@ -19,10 +46,10 @@ export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad, onErro
       onError={onError}
       shouldPlay
       isLooping
+      isMuted
       resizeMode={ResizeMode.CONTAIN}
-      source={{
-        uri: videoUrl,
-      }}
+      source={{ uri: videoUrl }}
+      posterSource={posterUrl ? { uri: posterUrl } : undefined}
     />
   );
 }
