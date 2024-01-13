@@ -8,7 +8,6 @@ import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
 
 type Props = {
