@@ -2,10 +2,11 @@ import { ResizeMode, Video } from 'expo-av';
 import { graphql, useFragment } from 'react-relay';
 import { CouldNotRenderNftError } from 'shared/errors/CouldNotRenderNftError';
 
+import { NftDetailAssetVideoFragment$key } from '~/generated/NftDetailAssetVideoFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 
 type Props = {
-  mediaRef: any;
+  mediaRef: NftDetailAssetVideoFragment$key;
   posterUrl?: string;
   outputDimensions: Dimensions;
   onLoad: (dimensions: Dimensions) => void;

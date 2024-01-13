@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import token from 'markdown-it/lib/token';
 import { useCallback, useContext, useMemo, useRef } from 'react';
 import { Pressable, useWindowDimensions, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
