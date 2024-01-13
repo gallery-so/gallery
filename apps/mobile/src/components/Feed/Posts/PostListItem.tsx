@@ -151,7 +151,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   const handleError = useCallback(() => {
     markTokenAsFailed(
       firstToken.dbid,
-      new CouldNotRenderNftError('NftDetailAsset', 'Failed to render', { id: token.dbid })
+      new CouldNotRenderNftError('NftDetailAsset', 'Failed to render', { id: firstToken.dbid })
     );
   }, [firstToken.dbid, markTokenAsFailed]);
 
