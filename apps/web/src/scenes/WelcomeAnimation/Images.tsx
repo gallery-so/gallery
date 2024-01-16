@@ -1,6 +1,6 @@
 type Offset = {
   mobile?: number;
-  desktop?: number;
+  desktop: number;
 };
 
 export type AnimatedImage = {

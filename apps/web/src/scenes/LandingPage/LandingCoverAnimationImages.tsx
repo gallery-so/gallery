@@ -51,7 +51,7 @@ export const animatedImages: AnimatedImage[] = [
     },
     offsetY: {
       mobile: 280,
-      desktop: 200,
+      desktop: 220,
     },
     offsetXStart: -20,
     offsetYStart: -12,
@@ -146,7 +146,7 @@ export const animatedImages: AnimatedImage[] = [
     },
     offsetY: {
       mobile: 150,
-      desktop: 60,
+      desktop: 80,
     },
     offsetXStart: 0,
     offsetYStart: -40,

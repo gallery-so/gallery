@@ -159,7 +159,6 @@ const StyledLandingPage = styled(VStack)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 16px 0;
   margin-bottom: 64px;
 `;
 

@@ -174,10 +174,14 @@ const StyledTitle = styled(TitleCondensed)`
   font-weight: 300;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 60%;
+    width: 80%;
     margin: auto;
     font-size: 96px;
     line-height: 84px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    width: 60%;
   }
 `;
 
@@ -215,15 +219,15 @@ const StyledMovementWrapper = styled.div<{
   ${({ animatedImage }) =>
     `transform: translate(${animatedImage.offsetX.mobile}px, ${animatedImage.offsetY.mobile}px);`}
 
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     ${({ animatedImage, aspectRatio }) =>
       `transform: translate(${
         aspectRatio === 'vertical' && animatedImage.moveOnVertical
-          ? animatedImage.verticalX
+          ? animatedImage.offsetX.desktop * 0.8
           : animatedImage.offsetX.desktop
       }px, ${
         aspectRatio === 'vertical' && animatedImage.moveOnVertical
-          ? animatedImage.verticalY
+          ? animatedImage.offsetY.desktop * 1.2
           : animatedImage.offsetY.desktop
       }px);`}
   }

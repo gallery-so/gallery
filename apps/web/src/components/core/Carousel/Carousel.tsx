@@ -58,7 +58,7 @@ export const Carousel = ({ slideContent }: Props) => {
 
 const StyledCarouselContainer = styled(HStack)`
   width: 100%;
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     padding: 0 8px;
   }
 `;
