@@ -9,7 +9,6 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed } from '~/components/core/Text/Text';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
-import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton';
 import useAuthModal from '~/hooks/useAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
@@ -74,27 +73,15 @@ export default function LandingCoverAnimation() {
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            {/* <StyledSignInButton
-              size={isMobile ? 'md' : 'lg'}
-              buttonLocation="Landing Page Splash Screen"
-            /> */}
-            {/* <SignUpButton
-              size={isMobile ? 'md' : 'lg'}
-              buttonLocation="Landing Page Splash Screen"
-            /> */}
             <Button
-              eventElementId="Sign Up Button"
-              eventName="Attempt Sign Up"
+              eventElementId="Landing Page Animation Get Started Button"
+              eventName="Clicked Landing Page Animation Get Started Button"
               eventContext={contexts.Onboarding}
               eventFlow={flows['Web Signup Flow']}
               properties={{ buttonLocation: 'Landing Page Splash Screen' }}
               onClick={showAuthModal}
-              // className={className}
-              // size={size}
             >
-              {/* <StyledButtonText size={size}> */}
               Get started
-              {/* </StyledButtonText> */}
             </Button>
           </HStack>
         </VStack>

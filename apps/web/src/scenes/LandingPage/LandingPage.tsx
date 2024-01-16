@@ -1,4 +1,5 @@
 import AppleLogo from 'public/icons/apple_logo.svg';
+import { contexts, flows } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -55,11 +56,23 @@ export default function LandingPage({ pageContent }: Props) {
               </StyledAppStoreBadgeLink> */}
               <FullWidthVStack gap={24} align="center">
                 <StyledMobileButtonContainer gap={12}>
-                  <StyledCtaButton variant="secondary" onClick={showAuthModal}>
+                  <StyledCtaButton
+                    variant="secondary"
+                    onClick={showAuthModal}
+                    eventElementId="Landing Page Sign Up On Web Button"
+                    eventName="Clicked Landing Page Sign Up On Web Button"
+                    eventContext={contexts.Onboarding}
+                    eventFlow={flows['Web Signup Flow']}
+                  >
                     <StyledCtaText>Sign up on web</StyledCtaText>
                   </StyledCtaButton>
                   <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                    <StyledCtaButton>
+                    <StyledCtaButton
+                      eventElementId="Landing Page Download iOS App Button"
+                      eventName="Clicked Landing Page Download iOS App Button"
+                      eventContext={contexts.Onboarding}
+                      eventFlow={flows['Web Signup Flow']}
+                    >
                       <HStack gap={6} align="center">
                         <AppleLogo width={27} height={27} />
                         <StyledCtaText color={colors.white}>Download App</StyledCtaText>
