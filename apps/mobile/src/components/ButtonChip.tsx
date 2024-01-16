@@ -9,7 +9,7 @@ import {
 } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 
-type ButtonChipVariant = 'primary' | 'secondary';
+export type ButtonChipVariant = 'primary' | 'secondary' | 'white';
 
 type ButtonChipProps = PropsWithChildren<{
   style?: ViewProps['style'];

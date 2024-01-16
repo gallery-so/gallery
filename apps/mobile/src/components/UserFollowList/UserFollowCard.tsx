@@ -8,16 +8,16 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
-import colors from '~/shared/theme/colors';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
   queryRef: UserFollowCardQueryFragment$key;
   onPress: (username: string) => void;
-  onFollowPress: () => void;
+  onFollowPress?: () => void;
   isPresentational?: boolean;
 };
 
@@ -57,13 +57,12 @@ export function UserFollowCard({
       onPress(user.username);
     }
   }, [onPress, user.username]);
+
   return (
     <View
-      className={
-        !isPresentational
-          ? 'flex w-full flex-row items-center space-x-8 overflow-hidden px-4'
-          : 'flex w-full flex-row items-center space-x-8 overflow-hidden'
-      }
+      className={`flex w-full flex-row items-center space-x-8 overflow-hidden${
+        !isPresentational ? ' px-4' : ''
+      }`}
     >
       <GalleryTouchableOpacity
         onPress={handlePress}

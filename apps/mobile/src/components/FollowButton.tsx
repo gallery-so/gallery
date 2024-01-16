@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { ButtonChip } from '~/components/ButtonChip';
+import { ButtonChip, ButtonChipVariant } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
@@ -16,8 +16,7 @@ type Props = {
   userRef: FollowButtonUserFragment$key;
   className?: string;
   styleChip?: ViewProps['style'];
-  flipVariant?: boolean;
-  variant?: string;
+  variant?: ButtonChipVariant;
   source?: string; // where the FollowButton is being used, for analytics
   width?: 'fixed' | 'grow';
   onPress?: () => void;
@@ -100,7 +99,7 @@ export function FollowButton({
     trigger('impactLight');
 
     await followUser(userToFollow.dbid);
-  }, [userToFollow.dbid, followUser]);
+  }, [userToFollow.dbid, followUser, onPress]);
 
   const handleUnfollowPress = useCallback(async () => {
     trigger('impactLight');
@@ -115,7 +114,12 @@ export function FollowButton({
       return null;
     } else if (isFollowing) {
       return (
-        <ButtonChip variant="primary" onPress={handleUnfollowPress} width={width} style={styleChip}>
+        <ButtonChip
+          variant={variant ? 'secondary' : 'primary'}
+          onPress={handleUnfollowPress}
+          width={width}
+          style={styleChip}
+        >
           Following
         </ButtonChip>
       );

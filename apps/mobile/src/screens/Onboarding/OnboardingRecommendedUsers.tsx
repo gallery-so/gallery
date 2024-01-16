@@ -8,9 +8,9 @@ import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { SuggestedUserFollowList } from '~/components/SuggestedUserFollowList/SuggestedUserFollowList';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { Typography } from '~/components/Typography';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 import { OnboardingRecommendedUsersInnerFragment$key } from '~/generated/OnboardingRecommendedUsersInnerFragment.graphql';
 import { OnboardingRecommendedUsersQuery } from '~/generated/OnboardingRecommendedUsersQuery.graphql';
@@ -19,10 +19,9 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
 import colors from '~/shared/theme/colors';
+import { noop } from '~/shared/utils/noop';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
-import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
-import { noop } from '~/shared/utils/noop';
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -167,7 +166,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
               onLoadMore={handleLoadMore}
               userRefs={recommendedUsers}
               queryRef={followingPagination}
-              onUserPress={(username: string) => {}}
+              onUserPress={noop}
               onFollowPress={() => setHasFollowedSomeone(true)}
               isPresentational={true}
             />
