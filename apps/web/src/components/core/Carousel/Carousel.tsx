@@ -3,7 +3,10 @@ import React, { useCallback } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import {
+  useIsDesktopWindowWidth,
+  useIsMobileOrMobileLargeWindowWidth,
+} from '~/hooks/useWindowSize';
 import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
 import ArrowRightIcon from '~/icons/ArrowRightIcon';
 
@@ -29,11 +32,11 @@ export const Carousel = ({ slideContent }: Props) => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isDesktop = useIsDesktopWindowWidth();
 
   return (
     <StyledCarouselContainer align="center" gap={12}>
-      {!isMobile && (
+      {isDesktop && (
         <StyledButton onClick={scrollPrev}>
           <ArrowLeftIcon />
         </StyledButton>
@@ -47,7 +50,7 @@ export const Carousel = ({ slideContent }: Props) => {
           </StyledSlidesContainer>
         </div>
       </StyledCarousel>
-      {!isMobile && (
+      {isDesktop && (
         <StyledButton onClick={scrollNext}>
           <ArrowRightIcon />
         </StyledButton>
@@ -75,7 +78,7 @@ const StyledSlides = styled.div`
   min-width: 0;
   margin: 0 8px;
 
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     flex: 0 0 100%;
     margin: 0;
   }

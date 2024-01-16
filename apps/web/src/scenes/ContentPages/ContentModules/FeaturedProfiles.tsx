@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+import breakpoints, { size } from '~/components/core/breakpoints';
 import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
@@ -17,9 +17,15 @@ type FeaturedProfilesProps = {
 
 export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const breakpoint = useBreakpoint();
 
   const slideContent = useMemo(() => {
-    const itemsPerSlide = isMobile ? 1 : 3;
+    const itemsPerSlide =
+      breakpoint === size.mobile || breakpoint === size.mobileLarge
+        ? 1
+        : breakpoint === size.tablet
+        ? 2
+        : 3;
     const rows = [];
 
     for (let i = 0; i < profiles.length; i += itemsPerSlide) {
@@ -36,7 +42,7 @@ export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
     }
 
     return rows;
-  }, [isMobile, profiles]);
+  }, [breakpoint, profiles]);
   return (
     <StyledContainer gap={16}>
       <Carousel slideContent={slideContent} />
@@ -45,7 +51,7 @@ export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
 }
 
 const StyledProfileSet = styled(HStack)`
-  width: fit-content;
+  width: 100%;
 `;
 
 const StyledContainer = styled(VStack)`
@@ -62,9 +68,8 @@ type FeaturedProfileProps = {
 };
 
 function FeaturedProfile({ profile }: FeaturedProfileProps) {
-  console.log(profile.pfp);
   return (
-    <GalleryLink href={`/${profile.username}`} target="_blank">
+    <StyledLinkWrapper href={`/${profile.username}`} target="_blank">
       <StyledProfile gap={16}>
         <HStack gap={4}>
           {profile.coverImages.map((image) => (
@@ -86,16 +91,20 @@ function FeaturedProfile({ profile }: FeaturedProfileProps) {
           <StyledBio>{profile.bio}</StyledBio>
         </VStack>
       </StyledProfile>
-    </GalleryLink>
+    </StyledLinkWrapper>
   );
 }
+
+const StyledLinkWrapper = styled(GalleryLink)`
+  width: 100%;
+`;
 
 const StyledProfile = styled(VStack)`
   width: 100%;
   background-color: ${colors.faint};
   padding: 16px;
   border-radius: 16px;
-  @media only screen and ${breakpoints.tablet} {
+  @media only screen and ${breakpoints.desktop} {
     min-width: 436px;
     max-width: 436px;
   }

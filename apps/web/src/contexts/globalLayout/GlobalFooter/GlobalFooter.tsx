@@ -1,22 +1,18 @@
 import { route } from 'nextjs-routes';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
+import { BaseM } from '~/components/core/Text/Text';
 import {
   GALLERY_BLOG,
   GALLERY_DISCORD,
   GALLERY_FAQ,
   GALLERY_JOBS,
-  GALLERY_MEMBERSHIP_OPENSEA,
   GALLERY_TWITTER,
 } from '~/constants/urls';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import LogoBracketLeft from '~/icons/LogoBracketLeft';
-import LogoBracketRight from '~/icons/LogoBracketRight';
 import { LogoLarge } from '~/icons/LogoLarge';
 import colors from '~/shared/theme/colors';
 
@@ -25,11 +21,8 @@ type Props = {
 };
 
 function GlobalFooter({ theme = 'light' }: Props) {
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
     <StyledGlobalFooter theme={theme}>
-      {/* <VStack gap={110}> */}
       <HStack>
         <HStack gap={4}>
           <GalleryLink to={{ pathname: '/' }}>
@@ -37,7 +30,7 @@ function GlobalFooter({ theme = 'light' }: Props) {
           </GalleryLink>
         </HStack>
       </HStack>
-      <HStack justify="space-between" align="end">
+      <StyledLinkContainer>
         <HStack gap={72} wrap="wrap">
           <VStack gap={8}>
             <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
@@ -54,17 +47,14 @@ function GlobalFooter({ theme = 'light' }: Props) {
             </StyledFooterLink>
           </VStack>
         </HStack>
-        <StyledFooterLinkContainer>
-          <HStack gap={8}>
-            <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
-            <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
-            <StyledPlainText color={colors.metal}>
-              © Gallery Labs, {new Date().getFullYear()}{' '}
-            </StyledPlainText>
-          </HStack>
-        </StyledFooterLinkContainer>
-      </HStack>
-      {/* </VStack> */}
+        <HStack gap={8}>
+          <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
+          <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>
+          <StyledPlainText color={colors.metal}>
+            © Gallery Labs, {new Date().getFullYear()}{' '}
+          </StyledPlainText>
+        </HStack>
+      </StyledLinkContainer>
     </StyledGlobalFooter>
   );
 }
@@ -90,7 +80,7 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   flex-direction: column;
   gap: 110px 0;
 
-  padding: 0 ${pageGutter.mobile}px 24px;
+  padding: 32px;
 
   background-color: ${({ theme }) => (theme === 'light' ? colors.offWhite : colors.black['800'])};
 
@@ -107,22 +97,20 @@ const StyledGlobalFooter = styled.div<StyledFooterProps>`
   }
 `;
 
-const StyledHr = styled.hr`
-  border: 1px solid #f7f7f7;
-  width: 100%;
-  margin: 16px 0px;
+const StyledLinkContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  @media only screen and ${breakpoints.desktop} {
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: end;
+  }
 `;
-
 const StyledLogo = styled(LogoLarge)<StyledFooterProps>`
   height: 36px;
   cursor: pointer;
-  // color: ${colors.white};
   color: ${({ theme }) => (theme === 'light' ? colors.black['800'] : colors.white)};
-`;
-
-const StyledFooterLinkContainer = styled.div<{ isMobile: boolean }>`
-  padding-top: ${({ isMobile }) => (isMobile ? '4px' : '0px')};
-  height: fit-content;
 `;
 
 const StyledPlainText = styled(BaseM)`

@@ -1,13 +1,10 @@
 import AppleLogo from 'public/icons/apple_logo.svg';
-import AppStoreBadge from 'public/icons/Download_on_the_App_Store_US.svg';
-import { contexts, flows } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseXL, TitleDiatypeL, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
+import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -16,7 +13,6 @@ import colors from '~/shared/theme/colors';
 import { CmsTypes } from '../ContentPages/cms_types';
 import FeaturedProfiles from '../ContentPages/ContentModules/FeaturedProfiles';
 import FeatureHighlight from '../ContentPages/ContentModules/FeatureHighlight';
-import Testimonials from '../ContentPages/ContentModules/Testimonials';
 import LandingCoverAnimation from './LandingCoverAnimation';
 import LandingPageNavbar from './LandingPageNavbar';
 
@@ -40,7 +36,6 @@ export default function LandingPage({ pageContent }: Props) {
       <StyledMainContent>
         <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
           <PageGutterWrapper gap={isMobile ? 70 : 120}>
-            {/* <FeatureHighlight content={pageContent.highlight1} /> */}
             <StyledFeatureHighlightContainer>
               {pageContent.miniFeatureHighlights.map(
                 (featureHighlight: CmsTypes.FeatureHighlight) => (
@@ -48,22 +43,17 @@ export default function LandingPage({ pageContent }: Props) {
                 )
               )}
             </StyledFeatureHighlightContainer>
-            {/* <StyledMobileAppCta> */}
-            {/* <StyledMobileAppImage
-                src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/mobileapp.jpg"
-                alt="Image of Mobile App"
-              /> */}
-            <StyledMobileAppCta gap={64} justify="center" align="center">
+            <FullWidthVStack gap={isMobile ? 32 : 64} justify="center" align="center">
               <VStack gap={32} align="center" justify="center">
                 <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
-                <StyledText>The mobile app is very cool and you should download it.</StyledText>
+                <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
               </VStack>
 
               {/* <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
                 <AppStoreBadge width="160" height="53.5" />
               </StyledAppStoreBadgeLink> */}
-              <VStack gap={24} align="center">
-                <HStack gap={12}>
+              <FullWidthVStack gap={24} align="center">
+                <StyledMobileButtonContainer gap={12}>
                   <StyledCtaButton variant="secondary">
                     <StyledCtaText>Sign up on web</StyledCtaText>
                   </StyledCtaButton>
@@ -73,16 +63,14 @@ export default function LandingPage({ pageContent }: Props) {
                       <StyledCtaText color={colors.white}>Download App</StyledCtaText>
                     </HStack>
                   </StyledCtaButton>
-                </HStack>
+                </StyledMobileButtonContainer>
                 <BaseXL color={colors.metal}>Android coming soon</BaseXL>
-              </VStack>
-            </StyledMobileAppCta>
-            {/* </StyledMobileAppCta> */}
+              </FullWidthVStack>
+            </FullWidthVStack>
           </PageGutterWrapper>
           <FullWidthWrapper gap={45}>
             <PageGutterWrapper gap={16}>
               <StyledTitle>The best collectors and creators are already on Gallery</StyledTitle>
-              {/* <StyledSubTitle>A selection of Collectors, Creators and Galleries</StyledSubTitle> */}
             </PageGutterWrapper>
             <FeaturedProfiles profiles={pageContent.featuredProfiles} />
           </FullWidthWrapper>
@@ -90,18 +78,6 @@ export default function LandingPage({ pageContent }: Props) {
             <StyledTitle>What our users say</StyledTitle>
             <Testimonials testimonials={pageContent.testimonials} />
           </PageGutterWrapper> */}
-          {/* <VStack gap={32}>
-            <StyledSubTitle>Start your journey today</StyledSubTitle>
-            <Button
-              eventElementId="Landing Page Get Started"
-              eventName="Clicked Landing Page Get Started"
-              eventContext={contexts.Onboarding}
-              eventFlow={flows['Web Signup Flow']}
-              onClick={showAuthModal}
-            >
-              <StyledGetStartedButtonText>Get started</StyledGetStartedButtonText>
-            </Button>
-          </VStack> */}
         </FullWidthWrapper>
       </StyledMainContent>
     </StyledLandingPage>
@@ -132,22 +108,19 @@ const StyledFeatureHighlightContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 56px 0;
-
-  @media only screen and ${breakpoints.tablet} {
-    // flex-direction: row;
-    // gap: 0 16px;
-  }
 `;
 
-const StyledMobileAppCta = styled(VStack)`
+const FullWidthVStack = styled(VStack)`
   width: 100%;
 `;
 
 const StyledCtaButton = styled(Button)`
-  padding: 8px 24px;
+  width: 50%;
+  padding: 8px 12px;
   border: 1px solid ${colors.black['800']};
 
   @media only screen and ${breakpoints.tablet} {
+    width: initial;
     padding: 13px 39px;
   }
 `;
@@ -159,18 +132,9 @@ const StyledCtaText = styled(TitleXS)`
   }
 `;
 
-const StyledMobileAppImage = styled.img`
+const StyledMobileButtonContainer = styled(HStack)`
   width: 100%;
-  height: 100%;
-
-  @media only screen and ${breakpoints.tablet} {
-    max-width: 500px;
-    max-height: 500px;
-  }
-`;
-
-const StyledAppStoreBadgeLink = styled(GalleryLink)`
-  width: fit-content;
+  justify-content: center;
 `;
 
 const StyledLandingPage = styled(VStack)`
@@ -201,12 +165,6 @@ const StyledTitleLarge = styled(StyledTitle)`
   }
 `;
 
-const StyledSubTitle = styled(TitleDiatypeM)`
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 400;
-`;
-
 const FullWidthWrapper = styled(VStack)`
   width: 100%;
 `;
@@ -221,9 +179,4 @@ const StyledText = styled(TitleDiatypeL)`
     font-size: 24px;
     line-height: 32px;
   }
-`;
-
-const StyledGetStartedButtonText = styled(TitleDiatypeL)`
-  color: ${colors.white};
-  text-transform: none;
 `;
