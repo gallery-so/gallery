@@ -141,27 +141,29 @@ function AnimatedImage({
   }, []);
 
   return (
-    <StyledMovementWrapper animatedImage={animatedImage} aspectRatio={aspectRatio}>
-      <animated.div
-        className="animate"
-        style={{
-          transform: xy.interpolate(getTransformCallback(animatedImage)),
-        }}
-      >
-        <div ref={divRef}>
-          <Image
-            alt="Welcome to Gallery"
-            width={animatedImage.width}
-            src={animatedImage.src ?? ''}
-            fadeInDelay={animatedImage.fadeInDelay}
-            shouldFadeOut={false}
-            fadeInGrow={fadeInGrow}
-            fadeOutGrow={fadeOutGrow}
-            imagesFaded={false}
-          />
-        </div>
-      </animated.div>
-    </StyledMovementWrapper>
+    <FadeInWrapper>
+      <StyledMovementWrapper animatedImage={animatedImage} aspectRatio={aspectRatio}>
+        <animated.div
+          className="animate"
+          style={{
+            transform: xy.interpolate(getTransformCallback(animatedImage)),
+          }}
+        >
+          <div ref={divRef}>
+            <Image
+              alt="Welcome to Gallery"
+              width={animatedImage.width}
+              src={animatedImage.src ?? ''}
+              fadeInDelay={animatedImage.fadeInDelay}
+              shouldFadeOut={false}
+              fadeInGrow={fadeInGrow}
+              fadeOutGrow={fadeOutGrow}
+              imagesFaded={false}
+            />
+          </div>
+        </animated.div>
+      </StyledMovementWrapper>
+    </FadeInWrapper>
   );
 }
 
@@ -189,13 +191,17 @@ const fadeOutGrow = keyframes`
   to { opacity: 0; transform: scale(1.8); }
 `;
 
+const FadeInWrapper = styled.div`
+  animation: ${fadeInGrow} 2s;
+`;
+
 const StyledContainer = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: ${fadeInGrow} 2s;
+  // animation: ${fadeInGrow} 2s;
   overflow: hidden;
 `;
 
