@@ -152,6 +152,7 @@ export function FollowButton({
   }, [
     isSelf,
     isFollowing,
+    buttonText,
     handleUnfollowPress,
     width,
     handleFollowPress,
@@ -159,6 +160,5 @@ export function FollowButton({
     styleChip,
     variant,
   ]);
-  
   return <View style={style}>{followChip}</View>;
 }
