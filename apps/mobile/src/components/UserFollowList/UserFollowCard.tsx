@@ -4,21 +4,30 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { FollowButton } from '~/components/FollowButton';
-import { Markdown } from '~/components/Markdown';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import ProcessedText from '../ProcessedText/ProcessedText';
+import colors from '~/shared/theme/colors';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
   queryRef: UserFollowCardQueryFragment$key;
   onPress: (username: string) => void;
+  onFollowPress: () => void;
+  isPresentational?: boolean;
 };
 
-export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardProps) {
+export function UserFollowCard({
+  userRef,
+  queryRef,
+  onPress,
+  onFollowPress,
+  isPresentational = false,
+}: UserFollowCardProps) {
   const query = useFragment(
     graphql`
       fragment UserFollowCardQueryFragment on Query {
@@ -48,11 +57,17 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
       onPress(user.username);
     }
   }, [onPress, user.username]);
-
   return (
-    <View className="flex w-full flex-row items-center space-x-8 overflow-hidden px-4">
+    <View
+      className={
+        !isPresentational
+          ? 'flex w-full flex-row items-center space-x-8 overflow-hidden px-4'
+          : 'flex w-full flex-row items-center space-x-8 overflow-hidden'
+      }
+    >
       <GalleryTouchableOpacity
         onPress={handlePress}
+        disabled={isPresentational}
         className="flex flex-1 flex-grow flex-col py-2"
         eventElementId="User Follow Username"
         eventName="User Follow Username Clicked"
@@ -65,11 +80,25 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>}
+            {bioFirstLine && <ProcessedText numberOfLines={1} text={bioFirstLine} />}
           </View>
         </View>
       </GalleryTouchableOpacity>
-      <FollowButton queryRef={query} userRef={user} />
+      {!isPresentational ? (
+        <FollowButton queryRef={query} userRef={user} />
+      ) : (
+        <FollowButton
+          queryRef={query}
+          userRef={user}
+          variant="white"
+          styleChip={{
+            width: 80,
+            borderWidth: 1,
+            borderColor: colors.faint,
+          }}
+          onPress={onFollowPress}
+        />
+      )}
     </View>
   );
 }

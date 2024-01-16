@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -21,6 +21,8 @@ import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommended
 import colors from '~/shared/theme/colors';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
+import { noop } from '~/shared/utils/noop';
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -61,14 +63,14 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
                 node {
                   id
                   __typename
-                  ...SuggestedUserFollowListFragment
+                  ...UserFollowListFragment
                 }
               }
             }
           }
         }
         ...useFollowAllRecommendedUsersQueryFragment
-        ...SuggestedUserFollowListQueryFragment
+        ...UserFollowListQueryFragment
       }
     `,
     queryRef
@@ -123,9 +125,11 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
     return removeNullValues(list);
   }, [followingPagination.viewer?.suggestedUsers?.edges]);
 
+  const [hasFollowedSomeone, setHasFollowedSomeone] = useState(false);
+
   return (
-    <View style={{ paddingTop: top }}>
-      <View className="flex flex-col flex-grow space-y-4 px-4">
+    <View style={{ paddingTop: top }} className="bg-white">
+      <View className="flex flex-col flex-grow space-y-4 px-4 bg-white">
         <View className="relative flex-row items-center justify-between ">
           <BackButton onPress={handleBack} />
           <GalleryTouchableOpacity
@@ -139,7 +143,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
               className="text-sm text-metal"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              Skip
+              {hasFollowedSomeone ? 'Next' : 'Skip'}
             </Typography>
             <RightArrowIcon color={colors.metal} />
           </GalleryTouchableOpacity>
@@ -157,12 +161,15 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           </Typography>
         </View>
 
-        <View className="h-4/6 mb-14">
+        <View className="h-2/3 mb-14">
           <Suspense fallback={<UserFollowListFallback />}>
-            <SuggestedUserFollowList
+            <UserFollowList
               onLoadMore={handleLoadMore}
               userRefs={recommendedUsers}
               queryRef={followingPagination}
+              onUserPress={(username: string) => {}}
+              onFollowPress={() => setHasFollowedSomeone(true)}
+              isPresentational={true}
             />
           </Suspense>
         </View>

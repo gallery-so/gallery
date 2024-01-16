@@ -17,8 +17,10 @@ type Props = {
   className?: string;
   styleChip?: ViewProps['style'];
   flipVariant?: boolean;
+  variant?: string;
   source?: string; // where the FollowButton is being used, for analytics
   width?: 'fixed' | 'grow';
+  onPress?: () => void;
 };
 
 export function FollowButton({
@@ -27,7 +29,8 @@ export function FollowButton({
   style,
   styleChip,
   width = 'fixed',
-  flipVariant = false,
+  variant,
+  onPress,
 }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
@@ -93,6 +96,7 @@ export function FollowButton({
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
 
   const handleFollowPress = useCallback(async () => {
+    onPress?.();
     trigger('impactLight');
 
     await followUser(userToFollow.dbid);
@@ -111,19 +115,14 @@ export function FollowButton({
       return null;
     } else if (isFollowing) {
       return (
-        <ButtonChip
-          variant={flipVariant ? 'primary' : 'secondary'}
-          onPress={handleUnfollowPress}
-          width={width}
-          style={styleChip}
-        >
+        <ButtonChip variant="primary" onPress={handleUnfollowPress} width={width} style={styleChip}>
           Following
         </ButtonChip>
       );
     } else {
       return (
         <ButtonChip
-          variant={flipVariant ? 'secondary' : 'primary'}
+          variant={variant ? variant : 'secondary'}
           width={width}
           onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
@@ -141,7 +140,7 @@ export function FollowButton({
     handleFollowPress,
     followsYou,
     styleChip,
-    flipVariant,
+    variant,
   ]);
 
   return <View style={style}>{followChip}</View>;
