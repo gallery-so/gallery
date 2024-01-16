@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { animated, SpringValue, useSpring } from 'react-spring';
 import { contexts, flows } from 'shared/analytics/constants';
-import colors from 'shared/theme/colors';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed } from '~/components/core/Text/Text';
-import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import useAuthModal from '~/hooks/useAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
@@ -231,8 +229,4 @@ const StyledMovementWrapper = styled.div<{
           : animatedImage.offsetY.desktop
       }px);`}
   }
-`;
-
-const StyledSignInButton = styled(SignInButton)`
-  border: 1px solid ${colors.black['800']};
 `;

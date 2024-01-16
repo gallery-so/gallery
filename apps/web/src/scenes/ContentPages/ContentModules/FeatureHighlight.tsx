@@ -1,4 +1,4 @@
-import { PortableText } from '@portabletext/react';
+import { PortableText, PortableTextReactComponents } from '@portabletext/react';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -13,7 +13,8 @@ type FeatureHighlightBulletsProps = {
 };
 
 function FeatureHighlightText({ text }: FeatureHighlightBulletsProps) {
-  const CustomComponents = useMemo(() => {
+  // Defining custom components for PortableText
+  const CustomComponents: Partial<PortableTextReactComponents> = useMemo(() => {
     return {
       listItem: {
         bullet: ({ children }) => (

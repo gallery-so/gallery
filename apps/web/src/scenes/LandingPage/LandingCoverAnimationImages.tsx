@@ -24,8 +24,6 @@ export const animatedImages: AnimatedImage[] = [
     src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/06.jpg', // Monarch
     width: 160,
     zIndex: -13,
-    //   offsetX: -105,
-    // offsetY: 210,
     offsetX: {
       mobile: 190,
       desktop: 555,

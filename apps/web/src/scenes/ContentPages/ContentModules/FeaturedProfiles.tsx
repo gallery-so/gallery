@@ -6,7 +6,7 @@ import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
-import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useBreakpoint } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
@@ -16,7 +16,6 @@ type FeaturedProfilesProps = {
 };
 
 export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const breakpoint = useBreakpoint();
 
   const slideContent = useMemo(() => {

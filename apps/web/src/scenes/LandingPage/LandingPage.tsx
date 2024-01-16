@@ -9,7 +9,6 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../ContentPages/cms_types';
@@ -26,8 +25,6 @@ type Props = {
 };
 
 export default function LandingPage({ pageContent }: Props) {
-  const track = useTrack();
-
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const showAuthModal = useAuthModal('sign-up');
 
@@ -50,10 +47,6 @@ export default function LandingPage({ pageContent }: Props) {
                 <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
                 <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
               </VStack>
-
-              {/* <StyledAppStoreBadgeLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                <AppStoreBadge width="160" height="53.5" />
-              </StyledAppStoreBadgeLink> */}
               <FullWidthVStack gap={24} align="center">
                 <StyledMobileButtonContainer gap={12}>
                   <StyledCtaWrapper>
