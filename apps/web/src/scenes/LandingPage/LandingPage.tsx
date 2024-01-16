@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
+import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
@@ -54,15 +55,17 @@ export default function LandingPage({ pageContent }: Props) {
               </StyledAppStoreBadgeLink> */}
               <FullWidthVStack gap={24} align="center">
                 <StyledMobileButtonContainer gap={12}>
-                  <StyledCtaButton variant="secondary">
+                  <StyledCtaButton variant="secondary" onClick={showAuthModal}>
                     <StyledCtaText>Sign up on web</StyledCtaText>
                   </StyledCtaButton>
-                  <StyledCtaButton>
-                    <HStack gap={6} align="center">
-                      <AppleLogo width={27} height={27} />
-                      <StyledCtaText color={colors.white}>Download App</StyledCtaText>
-                    </HStack>
-                  </StyledCtaButton>
+                  <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                    <StyledCtaButton>
+                      <HStack gap={6} align="center">
+                        <AppleLogo width={27} height={27} />
+                        <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                      </HStack>
+                    </StyledCtaButton>
+                  </GalleryLink>
                 </StyledMobileButtonContainer>
                 <BaseXL color={colors.metal}>Android coming soon</BaseXL>
               </FullWidthVStack>
@@ -90,7 +93,7 @@ const StyledMainContent = styled(VStack)`
   flex-direction: column;
   align-items: center;
   max-width: 1436px;
-  margin-bottom: 250px;
+  margin-bottom: 120px;
 `;
 
 const PageGutterWrapper = styled(VStack)`

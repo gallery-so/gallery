@@ -95,7 +95,7 @@ const StyledHighlight = styled(VStack)<{ orientation: string }>`
   gap: 32px 120px;
   width: 100%;
 
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     flex-direction: ${({ orientation }) =>
       orientation === 'bottom' ? 'column' : orientation === 'right' ? 'row' : 'row-reverse'};
     margin: 0;

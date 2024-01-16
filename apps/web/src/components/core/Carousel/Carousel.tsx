@@ -3,10 +3,7 @@ import React, { useCallback } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
-import {
-  useIsDesktopWindowWidth,
-  useIsMobileOrMobileLargeWindowWidth,
-} from '~/hooks/useWindowSize';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
 import ArrowRightIcon from '~/icons/ArrowRightIcon';
 
