@@ -115,7 +115,7 @@ export function FollowButton({
     } else if (isFollowing) {
       return (
         <ButtonChip
-          variant={variant ? 'secondary' : 'primary'}
+          variant={variant ? 'primary' : 'secondary'}
           onPress={handleUnfollowPress}
           width={width}
           style={styleChip}
