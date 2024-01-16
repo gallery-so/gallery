@@ -56,29 +56,33 @@ export default function LandingPage({ pageContent }: Props) {
               </StyledAppStoreBadgeLink> */}
               <FullWidthVStack gap={24} align="center">
                 <StyledMobileButtonContainer gap={12}>
-                  <StyledCtaButton
-                    variant="secondary"
-                    onClick={showAuthModal}
-                    eventElementId="Landing Page Sign Up On Web Button"
-                    eventName="Clicked Landing Page Sign Up On Web Button"
-                    eventContext={contexts.Onboarding}
-                    eventFlow={flows['Web Signup Flow']}
-                  >
-                    <StyledCtaText>Sign up on web</StyledCtaText>
-                  </StyledCtaButton>
-                  <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                  <StyledCtaWrapper>
                     <StyledCtaButton
-                      eventElementId="Landing Page Download iOS App Button"
-                      eventName="Clicked Landing Page Download iOS App Button"
+                      variant="secondary"
+                      onClick={showAuthModal}
+                      eventElementId="Landing Page Sign Up On Web Button"
+                      eventName="Clicked Landing Page Sign Up On Web Button"
                       eventContext={contexts.Onboarding}
                       eventFlow={flows['Web Signup Flow']}
                     >
-                      <HStack gap={6} align="center">
-                        <AppleLogo width={27} height={27} />
-                        <StyledCtaText color={colors.white}>Download App</StyledCtaText>
-                      </HStack>
+                      <StyledCtaText>Sign up on web</StyledCtaText>
                     </StyledCtaButton>
-                  </GalleryLink>
+                  </StyledCtaWrapper>
+                  <StyledCtaWrapper>
+                    <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                      <StyledCtaButton
+                        eventElementId="Landing Page Download iOS App Button"
+                        eventName="Clicked Landing Page Download iOS App Button"
+                        eventContext={contexts.Onboarding}
+                        eventFlow={flows['Web Signup Flow']}
+                      >
+                        <HStack gap={6} align="center">
+                          <AppleLogo width={27} height={27} />
+                          <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                        </HStack>
+                      </StyledCtaButton>
+                    </GalleryLink>
+                  </StyledCtaWrapper>
                 </StyledMobileButtonContainer>
                 <BaseXL color={colors.metal}>Android coming soon</BaseXL>
               </FullWidthVStack>
@@ -130,8 +134,17 @@ const FullWidthVStack = styled(VStack)`
   width: 100%;
 `;
 
-const StyledCtaButton = styled(Button)`
+const StyledCtaWrapper = styled.div`
   width: 50%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: fit-content;
+  }
+`;
+
+const StyledCtaButton = styled(Button)`
+  width: 100%;
+  height: 100%;
   padding: 8px 12px;
   border: 1px solid ${colors.black['800']};
 
