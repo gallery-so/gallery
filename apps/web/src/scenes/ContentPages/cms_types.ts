@@ -80,7 +80,9 @@ export namespace CmsTypes {
     coverImages: Image[];
     profilePicture: Media;
     username: string;
+    pfp: Image;
     profileType: 'collector' | 'creator';
+    bio: string;
   }
 
   export interface LandingPage {

@@ -6,6 +6,7 @@ import { Carousel } from '~/components/core/Carousel/Carousel';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
@@ -103,9 +104,14 @@ const StyledProfile = styled(VStack)`
   background-color: ${colors.faint};
   padding: 16px;
   border-radius: 16px;
+  transition: background-color ${transitions.cubic};
   @media only screen and ${breakpoints.desktop} {
     min-width: 436px;
     max-width: 436px;
+  }
+
+  &:hover {
+    background-color: ${colors.porcelain};
   }
 `;
 

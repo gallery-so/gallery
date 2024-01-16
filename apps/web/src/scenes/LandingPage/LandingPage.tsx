@@ -64,6 +64,7 @@ export default function LandingPage({ pageContent }: Props) {
                   <StyledCtaWrapper>
                     <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
                       <StyledCtaButton
+                        variant="primary"
                         eventElementId="Landing Page Download iOS App Button"
                         eventName="Clicked Landing Page Download iOS App Button"
                         eventContext={contexts.Onboarding}
@@ -135,7 +136,7 @@ const StyledCtaWrapper = styled.div`
   }
 `;
 
-const StyledCtaButton = styled(Button)`
+const StyledCtaButton = styled(Button)<{ variant: string }>`
   width: 100%;
   height: 100%;
   padding: 8px 12px;
@@ -144,6 +145,14 @@ const StyledCtaButton = styled(Button)`
   @media only screen and ${breakpoints.tablet} {
     width: initial;
     padding: 13px 39px;
+  }
+
+  &:hover {
+    opacity: 0.75;
+
+    ${({ variant }) =>
+      variant === 'secondary' &&
+      `border-color: ${colors.faint}`} !important; // override Button component's hover state. making exception for Landing page
   }
 `;
 
@@ -165,7 +174,11 @@ const StyledLandingPage = styled(VStack)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 64px;
+  margin-bottom: 140px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-bottom: 240px;
+  }
 `;
 
 const StyledTitle = styled(TitleDiatypeL)`

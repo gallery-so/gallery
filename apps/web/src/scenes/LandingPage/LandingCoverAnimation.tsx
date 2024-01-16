@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { animated, SpringValue, useSpring } from 'react-spring';
 import { contexts, flows } from 'shared/analytics/constants';
+import colors from 'shared/theme/colors';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleCondensed } from '~/components/core/Text/Text';
+import { TitleCondensed, TitleXS } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
@@ -71,7 +72,7 @@ export default function LandingCoverAnimation() {
             Gallery is the easiest way to express yourself <em>onchain</em>
           </StyledTitle>
           <HStack gap={12}>
-            <Button
+            <StyledButton
               eventElementId="Landing Page Animation Get Started Button"
               eventName="Clicked Landing Page Animation Get Started Button"
               eventContext={contexts.Onboarding}
@@ -79,8 +80,8 @@ export default function LandingCoverAnimation() {
               properties={{ buttonLocation: 'Landing Page Splash Screen' }}
               onClick={showAuthModal}
             >
-              Get started
-            </Button>
+              <StyledCtaText color={colors.white}>Get started</StyledCtaText>
+            </StyledButton>
           </HStack>
         </VStack>
       </animated.div>
@@ -180,6 +181,19 @@ const StyledTitle = styled(TitleCondensed)`
 
   @media only screen and ${breakpoints.desktop} {
     width: 60%;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  &:hover {
+    opacity: 0.75;
+  }
+`;
+
+const StyledCtaText = styled(TitleXS)`
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
+    line-height: 26px;
   }
 `;
 
