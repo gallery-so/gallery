@@ -65,17 +65,6 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
   return useCallback(
     async (followeeId: string) => {
       await followUserMutate({
-        optimisticUpdater: (store, response) => {
-          const viewer = store.getRoot().getLinkedRecord('viewer');
-          const user = viewer?.getLinkedRecord('user');
-          if (response.followUser?.__typename === 'FollowUserPayload') {
-            const followee = store.get(followeeId);
-            const userFollowing = user?.getLinkedRecords('following');
-            if (followee && userFollowing) {
-              user?.setLinkedRecords([...userFollowing, followee], 'following');
-            }
-          }
-        },
         optimisticResponse: {
           followUser: {
             __typename: 'FollowUserPayload',
@@ -85,7 +74,10 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
               user: {
                 __typename: 'GalleryUser',
                 id: query.viewer?.user?.id as string,
-                following: [...(query.viewer?.user?.following ?? []), { id: followeeId }],
+                following: [
+                  ...(query.viewer?.user?.following ?? []),
+                  { id: `GalleryUser:${followeeId}` },
+                ],
               },
             },
           },

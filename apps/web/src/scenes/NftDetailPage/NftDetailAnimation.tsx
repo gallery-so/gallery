@@ -18,18 +18,20 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAnimationFragment on Token {
-        media @required(action: THROW) {
-          ... on HtmlMedia {
-            __typename
-            contentRenderURL @required(action: THROW)
-          }
-          ... on TextMedia {
-            __typename
-            mediaURL
-          }
-          ... on UnknownMedia {
-            __typename
-            contentRenderURL @required(action: THROW)
+        definition {
+          media @required(action: THROW) {
+            ... on HtmlMedia {
+              __typename
+              contentRenderURL @required(action: THROW)
+            }
+            ... on TextMedia {
+              __typename
+              mediaURL
+            }
+            ... on UnknownMedia {
+              __typename
+              contentRenderURL @required(action: THROW)
+            }
           }
         }
       }
@@ -38,20 +40,23 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
   );
 
   const contentRenderURL = useMemo(() => {
-    if (token.media.__typename === 'HtmlMedia' || token.media.__typename === 'UnknownMedia') {
-      return token.media.contentRenderURL;
-    } else if (token.media.__typename === 'TextMedia') {
-      if (token.media.mediaURL?.startsWith('data:')) {
-        const mimeType = token.media.mediaURL.split('data:')[1]?.split(';')[0];
+    if (
+      token.definition.media.__typename === 'HtmlMedia' ||
+      token.definition.media.__typename === 'UnknownMedia'
+    ) {
+      return token.definition.media.contentRenderURL;
+    } else if (token.definition.media.__typename === 'TextMedia') {
+      if (token.definition.media.mediaURL?.startsWith('data:')) {
+        const mimeType = token.definition.media.mediaURL.split('data:')[1]?.split(';')[0];
 
         if (mimeType === 'text/html') {
-          return token.media.mediaURL;
+          return token.definition.media.mediaURL;
         }
       }
     }
 
     return '';
-  }, [token.media]);
+  }, [token.definition.media]);
 
   if (contentRenderURL.endsWith('.glb')) {
     return <RawNftDetailModel onLoad={onLoad} url={contentRenderURL} fullHeight />;

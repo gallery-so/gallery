@@ -16,9 +16,11 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
     graphql`
       fragment SearchBarFragment on Token @relay(plural: true) {
         dbid
-        name
-        contract {
+        definition {
           name
+          community {
+            name
+          }
         }
       }
     `,
@@ -33,11 +35,11 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
 
     const searchResults = tokens
       .filter((token) => {
-        if (token.name?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.definition.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 
-        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
+        if (token.definition.community?.name?.toLowerCase().includes(lowerCaseQuery)) {
           return true;
         }
 

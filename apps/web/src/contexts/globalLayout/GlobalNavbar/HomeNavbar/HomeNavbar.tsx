@@ -4,7 +4,6 @@ import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
@@ -123,11 +122,8 @@ export function HomeNavbar({ queryRef }: Props) {
 
       {/* Strictly here to keep spacing consistent */}
       <NavbarRightContent>
-        {isLoggedIn ? (
-          <SnowToggleIcon />
-        ) : (
+        {isLoggedIn ? null : (
           <HStack gap={8} align="center">
-            <SnowToggleIcon />
             <SignInButton />
             {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
             {!isMobile && <SignUpButton />}

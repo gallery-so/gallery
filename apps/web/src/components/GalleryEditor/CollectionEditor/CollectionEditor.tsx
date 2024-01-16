@@ -22,11 +22,18 @@ const collectionEditorViewerFragment = graphql`
         # Escape hatch for data processing util files
         # CollectionEditor could use a refactor
         # eslint-disable-next-line relay/unused-fields
-        name @required(action: THROW)
-        # Escape hatch for data processing util files
-        # CollectionEditor could use a refactor
-        # eslint-disable-next-line relay/unused-fields
-        isSpamByProvider
+        definition {
+          # Escape hatch for data processing util files
+          # CollectionEditor could use a refactor
+          # eslint-disable-next-line relay/unused-fields
+          name @required(action: THROW)
+          # Escape hatch for data processing util files
+          # CollectionEditor could use a refactor
+          # eslint-disable-next-line relay/unused-fields
+          contract {
+            isSpam
+          }
+        }
         # Escape hatch for data processing util files
         # CollectionEditor could use a refactor
         # eslint-disable-next-line relay/unused-fields

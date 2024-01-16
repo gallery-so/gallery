@@ -1,5 +1,6 @@
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { MAX_POST_LENGTH } from 'shared/utils/getRemainingCharacterCount';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -25,7 +26,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS } from '../core/Text/Text';
 import { PostComposerMintLinkInput } from './PostComposerMintLinkInput';
 import PostComposerNft from './PostComposerNft';
-import { DESCRIPTION_MAX_LENGTH, PostComposerTextArea } from './PostComposerTextArea';
+import { PostComposerTextArea } from './PostComposerTextArea';
 import SharePostModal from './SharePostModal';
 
 type Props = {
@@ -60,7 +61,8 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     { tokenId }
   );
 
-  const { mintPageUrl, clearUrlParamsAndSelections } = usePostComposerContext();
+  const { mintPageUrl: mintPageUrlDetectedFromQueryParams, clearUrlParamsAndSelections } =
+    usePostComposerContext();
 
   if (query.tokenById?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
@@ -81,6 +83,7 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
             }
           }
           mintUrl
+          chain
         }
         ...PostComposerNftFragment
         ...PostComposerTextAreaFragment
@@ -101,15 +104,26 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
     closeMention,
   } = useMentionableMessage();
 
-  const descriptionOverLengthLimit = message.length > DESCRIPTION_MAX_LENGTH;
+  const descriptionOverLengthLimit = message.length > MAX_POST_LENGTH;
 
   const ownerWalletAddress = query.viewer?.user?.primaryWallet?.chainAddress?.address ?? '';
-  const mintUrlFromQueryOrToken = mintPageUrl || (token.definition.mintUrl ?? '');
+  const mintUrlFromQueryOrToken =
+    mintPageUrlDetectedFromQueryParams || (token.definition.mintUrl ?? '');
   const mintURLWithRef = getMintUrlWithReferrer(mintUrlFromQueryOrToken, ownerWalletAddress).url;
 
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
-  const [includeMintLink, setIncludeMintLink] = useState(true);
+
+  // only toggle the mint link on by default if it's provided manually in query params, OR it's on zora network.
+  // on any other chain, disable it by default.
+  const shouldEnableMintLinkByDefault = useMemo(() => {
+    if (mintPageUrlDetectedFromQueryParams && mintURLWithRef) {
+      return true;
+    }
+    return token.definition.chain === 'Zora';
+  }, [mintPageUrlDetectedFromQueryParams, mintURLWithRef, token.definition.chain]);
+
+  const [includeMintLink, setIncludeMintLink] = useState(shouldEnableMintLinkByDefault);
 
   useClearURLQueryParams('mint_page_url');
 

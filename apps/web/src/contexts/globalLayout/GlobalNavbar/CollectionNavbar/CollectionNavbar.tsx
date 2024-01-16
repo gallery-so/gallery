@@ -14,7 +14,6 @@ import {
   BreadcrumbLink,
   BreadcrumbText,
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
@@ -118,7 +117,6 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <SnowToggleIcon />
         <CollectionRightContent collectionId={collectionId} username={username} queryRef={query} />
       </NavbarRightContent>
     </StandardNavbarContainer>

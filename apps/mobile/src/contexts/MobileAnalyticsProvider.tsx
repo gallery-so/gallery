@@ -12,8 +12,8 @@ import AnalyticsProvider, {
 
 let instance: Mixpanel | undefined = undefined;
 
-const token = env.MIXPANEL_TOKEN;
-const apiUrl = env.MIXPANEL_API_URL;
+const token = env.EXPO_PUBLIC_MIXPANEL_TOKEN;
+const apiUrl = env.EXPO_PUBLIC_MIXPANEL_API_URL;
 
 if (token && apiUrl) {
   instance = new Mixpanel(token, true);

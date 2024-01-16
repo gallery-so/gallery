@@ -1,15 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useMemo, useRef } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { useCallback, useContext, useMemo, useRef } from 'react';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
+import { CouldNotRenderNftError } from 'shared/errors/CouldNotRenderNftError';
+import { noop } from 'shared/utils/noop';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
 import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/UniversalNftPreview';
+import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graphql';
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { NftDetailAssetCacheSwapperContext } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
+import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetVideo';
+import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { useNftDetailAssetSizer } from '~/screens/NftDetailScreen/NftDetailAsset/useNftDetailAssetSizer';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
 
@@ -31,11 +38,15 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           dbid
           definition {
             media {
+              __typename
               ... on Media {
                 dimensions {
                   width
                   height
                 }
+              }
+              ... on VideoMedia {
+                ...NftDetailAssetVideoFragment
               }
             }
           }
@@ -125,6 +136,49 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     };
   }, [firstToken, dimensions.width]);
 
+  const assetSizer = useNftDetailAssetSizer();
+  const cachedAssetSwapperContext = useContext(NftDetailAssetCacheSwapperContext);
+  const handleLoad = useCallback(
+    (dimensions?: Dimensions | null) => {
+      cachedAssetSwapperContext?.markDetailAssetAsLoaded();
+      assetSizer.handleLoad(dimensions);
+    },
+    [assetSizer, cachedAssetSwapperContext]
+  );
+
+  const { markTokenAsFailed } = useTokenStateManagerContext();
+  const handleError = useCallback(() => {
+    markTokenAsFailed(
+      firstToken.dbid,
+      new CouldNotRenderNftError('NftDetailAsset', 'Failed to render', { id: firstToken.dbid })
+    );
+  }, [firstToken.dbid, markTokenAsFailed]);
+
+  const renderedAsset = useMemo(() => {
+    if (firstToken.definition.media?.__typename === 'VideoMedia') {
+      return (
+        <Pressable delayLongPress={100} onPress={handlePress} onLongPress={noop}>
+          <NftDetailAssetVideo
+            mediaRef={firstToken.definition.media}
+            onLoad={handleLoad}
+            onError={handleError}
+            posterUrl={imageUrl ?? undefined}
+            outputDimensions={resultDimensions}
+          />
+        </Pressable>
+      );
+    }
+    return (
+      <UniversalNftPreviewWithBoundary
+        tokenRef={firstToken}
+        onPress={handlePress}
+        resizeMode={ResizeMode.CONTAIN}
+        priority={FastImage.priority.high}
+        size="large"
+      />
+    );
+  }, [firstToken, handleError, handleLoad, handlePress, imageUrl, resultDimensions]);
+
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       <View
@@ -133,13 +187,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           width: dimensions.width,
         }}
       >
-        <UniversalNftPreviewWithBoundary
-          tokenRef={firstToken}
-          onPress={handlePress}
-          resizeMode={ResizeMode.CONTAIN}
-          priority={FastImage.priority.high}
-          size="large"
-        />
+        {renderedAsset}
       </View>
       <PostCreatorAndCollectionSection tokenRef={firstToken} />
     </View>

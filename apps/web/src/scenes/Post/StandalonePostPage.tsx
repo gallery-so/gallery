@@ -25,7 +25,9 @@ function StandalonePostPage({ queryRef }: Props) {
             }
             caption
             tokens {
-              name
+              definition {
+                name
+              }
             }
             ...StandalonePostViewFragment
           }
@@ -51,7 +53,7 @@ function StandalonePostPage({ queryRef }: Props) {
     }
 
     return token
-      ? `${post.author?.username} on Gallery: Shared "${token.name}"`
+      ? `${post.author?.username} on Gallery: Shared "${token.definition.name}"`
       : `${post.author?.username} on Gallery`;
   }, [post]);
 

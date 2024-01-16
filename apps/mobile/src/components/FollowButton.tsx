@@ -18,8 +18,7 @@ type Props = {
   styleChip?: ViewProps['style'];
   variant?: ButtonChipVariant;
   source?: string; // where the FollowButton is being used, for analytics
-  width?: 'fixed' | 'grow';
-  onPress?: () => void;
+  width?: ButtonChipProps['width'];
 };
 
 export function FollowButton({
@@ -109,6 +108,20 @@ export function FollowButton({
 
   const isSelf = loggedInUserId === userToFollow?.id;
 
+  const buttonText = useMemo(() => {
+    if (isFollowing) {
+      return 'Following';
+    }
+    if (width === 'fixed-tight') {
+      return 'Follow';
+    }
+    if (followsYou) {
+      return 'Follow Back';
+    }
+
+    return 'Follow';
+  }, [followsYou, isFollowing, width]);
+
   const followChip = useMemo(() => {
     if (isSelf) {
       return null;
@@ -120,7 +133,7 @@ export function FollowButton({
           width={width}
           style={styleChip}
         >
-          Following
+          {buttonText}
         </ButtonChip>
       );
     } else {
@@ -132,7 +145,7 @@ export function FollowButton({
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
           style={styleChip}
         >
-          {followsYou ? 'Follow back' : 'Follow'}
+          {buttonText}
         </ButtonChip>
       );
     }
@@ -146,6 +159,6 @@ export function FollowButton({
     styleChip,
     variant,
   ]);
-
+  
   return <View style={style}>{followChip}</View>;
 }

@@ -57,8 +57,6 @@ function GalleryBottomSheetModal(
       backgroundComponent={GalleryBottomSheetBackground}
       backdropComponent={GalleryBottomSheetBackdrop}
       handleComponent={GalleryBottomSheetHandle}
-      // @ts-expect-error - `snapPoints` is not typed correctly in `@gorhom/bottom-sheet`
-      // https://github.com/gorhom/react-native-bottom-sheet/issues/1478
       snapPoints={snapPoints}
       {...rest}
     >

@@ -70,27 +70,28 @@ const StyledFullPageLoader = styled.div`
   flex-direction: column;
   padding-left: 24px;
   padding-right: 24px;
+  margin-top: 48px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
     flex-direction: row;
+    margin-top: 0;
   }
 `;
 
 const VisibilityContainer = styled.div`
   position: relative;
-  @media only screen and ${breakpoints.tablet} {
-    margin-left: 84px;
-  }
 `;
 
 const StyledTextContainer = styled(VStack)`
-  margin-top: 56px;
-  padding-right: 10%;
-  padding-left: 10%;
-  width: 400px;
+  width: 100%;
+  margin-top: 24px;
 
   @media only screen and ${breakpoints.tablet} {
+    margin-top: 56px;
+    padding-right: 10%;
+    padding-left: 10%;
+    width: 400px;
     margin-left: 56px;
     margin-top: 0px;
     padding-right: 0%;
@@ -104,9 +105,8 @@ export const StyledNftSkeleton = styled(Skeleton)`
   height: 350px;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 600px;
-    height: 600px;
-    margin-left: 80px;
+    width: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
+    height: min(80vh, ${DESKTOP_TOKEN_DETAIL_VIEW_SIZE}px);
   }
 `;
 
@@ -158,16 +158,21 @@ const StyledOwnerAndCreator = styled(HStack)`
 `;
 
 const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
   border: none;
+  height: min(100%, ${({ width }) => width}px);
+  width: min(100%, ${({ width }) => width}px);
+
+  @media only screen and ${breakpoints.tablet} {
+    height: min(80vh, ${({ height }) => height}px);
+    width: min(80vh, ${({ height }) => height}px);
+  }
 `;
 
 const StyledImageWrapper = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 600px;
+  width: 100%;
   height: 100%;
   opacity: 0;
   pointer-events: none;

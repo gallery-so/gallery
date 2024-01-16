@@ -48,9 +48,11 @@ function StagedNftImageDragging({ tokenRef, size }: StagedNftImageDraggingProps)
     graphql`
       fragment StagedNftImageDraggingFragment on Token {
         dbid
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
         }
         ...useGetPreviewImagesSingleFragment
@@ -61,7 +63,7 @@ function StagedNftImageDragging({ tokenRef, size }: StagedNftImageDraggingProps)
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const contractAddress = token.definition?.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   const isMouseUp = useMouseUp();

@@ -77,76 +77,83 @@ export function CommunityView({ queryRef, communityRef }: Props) {
     });
   }, [chain, contractAddress]);
 
-  const TabBar = useCallback(() => {
+  const Header = useCallback(() => {
     return (
-      <CommunityTabsHeader
-        communityRef={community}
-        selectedRoute={selectedRoute}
-        onRouteChange={setSelectedRoute}
-      />
-    );
-  }, [community, setSelectedRoute, selectedRoute]);
+      <>
+        <View className="flex flex-col px-4 py-4 z-10">
+          <View className="flex flex-row justify-between">
+            <BackButton />
 
-  return (
-    <View className="flex-1">
-      <View className="flex flex-col px-4 py-4 z-10">
-        <View className="flex flex-row justify-between">
-          <BackButton />
-
-          <View className="flex flex-row space-x-2">
-            {externalAddressUrl && (
+            <View className="flex flex-row space-x-2">
+              {externalAddressUrl && (
+                <IconContainer
+                  eventElementId="Community Globe Icon"
+                  eventName="Community Globe Icon Clicked"
+                  eventContext={contexts.Community}
+                  icon={<GlobeIcon />}
+                  onPress={() => Linking.openURL(externalAddressUrl)}
+                />
+              )}
+              {objktUrl && (
+                <IconContainer
+                  eventElementId="Community Objkt Icon"
+                  eventName="Community Objkt Icon Clicked"
+                  eventContext={contexts.Community}
+                  icon={<ObjktIcon />}
+                  onPress={() => Linking.openURL(objktUrl)}
+                />
+              )}
+              {openseaUrl && (
+                <IconContainer
+                  eventElementId="Community Opensea Icon"
+                  eventName="Community Opensea Icon Clicked"
+                  eventContext={contexts.Community}
+                  icon={<OpenseaIcon />}
+                  onPress={() => Linking.openURL(openseaUrl)}
+                />
+              )}
               <IconContainer
-                eventElementId="Community Globe Icon"
-                eventName="Community Globe Icon Clicked"
+                eventElementId="Community Share Icon"
+                eventName="Community Share Icon Clicked"
                 eventContext={contexts.Community}
-                icon={<GlobeIcon />}
-                onPress={() => Linking.openURL(externalAddressUrl)}
+                icon={<ShareIcon />}
+                onPress={handleShare}
               />
-            )}
-            {objktUrl && (
-              <IconContainer
-                eventElementId="Community Objkt Icon"
-                eventName="Community Objkt Icon Clicked"
-                eventContext={contexts.Community}
-                icon={<ObjktIcon />}
-                onPress={() => Linking.openURL(objktUrl)}
-              />
-            )}
-            {openseaUrl && (
-              <IconContainer
-                eventElementId="Community Opensea Icon"
-                eventName="Community Opensea Icon Clicked"
-                eventContext={contexts.Community}
-                icon={<OpenseaIcon />}
-                onPress={() => Linking.openURL(openseaUrl)}
-              />
-            )}
-            <IconContainer
-              eventElementId="Community Share Icon"
-              eventName="Community Share Icon Clicked"
-              eventContext={contexts.Community}
-              icon={<ShareIcon />}
-              onPress={handleShare}
-            />
+            </View>
           </View>
         </View>
-      </View>
 
-      <View className="px-4">
-        <CommunityHeader communityRef={community} />
-        <CommunityMeta communityRef={community} queryRef={query} />
-      </View>
+        <View className="px-4">
+          <CommunityHeader communityRef={community} />
+          <CommunityMeta communityRef={community} queryRef={query} />
+        </View>
 
-      <View className="flex-grow">
-        <GalleryTabsContainer TabBar={TabBar} ref={containerRef} initialTabName={selectedRoute}>
-          <Tabs.Tab name="Posts">
-            <CommunityViewPostsTab communityRef={community} queryRef={query} />
-          </Tabs.Tab>
-          <Tabs.Tab name="Collectors">
-            <CommunityCollectors queryRef={query} communityRef={community} />
-          </Tabs.Tab>
-        </GalleryTabsContainer>
-      </View>
-    </View>
+        <CommunityTabsHeader
+          communityRef={community}
+          selectedRoute={selectedRoute}
+          onRouteChange={setSelectedRoute}
+        />
+      </>
+    );
+  }, [
+    community,
+    query,
+    handleShare,
+    externalAddressUrl,
+    objktUrl,
+    openseaUrl,
+    setSelectedRoute,
+    selectedRoute,
+  ]);
+
+  return (
+    <GalleryTabsContainer Header={Header} ref={containerRef} initialTabName={selectedRoute}>
+      <Tabs.Tab name="Posts">
+        <CommunityViewPostsTab communityRef={community} queryRef={query} />
+      </Tabs.Tab>
+      <Tabs.Tab name="Collectors">
+        <CommunityCollectors queryRef={query} communityRef={community} />
+      </Tabs.Tab>
+    </GalleryTabsContainer>
   );
 }

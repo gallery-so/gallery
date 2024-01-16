@@ -17,9 +17,10 @@ function readEnvironmentFromFile(file: string) {
   }
 }
 
-const environmentVariablePath = path.join(__dirname, `./env/.env.${process.env.ENV ?? 'prod'}`);
-// eslint-disable-next-line no-console
-console.log(`Loading Environment Variables from: ${environmentVariablePath}`);
+const environmentVariablePath = path.join(
+  __dirname,
+  `./env/.env.${process.env.EXPO_PUBLIC_ENV ?? 'prod'}`
+);
 const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
 
 const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
@@ -33,7 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.39',
+  version: '1.0.42',
   updates: {
     fallbackToCacheTimeout: 0,
   },

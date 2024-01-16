@@ -75,20 +75,21 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
             __typename
 
             dbid
-            name
-            chain
             creationTime
+            definition {
+              name
+              chain
+              contract {
+                dbid
+                name
+                isSpam
+              }
+            }
 
             isSpamByUser
-            isSpamByProvider
 
             ownerIsHolder
             ownerIsCreator
-
-            contract {
-              dbid
-              name
-            }
 
             ...useTokenSearchResultsFragment
             ...NftSelectorTokensFragment
@@ -156,7 +157,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         return true;
       }
 
-      if (token.chain !== network) {
+      if (token.definition.chain !== network) {
         return false;
       }
 
@@ -173,7 +174,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       }
 
       // ...but incorporate with spam filtering logic for Collected view
-      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      const isSpam =
+        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
       if (filterType === 'Hidden') {
         return isSpam;
       }
@@ -192,8 +194,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       });
     } else if (sortType === 'Alphabetical') {
       filteredTokens.sort((a, b) => {
-        const contractA = a.contract?.name?.toLocaleLowerCase();
-        const contractB = b.contract?.name?.toLocaleLowerCase();
+        const contractA = a.definition.contract?.name?.toLocaleLowerCase();
+        const contractB = b.definition.contract?.name?.toLocaleLowerCase();
 
         if (contractA && contractB) {
           if (contractA < contractB) {

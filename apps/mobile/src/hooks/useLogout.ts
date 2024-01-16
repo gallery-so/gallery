@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useCallback } from 'react';
@@ -36,7 +37,9 @@ export function useLogout(): [() => void, boolean] {
       // only go through official logout flow if user is using a real device, since we
       // need to de-register their push token (which doesn't exist for simulator)
       if (Device.isDevice) {
-        const expoPushToken = await Notifications.getExpoPushTokenAsync();
+        const expoPushToken = await Notifications.getExpoPushTokenAsync({
+          projectId: Constants.expoConfig?.extra?.eas.projectId,
+        });
         const response = await mutate({
           variables: {
             token: expoPushToken.data,

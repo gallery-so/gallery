@@ -28,17 +28,19 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     graphql`
       fragment TokenDetailAssetFragment on Token {
         dbid
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
-        }
-        media @required(action: THROW) {
-          ... on Media {
-            ...useContainedDimensionsForTokenFragment
-          }
-          ... on HtmlMedia {
-            __typename
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
+            ... on HtmlMedia {
+              __typename
+            }
           }
         }
 
@@ -51,11 +53,11 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const breakpoint = useBreakpoint();
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = token.media.__typename === 'HtmlMedia';
+  const isIframe = token.definition.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
@@ -64,7 +66,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   });
 
   const resultDimensions = useContainedDimensionsForToken({
-    mediaRef: token.media,
+    mediaRef: token.definition.media,
   });
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
@@ -136,14 +138,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-  @media only screen and ${breakpoints.tablet} {
-    width: 450px;
-    min-height: 450px;
-  }
-
   @media only screen and ${breakpoints.desktop} {
-    width: 600px;
-    min-height: 600px;
+    max-width: 800px;
   }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
@@ -152,10 +148,10 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+const StyledImage = styled.img`
   border: none;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const VisibilityContainer = styled.div`
@@ -181,11 +177,6 @@ const AssetContainer = styled.div<{ isVisible: boolean }>`
   opacity: 1;
   pointer-events: auto;
   `}
-
-  @media only screen and (max-width: ${size.tablet}px) {
-    height: 296px;
-    width: 296px;
-  }
 `;
 
 const ShimmerContainer = styled.div`

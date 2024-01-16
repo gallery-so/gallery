@@ -30,7 +30,9 @@ export function NewTokens({ notificationRef, onClose }: Props) {
           ... on Token {
             __typename
             dbid
-            name
+            definition {
+              name
+            }
             ...NewTokensTokenPreviewFragment
           }
         }
@@ -76,7 +78,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
           <StyledTextWrapper align="center" as="span" wrap="wrap">
             <BaseM>Collected {quantity > 1 && `${quantity}x`}</BaseM>
             <BaseM as="span">
-              <strong>{token?.name ? token.name : 'Unknown'}</strong>
+              <strong>{token?.definition.name ? token.definition.name : 'Unknown'}</strong>
             </BaseM>
           </StyledTextWrapper>
         </VStack>
@@ -118,7 +120,7 @@ function TokenPreview({ tokenRef, count }: TokenPreviewProps) {
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
   return (
-    <StyledPostPreviewWrapper>
+    <StyledPostPreviewWrapper stacked={count > 1}>
       {count > 1 && <StyledPostPreview src={imageUrl} count={count} stacked />}
       <StyledPostPreview count={count} src={imageUrl} />
     </StyledPostPreviewWrapper>
@@ -133,13 +135,15 @@ const StyledTextWrapper = styled(HStack)`
   display: inline;
 `;
 
-const StyledPostPreviewWrapper = styled.div`
+const StyledPostPreviewWrapper = styled.div<{ stacked?: boolean }>`
   position: relative;
+  padding: ${({ stacked }) => (stacked ? 5 : 0)}px;
 `;
 
-const StyledPostPreview = styled.img<{ stacked?: boolean; count: number }>`
+export const StyledPostPreview = styled.img<{ stacked?: boolean; count: number }>`
   height: 56px;
   width: 56px;
+  background: ${colors.offWhite};
 
   ${({ count }) =>
     count > 1 &&
@@ -147,15 +151,15 @@ const StyledPostPreview = styled.img<{ stacked?: boolean; count: number }>`
     height: 40px;
     width: 40px;
     border: 1px solid ${colors.offWhite}; 
-
   `}
 
   ${({ stacked }) =>
     stacked
       ? `
         position: absolute;
-        bottom: -5px;
-        right: -5px;  `
+        bottom: 4px;
+        right: 6px;
+        `
       : `
         z-index: 2;
         position: inherit;

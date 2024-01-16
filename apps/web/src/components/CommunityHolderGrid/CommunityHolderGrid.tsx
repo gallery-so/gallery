@@ -29,19 +29,16 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
       @refetchable(queryName: "CommunityHolderRefetchableFragment") {
         id
 
-        tokensInCommunity(
-          first: $tokenCommunityFirst
-          after: $tokenCommunityAfter
-          onlyGalleryUsers: $onlyGalleryUsers
-        ) @connection(key: "CommunityPageView_tokensInCommunity") {
+        tokens(first: $tokenCommunityFirst, after: $tokenCommunityAfter)
+          @connection(key: "CommunityPageView_tokens") {
           edges {
             node {
               __typename
-
               id
-
-              media {
-                __typename
+              definition {
+                media {
+                  __typename
+                }
               }
               owner {
                 universal
@@ -69,17 +66,17 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
   const tokenHolders = useMemo(() => {
     const tokens = [];
 
-    for (const token of community.tokensInCommunity?.edges ?? []) {
+    for (const token of community.tokens?.edges ?? []) {
       if (token?.node) {
         tokens.push(token.node);
       }
     }
 
     return tokens;
-  }, [community.tokensInCommunity?.edges]);
+  }, [community.tokens?.edges]);
 
   const filteredTokens = useMemo(() => {
-    return tokenHolders.filter((token) => token?.media?.__typename !== 'InvalidMedia');
+    return tokenHolders.filter((token) => token?.definition?.media?.__typename !== 'InvalidMedia');
   }, [tokenHolders]);
 
   const nonGalleryMemberTokens = useMemo(() => {

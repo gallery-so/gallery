@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
+import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
@@ -84,7 +85,7 @@ export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
   );
 
   return (
-    <FlashList
+    <Tabs.FlashList
       data={holders}
       estimatedItemSize={40}
       renderItem={renderItem}

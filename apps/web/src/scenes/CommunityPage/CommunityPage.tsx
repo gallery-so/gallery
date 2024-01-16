@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { CommunityPageCommunityFragment$key } from '~/generated/CommunityPageCommunityFragment.graphql';
 import { CommunityPageFragment$key } from '~/generated/CommunityPageFragment.graphql';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -14,31 +15,35 @@ import CommunityPageView from './CommunityPageView';
 
 type Props = {
   queryRef: CommunityPageFragment$key;
+  communityRef: CommunityPageCommunityFragment$key | null;
 };
 
-export default function CommunityPage({ queryRef }: Props) {
+export default function CommunityPage({ queryRef, communityRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommunityPageFragment on Query {
-        community: communityByAddress(
-          communityAddress: $communityAddress
-          forceRefresh: $forceRefresh
-        ) {
-          ... on ErrCommunityNotFound {
-            __typename
-          }
-          ... on Community {
-            __typename
-            name
-            ...CommunityPageViewFragment
-          }
-        }
         ...CommunityPageViewQueryFragment
       }
     `,
     queryRef
   );
-  const { community } = query;
+
+  const community = useFragment(
+    graphql`
+      fragment CommunityPageCommunityFragment on CommunityByKeyOrError {
+        ... on ErrCommunityNotFound {
+          __typename
+        }
+        ... on Community {
+          __typename
+          name
+          ...CommunityPageViewFragment
+        }
+      }
+    `,
+    communityRef
+  );
+
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
 

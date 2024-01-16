@@ -1,4 +1,5 @@
 import { Route } from 'nextjs-routes';
+import styled from 'styled-components';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { TitleS } from '~/components/core/Text/Text';
@@ -15,13 +16,22 @@ export function UsernameLink({ username, eventContext }: UsernameLinkProps) {
     : { pathname: '/' };
 
   return (
-    <GalleryLink
+    <StyledGalleryLink
       to={link}
       eventElementId="Username Link"
       eventName="Username Link Click"
       eventContext={eventContext}
     >
-      <TitleS as="span">{username ?? '<unknown>'}</TitleS>
-    </GalleryLink>
+      <StyledText as="span">{username ?? '<unknown>'}</StyledText>
+    </StyledGalleryLink>
   );
 }
+
+const StyledGalleryLink = styled(GalleryLink)`
+  display: flex;
+  align-items: flex-start;
+`;
+const StyledText = styled(TitleS)`
+  line-height: 1;
+  display: inline-flex;
+`;

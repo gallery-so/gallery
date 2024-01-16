@@ -56,38 +56,39 @@ function NftPreview({
     graphql`
       fragment NftPreviewFragment on Token {
         dbid
-        tokenId
-        name
-        contract {
-          contractAddress {
-            address
-          }
-        }
         owner {
           username
         }
-        media {
-          ... on VideoMedia {
-            __typename
-            ...NftDetailVideoFragment
+        definition {
+          tokenId
+          name
+          contract {
+            contractAddress {
+              address
+            }
           }
-          ... on GIFMedia {
-            __typename
-            contentRenderURL
-          }
-          ... on HtmlMedia {
-            __typename
-          }
-          ... on GltfMedia {
-            __typename
-            ...NftDetailModelFragment
-          }
-          ... on ImageMedia {
-            __typename
-            contentRenderURL
+          media {
+            ... on VideoMedia {
+              __typename
+              ...NftDetailVideoFragment
+            }
+            ... on GIFMedia {
+              __typename
+              contentRenderURL
+            }
+            ... on HtmlMedia {
+              __typename
+            }
+            ... on GltfMedia {
+              __typename
+              ...NftDetailModelFragment
+            }
+            ... on ImageMedia {
+              __typename
+              contentRenderURL
+            }
           }
         }
-
         ...NftPreviewLabelFragment
         ...NftPreviewAssetFragment
         ...NftDetailAnimationFragment
@@ -100,8 +101,8 @@ function NftPreview({
 
   const ownerUsername = token.owner?.username;
 
-  const tokenId = token.tokenId ?? '';
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const tokenId = token.definition.tokenId ?? '';
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
 
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(contractAddress),
@@ -113,8 +114,8 @@ function NftPreview({
     : _shouldLiveRender;
 
   const isIFrameLiveDisplay = Boolean(
-    (shouldLiveRender && token.media?.__typename === 'HtmlMedia') ||
-      (shouldLiveRender && token.media?.__typename === 'GltfMedia')
+    (shouldLiveRender && token.definition.media?.__typename === 'HtmlMedia') ||
+      (shouldLiveRender && token.definition.media?.__typename === 'GltfMedia')
   );
 
   // iframes generally look better if they are free to occupy the full height of their container.
@@ -125,9 +126,9 @@ function NftPreview({
   // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
   // NFT or per-collection basis, similar to the Live Render setting
   const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
-    const contractAddress = token.contract?.contractAddress?.address ?? '';
+    const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
     return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
-  }, [token.contract?.contractAddress]);
+  }, [token.definition.contract?.contractAddress]);
 
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
@@ -146,28 +147,34 @@ function NftPreview({
     if (disableLiverender) {
       return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
     }
-    if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
+    if (shouldLiveRender && token.definition.media?.__typename === 'VideoMedia') {
       return (
         <NftDetailVideo
           onLoad={onNftLoad}
-          mediaRef={token.media}
+          mediaRef={token.definition.media}
           tokenId={token.dbid}
           hideControls
         />
       );
     }
-    if (shouldLiveRender && token.media?.__typename === 'GIFMedia') {
+    if (shouldLiveRender && token.definition.media?.__typename === 'GIFMedia') {
       return <NftDetailGif onLoad={onNftLoad} tokenRef={token} />;
     }
-    if (shouldLiveRender && token.media?.__typename === 'GltfMedia') {
-      return <NftDetailModel onLoad={onNftLoad} mediaRef={token.media} fullHeight={fullHeight} />;
+    if (shouldLiveRender && token.definition.media?.__typename === 'GltfMedia') {
+      return (
+        <NftDetailModel
+          onLoad={onNftLoad}
+          mediaRef={token.definition.media}
+          fullHeight={fullHeight}
+        />
+      );
     }
-    if (shouldLiveRender && token.media?.__typename === 'ImageMedia') {
+    if (shouldLiveRender && token.definition.media?.__typename === 'ImageMedia') {
       return (
         <NftDetailImage
-          alt={token.name}
+          alt={token.definition.name}
           onLoad={onNftLoad}
-          imageUrl={token.media.contentRenderURL}
+          imageUrl={token.definition.media.contentRenderURL}
         />
       );
     }

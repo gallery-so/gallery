@@ -60,11 +60,7 @@ export default function Search() {
         query: { username: item.label as string },
       } as Route;
     } else if (item.type === 'Community') {
-      const { contractAddress, chain } = item;
-      return {
-        pathname: `/community/[chain]/[contractAddress]`,
-        query: { contractAddress, chain },
-      } as Route;
+      return item.communityPageUrl;
     } else if (item.type === 'Gallery') {
       const { owner, value } = item;
       return {

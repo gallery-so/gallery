@@ -36,10 +36,12 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
-        media {
-          ... on Media {
-            fallbackMedia {
-              mediaURL
+        definition {
+          media {
+            ... on Media {
+              fallbackMedia {
+                mediaURL
+              }
             }
           }
         }
@@ -58,7 +60,7 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
         <NftDetailImage
           alt={null}
           onLoad={onLoad}
-          imageUrl={token.media?.fallbackMedia?.mediaURL}
+          imageUrl={token.definition.media?.fallbackMedia?.mediaURL}
         />
       }
     >
@@ -80,37 +82,39 @@ function NftDetailAssetComponentWithouFallback({
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
         dbid
-        name
         ...useGetPreviewImagesSingleFragment
+        definition {
+          name
 
-        media @required(action: THROW) {
-          ... on VideoMedia {
-            __typename
-            ...NftDetailVideoFragment
-          }
-          ... on ImageMedia {
-            __typename
-            contentRenderURL
-          }
-          ... on GIFMedia {
-            __typename
-            contentRenderURL
-          }
-          ... on HtmlMedia {
-            __typename
-          }
-          ... on AudioMedia {
-            __typename
-          }
-          ... on TextMedia {
-            __typename
-          }
-          ... on GltfMedia {
-            __typename
-            ...NftDetailModelFragment
-          }
-          ... on UnknownMedia {
-            __typename
+          media @required(action: THROW) {
+            ... on VideoMedia {
+              __typename
+              ...NftDetailVideoFragment
+            }
+            ... on ImageMedia {
+              __typename
+              contentRenderURL
+            }
+            ... on GIFMedia {
+              __typename
+              contentRenderURL
+            }
+            ... on HtmlMedia {
+              __typename
+            }
+            ... on AudioMedia {
+              __typename
+            }
+            ... on TextMedia {
+              __typename
+            }
+            ... on GltfMedia {
+              __typename
+              ...NftDetailModelFragment
+            }
+            ... on UnknownMedia {
+              __typename
+            }
           }
         }
         ...NftDetailAnimationFragment
@@ -121,22 +125,22 @@ function NftDetailAssetComponentWithouFallback({
     tokenRef
   );
 
-  if (token.media.__typename === 'UnknownMedia') {
+  if (token.definition.media.__typename === 'UnknownMedia') {
     // If we're dealing with UnknownMedia, we know the NFT is going to
     // fail to load, so we'll just immediately notify the parent
     // that this NftDetailAsset was unable to render
     throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
   }
 
-  switch (token.media.__typename) {
+  switch (token.definition.media.__typename) {
     case 'HtmlMedia':
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
     case 'VideoMedia':
-      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} />;
+      return <NftDetailVideo onLoad={onLoad} mediaRef={token.definition.media} />;
     case 'AudioMedia':
       return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
-      const imageMedia = token.media;
+      const imageMedia = token.definition.media;
 
       if (!imageMedia.contentRenderURL) {
         throw new CouldNotRenderNftError(
@@ -147,7 +151,7 @@ function NftDetailAssetComponentWithouFallback({
 
       return (
         <NftDetailImage
-          alt={token.name}
+          alt={token.definition.name}
           onLoad={onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
@@ -158,7 +162,7 @@ function NftDetailAssetComponentWithouFallback({
         />
       );
     case 'GIFMedia':
-      const gifMedia = token.media;
+      const gifMedia = token.definition.media;
 
       return (
         <NftDetailGif
@@ -172,7 +176,7 @@ function NftDetailAssetComponentWithouFallback({
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} fullHeight />;
+      return <NftDetailModel onLoad={onLoad} mediaRef={token.definition.media} fullHeight />;
     default:
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
   }
@@ -202,15 +206,17 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     graphql`
       fragment NftDetailAssetTokenFragment on Token {
         dbid
-        contract {
-          contractAddress {
-            address
+        definition {
+          contract {
+            contractAddress {
+              address
+            }
           }
-        }
-        media @required(action: THROW) {
-          ...useContainedDimensionsForTokenFragment
-          ... on HtmlMedia {
-            __typename
+          media @required(action: THROW) {
+            ...useContainedDimensionsForTokenFragment
+            ... on HtmlMedia {
+              __typename
+            }
           }
         }
 
@@ -223,11 +229,11 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
 
   const breakpoint = useBreakpoint();
 
-  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
   // We do not want to enforce square aspect ratio for iframes https://github.com/gallery-so/gallery/pull/536
-  const isIframe = token.media.__typename === 'HtmlMedia';
+  const isIframe = token.definition.media.__typename === 'HtmlMedia';
   const shouldEnforceSquareAspectRatio =
     !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
@@ -235,7 +241,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     tokenId: token.dbid,
   });
 
-  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.media });
+  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.definition.media });
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
@@ -310,14 +316,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
-  @media only screen and ${breakpoints.tablet} {
-    width: 450px;
-    min-height: 450px;
-  }
-
   @media only screen and ${breakpoints.desktop} {
-    width: 600px;
-    min-height: 600px;
+    max-width: 800px;
   }
 
   // enforce auto width on NFT detail page as to not stretch to shimmer container
@@ -326,10 +326,10 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   }
 `;
 
-const StyledImage = styled.img<{ height: number; width: number }>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+const StyledImage = styled.img`
   border: none;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const VisibilityContainer = styled.div`

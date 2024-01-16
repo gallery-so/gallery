@@ -9,6 +9,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
 import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
+import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
@@ -21,11 +22,9 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
   const community = useFragment(
     graphql`
       fragment CommunityPageCollectorsTabFragment on Community {
-        contractAddress {
-          address
-        }
         ...CommunityHolderGridFragment
         ...CommunityHolderListFragment
+        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -40,14 +39,11 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
     queryRef
   );
 
-  const { contractAddress } = community;
-  if (!contractAddress) {
-    throw new Error('CommunityPageView: contractAddress not found on community');
-  }
+  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
 
   const isGridEnabled = useMemo(
-    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress.address || ''),
-    [contractAddress.address]
+    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress),
+    [contractAddress]
   );
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
   const showGrid = useMemo(

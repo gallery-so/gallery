@@ -1,5 +1,6 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
+import { extractRelevantMetadataFromCommunityContractIdFragment$key } from '~/generated/extractRelevantMetadataFromCommunityContractIdFragment.graphql';
 import { extractRelevantMetadataFromCommunityFragment$key } from '~/generated/extractRelevantMetadataFromCommunityFragment.graphql';
 
 import { Chain, isChainEvm } from './chains';
@@ -89,4 +90,41 @@ export function extractRelevantMetadataFromCommunity(
   }
 
   return result;
+}
+
+/**
+ * Only needed for refreshing communities based on its contract ID;
+ * this will likely be deprecated to refreshing by community ID.
+ * We genenerally want to avoid doing this as it'll waterfall a request
+ * to resolve the community's contract.
+ */
+export function extractContractIdFromCommunity(
+  communityRef: extractRelevantMetadataFromCommunityContractIdFragment$key
+) {
+  const community = readInlineData(
+    graphql`
+      fragment extractRelevantMetadataFromCommunityContractIdFragment on Community @inline {
+        subtype {
+          __typename
+          ... on ContractCommunity {
+            contract {
+              dbid
+            }
+          }
+          ... on ArtBlocksCommunity {
+            contract {
+              dbid
+            }
+          }
+        }
+      }
+    `,
+    communityRef
+  );
+
+  if (!community.subtype || community.subtype.__typename === '%other') {
+    return '';
+  }
+
+  return community.subtype.contract?.dbid ?? '';
 }

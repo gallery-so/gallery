@@ -30,6 +30,7 @@ import {
   NftSelectorSortView,
 } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
+import { NftSelectorPickerScreenFallback } from './NftSelectorPickerScreenFallback';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
 const NETWORKS: {
@@ -46,7 +47,7 @@ const NETWORKS: {
   })),
 ];
 
-export function NftSelectorPickerScreen() {
+function InnerNftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
 
   const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
@@ -229,5 +230,13 @@ export function NftSelectorPickerScreen() {
       </View>
       <CreatorSupportAnnouncementBottomSheet ref={announcementBottomSheetRef} />
     </>
+  );
+}
+
+export function NftSelectorPickerScreen() {
+  return (
+    <Suspense fallback={<NftSelectorPickerScreenFallback />}>
+      <InnerNftSelectorPickerScreen />
+    </Suspense>
   );
 }

@@ -141,20 +141,48 @@ export function CommentNote({
       ) : (
         <VStack gap={8} grow>
           <HStack align="center" justify="space-between">
-            <HStack gap={8}>
+            <HStack gap={8} grow>
               {comment.commenter && (
                 <StyledProfilePictureWrapper>
                   <ProfilePicture size="sm" userRef={comment.commenter} />
                 </StyledProfilePictureWrapper>
               )}
 
-              <VStack>
-                <HStack gap={4} align="center">
-                  <UsernameLink
-                    username={comment.commenter?.username ?? null}
-                    eventContext={contexts.Posts}
-                  />
-                  <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
+              <VStack grow>
+                <HStack justify="space-between">
+                  <HStack gap={4} align="flex-start">
+                    <UsernameLink
+                      username={comment.commenter?.username ?? null}
+                      eventContext={contexts.Posts}
+                    />
+                    <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
+                  </HStack>
+
+                  <HStack gap={4} align="items-center">
+                    <HStack gap={2} align="items-center">
+                      {totalAdmires > 0 && (
+                        <StyledAdmiredTotal as="span" active={hasViewerAdmiredComment}>
+                          {totalAdmires}
+                        </StyledAdmiredTotal>
+                      )}
+                      <AdmireIcon
+                        onClick={toggleAdmireComment}
+                        width={16}
+                        height={16}
+                        active={hasViewerAdmiredComment}
+                      />
+                    </HStack>
+
+                    {isAuthUserComment && (
+                      <IconWrapper
+                        role="button"
+                        onClick={handleDeleteCommentConfirmation}
+                        active={false}
+                      >
+                        <TrashIconNew color="currentColor" />
+                      </IconWrapper>
+                    )}
+                  </HStack>
                 </HStack>
                 <StyledBaseM as="span">
                   <ProcessedText
@@ -164,27 +192,6 @@ export function CommentNote({
                   />
                 </StyledBaseM>
               </VStack>
-            </HStack>
-            <HStack gap={4} align="items-center">
-              <HStack gap={2} align="items-center">
-                {totalAdmires > 0 && (
-                  <StyledAdmiredTotal as="span" active={hasViewerAdmiredComment}>
-                    {totalAdmires}
-                  </StyledAdmiredTotal>
-                )}
-                <AdmireIcon
-                  onClick={toggleAdmireComment}
-                  width={16}
-                  height={16}
-                  active={hasViewerAdmiredComment}
-                />
-              </HStack>
-
-              {isAuthUserComment && (
-                <IconWrapper role="button" onClick={handleDeleteCommentConfirmation} active={false}>
-                  <TrashIconNew color="currentColor" />
-                </IconWrapper>
-              )}
             </HStack>
           </HStack>
           <VStack>

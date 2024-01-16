@@ -22,8 +22,9 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
         __typename
         dbid
         token {
-          name
-
+          definition {
+            name
+          }
           ...NotificationPostPreviewWithBoundaryFragment
         }
         count
@@ -73,7 +74,7 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
                 </strong>
               </>
             )}
-            admired your <strong>{token.name ?? 'item'}</strong>
+            admired your <strong>{token.definition.name ?? 'item'}</strong>
           </BaseM>
         </StyledTextWrapper>
       </HStack>

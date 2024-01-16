@@ -16,9 +16,14 @@ import { ADD_WALLET_TO_USER } from '~/types/Wallet';
 type ModalProps = {
   queryRef: useAddWalletModalFragment$key;
   onConnectWalletSuccess?: OnConnectWalletSuccessFn;
+  displayUpsellText?: boolean;
 };
 
-const AddWalletModal = ({ queryRef, onConnectWalletSuccess }: ModalProps) => {
+const AddWalletModal = ({
+  queryRef,
+  onConnectWalletSuccess,
+  displayUpsellText = false,
+}: ModalProps) => {
   const query = useFragment(
     graphql`
       fragment useAddWalletModalFragment on Query {
@@ -36,16 +41,19 @@ const AddWalletModal = ({ queryRef, onConnectWalletSuccess }: ModalProps) => {
         onConnectWalletSuccess={onConnectWalletSuccess}
         showEmail={false}
       />
-      <StyledWalletText>
-        Gallery is a limitless creative canvas for <span>curation</span>, <span>connection</span>,
-        and <span>self expression</span> in web3
-      </StyledWalletText>
+      {displayUpsellText ? (
+        <StyledWalletText>
+          Gallery is a limitless creative canvas for <span>curation</span>, <span>connection</span>,
+          and <span>self expression</span> in web3
+        </StyledWalletText>
+      ) : null}
     </Container>
   );
 };
 
 type Props = {
   onConnectWalletSuccess?: OnConnectWalletSuccessFn;
+  displayUpsellText?: boolean;
 };
 
 export default function useAddWalletModal() {
@@ -61,11 +69,15 @@ export default function useAddWalletModal() {
   );
 
   return useCallback(
-    ({ onConnectWalletSuccess }: Props) => {
+    ({ onConnectWalletSuccess, displayUpsellText }: Props) => {
       showModal({
         id: 'add-wallet-modal',
         content: (
-          <AddWalletModal queryRef={query} onConnectWalletSuccess={onConnectWalletSuccess} />
+          <AddWalletModal
+            queryRef={query}
+            onConnectWalletSuccess={onConnectWalletSuccess}
+            displayUpsellText={displayUpsellText}
+          />
         ),
         headerText: 'Connect your wallet',
       });

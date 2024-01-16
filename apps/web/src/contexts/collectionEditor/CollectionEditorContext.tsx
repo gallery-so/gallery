@@ -13,6 +13,7 @@ import rfdc from 'rfdc';
 
 import {
   StagedCollection,
+  StagedItem,
   StagedSection,
   StagedSectionList,
   useGalleryEditorContext,
@@ -37,6 +38,7 @@ type CollectionEditorContextType = {
 
   // Actions
   toggleTokenStaged: (tokenId: string) => void;
+  addNewTokensToActiveSection: (tokenIds: string[]) => void;
   addWhitespace: () => void;
 
   updateSections: (sections: StagedSectionList) => void;
@@ -371,21 +373,39 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     [setSections]
   );
 
-  const addTokenToActiveSection = useCallback(
-    (tokenId: string) => {
+  // calling this directly is dangerous. you may add a token that's already in the section.
+  // use `addNewTokensToActiveSection` or `toggleTokenStaged` instead.
+  const _addTokensToActiveSection = useCallback(
+    (tokenIdOrIds: string | string[]) => {
       if (!activeSectionId) {
         // Maybe make a new section here for them?
         return;
       }
 
+      let tokensToAdd: StagedItem[] = [];
+      if (typeof tokenIdOrIds === 'string') {
+        tokensToAdd = [{ kind: 'token', id: tokenIdOrIds }];
+      } else {
+        tokensToAdd = tokenIdOrIds.map((tokenId) => ({ kind: 'token', id: tokenId }));
+      }
+
       updateSection(activeSectionId, (previousSection) => {
         return {
           ...previousSection,
-          items: [...previousSection.items, { kind: 'token', id: tokenId }],
+          items: [...previousSection.items, ...tokensToAdd],
         };
       });
     },
     [activeSectionId, updateSection]
+  );
+
+  // stages tokens within a section, and ensures the tokens haven't already been staged
+  const addNewTokensToActiveSection = useCallback(
+    (tokenIds: string[]) => {
+      const tokenIdsToStage = tokenIds.filter((tokenId) => !stagedItemIds.has(tokenId));
+      _addTokensToActiveSection(tokenIdsToStage);
+    },
+    [_addTokensToActiveSection, stagedItemIds]
   );
 
   const toggleTokenStaged = useCallback(
@@ -393,10 +413,10 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       if (stagedItemIds.has(tokenId)) {
         removeTokenFromSections(tokenId);
       } else {
-        addTokenToActiveSection(tokenId);
+        _addTokensToActiveSection(tokenId);
       }
     },
-    [addTokenToActiveSection, removeTokenFromSections, stagedItemIds]
+    [_addTokensToActiveSection, removeTokenFromSections, stagedItemIds]
   );
 
   const addWhitespace = useCallback(() => {
@@ -479,6 +499,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       toggleTokenLiveDisplay,
       toggleTokenHighDefinition,
       toggleTokenStaged,
+      addNewTokensToActiveSection,
       updateNameAndCollectorsNote,
     };
   }, [
@@ -500,6 +521,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     toggleTokenLiveDisplay,
     toggleTokenHighDefinition,
     toggleTokenStaged,
+    addNewTokensToActiveSection,
     updateNameAndCollectorsNote,
     updateSections,
   ]);

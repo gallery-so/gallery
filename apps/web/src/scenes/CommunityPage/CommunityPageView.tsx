@@ -26,9 +26,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityPageViewFragment on Community {
         dbid
-        contractAddress {
-          __typename
-        }
 
         ...CommunityPageCollectorsTabFragment
         ...CommunityPageTabsFragment
@@ -50,12 +47,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     `,
     queryRef
   );
-
-  const { contractAddress } = community;
-
-  if (!contractAddress) {
-    throw new Error('CommunityPageView: contractAddress not found on community');
-  }
 
   const [activeTab, setActiveTab] = useState<CommunityPageTab>('posts');
 

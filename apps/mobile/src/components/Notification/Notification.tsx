@@ -17,6 +17,7 @@ import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYo
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneMentionedYou } from './Notifications/SomeoneMentionedYou';
+import { SomeoneMentionedYourCommunity } from './Notifications/SomeoneMentionedYourCommunity';
 import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './Notifications/SomeoneRepliedToYourComment';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
@@ -41,6 +42,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneAdmiredYourTokenQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
         ...SomeoneMentionedYouQueryFragment
+        ...SomeoneMentionedYourCommunityQueryFragment
         ...SomeonePostedYourWorkQueryFragment
         ...SomeoneRepliedToYourCommentQueryFragment
         ...SomeoneYouFollowPostedTheirFirstPostQueryFragment
@@ -114,12 +116,14 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneMentionedYouFragment
         }
-
+        ... on SomeoneMentionedYourCommunityNotification {
+          __typename
+          ...SomeoneMentionedYourCommunityFragment
+        }
         ... on SomeonePostedYourWorkNotification {
           __typename
           ...SomeonePostedYourWorkFragment
         }
-
         ... on SomeoneRepliedToYourCommentNotification {
           __typename
           ...SomeoneRepliedToYourCommentFragment
@@ -173,6 +177,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return <NewTokens notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneMentionedYouNotification') {
       return <SomeoneMentionedYou queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneMentionedYourCommunityNotification') {
+      return <SomeoneMentionedYourCommunity queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeonePostedYourWorkNotification') {
       return <SomeonePostedYourWork queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {

@@ -25,9 +25,12 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     graphql`
       fragment PostNftPreviewFragment on Token {
         ...NftPreviewFragment
-        media @required(action: THROW) {
-          ... on Media {
-            ...useContainedDimensionsForTokenFragment
+        definition {
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
+            __typename
           }
         }
       }
@@ -36,17 +39,18 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   );
 
   const resultDimensions = useContainedDimensionsForToken({
-    mediaRef: token.media,
+    mediaRef: token.definition.media,
     tokenSize: DESKTOP_TOKEN_SIZE,
   });
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const shouldLiveRender = !isMobile || token.definition.media.__typename === 'VideoMedia';
 
   return (
     <StyledPostNftPreview resultHeight={resultDimensions.height}>
       <ShimmerProvider>
         <NftPreview
           tokenRef={token}
-          shouldLiveRender={!isMobile}
+          shouldLiveRender={shouldLiveRender}
           onLoad={onNftLoad}
           eventContext={contexts.Posts}
         />
