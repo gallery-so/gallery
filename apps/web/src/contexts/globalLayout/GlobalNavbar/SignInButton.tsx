@@ -8,10 +8,9 @@ import { contexts } from '~/shared/analytics/constants';
 type Props = {
   buttonLocation: string;
   className?: string;
-  size?: 'md' | 'lg';
 };
 
-export function SignInButton({ className, buttonLocation, size = 'md' }: Props) {
+export function SignInButton({ className, buttonLocation }: Props) {
   const showAuthModal = useAuthModal('sign-in');
 
   return (
@@ -23,19 +22,18 @@ export function SignInButton({ className, buttonLocation, size = 'md' }: Props) 
       onClick={showAuthModal}
       className={className}
       variant="secondary"
-      size={size}
     >
-      <StyledButtonText size={size}>Sign in</StyledButtonText>
+      <StyledButtonText>Sign in</StyledButtonText>
     </StyledButton>
   );
 }
 
-const StyledButton = styled(Button)<{ size: string }>`
-  padding: ${({ size }) => (size === 'md' ? '8px 24px' : '12px 40px')};
+const StyledButton = styled(Button)`
+  padding: 8px 24px;
 `;
 
-const StyledButtonText = styled(TitleDiatypeL)<{ size: string }>`
-  font-size: ${({ size }) => (size === 'md' ? '12px' : '18px')};
-  line-height: ${({ size }) => (size === 'md' ? '16px' : '24px')};
+const StyledButtonText = styled(TitleDiatypeL)`
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 400;
 `;

@@ -9,10 +9,9 @@ import { contexts, flows } from '~/shared/analytics/constants';
 type Props = {
   buttonLocation: string;
   className?: string;
-  size?: 'md' | 'lg';
 };
 
-export function SignUpButton({ className, buttonLocation, size = 'md' }: Props) {
+export function SignUpButton({ className, buttonLocation }: Props) {
   const showAuthModal = useAuthModal('sign-up');
 
   return (
@@ -24,20 +23,19 @@ export function SignUpButton({ className, buttonLocation, size = 'md' }: Props) 
       properties={{ buttonLocation }}
       onClick={showAuthModal}
       className={className}
-      size={size}
     >
-      <StyledButtonText size={size}>Sign up</StyledButtonText>
+      <StyledButtonText>Sign up</StyledButtonText>
     </StyledButton>
   );
 }
 
-const StyledButton = styled(Button)<{ size: string }>`
-  padding: ${({ size }) => (size === 'md' ? '8px 24px' : '12px 40px')};
+const StyledButton = styled(Button)`
+  padding: 8px 24px;
 `;
 
-const StyledButtonText = styled(TitleDiatypeL)<{ size: string }>`
-  font-size: ${({ size }) => (size === 'md' ? '12px' : '18px')};
-  line-height: ${({ size }) => (size === 'md' ? '16px' : '24px')};
+const StyledButtonText = styled(TitleDiatypeL)`
+  font-size: 12px;
+  line-height: 16px;
   font-weight: 400;
   color: ${colors.white};
 `;
