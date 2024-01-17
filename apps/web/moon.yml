@@ -12,22 +12,22 @@ tasks:
   start-optimized-build:
     deps:
       - '~:build'
-    command: next start
+    command: yarn next start
 
   build:
     deps:
       - '~:relay-codegen'
       - '~:graphql-codegen'
-    command: next build
+    command: yarn next build
     inputs:
       - '@group(source)'
       - 'next.config.js'
 
   cypress-gh:
-    command: synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.config.ts
+    command: yarn synpress run --record --key 9d633f22-7630-4a11-9cf4-ff9809332564 --configFile cypress.config.ts
 
   next-dev-server:
-    command: next dev
+    command: yarn next dev
     local: true
 
   dev:
@@ -39,15 +39,15 @@ tasks:
       - '~:graphql-codegen-watch'
 
   start:
-    command: next start
+    command: yarn next start
     local: true
 
   synpress-open:
-    command: synpress open --configFile cypress.config.ts
+    command: yarn synpress open --configFile cypress.config.ts
     platform: node
 
   synpress-run:
-    command: synpress run --configFile cypress.config.ts
+    command: yarn synpress run --configFile cypress.config.ts
     local: true
 
   relay-watch:
@@ -55,11 +55,11 @@ tasks:
     local: true
 
   graphql-codegen-watch:
-    command: graphql-codegen --watch
+    command: yarn graphql-codegen --watch
     local: true
 
   graphql-codegen:
-    command: graphql-codegen
+    command: yarn graphql-codegen
     inputs:
       - '@group(source)'
 
@@ -69,7 +69,7 @@ tasks:
       - '@group(source)'
 
   nextjs-routes:
-    command: nextjs-routes
+    command: yarn nextjs-routes
 
   codegen:
     deps:
@@ -85,7 +85,7 @@ tasks:
   test:
     deps:
       - '~:codegen'
-    command: jest
+    command: yarn jest
 
   upload-apq:
     command: node scripts/upload-persisted-queries.mjs
