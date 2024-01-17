@@ -63,6 +63,14 @@ describe('getMintUrlWithReferrer', () => {
     expect(result.provider).toBe('Highlight');
   });
 
+  it('should not append referrer to foundation.app URLs', () => {
+    const url = 'https://foundation.app/@kero/glitchportraits/40';
+    const referrer = 'referrer8';
+    const result = getMintUrlWithReferrer(url, referrer);
+    expect(result.url).toBe('https://foundation.app/@kero/glitchportraits/40');
+    expect(result.provider).toBe('Foundation');
+  });
+
   it('should not append referrer if mint.fun already have ref', () => {
     const url =
       'https://mint.fun/op/0xcA1cb17d65CeF28087Bf1f65B4D599c768F870Ac?ref=0x517AEa67196C8975dd100236689D0CA10B928F58';
