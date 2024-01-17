@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
+import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { HighlightIcon } from 'src/icons/HighlightIcon';
 import { MintFunIcon } from 'src/icons/MintFunIcon';
@@ -121,6 +122,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on highlight',
         icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+      };
+    } else if (mintProviderType === 'Foundation') {
+      return {
+        buttonText: 'mint on foundation',
+        icon: <FoundationIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else {
       return null;
