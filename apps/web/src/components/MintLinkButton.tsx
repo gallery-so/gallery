@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
+import { FoundationLogoIcon } from '~/icons/FoundationLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { HighlightLogoIcon } from '~/icons/HighlightLogoIcon';
 import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
@@ -98,6 +99,11 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on highlight',
         icon: <HighlightLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
+      };
+    } else if (mintProviderType === 'Foundation') {
+      return {
+        buttonText: 'mint on foundation',
+        icon: <FoundationLogoIcon mode={variant === 'primary' ? 'light' : 'dark'} />,
       };
     } else {
       return null;
