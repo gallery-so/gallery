@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { ButtonChip, ButtonChipVariant } from '~/components/ButtonChip';
+import { ButtonChip, ButtonChipVariant, ButtonChipProps } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
@@ -19,6 +19,7 @@ type Props = {
   variant?: ButtonChipVariant;
   source?: string; // where the FollowButton is being used, for analytics
   width?: ButtonChipProps['width'];
+  onPress?: () => void;
 };
 
 export function FollowButton({
@@ -139,7 +140,7 @@ export function FollowButton({
     } else {
       return (
         <ButtonChip
-          variant={variant ? variant : 'secondary'}
+          variant={variant ? variant : 'primary'}
           width={width}
           onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
