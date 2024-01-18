@@ -76,6 +76,7 @@ export function Markdown({
 }: GalleryMarkdownProps) {
   const [showAll, setShowAll] = useState(false);
   const { colorScheme } = useColorScheme();
+
   const navigation = useNavigation<RootStackNavigatorProp>();
 
   const mergedStyles = useMemo(() => {
