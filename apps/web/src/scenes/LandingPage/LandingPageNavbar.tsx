@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
@@ -8,7 +8,7 @@ import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton'
 export default function LandingPageNavbar() {
   const [opacity, setOpacity] = useState(0);
 
-  const adjustNavbarOpacity = () => {
+  const adjustNavbarOpacity = useCallback(() => {
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
     const startFade = 0.6 * windowHeight;
@@ -22,14 +22,14 @@ export default function LandingPageNavbar() {
     } else {
       setOpacity(0);
     }
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', adjustNavbarOpacity);
     return () => {
       window.removeEventListener('scroll', adjustNavbarOpacity);
     };
-  }, []);
+  }, [adjustNavbarOpacity]);
 
   return (
     <StyledNavbar opacity={opacity}>

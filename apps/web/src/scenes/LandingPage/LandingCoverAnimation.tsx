@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { animated, SpringValue, useSpring } from 'react-spring';
 import { contexts, flows } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
@@ -69,7 +69,7 @@ export default function LandingCoverAnimation() {
       >
         <VStack align="center" gap={isMobile ? 48 : 80}>
           <StyledTitle>
-            Gallery is the easiest way to express yourself <em>onchain</em>
+            Gallery is the easiest way to showcase your <em>collection</em>.
           </StyledTitle>
           <HStack gap={12}>
             <StyledButton
@@ -108,7 +108,7 @@ function AnimatedImage({
 }) {
   const divRef = useRef<HTMLDivElement>(null);
 
-  const updateOpacity = () => {
+  const updateOpacity = useCallback(() => {
     if (divRef.current) {
       const rect = divRef.current.getBoundingClientRect();
 
@@ -117,7 +117,7 @@ function AnimatedImage({
 
       divRef.current.style.opacity = `${opacity}`;
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Function to handle scroll and resize events
@@ -137,7 +137,7 @@ function AnimatedImage({
       window.removeEventListener('scroll', handleScrollAndResize);
       window.removeEventListener('resize', handleScrollAndResize);
     };
-  }, []);
+  }, [updateOpacity]);
 
   return (
     <FadeInWrapper>
