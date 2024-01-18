@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { RightArrowIcon } from 'src/icons/RightArrowIcon';
@@ -22,6 +22,8 @@ import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
+
+const HEIGHT_OF_FIXED_ITEMS_ON_SCREEN = 270;
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -79,20 +81,24 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
 
   const user = followingPagination?.viewer?.id;
 
-  const suggestedFollowing = useMemo(() => {
-    const users = [];
+  const suggestedFollowingIds = useMemo(() => {
+    const userIds = [];
 
     for (const edge of followingPagination.viewer?.suggestedUsers?.edges ?? []) {
       if (edge?.node?.__typename === 'GalleryUser') {
-        users.push(edge?.node);
+        userIds.push(edge?.node.id);
       }
     }
 
-    return users;
+    return userIds;
   }, [followingPagination]);
 
+  const windowDimensions = useWindowDimensions();
+
+  const heightOfUserList = windowDimensions.height - HEIGHT_OF_FIXED_ITEMS_ON_SCREEN;
+
   const followAllRecommendedUsers = useFollowAllRecommendedUsers({
-    suggestedFollowing: suggestedFollowing,
+    suggestedFollowingIds: suggestedFollowingIds,
     queryRef: followingPagination,
   });
 
@@ -160,7 +166,11 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           </Typography>
         </View>
 
-        <View className="h-2/3 mb-14">
+        <View
+          style={{
+            height: heightOfUserList,
+          }}
+        >
           <Suspense fallback={<UserFollowListFallback />}>
             <UserFollowList
               onLoadMore={handleLoadMore}
@@ -173,12 +183,12 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           </Suspense>
         </View>
 
-        <View className="flex justify-end">
+        <View className="flex justify-end mb-8">
           <Button
             onPress={handleFollowAll}
             variant="primary"
             size="md"
-            className="w-full mt-4"
+            className="w-full"
             eventElementId="Next button on onboarding recommended screen"
             eventName="Next button on onboarding recommended screen"
             eventContext={contexts.Onboarding}

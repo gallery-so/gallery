@@ -9,12 +9,12 @@ import { useFollowAllRecommendedUsersQueryFragment$key } from '~/generated/useFo
 import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type useFollowAllRecommendedUsersArgs = {
-  suggestedFollowing: OnboardingRecommendedUsersInnerFragment$data;
+  suggestedFollowingIds: string[];
   queryRef: useFollowAllRecommendedUsersQueryFragment$key;
 };
 
 export default function useFollowAllRecommendedUsers({
-  suggestedFollowing,
+  suggestedFollowingIds,
   queryRef,
 }: useFollowAllRecommendedUsersArgs) {
   const query = useFragment(
@@ -70,8 +70,6 @@ export default function useFollowAllRecommendedUsers({
       store,
       response
     ) => {
-      const followingUserIds = suggestedFollowing.map((user) => user.id);
-
       if (
         response.followAllOnboardingRecommendations?.__typename ===
         'FollowAllOnboardingRecommendationsPayload'
@@ -88,7 +86,7 @@ export default function useFollowAllRecommendedUsers({
 
         const following = currentUser?.getLinkedRecords('following') ?? [];
         const addToList = [];
-        for (const userId of followingUserIds) {
+        for (const userId of suggestedFollowingIds) {
           const user = store.get(userId);
           if (user) {
             addToList.push(user);
@@ -113,7 +111,7 @@ export default function useFollowAllRecommendedUsers({
               id: query.viewer?.user?.id as string,
               following: [
                 ...(query.viewer?.user?.following ?? []),
-                ...suggestedFollowing.map((user) => ({ id: `GalleryUser:${user.id}` })),
+                ...suggestedFollowingIds.map((id) => ({ id: `GalleryUser:${id}` })),
               ],
             },
           },
@@ -123,7 +121,7 @@ export default function useFollowAllRecommendedUsers({
   }, [
     followAllRecommendationsMutate,
     query.viewer?.user?.following,
-    suggestedFollowing,
+    suggestedFollowingIds,
     query.viewer?.user?.id,
   ]);
 }

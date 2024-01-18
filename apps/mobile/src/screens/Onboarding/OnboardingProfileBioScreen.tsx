@@ -138,6 +138,7 @@ export function OnboardingProfileBioScreen() {
             style={{
               fontSize: 24,
               fontFamily: 'GTAlpinaStandardLight',
+              textAlign: 'left',
             }}
             className="dark:text-white text-center"
             placeholderTextColor={colors.metal}
