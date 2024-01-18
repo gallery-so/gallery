@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
-import { OnboardingRecommendedUsersInnerFragment$data } from '~/generated/OnboardingRecommendedUsersInnerFragment.graphql';
 import { useFollowAllRecommendedUsersMutation } from '~/generated/useFollowAllRecommendedUsersMutation.graphql';
 import { useFollowAllRecommendedUsersQueryFragment$key } from '~/generated/useFollowAllRecommendedUsersQueryFragment.graphql';
 
