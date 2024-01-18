@@ -69,7 +69,7 @@ export default function LandingCoverAnimation() {
       >
         <VStack align="center" gap={isMobile ? 48 : 80}>
           <StyledTitle>
-            Gallery is the easiest way to showcase your <em>collection</em>.
+            Showcase your collection <em>effortlessly</em> with Gallery.
           </StyledTitle>
           <HStack gap={12}>
             <StyledButton
