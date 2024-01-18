@@ -117,6 +117,8 @@ export type LoginStackNavigatorParamList = {
 
   OnboardingProfileBio: undefined;
 
+  OnboardingRecommendedUsers: undefined;
+
   OnboardingNftSelector: {
     page: ScreenWithNftSelector;
     fullScreen?: boolean;

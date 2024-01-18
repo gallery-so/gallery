@@ -9,7 +9,7 @@ import {
 } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 
-type ButtonChipVariant = 'primary' | 'secondary';
+export type ButtonChipVariant = 'primary' | 'secondary' | 'white';
 
 export type ButtonChipProps = PropsWithChildren<{
   style?: ViewProps['style'];
@@ -60,6 +60,28 @@ const chipContainerVariants: ChipContainerVariants = {
     light: {
       inactive: {
         containerClassName: 'bg-porcelain',
+        textClassName: 'text-black-800',
+      },
+      active: {
+        containerClassName: 'bg-metal',
+        textClassName: 'text-black-800',
+      },
+    },
+    dark: {
+      inactive: {
+        containerClassName: 'bg-[#303030]',
+        textClassName: 'text-white',
+      },
+      active: {
+        containerClassName: 'bg-black-600',
+        textClassName: 'text-white',
+      },
+    },
+  },
+  white: {
+    light: {
+      inactive: {
+        containerClassName: 'bg-white',
         textClassName: 'text-black-800',
       },
       active: {

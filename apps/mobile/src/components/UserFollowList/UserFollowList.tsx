@@ -10,8 +10,10 @@ import { UserFollowListQueryFragment$key } from '~/generated/UserFollowListQuery
 type UserFollowListProps = {
   userRefs: UserFollowListFragment$key;
   queryRef: UserFollowListQueryFragment$key;
+  isPresentational?: boolean;
   onLoadMore?: () => void;
   onUserPress: (username: string) => void;
+  onFollowPress?: () => void;
 };
 
 export function UserFollowList({
@@ -19,6 +21,8 @@ export function UserFollowList({
   queryRef,
   onLoadMore,
   onUserPress,
+  onFollowPress,
+  isPresentational = false,
 }: UserFollowListProps) {
   const query = useFragment(
     graphql`
@@ -40,9 +44,17 @@ export function UserFollowList({
 
   const renderItem = useCallback<ListRenderItem<(typeof users)[number]>>(
     ({ item }) => {
-      return <UserFollowCard onPress={onUserPress} userRef={item} queryRef={query} />;
+      return (
+        <UserFollowCard
+          onPress={onUserPress}
+          onFollowPress={onFollowPress}
+          userRef={item}
+          queryRef={query}
+          isPresentational={isPresentational}
+        />
+      );
     },
-    [onUserPress, query]
+    [onUserPress, onFollowPress, isPresentational, query]
   );
 
   return (

@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { ButtonChip, ButtonChipProps } from '~/components/ButtonChip';
+import { ButtonChip, ButtonChipProps, ButtonChipVariant } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
@@ -15,11 +15,22 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
+  styleChip?: ViewProps['style'];
+  variant?: ButtonChipVariant;
   source?: string; // where the FollowButton is being used, for analytics
   width?: ButtonChipProps['width'];
+  onPress?: () => void;
 };
 
-export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Props) {
+export function FollowButton({
+  queryRef,
+  userRef,
+  style,
+  styleChip,
+  width = 'fixed',
+  variant,
+  onPress,
+}: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -66,6 +77,7 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
     const followingIds = new Set(
       followingList.map((following: { id: string } | null) => following?.id)
     );
+
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
 
@@ -83,10 +95,11 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
 
   const handleFollowPress = useCallback(async () => {
+    onPress?.();
     trigger('impactLight');
 
     await followUser(userToFollow.dbid);
-  }, [userToFollow.dbid, followUser]);
+  }, [userToFollow.dbid, followUser, onPress]);
 
   const handleUnfollowPress = useCallback(async () => {
     trigger('impactLight');
@@ -115,23 +128,38 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
       return null;
     } else if (isFollowing) {
       return (
-        <ButtonChip variant="secondary" onPress={handleUnfollowPress} width={width}>
+        <ButtonChip
+          variant={variant ? 'primary' : 'secondary'}
+          onPress={handleUnfollowPress}
+          width={width}
+          style={styleChip}
+        >
           {buttonText}
         </ButtonChip>
       );
     } else {
       return (
         <ButtonChip
-          variant="primary"
+          variant={variant ? variant : 'primary'}
           width={width}
           onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
+          style={styleChip}
         >
           {buttonText}
         </ButtonChip>
       );
     }
-  }, [isSelf, isFollowing, handleUnfollowPress, width, buttonText, handleFollowPress, followsYou]);
-
+  }, [
+    isSelf,
+    isFollowing,
+    buttonText,
+    handleUnfollowPress,
+    width,
+    handleFollowPress,
+    followsYou,
+    styleChip,
+    variant,
+  ]);
   return <View style={style}>{followChip}</View>;
 }

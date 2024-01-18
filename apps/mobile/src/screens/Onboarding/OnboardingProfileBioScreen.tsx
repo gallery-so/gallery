@@ -17,8 +17,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
 
-import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
-
 export function OnboardingProfileBioScreen() {
   const query = useLazyLoadQuery<OnboardingProfileBioScreenQuery>(
     graphql`
@@ -92,7 +90,7 @@ export function OnboardingProfileBioScreen() {
       await updateUser(user.dbid, user.username ?? '', bio);
     }
 
-    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
+    navigation.navigate('OnboardingRecommendedUsers');
   }, [bio, navigation, updateUser, user]);
 
   if (user?.__typename !== 'GalleryUser') {
@@ -140,6 +138,7 @@ export function OnboardingProfileBioScreen() {
             style={{
               fontSize: 24,
               fontFamily: 'GTAlpinaStandardLight',
+              textAlign: 'left',
             }}
             className="dark:text-white text-center"
             placeholderTextColor={colors.metal}
