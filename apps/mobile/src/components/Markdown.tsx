@@ -26,6 +26,15 @@ const markdownStyles = {
   strong: {
     fontFamily: 'ABCDiatypeBold',
   },
+  heading1: {
+    fontSize: 14,
+  },
+  heading2: {
+    fontSize: 14,
+  },
+  heading3: {
+    fontSize: 14,
+  },
 };
 
 const darkModeMarkdownStyles = {
