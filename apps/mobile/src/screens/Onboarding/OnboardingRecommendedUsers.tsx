@@ -23,7 +23,15 @@ import { noop } from '~/shared/utils/noop';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
 
-const HEIGHT_OF_FIXED_ITEMS_ON_SCREEN = 270;
+const VERTICAL_GAP_OF_ITEMS = 16;
+const NUMBER_OF_ITEMS_EXCLUDING_USER_LIST = 2;
+const HEADER_BAR_HEIGHT = 110;
+const FOOTER_BAR_HEIGHT = 127;
+
+const HEIGHT_OF_FIXED_ITEMS_ON_SCREEN =
+  HEADER_BAR_HEIGHT +
+  FOOTER_BAR_HEIGHT +
+  NUMBER_OF_ITEMS_EXCLUDING_USER_LIST * VERTICAL_GAP_OF_ITEMS;
 
 export function OnboardingRecommendedUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
@@ -142,6 +150,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
             className="flex flex-row items-center space-x-2"
             eventElementId="Next button on onboarding recommended users screen"
             eventName="Next button on onboarding recommended users screen"
+            properties={{ variant: hasFollowedSomeone ? 'Next' : 'Skip' }}
             eventContext={contexts.Onboarding}
           >
             <Typography
@@ -183,14 +192,14 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           </Suspense>
         </View>
 
-        <View className="flex justify-end mb-8">
+        <View className="flex justify-end mb-10">
           <Button
             onPress={handleFollowAll}
             variant="primary"
             size="md"
             className="w-full"
-            eventElementId="Next button on onboarding recommended screen"
-            eventName="Next button on onboarding recommended screen"
+            eventElementId="Follow All button on onboarding recommended users screen"
+            eventName="Follow All button on onboarding recommended users screen"
             eventContext={contexts.Onboarding}
             text="FOLLOW ALL"
           />

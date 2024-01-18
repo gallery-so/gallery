@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -60,9 +61,9 @@ export function UserFollowCard({
 
   return (
     <View
-      className={`flex w-full flex-row items-center space-x-8 overflow-hidden${
-        !isPresentational ? ' px-4' : ''
-      }`}
+      className={clsx('flex w-full flex-row items-center space-x-8 overflow-hidden', {
+        'px-4': isPresentational,
+      })}
     >
       <GalleryTouchableOpacity
         onPress={handlePress}
@@ -83,9 +84,7 @@ export function UserFollowCard({
           </View>
         </View>
       </GalleryTouchableOpacity>
-      {!isPresentational ? (
-        <FollowButton queryRef={query} userRef={user} />
-      ) : (
+      {isPresentational ? (
         <FollowButton
           queryRef={query}
           userRef={user}
@@ -97,6 +96,8 @@ export function UserFollowCard({
           }}
           onPress={onFollowPress}
         />
+      ) : (
+        <FollowButton queryRef={query} userRef={user} />
       )}
     </View>
   );

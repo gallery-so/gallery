@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { ButtonChip, ButtonChipVariant, ButtonChipProps } from '~/components/ButtonChip';
+import { ButtonChip, ButtonChipProps,ButtonChipVariant } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
