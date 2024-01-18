@@ -118,7 +118,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
   const handleFollowAll = useCallback(async () => {
     if (!user) return null;
     followAllRecommendedUsers();
-    setTimeout(async () => await handleNext(), 800);
+    await handleNext();
   }, [user, followAllRecommendedUsers, handleNext]);
 
   const handleBack = useCallback(() => {
