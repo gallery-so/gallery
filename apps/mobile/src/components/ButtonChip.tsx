@@ -98,8 +98,8 @@ const chipContainerVariants: ChipContainerVariants = {
         containerClassName: 'bg-black-600',
         textClassName: 'text-white',
       },
-    }
-  }
+    },
+  },
 };
 
 export function ButtonChip({
