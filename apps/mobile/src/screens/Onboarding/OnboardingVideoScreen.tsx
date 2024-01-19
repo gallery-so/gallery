@@ -26,7 +26,7 @@ export function OnboardingVideoScreen() {
   }, [navigation]);
 
   return (
-    <View className="bg-white relative">
+    <View className="bg-white relative" testID="OnboardingVideoScreen">
       <View
         className="flex-row items-center space-x-[5] justify-end absolute z-10 right-4"
         style={{
