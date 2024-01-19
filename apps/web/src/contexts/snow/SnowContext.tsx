@@ -48,7 +48,7 @@ const SnowProvider = memo(({ enabled: publiclyEnabled, children }: Props) => {
 
   const [isEnabledBasedOnSecretOverride, setIsEnabledBasedOnSecretOverride] = useState(false);
 
-  // can enable secret toggle later
+  // @ts-expect-error can enable secret toggle later
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSecretlyToggleSnow = useCallback(() => {
     setIsEnabledBasedOnSecretOverride((prev) => !prev);
