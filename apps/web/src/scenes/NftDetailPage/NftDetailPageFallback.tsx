@@ -159,6 +159,7 @@ const StyledOwnerAndCreator = styled(HStack)`
 
 const StyledImage = styled.img<{ height: number; width: number }>`
   border: none;
+  object-fit: contain;
   height: min(100%, ${({ width }) => width}px);
   width: min(100%, ${({ width }) => width}px);
 
