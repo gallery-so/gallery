@@ -157,7 +157,12 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   const renderedAsset = useMemo(() => {
     if (firstToken.definition.media?.__typename === 'VideoMedia') {
       return (
-        <Pressable delayLongPress={100} onPress={handlePress} onLongPress={noop}>
+        <Pressable
+          delayLongPress={100}
+          onPress={handlePress}
+          onLongPress={noop}
+          className="flex items-center"
+        >
           <NftDetailAssetVideo
             mediaRef={firstToken.definition.media}
             onLoad={handleLoad}
