@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
@@ -13,24 +13,17 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transitionTiming';
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
-import colors from '~/shared/theme/colors';
 
-import AnnouncementList from '../Announcement/AnnouncementList';
-import useAnnouncement from '../Announcement/useAnnouncement';
 import breakpoints from '../core/breakpoints';
-import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM } from '../core/Text/Text';
+import { VStack } from '../core/Spacer/Stack';
 import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL, rawTransitions } from '../core/transitions';
-
-type MenuTabs = 'Notifications' | 'Announcement';
 
 export function Notifications() {
   const query = useLazyLoadQuery<NotificationsQuery>(
     graphql`
       query NotificationsQuery($notificationsLast: Int!, $notificationsBefore: String) {
         ...NotificationListFragment
-        ...AnnouncementListFragment
-        ...useAnnouncementFragment
+
         viewer {
           ... on Viewer {
             id
@@ -46,8 +39,6 @@ export function Notifications() {
   );
 
   const clearAllNotifications = useClearNotifications();
-
-  const { totalUnreadAnnouncements } = useAnnouncement(query);
 
   const [subView, setSubView] = useState<JSX.Element | null>(null);
   const toggleSubView = useCallback((subView?: JSX.Element) => {
@@ -68,15 +59,9 @@ export function Notifications() {
     };
   }, [clearAllNotifications, query.viewer]);
 
-  const [activeTab, setActiveTab] = useState<MenuTabs>('Notifications');
-
-  const handleTabClick = useCallback((tab: MenuTabs) => {
-    setActiveTab(tab);
-  }, []);
-
   return (
     <>
-      <DrawerHeader headerText="Updates" />
+      <DrawerHeader headerText="Notifications" />
       <StyledNotifications>
         <Suspense
           fallback={
@@ -85,79 +70,32 @@ export function Notifications() {
             </StyledLoader>
           }
         >
-          <StyledUpdatesNav gap={16}>
-            <StyledNavText
-              active={activeTab === 'Notifications'}
-              onClick={() => handleTabClick('Notifications')}
-            >
-              Notifications
-            </StyledNavText>
-            <StyledNavText
-              active={activeTab === 'Announcement'}
-              onClick={() => handleTabClick('Announcement')}
-            >
-              <HStack gap={4} align="center">
-                What's new
-                {totalUnreadAnnouncements > 0 && (
-                  <StyledUpdatesNotification align="center" justify="center">
-                    {totalUnreadAnnouncements}
-                  </StyledUpdatesNotification>
-                )}
-              </HStack>
-            </StyledNavText>
-          </StyledUpdatesNav>
-          {activeTab === 'Notifications' && (
-            <AnimatePresence>
-              <StyledSubView
-                key={subView ? 'NotificationsSubView' : 'NotificationsList'}
-                initial={{
-                  opacity: 0,
-                  x: subView
-                    ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
-                    : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-                }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{
-                  opacity: 0,
-                  x: subView
-                    ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
-                    : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-                }}
-                transition={{
-                  ease: rawTransitions.cubicValues,
-                  duration: FADE_TRANSITION_TIME_SECONDS,
-                }}
-              >
-                {subView ? (
-                  subView
-                ) : (
-                  <NotificationList queryRef={query} toggleSubView={toggleSubView} />
-                )}
-              </StyledSubView>
-            </AnimatePresence>
-          )}
-          {activeTab === 'Announcement' && (
-            <AnimatePresence>
-              <StyledSubView
-                key="AnnouncementList"
-                initial={{
-                  opacity: 0,
-                  x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-                }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{
-                  opacity: 0,
-                  x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-                }}
-                transition={{
-                  ease: rawTransitions.cubicValues,
-                  duration: FADE_TRANSITION_TIME_SECONDS,
-                }}
-              >
-                <AnnouncementList queryRef={query} />
-              </StyledSubView>
-            </AnimatePresence>
-          )}
+          <StyledSubView
+            key={subView ? 'NotificationsSubView' : 'NotificationsList'}
+            initial={{
+              opacity: 0,
+              x: subView
+                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+            }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{
+              opacity: 0,
+              x: subView
+                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+            }}
+            transition={{
+              ease: rawTransitions.cubicValues,
+              duration: FADE_TRANSITION_TIME_SECONDS,
+            }}
+          >
+            {subView ? (
+              subView
+            ) : (
+              <NotificationList queryRef={query} toggleSubView={toggleSubView} />
+            )}
+          </StyledSubView>
         </Suspense>
       </StyledNotifications>
     </>
@@ -185,25 +123,4 @@ const StyledLoader = styled(VStack)`
 const StyledSubView = styled(motion.div)`
   height: 100%;
   width: 100%;
-`;
-
-const StyledNavText = styled(BaseM)<{ active: boolean }>`
-  font-size: 12px;
-  text-transform: uppercase;
-  color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
-  cursor: pointer;
-`;
-
-const StyledUpdatesNav = styled(HStack)`
-  padding: 16px 12px;
-`;
-
-const StyledUpdatesNotification = styled(HStack)`
-  background-color: ${colors.activeBlue};
-  color: ${colors.white};
-  font-weight: 700;
-  font-size: 10px;
-  border-radius: 100px;
-  width: 16px;
-  height: 12px;
 `;
