@@ -10,3 +10,4 @@ npm-debug.*
 web-build/
 android/
 ios/
+artifacts
