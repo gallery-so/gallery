@@ -92,5 +92,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
+  plugins: ['@config-plugins/detox', ['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
 });
