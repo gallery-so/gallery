@@ -69,7 +69,7 @@ export default function LandingCoverAnimation() {
       >
         <VStack align="center" gap={isMobile ? 48 : 80}>
           <StyledTitle>
-            Showcase your collection <em>effortlessly</em> with Gallery.
+            The best way to <em>showcase</em> your collection.
           </StyledTitle>
           <HStack gap={12}>
             <StyledButton
@@ -180,7 +180,7 @@ const StyledTitle = styled(TitleCondensed)`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    width: 60%;
+    width: 61%;
   }
 `;
 
