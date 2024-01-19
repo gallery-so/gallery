@@ -134,7 +134,12 @@ export function MintLinkButton({
   }
 
   return (
-    <Button onClick={handleMintButtonClick} variant={variant} {...props}>
+    <Button
+      onClick={handleMintButtonClick}
+      variant={variant}
+      properties={{ provider: mintProviderType, url: mintURL }}
+      {...props}
+    >
       <HStack gap={4} align="center">
         <HStack gap={8} align="center">
           {mintProvider?.icon}

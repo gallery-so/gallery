@@ -176,6 +176,7 @@ export function MintLinkButton({
       eventElementId="Mint Link Button"
       eventName="Press Mint Link Button"
       eventContext={eventContext}
+      properties={{ provider: mintProviderType, url: mintURL }}
     />
   );
 }
