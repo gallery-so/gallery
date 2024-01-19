@@ -11,28 +11,28 @@ fileGroups:
 
 tasks:
   relay-watch:
-    command: relay-compiler --watch relay.config.js
+    command: yarn relay-compiler --watch relay.config.js
     local: true
 
   relay-codegen:
-    command: relay-compiler --repersist ../../relay.config.js
+    command: yarn relay-compiler --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
   codegen-watch:
-    command: relay-compiler --repersist --watch ../../relay.config.js
+    command: yarn relay-compiler --repersist --watch ../../relay.config.js
     local: true
 
   ios-prebuild:
-    command: expo prebuild -p ios
+    command: yarn expo prebuild -p ios
     local: true
 
   ios-raw:
-    command: expo run:ios
+    command: yarn expo run:ios
     local: true
 
   ios-device-raw:
-    command: expo run:ios --device
+    command: yarn expo run:ios --device
     local: true
 
   ios-device:
@@ -50,15 +50,15 @@ tasks:
       - ~:relay-watch
 
   android-prebuild:
-    command: expo prebuild -p android
+    command: yarn expo prebuild -p android
     local: true
 
   android-raw:
-    command: expo run:android
+    command: yarn expo run:android
     local: true
 
   android-device-raw:
-    command: expo run:android --device
+    command: yarn expo run:android --device
     local: true
 
   android-device:
@@ -76,7 +76,7 @@ tasks:
       - ~:relay-watch
 
   ios-build:
-    command: eas build -p ios --local
+    command: yarn eas build -p ios --local
     env:
       EAS_LOCAL_BUILD_SKIP_CLEANUP: '1'
     local: true
@@ -85,7 +85,7 @@ tasks:
   typecheck:
     deps:
       - '~:relay-codegen'
-    command: tsc
+    command: yarn tsc
 
   version-bump:
     command: yarn run version-bump
