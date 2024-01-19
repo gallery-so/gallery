@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
 
 import AnimatedSnowfall from './AnimatedSnowfall';
@@ -49,11 +48,11 @@ const SnowProvider = memo(({ enabled: publiclyEnabled, children }: Props) => {
 
   const [isEnabledBasedOnSecretOverride, setIsEnabledBasedOnSecretOverride] = useState(false);
 
+  // can enable secret toggle later
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSecretlyToggleSnow = useCallback(() => {
     setIsEnabledBasedOnSecretOverride((prev) => !prev);
   }, []);
-
-  useMultiKeyDown(['Control', 's'], handleSecretlyToggleSnow);
 
   const isSnowVisibilityEnabled =
     isEnabledBasedOnSecretOverride ||
