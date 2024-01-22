@@ -21,6 +21,7 @@ import LandingPageNavbar from './LandingPageNavbar';
 
 const MOBILE_PAGE_GUTTER = 32;
 const DESKTOP_PAGE_GUTTER = 48;
+export const APP_STORE_URL = 'https://apps.apple.com/app/gallery/id6447068892?l=en-US';
 
 type Props = {
   pageContent: CmsTypes.LandingPage;
@@ -33,7 +34,7 @@ export default function LandingPage({ pageContent }: Props) {
 
   const handleDownloadAppClick = useCallback(() => {
     if (isMobile) {
-      window.open('https://apps.apple.com/app/gallery/id6447068892?l=en-US', '_blank');
+      window.open(APP_STORE_URL, '_blank');
       return;
     }
 
