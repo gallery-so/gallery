@@ -2,6 +2,7 @@ import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tab
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { OnReplyPressParams } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetLine';
 import { AuthPayloadVariables } from '~/shared/hooks/useAuthPayloadQuery';
 import { CommunitySubtype } from '~/shared/utils/extractRelevantMetadataFromToken';
 
@@ -58,7 +59,7 @@ export type MainTabStackNavigatorParamList = {
     page: ScreenWithNftSelector;
   };
   SettingsProfile: undefined;
-  Post: { postId: string; commentId?: string };
+  Post: { postId: string; commentId?: string; replyToComment?: OnReplyPressParams };
   NotificationSettingsScreen: undefined;
 
   // The main five tabs
