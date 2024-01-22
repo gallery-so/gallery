@@ -68,43 +68,45 @@ export default function LandingPage({ pageContent }: Props) {
             <StyledTitle>What our users say</StyledTitle>
             <Testimonials testimonials={pageContent.testimonials} />
           </PageGutterWrapper> */}
-        <FullWidthVStack gap={isMobile ? 32 : 64} justify="center" align="center">
-          <VStack gap={32} align="center" justify="center">
-            <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
-            <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
-          </VStack>
-          <FullWidthVStack gap={24} align="center">
-            <StyledMobileButtonContainer gap={12}>
-              <StyledCtaWrapper>
-                <StyledCtaButton
-                  variant="secondary"
-                  onClick={showAuthModal}
-                  eventElementId="Landing Page Sign Up On Web Button"
-                  eventName="Clicked Landing Page Sign Up On Web Button"
-                  eventContext={contexts.Onboarding}
-                  eventFlow={flows['Web Signup Flow']}
-                >
-                  <StyledCtaText>Sign up on web</StyledCtaText>
-                </StyledCtaButton>
-              </StyledCtaWrapper>
-              <StyledCtaWrapper>
-                <StyledCtaButton
-                  variant="primary"
-                  eventElementId="Landing Page Download iOS App Button"
-                  eventName="Clicked Landing Page Download iOS App Button"
-                  eventContext={contexts.Onboarding}
-                  eventFlow={flows['Web Signup Flow']}
-                  onClick={handleDownloadAppClick}
-                >
-                  <HStack gap={6} align="center">
-                    <AppleLogo width={27} height={27} />
-                    <StyledCtaText color={colors.white}>Download App</StyledCtaText>
-                  </HStack>
-                </StyledCtaButton>
-              </StyledCtaWrapper>
-            </StyledMobileButtonContainer>
-            <BaseXL color={colors.metal}>Android coming soon</BaseXL>
-          </FullWidthVStack>
+        <FullWidthVStack justify="center" align="center">
+          <PageGutterWrapper gap={isMobile ? 32 : 64}>
+            <VStack gap={32} align="center" justify="center">
+              <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
+              <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
+            </VStack>
+            <VStack gap={24} align="center">
+              <StyledMobileButtonContainer gap={12}>
+                <StyledCtaWrapper>
+                  <StyledCtaButton
+                    variant="secondary"
+                    onClick={showAuthModal}
+                    eventElementId="Landing Page Sign Up On Web Button"
+                    eventName="Clicked Landing Page Sign Up On Web Button"
+                    eventContext={contexts.Onboarding}
+                    eventFlow={flows['Web Signup Flow']}
+                  >
+                    <StyledCtaText>Sign up on web</StyledCtaText>
+                  </StyledCtaButton>
+                </StyledCtaWrapper>
+                <StyledCtaWrapper>
+                  <StyledCtaButton
+                    variant="primary"
+                    eventElementId="Landing Page Download iOS App Button"
+                    eventName="Clicked Landing Page Download iOS App Button"
+                    eventContext={contexts.Onboarding}
+                    eventFlow={flows['Web Signup Flow']}
+                    onClick={handleDownloadAppClick}
+                  >
+                    <HStack gap={6} align="center">
+                      <AppleLogo width={27} height={27} />
+                      <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                    </HStack>
+                  </StyledCtaButton>
+                </StyledCtaWrapper>
+              </StyledMobileButtonContainer>
+              <BaseXL color={colors.metal}>Android coming soon</BaseXL>
+            </VStack>
+          </PageGutterWrapper>
         </FullWidthVStack>
       </StyledMainContent>
     </StyledLandingPage>
