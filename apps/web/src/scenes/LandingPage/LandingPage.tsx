@@ -32,8 +32,8 @@ export default function LandingPage({ pageContent }: Props) {
     <StyledLandingPage gap={70}>
       <LandingPageNavbar />
       <LandingCoverAnimation />
-      <StyledMainContent>
-        <FullWidthWrapper gap={isMobile ? 70 : 120} justify="center" align="center">
+      <StyledMainContent gap={isMobile ? 70 : 120} justify="center" align="center">
+        <FullWidthVStack>
           <PageGutterWrapper gap={isMobile ? 70 : 120}>
             <StyledFeatureHighlightContainer>
               {pageContent.miniFeatureHighlights.map(
@@ -42,57 +42,57 @@ export default function LandingPage({ pageContent }: Props) {
                 )
               )}
             </StyledFeatureHighlightContainer>
-            <FullWidthVStack gap={isMobile ? 32 : 64} justify="center" align="center">
-              <VStack gap={32} align="center" justify="center">
-                <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
-                <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
-              </VStack>
-              <FullWidthVStack gap={24} align="center">
-                <StyledMobileButtonContainer gap={12}>
-                  <StyledCtaWrapper>
-                    <StyledCtaButton
-                      variant="secondary"
-                      onClick={showAuthModal}
-                      eventElementId="Landing Page Sign Up On Web Button"
-                      eventName="Clicked Landing Page Sign Up On Web Button"
-                      eventContext={contexts.Onboarding}
-                      eventFlow={flows['Web Signup Flow']}
-                    >
-                      <StyledCtaText>Sign up on web</StyledCtaText>
-                    </StyledCtaButton>
-                  </StyledCtaWrapper>
-                  <StyledCtaWrapper>
-                    <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                      <StyledCtaButton
-                        variant="primary"
-                        eventElementId="Landing Page Download iOS App Button"
-                        eventName="Clicked Landing Page Download iOS App Button"
-                        eventContext={contexts.Onboarding}
-                        eventFlow={flows['Web Signup Flow']}
-                      >
-                        <HStack gap={6} align="center">
-                          <AppleLogo width={27} height={27} />
-                          <StyledCtaText color={colors.white}>Download App</StyledCtaText>
-                        </HStack>
-                      </StyledCtaButton>
-                    </GalleryLink>
-                  </StyledCtaWrapper>
-                </StyledMobileButtonContainer>
-                <BaseXL color={colors.metal}>Android coming soon</BaseXL>
-              </FullWidthVStack>
-            </FullWidthVStack>
           </PageGutterWrapper>
-          <FullWidthWrapper gap={45}>
-            <PageGutterWrapper gap={16}>
-              <StyledTitle>The best collectors and creators are already on Gallery</StyledTitle>
-            </PageGutterWrapper>
-            <FeaturedProfiles profiles={pageContent.featuredProfiles} />
-          </FullWidthWrapper>
-          {/* <PageGutterWrapper gap={32}>
+        </FullWidthVStack>
+        <FullWidthVStack gap={45}>
+          <PageGutterWrapper gap={16}>
+            <StyledTitle>The best collectors and creators are already on Gallery</StyledTitle>
+          </PageGutterWrapper>
+          <FeaturedProfiles profiles={pageContent.featuredProfiles} />
+        </FullWidthVStack>
+        {/* <PageGutterWrapper gap={32}>
             <StyledTitle>What our users say</StyledTitle>
             <Testimonials testimonials={pageContent.testimonials} />
           </PageGutterWrapper> */}
-        </FullWidthWrapper>
+        <FullWidthVStack gap={isMobile ? 32 : 64} justify="center" align="center">
+          <VStack gap={32} align="center" justify="center">
+            <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
+            <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
+          </VStack>
+          <FullWidthVStack gap={24} align="center">
+            <StyledMobileButtonContainer gap={12}>
+              <StyledCtaWrapper>
+                <StyledCtaButton
+                  variant="secondary"
+                  onClick={showAuthModal}
+                  eventElementId="Landing Page Sign Up On Web Button"
+                  eventName="Clicked Landing Page Sign Up On Web Button"
+                  eventContext={contexts.Onboarding}
+                  eventFlow={flows['Web Signup Flow']}
+                >
+                  <StyledCtaText>Sign up on web</StyledCtaText>
+                </StyledCtaButton>
+              </StyledCtaWrapper>
+              <StyledCtaWrapper>
+                <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
+                  <StyledCtaButton
+                    variant="primary"
+                    eventElementId="Landing Page Download iOS App Button"
+                    eventName="Clicked Landing Page Download iOS App Button"
+                    eventContext={contexts.Onboarding}
+                    eventFlow={flows['Web Signup Flow']}
+                  >
+                    <HStack gap={6} align="center">
+                      <AppleLogo width={27} height={27} />
+                      <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                    </HStack>
+                  </StyledCtaButton>
+                </GalleryLink>
+              </StyledCtaWrapper>
+            </StyledMobileButtonContainer>
+            <BaseXL color={colors.metal}>Android coming soon</BaseXL>
+          </FullWidthVStack>
+        </FullWidthVStack>
       </StyledMainContent>
     </StyledLandingPage>
   );
@@ -197,10 +197,6 @@ const StyledTitleLarge = styled(StyledTitle)`
     font-size: 56px;
     line-height: 56px;
   }
-`;
-
-const FullWidthWrapper = styled(VStack)`
-  width: 100%;
 `;
 
 const StyledText = styled(TitleDiatypeL)`
