@@ -47,6 +47,8 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
         }
         comment {
           dbid
+          comment
+          deleted
           source {
             ... on Post {
               id
@@ -106,15 +108,48 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
       onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
+      hasAdmired
     >
-      <View className="flex-row items-center">
-        <GalleryTouchableOpacity
-          onPress={handleAdmirersPress}
-          eventName={null}
-          eventElementId={null}
-          eventContext={contexts['Notifications']}
-        >
+      <View className="flex space-y-0.5">
+        <View className="flex-row items-center">
+          <GalleryTouchableOpacity
+            onPress={handleAdmirersPress}
+            eventName={null}
+            eventElementId={null}
+            eventContext={contexts['Notifications']}
+          >
+            <Text>
+              <Typography
+                font={{
+                  family: 'ABCDiatype',
+                  weight: 'Bold',
+                }}
+                className="text-sm"
+              >
+                {count > 1
+                  ? `${notification.count} collectors`
+                  : firstAdmirer
+                  ? firstAdmirer?.username
+                  : 'Someone'}
+              </Typography>
+              <NotificationBottomSheetUserList
+                ref={bottomSheetRef}
+                onUserPress={handleUserPress}
+                notificationId={notification.id}
+              />
+            </Text>
+          </GalleryTouchableOpacity>
           <Text>
+            {' '}
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Regular',
+              }}
+              className="text-sm"
+            >
+              admired your
+            </Typography>{' '}
             <Typography
               font={{
                 family: 'ABCDiatype',
@@ -122,40 +157,18 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
               }}
               className="text-sm"
             >
-              {count > 1
-                ? `${notification.count} collectors`
-                : firstAdmirer
-                ? firstAdmirer?.username
-                : 'Someone'}
+              comment
             </Typography>
-            <NotificationBottomSheetUserList
-              ref={bottomSheetRef}
-              onUserPress={handleUserPress}
-              notificationId={notification.id}
-            />
           </Text>
-        </GalleryTouchableOpacity>
-        <Text>
-          {' '}
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Regular',
-            }}
-            className="text-sm"
-          >
-            admired your
-          </Typography>{' '}
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-sm"
-          >
-            comment
-          </Typography>
-        </Text>
+        </View>
+
+        {!notification.comment?.deleted && (
+          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+            <Text className="dark:text-white" numberOfLines={3}>
+              {notification.comment?.comment ?? ''}
+            </Text>
+          </View>
+        )}
       </View>
     </NotificationSkeleton>
   );

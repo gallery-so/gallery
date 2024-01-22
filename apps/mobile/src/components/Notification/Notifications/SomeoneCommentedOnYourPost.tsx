@@ -37,6 +37,7 @@ export function SomeoneCommentedOnYourPost({
         updatedTime
 
         comment {
+          deleted
           commenter {
             username
             ...NotificationSkeletonResponsibleUsersFragment
@@ -105,11 +106,13 @@ export function SomeoneCommentedOnYourPost({
           </Typography>
         </Text>
 
-        <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
-          <Text className="dark:text-white" numberOfLines={3}>
-            {notification.comment?.comment ?? ''}
-          </Text>
-        </View>
+        {!notification.comment?.deleted && (
+          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+            <Text className="dark:text-white" numberOfLines={3}>
+              {notification.comment?.comment ?? ''}
+            </Text>
+          </View>
+        )}
       </View>
     </NotificationSkeleton>
   );

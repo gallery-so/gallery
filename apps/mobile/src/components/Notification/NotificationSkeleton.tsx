@@ -16,6 +16,7 @@ import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/No
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
+import { AdmireIcon } from '../Feed/Socialize/AdmireIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
@@ -26,6 +27,7 @@ type Props = PropsWithChildren<{
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
   shouldShowFollowBackButton?: boolean;
   overridePfpElement?: React.ReactNode;
+  hasAdmired?: boolean;
 }>;
 
 export function NotificationSkeleton({
@@ -36,6 +38,7 @@ export function NotificationSkeleton({
   shouldShowFollowBackButton = false,
   responsibleUserRefs = [],
   overridePfpElement,
+  hasAdmired = false,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -155,6 +158,17 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneAdmiredYourCommentNotification {
+          comment {
+            source {
+              ... on Post {
+                tokens {
+                  ...NotificationPostPreviewWithBoundaryFragment
+                }
+              }
+            }
+          }
+        }
       }
     `,
     notificationRef
@@ -210,7 +224,10 @@ export function NotificationSkeleton({
       }
     }
 
-    if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
+    if (
+      notification.__typename === 'SomeoneRepliedToYourCommentNotification' ||
+      notification.__typename === 'SomeoneAdmiredYourCommentNotification'
+    ) {
       return notification.comment?.source?.tokens?.[0];
     }
 
@@ -242,7 +259,7 @@ export function NotificationSkeleton({
           </View>
         )}
         {overridePfpElement ?? (
-          <View className="mr-2">
+          <View className="mr-2 relative">
             <ProfilePictureBubblesWithCount
               eventElementId="Notification Row PFP Bubbles"
               eventName="Notification Row PFP Bubbles Pressed"
@@ -252,6 +269,11 @@ export function NotificationSkeleton({
               totalCount={responsibleUserRefs.length}
               size="md"
             />
+            {hasAdmired && (
+              <View className="absolute -top-0.5 -right-0.5 border border-offWhite bg-[#E5E8FD] h-[14] w-[14] items-center justify-center rounded-full">
+                <AdmireIcon height={10} active />
+              </View>
+            )}
           </View>
         )}
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>

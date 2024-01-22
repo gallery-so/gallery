@@ -98,6 +98,7 @@ export function SomeoneAdmiredYourPost({
       onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
+      hasAdmired
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <GalleryTouchableOpacity
