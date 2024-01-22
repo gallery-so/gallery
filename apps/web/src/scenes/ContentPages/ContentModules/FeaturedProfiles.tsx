@@ -69,7 +69,13 @@ type FeaturedProfileProps = {
 
 function FeaturedProfile({ profile }: FeaturedProfileProps) {
   return (
-    <StyledLinkWrapper href={`/${profile.username}`} target="_blank">
+    <StyledLinkWrapper
+      href={`/${profile.username}`}
+      target="_blank"
+      eventElementId="Landing Page Featured User"
+      eventName="Clicked Landing Page Featured User"
+      properties={{ username: profile.username }}
+    >
       <StyledProfile gap={16}>
         <HStack gap={4}>
           {profile.coverImages.map((image) => (
@@ -138,6 +144,8 @@ const StyledBio = styled(BaseM)`
 const StyledImage = styled.img`
   width: 100%;
   height: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
 `;
 
 const StyledProfileType = styled(TitleXS)<{ profileType: string }>`
