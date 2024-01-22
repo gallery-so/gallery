@@ -7,7 +7,6 @@ const QR_CODE_URL =
   'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/appstore-qr.jpeg';
 
 export default function DownloadAppQrModal() {
-  console.log({});
   return (
     <StyledModal align="center" gap={32}>
       <TitleL>Download App</TitleL>
