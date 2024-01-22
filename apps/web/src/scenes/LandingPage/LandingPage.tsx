@@ -1,12 +1,13 @@
 import AppleLogo from 'public/icons/apple_logo.svg';
+import { useCallback } from 'react';
 import { contexts, flows } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
@@ -14,6 +15,7 @@ import colors from '~/shared/theme/colors';
 import { CmsTypes } from '../ContentPages/cms_types';
 import FeaturedProfiles from '../ContentPages/ContentModules/FeaturedProfiles';
 import FeatureHighlight from '../ContentPages/ContentModules/FeatureHighlight';
+import DownloadAppQrModal from './DownloadAppQrModal';
 import LandingCoverAnimation from './LandingCoverAnimation';
 import LandingPageNavbar from './LandingPageNavbar';
 
@@ -27,6 +29,18 @@ type Props = {
 export default function LandingPage({ pageContent }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const showAuthModal = useAuthModal('sign-up');
+  const { showModal } = useModalActions();
+
+  const handleDownloadAppClick = useCallback(() => {
+    if (isMobile) {
+      window.open('https://apps.apple.com/app/gallery/id6447068892?l=en-US', '_blank');
+      return;
+    }
+
+    showModal({
+      content: <DownloadAppQrModal />,
+    });
+  }, [isMobile, showModal]);
 
   return (
     <StyledLandingPage gap={70}>
@@ -74,20 +88,19 @@ export default function LandingPage({ pageContent }: Props) {
                 </StyledCtaButton>
               </StyledCtaWrapper>
               <StyledCtaWrapper>
-                <GalleryLink href="https://apps.apple.com/app/gallery/id6447068892?l=en-US">
-                  <StyledCtaButton
-                    variant="primary"
-                    eventElementId="Landing Page Download iOS App Button"
-                    eventName="Clicked Landing Page Download iOS App Button"
-                    eventContext={contexts.Onboarding}
-                    eventFlow={flows['Web Signup Flow']}
-                  >
-                    <HStack gap={6} align="center">
-                      <AppleLogo width={27} height={27} />
-                      <StyledCtaText color={colors.white}>Download App</StyledCtaText>
-                    </HStack>
-                  </StyledCtaButton>
-                </GalleryLink>
+                <StyledCtaButton
+                  variant="primary"
+                  eventElementId="Landing Page Download iOS App Button"
+                  eventName="Clicked Landing Page Download iOS App Button"
+                  eventContext={contexts.Onboarding}
+                  eventFlow={flows['Web Signup Flow']}
+                  onClick={handleDownloadAppClick}
+                >
+                  <HStack gap={6} align="center">
+                    <AppleLogo width={27} height={27} />
+                    <StyledCtaText color={colors.white}>Download App</StyledCtaText>
+                  </HStack>
+                </StyledCtaButton>
               </StyledCtaWrapper>
             </StyledMobileButtonContainer>
             <BaseXL color={colors.metal}>Android coming soon</BaseXL>
