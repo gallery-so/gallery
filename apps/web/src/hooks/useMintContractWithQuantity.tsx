@@ -32,7 +32,6 @@ export default function useMintContractWithQuantity({
   const [transactionHash, setTransactionHash] = useState('');
 
   const address = rawAddress?.toLowerCase();
-  console.log({ web3Utils });
 
   // SUPPLIES
   const [publicSupply, setPublicSupply] = useState(0);
