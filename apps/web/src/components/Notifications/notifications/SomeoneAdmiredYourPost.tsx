@@ -1,8 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
-import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -11,6 +10,7 @@ import { AdmireIcon } from '~/icons/SocializeIcons';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
+import { StyledAdmireIconWrapper } from './SomeoneAdmiredYourToken';
 
 type Props = {
   notificationRef: SomeoneAdmiredYourPostFragment$key;
@@ -99,15 +99,4 @@ const StyledTextWrapper = styled(HStack)`
 
 const StyledProfilePictureWrapper = styled.div`
   position: relative;
-`;
-
-const StyledAdmireIconWrapper = styled(VStack)`
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background-color: #e5e8fd;
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
-  border: 1px solid ${colors.offWhite};
 `;

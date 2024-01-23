@@ -102,7 +102,7 @@ const StyledProfilePictureWrapper = styled.div`
   position: relative;
 `;
 
-const StyledAdmireIconWrapper = styled(VStack)`
+export const StyledAdmireIconWrapper = styled(VStack)`
   position: absolute;
   top: -4px;
   right: -4px;

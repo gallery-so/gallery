@@ -12,6 +12,7 @@ import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata
 import unescape from '~/shared/utils/unescape';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
+import { StyledAdmireIconWrapper } from './SomeoneAdmiredYourToken';
 
 type Props = {
   notificationRef: SomeoneAdmiredYourCommentFragment$key;
@@ -125,15 +126,4 @@ const StyledCaption = styled(BaseM)`
 
 const StyledProfilePictureWrapper = styled.div`
   position: relative;
-`;
-
-const StyledAdmireIconWrapper = styled(VStack)`
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background-color: #e5e8fd;
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
-  border: 1px solid ${colors.offWhite};
 `;
