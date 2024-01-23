@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -46,6 +46,20 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   const router = useRouter();
   const commentId = router.query.commentId as string;
 
+  const replyToComment = useMemo(() => {
+    return {
+      username: (router.query.replyToCommentUsername as string) || '',
+      commentId,
+      comment: (router.query.comment as string) || '',
+      topCommentId: (router.query.topCommentId as string) || '',
+    };
+  }, [
+    commentId,
+    router.query.comment,
+    router.query.replyToCommentUsername,
+    router.query.topCommentId,
+  ]);
+
   useEffect(() => {
     if (commentId) {
       showModal({
@@ -55,6 +69,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
             postRef={post}
             queryRef={query}
             activeCommentId={commentId}
+            replyToComment={replyToComment}
           />
         ),
         isFullPage: isMobile,
@@ -62,7 +77,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
         headerVariant: 'standard',
       });
     }
-  }, [commentId, isMobile, post, query, showModal]);
+  }, [commentId, isMobile, post, query, showModal, replyToComment]);
 
   return (
     <ReportingErrorBoundary fallback={<></>}>

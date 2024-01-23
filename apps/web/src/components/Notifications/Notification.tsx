@@ -630,6 +630,7 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     graphql`
       fragment NotificationInnerQueryFragment on Query {
         ...SomeoneFollowedYouQueryFragment
+        ...SomeoneCommentedOnYourPostQueryFragment
       }
     `,
     queryRef
@@ -655,7 +656,13 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
   } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
     return <SomeoneAdmiredYourPost notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
-    return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneCommentedOnYourPost
+        notificationRef={notification}
+        queryRef={query}
+        onClose={handleClose}
+      />
+    );
   } else if (notification.__typename === 'SomeoneAdmiredYourTokenNotification') {
     return <SomeoneAdmiredYourToken notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'NewTokensNotification') {

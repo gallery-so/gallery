@@ -6,15 +6,17 @@ import { FeedEventsCommentsModalQueryFragment$key } from '~/generated/FeedEvents
 import useCommentOnFeedEvent from '~/hooks/api/feedEvents/useCommentOnFeedEvent';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
+import { OnReplyClickParams } from './CommentNote';
 import { CommentsModal } from './CommentsModal';
 
 type Props = {
   eventRef: FeedEventsCommentsModalFragment$key;
   queryRef: FeedEventsCommentsModalQueryFragment$key;
   fullscreen: boolean;
+  replyToComment?: OnReplyClickParams;
 };
 
-export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Props) {
+export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen, replyToComment }: Props) {
   const {
     data: feedEvent,
     loadPrevious,
@@ -84,6 +86,7 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
       loadPrevious={loadPrevious}
       onSubmitComment={handleSubmitComment}
       isSubmittingComment={isSubmittingComment}
+      replyToComment={replyToComment}
     />
   );
 }
