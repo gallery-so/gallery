@@ -13,7 +13,6 @@ export default class MerkleTree {
 
   constructor(elements) {
     // Filter empty strings and hash elements
-    console.log(web3Utils);
     this.elements = elements
       .filter((el) => el)
       .map((el) => Buffer.from(web3Utils.hexToBytes(web3Utils.sha3(el, { encoding: 'hex' }))));
