@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { contexts } from 'shared/analytics/constants';
-import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
+import { useAdmireComment } from 'src/hooks/useAdmireComment';
 
 import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
@@ -29,7 +29,7 @@ export function SomeoneCommentedOnYourPost({
     graphql`
       fragment SomeoneCommentedOnYourPostQueryFragment on Query {
         ...NotificationSkeletonQueryFragment
-        ...useTogglePostAdmireQueryFragment
+        ...useAdmireCommentQueryFragment
       }
     `,
     queryRef
@@ -41,7 +41,7 @@ export function SomeoneCommentedOnYourPost({
         __typename
         updatedTime
 
-        comment {
+        comment @required(action: THROW) {
           replyTo {
             dbid
           }
@@ -52,11 +52,11 @@ export function SomeoneCommentedOnYourPost({
             ...NotificationSkeletonResponsibleUsersFragment
           }
           comment
+          ...useAdmireCommentFragment
         }
 
-        post @required(action: THROW) {
+        post {
           dbid
-          ...useTogglePostAdmireFragment
         }
 
         ...NotificationSkeletonFragment
@@ -65,12 +65,12 @@ export function SomeoneCommentedOnYourPost({
     notificationRef
   );
 
-  const { post } = notification;
+  const { comment, post } = notification;
 
   const commenter = notification.comment?.commenter;
 
-  const { toggleAdmire, hasViewerAdmiredEvent } = useTogglePostAdmire({
-    postRef: post,
+  const { toggleAdmire, hasViewerAdmiredComment } = useAdmireComment({
+    commentRef: comment,
     queryRef: query,
   });
 
@@ -162,7 +162,7 @@ export function SomeoneCommentedOnYourPost({
                 notificationType: notification.__typename,
               }}
             >
-              <AdmireIcon height={16} active={hasViewerAdmiredEvent} />
+              <AdmireIcon height={16} active={hasViewerAdmiredComment} />
             </GalleryTouchableOpacity>
             <GalleryTouchableOpacity
               onPress={handleReplyPress}
