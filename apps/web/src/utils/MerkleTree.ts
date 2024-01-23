@@ -5,7 +5,7 @@
 // from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
 
 import { bufferToHex } from 'ethereumjs-util';
-import web3Utils from 'web3-utils';
+import * as web3Utils from 'web3-utils';
 
 export default class MerkleTree {
   elements: Buffer[];
