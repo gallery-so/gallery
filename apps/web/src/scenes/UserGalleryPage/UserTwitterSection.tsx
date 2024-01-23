@@ -1,6 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseS } from '~/components/core/Text/Text';
 import { GalleryPill } from '~/components/GalleryPill';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
@@ -51,7 +53,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   if (isAuthenticatedUser && !userTwitterAccount) {
     return (
       <HStack align="flex-start" gap={8}>
-        <GalleryPill
+        <StyledPill
           eventElementId="Connect Twitter Pill"
           eventName="Connect Twitter"
           eventContext={contexts['External Social']}
@@ -61,9 +63,11 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
         >
           <HStack gap={5} align="center">
             <TwitterIcon />
-            <strong>Connect Twitter</strong>
+            <strong>
+              <BaseS>Connect Twitter</BaseS>
+            </strong>
           </HStack>
-        </GalleryPill>
+        </StyledPill>
       </HStack>
     );
   }
@@ -83,3 +87,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
     />
   );
 }
+
+const StyledPill = styled(GalleryPill)`
+  height: 24px;
+`;
