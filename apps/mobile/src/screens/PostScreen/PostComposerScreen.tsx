@@ -102,7 +102,7 @@ function PostComposerScreenInner() {
   const [isInvalidMintLink, setIsInvalidMintLink] = useState(false);
   const [mintURL, setMintURL] = useState<string>(mintURLWithRef ?? '');
 
-  // only toggle the mint link on by default if it's on zora network. disable it by defalut on any other chain.
+  // only toggle the mint link on by default if it's on zora network. disable it by default on any other chain.
   // NOTE: on web, if a mint link is manually provided via params (e.g. share-on-gallery from another chain), it'll
   // enable the mint link. we'll need to do this here too once we support better deeplinks.
   const shouldEnableMintLinkByDefault = useMemo(() => {
@@ -260,17 +260,15 @@ function PostComposerScreenInner() {
           onSelectionChange={handleSelectionChange}
           mentions={mentions}
         />
-        {mintURLWithRef && (
-          <PostMintLinkInput
-            value={mintURL}
-            defaultValue={mintURLWithRef}
-            setValue={setMintURL}
-            invalid={isInvalidMintLink}
-            onSetInvalid={setIsInvalidMintLink}
-            includeMintLink={includeMintLink}
-            setIncludeMintLink={setIncludeMintLink}
-          />
-        )}
+        <PostMintLinkInput
+          value={mintURL}
+          defaultValue={mintURLWithRef}
+          setValue={setMintURL}
+          invalid={isInvalidMintLink}
+          onSetInvalid={setIsInvalidMintLink}
+          includeMintLink={includeMintLink}
+          setIncludeMintLink={setIncludeMintLink}
+        />
         <View className="py-4 flex-grow">
           {isSelectingMentions ? (
             <View className="flex-1">
