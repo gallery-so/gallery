@@ -33,6 +33,7 @@ export default function UserSocialPill({ url, icon, username, className, platfor
 
 export const StyledUserSocialPill = styled(GalleryPill)`
   flex-basis: 0;
+  height: 24px;
 `;
 
 const StyledPillContent = styled(HStack)`
