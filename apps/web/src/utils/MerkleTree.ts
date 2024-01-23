@@ -5,7 +5,7 @@
 // from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
 
 import { bufferToHex } from 'ethereumjs-util';
-import web3Utils from 'web3-utils';
+import * as web3Utils from 'web3-utils';
 
 export default class MerkleTree {
   elements: Buffer[];
@@ -13,6 +13,7 @@ export default class MerkleTree {
 
   constructor(elements) {
     // Filter empty strings and hash elements
+    console.log(web3Utils);
     this.elements = elements
       .filter((el) => el)
       .map((el) => Buffer.from(web3Utils.hexToBytes(web3Utils.sha3(el, { encoding: 'hex' }))));

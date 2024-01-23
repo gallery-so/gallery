@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
-import web3Utils from 'web3-utils';
+import * as web3Utils from 'web3-utils';
 
 import { useConnectEthereum } from '~/components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from '~/constants/transaction';
@@ -32,6 +32,7 @@ export default function useMintContractWithQuantity({
   const [transactionHash, setTransactionHash] = useState('');
 
   const address = rawAddress?.toLowerCase();
+  console.log({ web3Utils });
 
   // SUPPLIES
   const [publicSupply, setPublicSupply] = useState(0);
