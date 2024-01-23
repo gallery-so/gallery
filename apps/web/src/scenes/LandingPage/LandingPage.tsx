@@ -9,7 +9,10 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import useAuthModal from '~/hooks/useAuthModal';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import {
+  useIsDesktopWindowWidth,
+  useIsMobileOrMobileLargeWindowWidth,
+} from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../ContentPages/cms_types';
@@ -29,6 +32,7 @@ type Props = {
 
 export default function LandingPage({ pageContent }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isDesktop = useIsDesktopWindowWidth();
   const showAuthModal = useAuthModal('sign-up');
   const { showModal } = useModalActions();
 
@@ -70,9 +74,9 @@ export default function LandingPage({ pageContent }: Props) {
             <Testimonials testimonials={pageContent.testimonials} />
           </PageGutterWrapper> */}
         <FullWidthVStack justify="center" align="center">
-          <PageGutterWrapper gap={isMobile ? 32 : 64}>
+          <PageGutterWrapper gap={isDesktop ? 64 : 32}>
             <VStack gap={32} align="center" justify="center">
-              <StyledTitleLarge>Available on web and iOS</StyledTitleLarge>
+              <StyledMobileAppTitle>Available on web and iOS</StyledMobileAppTitle>
               <StyledText>Now you can share, discover and connect wherever you are.</StyledText>
             </VStack>
             <VStack gap={24} align="center">
@@ -155,7 +159,7 @@ const StyledCtaWrapper = styled.div`
 const StyledCtaButton = styled(Button)<{ variant: string }>`
   width: 100%;
   height: 100%;
-  padding: 8px 12px;
+  padding: 4px 12px;
   border: 1px solid ${colors.black['800']};
 
   @media only screen and ${breakpoints.tablet} {
@@ -198,16 +202,28 @@ const StyledLandingPage = styled(VStack)`
 `;
 
 const StyledTitle = styled(TitleDiatypeL)`
-  font-size: 40px;
-  line-height: 56px;
+  font-size: 32px;
+  line-height: 38px;
   font-weight: 400;
   letter-spacing: -0.03em;
+
+  @media only screen and ${breakpoints.desktop} {
+    font-size: 48px;
+    line-height: 48px;
+  }
 `;
 
-const StyledTitleLarge = styled(StyledTitle)`
+const StyledMobileAppTitle = styled(StyledTitle)`
   font-size: 40px;
   line-height: 42px;
   text-align: center;
+  max-width: 300px;
+
+  @media only screen and ${breakpoints.tablet} {
+    max-width: 100%;
+    font-size: 32px;
+    line-height: 38px;
+  }
 
   @media only screen and ${breakpoints.desktop} {
     font-size: 56px;

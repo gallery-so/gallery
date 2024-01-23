@@ -6,11 +6,11 @@ export const animatedImages: AnimatedImage[] = [
     width: 200,
     zIndex: -40,
     offsetX: {
-      mobile: 120,
+      mobile: 60,
       desktop: 180,
     },
     offsetY: {
-      mobile: -350,
+      mobile: -250,
       desktop: -370,
     },
     offsetXStart: 0,
@@ -48,7 +48,7 @@ export const animatedImages: AnimatedImage[] = [
       desktop: -195,
     },
     offsetY: {
-      mobile: 280,
+      mobile: 300,
       desktop: 220,
     },
     offsetXStart: -20,
@@ -63,7 +63,7 @@ export const animatedImages: AnimatedImage[] = [
     width: 200,
     zIndex: 20,
     offsetX: {
-      mobile: -70,
+      mobile: -30,
       desktop: -150,
     },
     offsetY: {
@@ -86,7 +86,7 @@ export const animatedImages: AnimatedImage[] = [
       desktop: -570,
     },
     offsetY: {
-      mobile: -340,
+      mobile: -330,
       desktop: -390,
     },
     offsetXStart: 0,
@@ -101,11 +101,11 @@ export const animatedImages: AnimatedImage[] = [
     width: 180,
     zIndex: 37,
     offsetX: {
-      mobile: -290,
+      mobile: -200,
       desktop: -510,
     },
     offsetY: {
-      mobile: 150,
+      mobile: 120,
       desktop: 110,
     },
     offsetXStart: 0,

@@ -27,7 +27,8 @@ const StyledImage = styled.img<{
   @media only screen and ${breakpoints.tablet} {
     width: ${({ width }) => width}px;
   }
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  // box-shadow: rgba(50, 50, 93, 0.1) 0px 40px 40px -10px, rgba(0, 0, 0, 0.1) 0px 30px 40px -30px
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 60px -15px, rgba(0, 0, 0, 0.3) 0px 30px 50px -30px;
   opacity: 1;
 
   /*  We only want to apply the animation to fade in the images, and then we can remove the animation

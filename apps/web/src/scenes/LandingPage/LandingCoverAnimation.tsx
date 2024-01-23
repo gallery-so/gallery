@@ -213,12 +213,18 @@ const FadeInWrapper = styled.div`
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100vh + 150px);
   display: flex;
   align-items: center;
   justify-content: center;
   // animation: ${fadeInGrow} 2s;
   overflow: hidden;
+  padding-bottom: 150px;
+
+  @media only screen and ${breakpoints.tablet} {
+    height: calc(100vh + 80px);
+    padding-bottom: 80px;
+  }
 `;
 
 const StyledMovementWrapper = styled.div<{
