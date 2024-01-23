@@ -139,6 +139,12 @@ const StyledUsername = styled(BaseM)`
 
 const StyledBio = styled(BaseM)`
   height: 20px; // fix height to get consistent spacing across profiles even if bio is not present
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: end;
 `;
 
 const StyledImage = styled.img`

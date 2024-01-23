@@ -69,7 +69,7 @@ export default function LandingCoverAnimation() {
       >
         <VStack align="center" gap={isMobile ? 48 : 80}>
           <StyledTitle>
-            The best way to <em>showcase</em> your collection.
+            The best way to <em>showcase</em> your art
           </StyledTitle>
           <HStack gap={12}>
             <StyledButton
