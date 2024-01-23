@@ -27,7 +27,6 @@ type Props = PropsWithChildren<{
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
   shouldShowFollowBackButton?: boolean;
   overridePfpElement?: React.ReactNode;
-  hasAdmired?: boolean;
 }>;
 
 export function NotificationSkeleton({
@@ -38,7 +37,6 @@ export function NotificationSkeleton({
   shouldShowFollowBackButton = false,
   responsibleUserRefs = [],
   overridePfpElement,
-  hasAdmired = false,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -241,6 +239,14 @@ export function NotificationSkeleton({
     return null;
   }, [notification]);
 
+  const isAdmireNotificationType = useMemo(() => {
+    return (
+      notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
+      notification.__typename === 'SomeoneAdmiredYourCommentNotification' ||
+      notification.__typename === 'SomeoneAdmiredYourTokenNotification'
+    );
+  }, [notification]);
+
   const lastFollower = useMemo(() => notification.followers?.edges?.[0]?.node, [notification]);
 
   return (
@@ -269,7 +275,7 @@ export function NotificationSkeleton({
               totalCount={responsibleUserRefs.length}
               size="md"
             />
-            {hasAdmired && (
+            {isAdmireNotificationType && (
               <View className="absolute -top-0.5 -right-0.5 border border-offWhite bg-[#E5E8FD] h-[14] w-[14] items-center justify-center rounded-full">
                 <AdmireIcon height={10} active />
               </View>

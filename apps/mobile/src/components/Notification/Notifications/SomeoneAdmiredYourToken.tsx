@@ -97,7 +97,6 @@ export function SomeoneAdmiredYourToken({
       onPress={navigateToNftDetail}
       responsibleUserRefs={admirers}
       notificationRef={notification}
-      hasAdmired
     >
       <Text>
         <Typography

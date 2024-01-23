@@ -108,7 +108,6 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
       onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
-      hasAdmired
     >
       <View className="flex space-y-0.5">
         <View className="flex-row items-center">
