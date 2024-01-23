@@ -8,18 +8,21 @@ import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
 import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
+import { OnReplyClickParams } from './CommentNote';
 import { CommentsModal } from './CommentsModal';
 type Props = {
   postRef: PostCommentsModalFragment$key;
   queryRef: PostCommentsModalQueryFragment$key;
   fullscreen: boolean;
   activeCommentId?: string;
+  replyToComment?: OnReplyClickParams;
 };
 export default function PostCommentsModal({
   activeCommentId,
   postRef,
   queryRef,
   fullscreen,
+  replyToComment,
 }: Props) {
   const {
     data: post,
@@ -58,7 +61,7 @@ export default function PostCommentsModal({
     queryRef
   );
 
-  useClearURLQueryParams('commentId');
+  useClearURLQueryParams(['commentId', 'replyToCommentUsername', 'comment', 'topCommentId']);
 
   const [commentOnPost, isSubmittingComment] = useCommentOnPost();
 
@@ -93,6 +96,7 @@ export default function PostCommentsModal({
       loadPrevious={loadPrevious}
       onSubmitComment={handleSubmitComment}
       isSubmittingComment={isSubmittingComment}
+      replyToComment={replyToComment}
     />
   );
 }

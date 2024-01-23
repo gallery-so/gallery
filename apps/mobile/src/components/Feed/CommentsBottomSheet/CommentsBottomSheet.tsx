@@ -42,6 +42,7 @@ import { REPLIES_PER_PAGE } from './constants';
 
 type CommentsBottomSheetProps = {
   activeCommentId?: string;
+  replyToComment?: OnReplyPressParams;
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
@@ -51,6 +52,7 @@ export function CommentsBottomSheet({
   activeCommentId,
   bottomSheetRef,
   feedId,
+  replyToComment,
   type,
 }: CommentsBottomSheetProps) {
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -67,8 +69,10 @@ export function CommentsBottomSheet({
     };
   });
 
-  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(null);
-  const topCommentId = useRef<string | null>(null);
+  const [selectedComment, setSelectedComment] = useState<OnReplyPressParams>(
+    replyToComment || null
+  );
+  const topCommentId = useRef<string | null>(replyToComment?.topCommentId ?? null);
 
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
@@ -239,6 +243,7 @@ export function CommentsBottomSheet({
           onClose={noop}
           ref={commentBoxRef}
           mentions={mentions}
+          autoFocus={Boolean(selectedComment?.commentId)}
         />
       </Animated.View>
     </GalleryBottomSheetModal>

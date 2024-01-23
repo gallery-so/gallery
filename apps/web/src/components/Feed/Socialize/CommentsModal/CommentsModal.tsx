@@ -40,6 +40,7 @@ type CommentsModalProps = {
   ) => void;
   isSubmittingComment: boolean;
   activeCommentId?: string;
+  replyToComment?: OnReplyClickParams;
 };
 
 export function CommentsModal({
@@ -51,6 +52,7 @@ export function CommentsModal({
   loadPrevious,
   onSubmitComment,
   isSubmittingComment,
+  replyToComment,
 }: CommentsModalProps) {
   const comments = useFragment(
     graphql`
@@ -73,8 +75,10 @@ export function CommentsModal({
     queryRef
   );
 
-  const [selectedComment, setSelectedComment] = useState<OnReplyClickParams>(null);
-  const topCommentId = useRef<string | null>(null);
+  const [selectedComment, setSelectedComment] = useState<OnReplyClickParams>(
+    replyToComment || null
+  );
+  const topCommentId = useRef<string | null>(replyToComment?.topCommentId ?? null);
   const virtualizedListRef = useRef<List | null>(null);
 
   const highlightCommentId = useMemo(() => {
