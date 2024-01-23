@@ -7,7 +7,7 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
-import { useBreakpoint } from '~/hooks/useWindowSize';
+import { useBreakpoint, useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
@@ -18,14 +18,18 @@ type FeaturedProfilesProps = {
 
 export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
   const breakpoint = useBreakpoint();
+  const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
+
+  const itemsPerSlide = useMemo(() => {
+    if (isMobileOrMobileLarge) {
+      return 1;
+    } else if (breakpoint === size.tablet) {
+      return 2;
+    }
+    return 3;
+  }, [breakpoint, isMobileOrMobileLarge]);
 
   const slideContent = useMemo(() => {
-    const itemsPerSlide =
-      breakpoint === size.mobile || breakpoint === size.mobileLarge
-        ? 1
-        : breakpoint === size.tablet
-        ? 2
-        : 3;
     const rows = [];
 
     for (let i = 0; i < profiles.length; i += itemsPerSlide) {
@@ -35,6 +39,7 @@ export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
           {row.map((profile) => (
             <FeaturedProfile key={profile.id} profile={profile} />
           ))}
+          {row.length < itemsPerSlide && <StyledPlaceholder />}
         </StyledProfileSet>
       );
 
@@ -42,7 +47,7 @@ export default function FeaturedProfiles({ profiles }: FeaturedProfilesProps) {
     }
 
     return rows;
-  }, [breakpoint, profiles]);
+  }, [itemsPerSlide, profiles]);
   return (
     <StyledContainer gap={16}>
       <Carousel slideContent={slideContent} />
@@ -61,6 +66,10 @@ const StyledContainer = styled(VStack)`
     width: 100%;
     overflow-x: hidden;
   }
+`;
+
+const StyledPlaceholder = styled.div`
+  width: 100%;
 `;
 
 type FeaturedProfileProps = {
