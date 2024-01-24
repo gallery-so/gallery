@@ -155,7 +155,7 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
     >
       <Tabs.FlashList
         data={items}
-        estimatedItemSize={40}
+        estimatedItemSize={240}
         renderItem={renderItem}
         onEndReached={loadMore}
         refreshing={isLoadingNext}
