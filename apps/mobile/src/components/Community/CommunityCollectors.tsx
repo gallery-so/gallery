@@ -47,9 +47,9 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
 
   const {
     data: community,
-    // loadNext,
-    // hasNext,
-    // isLoadingNext,
+    loadNext,
+    hasNext,
+    isLoadingNext,
   } = usePaginationFragment(
     graphql`
       fragment CommunityCollectorsFragment on Community
@@ -138,6 +138,12 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
     [query, setTokenLayout, tokenLayout]
   );
 
+  const loadMore = useCallback(() => {
+    if (hasNext) {
+      loadNext(100);
+    }
+  }, [hasNext, loadNext]);
+
   const contentContainerStyle = useListContentStyle();
 
   return (
@@ -151,8 +157,8 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
         data={items}
         estimatedItemSize={40}
         renderItem={renderItem}
-        // onEndReached={loadMore}
-        // refreshing={isLoadingNext}
+        onEndReached={loadMore}
+        refreshing={isLoadingNext}
         onEndReachedThreshold={0.8}
         extraData={tokenLayout}
       />
