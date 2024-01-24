@@ -1,8 +1,9 @@
 import clsx from 'clsx';
 import { useCallback } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import GalleryProcessedText from 'shared/components/GalleryProccessedText/GalleryProcessedText';
 
 import { FollowButton } from '~/components/FollowButton';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -12,7 +13,9 @@ import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQuery
 import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import ProcessedText from '../ProcessedText/ProcessedText';
+import { MentionComponent } from '../ProcessedText/elements/MentionComponent';
+import { TextComponent } from '../ProcessedText/elements/TextComponent';
+import ProcessedTextAsPlaintext from '../ProcessedText/ProcessedTextAsPlaintext';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
@@ -62,7 +65,7 @@ export function UserFollowCard({
   return (
     <View
       className={clsx('flex w-full flex-row items-center space-x-8 overflow-hidden', {
-        'px-4': isPresentational,
+        'px-4': !isPresentational,
       })}
     >
       <GalleryTouchableOpacity
@@ -80,7 +83,7 @@ export function UserFollowCard({
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <ProcessedText numberOfLines={1} text={bioFirstLine} />}
+            {bioFirstLine && <ProcessedTextAsPlaintext text={bioFirstLine} numberOfLines={1} />}
           </View>
         </View>
       </GalleryTouchableOpacity>
