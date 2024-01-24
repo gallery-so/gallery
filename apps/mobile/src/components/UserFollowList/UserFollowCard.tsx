@@ -1,9 +1,8 @@
 import clsx from 'clsx';
 import { useCallback } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import GalleryProcessedText from 'shared/components/GalleryProccessedText/GalleryProcessedText';
 
 import { FollowButton } from '~/components/FollowButton';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -13,8 +12,6 @@ import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQuery
 import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { MentionComponent } from '../ProcessedText/elements/MentionComponent';
-import { TextComponent } from '../ProcessedText/elements/TextComponent';
 import ProcessedTextAsPlaintext from '../ProcessedText/ProcessedTextAsPlaintext';
 
 type UserFollowCardProps = {
