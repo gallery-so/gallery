@@ -21,8 +21,8 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -180,
   },
   {
-    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/06.jpg', // Monarch
-    width: 160,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/monarch-min.png', // Monarch
+    width: 200,
     zIndex: -13,
     offsetX: {
       mobile: 190,
@@ -30,7 +30,7 @@ export const animatedImages: AnimatedImage[] = [
     },
     offsetY: {
       mobile: 0,
-      desktop: 130,
+      desktop: 70,
     },
     offsetXStart: 0,
     offsetYStart: 0,
@@ -116,8 +116,8 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: 100,
   },
   {
-    src: 'https://lh3.googleusercontent.com/eseF_p4TBPq0Jauf99fkm32n13Xde_Zgsjdfy6L450YZaEUorYtDmUUHBxcxnC21Sq8mzBJ6uW8uUwYCKckyChysBRNvrWyZ6uSx', // Doge
-    width: 220,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/themes-and-variations-364-min.webp', // Themes + Variations
+    width: 210,
     zIndex: 25,
     offsetX: {
       mobile: 440,
