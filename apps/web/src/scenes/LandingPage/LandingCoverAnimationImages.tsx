@@ -21,8 +21,8 @@ export const animatedImages: AnimatedImage[] = [
     verticalY: -180,
   },
   {
-    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/06.jpg', // Monarch
-    width: 160,
+    src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/monarch-min.png', // Monarch
+    width: 200,
     zIndex: -13,
     offsetX: {
       mobile: 190,
@@ -30,7 +30,7 @@ export const animatedImages: AnimatedImage[] = [
     },
     offsetY: {
       mobile: 0,
-      desktop: 130,
+      desktop: 70,
     },
     offsetXStart: 0,
     offsetYStart: 0,
@@ -117,7 +117,7 @@ export const animatedImages: AnimatedImage[] = [
   },
   {
     src: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/landingPage/themes-and-variations-364-min.webp', // Themes + Variations
-    width: 170,
+    width: 210,
     zIndex: 25,
     offsetX: {
       mobile: 440,
