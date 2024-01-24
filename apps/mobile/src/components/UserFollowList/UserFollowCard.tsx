@@ -62,7 +62,7 @@ export function UserFollowCard({
   return (
     <View
       className={clsx('flex w-full flex-row items-center space-x-8 overflow-hidden', {
-        'px-4': isPresentational,
+        'px-4': !isPresentational,
       })}
     >
       <GalleryTouchableOpacity
@@ -80,7 +80,9 @@ export function UserFollowCard({
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <ProcessedText numberOfLines={1} text={bioFirstLine} />}
+            {bioFirstLine && (
+              <ProcessedText text={bioFirstLine} numberOfLines={1} plaintextOnly={true} />
+            )}
           </View>
         </View>
       </GalleryTouchableOpacity>

@@ -5,6 +5,7 @@ import { ProcessedTextFragment$key } from '~/generated/ProcessedTextFragment.gra
 import GalleryProcessedText from '~/shared/components/GalleryProccessedText/GalleryProcessedText';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 
+import { LinkAsPlaintextComponent } from './elements/LinkAsPlaintextComponent';
 import { LinkComponent } from './elements/LinkComponent';
 import { MentionComponent } from './elements/MentionComponent';
 import { TextComponent } from './elements/TextComponent';
@@ -13,11 +14,13 @@ type ProcessedTextProps = {
   text: string;
   mentionsRef?: ProcessedTextFragment$key;
   mentionsInText?: MentionDataType[];
+  plaintextOnly?: boolean;
 } & TextProps;
 
 export default function ProcessedText({
   text,
   mentionsRef = [],
+  plaintextOnly = false,
   mentionsInText,
   ...props
 }: ProcessedTextProps) {
@@ -36,7 +39,7 @@ export default function ProcessedText({
       text={text}
       mentionsRef={mentions}
       TextComponent={TextComponent}
-      LinkComponent={LinkComponent}
+      LinkComponent={plaintextOnly ? LinkAsPlaintextComponent : LinkComponent}
       MentionComponent={MentionComponent}
       BreakComponent={() => <Text>{'\n'}</Text>}
       mentionsInText={mentionsInText}
