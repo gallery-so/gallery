@@ -1,11 +1,11 @@
 import { Text, TextProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { Typography } from '~/components/Typography';
 import { ProcessedTextFragment$key } from '~/generated/ProcessedTextFragment.graphql';
 import GalleryProcessedText from '~/shared/components/GalleryProccessedText/GalleryProcessedText';
 import { MentionDataType } from '~/shared/hooks/useMentionableMessage';
 
+import { LinkAsPlaintextComponent } from './elements/LinkAsPlaintextComponent';
 import { LinkComponent } from './elements/LinkComponent';
 import { MentionComponent } from './elements/MentionComponent';
 import { TextComponent } from './elements/TextComponent';
@@ -47,20 +47,3 @@ export default function ProcessedText({
     />
   );
 }
-
-type LinkAsPlaintextComponentProps = {
-  url: string;
-  value?: string;
-};
-
-const LinkAsPlaintextComponent = ({ url, value }: LinkAsPlaintextComponentProps) => (
-  <>
-    <Typography
-      className="text-sm"
-      font={{ family: 'ABCDiatype', weight: 'Regular' }}
-      style={{ fontSize: 14, lineHeight: 18, paddingVertical: 2 }}
-    >
-      {value ?? url}
-    </Typography>
-  </>
-);
