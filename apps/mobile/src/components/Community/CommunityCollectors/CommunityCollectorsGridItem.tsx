@@ -69,6 +69,7 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
         <Typography
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
           className="text-sm"
+          numberOfLines={2}
           style={{
             lineHeight: 0,
           }}
@@ -80,6 +81,7 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             className="text-sm"
+            numberOfLines={1}
             style={{
               lineHeight: 0,
             }}
