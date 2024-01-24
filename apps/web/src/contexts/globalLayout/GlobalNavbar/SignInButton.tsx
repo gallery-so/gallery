@@ -1,32 +1,39 @@
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
-import TextButton from '~/components/core/Button/TextButton';
-import transitions from '~/components/core/transitions';
+import { Button } from '~/components/core/Button/Button';
+import { TitleDiatypeL } from '~/components/core/Text/Text';
 import useAuthModal from '~/hooks/useAuthModal';
 import { contexts } from '~/shared/analytics/constants';
-import colors from '~/shared/theme/colors';
 
-export function SignInButton() {
+type Props = {
+  buttonLocation: string;
+  className?: string;
+};
+
+export function SignInButton({ className, buttonLocation }: Props) {
   const showAuthModal = useAuthModal('sign-in');
 
   return (
-    <SignInWrapper
+    <StyledButton
       eventElementId="Sign In Button"
       eventName="Attempt Sign In"
       eventContext={contexts.Authentication}
-      text="Sign In"
+      properties={{ buttonLocation }}
       onClick={showAuthModal}
-    />
+      className={className}
+      variant="secondary"
+    >
+      <StyledButtonText>Sign in</StyledButtonText>
+    </StyledButton>
   );
 }
 
-const SignInWrapper = styled(TextButton)`
-  @media only screen and ${breakpoints.tablet} {
-    padding: 8px 16px;
-    transition: background-color ${transitions.cubic};
-    &:hover {
-      background-color: ${colors.faint};
-    }
-  }
+const StyledButton = styled(Button)`
+  padding: 8px 24px;
+`;
+
+const StyledButtonText = styled(TitleDiatypeL)`
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
 `;

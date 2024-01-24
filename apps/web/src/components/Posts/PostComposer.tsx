@@ -228,17 +228,15 @@ export default function PostComposer({ onBackClick, tokenId, eventFlow }: Props)
               handleSelectionChange={handleSelectionChange}
               closeMention={closeMention}
             />
-            {mintURLWithRef && (
-              <PostComposerMintLinkInput
-                value={mintURL}
-                defaultValue={mintURLWithRef}
-                setValue={setMintURL}
-                invalid={isInvalidMintLink}
-                onSetInvalid={setIsInvalidMintLink}
-                includeMintLink={includeMintLink}
-                setIncludeMintLink={setIncludeMintLink}
-              />
-            )}
+            <PostComposerMintLinkInput
+              value={mintURL}
+              defaultValue={mintURLWithRef}
+              setValue={setMintURL}
+              invalid={isInvalidMintLink}
+              onSetInvalid={setIsInvalidMintLink}
+              includeMintLink={includeMintLink}
+              setIncludeMintLink={setIncludeMintLink}
+            />
           </VStack>
         </ContentContainer>
       </VStack>

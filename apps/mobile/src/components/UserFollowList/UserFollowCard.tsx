@@ -76,7 +76,9 @@ export function UserFollowCard({
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <ProcessedText numberOfLines={1} text={bioFirstLine} />}
+            {bioFirstLine && (
+              <ProcessedText text={bioFirstLine} numberOfLines={1} plaintextOnly={true} />
+            )}
           </View>
         </View>
       </GalleryTouchableOpacity>

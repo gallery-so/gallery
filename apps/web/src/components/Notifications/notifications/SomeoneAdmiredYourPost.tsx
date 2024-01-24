@@ -6,9 +6,11 @@ import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
+import { AdmireIcon } from '~/icons/SocializeIcons';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
+import { StyledAdmireIconWrapper } from './SomeoneAdmiredYourToken';
 
 type Props = {
   notificationRef: SomeoneAdmiredYourPostFragment$key;
@@ -60,7 +62,12 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
-        <ProfilePicture size="md" userRef={firstAdmirer} />
+        <StyledProfilePictureWrapper>
+          <ProfilePicture size="md" userRef={firstAdmirer} />
+          <StyledAdmireIconWrapper align="center" justify="center">
+            <AdmireIcon active height={12} />
+          </StyledAdmireIconWrapper>
+        </StyledProfilePictureWrapper>
         <StyledTextWrapper align="center" as="span" wrap="wrap">
           <UserHoverCard userRef={firstAdmirer} onClick={onClose} />
           &nbsp;
@@ -88,4 +95,8 @@ const StyledNotificationContent = styled(HStack)`
 
 const StyledTextWrapper = styled(HStack)`
   display: inline;
+`;
+
+const StyledProfilePictureWrapper = styled.div`
+  position: relative;
 `;

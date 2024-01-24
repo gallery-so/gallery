@@ -158,9 +158,9 @@ export function CollectionRightContent({
   } else if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
-        <SignInButton />
+        <SignInButton buttonLocation="Gallery Collection View Navbar" />
         {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-        {!isMobile && <SignUpButton />}
+        {!isMobile && <SignUpButton buttonLocation="Gallery Collection View Navbar" />}
       </HStack>
     );
   }

@@ -1,37 +1,50 @@
+import { PortableText, PortableTextReactComponents } from '@portabletext/react';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleDiatypeL } from '~/components/core/Text/Text';
-import colors from '~/shared/theme/colors';
 
 import { CmsTypes } from '../cms_types';
 
 type FeatureHighlightBulletsProps = {
-  bullets: CmsTypes.FeatureHighlight['body'];
+  text: CmsTypes.FeatureHighlight['body'];
 };
 
-function FeatureHighlightBullets({ bullets }: FeatureHighlightBulletsProps) {
-  const textList = useMemo(
-    () => bullets.map((bullet) => bullet.children[0] && bullet.children[0]?.text),
-    [bullets]
-  );
-  return (
-    <VStack>
-      <StyledList>
-        {textList.map((text, index) => (
-          <li key={index}>
-            <StyledText>{text}</StyledText>
+function FeatureHighlightText({ text }: FeatureHighlightBulletsProps) {
+  // Defining custom components for PortableText
+  const CustomComponents: Partial<PortableTextReactComponents> = useMemo(() => {
+    return {
+      listItem: {
+        bullet: ({ children }) => (
+          <li>
+            <StyledText>{children}</StyledText>
           </li>
-        ))}
-      </StyledList>
-    </VStack>
+        ),
+      },
+
+      block: ({ children }) => {
+        return <StyledText>{children}</StyledText>;
+      },
+    };
+  }, []);
+
+  return (
+    <StyledHighlightText>
+      <PortableText value={text} components={CustomComponents} />
+    </StyledHighlightText>
   );
 }
 
-const StyledList = styled.ul`
-  padding-left: 24px;
+const StyledHighlightText = styled(VStack)`
+  ul {
+    margin: 0;
+    padding-left: 24px;
+  }
+  a {
+    color: inherit;
+  }
 `;
 
 type FeatureHighlightMediaProps = {
@@ -57,31 +70,40 @@ type Props = {
 export default function FeatureHighlight({ content }: Props) {
   return (
     <StyledHighlight gap={24} orientation={content.orientation}>
-      <StyledTextSection align="flex-start">
-        <StyledTitle>{content.heading}</StyledTitle>
-        <FeatureHighlightBullets bullets={content.body} />
-      </StyledTextSection>
       {content.media && (
         <StyledMedia>
           <FeatureHighlightMedia media={content.media} />
         </StyledMedia>
       )}
+      <StyledTextSection align="flex-start" gap={content.orientation === 'bottom' ? 16 : 32}>
+        {content.headingFont === 'abcDiatype' ? (
+          <StyledDiatypeTitle orientation={content.orientation}>
+            {content.heading}
+          </StyledDiatypeTitle>
+        ) : (
+          <StyledGTAlpinaTitle>{content.heading}</StyledGTAlpinaTitle>
+        )}
+
+        <FeatureHighlightText text={content.body} />
+      </StyledTextSection>
     </StyledHighlight>
   );
 }
 
 const StyledHighlight = styled(VStack)<{ orientation: string }>`
   align-items: center;
-  margin: 0 32px;
+  justify-content: space-between;
+  gap: 32px 120px;
+  width: 100%;
 
-  @media only screen and ${breakpoints.desktop} {
-    flex-direction: ${({ orientation }) => (orientation === 'right' ? 'row-reverse' : 'row')};
-    gap: 0 32px;
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: ${({ orientation }) =>
+      orientation === 'bottom' ? 'column' : orientation === 'right' ? 'row' : 'row-reverse'};
     margin: 0;
   }
 `;
 
-const StyledTitle = styled(TitleCondensed)`
+const StyledGTAlpinaTitle = styled(TitleCondensed)`
   font-size: 48px;
   text-align: start;
   @media only screen and ${breakpoints.desktop} {
@@ -89,24 +111,26 @@ const StyledTitle = styled(TitleCondensed)`
   }
 `;
 
-const StyledTextSection = styled(VStack)`
-  align-items: flex-start;
-
-  @media only screen and ${breakpoints.tablet} {
-    max-width: 480px;
+const StyledDiatypeTitle = styled(TitleDiatypeL)<{ orientation: string }>`
+  font-size: 32px;
+  line-height: 36px;
+  text-align: start;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  @media only screen and ${breakpoints.desktop} {
+    font-size: ${({ orientation }) => (orientation === 'bottom' ? '32px' : '56px')};
+    line-height: ${({ orientation }) => (orientation === 'bottom' ? '46px' : '56px')};
   }
 `;
 
-const StyledMedia = styled.div`
-  min-width: 326px;
-  min-height: 326px;
-  max-width: 326px;
-  max-height: 326px;
-  background-color: ${colors.faint};
+const StyledTextSection = styled(VStack)`
+  align-items: flex-start;
+  width: 100%;
+`;
 
+const StyledMedia = styled.div`
+  width: 100%;
   @media only screen and ${breakpoints.desktop} {
-    min-width: 500px;
-    min-height: 500px;
     max-width: 500px;
     max-height: 500px;
   }
@@ -124,6 +148,7 @@ const StyledText = styled(TitleDiatypeL)`
   font-weight: 400;
   font-size: 16px;
   line-height: 20px;
+  letter-spacing: -0.03em;
   @media only screen and ${breakpoints.desktop} {
     font-size: 20px;
     line-height: 28px;
