@@ -14,6 +14,7 @@ export function CommunityCollectorsGridRow({ tokenRefs }: Props) {
     graphql`
       fragment CommunityCollectorsGridRowFragment on Token @relay(plural: true) {
         __typename
+        dbid
         ...CommunityCollectorsGridItemFragment
       }
     `,
@@ -23,7 +24,7 @@ export function CommunityCollectorsGridRow({ tokenRefs }: Props) {
   return (
     <View className="flex-row px-4 space-x-2 mb-[20]">
       {tokens.map((token) => (
-        <CommunityCollectorsGridItem tokenRef={token} />
+        <CommunityCollectorsGridItem key={token.dbid} tokenRef={token} />
       ))}
     </View>
   );

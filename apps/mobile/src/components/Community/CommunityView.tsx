@@ -31,7 +31,6 @@ export function CommunityView({ queryRef, communityRef }: Props) {
     graphql`
       fragment CommunityViewCommunityFragment on Community {
         __typename
-        ...CommunityCollectorsListFragment
         ...CommunityHeaderFragment
         ...CommunityCollectorsFragment
         ...CommunityMetaFragment
@@ -47,7 +46,6 @@ export function CommunityView({ queryRef, communityRef }: Props) {
     graphql`
       fragment CommunityViewFragment on Query {
         ...CommunityCollectorsQueryFragment
-        ...CommunityCollectorsListQueryFragment
         ...CommunityViewPostsTabQueryFragment
         ...CommunityMetaQueryFragment
       }
@@ -59,7 +57,7 @@ export function CommunityView({ queryRef, communityRef }: Props) {
     throw new Error(`Unable to fetch the community`);
   }
 
-  const [selectedRoute, setSelectedRoute] = useState('Posts');
+  const [selectedRoute, setSelectedRoute] = useState('Collectors');
 
   const containerRef = useRef<CollapsibleRef>(null);
   useEffect(() => {
@@ -148,11 +146,11 @@ export function CommunityView({ queryRef, communityRef }: Props) {
 
   return (
     <GalleryTabsContainer Header={Header} ref={containerRef} initialTabName={selectedRoute}>
-      <Tabs.Tab name="Posts">
-        <CommunityViewPostsTab communityRef={community} queryRef={query} />
-      </Tabs.Tab>
       <Tabs.Tab name="Collectors">
         <CommunityCollectors queryRef={query} communityRef={community} />
+      </Tabs.Tab>
+      <Tabs.Tab name="Posts">
+        <CommunityViewPostsTab communityRef={community} queryRef={query} />
       </Tabs.Tab>
     </GalleryTabsContainer>
   );
