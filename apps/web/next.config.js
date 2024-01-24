@@ -88,11 +88,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/home',
-        permanent: false,
-      },
-      {
         source: '/trending',
         destination: '/home',
         permanent: false,

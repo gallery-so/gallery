@@ -223,9 +223,9 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
-        <SignInButton />
+        <SignInButton buttonLocation="Gallery Navbar" />
         {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-        {!isMobile && <SignUpButton />}
+        {!isMobile && <SignUpButton buttonLocation="Gallery Navbar" />}
       </HStack>
     );
   }

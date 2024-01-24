@@ -5,7 +5,7 @@ import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 
 import ErrorBoundary from './ErrorBoundary';
 
-const NO_FULL_PAGE_LOADER_PATHS = ['/features'];
+const NO_FULL_PAGE_LOADER_PATHS = ['/features', ''];
 
 const isPathExcluded = (pathname: string) => {
   return NO_FULL_PAGE_LOADER_PATHS.some((path) => pathname.startsWith(path));

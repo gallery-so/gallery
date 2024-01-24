@@ -20,8 +20,8 @@ const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window
 const textAnimationOptions = {
   width: 300,
   zIndex: 2,
-  offsetX: 0,
-  offsetY: 0,
+  offsetX: { mobile: 0, desktop: 0 },
+  offsetY: { mobile: 0, desktop: 0 },
   offsetXStart: 0,
   offsetYStart: 0,
   fadeInDelay: 0,
