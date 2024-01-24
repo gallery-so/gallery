@@ -88,41 +88,55 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
     return removeNullValues(community?.holders?.edges?.map((edge) => edge?.node));
   }, [community?.holders?.edges]);
 
-  const items = useMemo(() => {
+  const listItems = useMemo(() => {
     const items: CollectorItemList[] = [];
 
     items.push({
       kind: 'collector-section-header',
     });
 
-    if (tokenLayout === 'grid') {
-      for (let i = 0; i < nonNullTokens.length; i += 2) {
-        const tokenRefs: CommunityCollectorsGridRowFragment$key = removeNullValues([
-          nonNullTokens[i],
-          nonNullTokens[i + 1],
-        ]);
+    nonNullHolders.forEach((holder) => {
+      if (!holder.user) return;
+      items.push({
+        kind: 'collector-list-item',
+        userRef: holder.user,
+      });
+    });
 
-        if (tokenRefs.every((ref) => ref !== undefined)) {
-          items.push({
-            kind: 'collector-grid-item',
-            tokenRefs,
-          });
-        }
+    return items;
+  }, [nonNullHolders]);
+
+  const gridItems = useMemo(() => {
+    const items: CollectorItemList[] = [];
+
+    items.push({
+      kind: 'collector-section-header',
+    });
+
+    for (let i = 0; i < nonNullTokens.length; i += 2) {
+      const tokenRefs: CommunityCollectorsGridRowFragment$key = removeNullValues([
+        nonNullTokens[i],
+        nonNullTokens[i + 1],
+      ]);
+
+      if (tokenRefs.every((ref) => ref !== undefined)) {
+        items.push({
+          kind: 'collector-grid-item',
+          tokenRefs,
+        });
       }
     }
 
-    if (tokenLayout === 'list') {
-      nonNullHolders.forEach((holder) => {
-        if (!holder.user) return;
-        items.push({
-          kind: 'collector-list-item',
-          userRef: holder.user,
-        });
-      });
-    }
-
     return items;
-  }, [nonNullTokens, nonNullHolders, tokenLayout]);
+  }, [nonNullTokens]);
+
+  const items = useMemo(() => {
+    if (tokenLayout === 'grid') {
+      return gridItems;
+    } else {
+      return listItems;
+    }
+  }, [tokenLayout, gridItems, listItems]);
 
   const renderItem = useCallback<ListRenderItem<CollectorItemList>>(
     ({ item }) => {
