@@ -11,7 +11,8 @@ export const getOpenseaExternalUrlDangerously = (
   contractAddress: string,
   tokenId: string
 ) => {
-  const chain = chainStr.toLocaleLowerCase();
+  let chain = chainStr.toLocaleLowerCase();
+  if (chain === 'polygon') chain = 'matic';
   const hexTokenId = hexToDec(tokenId);
 
   return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}?ref=${GALLERY_OS_ADDRESS}`;
@@ -21,7 +22,8 @@ export const getOpenseaExternalUrlDangerouslyForCollection = (
   chainStr: string,
   contractAddress: string
 ) => {
-  const chain = chainStr.toLocaleLowerCase();
+  let chain = chainStr.toLocaleLowerCase();
+  if (chain === 'polygon') chain = 'matic';
 
   return `https://opensea.io/assets/${chain}/${contractAddress}`;
 };
