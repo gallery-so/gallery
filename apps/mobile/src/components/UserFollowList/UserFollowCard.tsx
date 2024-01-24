@@ -12,7 +12,7 @@ import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQuery
 import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import ProcessedTextAsPlaintext from '../ProcessedText/ProcessedTextAsPlaintext';
+import ProcessedText from '../ProcessedText/ProcessedText';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
@@ -80,7 +80,9 @@ export function UserFollowCard({
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
-            {bioFirstLine && <ProcessedTextAsPlaintext text={bioFirstLine} numberOfLines={1} />}
+            {bioFirstLine && (
+              <ProcessedText text={bioFirstLine} numberOfLines={1} plaintextOnly={true} />
+            )}
           </View>
         </View>
       </GalleryTouchableOpacity>
