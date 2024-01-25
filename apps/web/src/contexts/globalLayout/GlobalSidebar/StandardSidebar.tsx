@@ -322,7 +322,7 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
           <SidebarIcon
-            to={isLoggedIn ? { pathname: '/home' } : { pathname: '/' }}
+            to={{ pathname: isLoggedIn ? '/home' : '/' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
