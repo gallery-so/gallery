@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { CRYPTOPUNKS_CONTRACT_ADDRESS } from 'shared/utils/communities';
 import styled from 'styled-components';
 
 import transitions from '~/components/core/transitions';
@@ -126,9 +127,8 @@ function NftPreview({
   // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
   // NFT or per-collection basis, similar to the Live Render setting
   const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
-    const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
     return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
-  }, [token.definition.contract?.contractAddress]);
+  }, [contractAddress]);
 
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
@@ -191,6 +191,10 @@ function NftPreview({
   const isSvgOnWeirdBrowser = isSvg(imageUrl) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
+    // if it's not a cryptopunk – this will be handled with a future backend update where
+    // punks will be rasterized on a bigger canvas. otherwise, punks appear too wide with
+    // full width enforced
+    contractAddress !== CRYPTOPUNKS_CONTRACT_ADDRESS &&
     // it's not in a feed event
     !isInFeedEvent &&
     // there are more than 1 columns in the layout
