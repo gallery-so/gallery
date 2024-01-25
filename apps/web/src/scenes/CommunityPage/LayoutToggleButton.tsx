@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { contexts } from 'shared/analytics/constants';
+import { useTrack } from 'shared/contexts/AnalyticsContext';
 import styled from 'styled-components';
 
 import { DisplayLayout } from '~/components/core/enums';
@@ -11,13 +13,25 @@ type Props = {
 };
 
 export default function LayoutToggleButton({ layout, setLayout }: Props) {
-  const handleGridClick = () => {
-    setLayout(DisplayLayout.GRID);
-  };
+  const track = useTrack();
 
-  const handleListClick = () => {
+  const handleGridClick = useCallback(() => {
+    setLayout(DisplayLayout.GRID);
+    track('Grid layout Click', {
+      id: 'Grid Layout Switcher',
+      name: 'Grid Layout Switcher',
+      context: contexts.Community,
+    });
+  }, [setLayout, track]);
+
+  const handleListClick = useCallback(() => {
     setLayout(DisplayLayout.LIST);
-  };
+    track('List layout Click', {
+      id: 'List Layout Switcher',
+      name: 'List Layout Switcher',
+      context: contexts.Community,
+    });
+  }, [setLayout, track]);
 
   const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
 
@@ -51,6 +65,6 @@ const StyledToggleButton = styled.button<{ active?: boolean }>`
   justify-content: center;
 
   svg {
-    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
+    color: ${({ active }) => (active ? colors.black['800'] : colors.shadow)};
   }
 `;

@@ -1,24 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import Loader from '~/components/core/Loader/Loader';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleS } from '~/components/core/Text/Text';
 import { GRID_ITEM_PER_PAGE } from '~/constants/community';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { CommunityHolderGridFragment$key } from '~/generated/CommunityHolderGridFragment.graphql';
-import { CommunityHolderGridQueryFragment$key } from '~/generated/CommunityHolderGridQueryFragment.graphql';
 
 import CommunityHolderGridItem from './CommunityHolderGridItem';
 
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
-  queryRef: CommunityHolderGridQueryFragment$key;
 };
 
-export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
+export default function CommunityHolderGrid({ communityRef }: Props) {
   const {
     data: community,
     loadNext,
@@ -40,9 +37,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
                   __typename
                 }
               }
-              owner {
-                universal
-              }
               ...CommunityHolderGridItemFragment
             }
           }
@@ -50,15 +44,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
       }
     `,
     communityRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunityHolderGridQueryFragment on Query {
-        ...CommunityHolderGridItemQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const [isFetching, setIsFetching] = useState(false);
@@ -78,14 +63,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
   const filteredTokens = useMemo(() => {
     return tokenHolders.filter((token) => token?.definition?.media?.__typename !== 'InvalidMedia');
   }, [tokenHolders]);
-
-  const nonGalleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => token?.owner?.universal);
-  }, [filteredTokens]);
-
-  const galleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => !token?.owner?.universal);
-  }, [filteredTokens]);
 
   const handleSeeMore = useCallback(() => {
     setIsFetching(true);
@@ -112,27 +89,11 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
 
   return (
     <VStack gap={48}>
-      {galleryMemberTokens.length > 0 && (
+      {filteredTokens.length > 0 && (
         <VStack gap={16}>
-          <TitleS>Collectors on Gallery</TitleS>
           <StyledCommunityHolderGrid>
-            {galleryMemberTokens.map((holder) =>
-              holder ? (
-                <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
-              ) : null
-            )}
-          </StyledCommunityHolderGrid>
-        </VStack>
-      )}
-      {nonGalleryMemberTokens.length > 0 && (
-        <VStack gap={16}>
-          <TitleS>Other members</TitleS>
-
-          <StyledCommunityHolderGrid>
-            {nonGalleryMemberTokens.map((holder) =>
-              holder ? (
-                <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
-              ) : null
+            {filteredTokens.map((holder) =>
+              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>
@@ -149,8 +110,9 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
 
 const StyledCommunityHolderGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 24px;
+  row-gap: 48px;
 
   @media only screen and ${breakpoints.tablet} {
     grid-template-columns: repeat(4, 1fr);

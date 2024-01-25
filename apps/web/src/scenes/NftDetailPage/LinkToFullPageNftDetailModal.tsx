@@ -101,14 +101,14 @@ export default function LinkToFullPageNftDetailModal({
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-      <StyledAnchor data-tokenid={tokenId} onClick={handleClick}>
+      <StyledAnchorNftDetailModal data-tokenid={tokenId} onClick={handleClick}>
         {children}
-      </StyledAnchor>
+      </StyledAnchorNftDetailModal>
     </Link>
   );
 }
 
-const StyledAnchor = styled.a`
+export const StyledAnchorNftDetailModal = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;

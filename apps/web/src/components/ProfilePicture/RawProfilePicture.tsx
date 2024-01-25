@@ -7,6 +7,7 @@ import UserIcon from '~/icons/UserIcon';
 import colors from '~/shared/theme/colors';
 
 const sizeMapping: { [size in Size]: number } = {
+  xxs: 16,
   xs: 20,
   sm: 24,
   md: 32,
@@ -16,6 +17,7 @@ const sizeMapping: { [size in Size]: number } = {
 };
 
 const fontSizeMapping: { [size in Size]: number } = {
+  xxs: 10,
   xs: 12,
   sm: 14,
   md: 18,
@@ -24,7 +26,7 @@ const fontSizeMapping: { [size in Size]: number } = {
   xxl: 48,
 };
 
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | number;
+type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | number;
 
 export type RawProfilePictureProps = {
   size: Size;

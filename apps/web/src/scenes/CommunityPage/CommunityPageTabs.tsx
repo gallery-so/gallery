@@ -57,6 +57,12 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
 
   return (
     <StyledTabsContainer align="center" justify="center" gap={12}>
+      <StyledTab isActive={activeTab === 'collectors'} onClick={() => handleTabClick('collectors')}>
+        <HStack gap={3}>
+          <StyledTabLabel>Collectors</StyledTabLabel>
+          {totalOwners !== 0 && <StyledTabLabelCount>{totalOwners}</StyledTabLabelCount>}
+        </HStack>
+      </StyledTab>
       <StyledTab isActive={activeTab === 'posts'} onClick={() => handleTabClick('posts')}>
         <HStack gap={3}>
           <StyledTabLabel>Posts</StyledTabLabel>
@@ -67,12 +73,6 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
       {/* <StyledTab isActive={activeTab === 'galleries'} onClick={() => handleTabClick('galleries')}>
         <StyledTabLabel>Galleries</StyledTabLabel>
       </StyledTab> */}
-      <StyledTab isActive={activeTab === 'collectors'} onClick={() => handleTabClick('collectors')}>
-        <HStack gap={3}>
-          <StyledTabLabel>Collectors</StyledTabLabel>
-          {totalOwners !== 0 && <StyledTabLabelCount>{totalOwners}</StyledTabLabelCount>}
-        </HStack>
-      </StyledTab>
     </StyledTabsContainer>
   );
 }

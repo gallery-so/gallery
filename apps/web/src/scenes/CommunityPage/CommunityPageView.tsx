@@ -42,13 +42,12 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       fragment CommunityPageViewQueryFragment on Query {
         ...CommunityPagePostsTabQueryFragment
         ...CommunityPageViewHeaderQueryFragment
-        ...CommunityPageCollectorsTabQueryFragment
       }
     `,
     queryRef
   );
 
-  const [activeTab, setActiveTab] = useState<CommunityPageTab>('posts');
+  const [activeTab, setActiveTab] = useState<CommunityPageTab>('collectors');
 
   return (
     <MemberListPageProvider>
@@ -66,9 +65,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             {activeTab === 'posts' && (
               <CommunityPagePostsTab communityRef={community} queryRef={query} />
             )}
-            {activeTab === 'collectors' && (
-              <CommunityPageCollectorsTab communityRef={community} queryRef={query} />
-            )}
+            {activeTab === 'collectors' && <CommunityPageCollectorsTab communityRef={community} />}
           </VStack>
         </StyledCommunityPageContainer>
       </IsMemberOfCommunityProvider>

@@ -11,6 +11,7 @@ import { TokenHolderListFragment$key } from '~/generated/TokenHolderListFragment
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import breakpoints from '../core/breakpoints';
 import TokenHolderListItem from './TokenHolderListItem';
 
 // Get which side of the tokenHolder name to show the preview on
@@ -20,7 +21,7 @@ function getPreviewDirection(index: number) {
 }
 
 type Props = {
-  title: string;
+  title?: string;
   tokenHoldersRef: TokenHolderListFragment$key;
 };
 
@@ -63,7 +64,7 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
 
   return (
     <VStack gap={isMobile ? 24 : 16}>
-      <TitleS>{title}</TitleS>
+      {title && <TitleS>{title}</TitleS>}
       <StyledTokenHoldersWrapper>
         {filteredTokenHolders.map((tokenHolder, index) => (
           <TokenHolderListItem
@@ -82,6 +83,11 @@ const StyledTokenHoldersWrapper = styled(HStack)`
   flex-wrap: wrap;
   padding-bottom: 56px;
   row-gap: 18px;
+  max-width: 80%;
+
+  @media only screen and ${breakpoints.mobile} {
+    max-width: 100%;
+  }
 `;
 
 export default TokenHolderList;
