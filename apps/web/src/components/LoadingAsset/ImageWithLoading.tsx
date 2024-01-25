@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { SyntheticEvent, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
@@ -17,6 +17,7 @@ type Props = {
   alt: string;
   heightType?: ContentHeightType;
   onClick?: () => void;
+  onError?: () => void;
   onLoad: JSX.IntrinsicElements['img']['onLoad'];
 };
 
@@ -26,6 +27,7 @@ export default function ImageWithLoading({
   alt,
   heightType,
   onClick = noop,
+  onError = noop,
   onLoad,
 }: Props) {
   const maxHeight = useMemo(() => {
@@ -47,6 +49,14 @@ export default function ImageWithLoading({
   const renderFullWidth = isSvg(src) && !isFirefox();
   const { handleError } = useThrowOnMediaFailure('ImageWithLoading');
 
+  const handleErrorLoad = useCallback(
+    (e: SyntheticEvent<HTMLImageElement, Event>) => {
+      onError();
+      handleError(e);
+    },
+    [handleError, onError]
+  );
+
   return (
     <StyledImageWithLoading
       className={className}
@@ -56,7 +66,7 @@ export default function ImageWithLoading({
       alt={alt}
       loading="lazy"
       onLoad={onLoad}
-      onError={handleError}
+      onError={handleErrorLoad}
       onClick={onClick}
     />
   );
