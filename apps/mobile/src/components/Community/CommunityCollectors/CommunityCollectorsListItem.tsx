@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
@@ -33,18 +34,14 @@ export function CommunityCollectorsListItem({ userRef, queryRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  return (
-    <UserFollowCard
-      userRef={user}
-      queryRef={query}
-      onPress={() => {
-        if (user.username) {
-          navigation.push('Profile', {
-            username: user.username,
-            hideBackButton: false,
-          });
-        }
-      }}
-    />
-  );
+  const handlePress = useCallback(() => {
+    if (user.username) {
+      navigation.push('Profile', {
+        username: user.username,
+        hideBackButton: false,
+      });
+    }
+  }, [navigation, user.username]);
+
+  return <UserFollowCard userRef={user} queryRef={query} onPress={handlePress} />;
 }
