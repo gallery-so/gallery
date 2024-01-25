@@ -129,4 +129,8 @@ const StyledCommunityHolderGrid = styled.div`
   @media only screen and ${breakpoints.tablet} {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  @media only screen and ${breakpoints.mobile} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
