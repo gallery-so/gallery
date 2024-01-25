@@ -4,7 +4,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
 
-import { CommunityPostListFallback } from './CommunityPostListFallback';
+import { CommunityCollectorsGridFallback } from './CommunityCollectors/CommunityCollectorsGridFallback';
 
 export function CommunityViewFallback() {
   return (
@@ -46,12 +46,12 @@ export function CommunityViewFallback() {
 
           <SkeletonPlaceholder.Item
             flexDirection="row"
-            gap={20}
+            gap={12}
             alignItems="center"
             justifyContent="center"
-            marginBottom={32}
             marginTop={16}
           >
+            <SkeletonPlaceholder.Item width="25%" height={16} />
             <SkeletonPlaceholder.Item width="25%" height={16} />
             <SkeletonPlaceholder.Item width="25%" height={16} />
           </SkeletonPlaceholder.Item>
@@ -59,7 +59,7 @@ export function CommunityViewFallback() {
       </GallerySkeleton>
 
       <View className="-mx-4">
-        <CommunityPostListFallback />
+        <CommunityCollectorsGridFallback />
       </View>
     </View>
   );

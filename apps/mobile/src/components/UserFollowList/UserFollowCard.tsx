@@ -60,11 +60,7 @@ export function UserFollowCard({
   }, [onPress, user.username]);
 
   return (
-    <View
-      className={clsx('flex w-full flex-row items-center space-x-8 overflow-hidden', {
-        'px-4': !isPresentational,
-      })}
-    >
+    <View className={clsx('flex w-full flex-row items-center space-x-8 overflow-hidden px-4')}>
       <GalleryTouchableOpacity
         onPress={handlePress}
         disabled={isPresentational}

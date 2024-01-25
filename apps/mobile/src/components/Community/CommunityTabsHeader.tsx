@@ -38,12 +38,12 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
   const routes = useMemo(() => {
     return [
       {
-        name: 'Posts',
-        counter: totalPosts,
-      },
-      {
         name: 'Collectors',
         counter: totalOwners,
+      },
+      {
+        name: 'Posts',
+        counter: totalPosts,
       },
     ];
   }, [totalPosts, totalOwners]);
