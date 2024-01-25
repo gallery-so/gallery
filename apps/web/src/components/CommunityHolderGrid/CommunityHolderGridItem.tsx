@@ -78,7 +78,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   }, [openseaUrl, owner?.universal, query, showModal, token]);
 
   return (
-    <VStack gap={8}>
+    <VStack gap={8} justify="flex-end">
       <StyledGalleryLink
         onClick={handleClick}
         eventElementId="Community Holder Grid Item"
@@ -87,29 +87,23 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       >
         <StyledNftImage src={imageUrl} />
       </StyledGalleryLink>
-      <VStack>
-        <BaseM>{token?.definition?.name}</BaseM>
+      <StyledItemTextWrapper>
+        <StyledItemName>{token?.definition?.name} </StyledItemName>
 
         <HStack gap={4} align="center">
           <ProfilePicture userRef={owner} size="xxs" />
           <UserHoverCard userRef={token.owner} />
         </HStack>
-      </VStack>
+      </StyledItemTextWrapper>
     </VStack>
   );
 }
 
 const StyledNftImage = styled.img`
+  height: auto;
+  width: 100%;
   max-width: 100%;
-  height: 240px;
-  width: 240px;
-  object-fit: contain;
   cursor: pointer;
-
-  @media only screen and ${breakpoints.mobile} {
-    height: auto;
-    width: 100%;
-  }
 `;
 
 const StyledNftDetailViewPopover = styled(VStack)`
@@ -122,4 +116,16 @@ const StyledNftDetailViewPopover = styled(VStack)`
 
 const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
+`;
+
+const StyledItemTextWrapper = styled(VStack)`
+  height: 60px;
+`;
+
+const StyledItemName = styled(BaseM)`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
