@@ -123,14 +123,11 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
 
 const StyledCommunityHolderGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 24px;
+  row-gap: 48px;
 
   @media only screen and ${breakpoints.tablet} {
     grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media only screen and ${breakpoints.mobile} {
-    grid-template-columns: repeat(2, 1fr);
   }
 `;
