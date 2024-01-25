@@ -35,14 +35,9 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
           }
         }
         owner @required(action: THROW) {
-          universal
           ...UserHoverCardFragment
           ...ProfilePictureFragment
         }
-        ...useGetPreviewImagesSingleFragment
-        ...TokenDetailViewFragment
-        ...extractRelevantMetadataFromTokenFragment
-        ...NftPreviewAssetFragment
         ...NftPreviewFragment
       }
     `,
