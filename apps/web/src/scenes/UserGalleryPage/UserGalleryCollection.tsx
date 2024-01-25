@@ -178,11 +178,9 @@ function UserGalleryCollection({
           </StyledOptionsContainer>
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
-          <>
-            <StyledCollectorsNote>
-              <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserGallery} />
-            </StyledCollectorsNote>
-          </>
+          <StyledCollectorsNote>
+            <Markdown text={unescapedCollectorsNote} eventContext={contexts.UserGallery} />
+          </StyledCollectorsNote>
         )}
       </StyledCollectionHeader>
       <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />

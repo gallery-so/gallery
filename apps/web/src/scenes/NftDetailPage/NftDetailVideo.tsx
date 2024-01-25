@@ -3,11 +3,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import isVideoUrl from '~/utils/isVideoUrl';
 
 type Props = {
@@ -33,19 +35,15 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
     mediaRef
   );
 
-  const [errored, setErrored] = useState(false);
+  const [hasFailedToLoadDetailAsset, setHasFailedToLoadDetailAsset] = useState(false);
 
-  const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
+  const { handleError: handleSeriousError } = useThrowOnMediaFailure('NftDetailVideo');
 
-  const handleVideoLoadError = useCallback(
-    (e: SyntheticEvent<HTMLVideoElement, Event>) => {
-      if (e.currentTarget.error) {
-        setErrored(true);
-        handleError(e);
-      }
-    },
-    [handleError]
-  );
+  const handleVideoLoadError = useCallback((e: SyntheticEvent<HTMLVideoElement, Event>) => {
+    if (e.currentTarget.error) {
+      setHasFailedToLoadDetailAsset(true);
+    }
+  }, []);
 
   // poster image is displayed mid-load, or as a fallback if the load fails
   const poster = useMemo(() => {
@@ -75,7 +73,21 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, tokenId }: Pro
 
   // if there's an issue loading the video, controls need to be disabled in order
   // to render the poster fallback
-  const shouldHideControls = hideControls || errored;
+  const shouldHideControls = hideControls || hasFailedToLoadDetailAsset;
+
+  const isDesktop = useIsDesktopWindowWidth();
+
+  if (hasFailedToLoadDetailAsset) {
+    return (
+      <ImageWithLoading
+        alt={tokenId ?? ''}
+        src={poster ?? ''}
+        heightType={isDesktop ? 'maxHeightMinScreen' : undefined}
+        onLoad={onLoad}
+        onError={handleSeriousError}
+      />
+    );
+  }
 
   return (
     <StyledVideo

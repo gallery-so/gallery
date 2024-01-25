@@ -71,7 +71,8 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
+  const imageUrl =
+    useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false }) ?? '';
 
   const tokenId = token.dbid;
 
