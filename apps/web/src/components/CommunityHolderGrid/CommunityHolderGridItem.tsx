@@ -100,9 +100,10 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 }
 
 const StyledNftImage = styled.img`
-  height: auto;
-  width: 100%;
   max-width: 100%;
+  height: 240px;
+  width: 240px;
+  object-fit: contain;
   cursor: pointer;
 `;
 
