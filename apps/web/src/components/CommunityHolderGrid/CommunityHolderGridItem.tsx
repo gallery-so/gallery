@@ -1,33 +1,38 @@
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
+import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
-import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
-import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
+import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
+import { StyledAnchorNftDetailModal } from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
+import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
 import { contexts } from '~/shared/analytics/constants';
-import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import UserHoverCard from '../HoverCard/UserHoverCard';
+import NftPreview from '../NftPreview/NftPreview';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
-  queryRef: CommunityHolderGridItemQueryFragment$key;
 };
 
-export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) {
+const TOKEN_SIZE = 300;
+
+export default function CommunityHolderGridItem({ holderRef }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
         definition {
           name
+          media @required(action: THROW) {
+            ... on Media {
+              ...useContainedDimensionsForTokenFragment
+            }
+          }
         }
         owner @required(action: THROW) {
           universal
@@ -37,56 +42,27 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
         ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
         ...extractRelevantMetadataFromTokenFragment
+        ...NftPreviewAssetFragment
+        ...NftPreviewFragment
       }
     `,
     holderRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CommunityHolderGridItemQueryFragment on Query {
-        ...TokenDetailViewQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  const { showModal } = useModalActions();
-
   const { owner } = token;
 
-  // [GAL-4229] TODO: we'll need to wrap this component in a simple boundary
-  // skipping for now since this component is rarely ever visited
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
-
-  const { openseaUrl } = extractRelevantMetadataFromToken(token);
-
-  const handleClick = useCallback(() => {
-    if (owner?.universal) {
-      window.open(openseaUrl, '_blank');
-      return;
-    }
-
-    showModal({
-      content: (
-        <StyledNftDetailViewPopover justify="center" align="center">
-          <TokenDetailView tokenRef={token} queryRef={query} />
-        </StyledNftDetailViewPopover>
-      ),
-      isFullPage: true,
-    });
-  }, [openseaUrl, owner?.universal, query, showModal, token]);
+  const resultDimensions = useContainedDimensionsForToken({
+    mediaRef: token.definition.media,
+    tokenSize: TOKEN_SIZE,
+  });
 
   return (
     <VStack gap={8} justify="flex-end">
-      <StyledGalleryLink
-        onClick={handleClick}
-        eventElementId="Community Holder Grid Item"
-        eventName="Click Community Holder Grid Item"
-        eventContext={contexts['Community']}
-      >
-        <StyledNftImage src={imageUrl} />
-      </StyledGalleryLink>
+      <StyledNftPreviewWrapper resultHeight={resultDimensions.height}>
+        <ShimmerProvider>
+          <NftPreview tokenRef={token} eventContext={contexts.Community} />
+        </ShimmerProvider>
+      </StyledNftPreviewWrapper>
       <StyledItemTextWrapper>
         <StyledItemName>{token?.definition?.name} </StyledItemName>
 
@@ -99,23 +75,24 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   );
 }
 
-const StyledNftImage = styled.img`
-  height: auto;
-  width: 100%;
-  max-width: 100%;
-  cursor: pointer;
-`;
-
-const StyledNftDetailViewPopover = styled(VStack)`
+const StyledNftPreviewWrapper = styled.div<{ resultHeight: number }>`
+  display: flex;
   height: 100%;
-  padding: 80px 0;
-  @media only screen and ${breakpoints.desktop} {
-    padding: 0;
-  }
-`;
+  width: 100%;
+  flex: 1;
 
-const StyledGalleryLink = styled(GalleryLink)`
-  text-decoration: none;
+  ${StyledAnchorNftDetailModal} {
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  ${StyledImageWithLoading}, ${StyledVideo} {
+    align-items: flex-end;
+    @media only screen and ${breakpoints.desktop} {
+      width: 100%;
+      height: auto;
+    }
+  }
 `;
 
 const StyledItemTextWrapper = styled(VStack)`

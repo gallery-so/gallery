@@ -8,16 +8,14 @@ import { DisplayLayout } from '~/components/core/enums';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
-import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
 type Props = {
   communityRef: CommunityPageCollectorsTabFragment$key;
-  queryRef: CommunityPageCollectorsTabQueryFragment$key;
 };
 
-export default function CommunityPageCollectorsTab({ communityRef, queryRef }: Props) {
+export default function CommunityPageCollectorsTab({ communityRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageCollectorsTabFragment on Community {
@@ -26,15 +24,6 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
       }
     `,
     communityRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunityPageCollectorsTabQueryFragment on Query {
-        ...CommunityHolderGridQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
@@ -49,7 +38,7 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
       {showGrid ? (
         <StyledGridViewContainer gap={24}>
           <StyledListWrapper>
-            <CommunityHolderGrid communityRef={community} queryRef={query} />
+            <CommunityHolderGrid communityRef={community} />
           </StyledListWrapper>
         </StyledGridViewContainer>
       ) : (
