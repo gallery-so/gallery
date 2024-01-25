@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
@@ -13,9 +13,9 @@ import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { contexts } from '~/shared/analytics/constants';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 
 import UserHoverCard from '../HoverCard/UserHoverCard';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
@@ -30,10 +30,9 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
           name
         }
         owner @required(action: THROW) {
-          username @required(action: THROW)
           universal
-          ...walletTruncateUniversalUsernameFragment
           ...UserHoverCardFragment
+          ...ProfilePictureFragment
         }
         ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
@@ -55,10 +54,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   const { showModal } = useModalActions();
 
   const { owner } = token;
-
-  const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
-
-  const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
   // [GAL-4229] TODO: we'll need to wrap this component in a simple boundary
   // skipping for now since this component is rarely ever visited
@@ -94,11 +89,11 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       </StyledGalleryLink>
       <VStack>
         <BaseM>{token?.definition?.name}</BaseM>
-        {owner?.universal ? (
-          <GalleryLink href={openseaProfileLink}>{usernameWithFallback}</GalleryLink>
-        ) : (
+
+        <HStack gap={4} align="center">
+          <ProfilePicture userRef={owner} size="xxs" />
           <UserHoverCard userRef={token.owner} />
-        )}
+        </HStack>
       </VStack>
     </VStack>
   );

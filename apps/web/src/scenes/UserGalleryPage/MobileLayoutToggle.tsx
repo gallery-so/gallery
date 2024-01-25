@@ -13,35 +13,36 @@ export const ListLayoutIcon = () => (
   // Although the svg has a height and width of 24, it is actually 18px (per Figma)
   // Notice how the path elements begin at 21; there is simply padding around the icon
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
     fill="none"
     stroke="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
   >
-    <g>
-      <path d="M21 3H3V21H21V3Z" />
-      <path d="M21 15H3" strokeMiterlimit="10" />
-      <path d="M21 9H3" strokeMiterlimit="10" />
-    </g>
+    <path d="M5.3335 4H14.0002" stroke-miterlimit="10" />
+    <path d="M5.3335 8H14.0002" stroke-miterlimit="10" />
+    <path d="M5.3335 12H14.0002" stroke-miterlimit="10" />
+    <path d="M2 4H3" />
+    <path d="M2 8H3" />
+    <path d="M2 12H3" />
   </svg>
 );
 
 export const GridLayoutIcon = () => (
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
     fill="none"
     stroke="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M15 3V21" strokeMiterlimit="10" />
-    <path d="M9 3V21" strokeMiterlimit="10" />
-    <path d="M21 3H3V21H21V3Z" />
-    <path d="M21 15H3" strokeMiterlimit="10" />
-    <path d="M21 9H3" strokeMiterlimit="10" />
+    <path d="M10 2V14" stroke-miterlimit="10" />
+    <path d="M6 2V14" stroke-miterlimit="10" />
+    <path d="M14 2H2V14H14V2Z" />
+    <path d="M14 10H2" stroke-miterlimit="10" />
+    <path d="M14 6H2" stroke-miterlimit="10" />
   </svg>
 );
 

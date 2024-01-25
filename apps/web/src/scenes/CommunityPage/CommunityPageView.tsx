@@ -48,7 +48,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const [activeTab, setActiveTab] = useState<CommunityPageTab>('posts');
+  const [activeTab, setActiveTab] = useState<CommunityPageTab>('collectors');
 
   return (
     <MemberListPageProvider>

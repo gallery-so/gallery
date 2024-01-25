@@ -84,21 +84,10 @@ export default function CommunityHolderList({ communityRef }: Props) {
     });
   }, [nonNullTokenHolders]);
 
-  const nonGalleryMembers = useMemo(() => {
-    return nonNullTokenHolders.filter((holder) => {
-      return holder?.user?.universal;
-    });
-  }, [nonNullTokenHolders]);
-
   return (
     <div>
       <StyledListWrapper>
-        {galleryMembers.length > 0 && (
-          <TokenHolderList title="Collectors on Gallery" tokenHoldersRef={galleryMembers} />
-        )}
-        {nonGalleryMembers.length > 0 && (
-          <TokenHolderList title="Other owners" tokenHoldersRef={nonGalleryMembers} />
-        )}
+        <TokenHolderList tokenHoldersRef={galleryMembers} />
 
         {isFetching && (
           <VStack align="center" justify="center">
@@ -114,4 +103,5 @@ const StyledListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-top: 24px;
 `;

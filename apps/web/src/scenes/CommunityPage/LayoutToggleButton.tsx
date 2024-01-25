@@ -51,6 +51,6 @@ const StyledToggleButton = styled.button<{ active?: boolean }>`
   justify-content: center;
 
   svg {
-    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
+    color: ${({ active }) => (active ? colors.black['800'] : colors.shadow)};
   }
 `;

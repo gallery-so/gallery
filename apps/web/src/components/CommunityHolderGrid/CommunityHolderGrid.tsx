@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import Loader from '~/components/core/Loader/Loader';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleS } from '~/components/core/Text/Text';
 import { GRID_ITEM_PER_PAGE } from '~/constants/community';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { CommunityHolderGridFragment$key } from '~/generated/CommunityHolderGridFragment.graphql';
@@ -39,9 +38,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
                 media {
                   __typename
                 }
-              }
-              owner {
-                universal
               }
               ...CommunityHolderGridItemFragment
             }
@@ -79,14 +75,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
     return tokenHolders.filter((token) => token?.definition?.media?.__typename !== 'InvalidMedia');
   }, [tokenHolders]);
 
-  const nonGalleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => token?.owner?.universal);
-  }, [filteredTokens]);
-
-  const galleryMemberTokens = useMemo(() => {
-    return filteredTokens.filter((token) => !token?.owner?.universal);
-  }, [filteredTokens]);
-
   const handleSeeMore = useCallback(() => {
     setIsFetching(true);
     loadNext(GRID_ITEM_PER_PAGE, {
@@ -112,24 +100,10 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
 
   return (
     <VStack gap={48}>
-      {galleryMemberTokens.length > 0 && (
+      {filteredTokens.length > 0 && (
         <VStack gap={16}>
-          <TitleS>Collectors on Gallery</TitleS>
           <StyledCommunityHolderGrid>
-            {galleryMemberTokens.map((holder) =>
-              holder ? (
-                <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
-              ) : null
-            )}
-          </StyledCommunityHolderGrid>
-        </VStack>
-      )}
-      {nonGalleryMemberTokens.length > 0 && (
-        <VStack gap={16}>
-          <TitleS>Other members</TitleS>
-
-          <StyledCommunityHolderGrid>
-            {nonGalleryMemberTokens.map((holder) =>
+            {filteredTokens.map((holder) =>
               holder ? (
                 <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
               ) : null

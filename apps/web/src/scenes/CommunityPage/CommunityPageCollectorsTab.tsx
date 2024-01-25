@@ -6,10 +6,9 @@ import CommunityHolderList from '~/components/Community/CommunityHolderList';
 import CommunityHolderGrid from '~/components/CommunityHolderGrid/CommunityHolderGrid';
 import { DisplayLayout } from '~/components/core/enums';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleS } from '~/components/core/Text/Text';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
 import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
-import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
-import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
@@ -24,7 +23,6 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
       fragment CommunityPageCollectorsTabFragment on Community {
         ...CommunityHolderGridFragment
         ...CommunityHolderListFragment
-        ...extractRelevantMetadataFromCommunityFragment
       }
     `,
     communityRef
@@ -39,25 +37,15 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
     queryRef
   );
 
-  const { contractAddress } = extractRelevantMetadataFromCommunity(community);
-
-  const isGridEnabled = useMemo(
-    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress),
-    [contractAddress]
-  );
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
-  const showGrid = useMemo(
-    () => isGridEnabled && layout === DisplayLayout.GRID,
-    [isGridEnabled, layout]
-  );
+  const showGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
 
   return (
     <StyledCollectorsTab>
-      {isGridEnabled && (
-        <HStack justify="flex-end">
-          <LayoutToggleButton layout={layout} setLayout={setLayout} />
-        </HStack>
-      )}
+      <HStack align="center" justify="space-between">
+        <TitleS>Collectors on Gallery</TitleS>
+        <LayoutToggleButton layout={layout} setLayout={setLayout} />
+      </HStack>
       {showGrid ? (
         <StyledGridViewContainer gap={24}>
           <StyledListWrapper>
@@ -80,7 +68,8 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
 }
 
 const StyledCollectorsTab = styled.div`
-  padding-top: 24px;
+  padding-top: 10px;
+  padding-bottom: 56px;
 `;
 
 const StyledGridViewContainer = styled(VStack)`
