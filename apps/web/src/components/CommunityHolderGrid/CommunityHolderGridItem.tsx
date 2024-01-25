@@ -105,6 +105,11 @@ const StyledNftImage = styled.img`
   width: 240px;
   object-fit: contain;
   cursor: pointer;
+
+  @media only screen and ${breakpoints.mobile} {
+    height: auto;
+    width: 100%;
+  }
 `;
 
 const StyledNftDetailViewPopover = styled(VStack)`
