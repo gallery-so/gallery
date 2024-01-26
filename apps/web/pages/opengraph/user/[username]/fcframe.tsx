@@ -1,36 +1,45 @@
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
+import { getPreviewImageUrlsInlineDangerously } from 'shared/relay/getPreviewImageUrlsInlineDangerously';
+import { removeNullValues } from 'shared/relay/removeNullValues';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
-import { fcframeCollectionIdOpengraphQuery } from '~/generated/fcframeCollectionIdOpengraphQuery.graphql';
-import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { fcframeUsernameOpengraphQuery } from '~/generated/fcframeUsernameOpengraphQuery.graphql';
 
-export default function FarcasterOpenGraphCollectionPage() {
+export default function FarcasterOpenGraphUserPage() {
   const { query: urlQuery } = useRouter();
-  const { collectionId, position, width, height } = urlQuery;
+  const { username, position, width, height } = urlQuery;
 
-  const queryResponse = useLazyLoadQuery<fcframeCollectionIdOpengraphQuery>(
+  const queryResponse = useLazyLoadQuery<fcframeUsernameOpengraphQuery>(
     graphql`
-      query fcframeCollectionIdOpengraphQuery($collectionId: DBID!) {
-        collection: collectionById(id: $collectionId) {
-          ... on ErrCollectionNotFound {
+      query fcframeUsernameOpengraphQuery($username: String!) {
+        user: userByUsername(username: $username) {
+          ... on ErrUserNotFound {
             __typename
           }
-          ... on Collection {
+          ... on ErrInvalidInput {
             __typename
-
-            tokens {
-              token {
-                ...getPreviewImageUrlsInlineDangerouslyFragment
-                definition {
-                  name
-                  community {
-                    name
+          }
+          ... on GalleryUser {
+            __typename
+            username
+            galleries {
+              collections {
+                hidden
+                tokens {
+                  token {
+                    ...getPreviewImageUrlsInlineDangerouslyFragment
+                    definition {
+                      name
+                      community {
+                        name
+                      }
+                    }
                   }
                 }
               }
@@ -39,30 +48,38 @@ export default function FarcasterOpenGraphCollectionPage() {
         }
       }
     `,
-    { collectionId: collectionId as string }
+    { username: username as string }
   );
 
-  if (queryResponse.collection?.__typename !== 'Collection') {
-    throw new Error('invalid collection ID!');
+  if (queryResponse.user?.__typename !== 'GalleryUser') {
+    throw new Error('invalid user!');
   }
 
-  const { collection } = queryResponse;
+  const { user } = queryResponse;
+
+  const nonEmptyGalleries = user.galleries?.filter((gallery) =>
+    gallery?.collections?.some((collection) => collection?.tokens?.length)
+  );
 
   const tokensToDisplay = useMemo(() => {
     const tokens = removeNullValues(
-      removeNullValues(collection.tokens).map(({ token }) => {
-        if (token) {
-          const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
-          if (result.type === 'valid') {
+      nonEmptyGalleries?.[0]?.collections
+        ?.filter((collection) => !collection?.hidden)
+        .flatMap((collection) => collection?.tokens)
+        .map((galleryToken) => {
+          const result = galleryToken?.token
+            ? getPreviewImageUrlsInlineDangerously({ tokenRef: galleryToken.token })
+            : null;
+
+          if (result?.type === 'valid') {
             return {
               src: result.urls.large ?? '',
-              name: token.definition.name,
-              communityName: token.definition.community?.name,
+              name: galleryToken?.token?.definition?.name,
+              communityName: galleryToken?.token?.definition?.community?.name,
             };
           }
           return null;
-        }
-      })
+        })
     );
 
     if (!position) {
@@ -74,7 +91,7 @@ export default function FarcasterOpenGraphCollectionPage() {
       return [tokens[tokens.length - 1], ...tokens.slice(0, 2)];
     }
     return tokens.slice(mainPosition - 1, mainPosition + 2);
-  }, [collection.tokens, position]);
+  }, [nonEmptyGalleries, position]);
 
   const displayWidth = parseInt(width as string) || WIDTH_OPENGRAPH_IMAGE;
   const displayHeight = parseInt(height as string) || HEIGHT_OPENGRAPH_IMAGE;
@@ -92,7 +109,7 @@ export default function FarcasterOpenGraphCollectionPage() {
             <ContainerImageLeft>
               {leftToken ? (
                 <VStack gap={8}>
-                  <StyledImage key={leftToken?.src} src={leftToken?.src} />
+                  <StyledImage key={leftToken?.src} src={leftToken?.src ?? ''} />
                   <VStack>
                     <BaseM>{leftToken?.name}</BaseM>
                     <TitleDiatypeM>{leftToken?.communityName}</TitleDiatypeM>
@@ -102,7 +119,7 @@ export default function FarcasterOpenGraphCollectionPage() {
             </ContainerImageLeft>
             <ContainerCenter>
               <VStack gap={8}>
-                <StyledImage key={centerToken?.src} src={centerToken?.src} />
+                <StyledImage key={centerToken?.src} src={centerToken?.src ?? ''} />
                 <VStack>
                   <BaseM>{centerToken?.name}</BaseM>
                   <TitleDiatypeM>{centerToken?.communityName}</TitleDiatypeM>
@@ -111,7 +128,7 @@ export default function FarcasterOpenGraphCollectionPage() {
             </ContainerCenter>
             <ContainerImageRight>
               <VStack gap={8}>
-                <StyledImage key={rightToken?.src} src={rightToken?.src} />
+                <StyledImage key={rightToken?.src} src={rightToken?.src ?? ''} />
                 <VStack>
                   <BaseM>{rightToken?.name}</BaseM>
                   <TitleDiatypeM>{rightToken?.communityName}</TitleDiatypeM>

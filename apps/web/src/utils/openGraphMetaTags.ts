@@ -8,7 +8,6 @@ import isProduction from './isProduction';
 type Params = {
   title: string;
   previewPath: string;
-  position?: string;
 };
 
 const baseurl = `https://gallery-opengraph${
@@ -18,7 +17,6 @@ const baseurl = `https://gallery-opengraph${
 export const openGraphMetaTags = ({
   title,
   previewPath,
-  position,
 }: Params): Required<MetaTagProps['metaTags']> => {
   const tags = [
     { property: 'og:title', content: title },
@@ -48,16 +46,6 @@ export const openGraphMetaTags = ({
       property: 'fc:frame',
       content: 'vNext',
     },
-    // TODO: might be able to remove this
-    // // set `previous` button only if a position is set, implying the user can traverse backwards
-    // position
-    //   ? {
-    //       property: 'fc:frame:button:1',
-    //       content: '←',
-    //     }
-    //   : null,
-    // // set `next` button all the time; conditionally set $id depending on whether `previous` button exists,
-    // // since $id must increment from 1.
     {
       property: `fc:frame:button:1`,
       content: '→',
@@ -65,8 +53,7 @@ export const openGraphMetaTags = ({
     {
       property: 'fc:frame:image',
       content: `${baseurl}?${new URLSearchParams({
-        // TODO: might be able to remove this
-        path: `${previewPath}/fcframe${position ? `/position` : ''}`,
+        path: `${previewPath}/fcframe`,
         fallback:
           'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
       }).toString()}`,
@@ -74,8 +61,7 @@ export const openGraphMetaTags = ({
     {
       property: 'fc:frame:post_url',
       content: `${baseurl}?${new URLSearchParams({
-        // TODO: might be able to remove this
-        path: `${previewPath}/fcframe${position ? `/position` : ''}`,
+        path: `${previewPath}/fcframe`,
         fallback:
           'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
       }).toString()}`,
