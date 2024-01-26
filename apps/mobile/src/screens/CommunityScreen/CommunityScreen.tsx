@@ -2,6 +2,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { GALLERIES_PER_PAGE } from 'src/constants/community';
 import { POSTS_PER_PAGE } from 'src/constants/feed';
 import { useRefreshHandle } from 'src/hooks/useRefreshHandle';
 
@@ -72,6 +73,8 @@ function ContractCommunityView({ contractAddress, chain }: ContractCommunityView
         $listOwnersAfter: String
         $postLast: Int!
         $postBefore: String
+        $galleriesFirst: Int!
+        $galleriesAfter: String
       ) {
         community: contractCommunityByKey(key: $contractCommunityInput) @required(action: THROW) {
           ... on Community {
@@ -89,6 +92,7 @@ function ContractCommunityView({ contractAddress, chain }: ContractCommunityView
       },
       listOwnersFirst: 200,
       postLast: POSTS_PER_PAGE,
+      galleriesFirst: GALLERIES_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
@@ -115,6 +119,8 @@ function ArtBlocksCommunityView({
         $listOwnersAfter: String
         $postLast: Int!
         $postBefore: String
+        $galleriesFirst: Int!
+        $galleriesAfter: String
       ) {
         community: artBlocksCommunityByKey(key: $artBlocksCommunityInput) @required(action: THROW) {
           ... on Community {
@@ -133,6 +139,7 @@ function ArtBlocksCommunityView({
       },
       listOwnersFirst: 200,
       postLast: POSTS_PER_PAGE,
+      galleriesFirst: GALLERIES_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
