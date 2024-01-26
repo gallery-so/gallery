@@ -99,7 +99,7 @@ export function RawProfilePicture({
         {'letter' in rest && (
           <Typography
             font={{ family: 'GTAlpina', weight: 'Light' }}
-            className="text-black-800"
+            className="text-black-800 text-center"
             style={{
               fontSize,
               lineHeight: undefined,
