@@ -82,7 +82,7 @@ export default function FarcasterOpenGraphUserPage() {
           }
           return null;
         })
-    );
+    ).slice(4);
 
     if (!position) {
       return tokens.slice(0, 2);
