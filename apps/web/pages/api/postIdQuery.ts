@@ -11,7 +11,41 @@ post: postById(id: $postId) {
                 ... on TokenProfileImage {
                   token {
                     dbid
-                    
+                    definition {
+                      media {
+                        ... on ImageMedia {
+                          __typename
+                          previewURLs {
+                            small
+                            medium
+                            large
+                          }
+                          fallbackMedia {
+                            mediaURL
+                          }
+                        }
+                        ... on VideoMedia {
+                          __typename
+                          previewURLs {
+                            small
+                            medium
+                            large
+                          }
+                          fallbackMedia {
+                            mediaURL
+                          } 
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on EnsProfileImage {
+                  __typename
+                  profileImage {
+                    __typename
+                    previewURLs {
+                      medium
+                    }
                   }
                 }
               }
@@ -19,9 +53,34 @@ post: postById(id: $postId) {
             caption
             tokens {
               dbid
+              definition {
+                media {
+                  ... on ImageMedia {
+                    __typename
+                    previewURLs {
+                      small
+                      medium
+                      large
+                    }
+                    fallbackMedia {
+                      mediaURL
+                      }
+                    }
+                  ... on VideoMedia {
+                    __typename
+                    previewURLs {
+                      small
+                      medium
+                      large
+                    }
+                      fallbackMedia {
+                        mediaURL
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
-          
         }
-      }
     `;

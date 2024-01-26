@@ -1,13 +1,14 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
-import { ogPostQuery } from '~/generated/ogPostQuery.graphql';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-
-import styled from 'styled-components';
-import { TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
-import colors from '~/shared/theme/colors';
-import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { fetchWithJustQueryText } from 'shared/relay/network';
+import styled from 'styled-components';
+
+import { TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
+import { ogPostQuery } from '~/generated/ogPostQuery.graphql';
+import colors from '~/shared/theme/colors';
+
 import { postIdQuery } from './postIdQuery';
 
 export const config = {
@@ -26,14 +27,19 @@ const alpinaLight = fetch(
   new URL('../../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.otf', import.meta.url)
 ).then((res) => res.arrayBuffer());
 
+type UrlSet = {
+  small: string | null;
+  medium: string | null;
+  large: string | null;
+};
+
 export default async function handler(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
   // change from username to postId in search params
   // query the data needed here
   const postId = searchParams.get('postId') ?? '';
-  const username = searchParams.get('username');
-  const postImageUrl =
+  let postImageUrl =
     'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F4-292cd-KT1EfsNuqwLAWDd3o4pvfUx1CAh5GMdTrRvr-image?auto=compress%2Cformat&fit=max&glryts=1705844681&w=1024&s=9076d07060aeb7ac31297a0381bd0ed3';
   /*
        if (reza) {
@@ -46,15 +52,12 @@ export default async function handler(request: NextRequest) {
   //   'LIFE BETWEEN BORDERS.\n #ThemeOfTheWeek \n Their greatest distinguishing feature is their hospitality. They welcome you as a member of their family and treat you as such';
   const caption = 'grain:street #63 by nekropunk';
 
-  const firstLetter = username?.substring(0, 1).toUpperCase() ?? '';
-  const profileImageUrl = null;
-
   const queryResponse = await fetchWithJustQueryText({
     queryText: postIdQuery,
     variables: { postId: postId },
   });
 
-  if (!username || !queryResponse?.data?.post) {
+  if (!postId || !queryResponse?.data?.post) {
     return new ImageResponse(<>Visit gallery.so;</>, {
       width: 1200,
       height: 630,
@@ -62,6 +65,69 @@ export default async function handler(request: NextRequest) {
   }
 
   const post = queryResponse.data.post;
+  const author = post.author;
+  const firstLetter = author?.username?.substring(0, 1).toUpperCase() ?? '';
+
+  let profileImageUrl = null;
+  const { token: profileToken, profileImage } = post?.author?.profileImage ?? {};
+
+  if (profileImage && profileImage.previewURLs?.medium) {
+    profileImageUrl = profileImage.previewURLs.medium;
+  }
+
+  const media = profileToken?.definition?.media;
+
+  let previewUrls: UrlSet | null = null;
+
+  if (!profileToken) {
+    return null;
+  }
+
+  if (
+    media &&
+    'previewURLs' in media &&
+    media.previewURLs &&
+    (media.previewURLs.small || media.previewURLs.medium || media.previewURLs.large)
+  ) {
+    previewUrls = media.previewURLs;
+  } else if ('fallbackMedia' in media) {
+    if (media.fallbackMedia?.mediaURL) {
+      previewUrls = {
+        small: media.fallbackMedia.mediaURL,
+        medium: media.fallbackMedia.mediaURL,
+        large: media.fallbackMedia.mediaURL,
+      };
+    }
+  }
+
+  profileImageUrl = previewUrls?.small;
+
+  const postToken = post.tokens?.[0];
+  if (!postToken) {
+    return null;
+  }
+
+  const postMedia = postToken?.definition?.media;
+  let postPreviewUrls: UrlSet | null = null;
+
+  if (
+    postMedia &&
+    'previewURLs' in postMedia &&
+    postMedia.previewURLs &&
+    (postMedia.previewURLs.small || postMedia.previewURLs.medium || postMedia.previewURLs.large)
+  ) {
+    postPreviewUrls = postMedia.previewURLs;
+  } else if ('fallbackMedia' in media) {
+    if (media.fallbackMedia?.mediaURL) {
+      postPreviewUrls = {
+        small: media.fallbackMedia.mediaURL,
+        medium: media.fallbackMedia.mediaURL,
+        large: media.fallbackMedia.mediaURL,
+      };
+    }
+  }
+
+  postImageUrl = postPreviewUrls?.large ?? '';
 
   const ABCDiatypeRegularFontData = await ABCDiatypeRegular;
   const ABCDiatypeBoldFontData = await ABCDiatypeBold;
@@ -127,8 +193,8 @@ export default async function handler(request: NextRequest) {
             >
               {profileImageUrl ? (
                 <img
-                  width="40"
-                  height="40"
+                  width="48"
+                  height="48"
                   src={profileImageUrl}
                   style={{
                     borderRadius: 30,
@@ -138,9 +204,9 @@ export default async function handler(request: NextRequest) {
               ) : (
                 <div
                   style={{
-                    height: 32,
-                    width: 32,
-                    fontSize: 18,
+                    height: 48,
+                    width: 48,
+                    fontSize: 28,
                     borderWidth: 1,
                     borderColor: 'black',
                     fontFamily: "'GT Alpina'",
@@ -167,7 +233,7 @@ export default async function handler(request: NextRequest) {
                   justifyContent: 'center',
                 }}
               >
-                {username}
+                {author?.username}
               </h1>
             </div>
             <div
@@ -217,30 +283,20 @@ export default async function handler(request: NextRequest) {
         {
           name: 'ABCDiatype-Regular',
           data: ABCDiatypeRegularFontData,
-          style: 'normal',
+          weight: 400,
         },
         {
           name: 'ABCDiatype-Bold',
           data: ABCDiatypeBoldFontData,
-          style: 'normal',
+          weight: 700,
         },
         {
           name: 'GT Alpina',
           data: alpinaLightFontData,
           style: 'normal',
+          weight: 500,
         },
       ],
     }
   );
 }
-
-const ProfilePictureText = styled.div`
-  user-select: none;
-
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 13px;
-  font-family: ${TITLE_FONT_FAMILY};
-  color: ${colors.black['800']};
-  display: inline-block;
-`;
