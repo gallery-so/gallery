@@ -36,21 +36,10 @@ type UrlSet = {
 export default async function handler(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
-  // change from username to postId in search params
-  // query the data needed here
   const postId = searchParams.get('postId') ?? '';
   let postImageUrl =
     'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F4-292cd-KT1EfsNuqwLAWDd3o4pvfUx1CAh5GMdTrRvr-image?auto=compress%2Cformat&fit=max&glryts=1705844681&w=1024&s=9076d07060aeb7ac31297a0381bd0ed3';
-  /*
-       if (reza) {
-           pfpUrl = 'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F0-38d774de387330a762733280388221c7e5906df44aacef44c452a8a422ccfbb2-0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85-thumbnail?auto=format%2Ccompress&fit=max&glryts=1697105205&w=204&s=87c67d480c26b46973f67ba466d0b09f'
-           caption = 'LIFE BETWEEN BORDERS.\n #ThemeOfTheWeek \n Their greatest distinguishing feature is their hospitality. They welcome you as a member of their family and treat you as such'
-       }
-  */
-
-  //  const caption =
-  //   'LIFE BETWEEN BORDERS.\n #ThemeOfTheWeek \n Their greatest distinguishing feature is their hospitality. They welcome you as a member of their family and treat you as such';
-  const caption = 'grain:street #63 by nekropunk';
+ // const caption = 'grain:street #63 by nekropunk';
 
   const queryResponse = await fetchWithJustQueryText({
     queryText: postIdQuery,
