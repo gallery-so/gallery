@@ -63,7 +63,7 @@ export default function FarcasterOpenGraphCollectionPage() {
           return null;
         }
       })
-    ).slice(0, 10);
+    ).slice(0, 5);
 
     if (!position) {
       return tokens.slice(0, 2);
