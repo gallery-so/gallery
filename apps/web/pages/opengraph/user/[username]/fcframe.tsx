@@ -82,7 +82,7 @@ export default function FarcasterOpenGraphUserPage() {
           }
           return null;
         })
-    ).slice(4);
+    ).slice(0, 4);
 
     if (!position) {
       return tokens.slice(0, 2);
@@ -92,7 +92,14 @@ export default function FarcasterOpenGraphUserPage() {
     if (mainPosition === 0) {
       return [tokens[tokens.length - 1], ...tokens.slice(0, 2)];
     }
-    return tokens.slice(mainPosition - 1, mainPosition + 2);
+
+    const start = mainPosition - 1;
+    const end = mainPosition + 2;
+    let result = tokens.slice(start, end);
+    if (end > tokens.length) {
+      result = [...result, tokens[0]!];
+    }
+    return result;
   }, [nonEmptyGalleries, position]);
 
   const displayWidth = parseInt(width as string) || WIDTH_OPENGRAPH_IMAGE;
