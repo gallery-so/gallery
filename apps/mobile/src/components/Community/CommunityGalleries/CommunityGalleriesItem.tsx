@@ -69,7 +69,7 @@ export function CommunityGalleriesItem({ communityGalleryRef, style }: Props) {
       </View>
       <View className="space-y-1">
         <View className="flex-row items-center gap-1">
-          {gallery?.owner && <ProfilePicture size="sm" userRef={gallery.owner} />}
+          {gallery?.owner && <ProfilePicture size="xs" userRef={gallery.owner} />}
           <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
             {gallery?.owner?.username}
           </Typography>
