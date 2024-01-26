@@ -7,7 +7,7 @@ import { removeNullValues } from 'shared/relay/removeNullValues';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseXL, TitleDiatypeL } from '~/components/core/Text/Text';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { fcframeUsernameOpengraphQuery } from '~/generated/fcframeUsernameOpengraphQuery.graphql';
 
@@ -120,8 +120,8 @@ export default function FarcasterOpenGraphUserPage() {
                 <VStack gap={8}>
                   <StyledImage key={leftToken?.src} src={leftToken?.src ?? ''} />
                   <VStack>
-                    <BaseM>{leftToken?.name}</BaseM>
-                    <TitleDiatypeM>{leftToken?.communityName}</TitleDiatypeM>
+                    <BaseXL>{leftToken?.name}</BaseXL>
+                    <TitleDiatypeL>{leftToken?.communityName}</TitleDiatypeL>
                   </VStack>
                 </VStack>
               ) : null}
@@ -130,8 +130,8 @@ export default function FarcasterOpenGraphUserPage() {
               <VStack gap={8}>
                 <StyledImage key={centerToken?.src} src={centerToken?.src ?? ''} />
                 <VStack>
-                  <BaseM>{centerToken?.name}</BaseM>
-                  <TitleDiatypeM>{centerToken?.communityName}</TitleDiatypeM>
+                  <BaseXL>{centerToken?.name}</BaseXL>
+                  <TitleDiatypeL>{centerToken?.communityName}</TitleDiatypeL>
                 </VStack>
               </VStack>
             </ContainerCenter>
@@ -139,8 +139,8 @@ export default function FarcasterOpenGraphUserPage() {
               <VStack gap={8}>
                 <StyledImage key={rightToken?.src} src={rightToken?.src ?? ''} />
                 <VStack>
-                  <BaseM>{rightToken?.name}</BaseM>
-                  <TitleDiatypeM>{rightToken?.communityName}</TitleDiatypeM>
+                  <BaseXL>{rightToken?.name}</BaseXL>
+                  <TitleDiatypeL>{rightToken?.communityName}</TitleDiatypeL>
                 </VStack>
               </VStack>
             </ContainerImageRight>
