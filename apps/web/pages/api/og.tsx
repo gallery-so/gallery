@@ -1,16 +1,37 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { ogPostQuery } from '~/generated/ogPostQuery.graphql';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import styled from 'styled-components';
 import { TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import colors from '~/shared/theme/colors';
+import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
+import { fetchWithJustQueryText } from 'shared/relay/network';
+import { postIdQuery } from './postIdQuery';
 
 export const config = {
   runtime: 'edge',
 };
 
+const ABCDiatypeRegular = fetch(
+  new URL('../../../../packages/shared/src/fonts/ABCDiatype-Regular.ttf', import.meta.url)
+).then((res) => res.arrayBuffer());
+
+const ABCDiatypeBold = fetch(
+  new URL('../../../../packages/shared/src/fonts/ABCDiatype-Bold.ttf', import.meta.url)
+).then((res) => res.arrayBuffer());
+
+const alpinaLight = fetch(
+  new URL('../../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.otf', import.meta.url)
+).then((res) => res.arrayBuffer());
+
 export default async function handler(request: NextRequest) {
   const { searchParams } = request.nextUrl;
+
+  // change from username to postId in search params
+  // query the data needed here
+  const postId = searchParams.get('postId') ?? '';
   const username = searchParams.get('username');
   const postImageUrl =
     'https://assets.gallery.so/https%3A%2F%2Fstorage.googleapis.com%2Fprod-token-content%2F4-292cd-KT1EfsNuqwLAWDd3o4pvfUx1CAh5GMdTrRvr-image?auto=compress%2Cformat&fit=max&glryts=1705844681&w=1024&s=9076d07060aeb7ac31297a0381bd0ed3';
@@ -21,16 +42,30 @@ export default async function handler(request: NextRequest) {
        }
   */
 
+  //  const caption =
+  //   'LIFE BETWEEN BORDERS.\n #ThemeOfTheWeek \n Their greatest distinguishing feature is their hospitality. They welcome you as a member of their family and treat you as such';
   const caption = 'grain:street #63 by nekropunk';
+
   const firstLetter = username?.substring(0, 1).toUpperCase() ?? '';
   const profileImageUrl = null;
 
-  if (!username) {
+  const queryResponse = await fetchWithJustQueryText({
+    queryText: postIdQuery,
+    variables: { postId: postId },
+  });
+
+  if (!username || !queryResponse?.data?.post) {
     return new ImageResponse(<>Visit gallery.so;</>, {
       width: 1200,
       height: 630,
     });
   }
+
+  const post = queryResponse.data.post;
+
+  const ABCDiatypeRegularFontData = await ABCDiatypeRegular;
+  const ABCDiatypeBoldFontData = await ABCDiatypeBold;
+  const alpinaLightFontData = await alpinaLight;
 
   return new ImageResponse(
     (
@@ -39,7 +74,7 @@ export default async function handler(request: NextRequest) {
           height: '100%',
           width: '100%',
           display: 'flex',
-          gap: '60px',
+          gap: '70px',
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#fff',
@@ -58,94 +93,106 @@ export default async function handler(request: NextRequest) {
             fill="#141414"
           />
         </svg>
-        <img
-          width="370"
-          src={postImageUrl}
-          style={{
-            maxWidth: '370px',
-            maxHeight: '370px',
-            display: 'block',
-          }}
-          alt="post"
-        />
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
+            gap: '70px',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
+          <img
+            width="370"
+            src={postImageUrl}
+            style={{
+              maxWidth: '370px',
+              maxHeight: '370px',
+              display: 'block',
+            }}
+            alt="post"
+          />
           <div
             style={{
               display: 'flex',
-              alignItems: 'center',
+              flexDirection: 'column',
               gap: '8px',
             }}
           >
-            {profileImageUrl ? (
-              <img
-                width="40"
-                height="40"
-                src={profileImageUrl}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              {profileImageUrl ? (
+                <img
+                  width="40"
+                  height="40"
+                  src={profileImageUrl}
+                  style={{
+                    borderRadius: 30,
+                  }}
+                  alt="profile picture"
+                />
+              ) : (
+                <div
+                  style={{
+                    height: 32,
+                    width: 32,
+                    fontSize: 18,
+                    borderWidth: 1,
+                    borderColor: 'black',
+                    fontFamily: "'GT Alpina'",
+
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '999999999px',
+                  }}
+                >
+                  {firstLetter}
+                </div>
+              )}
+              <h1
                 style={{
-                  borderRadius: 30,
-                }}
-                alt="profile picture"
-              />
-            ) : (
-              <div
-                style={{
-                  height: 32,
-                  width: 32,
-                  fontSize: 12,
-                  borderWidth: 1,
-                  borderColor: 'black',
+                  fontSize: '32px',
+                  lineHeight: '36px',
+                  fontFamily: "'ABCDiatype-Bold'",
+                  letterSpacing: '-0.01em',
+                  margin: '0',
+                  paddingBottom: 4,
                   display: 'flex',
-                  justifyContent: 'center',
                   alignItems: 'center',
-                  borderRadius: '999999999px',
+                  justifyContent: 'center',
                 }}
               >
-                {firstLetter}
-              </div>
-            )}
-            <h1
+                {username}
+              </h1>
+            </div>
+            <div
               style={{
-                fontSize: '24px',
-                fontWeight: 600,
-                lineHeight: '36px',
-                fontFamily: "'ABC Diatype', Helvetica, Arial, sans-serif",
-                letterSpacing: '-0.01em',
-                margin: '0',
-              }}
-            >
-              {username}
-            </h1>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              fontSize: '26px',
-              lineHeight: '32px',
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "'ABC Diatype', Helvetica, Arial, sans-serif",
-                fontSize: '22px',
-                fontWeight: 400,
+                display: 'flex',
                 lineHeight: '32px',
-                overflow: 'hidden',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 5,
-                maxWidth: '350px',
-                whiteSpace: 'pre-line',
-                margin: 0,
               }}
             >
-              {caption}
-            </p>
+              <p
+                style={{
+                  fontFamily: "'ABCDiatype-Regular'",
+                  fontSize: '25px',
+                  fontWeight: 400,
+                  lineHeight: '32px',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 5,
+                  wordBreak: 'break-all',
+                  maxWidth: '350px',
+                  margin: 0,
+                }}
+              >
+                {post?.caption}
+              </p>
+            </div>
           </div>
         </div>
         <svg
@@ -164,8 +211,25 @@ export default async function handler(request: NextRequest) {
       </div>
     ),
     {
-      width: 1200,
-      height: 630,
+      width: WIDTH_OPENGRAPH_IMAGE,
+      height: HEIGHT_OPENGRAPH_IMAGE,
+      fonts: [
+        {
+          name: 'ABCDiatype-Regular',
+          data: ABCDiatypeRegularFontData,
+          style: 'normal',
+        },
+        {
+          name: 'ABCDiatype-Bold',
+          data: ABCDiatypeBoldFontData,
+          style: 'normal',
+        },
+        {
+          name: 'GT Alpina',
+          data: alpinaLightFontData,
+          style: 'normal',
+        },
+      ],
     }
   );
 }
