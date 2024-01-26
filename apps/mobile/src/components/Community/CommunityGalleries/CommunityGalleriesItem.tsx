@@ -55,7 +55,7 @@ export function CommunityGalleriesItem({ communityGalleryRef, style }: Props) {
 
   return (
     <GalleryTouchableOpacity
-      className="p-2 bg-offWhite dark:bg-black-800 space-y-1 w-1/2 rounded"
+      className="p-2 bg-offWhite dark:bg-black-700 space-y-1 w-1/2 rounded"
       eventElementId="Community Gallery Item"
       eventName="Press Community Gallery Item"
       eventContext={contexts.Community}
