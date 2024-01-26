@@ -29,7 +29,7 @@ export function CommunityCollectorsGridFallback() {
                 .fill(null)
                 .map((_, index) => (
                   <SkeletonPlaceholder.Item key={index} paddingBottom={20}>
-                    <SkeletonPlaceholder.Item width={175} height={175} marginBottom={8} />
+                    <SkeletonPlaceholder.Item width={160} height={160} marginBottom={8} />
                     <SkeletonPlaceholder.Item width={60} height={14} marginBottom={4} />
 
                     <SkeletonPlaceholder.Item flexDirection="row" gap={4}>
