@@ -29,6 +29,7 @@ export default function FarcasterOpenGraphUserPage() {
             __typename
             username
             galleries {
+              hidden
               collections {
                 hidden
                 tokens {
@@ -57,8 +58,9 @@ export default function FarcasterOpenGraphUserPage() {
 
   const { user } = queryResponse;
 
-  const nonEmptyGalleries = user.galleries?.filter((gallery) =>
-    gallery?.collections?.some((collection) => collection?.tokens?.length)
+  const nonEmptyGalleries = user.galleries?.filter(
+    (gallery) =>
+      !gallery?.hidden && gallery?.collections?.some((collection) => collection?.tokens?.length)
   );
 
   const tokensToDisplay = useMemo(() => {
