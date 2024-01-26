@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback } from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
@@ -16,9 +16,10 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
   tokenRef: CommunityCollectorsGridItemFragment$key;
+  style?: ViewProps['style'];
 };
 
-export function CommunityCollectorsGridItem({ tokenRef }: Props) {
+export function CommunityCollectorsGridItem({ tokenRef, style }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityCollectorsGridItemFragment on Token {
@@ -64,8 +65,8 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
   }, [navigation, token.owner?.username]);
 
   return (
-    <View className="w-1/2 space-y-2">
-      <View className="h-[175] w-[175]">
+    <View className="w-1/2 space-y-2" style={style}>
+      <View className="h-[175] w-[175] max-w-full">
         <UniversalNftPreviewWithBoundary
           tokenRef={token}
           onPress={handlePress}
