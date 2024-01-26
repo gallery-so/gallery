@@ -4,8 +4,10 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
+import { contexts } from 'shared/analytics/constants';
 import { useGetSinglePreviewImage } from 'shared/relay/useGetPreviewImages';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/UniversalNftPreview';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
@@ -54,6 +56,13 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
     });
   }, [imageUrl, navigation, token.dbid]);
 
+  const handleUsernamePress = useCallback(() => {
+    if (!token.owner?.username) return;
+    navigation.navigate('Profile', {
+      username: token.owner?.username,
+    });
+  }, [navigation, token.owner?.username]);
+
   return (
     <View className="w-1/2 space-y-2">
       <View className="h-[175] w-[175]">
@@ -76,7 +85,13 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
         >
           {token.definition.name}
         </Typography>
-        <View className="flex-row space-x-1 items-center">
+        <GalleryTouchableOpacity
+          onPress={handleUsernamePress}
+          eventElementId="Community Collectors Grid Item Username"
+          eventName="Press Community Collectors Grid Item Username"
+          eventContext={contexts.Community}
+          className="flex-row space-x-1 items-center"
+        >
           <ProfilePicture size="xxs" userRef={token.owner} />
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
@@ -88,7 +103,7 @@ export function CommunityCollectorsGridItem({ tokenRef }: Props) {
           >
             {token.owner?.username}
           </Typography>
-        </View>
+        </GalleryTouchableOpacity>
       </View>
     </View>
   );
