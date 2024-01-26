@@ -71,6 +71,15 @@ export const openGraphMetaTags = ({
           'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
       }).toString()}`,
     },
+    {
+      property: 'fc:frame:post_url',
+      content: `${baseurl}?${new URLSearchParams({
+        // TODO: might be able to remove this
+        path: `${previewPath}/fcframe${position ? `/position` : ''}`,
+        fallback:
+          'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
+      }).toString()}`,
+    },
   ];
 
   return removeNullValues(tags);

@@ -79,14 +79,10 @@ export default function OpenGraphCollectionPage() {
   const displayWidth = parseInt(width as string) || WIDTH_OPENGRAPH_IMAGE;
   const displayHeight = parseInt(height as string) || HEIGHT_OPENGRAPH_IMAGE;
 
-  console.log(tokensToDisplay);
-
   const shouldHaveLeftToken = tokensToDisplay.length === 3;
   const leftToken = shouldHaveLeftToken ? tokensToDisplay[0] : null;
   const centerToken = tokensToDisplay[shouldHaveLeftToken ? 1 : 0];
   const rightToken = tokensToDisplay[shouldHaveLeftToken ? 2 : 1];
-
-  console.log({ leftToken, centerToken, rightToken });
 
   return (
     <>

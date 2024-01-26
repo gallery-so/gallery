@@ -78,6 +78,7 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
 }) => {
   const username = params?.username ? (params.username as string) : undefined;
   const collectionId = params?.collectionId ? (params.collectionId as string) : undefined;
+  const position = params?.position ? (params.position as string) : undefined;
 
   if (!username || !collectionId) {
     // How could they have possibly gotten to this route without those params
@@ -92,6 +93,7 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
             previewPath: `/opengraph/collection/${collectionId}`,
+            position,
           })
         : null,
     },
