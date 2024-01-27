@@ -367,6 +367,7 @@ type Community implements Node {
   creator: GalleryUserOrAddress
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @deprecated(reason: "Use Community.tokens")
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
+  galleries(maxPreviews: Int!, before: String, after: String, first: Int, last: Int): CommunityGalleriesConnection
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
@@ -377,6 +378,21 @@ union CommunityByKeyOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
 type CommunityEdge {
   node: Community
+  cursor: String
+}
+
+type CommunityGalleriesConnection {
+  edges: [CommunityGalleryEdge]
+  pageInfo: PageInfo!
+}
+
+type CommunityGallery {
+  gallery: Gallery
+  tokenPreviews: [PreviewURLSet]
+}
+
+type CommunityGalleryEdge {
+  node: CommunityGallery
   cursor: String
 }
 

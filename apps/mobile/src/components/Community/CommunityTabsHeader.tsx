@@ -27,13 +27,18 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
             total
           }
         }
+        galleries(first: $galleriesFirst, after: $galleriesAfter, maxPreviews: 2) {
+          pageInfo {
+            total
+          }
+        }
       }
     `,
     communityRef
   );
-
   const totalOwners = community.holders?.pageInfo?.total ?? 0;
   const totalPosts = community.posts?.pageInfo?.total ?? 0;
+  const totalGalleries = community.galleries?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
     return [
@@ -45,8 +50,12 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
         name: 'Posts',
         counter: totalPosts,
       },
+      {
+        name: 'Galleries',
+        counter: totalGalleries,
+      },
     ];
-  }, [totalPosts, totalOwners]);
+  }, [totalPosts, totalOwners, totalGalleries]);
 
   return (
     <View>

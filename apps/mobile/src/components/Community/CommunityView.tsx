@@ -16,6 +16,7 @@ import { BackButton } from '../BackButton';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { IconContainer } from '../IconContainer';
 import { CommunityCollectors } from './CommunityCollectors';
+import { CommunityGalleries } from './CommunityGalleries/CommunityGalleries';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
 import { CommunityTabsHeader } from './CommunityTabsHeader';
@@ -37,6 +38,7 @@ export function CommunityView({ queryRef, communityRef }: Props) {
         ...CommunityViewPostsTabFragment
         ...CommunityTabsHeaderFragment
         ...extractRelevantMetadataFromCommunityFragment
+        ...CommunityGalleriesFragment
       }
     `,
     communityRef
@@ -151,6 +153,9 @@ export function CommunityView({ queryRef, communityRef }: Props) {
       </Tabs.Tab>
       <Tabs.Tab name="Posts">
         <CommunityViewPostsTab communityRef={community} queryRef={query} />
+      </Tabs.Tab>
+      <Tabs.Tab name="Galleries">
+        <CommunityGalleries communityRef={community} />
       </Tabs.Tab>
     </GalleryTabsContainer>
   );
