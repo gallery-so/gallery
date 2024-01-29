@@ -334,12 +334,14 @@ export function StandardSidebar({ queryRef }: Props) {
           />
         )}
         <VStack gap={24}>
-          <SidebarIcon
-            tooltipLabel="Settings"
-            onClick={handleSettingsClick}
-            icon={<CogIcon />}
-            isActive={activeDrawerType === Settings}
-          />
+          {isLoggedIn && (
+            <SidebarIcon
+              tooltipLabel="Settings"
+              onClick={handleSettingsClick}
+              icon={<CogIcon />}
+              isActive={activeDrawerType === Settings}
+            />
+          )}
           <SidebarIcon
             href="https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2"
             tooltipLabel="Support/FAQ"
