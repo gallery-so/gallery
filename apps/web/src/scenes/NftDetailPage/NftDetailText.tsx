@@ -256,6 +256,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
 
   const OwnerAndCreatorSection = useMemo(() => {
     const ownerUsernameLength = token.owner?.username?.length ?? 0;
+
     // if owner username is too long we want the owner and creator on their own row
     if (ownerUsernameLength > 15) {
       return <VStack gap={10}>{OwnerAndCreatorDetails}</VStack>;
