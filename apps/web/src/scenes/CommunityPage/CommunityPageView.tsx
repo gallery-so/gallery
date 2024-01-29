@@ -10,6 +10,7 @@ import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFrag
 import { CommunityPageViewQueryFragment$key } from '~/generated/CommunityPageViewQueryFragment.graphql';
 
 import CommunityPageCollectorsTab from './CommunityPageCollectorsTab';
+import { CommunityPageGalleriesTab } from './CommunityPageGalleriesTab';
 import CommunityPagePostsTab from './CommunityPagePostsTab';
 import CommunityPageTabs from './CommunityPageTabs';
 import CommunityPageViewHeader from './CommunityPageViewHeader';
@@ -30,6 +31,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         ...CommunityPageCollectorsTabFragment
         ...CommunityPageTabsFragment
         ...CommunityPagePostsTabFragment
+        ...CommunityPageGalleriesTabFragment
 
         ...CommunityPageViewHeaderFragment
       }
@@ -42,6 +44,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       fragment CommunityPageViewQueryFragment on Query {
         ...CommunityPagePostsTabQueryFragment
         ...CommunityPageViewHeaderQueryFragment
+        ...CommunityPageGalleriesTabQueryFragment
       }
     `,
     queryRef
@@ -66,6 +69,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
               <CommunityPagePostsTab communityRef={community} queryRef={query} />
             )}
             {activeTab === 'collectors' && <CommunityPageCollectorsTab communityRef={community} />}
+            {activeTab === 'galleries' && (
+              <CommunityPageGalleriesTab communityRef={community} queryRef={query} />
+            )}
           </VStack>
         </StyledCommunityPageContainer>
       </IsMemberOfCommunityProvider>

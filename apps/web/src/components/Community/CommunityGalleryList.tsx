@@ -1,0 +1,68 @@
+import { useMemo } from 'react';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { removeNullValues } from 'shared/relay/removeNullValues';
+import styled from 'styled-components';
+
+import { CommunityGalleryListFragment$key } from '~/generated/CommunityGalleryListFragment.graphql';
+import { CommunityGalleryListQueryFragment$key } from '~/generated/CommunityGalleryListQueryFragment.graphql';
+
+import { CommunityGalleryListItem } from './CommunityGalleryListItem';
+
+type Props = {
+  communityRef: CommunityGalleryListFragment$key;
+  queryRef: CommunityGalleryListQueryFragment$key;
+};
+
+export function CommunityGalleryList({ communityRef, queryRef }: Props) {
+  const { data: community } = usePaginationFragment(
+    graphql`
+      fragment CommunityGalleryListFragment on Community
+      @refetchable(queryName: "CommunityGalleriesListRefetchableFragment") {
+        galleries(first: $listOwnersFirst, after: $listOwnersAfter, maxPreviews: 3)
+          @connection(key: "CommunityGalleriesList_galleries") {
+          edges {
+            node {
+              __typename
+              gallery {
+                dbid
+              }
+              ...CommunityGalleryListItemFragment
+            }
+          }
+        }
+      }
+    `,
+    communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityGalleryListQueryFragment on Query {
+        ...CommunityGalleryListItemQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const nonNullGalleries = useMemo(() => {
+    return removeNullValues(community?.galleries?.edges?.map((edge) => edge?.node));
+  }, [community?.galleries?.edges]);
+
+  return (
+    <StyledCommunityGalleryListItemWrapper>
+      {nonNullGalleries.map((gallery) => (
+        <CommunityGalleryListItem
+          key={gallery.gallery?.dbid}
+          communityGalleryRef={gallery}
+          queryRef={query}
+        />
+      ))}
+    </StyledCommunityGalleryListItemWrapper>
+  );
+}
+
+const StyledCommunityGalleryListItemWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+`;
