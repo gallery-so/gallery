@@ -228,7 +228,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     // TODO: rohan - remove this check after the event
     const ownerUserId = token.owner?.dbid ?? '';
     const isOwnerWelovetheart = ownerUserId === '2Z8hbOMIYm4NWfKN7SH8hqF8pRX';
-    const shouldShowOwner = !isOwnerWelovetheart && token.owner?.username;
+    const shouldShowOwner = token.owner?.username && !isOwnerWelovetheart;
 
     return (
       <>
