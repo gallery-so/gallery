@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import { removeNullValues } from 'shared/relay/removeNullValues';
@@ -61,13 +61,22 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
 
   const { gallery } = communityGallery || {};
 
+  const [isHovered, setIsHovered] = useState(false);
+
   const isOwnerGallery = useMemo(() => {
     return gallery?.owner?.dbid === query?.viewer?.user?.dbid;
   }, [gallery?.owner?.dbid, query?.viewer?.user?.dbid]);
 
   const tokenPreviews = useMemo(() => {
-    return removeNullValues(communityGallery?.tokenPreviews?.slice(0, 2));
-  }, [communityGallery?.tokenPreviews]);
+    const previewWithoutFirstItem = removeNullValues(communityGallery?.tokenPreviews?.slice(1, 3));
+    const randomIndex = Math.floor(Math.random() * previewWithoutFirstItem.length);
+
+    const previews = removeNullValues(communityGallery?.tokenPreviews?.slice(0, 3));
+    if (isHovered && previews.length > 2) {
+      return [previews[0], previewWithoutFirstItem[randomIndex]];
+    }
+    return previews.slice(0, 2);
+  }, [communityGallery?.tokenPreviews, isHovered]);
 
   const router = useRouter();
   const handleEditGallery = useCallback(
@@ -97,28 +106,36 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
       eventName="Collection Gallery Card Click"
       eventContext={contexts.Community}
     >
-      <TokenPreviewContainer>
-        {tokenPreviews.map((url) => url?.large && <TokenPreview src={url.large} key={url.large} />)}
-      </TokenPreviewContainer>
-      <HStack align="center" justify="space-between">
-        <HStack gap={4}>
-          {communityGallery?.gallery?.owner && (
-            <ProfilePicture userRef={communityGallery?.gallery?.owner} size="sm" />
+      <VStack
+        gap={12}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <TokenPreviewContainer>
+          {tokenPreviews.map(
+            (url) => url?.large && <TokenPreview src={url.large} key={url.large} />
           )}
-          <VStack>
-            <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
-            <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
-          </VStack>
+        </TokenPreviewContainer>
+        <HStack align="center" justify="space-between">
+          <HStack gap={4}>
+            {communityGallery?.gallery?.owner && (
+              <ProfilePicture userRef={communityGallery?.gallery?.owner} size="sm" />
+            )}
+            <VStack>
+              <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
+              <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
+            </VStack>
+          </HStack>
+          {isOwnerGallery && (
+            <IconContainer
+              onClick={handleEditGallery}
+              size="sm"
+              variant="stacked"
+              icon={<EditPencilIcon />}
+            />
+          )}
         </HStack>
-        {isOwnerGallery && (
-          <IconContainer
-            onClick={handleEditGallery}
-            size="sm"
-            variant="stacked"
-            icon={<EditPencilIcon />}
-          />
-        )}
-      </HStack>
+      </VStack>
     </StyledCommunityGalleryListItem>
   );
 }
@@ -127,9 +144,6 @@ const StyledCommunityGalleryListItem = styled(GalleryLink)`
   padding: 12px;
   border-radius: 4px;
   background-color: ${colors.offWhite};
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 
   &:hover {
     background-color: ${colors.faint};

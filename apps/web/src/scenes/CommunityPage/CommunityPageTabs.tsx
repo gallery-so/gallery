@@ -40,7 +40,7 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
             total
           }
         }
-        galleries(first: $listOwnersFirst, after: $listOwnersAfter, maxPreviews: 3)
+        galleries(first: $listOwnersFirst, after: $listOwnersAfter, maxPreviews: 5)
           @connection(key: "CommunityPageView_galleries") {
           # Relay doesn't allow @connection w/o edges so we must query for it
           # eslint-disable-next-line relay/unused-fields

@@ -8,6 +8,7 @@ import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/Globa
 import { CommunityGalleryListFragment$key } from '~/generated/CommunityGalleryListFragment.graphql';
 import { CommunityGalleryListQueryFragment$key } from '~/generated/CommunityGalleryListQueryFragment.graphql';
 
+import breakpoints from '../core/breakpoints';
 import Loader from '../core/Loader/Loader';
 import { VStack } from '../core/Spacer/Stack';
 import { CommunityGalleryListItem } from './CommunityGalleryListItem';
@@ -26,7 +27,7 @@ export function CommunityGalleryList({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityGalleryListFragment on Community
       @refetchable(queryName: "CommunityGalleriesListRefetchableFragment") {
-        galleries(first: $listOwnersFirst, after: $listOwnersAfter, maxPreviews: 3)
+        galleries(first: $listOwnersFirst, after: $listOwnersAfter, maxPreviews: 5)
           @connection(key: "CommunityGalleriesList_galleries") {
           edges {
             node {
@@ -104,6 +105,10 @@ export function CommunityGalleryList({ communityRef, queryRef }: Props) {
 
 const StyledCommunityGalleryListItemWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 16px;
+
+  @media only screen and ${breakpoints.desktop} {
+    grid-template-columns: repeat(4, 1fr);
+  }
 `;
