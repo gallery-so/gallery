@@ -25,7 +25,7 @@ export default function SidebarPfp({ userRef, onClick }: Props) {
   return (
     <StyledSidebarPfp onClick={onClick}>
       <StyledProfilePictureWrapper {...getReferenceProps()} ref={reference}>
-        <ProfilePicture size="md" userRef={user} />
+        <ProfilePicture size="sm" userRef={user} />
       </StyledProfilePictureWrapper>
       <NewTooltip {...getFloatingProps()} style={floatingStyle} ref={floating} text="My profile" />
     </StyledSidebarPfp>

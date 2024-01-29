@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { Route } from 'nextjs-routes';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -19,12 +18,11 @@ import { useSearchHotkey } from '~/hooks/useSearchHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
-import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
+import HomeIcon from '~/icons/HomeIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import SearchIcon from '~/icons/SearchIcon';
-import UserIcon from '~/icons/UserIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
@@ -117,11 +115,6 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Profile Click', { username });
   }, [hideDrawer, track, username]);
 
-  const handleEditClick = useCallback(() => {
-    hideDrawer();
-    track('Sidebar Edit Galleries Click', { username });
-  }, [hideDrawer, track, username]);
-
   const handleFaqIconClick = useCallback(async () => {
     track('Sidebar FAQ Click');
   }, [track]);
@@ -189,32 +182,6 @@ export function StandardSidebar({ queryRef }: Props) {
     });
   }, [showDrawer, track]);
 
-  const userGalleryRoute: Route = useMemo(() => {
-    return { pathname: '/[username]', query: { username } };
-  }, [username]);
-
-  const editGalleriesRoute: Route = useMemo(() => {
-    return { pathname: '/[username]/galleries', query: { username, mode: 'edit' } };
-  }, [username]);
-
-  const isLoggedInProfileActive = useMemo(() => {
-    // prevent highlight if another item in the drawer is selected
-    if (activeDrawerType) {
-      return false;
-    }
-    const currentRoute = { pathname, query: routerQuery };
-    return JSON.stringify(userGalleryRoute) === JSON.stringify(currentRoute);
-  }, [activeDrawerType, pathname, routerQuery, userGalleryRoute]);
-
-  const isEditGalleriesActive = useMemo(() => {
-    // prevent highlight if another item in the drawer is selected
-    if (activeDrawerType) {
-      return false;
-    }
-    const currentRoute = { pathname, query: routerQuery };
-    return JSON.stringify(editGalleriesRoute) === JSON.stringify(currentRoute);
-  }, [activeDrawerType, pathname, routerQuery, editGalleriesRoute]);
-
   useSearchHotkey(() => {
     showDrawer({
       content: <Search />,
@@ -271,10 +238,11 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledStandardSidebar>
         <StyledMobileIconContainer align="center" justify="space-around">
           <SidebarIcon
-            to={{ pathname: '/home' }}
+            to={{ pathname: isLoggedIn ? '/home' : '/' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
-            icon={<GLogoIcon />}
+            icon={isLoggedIn ? <HomeIcon /> : <GLogoIcon />}
+            isActive={pathname === '/home' && !activeDrawerType}
           />
           {isLoggedIn ? (
             <>
@@ -296,13 +264,9 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Notifications}
                 showUnreadDot={notificationCount > 0}
               />
-              <SidebarIcon
-                to={userGalleryRoute}
-                tooltipLabel="My Profile"
-                onClick={handleProfileClick}
-                icon={<UserIcon />}
-                isActive={isLoggedInProfileActive}
-              />
+              {query.viewer.user && (
+                <SidebarPfp userRef={query.viewer.user} onClick={handleProfileClick} />
+              )}
             </>
           ) : (
             <SidebarIcon
@@ -321,31 +285,31 @@ export function StandardSidebar({ queryRef }: Props) {
     <StyledStandardSidebar>
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
-          <SidebarIcon
-            to={{ pathname: isLoggedIn ? '/home' : '/' }}
-            tooltipLabel="Home"
-            onClick={handleHomeIconClick}
-            icon={<GLogoIcon />}
-          />
+          {!isLoggedIn && (
+            <SidebarIcon
+              to={{ pathname: '/' }}
+              tooltipLabel="Home"
+              onClick={handleHomeIconClick}
+              icon={<GLogoIcon />}
+            />
+          )}
           {isLoggedIn && query.viewer.user && (
-            <VStack gap={12}>
-              <SidebarPfp userRef={query.viewer.user} onClick={handleProfileClick} />
-              <SidebarIcon
-                tooltipLabel="Create a post"
-                onClick={handleCreatePostClick}
-                icon={<PlusSquareIcon />}
-              />
-            </VStack>
+            <SidebarPfp userRef={query.viewer.user} onClick={handleProfileClick} />
           )}
         </VStack>
         {isLoggedIn ? (
-          <VStack gap={32}>
+          <VStack gap={24}>
             <SidebarIcon
-              to={editGalleriesRoute}
-              tooltipLabel="Edit galleries"
-              onClick={handleEditClick}
-              icon={<EditPencilIcon />}
-              isActive={isEditGalleriesActive}
+              to={{ pathname: '/home' }}
+              tooltipLabel="Home"
+              onClick={handleHomeIconClick}
+              icon={<HomeIcon />}
+              isActive={pathname === '/home' && !activeDrawerType}
+            />
+            <SidebarIcon
+              tooltipLabel="Create a post"
+              onClick={handleCreatePostClick}
+              icon={<PlusSquareIcon />}
             />
             <SidebarIcon
               tooltipLabel="Search"
@@ -360,12 +324,6 @@ export function StandardSidebar({ queryRef }: Props) {
               isActive={activeDrawerType === Notifications}
               showUnreadDot={notificationCount > 0}
             />
-            <SidebarIcon
-              tooltipLabel="Settings"
-              onClick={handleSettingsClick}
-              icon={<CogIcon />}
-              isActive={activeDrawerType === Settings}
-            />
           </VStack>
         ) : (
           <SidebarIcon
@@ -375,7 +333,13 @@ export function StandardSidebar({ queryRef }: Props) {
             isActive={activeDrawerType === Search}
           />
         )}
-        <VStack>
+        <VStack gap={24}>
+          <SidebarIcon
+            tooltipLabel="Settings"
+            onClick={handleSettingsClick}
+            icon={<CogIcon />}
+            isActive={activeDrawerType === Settings}
+          />
           <SidebarIcon
             href="https://gallery-so.notion.site/Gallery-Support-Docs-d317f077d7614935bdf2c039349823d2"
             tooltipLabel="Support/FAQ"
