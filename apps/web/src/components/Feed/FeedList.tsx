@@ -4,20 +4,15 @@ import {
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  InfiniteLoader,
   List,
   WindowScroller,
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
-import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
-import Loader from '~/components/core/Loader/Loader';
-import { TitleM } from '~/components/core/Text/Text';
-import transitions from '~/components/core/transitions';
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
-import colors from '~/shared/theme/colors';
 
 import FeedEventItem from './FeedEventItem';
 import { PostItemWithBoundary as PostItem } from './PostItem';
@@ -189,9 +184,10 @@ export default function FeedList({
     [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
 
-  const handleLoadMoreClick = useCallback(async () => {
+  const handleLoadMore = useCallback(async () => {
+    console.log('loading more');
     setIsLoading(true);
     await loadNextPage();
     setIsLoading(false);
@@ -204,39 +200,47 @@ export default function FeedList({
     [feedData, measurerCache]
   );
 
+  const rowCount = hasNext ? feedData.length + 1 : feedData.length;
+
   return (
     <WindowScroller>
       {({ height, scrollTop, registerChild }) => (
         <AutoSizer disableHeight>
           {({ width }) => (
-            // calling registerChild resets the scroll position which fixes an issue where upon remounting this list, virtualization didn't work
-            // https://github.com/bvaughn/react-virtualized/issues/1324
             // @ts-expect-error shitty react-virtualized types
-            <div ref={(el) => registerChild(el)}>
-              <List
-                className="FeedList"
-                ref={virtualizedListRef}
-                autoHeight
-                width={width}
-                height={height}
-                rowRenderer={rowRenderer}
-                rowCount={feedData.length}
-                rowHeight={measurerCache.rowHeight}
-                scrollTop={scrollTop}
-                overscanRowCount={2}
-                // By default, react-virtualized's list has the css property `will-change` set to `transform`
-                // An element with `position: fixed` beneath an element with `will-change: transform` will
-                // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)
-                //
-                // Simply setting this back to it's original `auto` seems to do the trick and shouldn't have
-                // any serious performance implications from some trivial testing that was done.
-                style={{ willChange: 'auto', outline: 'none' }}
-              />
-              {hasNext && (
-                <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
-                  {isLoading ? <Loader inverted size="small" /> : <TitleM>More</TitleM>}
-                </StyledLoadMoreRow>
-              )}
+            <div ref={registerChild}>
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={handleLoadMore}
+                rowCount={rowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  // calling registerChild resets the scroll position which fixes an issue where upon remounting this list, virtualization didn't work
+                  // https://github.com/bvaughn/react-virtualized/issues/1324
+                  <div ref={(el) => registerChild(el)}>
+                    <List
+                      className="FeedList"
+                      ref={virtualizedListRef}
+                      autoHeight
+                      width={width}
+                      height={height}
+                      rowRenderer={rowRenderer}
+                      rowCount={feedData.length}
+                      rowHeight={measurerCache.rowHeight}
+                      scrollTop={scrollTop}
+                      overscanRowCount={2}
+                      onRowsRendered={onRowsRendered}
+                      // By default, react-virtualized's list has the css property `will-change` set to `transform`
+                      // An element with `position: fixed` beneath an element with `will-change: transform` will
+                      // be incredibly busted. You can read more about that [here](https://stackoverflow.com/questions/28157125/why-does-transform-break-position-fixed)
+                      //
+                      // Simply setting this back to it's original `auto` seems to do the trick and shouldn't have
+                      // any serious performance implications from some trivial testing that was done.
+                      style={{ willChange: 'auto', outline: 'none' }}
+                    />
+                  </div>
+                )}
+              </InfiniteLoader>
             </div>
           )}
         </AutoSizer>
@@ -244,28 +248,3 @@ export default function FeedList({
     </WindowScroller>
   );
 }
-
-const StyledLoadMoreRow = styled.div<{ width: number }>`
-  width: ${({ width }) => width}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  height: 92px;
-  @media only screen and ${breakpoints.tablet} {
-    height: 156px;
-  }
-  transition: background ${transitions.cubic};
-  ${TitleM} {
-    font-style: normal;
-    color: ${colors.shadow};
-    transition: color ${transitions.cubic};
-  }
-  &:hover {
-    background: ${colors.faint};
-    ${TitleM} {
-      color: ${colors.black['800']};
-    }
-  }
-  cursor: pointer;
-`;

@@ -43,6 +43,7 @@ export default function Home({ preloadedQuery }: Props) {
       navbar={<HomeNavbar queryRef={query} />}
       sidebar={<StandardSidebar queryRef={query} />}
       element={<CuratedHomePage queryRef={query} />}
+      footer={false}
     />
   );
 }
