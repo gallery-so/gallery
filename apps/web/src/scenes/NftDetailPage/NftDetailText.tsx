@@ -77,6 +77,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         }
         owner {
           username
+          dbid
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
 
@@ -223,9 +224,15 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   }, [isMobile, showModal, token]);
 
   const OwnerAndCreatorDetails = useMemo(() => {
+    // ignore if owner is welovetheart
+    // TODO: rohan - remove this check after the event
+    const ownerUserId = token.owner?.dbid ?? '';
+    const isOwnerWelovetheart = ownerUserId === '2Z8hbOMIYm4NWfKN7SH8hqF8pRX';
+    const shouldShowOwner = token.owner?.username && !isOwnerWelovetheart;
+
     return (
       <>
-        {token.owner?.username && (
+        {shouldShowOwner && (
           <VStack gap={2}>
             <TitleXS>OWNER</TitleXS>
             <OwnerProfilePictureAndUsername
