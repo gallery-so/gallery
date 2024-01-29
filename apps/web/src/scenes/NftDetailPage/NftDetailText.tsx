@@ -224,9 +224,15 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   }, [isMobile, showModal, token]);
 
   const OwnerAndCreatorDetails = useMemo(() => {
+    // ignore if owner is welovetheart
+    // TODO: rohan - remove this check after the event
+    const ownerUserId = token.owner?.dbid ?? '';
+    const isOwnerWelovetheart = ownerUserId === '2Z8hbOMIYm4NWfKN7SH8hqF8pRX';
+    const shouldShowOwner = !isOwnerWelovetheart && token.owner?.username;
+
     return (
       <>
-        {token.owner?.username && (
+        {shouldShowOwner && (
           <VStack gap={2}>
             <TitleXS>OWNER</TitleXS>
             <OwnerProfilePictureAndUsername
@@ -250,14 +256,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
 
   const OwnerAndCreatorSection = useMemo(() => {
     const ownerUsernameLength = token.owner?.username?.length ?? 0;
-    const ownerUserId = token.owner?.dbid ?? '';
-
-    // ignore if owner is welovetheart
-    // TODO: rohan - remove this check after the event
-    if (ownerUserId === '2Z8hbOMIYm4NWfKN7SH8hqF8pRX') {
-      return null;
-    }
-
     // if owner username is too long we want the owner and creator on their own row
     if (ownerUsernameLength > 15) {
       return <VStack gap={10}>{OwnerAndCreatorDetails}</VStack>;
@@ -269,7 +267,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
       );
     }
     return null;
-  }, [token.owner?.username, token.owner?.dbid, OwnerAndCreatorDetails]);
+  }, [token.owner?.username, OwnerAndCreatorDetails]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
