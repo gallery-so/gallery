@@ -187,7 +187,6 @@ export default function FeedList({
   const [, setIsLoading] = useState(false);
 
   const handleLoadMore = useCallback(async () => {
-    console.log('loading more');
     setIsLoading(true);
     await loadNextPage();
     setIsLoading(false);
