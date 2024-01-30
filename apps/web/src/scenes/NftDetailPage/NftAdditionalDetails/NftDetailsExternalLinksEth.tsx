@@ -25,6 +25,9 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
       fragment NftDetailsExternalLinksEthFragment on Token {
         ...useRefreshMetadataFragment
         ...extractRelevantMetadataFromTokenFragment
+        owner {
+          dbid
+        }
       }
     `,
     tokenRef
@@ -39,6 +42,12 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
     useTooltipHover({
       placement: 'top',
     });
+
+  // ignore openseaUrl if owner is welovetheart
+  // TODO: rohan - remove this check after the event
+  const ownerUserId = token.owner?.dbid ?? '';
+  const isOwnerWelovetheart = ownerUserId === '2Z8hbOMIYm4NWfKN7SH8hqF8pRX';
+  const showOpenseaUrl = openseaUrl && !isOwnerWelovetheart;
 
   return (
     <>
@@ -74,7 +83,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
             </HStack>
           </GalleryLink>
         )}
-        {openseaUrl && (
+        {showOpenseaUrl && (
           <VStack gap={14}>
             <GalleryLink
               href={openseaUrl}
