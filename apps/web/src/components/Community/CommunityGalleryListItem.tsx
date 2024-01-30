@@ -68,12 +68,11 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
   }, [gallery?.owner?.dbid, query?.viewer?.user?.dbid]);
 
   const tokenPreviews = useMemo(() => {
-    const previewWithoutFirstItem = removeNullValues(communityGallery?.tokenPreviews?.slice(1, 5));
-    const randomIndex = Math.floor(Math.random() * previewWithoutFirstItem.length);
+    const previews = removeNullValues(communityGallery?.tokenPreviews);
+    const randomIndex = Math.floor(Math.random() * previews.length);
 
-    const previews = removeNullValues(communityGallery?.tokenPreviews?.slice(0, 3));
     if (isHovered && previews.length > 2) {
-      return [previews[0], previewWithoutFirstItem[randomIndex]];
+      return [previews[randomIndex], previews[randomIndex + 1]];
     }
     return previews.slice(0, 2);
   }, [communityGallery?.tokenPreviews, isHovered]);
