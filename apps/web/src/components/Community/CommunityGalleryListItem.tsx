@@ -68,7 +68,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
   }, [gallery?.owner?.dbid, query?.viewer?.user?.dbid]);
 
   const tokenPreviews = useMemo(() => {
-    const previewWithoutFirstItem = removeNullValues(communityGallery?.tokenPreviews?.slice(1, 3));
+    const previewWithoutFirstItem = removeNullValues(communityGallery?.tokenPreviews?.slice(1, 5));
     const randomIndex = Math.floor(Math.random() * previewWithoutFirstItem.length);
 
     const previews = removeNullValues(communityGallery?.tokenPreviews?.slice(0, 3));
