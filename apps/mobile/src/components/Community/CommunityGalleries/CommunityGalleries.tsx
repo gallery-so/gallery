@@ -79,20 +79,23 @@ export function CommunityGalleries({ communityRef }: Props) {
     return items;
   }, [nonNullGalleries]);
 
-  const renderItem = useCallback<ListRenderItem<GalleryItemList>>(({ item }) => {
-    switch (item.kind) {
-      case 'galleries-section-header':
-        return (
-          <View className="px-4 py-3">
-            <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
-              Galleries that contain {community?.name ?? 'this collection'}
-            </Typography>
-          </View>
-        );
-      case 'galleries-row-item':
-        return <CommunityGalleriesRow galleryRefs={item.galleryRefs} />;
-    }
-  }, []);
+  const renderItem = useCallback<ListRenderItem<GalleryItemList>>(
+    ({ item }) => {
+      switch (item.kind) {
+        case 'galleries-section-header':
+          return (
+            <View className="px-4 py-3">
+              <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
+                Galleries that contain {community?.name ?? 'this collection'}
+              </Typography>
+            </View>
+          );
+        case 'galleries-row-item':
+          return <CommunityGalleriesRow galleryRefs={item.galleryRefs} />;
+      }
+    },
+    [community?.name]
+  );
 
   const loadMore = useCallback(() => {
     if (hasNext) {
