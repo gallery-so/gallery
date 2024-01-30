@@ -36,6 +36,7 @@ export function CommunityGalleries({ communityRef }: Props) {
     graphql`
       fragment CommunityGalleriesFragment on Community
       @refetchable(queryName: "CommunityGalleriesRefetchableFragment") {
+        name
         galleries(first: $galleriesFirst, after: $galleriesAfter, maxPreviews: 2)
           @connection(key: "CommunityGalleriesList_galleries") {
           edges {
@@ -84,7 +85,7 @@ export function CommunityGalleries({ communityRef }: Props) {
         return (
           <View className="px-4 py-3">
             <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
-              Galleries
+              Galleries that contain {community?.name ?? 'this collection'}
             </Typography>
           </View>
         );

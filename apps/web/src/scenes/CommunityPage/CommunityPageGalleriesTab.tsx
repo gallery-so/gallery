@@ -17,6 +17,7 @@ export function CommunityPageGalleriesTab({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityPageGalleriesTabFragment on Community {
         ...CommunityGalleryListFragment
+        name
       }
     `,
     communityRef
@@ -34,7 +35,7 @@ export function CommunityPageGalleriesTab({ communityRef, queryRef }: Props) {
   return (
     <StyledGalleriesTab>
       <HStack align="center" justify="space-between">
-        <TitleS>Galleries</TitleS>
+        <TitleS>Galleries that contain {community.name ?? 'this collection'}</TitleS>
       </HStack>
       <StyledGalleriesWrapper>
         <CommunityGalleryList communityRef={community} queryRef={query} />
