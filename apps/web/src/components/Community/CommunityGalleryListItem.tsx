@@ -114,7 +114,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
       >
         <TokenPreviewContainer>
           {tokenPreviews.map(
-            (url) => url?.large && <TokenPreview src={url.large} key={url.large} />
+            (url) => url?.large && <ImageWithLoadingFallback url={url.large} key={url.large} />
           )}
         </TokenPreviewContainer>
         <HStack align="center" justify="space-between">
@@ -179,4 +179,37 @@ const StyledCommunityGalleryListItem = styled(GalleryLink)`
 const StyledUsername = styled(BaseM)`
   font-weight: 700;
   line-height: 1.2;
+`;
+
+export function ImageWithLoadingFallback({ url }: { url: string }) {
+  const [loading, setLoading] = useState(true);
+
+  const handleLoad = useCallback(() => {
+    setLoading(false);
+  }, []);
+
+  return (
+    <div>
+      {loading && <StyledTokenFallback />}
+
+      <TokenPreview
+        src={url}
+        onLoad={handleLoad}
+        style={{
+          display: loading ? 'none' : 'block',
+        }}
+      />
+    </div>
+  );
+}
+
+const StyledTokenFallback = styled.div`
+  display: block;
+  width: 100%;
+  height: 30px;
+  aspect-ratio: 1;
+  /* hack for safari, since it doesn't support aspect-ratio yet */
+  padding-top: 100%;
+  background-color: ${colors.faint};
+  background-size: 400% 100%;
 `;
