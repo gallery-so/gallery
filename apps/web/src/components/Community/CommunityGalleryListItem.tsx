@@ -119,7 +119,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
         <HStack align="center" justify="space-between">
           <HStack gap={4}>
             {communityGallery?.gallery?.owner && (
-              <ProfilePicture userRef={communityGallery?.gallery?.owner} size="sm" />
+              <ProfilePicture userRef={communityGallery?.gallery?.owner} size="md" />
             )}
             <VStack>
               <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
