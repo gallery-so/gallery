@@ -103,8 +103,8 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
           galleryId: communityGallery?.gallery?.dbid || '',
         },
       }}
-      eventElementId="Collection Gallery Card"
-      eventName="Collection Gallery Card Click"
+      eventElementId="Collection Page Gallery Tab Card"
+      eventName="Collection Page Gallery Tab Card Click"
       eventContext={contexts.Community}
     >
       <VStack
