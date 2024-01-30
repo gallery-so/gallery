@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import { CommunityGalleryListItemFragment$key } from '~/generated/CommunityGalleryListItemFragment.graphql';
 import { CommunityGalleryListItemQueryFragment$key } from '~/generated/CommunityGalleryListItemQueryFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
@@ -62,6 +63,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
   const { gallery } = communityGallery || {};
 
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobileWindowWidth();
 
   const isOwnerGallery = useMemo(() => {
     return gallery?.owner?.dbid === query?.viewer?.user?.dbid;
@@ -116,22 +118,47 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
           )}
         </TokenPreviewContainer>
         <HStack align="center" justify="space-between">
-          <HStack gap={4}>
-            {communityGallery?.gallery?.owner && (
-              <ProfilePicture userRef={communityGallery?.gallery?.owner} size="md" />
-            )}
-            <VStack>
-              <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
+          {isMobile ? (
+            <VStack gap={4} grow>
+              <HStack gap={4} align="center" justify="space-between">
+                <HStack gap={4} align="center">
+                  {communityGallery?.gallery?.owner && (
+                    <ProfilePicture userRef={communityGallery?.gallery?.owner} size="xs" />
+                  )}
+                  <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
+                </HStack>
+                {isOwnerGallery && (
+                  <IconContainer
+                    onClick={handleEditGallery}
+                    size="sm"
+                    variant="stacked"
+                    icon={<EditPencilIcon />}
+                  />
+                )}
+              </HStack>
               <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
             </VStack>
-          </HStack>
-          {isOwnerGallery && (
-            <IconContainer
-              onClick={handleEditGallery}
-              size="sm"
-              variant="stacked"
-              icon={<EditPencilIcon />}
-            />
+          ) : (
+            <>
+              <HStack gap={4}>
+                {communityGallery?.gallery?.owner && (
+                  <ProfilePicture userRef={communityGallery?.gallery?.owner} size="md" />
+                )}
+                <VStack>
+                  <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
+                  <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
+                </VStack>
+              </HStack>
+
+              {isOwnerGallery && (
+                <IconContainer
+                  onClick={handleEditGallery}
+                  size="sm"
+                  variant="stacked"
+                  icon={<EditPencilIcon />}
+                />
+              )}
+            </>
           )}
         </HStack>
       </VStack>
