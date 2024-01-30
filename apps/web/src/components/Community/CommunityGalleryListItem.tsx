@@ -136,7 +136,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
                   />
                 )}
               </HStack>
-              <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
+              <BaseM>{communityGallery?.gallery?.name}</BaseM>
             </VStack>
           ) : (
             <>
@@ -144,9 +144,9 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
                 {communityGallery?.gallery?.owner && (
                   <ProfilePicture userRef={communityGallery?.gallery?.owner} size="md" />
                 )}
-                <VStack>
+                <VStack justify="center">
                   <StyledUsername>{communityGallery?.gallery?.owner?.username}</StyledUsername>
-                  <BaseM>{communityGallery?.gallery?.name || 'Untitled'}</BaseM>
+                  <BaseM>{communityGallery?.gallery?.name}</BaseM>
                 </VStack>
               </HStack>
 

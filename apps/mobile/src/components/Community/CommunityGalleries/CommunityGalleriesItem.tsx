@@ -75,7 +75,7 @@ export function CommunityGalleriesItem({ communityGalleryRef, style }: Props) {
           </Typography>
         </View>
         <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }} className="text-xs">
-          {gallery?.name || 'Untitled'}
+          {gallery?.name}
         </Typography>
       </View>
     </GalleryTouchableOpacity>
