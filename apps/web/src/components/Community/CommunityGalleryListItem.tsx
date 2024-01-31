@@ -17,6 +17,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { TokenPreview, TokenPreviewContainer } from '../Explore/ExploreUserCard';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import Shimmer from '../Shimmer/Shimmer';
 
 type Props = {
   communityGalleryRef: CommunityGalleryListItemFragment$key;
@@ -189,8 +190,8 @@ export function ImageWithLoadingFallback({ url }: { url: string }) {
   }, []);
 
   return (
-    <div>
-      {loading && <StyledTokenFallback />}
+    <>
+      {loading && <Shimmer />}
 
       <TokenPreview
         src={url}
@@ -199,17 +200,6 @@ export function ImageWithLoadingFallback({ url }: { url: string }) {
           display: loading ? 'none' : 'block',
         }}
       />
-    </div>
+    </>
   );
 }
-
-const StyledTokenFallback = styled.div`
-  display: block;
-  width: 100%;
-  height: 30px;
-  aspect-ratio: 1;
-  /* hack for safari, since it doesn't support aspect-ratio yet */
-  padding-top: 100%;
-  background-color: ${colors.faint};
-  background-size: 400% 100%;
-`;
