@@ -92,7 +92,7 @@ const StyledTextContainer = styled(VStack)`
     padding-right: 10%;
     padding-left: 10%;
     width: 400px;
-    margin-left: 56px;
+    margin-left: 46px;
     margin-top: 0px;
     padding-right: 0%;
     padding-left: 0%;
