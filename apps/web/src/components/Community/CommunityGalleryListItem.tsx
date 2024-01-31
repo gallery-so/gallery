@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import { removeNullValues } from 'shared/relay/removeNullValues';
@@ -70,15 +70,42 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
     return gallery?.owner?.dbid === query?.viewer?.user?.dbid;
   }, [gallery?.owner?.dbid, query?.viewer?.user?.dbid]);
 
-  const tokenPreviews = useMemo(() => {
-    const previews = removeNullValues(communityGallery?.tokenPreviews);
-    const randomIndex = Math.floor(Math.random() * previews.length);
+  const selectedTokenUrls = useRef<string[]>([]);
 
-    if (isHovered && previews.length > 2) {
-      return [previews[randomIndex], previews[randomIndex + 1]];
+  const nonNullTokenPreviews = useMemo(() => {
+    const tokens = communityGallery?.tokenPreviews?.map((preview) => preview?.large);
+    const nonEmptyTokens = tokens?.filter((token) => token !== '');
+    // Remove duplicates
+    const uniqueTokens = Array.from(new Set(removeNullValues(nonEmptyTokens)));
+    return uniqueTokens;
+  }, [communityGallery?.tokenPreviews]);
+
+  const tokenPreviews = useMemo(() => {
+    if (isHovered && nonNullTokenPreviews.length > 3) {
+      // Filter out the previews that are already being shown
+      const filteredPreviews = nonNullTokenPreviews.filter(
+        (preview) => !selectedTokenUrls.current.includes(preview)
+      );
+
+      if (filteredPreviews.length >= 2) {
+        const randomIndex = Math.floor(Math.random() * filteredPreviews.length);
+
+        // If there are no more previews to show, just show the first two
+        const firstPreview = filteredPreviews[randomIndex];
+        const secondPreview = filteredPreviews[randomIndex + 1];
+
+        const previews = [firstPreview, secondPreview].filter(Boolean) as string[];
+        selectedTokenUrls.current = previews;
+
+        return previews;
+      }
+
+      return selectedTokenUrls.current;
     }
-    return previews.slice(0, 2);
-  }, [communityGallery?.tokenPreviews, isHovered]);
+
+    selectedTokenUrls.current = nonNullTokenPreviews.slice(0, 2);
+    return nonNullTokenPreviews.slice(0, 2);
+  }, [isHovered, nonNullTokenPreviews]);
 
   const router = useRouter();
   const handleEditGallery = useCallback(
@@ -114,9 +141,9 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
         onMouseLeave={() => setIsHovered(false)}
       >
         <TokenPreviewContainer>
-          {tokenPreviews.map(
-            (url) => url?.large && <ImageWithLoadingFallback url={url.large} key={url.large} />
-          )}
+          {tokenPreviews.map((url, index) => (
+            <ImageWithLoadingFallback url={url} key={index} />
+          ))}
         </TokenPreviewContainer>
         <HStack align="center" justify="space-between">
           {isMobile ? (
