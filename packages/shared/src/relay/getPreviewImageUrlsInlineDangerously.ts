@@ -25,9 +25,9 @@ export type GetPreviewImageUrlsResult =
       error: CouldNotRenderNftError;
     }
   | {
-    // TODO: rohan - remove later and throw error
-    type: 'temp';
-  };
+      // TODO: rohan - remove later and throw error
+      type: 'temp';
+    };
 
 type Props = {
   tokenRef: getPreviewImageUrlsInlineDangerouslyFragment$key;
@@ -239,7 +239,6 @@ export function getPreviewImageUrlsInlineDangerously({
       return { type: SyncingMediaWithoutFallback };
     }
   }
-
 
   if (!previewUrls) {
     return {
