@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import { removeNullValues } from 'shared/relay/removeNullValues';
@@ -142,7 +142,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
       >
         <TokenPreviewContainer>
           {tokenPreviews.map((url, index) => (
-            <ImageWithLoadingFallback url={url} key={index} />
+            <ImageWithLoadingFallback url={url} key={index} isHovered={isHovered} />
           ))}
         </TokenPreviewContainer>
         <HStack align="center" justify="space-between">
@@ -213,8 +213,14 @@ const StyledUsername = styled(BaseM)`
   line-height: 1.2;
 `;
 
-export function ImageWithLoadingFallback({ url }: { url: string }) {
+export function ImageWithLoadingFallback({ url, isHovered }: { url: string; isHovered: boolean }) {
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isHovered) {
+      setLoading(true);
+    }
+  }, [isHovered]);
 
   const handleLoad = useCallback(() => {
     setLoading(false);
