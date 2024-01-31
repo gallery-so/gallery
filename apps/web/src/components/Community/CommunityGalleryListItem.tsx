@@ -135,7 +135,7 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
       eventName="Collection Page Gallery Tab Card Click"
       eventContext={contexts.Community}
     >
-      <VStack
+      <StyledCommunityGalleryListItemContent
         gap={12}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -189,19 +189,23 @@ export function CommunityGalleryListItem({ communityGalleryRef, queryRef }: Prop
             </>
           )}
         </HStack>
-      </VStack>
+      </StyledCommunityGalleryListItemContent>
     </StyledCommunityGalleryListItem>
   );
 }
 
 const StyledCommunityGalleryListItem = styled(GalleryLink)`
-  padding: 12px;
   border-radius: 4px;
   background-color: ${colors.offWhite};
 
   &:hover {
     background-color: ${colors.faint};
   }
+`;
+
+const StyledCommunityGalleryListItemContent = styled(VStack)`
+  border-radius: 4px;
+  padding: 12px;
 `;
 
 const StyledUsername = styled(BaseM)`
