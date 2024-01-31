@@ -86,7 +86,7 @@ export function CommunityGalleries({ communityRef }: Props) {
           return (
             <View className="px-4 py-3">
               <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
-                Galleries that contain {community?.name ?? 'this collection'}
+                Galleries that feature {community?.name ?? 'this collection'}
               </Typography>
             </View>
           );

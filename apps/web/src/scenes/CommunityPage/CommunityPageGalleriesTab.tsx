@@ -35,7 +35,7 @@ export function CommunityPageGalleriesTab({ communityRef, queryRef }: Props) {
   return (
     <StyledGalleriesTab>
       <HStack align="center" justify="space-between">
-        <TitleS>Galleries that contain {community.name ?? 'this collection'}</TitleS>
+        <TitleS>Galleries that feature {community.name ?? 'this collection'}</TitleS>
       </HStack>
       <StyledGalleriesWrapper>
         <CommunityGalleryList communityRef={community} queryRef={query} />
