@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
@@ -103,11 +105,13 @@ export default function NftDetailView({
         <StyledVStack>
           <StyledAssetAndNoteContainer>
             <Container>
-              <NftDetailAsset
-                tokenRef={collectionNft}
-                hasExtraPaddingForNote={showCollectorsNoteComponent}
-                visibility={visibility}
-              />
+              <ErrorBoundary fallback={<NftFailureFallback tokenId={token.dbid} />}>
+                <NftDetailAsset
+                  tokenRef={collectionNft}
+                  hasExtraPaddingForNote={showCollectorsNoteComponent}
+                  visibility={visibility}
+                />
+              </ErrorBoundary>
             </Container>
           </StyledAssetAndNoteContainer>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
