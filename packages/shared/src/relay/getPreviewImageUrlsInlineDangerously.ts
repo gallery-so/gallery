@@ -23,10 +23,6 @@ export type GetPreviewImageUrlsResult =
   | {
       type: 'error';
       error: CouldNotRenderNftError;
-    }
-  | {
-      // TODO: rohan - remove later and throw error
-      type: 'temp';
     };
 
 type Props = {
@@ -242,7 +238,15 @@ export function getPreviewImageUrlsInlineDangerously({
 
   if (!previewUrls) {
     return {
-      type: 'temp',
+      type: 'error',
+      error: new CouldNotRenderNftError(
+        'getPreviewImageUrlsInlineDangerously',
+        'No preview URLs returned for token!',
+        {
+          id: token?.dbid,
+          assetType: media?.__typename,
+        }
+      ),
     };
   }
 

@@ -9,10 +9,12 @@ import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
+import Shimmer from '~/components/Shimmer/Shimmer';
 
 type Props = {
   authenticatedUserOwnsAsset: boolean;
@@ -103,11 +105,13 @@ export default function NftDetailView({
         <StyledVStack>
           <StyledAssetAndNoteContainer>
             <Container>
-              <NftDetailAsset
-                tokenRef={collectionNft}
-                hasExtraPaddingForNote={showCollectorsNoteComponent}
-                visibility={visibility}
-              />
+              <ErrorBoundary fallback={<Shimmer />}>
+                <NftDetailAsset
+                  tokenRef={collectionNft}
+                  hasExtraPaddingForNote={showCollectorsNoteComponent}
+                  visibility={visibility}
+                />
+              </ErrorBoundary>
             </Container>
           </StyledAssetAndNoteContainer>
           {!isMobileOrMobileLarge && showCollectorsNoteComponent && (
