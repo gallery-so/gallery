@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
@@ -58,6 +58,9 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
             dbid
             galleries {
               __typename
+            }
+            featuredGallery {
+              dbid
             }
             ...FollowButtonUserFragment
           }
@@ -146,6 +149,18 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     });
   }, [query, showModal, track]);
 
+  const handleEditGalleryClick = useCallback(() => {
+    const routeGalleryId = router.query.galleryId as string;
+    // The Edit button appears on each Gallery page as well as the Featured Gallery page, so if there's a galleryId in the route, use that
+    const editGalleryId = routeGalleryId ?? query.userByUsername?.featuredGallery?.dbid;
+
+    const route = {
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId: editGalleryId },
+    };
+    router.push(route);
+  }, [query.userByUsername?.featuredGallery?.dbid]);
+
   const editGalleryUrl: Route | null = useMemo(() => {
     if (!gallery?.dbid) {
       return null;
@@ -217,6 +232,20 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
           Add New
         </Button>
       </VStack>
+    );
+  }
+
+  if (isViewingSignedInUser) {
+    return (
+      <Button
+        eventElementId="Edit Gallery Button In Navbar"
+        eventName="Clicked Edit Gallery Button In Navbar"
+        eventContext={contexts.Editor}
+        variant="primary"
+        onClick={handleEditGalleryClick}
+      >
+        Edit
+      </Button>
     );
   }
 

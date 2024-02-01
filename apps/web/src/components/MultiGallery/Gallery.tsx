@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -14,6 +14,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowDownIcon from '~/icons/ArrowDownIcon';
 import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -27,11 +28,9 @@ import IconContainer from '../core/IconContainer';
 import { UnstyledLink } from '../core/Link/UnstyledLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleS, TitleXS } from '../core/Text/Text';
-import { GalleryNameAndDescriptionEditForm } from '../GalleryEditor/GalleryNameAndDescriptionEditForm';
 import DeleteGalleryConfirmation from './DeleteGalleryConfirmation';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
-import useUpdateGalleryInfo from './useUpdateGalleryInfo';
 
 export type GalleryOrderDirection = 'up' | 'down';
 
@@ -57,7 +56,6 @@ export default function Gallery({
         dbid
         id
         name
-        description
         tokenPreviews @required(action: THROW) {
           __typename
           large
@@ -200,50 +198,22 @@ export default function Gallery({
     });
   }, [checkIfItsLastVisibleGallery, gallery, reassignFeaturedGallery, showModal]);
 
-  const updateGalleryInfo = useUpdateGalleryInfo();
-
-  const handleUpdateGalleryInfo = useCallback(
-    async (result: { name: string; description: string }) => {
-      try {
-        await updateGalleryInfo({
-          id: gallery.dbid,
-          name: result.name,
-          description: result.description,
-        });
-      } catch (error) {
-        if (error instanceof Error) {
-          pushToast({
-            message: 'Unfortunately there was an error to update gallery name and description.',
-          });
-        }
-      }
-    },
-    [gallery.dbid, pushToast, updateGalleryInfo]
-  );
-
-  const handleEditGalleryName = useCallback(() => {
-    showModal({
-      content: (
-        <GalleryNameAndDescriptionEditForm
-          onDone={handleUpdateGalleryInfo}
-          mode="editing"
-          description={gallery.description ?? ''}
-          name={gallery.name ?? ''}
-        />
-      ),
-      headerText: 'Add a gallery name and description',
-    });
-  }, [gallery, handleUpdateGalleryInfo, showModal]);
-
   const galleryLink: Route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: { username: gallery.owner.username, galleryId: gallery.dbid },
   };
 
-  const galleryEditLink: Route = {
-    pathname: '/gallery/[galleryId]/edit',
-    query: { galleryId: dbid },
-  };
+  const galleryEditLink: Route = useMemo(
+    () => ({
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId: dbid },
+    }),
+    [dbid]
+  );
+
+  const handleEditGalleryClick = useCallback(() => {
+    router.push(galleryEditLink);
+  }, [galleryEditLink, router]);
 
   const handleChangeGalleryOrder = useCallback(
     (direction: GalleryOrderDirection) => {
@@ -294,13 +264,21 @@ export default function Gallery({
                 )}
                 {isAuthenticatedUser && (
                   <HStack>
+                    <StyledEditGalleryLinkContainer href={galleryEditLink}>
+                      <IconContainer
+                        variant="stacked"
+                        icon={<EditPencilIcon />}
+                        tooltipLabel="Edit Gallery"
+                        tooltipPlacement="left"
+                      />
+                    </StyledEditGalleryLinkContainer>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
                         <DropdownItem
-                          onClick={handleEditGalleryName}
+                          onClick={handleEditGalleryClick}
                           name="Manage Gallery"
                           eventContext={contexts.Editor}
-                          label="Edit Name & Description"
+                          label="Edit Gallery"
                         />
                         {hidden ? (
                           <DropdownItem
@@ -372,6 +350,18 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
 `;
 
+const StyledEditGalleryLinkContainer = styled(UnstyledLink)`
+  display: none;
+`;
+
+const StyledGalleryFeaturedText = styled(TitleXS)`
+  border: 1px solid ${colors.activeBlue};
+  border-radius: 2px;
+  padding: 2px 4px;
+  color: ${colors.activeBlue};
+  font-weight: 500;
+`;
+
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   border-radius: 12px;
   background-color: ${colors.offWhite};
@@ -379,6 +369,14 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
 
   &:hover {
     background-color: ${colors.faint};
+
+    ${StyledEditGalleryLinkContainer} {
+      display: block;
+    }
+
+    ${StyledGalleryFeaturedText} {
+      ${({ isAuthedUser }) => isAuthedUser && `display:none`}
+    }
   }
 `;
 
@@ -401,14 +399,6 @@ const StyledGalleryTitle = styled(TitleS)`
   &:hover {
     text-decoration: underline;
   }
-`;
-
-const StyledGalleryFeaturedText = styled(TitleXS)`
-  border: 1px solid ${colors.activeBlue};
-  border-radius: 2px;
-  padding: 2px 4px;
-  color: ${colors.activeBlue};
-  font-weight: 500;
 `;
 
 const StyledTokenPreviewWrapper = styled.div<{ isHidden?: boolean }>`
