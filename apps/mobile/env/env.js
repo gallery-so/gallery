@@ -10,6 +10,7 @@ const EnvironmentSchema = z.object({
   EXPO_PUBLIC_MIXPANEL_TOKEN: z.string(),
   EXPO_PUBLIC_FORMSPREE_ID: z.string(),
   EXPO_PUBLIC_SANITY_PROJECT_ID: z.string(),
+  EXPO_PUBLIC_FORMSPEE_REQUEST_COLLECTION_ID: z.string(),
 });
 
 module.exports = {
