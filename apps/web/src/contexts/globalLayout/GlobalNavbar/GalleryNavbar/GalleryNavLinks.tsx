@@ -58,6 +58,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   const galleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
   const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
   const postsRoute: Route = { pathname: '/[username]/posts', query: { username } };
+  const bookmarksRoute: Route = { pathname: '/[username]/bookmarks', query: { username } };
 
   return (
     <HStack gap={8}>
@@ -66,6 +67,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         active={pathname === featuredRoute.pathname}
         eventElementId="Gallery Navbar Link"
         eventName="Gallery Navbar Link Click"
+        properties={{ tab: 'featured' }}
         eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
@@ -78,6 +80,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         active={pathname === galleriesRoute.pathname}
         eventElementId="Gallery Navbar Link"
         eventName="Gallery Navbar Link Click"
+        properties={{ tab: 'galleries' }}
         eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
@@ -91,6 +94,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         active={pathname === postsRoute.pathname}
         eventElementId="Gallery Navbar Link"
         eventName="Gallery Navbar Link Click"
+        properties={{ tab: 'posts' }}
         eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">
@@ -100,10 +104,25 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
       </NavbarLink>
 
       <NavbarLink
+        to={bookmarksRoute}
+        active={pathname === bookmarksRoute.pathname}
+        eventElementId="Gallery Navbar Link"
+        eventName="Gallery Navbar Link Click"
+        properties={{ tab: 'bookmarks' }}
+        eventContext={contexts.UserGallery}
+      >
+        <HStack gap={4} align="baseline">
+          <span>Bookmarks</span>
+          {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
+        </HStack>
+      </NavbarLink>
+
+      <NavbarLink
         to={followersRoute}
         active={pathname === followersRoute.pathname}
         eventElementId="Gallery Navbar Link"
         eventName="Gallery Navbar Link Click"
+        properties={{ tab: 'followers' }}
         eventContext={contexts.UserGallery}
       >
         <HStack gap={4} align="baseline">

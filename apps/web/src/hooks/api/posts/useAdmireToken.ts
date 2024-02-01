@@ -29,7 +29,12 @@ export default function useAdmireToken() {
   const reportError = useReportError();
 
   const admireToken = useCallback(
-    async (tokenId: string, tokenDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
+    async (
+      tokenId: string,
+      tokenDbid: string,
+      optimisticUserInfo: OptimisticUserInfo,
+      tokenName?: string | null
+    ) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         tokenId,
         'Interactions_previewAdmires'
@@ -42,6 +47,13 @@ export default function useAdmireToken() {
       const errorMetadata: AdditionalContext['tags'] = {
         tokenId: tokenDbid,
       };
+
+      function pushSuccessToast() {
+        pushToast({
+          autoClose: true,
+          message: `Added ${tokenName ?? 'this item'} to Bookmarks`,
+        });
+      }
 
       function pushErrorToast() {
         pushToast({
@@ -126,6 +138,7 @@ export default function useAdmireToken() {
             tags: errorMetadata,
           });
         }
+        pushSuccessToast();
       } catch (error) {
         pushErrorToast();
 

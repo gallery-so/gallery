@@ -496,6 +496,11 @@ type CreateUserPayload {
 
 union CreateUserPayloadOrError = CreateUserPayload | ErrAuthenticationFailed | ErrDoesNotOwnRequiredToken | ErrUserAlreadyExists | ErrUsernameNotAvailable | ErrInvalidInput | ErrEmailAlreadyUsed
 
+enum DarkMode {
+  Disabled
+  Enabled
+}
+
 scalar DBID
 
 input DebugAuth {
@@ -864,6 +869,7 @@ type GalleryUser implements Node {
   roles: [Role]
   socialAccounts: SocialAccounts
   tokens(ownershipFilter: [TokenOwnershipType!]): [Token]
+  tokensBookmarked(before: String, after: String, first: Int, last: Int): TokensConnection
   wallets: [Wallet]
   primaryWallet: Wallet
   featuredGallery: Gallery
@@ -1349,7 +1355,7 @@ input PostComposerDraftDetailsInput {
 }
 
 type PostComposerDraftDetailsPayload {
-  media: MediaSubtype
+  media(darkMode: DarkMode): MediaSubtype
   community: Community
   tokenName: String
   tokenDescription: String
@@ -1937,7 +1943,7 @@ type Token implements Node {
   isSpamByUser: Boolean
   admires(before: String, after: String, first: Int, last: Int, userID: DBID): TokenAdmiresConnection
   viewerAdmire: Admire
-  media: MediaSubtype @deprecated(reason: "Use definition.media instead")
+  media(darkMode: DarkMode): MediaSubtype @deprecated(reason: "Use definition.media instead")
   tokenType: TokenType @deprecated(reason: "Use definition.tokenType instead")
   chain: Chain @deprecated(reason: "Use definition.chain instead")
   name: String @deprecated(reason: "Use definition.name instead")
@@ -1972,7 +1978,7 @@ type TokenDefinition implements Node {
   dbid: DBID!
   creationTime: Time
   lastUpdated: Time
-  media: MediaSubtype
+  media(darkMode: DarkMode): MediaSubtype
   tokenType: TokenType
   contract: Contract
   chain: Chain

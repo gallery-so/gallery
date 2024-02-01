@@ -27,6 +27,7 @@ import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import BookmarkIcon from '~/icons/BookmarkIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { AdmireIcon } from '~/icons/SocializeIcons';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
@@ -146,6 +147,17 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     return removeNullValues(admires);
   }, [token.previewAdmires?.edges]);
 
+  const { tokenId, name, contractName, contractAddress, chain, openseaUrl } =
+    extractRelevantMetadataFromToken(token);
+
+  const decodedTokenName = useMemo(() => {
+    if (name) {
+      return unescape(name);
+    }
+
+    return null;
+  }, [name]);
+
   const [admireToken] = useAdmireToken();
   const [removeTokenAdmire] = useRemoveTokenAdmire();
 
@@ -160,8 +172,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     }
 
     track('Admire Token Click');
-    admireToken(token.id, token.dbid, info);
-  }, [query, showModal, track, admireToken, info, token.dbid, token.id]);
+    admireToken(token.id, token.dbid, info, decodedTokenName);
+  }, [query, track, admireToken, token.id, token.dbid, info, decodedTokenName, showModal]);
 
   const handleRemoveAdmire = useCallback(async () => {
     if (!token.viewerAdmire?.dbid) {
@@ -183,9 +195,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const { tokenId, name, contractName, contractAddress, chain, openseaUrl } =
-    extractRelevantMetadataFromToken(token);
-
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
@@ -202,13 +211,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
 
   const navbarHeight = useGlobalNavbarHeight();
-  const decodedTokenName = useMemo(() => {
-    if (name) {
-      return unescape(name);
-    }
-
-    return null;
-  }, [name]);
 
   const handleCreatePostClick = useCallback(() => {
     showModal({
@@ -276,7 +278,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         <VStack gap={8}>
           <HStack gap={8} justify="space-between">
             {name && <TitleM>{decodedTokenName}</TitleM>}
-            <HStack gap={8} align="flex-start">
+            {/* <HStack gap={8} align="flex-start">
               <ProfilePictureStack
                 onClick={openAdmireModal}
                 usersRef={nonNullAdmires}
@@ -292,7 +294,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
                   />
                 }
               />
-            </HStack>
+            </HStack> */}
           </HStack>
           <HStack align="center" gap={4}>
             {communityUrl && token.definition.community ? (
@@ -335,19 +337,19 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         )}
 
         <StyledButtonContainer gap={12}>
-          <StyledAdmireButton
+          <StyledBookmarkButton
             active={hasViewerAdmiredToken}
             onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
             variant="blue"
-            eventElementId="Nft Detail Admire Token Button"
-            eventName="Nft Detail Admire Token Button Pressed"
+            eventElementId="Nft Detail Bookmark Token Button"
+            eventName="Nft Detail Bookmark Token Button Pressed"
             eventContext={contexts['NFT Detail']}
           >
-            <StyledAdmireButtonContainer active={hasViewerAdmiredToken} gap={8} align="center">
-              <AdmireIcon active={hasViewerAdmiredToken} />
-              {hasViewerAdmiredToken ? 'Admired' : 'Admire'}
-            </StyledAdmireButtonContainer>
-          </StyledAdmireButton>
+            <StyledBookmarkButtonContainer active={hasViewerAdmiredToken} gap={8} align="center">
+              <BookmarkIcon isActive={hasViewerAdmiredToken} />
+              {hasViewerAdmiredToken ? 'Bookmarked' : 'Bookmark'}
+            </StyledBookmarkButtonContainer>
+          </StyledBookmarkButton>
           {authenticatedUserOwnsAsset ? (
             <StyledInteractionButton
               eventElementId="Create Post Button"
@@ -445,7 +447,7 @@ const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: 
   }
 `;
 
-const StyledAdmireButtonContainer = styled(HStack)<{ active: boolean }>`
+const StyledBookmarkButtonContainer = styled(HStack)<{ active: boolean }>`
   ${({ active }) => (active ? `color: ${colors.hyperBlue}` : null)};
 `;
 
@@ -453,7 +455,7 @@ const StyledGalleryLink = styled(GalleryLink)`
   text-decoration: none;
 `;
 
-const StyledAdmireButton = styled(Button)<{ active: boolean }>`
+const StyledBookmarkButton = styled(Button)<{ active: boolean }>`
   display: flex;
   flex-grow: 1;
   min-width: 202px;
