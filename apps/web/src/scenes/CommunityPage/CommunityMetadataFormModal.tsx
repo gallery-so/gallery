@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -101,7 +102,11 @@ export function CommunityMetadataFormModal({ communityRef }: Props) {
 }
 
 const StyledConfirmation = styled(VStack)`
-  width: 552px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.desktop} {
+    width: 552px;
+  }
 `;
 
 const TextContainer = styled.div`
