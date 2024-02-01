@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
@@ -13,6 +14,7 @@ import { Markdown } from '../Markdown';
 import { CommunityProfilePicture } from '../ProfilePicture/CommunityProfilePicture';
 import { Typography } from '../Typography';
 import { CommunityBottomSheet } from './CommunityBottomSheet';
+import { CommunityMetadataFormBottomSheet } from './CommunityMetadataFormBottomSheet';
 
 type Props = {
   communityRef: CommunityHeaderFragment$key;
@@ -26,6 +28,7 @@ export function CommunityHeader({ communityRef }: Props) {
         ...CommunityProfilePictureFragment
         ...CommunityBottomSheetFragment
         ...extractRelevantMetadataFromCommunityFragment
+        ...CommunityMetadataFormBottomSheetFragment
       }
     `,
     communityRef
@@ -48,6 +51,11 @@ export function CommunityHeader({ communityRef }: Props) {
 
   const displayName = community.name || truncateAddress(contractAddress);
 
+  const formBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handleEditPress = useCallback(() => {
+    formBottomSheetRef.current?.present();
+  }, []);
+
   return (
     <View className="mb-2">
       <View className="flex flex-row space-x-2 items-center">
@@ -61,18 +69,26 @@ export function CommunityHeader({ communityRef }: Props) {
           disabled={!hasCommunityDescription}
         >
           <View>
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              className="text-lg leading-5 mb-1"
+            <GalleryTouchableOpacity
+              onPress={handleEditPress}
+              eventElementId="Community Header Edit Button"
+              eventName="Community Header Edit Button Press"
+              eventContext={contexts.Community}
+              className="flex-row gap-1 items-center mb-1"
             >
-              {displayName}
-            </Typography>
-
+              <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-lg">
+                {displayName}
+              </Typography>
+              <View className="bg-faint h-4 w-4 rounded-full items-center justify-center">
+                <EditPencilIcon width={10} />
+              </View>
+            </GalleryTouchableOpacity>
             {formattedDescription && <Markdown numberOfLines={3}>{formattedDescription}</Markdown>}
           </View>
         </GalleryTouchableOpacity>
       </View>
       <CommunityBottomSheet ref={bottomSheetRef} communityRef={community} />
+      <CommunityMetadataFormBottomSheet ref={formBottomSheetRef} communityRef={community} />
     </View>
   );
 }
