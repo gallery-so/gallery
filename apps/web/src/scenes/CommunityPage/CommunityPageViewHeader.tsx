@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
@@ -12,10 +13,12 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CopyIcon from '~/icons/CopyIcon';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ObjktIcon from '~/icons/ObjktIcon';
 import OpenseaIcon from '~/icons/OpenseaIcon';
@@ -26,6 +29,7 @@ import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMar
 import { truncateAddress } from '~/shared/utils/wallet';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
+import { CommunityMetadataFormModal } from './CommunityMetadataFormModal';
 import CommunityPageMetadata from './CommunityPageMetadata';
 
 type Props = {
@@ -43,6 +47,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         ...CommunityPageMetadataFragment
         ...CommunityProfilePictureFragment
         ...extractRelevantMetadataFromCommunityFragment
+        ...CommunityMetadataFormModalFragment
       }
     `,
     communityRef
@@ -60,6 +65,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const isMobile = useIsMobileWindowWidth();
 
   const { name, description, badgeURL } = community;
+  const { showModal } = useModalActions();
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -105,6 +111,14 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const handleShareLinkClick = useCallback(() => {
     track('Community Page: Clicked Copy Share Link');
   }, [track]);
+
+  const handleEditClick = useCallback(() => {
+    showModal({
+      content: <CommunityMetadataFormModal communityRef={community} />,
+      isFullPage: false,
+      headerText: 'Request changes',
+    });
+  }, [community, showModal]);
 
   const ExternalLinks = useMemo(() => {
     return (
@@ -198,17 +212,24 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             onClick={handleShowMoreClick}
           />
         )}
+
+        <StyledEditIconWrapper onClick={handleEditClick}>
+          <EditPencilIcon />
+        </StyledEditIconWrapper>
       </StyledDescriptionWrapper>
     );
   }, [
     description,
     formattedDescription,
+    handleEditClick,
     handleShowMoreClick,
     isLineClampEnabled,
     showExpandedDescription,
   ]);
 
   const displayName = name || truncateAddress(contractAddress);
+
+  const [isProfilePictureHovered, setIsProfilePictureHovered] = useState(false);
 
   if (isMobile) {
     return (
@@ -231,11 +252,26 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   return (
     <VStack gap={24}>
       <StyledContainer>
-        <HStack gap={12} align="center">
-          <CommunityProfilePicture communityRef={community} size="lg" />
+        <StyledCommunityTitleWrapper gap={12} align="center">
+          <div
+            onMouseEnter={() => setIsProfilePictureHovered(true)}
+            onMouseLeave={() => setIsProfilePictureHovered(false)}
+            onClick={handleEditClick}
+          >
+            <CommunityProfilePicture
+              communityRef={community}
+              size="lg"
+              isEditable={isProfilePictureHovered}
+              editIconSize={18}
+            />
+          </div>
           <TitleL>{displayName}</TitleL>
           {badgeURL && <StyledBadge src={badgeURL} />}
-        </HStack>
+
+          <StyledEditIconWrapper onClick={handleEditClick}>
+            <EditPencilIcon />
+          </StyledEditIconWrapper>
+        </StyledCommunityTitleWrapper>
         <HStack gap={48}>
           <CommunityPageMetadata communityRef={community} queryRef={query} />
           {ExternalLinks}
@@ -260,8 +296,37 @@ const StyledContainer = styled.div`
   }
 `;
 
+const StyledEditIconWrapper = styled.div`
+  width: 18px;
+  height: 18px;
+  background-color: ${colors.faint};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+`;
+
+const StyledCommunityTitleWrapper = styled(HStack)`
+  position: relative;
+  ${StyledEditIconWrapper} {
+    position: absolute;
+    right: -24px;
+    bottom: 4px;
+  }
+`;
+
 const StyledDescriptionWrapper = styled(VStack)`
-  padding-top: 4px;
+  position: relative;
+  padding: 8px 56px 8px 8px;
+  background-color: ${colors.offWhite};
+
+  ${StyledEditIconWrapper} {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
 `;
 
 const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
