@@ -80,7 +80,7 @@ function CommunityMetadataFormBottomSheet(
     } catch (error) {
       setStatus('ERROR');
     }
-  }, [community.dbid, community.name, message]);
+  }, [community.dbid, community.name, message, pushToast]);
 
   return (
     <GalleryBottomSheetModal
