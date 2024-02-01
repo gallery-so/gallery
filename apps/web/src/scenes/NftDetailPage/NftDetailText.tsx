@@ -346,7 +346,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
             eventContext={contexts['NFT Detail']}
           >
             <StyledBookmarkButtonContainer active={hasViewerAdmiredToken} gap={8} align="center">
-              <BookmarkIcon isActive={hasViewerAdmiredToken} />
+              <BookmarkIcon isActive={hasViewerAdmiredToken} colorScheme="blue" />
               {hasViewerAdmiredToken ? 'Bookmarked' : 'Bookmark'}
             </StyledBookmarkButtonContainer>
           </StyledBookmarkButton>

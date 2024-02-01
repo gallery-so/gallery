@@ -20,6 +20,8 @@ type BookmarksPageProps = {
   queryRef: bookmarksPageFragment$key;
 };
 
+export const BOOKMARKS_PER_PAGE = 12;
+
 function BookmarksPage({ queryRef }: BookmarksPageProps) {
   const query = useFragment(
     graphql`
@@ -76,7 +78,7 @@ export default function Bookmarks({ username }: BookmarksProps) {
       username,
       sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-      bookmarksFirst: 12,
+      bookmarksFirst: BOOKMARKS_PER_PAGE,
     }
   );
 

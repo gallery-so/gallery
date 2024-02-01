@@ -1,25 +1,30 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+import { Button } from '~/components/core/Button/Button';
 import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TIMEOUT_MS,
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
+
+import { ToastButtonProps } from './ToastContext';
 
 type Props = {
   message: string;
   onClose?: () => void;
   autoClose?: boolean;
   variant?: 'success' | 'error';
+  buttonProps?: ToastButtonProps;
 };
 
 export function AnimatedToast({
@@ -27,6 +32,7 @@ export function AnimatedToast({
   onClose = noop,
   autoClose = true,
   variant = 'success',
+  buttonProps,
 }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
@@ -55,7 +61,7 @@ export function AnimatedToast({
 
   return (
     <_Animate isActive={isActive}>
-      <Toast message={message} onClose={handleClose} variant={variant} />
+      <Toast message={message} onClose={handleClose} variant={variant} buttonProps={buttonProps} />
     </_Animate>
   );
 }
@@ -85,10 +91,12 @@ const _Animate = styled.div<{ isActive: boolean }>`
   bottom: 16px;
 `;
 
-function Toast({ message, onClose, variant }: Props) {
+function Toast({ message, onClose, variant, buttonProps }: Props) {
   const handleClose = useCallback(() => {
     onClose?.();
   }, [onClose]);
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
     <ToastContainer>
@@ -98,13 +106,20 @@ function Toast({ message, onClose, variant }: Props) {
             <AlertIcon />
           </StyledAlertIcon>
         )}
-        <StyledMessage>
-          <Markdown
-            text={message}
-            // we wouldn't render a link in a toast
-            eventContext={null}
-          />
-        </StyledMessage>
+        <HStack gap={isMobile ? 16 : 64} align="center">
+          <StyledMessage>
+            <Markdown
+              text={message}
+              // we wouldn't render a link in a toast
+              eventContext={null}
+            />
+          </StyledMessage>
+          {buttonProps && (
+            <StyledButton onClick={buttonProps.onClick} {...buttonProps.eventProperties}>
+              <StyledButtonText color={colors.white}>{buttonProps.label}</StyledButtonText>
+            </StyledButton>
+          )}
+        </HStack>
         <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>
     </ToastContainer>
@@ -134,4 +149,14 @@ const StyledAlertIcon = styled(VStack)`
 
 const StyledMessage = styled(BaseM)`
   overflow: hidden; // prevent dynamic content from extending beyond toast
+`;
+
+const StyledButton = styled(Button)`
+  padding: 4px 32px;
+  border-radius: 2px;
+`;
+
+const StyledButtonText = styled(TitleXS)`
+  text-transform: capitalize;
+  font-weight: 700;
 `;

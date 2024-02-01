@@ -38,8 +38,8 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     graphql`
       fragment CollectionNavbarFragment on Query {
         ...CollectionRightContentFragment
-
         ...NavActionFollowQueryFragment
+        ...GalleryNavLinksQueryFragment
 
         userByUsername(username: $username) @required(action: THROW) {
           ...GalleryNavLinksFragment
@@ -113,7 +113,9 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
       </NavbarLeftContent>
 
       <NavbarCenterContent>
-        {!isMobile && <GalleryNavLinks username={username} queryRef={query.userByUsername} />}
+        {!isMobile && (
+          <GalleryNavLinks username={username} userRef={query.userByUsername} queryRef={query} />
+        )}
       </NavbarCenterContent>
 
       <NavbarRightContent>

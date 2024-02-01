@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
+import { GalleryNavLinksQueryFragment$key } from '~/generated/GalleryNavLinksQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -13,13 +14,15 @@ import { NavbarLink } from '../NavbarLink';
 
 type Props = {
   username: string;
-  queryRef: GalleryNavLinksFragment$key;
+  userRef: GalleryNavLinksFragment$key;
+  queryRef: GalleryNavLinksQueryFragment$key;
 };
 
-export function GalleryNavLinks({ username, queryRef }: Props) {
-  const query = useFragment(
+export function GalleryNavLinks({ username, userRef, queryRef }: Props) {
+  const user = useFragment(
     graphql`
       fragment GalleryNavLinksFragment on GalleryUser {
+        dbid
         galleries {
           __typename
           hidden
@@ -38,19 +41,53 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
             total
           }
         }
+        bookmarksCount: tokensBookmarked(first: 1, after: null)
+          @connection(key: "GalleryNavLinksFragment_bookmarksCount") {
+          edges {
+            __typename
+          }
+          pageInfo {
+            total
+          }
+        }
+      }
+    `,
+    userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment GalleryNavLinksQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
       }
     `,
     queryRef
   );
 
-  const totalFollowers = query.followers?.length ?? 0;
+  const isViewingSignedInUser = useMemo(() => {
+    return Boolean(
+      query.viewer &&
+        'user' in query.viewer &&
+        query.viewer?.user?.dbid &&
+        query.viewer?.user?.dbid === user.dbid
+    );
+  }, [query.viewer, user.dbid]);
+
+  const totalFollowers = user.followers?.length ?? 0;
   const totalGalleries = useMemo(() => {
     return (
-      removeNullValues(query.galleries?.map((gallery) => (gallery?.hidden ? null : gallery)))
+      removeNullValues(user.galleries?.map((gallery) => (gallery?.hidden ? null : gallery)))
         .length ?? 0
     );
-  }, [query.galleries]);
-  const totalPosts = query?.feed?.pageInfo?.total ?? 0;
+  }, [user.galleries]);
+  const totalPosts = user?.feed?.pageInfo?.total ?? 0;
+  const totalBookmarks = user?.bookmarksCount?.pageInfo?.total ?? 0;
 
   const { pathname } = useRouter();
 
@@ -103,19 +140,21 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         </HStack>
       </NavbarLink>
 
-      <NavbarLink
-        to={bookmarksRoute}
-        active={pathname === bookmarksRoute.pathname}
-        eventElementId="Gallery Navbar Link"
-        eventName="Gallery Navbar Link Click"
-        properties={{ tab: 'bookmarks' }}
-        eventContext={contexts.UserGallery}
-      >
-        <HStack gap={4} align="baseline">
-          <span>Bookmarks</span>
-          {totalPosts > 0 && <BaseS>{totalPosts}</BaseS>}
-        </HStack>
-      </NavbarLink>
+      {isViewingSignedInUser && (
+        <NavbarLink
+          to={bookmarksRoute}
+          active={pathname === bookmarksRoute.pathname}
+          eventElementId="Gallery Navbar Link"
+          eventName="Gallery Navbar Link Click"
+          properties={{ tab: 'bookmarks' }}
+          eventContext={contexts.UserGallery}
+        >
+          <HStack gap={4} align="baseline">
+            <span>Bookmarks</span>
+            {totalBookmarks > 0 && <BaseS>{totalBookmarks}</BaseS>}
+          </HStack>
+        </NavbarLink>
+      )}
 
       <NavbarLink
         to={followersRoute}

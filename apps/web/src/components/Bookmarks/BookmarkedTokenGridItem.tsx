@@ -1,29 +1,37 @@
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import colors from 'shared/theme/colors';
+import { truncateAddress } from 'shared/utils/wallet';
 import styled from 'styled-components';
 
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { BookmarkedTokenGridItemFragment$key } from '~/generated/BookmarkedTokenGridItemFragment.graphql';
-import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
+import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 
-import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM } from '../core/Text/Text';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
+import { VStack } from '../core/Spacer/Stack';
+import { BaseM, TitleXS } from '../core/Text/Text';
 import NftPreview from '../NftPreview/NftPreview';
 
 type Props = {
   tokenRef: BookmarkedTokenGridItemFragment$key;
+  onNftLoad?: () => void;
 };
-const TOKEN_SIZE = 300;
 
-export default function BookmarkedTokenGridItem({ tokenRef }: Props) {
+export default function BookmarkedTokenGridItem({ tokenRef, onNftLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment BookmarkedTokenGridItemFragment on Token {
         definition {
           name
-          media @required(action: THROW) {
-            ... on Media {
-              ...useContainedDimensionsForTokenFragment
+          community {
+            name
+            ...getCommunityUrlFromCommunityFragment
+          }
+          contract {
+            contractAddress {
+              address
             }
           }
         }
@@ -33,20 +41,26 @@ export default function BookmarkedTokenGridItem({ tokenRef }: Props) {
     tokenRef
   );
 
-  const resultDimensions = useContainedDimensionsForToken({
-    mediaRef: token.definition.media,
-    tokenSize: TOKEN_SIZE,
-  });
+  const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
+  const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
+
+  const collectionName = useMemo(
+    () => token.definition.community?.name || truncateAddress(contractAddress),
+    [contractAddress, token.definition.community?.name]
+  );
 
   return (
     <VStack gap={8} justify="flex-end">
       <div>
         <ShimmerProvider>
-          <NftPreview tokenRef={token} eventContext={contexts.UserGallery} />
+          <NftPreview tokenRef={token} eventContext={contexts.UserGallery} onLoad={onNftLoad} />
         </ShimmerProvider>
       </div>
       <div>
-        <StyledItemName>{token?.definition?.name} </StyledItemName>
+        <TitleXS color={colors.metal}>COLLECTION</TitleXS>
+        <GalleryLink to={communityUrl}>
+          <StyledItemName>{collectionName}</StyledItemName>
+        </GalleryLink>
       </div>
     </VStack>
   );
@@ -58,4 +72,7 @@ const StyledItemName = styled(BaseM)`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-height: 40px;
+  max-height: 40px;
+  font-weight: 700;
 `;

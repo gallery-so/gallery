@@ -66,6 +66,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         }
         ...UserNameAndDescriptionHeaderQueryFragment
         ...UserTwitterSectionQueryFragment
+        ...GalleryNavLinksQueryFragment
       }
     `,
     queryRef
@@ -102,7 +103,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         )}
         {isMobile && (
           <MobileNavLinks align="center" justify="center">
-            <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
+            <GalleryNavLinks username={user.username ?? ''} userRef={user} queryRef={query} />
           </MobileNavLinks>
         )}
       </VStack>

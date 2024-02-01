@@ -1,9 +1,12 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
+import { contexts } from 'shared/analytics/constants';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useAdmireTokenMutation } from '~/generated/useAdmireTokenMutation.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
@@ -27,6 +30,8 @@ export default function useAdmireToken() {
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
+  const router = useRouter();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const admireToken = useCallback(
     async (
@@ -51,7 +56,21 @@ export default function useAdmireToken() {
       function pushSuccessToast() {
         pushToast({
           autoClose: true,
-          message: `Added ${tokenName ?? 'this item'} to Bookmarks`,
+          message: `Added **${tokenName ?? 'this item'}** to Bookmarks`,
+          buttonProps: {
+            label: isMobile ? 'View' : 'View Bookmarks',
+            onClick: () => {
+              router.push({
+                pathname: '/[username]/bookmarks',
+                query: { username: optimisticUserInfo.username },
+              });
+            },
+            eventProperties: {
+              eventElementId: 'View Bookmarks Button on Success Toast',
+              eventName: 'Clicked View Bookmarks Button on Success Toast',
+              eventContext: contexts.Toast,
+            },
+          },
         });
       }
 
@@ -151,7 +170,7 @@ export default function useAdmireToken() {
         }
       }
     },
-    [admire, pushToast, reportError]
+    [admire, isMobile, pushToast, reportError, router]
   );
 
   return [admireToken] as const;
