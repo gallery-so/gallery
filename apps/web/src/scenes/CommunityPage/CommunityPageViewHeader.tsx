@@ -199,7 +199,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     const buttonText = showExpandedDescription ? 'Show Less' : 'Show More';
 
     return (
-      <StyledDescriptionWrapper gap={8}>
+      <StyledDescriptionWrapper gap={8} onClick={handleEditClick}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
           <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
@@ -213,7 +213,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
           />
         )}
 
-        <StyledEditIconWrapper onClick={handleEditClick}>
+        <StyledEditIconWrapper>
           <EditPencilIcon />
         </StyledEditIconWrapper>
       </StyledDescriptionWrapper>
@@ -252,7 +252,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   return (
     <VStack gap={24}>
       <StyledContainer>
-        <StyledCommunityTitleWrapper gap={12} align="center">
+        <HStack gap={12} align="center">
           <div
             onMouseEnter={() => setIsProfilePictureHovered(true)}
             onMouseLeave={() => setIsProfilePictureHovered(false)}
@@ -265,13 +265,15 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
               editIconSize={18}
             />
           </div>
-          <TitleL>{displayName}</TitleL>
-          {badgeURL && <StyledBadge src={badgeURL} />}
+          <StyledCommunityNameWrapper onClick={handleEditClick} gap={12} align="center">
+            <TitleL>{displayName}</TitleL>
+            {badgeURL && <StyledBadge src={badgeURL} />}
 
-          <StyledEditIconWrapper onClick={handleEditClick}>
-            <EditPencilIcon />
-          </StyledEditIconWrapper>
-        </StyledCommunityTitleWrapper>
+            <StyledEditIconWrapper>
+              <EditPencilIcon />
+            </StyledEditIconWrapper>
+          </StyledCommunityNameWrapper>
+        </HStack>
         <HStack gap={48}>
           <CommunityPageMetadata communityRef={community} queryRef={query} />
           {ExternalLinks}
@@ -306,21 +308,38 @@ const StyledEditIconWrapper = styled.div`
   justify-content: center;
   padding: 4px;
   cursor: pointer;
+
+  display: none;
 `;
 
-const StyledCommunityTitleWrapper = styled(HStack)`
+const StyledCommunityNameWrapper = styled(HStack)`
   position: relative;
+  cursor: pointer;
+
+  &:hover {
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
   ${StyledEditIconWrapper} {
     position: absolute;
     right: -24px;
-    bottom: 4px;
+    bottom: 0px;
   }
 `;
 
 const StyledDescriptionWrapper = styled(VStack)`
   position: relative;
   padding: 8px 56px 8px 8px;
-  background-color: ${colors.offWhite};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${colors.offWhite};
+
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
 
   ${StyledEditIconWrapper} {
     position: absolute;
