@@ -24,7 +24,6 @@ import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftPreviewAsset from './NftPreviewAsset';
-// import NftPreviewBookmarkLabel from './NftPreviewBookmarkLabel';
 import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
@@ -96,7 +95,6 @@ function NftPreview({
         ...NftDetailAnimationFragment
         ...useGetPreviewImagesSingleFragment
         ...NftDetailGifFragment
-        # ...NftPreviewBookmarkLabelFragment
       }
     `,
     tokenRef
@@ -229,11 +227,6 @@ function NftPreview({
           fullHeight={fullHeight}
           data-tokenid={token.dbid}
         >
-          {/* {isMobileOrLargeMobile ? null : (
-            <StyledNftHeader>
-              <StyledBookmarkLabel tokenRef={token} />
-            </StyledNftHeader>
-          )} */}
           {PreviewAsset}
 
           {isMobileOrLargeMobile ? null : (
@@ -255,22 +248,6 @@ const NftFailureWrapper = styled.div`
 const StyledNftLabel = styled(NftPreviewLabel)`
   transition: transform ${transitions.cubic};
   transform: translateY(5px);
-`;
-
-// const StyledBookmarkLabel = styled(NftPreviewBookmarkLabel)`
-//   transition: transform ${transitions.cubic};
-//   transform: translateY(-5px);
-// `;
-
-const StyledNftHeader = styled.div`
-  position: absolute;
-  top: 60px;
-  right: 0;
-  width: 100%;
-
-  transition: opacity ${transitions.cubic};
-
-  // opacity: 0;
 `;
 
 const StyledNftFooter = styled.div`
@@ -303,17 +280,8 @@ const StyledNftPreview = styled.div<{
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride};`}
 
-  &:hover {
-    ${StyledNftLabel} {
-      transform: translateY(0px);
-    }
-
-    ${StyledNftFooter} {
-      opacity: 1;
-    }
-    ${StyledNftHeader} {
-      opacity: 1;
-    }
+  &:hover ${StyledNftFooter} {
+    opacity: 1;
   }
 `;
 

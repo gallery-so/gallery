@@ -65,7 +65,7 @@ export default function BookmarkedTokenGridItem({ tokenRef, onNftLoad }: Props) 
         <TitleXS color={colors.metal}>COLLECTION</TitleXS>
         {communityUrl && (
           <GalleryLink to={communityUrl}>
-            <StyledItemName>{collectionName}</StyledItemName>
+            <StyledCollectionName>{collectionName}</StyledCollectionName>
           </GalleryLink>
         )}
       </div>
@@ -73,7 +73,7 @@ export default function BookmarkedTokenGridItem({ tokenRef, onNftLoad }: Props) 
   );
 }
 
-const StyledItemName = styled(BaseM)`
+const StyledCollectionName = styled(BaseM)`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

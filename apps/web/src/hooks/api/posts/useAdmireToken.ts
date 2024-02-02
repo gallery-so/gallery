@@ -56,7 +56,7 @@ export default function useAdmireToken() {
       function pushSuccessToast() {
         pushToast({
           autoClose: true,
-          message: `Added **${tokenName ?? 'this item'}** to Bookmarks`,
+          message: `Added ${tokenName ? `**${tokenName}**` : 'this item'} to Bookmarks`,
           buttonProps: {
             label: isMobile ? 'View' : 'View Bookmarks',
             onClick: () => {

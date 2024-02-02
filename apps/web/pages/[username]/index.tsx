@@ -70,7 +70,6 @@ const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
   justify-content: center;
   min-height: 100vh;
 
-  // margin: 0 ${pageGutter.mobile}px 24px;
   margin: 0 0 24px;
   padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
 
