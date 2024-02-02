@@ -133,12 +133,10 @@ export default function BookmarkedTokenGrid({ userRef }: Props) {
 
   return (
     <StyledContainer gap={24}>
-      {!isMobile && (
-        <HStack gap={4} align="center">
-          <StyledTitle>Bookmarks</StyledTitle>
-          <BookmarkIcon colorScheme="black" isActive={true} width={16} />
-        </HStack>
-      )}
+      <HStack gap={4} align="center">
+        <StyledTitle>Bookmarks</StyledTitle>
+        <BookmarkIcon colorScheme="black" isActive={true} width={16} />
+      </HStack>
 
       {bookmarkedTokens.length ? (
         <WindowScroller>
@@ -199,7 +197,12 @@ export default function BookmarkedTokenGrid({ userRef }: Props) {
 }
 
 const StyledContainer = styled(VStack)`
+  padding-top: 24px;
   width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 0;
+  }
 `;
 
 const StyledTitle = styled(TitleDiatypeM)`
