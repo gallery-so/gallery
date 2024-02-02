@@ -68,11 +68,7 @@ export default function GalleriesPage({ queryRef }: Props) {
   const user = query.userByUsername;
 
   const [sortedGalleryIds, setSortedGalleryIds] = useState(
-    nonNullGalleries
-      .sort((a, b) => {
-        return a.position.localeCompare(b.position);
-      })
-      .map((gallery) => gallery.dbid)
+    nonNullGalleries.sort().map((gallery) => gallery.dbid)
   );
 
   const featuredGalleryId = user?.featuredGallery?.id ?? null;
