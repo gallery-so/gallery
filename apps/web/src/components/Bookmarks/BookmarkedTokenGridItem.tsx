@@ -41,7 +41,12 @@ export default function BookmarkedTokenGridItem({ tokenRef, onNftLoad }: Props) 
     tokenRef
   );
 
-  const communityUrl = getCommunityUrlFromCommunity(token.definition.community);
+  const communityUrl = useMemo(
+    () =>
+      token.definition.community ? getCommunityUrlFromCommunity(token.definition.community) : '',
+    [token.definition.community]
+  );
+
   const contractAddress = token.definition.contract?.contractAddress?.address ?? '';
 
   const collectionName = useMemo(
@@ -58,9 +63,11 @@ export default function BookmarkedTokenGridItem({ tokenRef, onNftLoad }: Props) 
       </div>
       <div>
         <TitleXS color={colors.metal}>COLLECTION</TitleXS>
-        <GalleryLink to={communityUrl}>
-          <StyledItemName>{collectionName}</StyledItemName>
-        </GalleryLink>
+        {communityUrl && (
+          <GalleryLink to={communityUrl}>
+            <StyledItemName>{collectionName}</StyledItemName>
+          </GalleryLink>
+        )}
       </div>
     </VStack>
   );

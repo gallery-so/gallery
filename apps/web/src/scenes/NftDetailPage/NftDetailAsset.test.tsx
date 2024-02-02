@@ -242,7 +242,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'EnsProfileImage',
       },
       wallets: [],
-      following: [],
       primaryWallet: {
         id: 'Token:testWalletId',
         dbid: 'testWalletId',
@@ -252,7 +251,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           address: 'someAddress',
         },
       },
-      followers: [],
     },
   },
 };
