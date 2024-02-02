@@ -35,6 +35,7 @@ export function CommunityMetadataFormModal({ communityRef }: Props) {
   const [status, setStatus] = useState<'SUBMITTING' | 'SUCCESS' | 'ERROR' | undefined>();
 
   const handleSubmit = useCallback(async () => {
+    if (!message) return;
     setStatus('SUBMITTING');
 
     try {
