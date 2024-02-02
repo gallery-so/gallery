@@ -68,7 +68,6 @@ export function extractRelevantMetadataFromCommunity(
     const chain = community.subtype.communityKey.contract.chain;
     const address = community.subtype.communityKey.contract.address;
 
-    // @ts-expect-error: relay error, no need to check for %future added value
     result.chain = chain ?? 'Ethereum';
     result.contractAddress = address ?? '';
 

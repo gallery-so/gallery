@@ -26,7 +26,7 @@ export default function useRemoveTokenAdmire() {
   const reportError = useReportError();
 
   const removeTokenAdmire = useCallback(
-    async (tokenId: string, tokenDbid: string, removedAdmireDbid: string) => {
+    async (tokenId: string, tokenDbid: string, removedAdmireDbid: string, viewerDbid: string) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         tokenId,
         'Interactions_previewAdmires'
@@ -47,6 +47,7 @@ export default function useRemoveTokenAdmire() {
         response
       ) => {
         if (response?.removeAdmire?.__typename === 'RemoveAdmirePayload') {
+          // Update the total count of admires in the interactions list
           const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
 
@@ -54,6 +55,28 @@ export default function useRemoveTokenAdmire() {
             const relayId = `Admire:${response.removeAdmire.admireID}`;
 
             store.delete(relayId);
+          }
+
+          // Update the total count of bookmarks in the navbar tab
+          const bookmarksCountConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${viewerDbid}`,
+            'GalleryNavLinksFragment_bookmarksCount'
+          );
+          const bookmarksCountStore = store.get(bookmarksCountConnectionID);
+          if (bookmarksCountStore) {
+            const pageInfo = bookmarksCountStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
+          }
+
+          // Remove the bookmarked token from the bookmarks list displayed on the Bookmarks tab (if connection exists in store)
+          const bookmarkedTokensConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${viewerDbid}`,
+            'BookmarkedTokenGridFragment_tokensBookmarked'
+          );
+          const bookmarkedTokensConnection = store.get(bookmarkedTokensConnectionID);
+          const tokenRelayId = `Token:${tokenDbid}`;
+          if (bookmarkedTokensConnection) {
+            ConnectionHandler.deleteNode(bookmarkedTokensConnection, tokenRelayId);
           }
         }
       };

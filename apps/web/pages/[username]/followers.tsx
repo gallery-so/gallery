@@ -10,6 +10,7 @@ import { followersFollowersPageFragment$key } from '~/generated/followersFollowe
 import { followersQuery } from '~/generated/followersQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { MobileSpacingContainer } from '~/scenes/UserGalleryPage/UserGallery';
 import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
@@ -44,9 +45,9 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
     <GalleryPageSpacing>
       <VStack gap={isMobile ? 0 : 24}>
         <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
-        <VStack align="center">
+        <MobileSpacingContainer align="center">
           <FollowList queryRef={query} userRef={query.userByUsername} />
-        </VStack>
+        </MobileSpacingContainer>
       </VStack>
     </GalleryPageSpacing>
   );

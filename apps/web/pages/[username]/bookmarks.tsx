@@ -10,6 +10,7 @@ import { bookmarksPageFragment$key } from '~/generated/bookmarksPageFragment.gra
 import { bookmarksQuery } from '~/generated/bookmarksQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { MobileSpacingContainer } from '~/scenes/UserGalleryPage/UserGallery';
 import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
@@ -44,9 +45,9 @@ function BookmarksPage({ queryRef }: BookmarksPageProps) {
     <GalleryPageSpacing>
       <VStack gap={isMobile ? 0 : 24}>
         <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
-        <VStack align="center">
+        <MobileSpacingContainer align="center">
           <BookmarkedTokenGrid userRef={query.userByUsername} />
-        </VStack>
+        </MobileSpacingContainer>
       </VStack>
     </GalleryPageSpacing>
   );

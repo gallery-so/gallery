@@ -16,9 +16,10 @@ type Props = {
   username: string;
   userRef: GalleryNavLinksFragment$key;
   queryRef: GalleryNavLinksQueryFragment$key;
+  className?: string;
 };
 
-export function GalleryNavLinks({ username, userRef, queryRef }: Props) {
+export function GalleryNavLinks({ username, userRef, queryRef, className }: Props) {
   const user = useFragment(
     graphql`
       fragment GalleryNavLinksFragment on GalleryUser {
@@ -98,7 +99,7 @@ export function GalleryNavLinks({ username, userRef, queryRef }: Props) {
   const bookmarksRoute: Route = { pathname: '/[username]/bookmarks', query: { username } };
 
   return (
-    <HStack gap={8}>
+    <HStack gap={8} className={className}>
       <NavbarLink
         to={featuredRoute}
         active={pathname === featuredRoute.pathname}

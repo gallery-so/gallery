@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
@@ -11,7 +12,6 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
@@ -96,17 +96,15 @@ function Toast({ message, onClose, variant, buttonProps }: Props) {
     onClose?.();
   }, [onClose]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
     <ToastContainer>
       <StyledToast align="center" gap={8} variant={variant}>
-        {variant === 'error' && (
-          <StyledAlertIcon>
-            <AlertIcon />
-          </StyledAlertIcon>
-        )}
-        <HStack gap={isMobile ? 16 : 64} align="center">
+        <StyledToastContent gap={16} align="center">
+          {variant === 'error' && (
+            <StyledAlertIcon>
+              <AlertIcon />
+            </StyledAlertIcon>
+          )}
           <StyledMessage>
             <Markdown
               text={message}
@@ -119,8 +117,8 @@ function Toast({ message, onClose, variant, buttonProps }: Props) {
               <StyledButtonText color={colors.white}>{buttonProps.label}</StyledButtonText>
             </StyledButton>
           )}
-        </HStack>
-        <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
+          <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
+        </StyledToastContent>
       </StyledToast>
     </ToastContainer>
   );
@@ -142,6 +140,10 @@ const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
   pointer-events: auto;
 `;
 
+const StyledToastContent = styled(HStack)`
+  width: 100%;
+`;
+
 const StyledAlertIcon = styled(VStack)`
   height: 24px;
   width: 24px;
@@ -152,11 +154,16 @@ const StyledMessage = styled(BaseM)`
 `;
 
 const StyledButton = styled(Button)`
+  margin-left: 16px;
   padding: 4px 32px;
   border-radius: 2px;
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: 64px; // use margin instead of gap because all of the toast's content children needed to be direct siblings to shrink to fit, and we don't want a 64px gap between everything
+  }
 `;
 
 const StyledButtonText = styled(TitleXS)`
   text-transform: capitalize;
   font-weight: 700;
+  white-space: nowrap;
 `;

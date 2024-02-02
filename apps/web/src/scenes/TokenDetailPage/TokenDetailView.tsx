@@ -3,7 +3,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
 import { TokenDetailViewQuery } from '~/generated/TokenDetailViewQuery.graphql';
@@ -21,11 +20,7 @@ type LoadableTokenDetailViewProps = {
 export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDetailViewProps) {
   const query = useLazyLoadQuery<TokenDetailViewQuery>(
     graphql`
-      query TokenDetailViewQuery(
-        $tokenId: DBID!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query TokenDetailViewQuery($tokenId: DBID!) {
         token: tokenById(id: $tokenId) {
           ... on ErrTokenNotFound {
             __typename
@@ -39,7 +34,7 @@ export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDeta
         ...TokenDetailViewQueryFragment
       }
     `,
-    { tokenId, interactionsFirst: NOTES_PER_PAGE }
+    { tokenId }
   );
 
   if (!query.token || query.token.__typename !== 'Token') {

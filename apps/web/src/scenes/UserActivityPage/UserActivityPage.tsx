@@ -9,6 +9,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
+import { MobileSpacingContainer } from '../UserGalleryPage/UserGallery';
 import UserGalleryHeader from '../UserGalleryPage/UserGalleryHeader';
 import UserActivity from './UserActivity';
 
@@ -51,7 +52,9 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
           {query.userByUsername && (
             <UserGalleryHeader queryRef={query} userRef={query.userByUsername} />
           )}
-          <UserActivity queryRef={query} />
+          <MobileSpacingContainer>
+            <UserActivity queryRef={query} />
+          </MobileSpacingContainer>
         </VStack>
       </GalleryPageSpacing>
     </>

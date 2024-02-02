@@ -4,7 +4,6 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { TokenDetailPageQuery } from '~/generated/TokenDetailPageQuery.graphql';
 
 import NftDetailPageFallback from '../NftDetailPage/NftDetailPageFallback';
@@ -17,11 +16,7 @@ type TokenDetailPageProps = {
 function TokenDetailPage({ tokenId }: TokenDetailPageProps) {
   const query = useLazyLoadQuery<TokenDetailPageQuery>(
     graphql`
-      query TokenDetailPageQuery(
-        $tokenId: DBID!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query TokenDetailPageQuery($tokenId: DBID!) {
         token: tokenById(id: $tokenId) {
           ... on ErrTokenNotFound {
             __typename
@@ -34,7 +29,7 @@ function TokenDetailPage({ tokenId }: TokenDetailPageProps) {
         ...TokenDetailViewQueryFragment
       }
     `,
-    { tokenId, interactionsFirst: NOTES_PER_PAGE }
+    { tokenId }
   );
 
   if (!query.token || query.token.__typename !== 'Token') {

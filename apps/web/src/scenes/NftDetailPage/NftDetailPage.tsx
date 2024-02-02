@@ -10,7 +10,6 @@ import { Directions } from '~/components/core/enums';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from '~/components/core/transitions';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailPageFragment$key } from '~/generated/NftDetailPageFragment.graphql';
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
@@ -240,13 +239,7 @@ type NftDetailPageWrapperProps = {
 function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPageWrapperProps) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      query NftDetailPageQuery(
-        $tokenId: DBID!
-        $collectionId: DBID!
-        $username: String!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!, $username: String!) {
         collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ... on ErrTokenNotFound {
             __typename
@@ -282,7 +275,7 @@ function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPage
         ...NftDetailPageQueryFragment
       }
     `,
-    { tokenId, collectionId, username, interactionsFirst: NOTES_PER_PAGE }
+    { tokenId, collectionId, username }
   );
 
   const collectionHasToken = useMemo(() => {

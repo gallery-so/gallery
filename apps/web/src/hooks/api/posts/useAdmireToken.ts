@@ -86,9 +86,37 @@ export default function useAdmireToken() {
         response
       ) => {
         if (response?.admireToken?.__typename === 'AdmireTokenPayload') {
+          // Update the total count of admires in the interactions list
           const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+          // Update the total count of bookmarks in the navbar tab
+          const bookmarksCountConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${optimisticUserInfo.dbid}`,
+            'GalleryNavLinksFragment_bookmarksCount'
+          );
+          const bookmarksCountStore = store.get(bookmarksCountConnectionID);
+          if (bookmarksCountStore) {
+            const pageInfo = bookmarksCountStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) + 1, 'total');
+          }
+
+          // Add the bookmarked token to the bookmarks list displayed on the Bookmarks tab (if connection exists in store)
+          const bookmarkedTokensConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${optimisticUserInfo.dbid}`,
+            'BookmarkedTokenGridFragment_tokensBookmarked'
+          );
+          const bookmarkedTokensConnection = store.get(bookmarkedTokensConnectionID);
+          const newBookmarkedToken = store.getRootField('admireToken')?.getLinkedRecord('token');
+          if (newBookmarkedToken && bookmarkedTokensConnection) {
+            const edge = ConnectionHandler.createEdge(
+              store,
+              bookmarkedTokensConnection,
+              newBookmarkedToken,
+              'TokenBookmarkEdge'
+            );
+            ConnectionHandler.insertEdgeAfter(bookmarkedTokensConnection, edge);
+          }
         }
       };
 

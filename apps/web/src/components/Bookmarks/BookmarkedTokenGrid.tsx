@@ -9,6 +9,8 @@ import {
   ListRowRenderer,
   WindowScroller,
 } from 'react-virtualized';
+import { contexts } from 'shared/analytics/constants';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { BookmarkedTokenGridFragment$key } from '~/generated/BookmarkedTokenGridFragment.graphql';
@@ -17,8 +19,10 @@ import BookmarkIcon from '~/icons/BookmarkIcon';
 import { BOOKMARKS_PER_PAGE } from '~/pages/[username]/bookmarks';
 
 import breakpoints from '../core/breakpoints';
+import { Button } from '../core/Button/Button';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { TitleDiatypeM } from '../core/Text/Text';
+import { TitleDiatypeM, TitleM, TitleXS } from '../core/Text/Text';
 import BookmarkedTokenGridItem from './BookmarkedTokenGridItem';
 
 const ITEMS_PER_ROW_MOBILE = 2;
@@ -29,13 +33,6 @@ type Props = {
 };
 
 export default function BookmarkedTokenGrid({ userRef }: Props) {
-  // const query = useFragment(
-  //   graphql`
-  //     fragment BookmarkedTokenGridQueryFragment on Query {}
-  //       `,
-  //   queryRef
-  // );
-
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment BookmarkedTokenGridFragment on GalleryUser
@@ -134,44 +131,68 @@ export default function BookmarkedTokenGrid({ userRef }: Props) {
   const rowCount = hasNext ? groupedTokens.length + 1 : groupedTokens.length;
 
   return (
-    <StyledContainer>
-      <HStack gap={4} align="center">
-        <StyledTitle>Bookmarks</StyledTitle>
-        <BookmarkIcon colorScheme="black" isActive={true} width={16} />
-      </HStack>
+    <StyledContainer gap={24}>
+      {!isMobile && (
+        <HStack gap={4} align="center">
+          <StyledTitle>Bookmarks</StyledTitle>
+          <BookmarkIcon colorScheme="black" isActive={true} width={16} />
+        </HStack>
+      )}
 
-      <WindowScroller>
-        {({ height, registerChild, scrollTop }) => (
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              // @ts-expect-error bad react-virtualized types
-              <div ref={registerChild}>
-                <InfiniteLoader
-                  isRowLoaded={isRowLoaded}
-                  loadMoreRows={handleLoadMore}
-                  rowCount={rowCount}
-                >
-                  {({ onRowsRendered, registerChild }) => (
-                    <div ref={(el) => registerChild(el)}>
-                      <List
-                        ref={gridRef}
-                        autoHeight
-                        width={width}
-                        height={height}
-                        rowRenderer={rowRenderer}
-                        rowCount={groupedTokens.length}
-                        rowHeight={measurerCache.rowHeight}
-                        onRowsRendered={onRowsRendered}
-                        scrollTop={scrollTop}
-                      />
-                    </div>
-                  )}
-                </InfiniteLoader>
-              </div>
-            )}
-          </AutoSizer>
-        )}
-      </WindowScroller>
+      {bookmarkedTokens.length ? (
+        <WindowScroller>
+          {({ height, registerChild, scrollTop }) => (
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                // @ts-expect-error bad react-virtualized types
+                <div ref={registerChild}>
+                  <InfiniteLoader
+                    isRowLoaded={isRowLoaded}
+                    loadMoreRows={handleLoadMore}
+                    rowCount={rowCount}
+                  >
+                    {({ onRowsRendered, registerChild }) => (
+                      <div ref={(el) => registerChild(el)}>
+                        <List
+                          ref={gridRef}
+                          autoHeight
+                          width={width}
+                          height={height}
+                          rowRenderer={rowRenderer}
+                          rowCount={groupedTokens.length}
+                          rowHeight={measurerCache.rowHeight}
+                          onRowsRendered={onRowsRendered}
+                          scrollTop={scrollTop}
+                        />
+                      </div>
+                    )}
+                  </InfiniteLoader>
+                </div>
+              )}
+            </AutoSizer>
+          )}
+        </WindowScroller>
+      ) : (
+        <StyledEmptyState gap={32} align="center">
+          <VStack align="center">
+            <TitleM>
+              <strong>
+                You haven’t Bookmarked anything yet!{!isMobile && <br />} Tap the Bookmark icon on
+                work you like to build your collection
+              </strong>
+            </TitleM>
+          </VStack>
+          <StyledEmptyStateCtaWrapper to={{ pathname: '/home' }}>
+            <StyledEmptyStateCtaButton
+              eventElementId="Bookmarks Tab Empty State Start Exploring Button"
+              eventName="Clicked Bookmarks Tab Empty State Start Exploring Button"
+              eventContext={contexts.Bookmarks}
+            >
+              <TitleXS color={colors.white}>Start Exploring</TitleXS>
+            </StyledEmptyStateCtaButton>
+          </StyledEmptyStateCtaWrapper>
+        </StyledEmptyState>
+      )}
     </StyledContainer>
   );
 }
@@ -193,5 +214,28 @@ const StyledGridRow = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     grid-template-columns: repeat(4, 1fr);
+  }
+`;
+
+const StyledEmptyState = styled(VStack)`
+  padding: 76px 24px 0;
+  text-align: center;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
+`;
+
+const StyledEmptyStateCtaWrapper = styled(GalleryLink)`
+  width: 100%;
+  @media only screen and ${breakpoints.tablet} {
+    width: initial;
+  }
+`;
+
+const StyledEmptyStateCtaButton = styled(Button)`
+  width: 100%;
+  @media only screen and ${breakpoints.tablet} {
+    width: initial;
   }
 `;

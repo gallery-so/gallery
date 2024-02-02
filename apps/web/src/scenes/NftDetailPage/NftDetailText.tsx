@@ -6,7 +6,6 @@ import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
@@ -18,7 +17,6 @@ import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
-import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -29,18 +27,14 @@ import { AuthModal } from '~/hooks/useAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BookmarkIcon from '~/icons/BookmarkIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
-import { AdmireIcon } from '~/icons/SocializeIcons';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlFromCommunity } from '~/utils/getCommunityUrl';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
-
-import { AdmireTokenModal } from './AdmireTokenModal';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -86,25 +80,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
           dbid
         }
 
-        previewAdmires: admires(last: 5) @connection(key: "Interactions_previewAdmires") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              __typename
-              admirer {
-                dbid
-                username
-                ...ProfilePictureStackFragment
-              }
-            }
-          }
-        }
-
         ...NftAdditionalDetailsFragment
         ...extractRelevantMetadataFromTokenFragment
-        ...AdmireTokenModalFragment
         ...MintLinkButtonFragment
       }
     `,
@@ -117,11 +94,13 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         viewer {
           ... on Viewer {
             __typename
+            user {
+              dbid
+            }
           }
         }
         ...useOptimisticUserInfoFragment
         ...useAuthModalFragment
-        ...AdmireTokenModalQueryFragment
       }
     `,
     queryRef
@@ -132,20 +111,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
   const info = useOptimisticUserInfo(query);
 
   const hasViewerAdmiredToken = Boolean(token.viewerAdmire);
-  const totalAdmires = token?.previewAdmires?.pageInfo?.total ?? 0;
-  const nonNullAdmires = useMemo(() => {
-    const admires = [];
-
-    for (const edge of token.previewAdmires?.edges ?? []) {
-      if (edge?.node) {
-        admires.push(edge.node.admirer);
-      }
-    }
-
-    admires.reverse();
-
-    return removeNullValues(admires);
-  }, [token.previewAdmires?.edges]);
 
   const { tokenId, name, contractName, contractAddress, chain, openseaUrl } =
     extractRelevantMetadataFromToken(token);
@@ -179,18 +144,10 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     if (!token.viewerAdmire?.dbid) {
       return;
     }
-    removeTokenAdmire(token.id, token.dbid, token.viewerAdmire.dbid);
-  }, [removeTokenAdmire, token.dbid, token.id, token.viewerAdmire?.dbid]);
+    removeTokenAdmire(token.id, token.dbid, token.viewerAdmire.dbid, query.viewer?.user?.dbid);
+  }, [query.viewer?.user?.dbid, removeTokenAdmire, token.dbid, token.id, token.viewerAdmire?.dbid]);
 
   const isMobile = useIsMobileWindowWidth();
-
-  const openAdmireModal = () =>
-    showModal({
-      content: <AdmireTokenModal queryRef={query} tokenRef={token} fullscreen={isMobile} />,
-      isFullPage: isMobile,
-      isPaddingDisabled: true,
-      headerVariant: 'standard',
-    });
 
   const breakpoint = useBreakpoint();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
@@ -278,23 +235,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         <VStack gap={8}>
           <HStack gap={8} justify="space-between">
             {name && <TitleM>{decodedTokenName}</TitleM>}
-            {/* <HStack gap={8} align="flex-start">
-              <ProfilePictureStack
-                onClick={openAdmireModal}
-                usersRef={nonNullAdmires}
-                total={totalAdmires}
-              />
-              <IconContainer
-                size="sm"
-                variant="default"
-                icon={
-                  <AdmireIcon
-                    active={hasViewerAdmiredToken}
-                    onClick={hasViewerAdmiredToken ? handleRemoveAdmire : handleAdmire}
-                  />
-                }
-              />
-            </HStack> */}
           </HStack>
           <HStack align="center" gap={4}>
             {communityUrl && token.definition.community ? (
