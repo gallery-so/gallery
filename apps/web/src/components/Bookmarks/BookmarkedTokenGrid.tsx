@@ -100,7 +100,8 @@ export default function BookmarkedTokenGrid({ userRef }: Props) {
           {({ registerChild, measure }) => (
             // @ts-expect-error Bad types from react-virtualized
             <StyledGridRow ref={registerChild} key={key} style={style}>
-              {groupedTokens[index].map((token) => (
+              {/* adding non-null assertion after groupedTokens[index] because we check if it's defined above, but typescript doesnt recognize the check*/}
+              {groupedTokens[index]!.map((token) => (
                 <BookmarkedTokenGridItem key={token.id} tokenRef={token} onNftLoad={measure} />
               ))}
             </StyledGridRow>
