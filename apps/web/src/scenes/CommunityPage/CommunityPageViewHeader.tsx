@@ -330,8 +330,13 @@ const StyledCommunityNameWrapper = styled(HStack)`
 
 const StyledDescriptionWrapper = styled(VStack)`
   position: relative;
-  padding: 8px 56px 8px 8px;
+  padding: 8px 32px 8px 0px;
   cursor: pointer;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-left: 8px;
+    padding-right: 56px;
+  }
 
   &:hover {
     background-color: ${colors.offWhite};
