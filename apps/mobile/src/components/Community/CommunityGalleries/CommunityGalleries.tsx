@@ -36,7 +36,6 @@ export function CommunityGalleries({ communityRef }: Props) {
     graphql`
       fragment CommunityGalleriesFragment on Community
       @refetchable(queryName: "CommunityGalleriesRefetchableFragment") {
-        name
         galleries(first: $galleriesFirst, after: $galleriesAfter, maxPreviews: 2)
           @connection(key: "CommunityGalleriesList_galleries") {
           edges {
@@ -79,23 +78,20 @@ export function CommunityGalleries({ communityRef }: Props) {
     return items;
   }, [nonNullGalleries]);
 
-  const renderItem = useCallback<ListRenderItem<GalleryItemList>>(
-    ({ item }) => {
-      switch (item.kind) {
-        case 'galleries-section-header':
-          return (
-            <View className="px-4 py-3">
-              <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
-                Galleries that feature {community?.name ?? 'this collection'}
-              </Typography>
-            </View>
-          );
-        case 'galleries-row-item':
-          return <CommunityGalleriesRow galleryRefs={item.galleryRefs} />;
-      }
-    },
-    [community?.name]
-  );
+  const renderItem = useCallback<ListRenderItem<GalleryItemList>>(({ item }) => {
+    switch (item.kind) {
+      case 'galleries-section-header':
+        return (
+          <View className="px-4 py-3">
+            <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm">
+              Galleries that feature this collection
+            </Typography>
+          </View>
+        );
+      case 'galleries-row-item':
+        return <CommunityGalleriesRow galleryRefs={item.galleryRefs} />;
+    }
+  }, []);
 
   const loadMore = useCallback(() => {
     if (hasNext) {
