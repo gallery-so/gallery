@@ -75,7 +75,8 @@ export const getServerSideProps: GetServerSideProps<TokenDetailPageProps> = asyn
       metaTags: tokenId
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/nft/${tokenId}`,
+            path: `/nft/${tokenId}`,
+            isFcFrameCompatible: false,
           })
         : null,
     },

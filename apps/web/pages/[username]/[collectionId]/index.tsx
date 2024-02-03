@@ -91,7 +91,8 @@ export const getServerSideProps: GetServerSideProps<CollectionGalleryProps> = as
       metaTags: collectionId
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/collection/${collectionId}`,
+            path: `/collection/${collectionId}`,
+            isFcFrameCompatible: true,
           })
         : null,
     },
