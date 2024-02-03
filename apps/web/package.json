@@ -10,6 +10,8 @@
     "@gallery-so/visitor-plugin-common": "^0.0.2",
     "@graphql-codegen/cli": "^2.11.6",
     "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-tools/mock": "^9.0.1",
+    "@graphql-tools/schema": "^10.0.2",
     "@moonrepo/cli": "^1.18.5",
     "@next/bundle-analyzer": "^13.0.4",
     "@svgr/webpack": "^5.5.0",
