@@ -152,7 +152,8 @@ export const getServerSideProps: GetServerSideProps<
       metaTags: username
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/user/${username}`,
+            path: `/user/${username}`,
+            isFcFrameCompatible: true,
           })
         : null,
     },

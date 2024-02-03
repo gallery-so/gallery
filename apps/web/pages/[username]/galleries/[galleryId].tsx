@@ -85,7 +85,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) 
       metaTags: username
         ? openGraphMetaTags({
             title: `${username} | Gallery`,
-            previewPath: `/opengraph/gallery/${galleryId}`,
+            path: `/gallery/${galleryId}`,
+            isFcFrameCompatible: false,
           })
         : null,
     },
