@@ -74,8 +74,6 @@ export default function useGlobalAnnouncementPopover({
       return;
     }
 
-    // hide on opengraph pages
-    if (asPath.includes('opengraph')) return true;
     // hide on announcements page
     if (asPath === '/announcements') return true;
     // hide on auth page

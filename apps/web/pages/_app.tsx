@@ -120,10 +120,7 @@ function VercelAnalytics() {
   return (
     <Analytics
       beforeSend={(event) => {
-        // Ignore sending noisy events related to /opengraph previews
-        if (event.url.includes('/opengraph')) {
-          return null;
-        }
+        // Can ignore sending noisy events here
         return event;
       }}
     />
