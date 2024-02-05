@@ -97,6 +97,7 @@ export default function FeedList({
     [measurerCache]
   );
 
+  console.log({ feedData });
   //Render a list item or a loading indicator.
   const rowRenderer = useCallback(
     ({
@@ -122,6 +123,7 @@ export default function FeedList({
       }
 
       if (content.__typename === 'Post') {
+        console.log('returning');
         return (
           <CellMeasurer
             cache={measurerCache}
@@ -207,7 +209,7 @@ export default function FeedList({
         <AutoSizer disableHeight>
           {({ width }) => (
             // @ts-expect-error shitty react-virtualized types
-            <div ref={registerChild}>
+            <div ref={(el) => registerChild(el)}>
               <InfiniteLoader
                 isRowLoaded={isRowLoaded}
                 loadMoreRows={handleLoadMore}
