@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
+import { CommunityHeaderQueryFragment$key } from '~/generated/CommunityHeaderQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { truncateAddress } from '~/shared/utils/wallet';
@@ -18,8 +19,9 @@ import { CommunityMetadataFormBottomSheet } from './CommunityMetadataFormBottomS
 
 type Props = {
   communityRef: CommunityHeaderFragment$key;
+  queryRef: CommunityHeaderQueryFragment$key;
 };
-export function CommunityHeader({ communityRef }: Props) {
+export function CommunityHeader({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityHeaderFragment on Community {
@@ -32,6 +34,15 @@ export function CommunityHeader({ communityRef }: Props) {
       }
     `,
     communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityHeaderQueryFragment on Query {
+        ...CommunityMetadataFormBottomSheetQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const hasCommunityDescription = Boolean(community.description);
@@ -88,7 +99,11 @@ export function CommunityHeader({ communityRef }: Props) {
         </GalleryTouchableOpacity>
       </View>
       <CommunityBottomSheet ref={bottomSheetRef} communityRef={community} />
-      <CommunityMetadataFormBottomSheet ref={formBottomSheetRef} communityRef={community} />
+      <CommunityMetadataFormBottomSheet
+        ref={formBottomSheetRef}
+        communityRef={community}
+        queryRef={query}
+      />
     </View>
   );
 }

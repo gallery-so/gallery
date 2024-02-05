@@ -8,6 +8,7 @@ import colors from 'shared/theme/colors';
 import { useToastActions } from '~/contexts/ToastContext';
 import { env } from '~/env/runtime';
 import { CommunityMetadataFormBottomSheetFragment$key } from '~/generated/CommunityMetadataFormBottomSheetFragment.graphql';
+import { CommunityMetadataFormBottomSheetQueryFragment$key } from '~/generated/CommunityMetadataFormBottomSheetQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 
 import { Button } from '../Button';
@@ -22,10 +23,11 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   communityRef: CommunityMetadataFormBottomSheetFragment$key;
+  queryRef: CommunityMetadataFormBottomSheetQueryFragment$key;
 };
 
 function CommunityMetadataFormBottomSheet(
-  { communityRef }: Props,
+  { communityRef, queryRef }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const community = useFragment(
@@ -38,10 +40,27 @@ function CommunityMetadataFormBottomSheet(
     communityRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CommunityMetadataFormBottomSheetQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
   const { bottom } = useSafeAreaPadding();
   const { pushToast } = useToastActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const userId = query.viewer?.user?.dbid;
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
@@ -62,7 +81,7 @@ function CommunityMetadataFormBottomSheet(
           },
           body: JSON.stringify({
             communityId: community.dbid,
-            communityName: community.name,
+            userId,
             message,
           }),
         }
@@ -80,7 +99,7 @@ function CommunityMetadataFormBottomSheet(
     } catch (error) {
       setStatus('ERROR');
     }
-  }, [community.dbid, community.name, message, pushToast]);
+  }, [community.dbid, message, pushToast, userId]);
 
   const isButtonDisabled = useMemo(() => {
     return status === 'SUBMITTING' || !message;
