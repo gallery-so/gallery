@@ -77,7 +77,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  const handleShowMoreClick = useCallback((e: MouseEvent) => {
+  const handleShowMoreClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setShowExpandedDescription((prev) => !prev);
   }, []);
