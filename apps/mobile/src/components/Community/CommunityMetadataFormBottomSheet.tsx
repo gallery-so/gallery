@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import clsx from 'clsx';
-import { ForwardedRef, forwardRef, useCallback, useRef, useState } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import colors from 'shared/theme/colors';
@@ -82,6 +82,10 @@ function CommunityMetadataFormBottomSheet(
     }
   }, [community.dbid, community.name, message, pushToast]);
 
+  const isButtonDisabled = useMemo(() => {
+    return status === 'SUBMITTING' || !message;
+  }, [message, status]);
+
   return (
     <GalleryBottomSheetModal
       ref={(value) => {
@@ -146,6 +150,7 @@ function CommunityMetadataFormBottomSheet(
             eventElementId="Community Metadata Form Submit Button"
             eventName="Community Metadata Form Submit Press"
             eventContext={contexts.Community}
+            disabled={isButtonDisabled}
           />
         </View>
       </View>
