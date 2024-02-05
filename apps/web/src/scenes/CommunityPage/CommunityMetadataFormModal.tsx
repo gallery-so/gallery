@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import styled from 'styled-components';
@@ -24,7 +24,6 @@ export function CommunityMetadataFormModal({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityMetadataFormModalFragment on Community {
         dbid
-        name
       }
     `,
     communityRef
@@ -84,7 +83,9 @@ export function CommunityMetadataFormModal({ communityRef, queryRef }: Props) {
     } catch (error) {
       setStatus('ERROR');
     }
-  }, [community.dbid, community.name, message, pushToast, userId, hideModal]);
+  }, [community.dbid, message, pushToast, userId, hideModal]);
+
+  const isButtonDisabled = useMemo(() => status === 'SUBMITTING' || !message, [status, message]);
 
   return (
     <StyledConfirmation gap={16}>
@@ -112,6 +113,7 @@ export function CommunityMetadataFormModal({ communityRef, queryRef }: Props) {
           eventName="Submit Community Metadata Form"
           eventContext={contexts.Community}
           onClick={handleSubmit}
+          disabled={isButtonDisabled}
         >
           Submit
         </Button>
