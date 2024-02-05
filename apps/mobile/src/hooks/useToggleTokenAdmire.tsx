@@ -230,7 +230,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
               >
                 {response.admireToken.token?.definition.name}
               </Typography>{' '}
-              to bookmarks
+              to Bookmarks
             </Typography>
           </Text>
         ),
