@@ -2,7 +2,9 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
@@ -88,9 +90,19 @@ function UserGallery({ queryRef }: Props) {
   return (
     <VStack gap={isMobile ? 12 : 24}>
       <UserGalleryHeader userRef={user} queryRef={query} />
-      <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
+      <MobileSpacingContainer>
+        <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
+      </MobileSpacingContainer>
     </VStack>
   );
 }
+
+export const MobileSpacingContainer = styled(VStack)`
+  margin: 0 ${pageGutter.mobile}px 24px;
+
+  @media (min-width: ${breakpoints.mobile}px) {
+    margin: 0;
+  }
+`;
 
 export default UserGallery;

@@ -280,10 +280,6 @@ const StyledNftPreview = styled.div<{
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride};`}
 
-  &:hover ${StyledNftLabel} {
-    transform: translateY(0px);
-  }
-
   &:hover ${StyledNftFooter} {
     opacity: 1;
   }

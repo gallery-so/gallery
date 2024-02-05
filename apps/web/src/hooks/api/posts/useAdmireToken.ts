@@ -1,9 +1,12 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
+import { contexts } from 'shared/analytics/constants';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useAdmireTokenMutation } from '~/generated/useAdmireTokenMutation.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
@@ -27,9 +30,16 @@ export default function useAdmireToken() {
 
   const { pushToast } = useToastActions();
   const reportError = useReportError();
+  const router = useRouter();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const admireToken = useCallback(
-    async (tokenId: string, tokenDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
+    async (
+      tokenId: string,
+      tokenDbid: string,
+      optimisticUserInfo: OptimisticUserInfo,
+      tokenName?: string | null
+    ) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         tokenId,
         'Interactions_previewAdmires'
@@ -43,6 +53,27 @@ export default function useAdmireToken() {
         tokenId: tokenDbid,
       };
 
+      function pushSuccessToast() {
+        pushToast({
+          autoClose: true,
+          message: `Added ${tokenName ? `**${tokenName}**` : 'this item'} to Bookmarks`,
+          buttonProps: {
+            label: isMobile ? 'View' : 'View Bookmarks',
+            onClick: () => {
+              router.push({
+                pathname: '/[username]/bookmarks',
+                query: { username: optimisticUserInfo.username },
+              });
+            },
+            eventProperties: {
+              eventElementId: 'View Bookmarks Button on Success Toast',
+              eventName: 'Clicked View Bookmarks Button on Success Toast',
+              eventContext: contexts.Toast,
+            },
+          },
+        });
+      }
+
       function pushErrorToast() {
         pushToast({
           autoClose: true,
@@ -55,9 +86,37 @@ export default function useAdmireToken() {
         response
       ) => {
         if (response?.admireToken?.__typename === 'AdmireTokenPayload') {
+          // Update the total count of admires in the interactions list
           const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
+
+          // Update the total count of bookmarks in the navbar tab
+          const bookmarksCountConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${optimisticUserInfo.dbid}`,
+            'GalleryNavLinksFragment_bookmarksCount'
+          );
+          const bookmarksCountStore = store.get(bookmarksCountConnectionID);
+          if (bookmarksCountStore) {
+            const pageInfo = bookmarksCountStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) + 1, 'total');
+          }
+
+          // Add the bookmarked token to the bookmarks list displayed on the Bookmarks tab (if connection exists in store)
+          const bookmarkedTokensConnectionID = ConnectionHandler.getConnectionID(
+            `GalleryUser:${optimisticUserInfo.dbid}`,
+            'BookmarkedTokenGridFragment_tokensBookmarked'
+          );
+          const bookmarkedTokensConnection = store.get(bookmarkedTokensConnectionID);
+          const newBookmarkedToken = store.getRootField('admireToken')?.getLinkedRecord('token');
+          if (newBookmarkedToken && bookmarkedTokensConnection) {
+            const edge = ConnectionHandler.createEdge(
+              store,
+              bookmarkedTokensConnection,
+              newBookmarkedToken,
+              'TokenBookmarkEdge'
+            );
+            ConnectionHandler.insertEdgeAfter(bookmarkedTokensConnection, edge);
+          }
         }
       };
 
@@ -126,6 +185,7 @@ export default function useAdmireToken() {
             tags: errorMetadata,
           });
         }
+        pushSuccessToast();
       } catch (error) {
         pushErrorToast();
 
@@ -138,7 +198,7 @@ export default function useAdmireToken() {
         }
       }
     },
-    [admire, pushToast, reportError]
+    [admire, isMobile, pushToast, reportError, router]
   );
 
   return [admireToken] as const;

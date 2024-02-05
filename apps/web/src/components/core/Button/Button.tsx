@@ -113,12 +113,12 @@ const StyledButton = styled.button<StyledButtonProps>`
       return css`
         background: ${colors.white};
         color: ${colors.black['800']};
-        border: 1px solid ${active ? '#001cc133' : colors.porcelain};
+        border: 1px solid ${active ? colors.activeBlue : colors.porcelain};
         padding: 7px 23px;
 
         &:hover:not(:disabled) {
           color: ${colors.black['800']};
-          border: 1px solid ${active ? colors.hyperBlue : colors.black['800']};
+          border: 1px solid ${active ? colors.activeBlue : colors.black['800']};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things

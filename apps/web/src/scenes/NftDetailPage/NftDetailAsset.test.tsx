@@ -1,7 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
@@ -16,12 +15,7 @@ import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 function Fixture() {
   const query = useLazyLoadQuery<NftDetailAssetTestQuery>(
     graphql`
-      query NftDetailAssetTestQuery(
-        $collectionId: DBID!
-        $tokenId: DBID!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query NftDetailAssetTestQuery($collectionId: DBID!, $tokenId: DBID!) {
         collectionTokenById(collectionId: $collectionId, tokenId: $tokenId) {
           ... on CollectionToken {
             __typename
@@ -31,7 +25,7 @@ function Fixture() {
         ...NftDetailViewQueryFragment
       }
     `,
-    { collectionId: 'testCollectionId', tokenId: 'testTokenId', interactionsFirst: NOTES_PER_PAGE }
+    { collectionId: 'testCollectionId', tokenId: 'testTokenId' }
   );
 
   if (query.collectionTokenById?.__typename !== 'CollectionToken') {
@@ -248,7 +242,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'EnsProfileImage',
       },
       wallets: [],
-      following: [],
       primaryWallet: {
         id: 'Token:testWalletId',
         dbid: 'testWalletId',
@@ -258,7 +251,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           address: 'someAddress',
         },
       },
-      followers: [],
     },
   },
 };

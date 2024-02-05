@@ -81,7 +81,7 @@ export default function SomeoneAdmiredYourToken({ notificationRef, onClose }: Pr
                 </strong>
               </>
             )}
-            admired your <strong>{token.definition.name ?? 'item'}</strong>
+            bookmarked your <strong>{token.definition.name ?? 'item'}</strong>
           </BaseM>
         </StyledTextWrapper>
       </HStack>

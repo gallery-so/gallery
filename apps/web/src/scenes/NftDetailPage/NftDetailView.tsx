@@ -3,7 +3,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
@@ -35,19 +34,14 @@ export function LoadableNftDetailView({
 }: LoadableNftDetailViewProps) {
   const query = useLazyLoadQuery<NftDetailViewQuery>(
     graphql`
-      query NftDetailViewQuery(
-        $tokenId: DBID!
-        $collectionId: DBID!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query NftDetailViewQuery($tokenId: DBID!, $collectionId: DBID!) {
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ...NftDetailViewFragment
         }
         ...NftDetailViewQueryFragment
       }
     `,
-    { tokenId: tokenId, collectionId: collectionId, interactionsFirst: NOTES_PER_PAGE }
+    { tokenId: tokenId, collectionId: collectionId }
   );
 
   if (!query.collectionTokenById) {

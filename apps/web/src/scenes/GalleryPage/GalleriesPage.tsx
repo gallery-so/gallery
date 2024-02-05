@@ -28,6 +28,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { MobileSpacingContainer } from '../UserGalleryPage/UserGallery';
 import UserGalleryHeader from '../UserGalleryPage/UserGalleryHeader';
 
 type Props = {
@@ -207,44 +208,46 @@ export default function GalleriesPage({ queryRef }: Props) {
         {query.userByUsername && (
           <UserGalleryHeader queryRef={query} userRef={query.userByUsername} />
         )}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          measuring={layoutMeasuring}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDragOver={handleDragOver}
-          onDragCancel={() => setActiveId(null)}
-        >
-          <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
-            <GalleryWrapper>
-              {sortedGalleries.map((gallery) => {
-                return (
+        <MobileSpacingContainer>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            measuring={layoutMeasuring}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
+            onDragCancel={() => setActiveId(null)}
+          >
+            <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
+              <GalleryWrapper>
+                {sortedGalleries.map((gallery) => {
+                  return (
+                    <Gallery
+                      key={gallery.id}
+                      galleryRef={gallery}
+                      queryRef={query}
+                      isFeatured={featuredGalleryId === gallery.id}
+                      onGalleryOrderChange={handleOrderOnMobile}
+                    />
+                  );
+                })}
+              </GalleryWrapper>
+            </SortableContext>
+            {createPortal(
+              <DragOverlay dropAnimation={dropAnimation}>
+                {activeGallery && (
                   <Gallery
-                    key={gallery.id}
-                    galleryRef={gallery}
+                    key={activeGallery.dbid}
+                    galleryRef={activeGallery}
                     queryRef={query}
-                    isFeatured={featuredGalleryId === gallery.id}
-                    onGalleryOrderChange={handleOrderOnMobile}
+                    isFeatured={featuredGalleryId === `Gallery:${activeId}`}
                   />
-                );
-              })}
-            </GalleryWrapper>
-          </SortableContext>
-          {createPortal(
-            <DragOverlay dropAnimation={dropAnimation}>
-              {activeGallery && (
-                <Gallery
-                  key={activeGallery.dbid}
-                  galleryRef={activeGallery}
-                  queryRef={query}
-                  isFeatured={featuredGalleryId === `Gallery:${activeId}`}
-                />
-              )}
-            </DragOverlay>,
-            document.body
-          )}
-        </DndContext>
+                )}
+              </DragOverlay>,
+              document.body
+            )}
+          </DndContext>
+        </MobileSpacingContainer>
       </VStack>
     </GalleryPageSpacing>
   );

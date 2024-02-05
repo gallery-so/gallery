@@ -33,6 +33,7 @@ export const contexts = {
   Mention: 'Mention',
   Reply: 'Reply',
   Badge: 'Badge',
+  Bookmarks: 'Bookmarks',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;

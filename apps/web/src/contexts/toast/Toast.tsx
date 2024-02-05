@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TIMEOUT_MS,
   ANIMATED_COMPONENT_TRANSITION_MS,
@@ -15,11 +17,14 @@ import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
 
+import { ToastButtonProps } from './ToastContext';
+
 type Props = {
   message: string;
   onClose?: () => void;
   autoClose?: boolean;
   variant?: 'success' | 'error';
+  buttonProps?: ToastButtonProps;
 };
 
 export function AnimatedToast({
@@ -27,6 +32,7 @@ export function AnimatedToast({
   onClose = noop,
   autoClose = true,
   variant = 'success',
+  buttonProps,
 }: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
@@ -55,7 +61,7 @@ export function AnimatedToast({
 
   return (
     <_Animate isActive={isActive}>
-      <Toast message={message} onClose={handleClose} variant={variant} />
+      <Toast message={message} onClose={handleClose} variant={variant} buttonProps={buttonProps} />
     </_Animate>
   );
 }
@@ -85,7 +91,7 @@ const _Animate = styled.div<{ isActive: boolean }>`
   bottom: 16px;
 `;
 
-function Toast({ message, onClose, variant }: Props) {
+function Toast({ message, onClose, variant, buttonProps }: Props) {
   const handleClose = useCallback(() => {
     onClose?.();
   }, [onClose]);
@@ -93,19 +99,26 @@ function Toast({ message, onClose, variant }: Props) {
   return (
     <ToastContainer>
       <StyledToast align="center" gap={8} variant={variant}>
-        {variant === 'error' && (
-          <StyledAlertIcon>
-            <AlertIcon />
-          </StyledAlertIcon>
-        )}
-        <StyledMessage>
-          <Markdown
-            text={message}
-            // we wouldn't render a link in a toast
-            eventContext={null}
-          />
-        </StyledMessage>
-        <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
+        <StyledToastContent gap={16} align="center">
+          {variant === 'error' && (
+            <StyledAlertIcon>
+              <AlertIcon />
+            </StyledAlertIcon>
+          )}
+          <StyledMessage>
+            <Markdown
+              text={message}
+              // we wouldn't render a link in a toast
+              eventContext={null}
+            />
+          </StyledMessage>
+          {buttonProps && (
+            <StyledButton onClick={buttonProps.onClick} {...buttonProps.eventProperties}>
+              <StyledButtonText color={colors.white}>{buttonProps.label}</StyledButtonText>
+            </StyledButton>
+          )}
+          <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
+        </StyledToastContent>
       </StyledToast>
     </ToastContainer>
   );
@@ -127,6 +140,10 @@ const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
   pointer-events: auto;
 `;
 
+const StyledToastContent = styled(HStack)`
+  width: 100%;
+`;
+
 const StyledAlertIcon = styled(VStack)`
   height: 24px;
   width: 24px;
@@ -134,4 +151,19 @@ const StyledAlertIcon = styled(VStack)`
 
 const StyledMessage = styled(BaseM)`
   overflow: hidden; // prevent dynamic content from extending beyond toast
+`;
+
+const StyledButton = styled(Button)`
+  margin-left: 16px;
+  padding: 4px 32px;
+  border-radius: 2px;
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: 64px; // use margin instead of gap because all of the toast's content children needed to be direct siblings to shrink to fit, and we don't want a 64px gap between everything
+  }
+`;
+
+const StyledButtonText = styled(TitleXS)`
+  text-transform: capitalize;
+  font-weight: 700;
+  white-space: nowrap;
 `;
