@@ -1,6 +1,6 @@
 type Props = {
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
 } & JSX.IntrinsicElements['svg'];
 
 export function EditPencilIcon({ height = 14, width = 14, ...props }: Props) {
