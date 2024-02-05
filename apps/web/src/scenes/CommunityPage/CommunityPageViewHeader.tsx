@@ -13,8 +13,6 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
-import { NewTooltip } from '~/components/Tooltip/NewTooltip';
-import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
@@ -195,17 +193,6 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     handleShareLinkClick,
   ]);
 
-  const {
-    floating: editDescriptionFloating,
-    reference: editDescriptionReference,
-    getFloatingProps: getEditDescriptionFloatingProps,
-    getReferenceProps: getEditDescriptionReferenceProps,
-    floatingStyle: editDescriptionFloatingStyle,
-  } = useTooltipHover({
-    placement: 'top-end',
-    offsetOptions: 15,
-  });
-
   const DescriptionContainer = useMemo(() => {
     if (!description) {
       return null;
@@ -214,12 +201,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     const buttonText = showExpandedDescription ? 'Show Less' : 'Show More';
 
     return (
-      <StyledDescriptionWrapper
-        gap={8}
-        onClick={handleEditClick}
-        {...getEditDescriptionReferenceProps()}
-        ref={editDescriptionReference}
-      >
+      <StyledDescriptionWrapper gap={8} onClick={handleEditClick}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
           <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
@@ -234,15 +216,14 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         )}
 
         <StyledEditIconWrapper>
-          <EditPencilIcon />
+          <IconContainer
+            variant="default"
+            size="xs"
+            tooltipLabel="Edit description"
+            tooltipPlacement="right"
+            icon={<EditPencilIcon height={10} width={10} />}
+          />
         </StyledEditIconWrapper>
-
-        <StyledTooltip
-          {...getEditDescriptionFloatingProps()}
-          style={editDescriptionFloatingStyle}
-          ref={editDescriptionFloating}
-          text="Edit description"
-        />
       </StyledDescriptionWrapper>
     );
   }, [
@@ -252,29 +233,11 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     handleShowMoreClick,
     isLineClampEnabled,
     showExpandedDescription,
-    editDescriptionReference,
-    editDescriptionFloating,
-    editDescriptionFloatingStyle,
-    getEditDescriptionFloatingProps,
-    getEditDescriptionReferenceProps,
   ]);
 
   const displayName = name || truncateAddress(contractAddress);
 
   const [isProfilePictureHovered, setIsProfilePictureHovered] = useState(false);
-  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover({ placement: 'right-end' });
-
-  const {
-    floating: editTitleFloating,
-    reference: editTitleReference,
-    getFloatingProps: getEditTitleFloatingProps,
-    getReferenceProps: getEditTitleReferenceProps,
-    floatingStyle: editTitleFloatingStyle,
-  } = useTooltipHover({
-    placement: 'right-start',
-    offsetOptions: 15,
-  });
 
   if (isMobile) {
     return (
@@ -298,47 +261,42 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     <VStack gap={24}>
       <StyledContainer>
         <HStack gap={12} align="center">
-          <div
+          <StyledCommunityProfilePictureWrapper
             onMouseEnter={() => setIsProfilePictureHovered(true)}
             onMouseLeave={() => setIsProfilePictureHovered(false)}
             onClick={handleEditClick}
-            {...getReferenceProps()}
-            ref={reference}
           >
             <CommunityProfilePicture
               communityRef={community}
               size="lg"
-              isEditable={isProfilePictureHovered}
+              isHover={isProfilePictureHovered}
               editIconSize={18}
             />
 
-            <StyledTooltip
-              {...getFloatingProps()}
-              style={floatingStyle}
-              ref={floating}
-              text="Edit profile picture"
-            />
-          </div>
-          <StyledCommunityNameWrapper
-            onClick={handleEditClick}
-            gap={12}
-            align="center"
-            {...getEditTitleReferenceProps()}
-            ref={editTitleReference}
-          >
-            <TitleL>{displayName}</TitleL>
-            {badgeURL && <StyledBadge src={badgeURL} />}
-
             <StyledEditIconWrapper>
-              <EditPencilIcon />
+              <IconContainer
+                variant="default"
+                size="xs"
+                tooltipLabel="Edit profile picture"
+                tooltipPlacement="right"
+                icon={<EditPencilIcon height={10} width={10} />}
+              />
             </StyledEditIconWrapper>
-
-            <StyledTooltip
-              {...getEditTitleFloatingProps()}
-              style={editTitleFloatingStyle}
-              ref={editTitleFloating}
-              text="Edit title"
-            />
+          </StyledCommunityProfilePictureWrapper>
+          <StyledCommunityNameWrapper onClick={handleEditClick} gap={4} align="center">
+            <HStack gap={12} align="center">
+              <TitleL>{displayName}</TitleL>
+              {badgeURL && <StyledBadge src={badgeURL} />}
+            </HStack>
+            <StyledEditIconWrapper>
+              <IconContainer
+                variant="default"
+                size="xs"
+                tooltipLabel="Edit title"
+                tooltipPlacement="right"
+                icon={<EditPencilIcon height={10} width={10} />}
+              />
+            </StyledEditIconWrapper>
           </StyledCommunityNameWrapper>
         </HStack>
         <HStack gap={48}>
@@ -379,6 +337,21 @@ const StyledEditIconWrapper = styled.div`
   display: none;
 `;
 
+const StyledCommunityProfilePictureWrapper = styled.div`
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
+  ${StyledEditIconWrapper} {
+    bottom: -4px;
+    right: -4px;
+    position: absolute;
+  }
+`;
+
 const StyledCommunityNameWrapper = styled(HStack)`
   position: relative;
   cursor: pointer;
@@ -389,9 +362,8 @@ const StyledCommunityNameWrapper = styled(HStack)`
     }
   }
   ${StyledEditIconWrapper} {
-    position: absolute;
-    right: -24px;
-    bottom: 0px;
+    top: 10px;
+    position: relative;
   }
 `;
 
@@ -438,11 +410,4 @@ const StyledBadge = styled.img`
   max-height: 24px;
   max-width: 24px;
   width: 100%;
-`;
-
-const StyledTooltip = styled(NewTooltip)`
-  display: none;
-  @media only screen and ${breakpoints.tablet} {
-    display: block;
-  }
 `;
