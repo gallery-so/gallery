@@ -34,7 +34,6 @@ function CommunityMetadataFormBottomSheet(
     graphql`
       fragment CommunityMetadataFormBottomSheetFragment on Community {
         dbid
-        name
       }
     `,
     communityRef
