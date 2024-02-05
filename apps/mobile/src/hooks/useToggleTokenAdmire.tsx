@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
+import { Text } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
-import { ConnectionHandler, graphql, useFragment } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
+import { Typography } from '~/components/Typography';
+import { useToastActions } from '~/contexts/ToastContext';
 import { useToggleAdmireRemoveMutation } from '~/generated/useToggleAdmireRemoveMutation.graphql';
 import { useToggleTokenAdmireAddMutation } from '~/generated/useToggleTokenAdmireAddMutation.graphql';
 import { useToggleTokenAdmireFragment$key } from '~/generated/useToggleTokenAdmireFragment.graphql';
@@ -41,6 +44,11 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       fragment useToggleTokenAdmireFragment on Token {
         id
         dbid
+        definition {
+          __typename
+          id
+          name
+        }
 
         viewerAdmire {
           id
@@ -52,15 +60,20 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
   );
 
   const reportError = useReportError();
+  const { pushToast } = useToastActions();
 
   const [admire] = usePromisifiedMutation<useToggleTokenAdmireAddMutation>(graphql`
-    mutation useToggleTokenAdmireAddMutation($tokenId: DBID!, $connections: [ID!]!)
-    @raw_response_type {
+    mutation useToggleTokenAdmireAddMutation($tokenId: DBID!) @raw_response_type {
       admireToken(tokenId: $tokenId) {
         ... on AdmireTokenPayload {
           __typename
           token {
-            viewerAdmire @appendNode(edgeTypeName: "TokenAdmireEdge", connections: $connections) {
+            definition {
+              __typename
+              id
+              name
+            }
+            viewerAdmire {
               dbid
               __typename
               creationTime
@@ -93,11 +106,6 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     }
   `);
 
-  const interactionsConnection = ConnectionHandler.getConnectionID(
-    token.id,
-    'Interactions_token_admires'
-  );
-
   const handleRemoveAdmire = useCallback(async () => {
     if (!token.viewerAdmire?.dbid) {
       return;
@@ -114,10 +122,6 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       response
     ) => {
       if (response?.removeAdmire?.__typename === 'RemoveAdmirePayload') {
-        const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-        pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
-
         if (response.removeAdmire.admireID) {
           const relayId = `Admire:${response.removeAdmire.admireID}`;
 
@@ -159,7 +163,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [reportError, removeAdmire, interactionsConnection, token.viewerAdmire?.dbid, token.dbid]);
+  }, [reportError, removeAdmire, token.viewerAdmire?.dbid, token.dbid]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -172,28 +176,20 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       tokenId: token.dbid,
     };
 
-    const updater: SelectorStoreUpdater<useToggleTokenAdmireAddMutation['response']> = (
-      store,
-      response
-    ) => {
-      if (response?.admireToken?.__typename === 'AdmireTokenPayload') {
-        const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-        pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-      }
-    };
-
     try {
       const optimisticAdmireId = Math.random().toString();
       const response = await admire({
-        updater,
-        optimisticUpdater: updater,
         optimisticResponse: {
           admireToken: {
             __typename: 'AdmireTokenPayload',
             token: {
               id: token.id,
               dbid: token.dbid,
+              definition: {
+                __typename: 'TokenDefinition',
+                id: token.definition.id,
+                name: token.definition.name,
+              },
               viewerAdmire: {
                 __typename: 'Admire',
                 id: `Admire:${optimisticAdmireId}`,
@@ -210,7 +206,6 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         },
         variables: {
           tokenId: token.dbid,
-          connections: [interactionsConnection],
         },
       });
 
@@ -218,7 +213,28 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         reportError(`Could not admire token, typename was ${response.admireToken?.__typename}`, {
           tags: errorMetadata,
         });
+        return;
       }
+      pushToast({
+        position: 'top',
+        children: (
+          <Text>
+            <Typography
+              className="text-sm text-offBlack dark:text-offWhite"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              Added{' '}
+              <Typography
+                className="text-sm text-offBlack dark:text-offWhite"
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {response.admireToken.token?.definition.name}
+              </Typography>{' '}
+              to Bookmarks
+            </Typography>
+          </Text>
+        ),
+      });
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
@@ -228,7 +244,16 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [admire, token.dbid, token.id, interactionsConnection, query.viewer, reportError]);
+  }, [
+    admire,
+    token.dbid,
+    token.id,
+    pushToast,
+    query.viewer,
+    reportError,
+    token.definition.id,
+    token.definition.name,
+  ]);
 
   const hasViewerAdmiredEvent = Boolean(token.viewerAdmire);
 

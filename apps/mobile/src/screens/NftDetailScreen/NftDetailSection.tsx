@@ -1,19 +1,18 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
+import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
-import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { MintLinkButton } from '~/components/MintLinkButton';
@@ -23,7 +22,6 @@ import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
-import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -34,7 +32,6 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
-import { AdmireBottomSheet } from './AdmireBottomSheet';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from './NftDetailAsset/NftDetailAssetCacheSwapper';
@@ -81,24 +78,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 }
               }
               ...ProfilePictureAndUserOrAddressOwnerFragment
-            }
-
-            # We only show 1 but in case the user deletes something
-            # we want to be sure that we can show another admire beneath
-            admires(last: 5) @connection(key: "Interactions_token_admires") {
-              pageInfo {
-                total
-              }
-              edges {
-                node {
-                  dbid
-                  __typename
-                  admirer {
-                    username
-                    ...ProfileViewSharedFollowersBubblesFragment
-                  }
-                }
-              }
             }
 
             ...NftAdditionalDetailsFragment
@@ -175,41 +154,13 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     return null;
   }, [tokenDefinition?.community?.creator, handleCreatorUsernamePress]);
 
-  const { hasViewerAdmiredEvent, toggleTokenAdmire } = useToggleTokenAdmire({
+  const {
+    hasViewerAdmiredEvent: hasViewerBookmarkedEvent,
+    toggleTokenAdmire: toggleTokenBookmark,
+  } = useToggleTokenAdmire({
     tokenRef: token,
     queryRef: query,
   });
-
-  const nonNullAdmires = useMemo(() => {
-    const admires = [];
-
-    for (const edge of token.admires?.edges ?? []) {
-      if (edge?.node) {
-        admires.push(edge.node);
-      }
-    }
-
-    admires.reverse();
-
-    return admires;
-  }, [token.admires?.edges]);
-
-  const admireUsers = useMemo(() => {
-    const users = [];
-    for (const admire of nonNullAdmires) {
-      if (admire?.admirer) {
-        users.push(admire.admirer);
-      }
-    }
-    return users;
-  }, [nonNullAdmires]);
-
-  const totalAdmires = token.admires?.pageInfo?.total ?? 0;
-  const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const handleSeeAllAdmires = useCallback(() => {
-    admiresBottomSheetRef.current?.present();
-  }, []);
 
   const { contractName } = extractRelevantMetadataFromToken(token);
 
@@ -259,26 +210,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               >
                 {tokenDefinition.name}
               </Typography>
-            </View>
-            <View className="flex flex-row space-x-2 items-center">
-              {admireUsers.length > 0 && (
-                <ProfilePictureBubblesWithCount
-                  eventName="Nft Detail Screen Admire Bubbles Pressed"
-                  eventElementId="Nft Detail Screen Admire Bubbles"
-                  eventContext={contexts['NFT Detail']}
-                  onPress={handleSeeAllAdmires}
-                  userRefs={admireUsers}
-                  totalCount={totalAdmires}
-                />
-              )}
-              <GalleryTouchableOpacity
-                eventElementId={'NFT Detail Token Admire'}
-                eventName={'NFT Detail Token Admire Clicked'}
-                eventContext={contexts['NFT Detail']}
-                onPress={toggleTokenAdmire}
-              >
-                <AdmireIcon active={hasViewerAdmiredEvent} />
-              </GalleryTouchableOpacity>
             </View>
           </View>
           <GalleryTouchableOpacity
@@ -346,6 +277,22 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         )}
 
+        <View className="space-y-2">
+          <Button
+            variant="blue"
+            headerElement={<BookmarkIcon active={hasViewerBookmarkedEvent} />}
+            eventElementId={'NFT Detail Token Bookmark Button'}
+            eventName={'NFT Detail Token Bookmark Button Clicked'}
+            eventContext={contexts['NFT Detail']}
+            onPress={toggleTokenBookmark}
+            text={hasViewerBookmarkedEvent ? 'bookmarked' : 'bookmark'}
+            textClassName={hasViewerBookmarkedEvent ? `text-${blueToDisplay}` : ''}
+            containerClassName={
+              hasViewerBookmarkedEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+            }
+          />
+        </View>
+
         {isTokenOwner ? (
           <Button
             headerElement={
@@ -369,28 +316,10 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           />
         )}
 
-        <View className="space-y-2">
-          <Button
-            variant="blue"
-            headerElement={<AdmireIcon active={hasViewerAdmiredEvent} />}
-            eventElementId={'NFT Detail Token Admire'}
-            eventName={'NFT Detail Token Admire Clicked'}
-            eventContext={contexts['NFT Detail']}
-            onPress={toggleTokenAdmire}
-            text={hasViewerAdmiredEvent ? 'admired' : 'admire'}
-            textClassName={hasViewerAdmiredEvent ? `text-${blueToDisplay}` : ''}
-            containerClassName={
-              hasViewerAdmiredEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
-            }
-          />
-        </View>
-
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
         </View>
       </View>
-
-      <AdmireBottomSheet tokenId={token.dbid ?? ''} bottomSheetRef={admiresBottomSheetRef} />
     </ScrollView>
   );
 }
