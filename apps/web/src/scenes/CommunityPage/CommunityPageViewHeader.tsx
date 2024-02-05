@@ -59,6 +59,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     graphql`
       fragment CommunityPageViewHeaderQueryFragment on Query {
         ...CommunityPageMetadataQueryFragment
+        ...CommunityMetadataFormModalQueryFragment
       }
     `,
     queryRef
@@ -116,11 +117,11 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const handleEditClick = useCallback(() => {
     showModal({
-      content: <CommunityMetadataFormModal communityRef={community} />,
+      content: <CommunityMetadataFormModal communityRef={community} queryRef={query} />,
       isFullPage: false,
       headerText: 'Request changes',
     });
-  }, [community, showModal]);
+  }, [community, query, showModal]);
 
   const ExternalLinks = useMemo(() => {
     return (

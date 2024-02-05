@@ -11,13 +11,15 @@ import { TextArea } from '~/components/core/TextArea/TextArea';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommunityMetadataFormModalFragment$key } from '~/generated/CommunityMetadataFormModalFragment.graphql';
+import { CommunityMetadataFormModalQueryFragment$key } from '~/generated/CommunityMetadataFormModalQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 type Props = {
   communityRef: CommunityMetadataFormModalFragment$key;
+  queryRef: CommunityMetadataFormModalQueryFragment$key;
 };
 
-export function CommunityMetadataFormModal({ communityRef }: Props) {
+export function CommunityMetadataFormModal({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityMetadataFormModalFragment on Community {
@@ -28,8 +30,24 @@ export function CommunityMetadataFormModal({ communityRef }: Props) {
     communityRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CommunityMetadataFormModalQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
   const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
+
+  const userId = query.viewer?.user?.dbid;
 
   const [message, setMessage] = useState<string>('');
   const [status, setStatus] = useState<'SUBMITTING' | 'SUCCESS' | 'ERROR' | undefined>();
@@ -48,7 +66,7 @@ export function CommunityMetadataFormModal({ communityRef }: Props) {
           },
           body: JSON.stringify({
             communityId: community.dbid,
-            communityName: community.name,
+            userId,
             message,
           }),
         }
@@ -66,7 +84,7 @@ export function CommunityMetadataFormModal({ communityRef }: Props) {
     } catch (error) {
       setStatus('ERROR');
     }
-  }, [community.dbid, community.name, message, pushToast, hideModal]);
+  }, [community.dbid, community.name, message, pushToast, userId, hideModal]);
 
   return (
     <StyledConfirmation gap={16}>
