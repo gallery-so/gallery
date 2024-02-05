@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import GalleryViewEmitter from 'shared/components/GalleryViewEmitter';
 
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -28,6 +29,7 @@ export default function FocusedGallery({ galleryId, username }: Props) {
           }
         }
 
+        ...GalleryViewEmitterWithSuspenseFragment
         ...GalleryNavbarFragment
         ...FocusedGalleryPageFragment
         ...StandardSidebarFragment
@@ -66,7 +68,12 @@ export default function FocusedGallery({ galleryId, username }: Props) {
         />
       }
       sidebar={<StandardSidebar queryRef={query} />}
-      element={<FocusedGalleryPage queryRef={query} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <FocusedGalleryPage queryRef={query} />
+        </>
+      }
     />
   );
 }
