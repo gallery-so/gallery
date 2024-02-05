@@ -50,6 +50,7 @@ export function CommunityView({ queryRef, communityRef }: Props) {
         ...CommunityCollectorsQueryFragment
         ...CommunityViewPostsTabQueryFragment
         ...CommunityMetaQueryFragment
+        ...CommunityHeaderQueryFragment
       }
     `,
     queryRef
@@ -124,7 +125,7 @@ export function CommunityView({ queryRef, communityRef }: Props) {
         </View>
 
         <View className="px-4">
-          <CommunityHeader communityRef={community} />
+          <CommunityHeader communityRef={community} queryRef={query} />
           <CommunityMeta communityRef={community} queryRef={query} />
         </View>
 
