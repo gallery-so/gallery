@@ -277,6 +277,22 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           </View>
         )}
 
+        <View className="space-y-2">
+          <Button
+            variant="blue"
+            headerElement={<BookmarkIcon active={hasViewerBookmarkedEvent} />}
+            eventElementId={'NFT Detail Token Bookmark Button'}
+            eventName={'NFT Detail Token Bookmark Button Clicked'}
+            eventContext={contexts['NFT Detail']}
+            onPress={toggleTokenBookmark}
+            text={hasViewerBookmarkedEvent ? 'bookmarked' : 'bookmark'}
+            textClassName={hasViewerBookmarkedEvent ? `text-${blueToDisplay}` : ''}
+            containerClassName={
+              hasViewerBookmarkedEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
+            }
+          />
+        </View>
+
         {isTokenOwner ? (
           <Button
             headerElement={
@@ -299,22 +315,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             referrerAddress={ownerWalletAddress}
           />
         )}
-
-        <View className="space-y-2">
-          <Button
-            variant="blue"
-            headerElement={<BookmarkIcon active={hasViewerBookmarkedEvent} />}
-            eventElementId={'NFT Detail Token Bookmark Button'}
-            eventName={'NFT Detail Token Bookmark Button Clicked'}
-            eventContext={contexts['NFT Detail']}
-            onPress={toggleTokenBookmark}
-            text={hasViewerBookmarkedEvent ? 'bookmarked' : 'bookmark'}
-            textClassName={hasViewerBookmarkedEvent ? `text-${blueToDisplay}` : ''}
-            containerClassName={
-              hasViewerBookmarkedEvent ? 'border border-[#7597FF]' : 'border border-porcelain'
-            }
-          />
-        </View>
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
