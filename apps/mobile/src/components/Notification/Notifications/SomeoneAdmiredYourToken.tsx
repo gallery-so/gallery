@@ -119,7 +119,7 @@ export function SomeoneAdmiredYourToken({
           }}
           className="text-sm"
         >
-          admired your
+          bookmarked your
         </Typography>{' '}
         <Typography
           font={{
