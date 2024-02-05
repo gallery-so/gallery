@@ -36,6 +36,7 @@ export type RawProfilePictureProps = {
   isHover?: boolean;
   onEdit?: () => void;
   inheritBorderColor?: boolean;
+  editIconSize?: number;
 } & (
   | {
       letter: string;
@@ -56,6 +57,7 @@ export function RawProfilePicture({
   inline,
   isHover,
   inheritBorderColor,
+  editIconSize,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = typeof size === 'number' ? size : sizeMapping[size];
@@ -116,8 +118,8 @@ export function RawProfilePicture({
           justify="center"
           style={{
             borderRadius: '999999999px',
-            width: widthAndHeight / 2,
-            height: widthAndHeight / 2,
+            width: editIconSize || widthAndHeight / 2,
+            height: editIconSize || widthAndHeight / 2,
           }}
         >
           <EditPencilIcon width="50%" height="50%" />

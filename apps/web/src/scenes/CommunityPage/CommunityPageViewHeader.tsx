@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
@@ -12,10 +13,12 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CopyIcon from '~/icons/CopyIcon';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ObjktIcon from '~/icons/ObjktIcon';
 import OpenseaIcon from '~/icons/OpenseaIcon';
@@ -26,6 +29,7 @@ import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMar
 import { truncateAddress } from '~/shared/utils/wallet';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
+import { CommunityMetadataFormModal } from './CommunityMetadataFormModal';
 import CommunityPageMetadata from './CommunityPageMetadata';
 
 type Props = {
@@ -43,6 +47,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         ...CommunityPageMetadataFragment
         ...CommunityProfilePictureFragment
         ...extractRelevantMetadataFromCommunityFragment
+        ...CommunityMetadataFormModalFragment
       }
     `,
     communityRef
@@ -52,6 +57,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     graphql`
       fragment CommunityPageViewHeaderQueryFragment on Query {
         ...CommunityPageMetadataQueryFragment
+        ...CommunityMetadataFormModalQueryFragment
       }
     `,
     queryRef
@@ -60,6 +66,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const isMobile = useIsMobileWindowWidth();
 
   const { name, description, badgeURL } = community;
+  const { showModal } = useModalActions();
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -68,7 +75,8 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  const handleShowMoreClick = useCallback(() => {
+  const handleShowMoreClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     setShowExpandedDescription((prev) => !prev);
   }, []);
 
@@ -105,6 +113,14 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const handleShareLinkClick = useCallback(() => {
     track('Community Page: Clicked Copy Share Link');
   }, [track]);
+
+  const handleEditClick = useCallback(() => {
+    showModal({
+      content: <CommunityMetadataFormModal communityRef={community} queryRef={query} />,
+      isFullPage: false,
+      headerText: 'Request changes',
+    });
+  }, [community, query, showModal]);
 
   const ExternalLinks = useMemo(() => {
     return (
@@ -185,7 +201,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     const buttonText = showExpandedDescription ? 'Show Less' : 'Show More';
 
     return (
-      <StyledDescriptionWrapper gap={8}>
+      <StyledDescriptionWrapper gap={8} onClick={handleEditClick}>
         <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
           <Markdown text={formattedDescription} eventContext={contexts.UserGallery} />
         </StyledBaseM>
@@ -198,17 +214,30 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             onClick={handleShowMoreClick}
           />
         )}
+
+        <StyledEditIconWrapper>
+          <IconContainer
+            variant="default"
+            size="xs"
+            tooltipLabel="Edit description"
+            tooltipPlacement="right"
+            icon={<EditPencilIcon height={10} width={10} />}
+          />
+        </StyledEditIconWrapper>
       </StyledDescriptionWrapper>
     );
   }, [
     description,
     formattedDescription,
+    handleEditClick,
     handleShowMoreClick,
     isLineClampEnabled,
     showExpandedDescription,
   ]);
 
   const displayName = name || truncateAddress(contractAddress);
+
+  const [isProfilePictureHovered, setIsProfilePictureHovered] = useState(false);
 
   if (isMobile) {
     return (
@@ -232,9 +261,43 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     <VStack gap={24}>
       <StyledContainer>
         <HStack gap={12} align="center">
-          <CommunityProfilePicture communityRef={community} size="lg" />
-          <TitleL>{displayName}</TitleL>
-          {badgeURL && <StyledBadge src={badgeURL} />}
+          <StyledCommunityProfilePictureWrapper
+            onMouseEnter={() => setIsProfilePictureHovered(true)}
+            onMouseLeave={() => setIsProfilePictureHovered(false)}
+            onClick={handleEditClick}
+          >
+            <CommunityProfilePicture
+              communityRef={community}
+              size="lg"
+              isHover={isProfilePictureHovered}
+              editIconSize={18}
+            />
+
+            <StyledEditIconWrapper>
+              <IconContainer
+                variant="default"
+                size="xs"
+                tooltipLabel="Edit profile picture"
+                tooltipPlacement="right"
+                icon={<EditPencilIcon height={10} width={10} />}
+              />
+            </StyledEditIconWrapper>
+          </StyledCommunityProfilePictureWrapper>
+          <StyledCommunityNameWrapper onClick={handleEditClick} gap={4} align="center">
+            <HStack gap={12} align="center">
+              <TitleL>{displayName}</TitleL>
+              {badgeURL && <StyledBadge src={badgeURL} />}
+            </HStack>
+            <StyledEditIconWrapper>
+              <IconContainer
+                variant="default"
+                size="xs"
+                tooltipLabel="Edit title"
+                tooltipPlacement="right"
+                icon={<EditPencilIcon height={10} width={10} />}
+              />
+            </StyledEditIconWrapper>
+          </StyledCommunityNameWrapper>
         </HStack>
         <HStack gap={48}>
           <CommunityPageMetadata communityRef={community} queryRef={query} />
@@ -260,8 +323,73 @@ const StyledContainer = styled.div`
   }
 `;
 
+const StyledEditIconWrapper = styled.div`
+  width: 18px;
+  height: 18px;
+  background-color: ${colors.faint};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+
+  display: none;
+`;
+
+const StyledCommunityProfilePictureWrapper = styled.div`
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
+  ${StyledEditIconWrapper} {
+    bottom: -4px;
+    right: -4px;
+    position: absolute;
+  }
+`;
+
+const StyledCommunityNameWrapper = styled(HStack)`
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
+  ${StyledEditIconWrapper} {
+    top: 10px;
+    position: relative;
+  }
+`;
+
 const StyledDescriptionWrapper = styled(VStack)`
-  padding-top: 4px;
+  position: relative;
+  padding: 8px 32px 8px 0px;
+  cursor: pointer;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-left: 8px;
+    padding-right: 56px;
+  }
+
+  &:hover {
+    background-color: ${colors.offWhite};
+
+    ${StyledEditIconWrapper} {
+      display: flex;
+    }
+  }
+
+  ${StyledEditIconWrapper} {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
 `;
 
 const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`

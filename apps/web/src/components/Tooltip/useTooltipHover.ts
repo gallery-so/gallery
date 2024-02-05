@@ -1,6 +1,7 @@
 import {
   autoUpdate,
   offset,
+  OffsetOptions,
   Placement,
   shift,
   useFloating,
@@ -10,9 +11,15 @@ import {
 import { useMemo, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 
-type useTooltipHoverOptions = { disabled?: boolean; placement?: Placement; forceDisplay?: boolean };
+type useTooltipHoverOptions = {
+  disabled?: boolean;
+  placement?: Placement;
+  forceDisplay?: boolean;
 
-export function useTooltipHover(options?: useTooltipHoverOptions) {
+  offsetOptions?: OffsetOptions;
+};
+
+export function useTooltipHover(options?: useTooltipHoverOptions, offsetOptions = 8) {
   const [_open, setOpen] = useState(false);
   const open = options?.disabled ? false : _open;
 
@@ -21,7 +28,7 @@ export function useTooltipHover(options?: useTooltipHoverOptions) {
     placement: options?.placement ?? 'bottom',
     strategy: 'absolute',
     onOpenChange: setOpen,
-    middleware: [offset(8), shift()],
+    middleware: [offset(offsetOptions), shift()],
     whileElementsMounted: autoUpdate,
   });
 
