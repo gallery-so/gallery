@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Animated, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
@@ -14,12 +14,15 @@ import {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from './transition';
 
+export type ToastPosition = 'top' | 'bottom';
+
 type Props = {
   message?: string;
   onClose?: () => void;
   autoClose?: boolean;
-  children?: ReactNode;
+  children?: JSX.Element;
   withoutNavbar?: boolean;
+  position?: ToastPosition;
 };
 
 export function AnimatedToast({
@@ -28,10 +31,11 @@ export function AnimatedToast({
   autoClose = true,
   children,
   withoutNavbar,
+  position = 'bottom',
 }: Props) {
   const animationValue = useState(new Animated.Value(0))[0];
 
-  const { bottom } = useSafeAreaInsets();
+  const { bottom, top } = useSafeAreaInsets();
 
   useEffect(() => {
     Animated.timing(animationValue, {
@@ -71,16 +75,19 @@ export function AnimatedToast({
     transform: [{ translateY }],
   };
 
+  const positionStyles = useMemo(() => {
+    if (position === 'top') {
+      return { top: top };
+    }
+
+    // 56 is the height of the bottom navigation bar
+    return { bottom: bottom + (withoutNavbar ? 0 : 56) };
+  }, [bottom, position, top, withoutNavbar]);
+
   return (
     <Animated.View
       className="absolute inset-x-0 z-50 justify-center items-center"
-      style={[
-        {
-          // 56 is the height of the bottom navigation bar
-          bottom: bottom + (withoutNavbar ? 0 : 56),
-        },
-        animatedStyles,
-      ]}
+      style={[positionStyles, animatedStyles]}
     >
       <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
         {message && (

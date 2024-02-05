@@ -1,6 +1,6 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
-import { AnimatedToast } from '~/components/Toast/Toast';
+import { AnimatedToast, ToastPosition } from '~/components/Toast/Toast';
 import { noop } from '~/shared/utils/noop';
 
 type DismissToastHandler = () => void;
@@ -9,8 +9,9 @@ type ToastProps = {
   message?: string;
   onDismiss?: DismissToastHandler;
   autoClose?: boolean;
-  children?: ReactNode;
+  children?: JSX.Element;
   withoutNavbar?: boolean;
+  position?: ToastPosition;
 };
 
 type ToastActions = {
@@ -35,8 +36,9 @@ type ToastType = {
   message?: string;
   onDismiss: DismissToastHandler;
   autoClose: boolean;
-  children?: ReactNode;
+  children?: JSX.Element;
   withoutNavbar?: boolean;
+  position?: ToastPosition;
 };
 
 type Props = { children: ReactNode };
@@ -51,10 +53,19 @@ const ToastProvider = memo(({ children }: Props) => {
       autoClose = true,
       children,
       withoutNavbar = false,
+      position = 'bottom',
     }: ToastProps) => {
       setToasts((previousMessages) => [
         ...previousMessages,
-        { message, onDismiss, autoClose, id: Date.now().toString(), children, withoutNavbar },
+        {
+          message,
+          onDismiss,
+          autoClose,
+          id: Date.now().toString(),
+          children,
+          withoutNavbar,
+          position,
+        },
       ]);
     },
     []
@@ -91,7 +102,7 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, autoClose, id, children, withoutNavbar }) => (
+      {toasts.map(({ message, autoClose, id, children, withoutNavbar, position }) => (
         <AnimatedToast
           data-testid={id}
           key={id}
@@ -99,9 +110,9 @@ const ToastProvider = memo(({ children }: Props) => {
           onClose={() => dismissToast(id)}
           autoClose={autoClose}
           withoutNavbar={withoutNavbar}
-        >
-          {children}
-        </AnimatedToast>
+          position={position}
+          children={children}
+        ></AnimatedToast>
       ))}
       {children}
     </ToastActionsContext.Provider>
