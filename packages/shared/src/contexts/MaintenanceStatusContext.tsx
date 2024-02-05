@@ -55,7 +55,11 @@ type Props = {
 const MaintenanceStatusProvider = memo(
   ({ sanityProjectId, children, MaintenancePageComponent }: Props) => {
     if (!sanityProjectId) {
-      throw new Error('MaintenanceStatusProvider initiated without a sanity project ID!');
+      if (process.env.NODE_ENV === 'test') {
+        sanityProjectId = 'TEST_SANITY_PROJECT_ID';
+      } else {
+        throw new Error('MaintenanceStatusProvider initiated without a sanity project ID!');
+      }
     }
 
     const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);

@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
 import { noop } from '~/shared/utils/noop';
-import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
@@ -37,82 +36,52 @@ type MockResponseArgs = {
   nonUserViews: number;
 };
 
-function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
-  const result: SomeoneViewedYourGalleryTestQueryQuery = {
-    node: {
-      __typename: 'SomeoneViewedYourGalleryNotification',
-      id: 'SomeoneViewedYourGalleryNotification:notification-1',
-      nonUserViewerCount: nonUserViews,
-      userViewers: {
-        __typename: 'GroupNotificationUsersConnection',
+let userCount = 0;
+function generateMocks({ userViews, nonUserViews }: MockResponseArgs) {
+  return {
+    GroupNotificationUserEdge() {
+      return {
+        node() {
+          const node = {
+            __typename: 'GalleryUser',
+            id: `GalleryUser:user-${userCount}`,
+            dbid: `user-${userCount}`,
+            username: `User ${userCount}`,
+          };
+
+          userCount++;
+
+          return node;
+        },
+      };
+    },
+
+    GroupNotificationUsersConnection() {
+      return {
         pageInfo: {
           total: userViews,
         },
-        edges: Array.from({ length: userViews }).map((_, index) => {
-          return {
-            __typename: 'GroupNotificationUserEdge',
-            node: {
-              __typename: 'GalleryUser',
-              id: `GalleryUser:user-${index}`,
-              dbid: `user-${index}`,
-              username: `User ${index}`,
-              profileImage: {
-                __typename: 'TokenProfileImage',
-                token: {
-                  dbid: `testTokenId-${index}`,
-                  id: `Token:testTokenId-${index}`,
-                  definition: {
-                    id: `Token:testTokenId-${index}`,
-                    media: {
-                      __typename: 'ImageMedia',
-                      previewURLs: {
-                        small: 'http://someurl.com',
-                        medium: 'http://someurl.com',
-                        large: 'http://someurl.com',
-                      },
-                      fallbackMedia: {
-                        mediaURL: 'http://someurl.com',
-                      },
-                    },
-                  },
-                },
-              },
-              // Irrelevant properties
-              bio: null,
-              galleries: [
-                {
-                  __typename: 'Gallery',
-                  id: `Gallery:user-${index}-gallery`,
-                  collections: null,
-                },
-              ] as const,
-              badges: null,
-              followers: null,
-              following: null,
-            },
-          } as const;
-        }),
-      },
+
+        edges: Array.from({ length: userViews }),
+      };
+    },
+
+    Query: {
+      node: () => ({
+        __typename: 'SomeoneViewedYourGalleryNotification',
+        nonUserViewerCount: nonUserViews,
+        userViewers: {
+          __typename: 'GroupNotificationUsersConnection',
+        },
+      }),
     },
   };
-
-  return result;
-}
-
-class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
 }
 
 async function assertSituation(args: MockResponseArgs, expectedText: string) {
-  const response = mockResponse(args);
-
   mockProviderQueries();
 
-  window.ResizeObserver = ResizeObserver;
-
-  mockGraphqlQuery('SomeoneViewedYourGalleryTestQuery', response);
+  mockGraphqlQuery('SomeoneViewedYourGalleryTestQuery', generateMocks(args));
 
   const { findByTestId } = render(
     <MockAppProvider>
@@ -122,9 +91,11 @@ async function assertSituation(args: MockResponseArgs, expectedText: string) {
 
   const element = await findByTestId('SomeoneViewedYourGallery');
   expect(element.textContent).toEqual(expectedText);
+
+  userCount = 0;
 }
 
-describe.skip('SomeoneViewedYourGallery', () => {
+describe('SomeoneViewedYourGallery', () => {
   describe('all non-user views', () => {
     test('only 1 view', async () => {
       await assertSituation(

@@ -1,10 +1,9 @@
-import { mockErrorReportingContextQuery } from '~/tests/graphql/mockErrorReportingContextQuery';
-
-import { mockDebuggerQuery } from './mockDebuggerQuery';
-import { mockGlobalLayoutQuery } from './mockGlobalLayoutQuery';
+import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 
 export function mockProviderQueries() {
-  mockDebuggerQuery();
-  mockGlobalLayoutQuery();
-  mockErrorReportingContextQuery();
+  mockGraphqlQuery('useAddWalletModalQuery', {});
+  mockGraphqlQuery('AnalyticsContextQuery', {});
+  mockGraphqlQuery('DebuggerQuery', {});
+  mockGraphqlQuery('GlobalLayoutContextQuery', {});
+  mockGraphqlQuery('ErrorReportingContextQuery', {});
 }
