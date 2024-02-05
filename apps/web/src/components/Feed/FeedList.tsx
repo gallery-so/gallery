@@ -97,7 +97,6 @@ export default function FeedList({
     [measurerCache]
   );
 
-  console.log({ feedData });
   //Render a list item or a loading indicator.
   const rowRenderer = useCallback(
     ({
@@ -123,7 +122,6 @@ export default function FeedList({
       }
 
       if (content.__typename === 'Post') {
-        console.log('returning');
         return (
           <CellMeasurer
             cache={measurerCache}
