@@ -223,7 +223,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
               className="text-sm text-offBlack dark:text-offWhite"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              Add{' '}
+              Added{' '}
               <Typography
                 className="text-sm text-offBlack dark:text-offWhite"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
