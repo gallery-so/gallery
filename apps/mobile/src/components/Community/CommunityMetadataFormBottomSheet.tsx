@@ -65,7 +65,7 @@ function CommunityMetadataFormBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const [message, setMessage] = useState<string>('adasd');
+  const [message, setMessage] = useState<string>('');
   const [status, setStatus] = useState<'SUBMITTING' | 'SUCCESS' | 'ERROR' | undefined>();
 
   const handleSubmitPress = useCallback(async () => {
