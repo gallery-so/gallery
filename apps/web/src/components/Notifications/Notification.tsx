@@ -631,6 +631,7 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
       fragment NotificationInnerQueryFragment on Query {
         ...SomeoneFollowedYouQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
+        ...SomeoneRepliedToYourCommentQueryFragment
       }
     `,
     queryRef
@@ -678,7 +679,13 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
       <SomeoneYouFollowPostedTheirFirstPost notificationRef={notification} onClose={handleClose} />
     );
   } else if (notification.__typename === 'SomeoneRepliedToYourCommentNotification') {
-    return <SomeoneRepliedToYourComment notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneRepliedToYourComment
+        notificationRef={notification}
+        queryRef={query}
+        onClose={handleClose}
+      />
+    );
   } else if (notification.__typename === 'YouReceivedTopActivityBadgeNotification') {
     return <YouReceivedTopActivityBadge />;
   } else if (
