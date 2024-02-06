@@ -26,7 +26,13 @@ export default function useRemoveTokenAdmire() {
   const reportError = useReportError();
 
   const removeTokenAdmire = useCallback(
-    async (tokenId: string, tokenDbid: string, removedAdmireDbid: string, viewerDbid: string) => {
+    async (
+      tokenId: string,
+      tokenDbid: string,
+      removedAdmireDbid: string,
+      viewerDbid: string,
+      tokenName?: string | null
+    ) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         tokenId,
         'Interactions_previewAdmires'
@@ -34,6 +40,13 @@ export default function useRemoveTokenAdmire() {
       const errorMetadata: AdditionalContext['tags'] = {
         tokenId: tokenDbid,
       };
+
+      function pushSuccessToast() {
+        pushToast({
+          autoClose: true,
+          message: `Removed ${tokenName ? `**${tokenName}**` : 'this item'} from Bookmarks.`,
+        });
+      }
 
       function pushErrorToast() {
         pushToast({
@@ -109,6 +122,8 @@ export default function useRemoveTokenAdmire() {
               tags: errorMetadata,
             }
           );
+        } else {
+          pushSuccessToast();
         }
       } catch (error) {
         pushErrorToast();

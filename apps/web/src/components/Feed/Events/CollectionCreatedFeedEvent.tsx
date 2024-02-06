@@ -9,6 +9,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -29,10 +30,19 @@ import {
 
 type Props = {
   isSubEvent?: boolean;
+  queryRef: CollectionCreatedFeedEventQueryFragment$key;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }: Props) {
+export default function CollectionCreatedFeedEvent({ queryRef, eventDataRef, isSubEvent }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionCreatedFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
+  );
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -117,6 +127,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
           )}
           <VStack gap={8}>
             <FeedEventTokenPreviews
+              queryRef={query}
               isInCaption={Boolean(event.newCollectorsNote || isSubEvent)}
               tokenToPreviewRefs={tokensToPreview}
             />

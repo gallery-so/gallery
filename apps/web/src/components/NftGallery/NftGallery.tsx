@@ -7,15 +7,25 @@ import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
 import NftPreviewWrapper from '~/components/NftPreview/GalleryNftPreviewWrapper';
 import { NftGalleryFragment$key } from '~/generated/NftGalleryFragment.graphql';
+import { NftGalleryQueryFragment$key } from '~/generated/NftGalleryQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 
 type Props = {
+  queryRef: NftGalleryQueryFragment$key;
   collectionRef: NftGalleryFragment$key;
   mobileLayout: DisplayLayout;
 };
 
-function NftGallery({ collectionRef, mobileLayout }: Props) {
+function NftGallery({ queryRef, collectionRef, mobileLayout }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment NftGalleryQueryFragment on Query {
+        ...GalleryNftPreviewWrapperQueryFragment
+      }
+    `,
+    queryRef
+  );
   const collection = useFragment(
     graphql`
       fragment NftGalleryFragment on Collection {
@@ -67,7 +77,12 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
               }
 
               return (
-                <NftPreviewWrapper key={token.id} tokenRef={token} columns={section.columns} />
+                <NftPreviewWrapper
+                  key={token.id}
+                  queryRef={query}
+                  tokenRef={token}
+                  columns={section.columns}
+                />
               );
             })}
           </StyledSection>

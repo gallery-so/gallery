@@ -52,9 +52,21 @@ const getEventComponent = ({
 }: getEventComponentProps) => {
   switch (eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      return <CollectionCreatedFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />;
+      return (
+        <CollectionCreatedFeedEvent
+          queryRef={query}
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+        />
+      );
     case 'CollectionUpdatedFeedEventData':
-      return <CollectionUpdatedFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />;
+      return (
+        <CollectionUpdatedFeedEvent
+          queryRef={query}
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+        />
+      );
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return (
         <CollectorsNoteAddedToTokenFeedEvent
@@ -66,6 +78,7 @@ const getEventComponent = ({
     case 'TokensAddedToCollectionFeedEventData':
       return (
         <TokensAddedToCollectionFeedEvent
+          queryRef={query}
           isSubEvent={isSubEvent}
           caption={unescape(caption ?? '')}
           eventDataRef={eventData}
@@ -74,6 +87,7 @@ const getEventComponent = ({
     case 'CollectorsNoteAddedToCollectionFeedEventData':
       return (
         <CollectorsNoteAddedToCollectionFeedEvent
+          queryRef={query}
           isSubEvent={isSubEvent}
           eventDataRef={eventData}
         />
@@ -107,6 +121,10 @@ export function NonRecursiveFeedEventData({
       fragment FeedEventDataNonRecursiveQueryFragment on Query {
         ...CollectorsNoteAddedToTokenFeedEventQueryFragment
         ...UserFollowedUsersFeedEventQueryFragment
+        ...CollectionCreatedFeedEventQueryFragment
+        ...CollectionUpdatedFeedEventQueryFragment
+        ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
+        ...TokensAddedToCollectionFeedEventQueryFragment
       }
     `,
     queryRef

@@ -12,6 +12,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -25,11 +26,25 @@ import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 
 type Props = {
+  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
   isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = false }: Props) {
+export default function CollectionUpdatedFeedEvent({
+  queryRef,
+  eventDataRef,
+  isSubEvent = false,
+}: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionUpdatedFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -101,7 +116,11 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
             />
           </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />
+            <FeedEventTokenPreviews
+              queryRef={query}
+              isInCaption={false}
+              tokenToPreviewRefs={tokensToPreview}
+            />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}

@@ -60,6 +60,7 @@ export function PostItem({
       fragment PostItemQueryFragment on Query {
         ...PostSocializeSectionQueryFragment
         ...PostHeaderQueryFragment
+        ...PostNftsQueryFragment
       }
     `,
     queryRef
@@ -84,7 +85,7 @@ export function PostItem({
     return (
       <StyledPostItem useVerticalLayout={true}>
         <PostHeader postRef={post} queryRef={query} />
-        <PostNfts postRef={post} onNftLoad={measure} />
+        <PostNfts queryRef={query} postRef={post} onNftLoad={measure} />
         <VStack gap={8}>
           <PostCreatorAndCollectionSection tokenRef={token} />
           <ReportingErrorBoundary dontReport fallback={<></>}>
@@ -110,7 +111,7 @@ export function PostItem({
   }
   return (
     <StyledPostItem useVerticalLayout={false}>
-      <PostNfts postRef={post} onNftLoad={measure} />
+      <PostNfts queryRef={query} postRef={post} onNftLoad={measure} />
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <VStack gap={8}>

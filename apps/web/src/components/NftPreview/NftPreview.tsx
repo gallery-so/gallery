@@ -8,6 +8,7 @@ import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
+import { NftPreviewQueryFragment$key } from '~/generated/NftPreviewQueryFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
@@ -24,9 +25,11 @@ import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftPreviewAsset from './NftPreviewAsset';
+import NftPreviewBookmarkLabel from './NftPreviewBookmarkLabel';
 import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
+  queryRef: NftPreviewQueryFragment$key;
   tokenRef: NftPreviewFragment$key;
   ownerUsername?: string;
   hideLabelOnMobile?: boolean;
@@ -37,6 +40,7 @@ type Props = {
   collectionId?: string;
   onLoad?: () => void;
   eventContext: GalleryElementTrackingProps['eventContext'];
+  className?: string;
 };
 
 const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
@@ -44,6 +48,7 @@ const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
 ]);
 
 function NftPreview({
+  queryRef,
   tokenRef,
   disableLiverender = false,
   columns = 3,
@@ -52,7 +57,17 @@ function NftPreview({
   collectionId,
   onLoad,
   eventContext,
+  className,
 }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment NftPreviewQueryFragment on Query {
+        ...NftPreviewBookmarkLabelQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment NftPreviewFragment on Token {
@@ -95,6 +110,7 @@ function NftPreview({
         ...NftDetailAnimationFragment
         ...useGetPreviewImagesSingleFragment
         ...NftDetailGifFragment
+        ...NftPreviewBookmarkLabelFragment
       }
     `,
     tokenRef
@@ -215,27 +231,33 @@ function NftPreview({
         </NftFailureWrapper>
       }
     >
-      <LinkToFullPageNftDetailModal
-        username={ownerUsername ?? ''}
-        collectionId={collectionId}
-        tokenId={token.dbid}
-        eventContext={eventContext}
-      >
-        <StyledNftPreview
-          backgroundColorOverride={backgroundColorOverride}
-          fullWidth={fullWidth}
-          fullHeight={fullHeight}
-          data-tokenid={token.dbid}
+      <StyledContainer className={className}>
+        <LinkToFullPageNftDetailModal
+          username={ownerUsername ?? ''}
+          collectionId={collectionId}
+          tokenId={token.dbid}
+          eventContext={eventContext}
         >
-          {PreviewAsset}
-
-          {isMobileOrLargeMobile ? null : (
-            <StyledNftFooter>
-              <StyledNftLabel tokenRef={token} />
-            </StyledNftFooter>
-          )}
-        </StyledNftPreview>
-      </LinkToFullPageNftDetailModal>
+          <StyledNftPreview
+            backgroundColorOverride={backgroundColorOverride}
+            fullWidth={fullWidth}
+            fullHeight={fullHeight}
+            data-tokenid={token.dbid}
+          >
+            {PreviewAsset}
+          </StyledNftPreview>
+        </LinkToFullPageNftDetailModal>
+        {isMobileOrLargeMobile ? null : (
+          <StyledNftHeader>
+            <StyledBookmarkLabel tokenRef={token} queryRef={query} />
+          </StyledNftHeader>
+        )}
+        {isMobileOrLargeMobile ? null : (
+          <StyledNftFooter>
+            <StyledNftLabel tokenRef={token} />
+          </StyledNftFooter>
+        )}
+      </StyledContainer>
     </NftFailureBoundary>
   );
 }
@@ -245,9 +267,25 @@ const NftFailureWrapper = styled.div`
   max-width: 400px;
 `;
 
+const StyledBookmarkLabel = styled(NftPreviewBookmarkLabel)`
+  transition: transform ${transitions.cubic};
+  transform: translateY(-5px);
+`;
+
 const StyledNftLabel = styled(NftPreviewLabel)`
   transition: transform ${transitions.cubic};
   transform: translateY(5px);
+`;
+
+const StyledNftHeader = styled.div`
+  position: absolute;
+  width: fit-content;
+  top: 10px;
+  right: 10px;
+
+  transition: opacity ${transitions.cubic};
+
+  opacity: 0;
 `;
 
 const StyledNftFooter = styled.div`
@@ -279,9 +317,30 @@ const StyledNftPreview = styled.div<{
 
   ${({ backgroundColorOverride }) =>
     backgroundColorOverride && `background-color: ${backgroundColorOverride};`}
+`;
 
-  &:hover ${StyledNftFooter} {
-    opacity: 1;
+const StyledContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
+  height: inherit;
+  &:hover {
+    ${StyledNftHeader} {
+      opacity: 1;
+    }
+    ${StyledNftFooter} {
+      opacity: 1;
+    }
+
+    ${StyledNftLabel} {
+      transform: translateY(0px);
+    }
+
+    ${StyledBookmarkLabel} {
+      transform: translateY(0px);
+    }
   }
 `;
 
