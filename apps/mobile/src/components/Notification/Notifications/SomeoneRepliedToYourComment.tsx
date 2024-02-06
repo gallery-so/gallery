@@ -3,7 +3,11 @@ import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { contexts } from 'shared/analytics/constants';
+import { useAdmireComment } from 'src/hooks/useAdmireComment';
 
+import { AdmireIcon } from '~/components/Feed/Socialize/AdmireIcon';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneRepliedToYourCommentFragment$key } from '~/generated/SomeoneRepliedToYourCommentFragment.graphql';
@@ -25,6 +29,7 @@ export function SomeoneRepliedToYourComment({
     graphql`
       fragment SomeoneRepliedToYourCommentQueryFragment on Query {
         ...NotificationSkeletonQueryFragment
+        ...useAdmireCommentQueryFragment
       }
     `,
     queryRef
@@ -36,7 +41,7 @@ export function SomeoneRepliedToYourComment({
         __typename
         updatedTime
 
-        comment {
+        comment @required(action: THROW) {
           dbid
           commenter {
             username
@@ -48,6 +53,10 @@ export function SomeoneRepliedToYourComment({
               dbid
             }
           }
+          replyTo {
+            dbid
+          }
+          ...useAdmireCommentFragment
         }
 
         ...NotificationSkeletonFragment
@@ -59,6 +68,12 @@ export function SomeoneRepliedToYourComment({
   const post = notification.comment?.source ?? {};
 
   const commenter = notification.comment?.commenter;
+  const { comment } = notification;
+
+  const { toggleAdmire, hasViewerAdmiredComment } = useAdmireComment({
+    commentRef: comment,
+    queryRef: query,
+  });
 
   const commenters = useMemo(() => {
     return removeNullValues([commenter]);
@@ -70,6 +85,28 @@ export function SomeoneRepliedToYourComment({
       navigation.navigate('Post', { postId: post.dbid, commentId: notification.comment?.dbid });
     }
   }, [navigation, post?.dbid, notification.comment?.dbid]);
+
+  const handleReplyPress = useCallback(() => {
+    if (post?.dbid) {
+      navigation.navigate('Post', {
+        postId: post.dbid,
+        commentId: notification.comment?.dbid,
+        replyToComment: {
+          username: commenter?.username ?? '',
+          commentId: notification.comment?.dbid,
+          comment: notification.comment?.comment ?? '',
+          topCommentId: notification.comment?.replyTo?.dbid ?? notification.comment?.dbid,
+        },
+      });
+    }
+  }, [
+    navigation,
+    post?.dbid,
+    notification.comment?.dbid,
+    commenter?.username,
+    notification.comment?.comment,
+    notification.comment?.replyTo?.dbid,
+  ]);
 
   return (
     <NotificationSkeleton
@@ -107,10 +144,44 @@ export function SomeoneRepliedToYourComment({
           </Typography>
         </Text>
 
-        <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
-          <Text className="dark:text-white" numberOfLines={3}>
-            {notification.comment?.comment ?? ''}
-          </Text>
+        <View className="space-y-1">
+          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+            <Text className="dark:text-white" numberOfLines={3}>
+              {notification.comment?.comment ?? ''}
+            </Text>
+          </View>
+          <View className="flex-row items-center space-x-2">
+            <GalleryTouchableOpacity
+              eventElementId={'Notification Admire Icon'}
+              eventName={'Notification Admire Icon Clicked'}
+              eventContext={contexts.Notifications}
+              onPress={toggleAdmire}
+              properties={{
+                notificationType: notification.__typename,
+              }}
+            >
+              <AdmireIcon height={16} active={hasViewerAdmiredComment} />
+            </GalleryTouchableOpacity>
+            <GalleryTouchableOpacity
+              onPress={handleReplyPress}
+              eventElementId="Notification Reply Button"
+              eventName="Notification Reply Button Clicked"
+              eventContext={contexts.Notifications}
+              properties={{
+                notificationType: notification.__typename,
+              }}
+            >
+              <Typography
+                font={{
+                  family: 'ABCDiatype',
+                  weight: 'Bold',
+                }}
+                className="text-xs"
+              >
+                Reply
+              </Typography>
+            </GalleryTouchableOpacity>
+          </View>
         </View>
       </View>
     </NotificationSkeleton>
