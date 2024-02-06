@@ -190,11 +190,11 @@ const StyledMovementWrapper = styled.div<{
       ? `transform: translate(${
           aspectRatio === 'vertical' && animatedImage.moveOnVertical
             ? animatedImage.verticalX
-            : animatedImage.offsetX
+            : animatedImage.offsetX.desktop
         }px, ${
           aspectRatio === 'vertical' && animatedImage.moveOnVertical
             ? animatedImage.verticalY
-            : animatedImage.offsetY
+            : animatedImage.offsetY.desktop
         }px);`
       : `transform: translate(${animatedImage.offsetXStart - 120}px, ${
           animatedImage.offsetYStart - 150
