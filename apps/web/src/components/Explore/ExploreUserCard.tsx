@@ -201,13 +201,13 @@ const StyledUserBio = styled(BaseM)`
   -webkit-box-orient: vertical;
 `;
 
-const TokenPreviewContainer = styled.div`
+export const TokenPreviewContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 2px;
 `;
 
-const TokenPreview = styled.img`
+export const TokenPreview = styled.img`
   height: auto;
   width: 100%;
   aspect-ratio: 1 / 1;

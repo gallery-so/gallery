@@ -64,7 +64,7 @@ type StyledFooterProps = {
   theme: 'light' | 'dark';
 };
 
-export const GLOBAL_FOOTER_HEIGHT = 80;
+export const GLOBAL_FOOTER_HEIGHT = 358;
 export const GLOBAL_FOOTER_HEIGHT_MOBILE = 134;
 
 const StyledFooterLink = styled(NavLink)<StyledFooterProps>`
