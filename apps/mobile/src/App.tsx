@@ -1,6 +1,5 @@
 import 'expo-dev-client';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { addBreadcrumb } from '@sentry/react-native';
@@ -26,6 +25,7 @@ import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
 import { Typography } from './components/Typography';
+import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';

@@ -1,17 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
-import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { QuestionCircleIcon } from 'src/icons/QuestionCircleIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
-import { FeedbackBottomSheet } from '~/components/FeedbackBottomSheet';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import FeedbackBottomSheetModal from '~/components/FeedbackBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -22,7 +22,7 @@ import { BugReportIcon } from '../../icons/BugReportIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
-import { DebugBottomSheet } from './DebugBottomSheet';
+import DebugBottomSheetModal from './DebugBottomSheetModal';
 
 const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
@@ -43,19 +43,18 @@ export function SettingsScreen() {
     {}
   );
 
-  const feedbackBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const debugBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleBugReportPress = useCallback(() => {
-    feedbackBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({ content: <FeedbackBottomSheetModal /> });
+  }, [showBottomSheetModal]);
 
   const handleDebugPress = useCallback(() => {
-    debugBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({ content: <DebugBottomSheetModal /> });
+  }, [showBottomSheetModal]);
 
   const handleDiscordPress = useCallback(() => {
     Linking.openURL('https://discord.gg/U6Xx8heTXY');
@@ -188,9 +187,6 @@ export function SettingsScreen() {
           )}
         </View>
       </View>
-
-      <FeedbackBottomSheet ref={feedbackBottomSheetRef} />
-      {isAdminUser && <DebugBottomSheet ref={debugBottomSheetRef} />}
     </View>
   );
 }
