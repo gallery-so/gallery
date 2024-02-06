@@ -106,7 +106,7 @@ export function CommentNoteSection({
       };
       onReplyClick(payload);
     },
-    [comment.dbid, onReplyClick]
+    [comment?.dbid, onReplyClick]
   );
 
   return (

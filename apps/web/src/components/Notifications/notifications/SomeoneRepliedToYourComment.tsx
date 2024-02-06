@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -6,6 +8,9 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneRepliedToYourCommentFragment$key } from '~/generated/SomeoneRepliedToYourCommentFragment.graphql';
+import { SomeoneRepliedToYourCommentQueryFragment$key } from '~/generated/SomeoneRepliedToYourCommentQueryFragment.graphql';
+import useAdmireComment from '~/hooks/api/posts/useAdmireComment';
+import { AdmireIcon } from '~/icons/SocializeIcons';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -14,40 +19,93 @@ import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
 type Props = {
   notificationRef: SomeoneRepliedToYourCommentFragment$key;
+  queryRef: SomeoneRepliedToYourCommentQueryFragment$key;
   onClose: () => void;
 };
 
-export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props) {
+export function SomeoneRepliedToYourComment({ notificationRef, queryRef, onClose }: Props) {
   const notification = useFragment(
     graphql`
       fragment SomeoneRepliedToYourCommentFragment on SomeoneRepliedToYourCommentNotification {
         __typename
         dbid
         updatedTime
-        comment {
+        comment @required(action: THROW) {
+          dbid
           commenter {
+            username
             ...UserHoverCardFragment
             ...ProfilePictureFragment
           }
           comment
           source {
+            __typename
             ... on Post {
+              dbid
               tokens {
                 ...NotificationPostPreviewWithBoundaryFragment
               }
             }
           }
+          replyTo {
+            dbid
+          }
+          ...useAdmireCommentFragment
         }
       }
     `,
     notificationRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment SomeoneRepliedToYourCommentQueryFragment on Query {
+        ...useAdmireCommentQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const { comment } = notification;
 
+  const { toggleAdmireComment, hasViewerAdmiredComment } = useAdmireComment({
+    commentRef: comment,
+    queryRef: query,
+  });
+
+  const { push } = useRouter();
   const reportError = useReportError();
 
-  const token = notification.comment?.source?.tokens?.[0];
+  const handleReply = useCallback(() => {
+    if (comment.source?.__typename !== 'Post') {
+      return;
+    }
+
+    const postId = comment.source.dbid;
+    const commentId = comment.dbid;
+    if (postId && commentId) {
+      const query = {
+        postId,
+        commentId,
+        replyToCommentUsername: comment.commenter?.username || '',
+        comment: comment.comment || '',
+        topCommentId: comment.replyTo?.dbid || '',
+      };
+      push({ pathname: '/post/[postId]', query });
+    }
+  }, [
+    comment.comment,
+    comment.commenter?.username,
+    comment.dbid,
+    comment.replyTo?.dbid,
+    push,
+    comment.source,
+  ]);
+
+  const token =
+    notification.comment?.source?.__typename === 'Post'
+      ? notification.comment.source.tokens?.[0]
+      : undefined;
 
   if (!token) {
     throw new Error('Post does not have accompanying token');
@@ -79,7 +137,20 @@ export function SomeoneRepliedToYourComment({ notificationRef, onClose }: Props)
             &nbsp;
             <TimeAgoText as="span">{timeAgo}</TimeAgoText>
           </StyledTextWrapper>
-          <StyledCaption>{comment.comment}</StyledCaption>
+          <VStack gap={4}>
+            <StyledCaption>{unescape(comment.comment)}</StyledCaption>
+
+            <HStack gap={4}>
+              <AdmireIcon
+                active={hasViewerAdmiredComment}
+                height={16}
+                onClick={toggleAdmireComment}
+              />
+              <StyledBaseS as="span" onClick={handleReply}>
+                Reply
+              </StyledBaseS>
+            </HStack>
+          </VStack>
         </VStack>
       </HStack>
       <NotificationPostPreviewWithBoundary tokenRef={token} />
@@ -111,4 +182,8 @@ const TimeAgoText = styled(BaseS)`
 
 const StyledTextWrapper = styled(HStack)`
   display: inline;
+`;
+
+const StyledBaseS = styled(BaseS)`
+  font-weight: 700;
 `;
