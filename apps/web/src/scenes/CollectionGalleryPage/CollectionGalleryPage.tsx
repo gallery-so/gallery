@@ -9,6 +9,7 @@ import useKeyDown from '~/hooks/useKeyDown';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
+import { MobileSpacingContainer } from '../UserGalleryPage/UserGallery';
 import CollectionGallery from './CollectionGallery';
 
 type CollectionGalleryPageProps = {
@@ -101,7 +102,9 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
         <title>{headTitle}</title>
       </Head>
       <GalleryPageSpacing>
-        <CollectionGallery queryRef={query} />
+        <MobileSpacingContainer>
+          <CollectionGallery queryRef={query} />
+        </MobileSpacingContainer>
       </GalleryPageSpacing>
     </>
   );

@@ -8,6 +8,7 @@ import { StandalonePostPageQueryFragment$key } from '~/generated/StandalonePostP
 import { GalleryPageSpacing } from '~/pages/[username]';
 
 import NotFound from '../NotFound/NotFound';
+import { MobileSpacingContainer } from '../UserGalleryPage/UserGallery';
 import StandalonePostView from './StandalonePostView';
 
 type Props = {
@@ -71,7 +72,9 @@ function StandalonePostPage({ queryRef }: Props) {
         <title>{headTitle}</title>
       </Head>
       <GalleryPageSpacing>
-        <StandalonePostView postRef={post} queryRef={query} />
+        <MobileSpacingContainer>
+          <StandalonePostView postRef={post} queryRef={query} />
+        </MobileSpacingContainer>
       </GalleryPageSpacing>
     </>
   );
