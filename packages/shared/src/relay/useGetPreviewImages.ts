@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -84,10 +84,14 @@ export function useGetPreviewImagesWithPolling({
     tokenRef
   );
 
-  const result = getPreviewImageUrlsInlineDangerously({
-    tokenRef: token,
-    preferStillFrameFromGif,
-  });
+  const result = useMemo(
+    () =>
+      getPreviewImageUrlsInlineDangerously({
+        tokenRef: token,
+        preferStillFrameFromGif,
+      }),
+    [preferStillFrameFromGif, token]
+  );
 
   const reportError = useReportError();
   // explicitly throw the loading state. this will allow a boundary
