@@ -5544,17 +5544,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@moonrepo/cli@npm:^1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/cli@npm:1.18.5"
+"@moonrepo/cli@npm:^1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/cli@npm:1.21.0"
   dependencies:
-    "@moonrepo/core-linux-arm64-gnu": 1.18.5
-    "@moonrepo/core-linux-arm64-musl": 1.18.5
-    "@moonrepo/core-linux-x64-gnu": 1.18.5
-    "@moonrepo/core-linux-x64-musl": 1.18.5
-    "@moonrepo/core-macos-arm64": 1.18.5
-    "@moonrepo/core-macos-x64": 1.18.5
-    "@moonrepo/core-windows-x64-msvc": 1.18.5
+    "@moonrepo/core-linux-arm64-gnu": 1.21.0
+    "@moonrepo/core-linux-arm64-musl": 1.21.0
+    "@moonrepo/core-linux-x64-gnu": 1.21.0
+    "@moonrepo/core-linux-x64-musl": 1.21.0
+    "@moonrepo/core-macos-arm64": 1.21.0
+    "@moonrepo/core-macos-x64": 1.21.0
+    "@moonrepo/core-windows-x64-msvc": 1.21.0
     detect-libc: ^2.0.2
   dependenciesMeta:
     "@moonrepo/core-linux-arm64-gnu":
@@ -5573,55 +5573,55 @@ __metadata:
       optional: true
   bin:
     moon: moon
-  checksum: 1b37d68af5c1e8bcdc2e91a37482a76768ca9d20b53079860fc535498787261ebd4d22df956c660bfc119a85568ed764978dbef45127d5a710bb4267b8aaed8f
+  checksum: 9a3c5037f47c49209a1fadadef8b9446f429884964cf3f9dfd55f652fb3ef62186e44f7a913ab548e5d847765ebf9c24f8b9aa38c126f6fd69987275ab96bc63
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-arm64-gnu@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-linux-arm64-gnu@npm:1.18.5"
+"@moonrepo/core-linux-arm64-gnu@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-linux-arm64-gnu@npm:1.21.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-arm64-musl@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-linux-arm64-musl@npm:1.18.5"
+"@moonrepo/core-linux-arm64-musl@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-linux-arm64-musl@npm:1.21.0"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-x64-gnu@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-linux-x64-gnu@npm:1.18.5"
+"@moonrepo/core-linux-x64-gnu@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-linux-x64-gnu@npm:1.21.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@moonrepo/core-linux-x64-musl@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-linux-x64-musl@npm:1.18.5"
+"@moonrepo/core-linux-x64-musl@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-linux-x64-musl@npm:1.21.0"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@moonrepo/core-macos-arm64@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-macos-arm64@npm:1.18.5"
+"@moonrepo/core-macos-arm64@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-macos-arm64@npm:1.21.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@moonrepo/core-macos-x64@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-macos-x64@npm:1.18.5"
+"@moonrepo/core-macos-x64@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-macos-x64@npm:1.21.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@moonrepo/core-windows-x64-msvc@npm:1.18.5":
-  version: 1.18.5
-  resolution: "@moonrepo/core-windows-x64-msvc@npm:1.18.5"
+"@moonrepo/core-windows-x64-msvc@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@moonrepo/core-windows-x64-msvc@npm:1.21.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -17702,7 +17702,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "gallery-monorepo@workspace:."
   dependencies:
-    "@moonrepo/cli": ^1.18.5
+    "@moonrepo/cli": ^1.21.0
     "@types/react-relay": ^14.1.3
     "@types/relay-runtime": ^14.1.8
     "@typescript-eslint/eslint-plugin": ^6.15.0
@@ -23454,7 +23454,7 @@ __metadata:
     "@babel/plugin-transform-flow-strip-types": ^7.23.3
     "@gorhom/bottom-sheet": 4.4.7
     "@magic-sdk/react-native-expo": ^16.0.0
-    "@moonrepo/cli": ^1.18.5
+    "@moonrepo/cli": ^1.21.0
     "@react-native-async-storage/async-storage": 1.18.2
     "@react-native-clipboard/clipboard": ^1.12.1
     "@react-native-masked-view/masked-view": 0.2.9
@@ -31057,7 +31057,7 @@ __metadata:
     "@gallery-so/visitor-plugin-common": ^0.0.2
     "@graphql-codegen/cli": ^2.11.6
     "@graphql-codegen/typescript": ^2.7.3
-    "@moonrepo/cli": ^1.18.5
+    "@moonrepo/cli": ^1.21.0
     "@next/bundle-analyzer": ^13.0.4
     "@portabletext/react": ^3.0.11
     "@rainbow-me/rainbowkit": ^1.0.5

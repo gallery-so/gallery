@@ -10,7 +10,7 @@
     "@gallery-so/visitor-plugin-common": "^0.0.2",
     "@graphql-codegen/cli": "^2.11.6",
     "@graphql-codegen/typescript": "^2.7.3",
-    "@moonrepo/cli": "^1.18.5",
+    "@moonrepo/cli": "^1.21.0",
     "@next/bundle-analyzer": "^13.0.4",
     "@svgr/webpack": "^5.5.0",
     "@synthetixio/synpress": "3.7.1",
