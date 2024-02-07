@@ -12,6 +12,7 @@ import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
 import { AuthModal } from '~/hooks/useAuthModal';
 import BookmarkIcon from '~/icons/BookmarkIcon';
+import unescape from '~/shared/utils/unescape';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { NewTooltip } from '../Tooltip/NewTooltip';
@@ -97,6 +98,7 @@ export default function NftPreviewBookmarkLabel({ tokenRef, queryRef }: Props) {
 
     admireToken(token.id, token.dbid, info, decodedTokenName);
   }, [admireToken, decodedTokenName, info, query, route, showModal, token.dbid, token.id, track]);
+
   const handleRemoveBookmark = useCallback(() => {
     if (
       !token.viewerAdmire?.dbid ||
