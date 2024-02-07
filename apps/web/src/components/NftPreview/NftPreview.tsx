@@ -324,8 +324,9 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: inherit;
-  height: inherit;
+
+  flex-grow: 1;
+
   &:hover {
     ${StyledNftHeader} {
       opacity: 1;
