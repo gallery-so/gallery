@@ -30,16 +30,16 @@ export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
           ... on Viewer {
             user {
               __typename
-              primaryWallet {
-                chainAddress {
-                  address
-                  chain
-                }
-              }
 
               potentialEnsProfileImage {
                 __typename
                 ... on EnsProfileImage {
+                  wallet {
+                    chainAddress {
+                      chain
+                      address
+                    }
+                  }
                   profileImage {
                     previewURLs {
                       small
@@ -76,7 +76,7 @@ export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
 
   const ensProfileImage = user.potentialEnsProfileImage?.profileImage?.previewURLs?.small;
 
-  const { chainAddress } = user.primaryWallet || {};
+  const { chainAddress } = user.potentialEnsProfileImage?.wallet || {};
 
   const handleSetEnsProfilePicture = useCallback(() => {
     track('PFP: Clicked Use ENS Avatar');
