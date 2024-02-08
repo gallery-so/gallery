@@ -167,7 +167,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
   );
 }
 
-export const SharePostModalFallback = styled.div`
+const SharePostModalFallback = styled.div`
   min-width: 480px;
   min-height: 307px;
   max-width: 100%;

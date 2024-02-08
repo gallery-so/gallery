@@ -6,7 +6,6 @@ import { ReadOnlyInput } from '~/components/core/Input/Input';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import FarcasterIcon from '~/icons/FarcasterIcon';
 import LensIcon from '~/icons/LensIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
@@ -140,11 +139,8 @@ export default function SharePostModal({ postId, tokenName = 'this', creatorName
   }
 
   const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
-  if (result.type !== 'valid') {
-    return null;
-  }
 
-  const imageUrl = result.urls.small ?? '';
+  const imageUrl = result?.type === 'valid' ? result?.urls?.small : '';
   const username = post.author.username ?? '';
   const caption = post.caption ?? '';
 
@@ -152,12 +148,12 @@ export default function SharePostModal({ postId, tokenName = 'this', creatorName
     <StyledContainer>
       <VStack gap={16}>
         <HStack>
-          <MiniPostOpenGraphPreview
-            caption={caption}
-            username={username}
-            imageUrl={imageUrl}
-            profileImageUrl={profileImageUrl ?? ''}
-          />
+            <MiniPostOpenGraphPreview
+              caption={caption}
+              username={username}
+              imageUrl={imageUrl ?? ''}
+              profileImageUrl={profileImageUrl ?? ''}
+            />
         </HStack>
         <HStack gap={8}>
           {shareButtonsDetails.map((btnData) => (
