@@ -9,7 +9,10 @@ import { graphql } from 'relay-runtime';
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { UniversalNftPreviewFragment$key } from '~/generated/UniversalNftPreviewFragment.graphql';
 import { UniversalNftPreviewInnerFragment$key } from '~/generated/UniversalNftPreviewInnerFragment.graphql';
+import { UniversalNftPreviewInnerQueryFragment$key } from '~/generated/UniversalNftPreviewInnerQueryFragment.graphql';
+import { UniversalNftPreviewQueryFragment$key } from '~/generated/UniversalNftPreviewQueryFragment.graphql';
 import { UniversalNftPreviewWithBoundaryFragment$key } from '~/generated/UniversalNftPreviewWithBoundaryFragment.graphql';
+import { UniversalNftPreviewWithBoundaryQueryFragment$key } from '~/generated/UniversalNftPreviewWithBoundaryQueryFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import {
@@ -32,11 +35,13 @@ export type NftPreviewSharedProps = {
 };
 
 type UniversalNftPreviewInnerProps = {
+  queryRef: UniversalNftPreviewInnerQueryFragment$key;
   tokenRef: UniversalNftPreviewInnerFragment$key;
   tokenUrl: string | null | undefined;
 } & NftPreviewSharedProps;
 
 function UniversalNftPreviewInner({
+  queryRef,
   tokenRef,
   tokenUrl,
   resizeMode,
@@ -44,6 +49,14 @@ function UniversalNftPreviewInner({
   onPress,
   onImageStateChange,
 }: UniversalNftPreviewInnerProps) {
+  const query = useFragment(
+    graphql`
+      fragment UniversalNftPreviewInnerQueryFragment on Query {
+        ...UniversalNftPreviewContextMenuPopupQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment UniversalNftPreviewInnerFragment on Token {
@@ -116,11 +129,20 @@ function UniversalNftPreviewInner({
 }
 
 type UniversalNftPreviewProps = {
+  queryRef: UniversalNftPreviewQueryFragment$key;
   tokenRef: UniversalNftPreviewFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
-function UniversalNftPreview({ tokenRef, size, ...props }: UniversalNftPreviewProps) {
+function UniversalNftPreview({ queryRef, tokenRef, size, ...props }: UniversalNftPreviewProps) {
+  const query = useFragment(
+    graphql`
+      fragment UniversalNftPreviewQueryFragment on Query {
+        ...UniversalNftPreviewInnerQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment UniversalNftPreviewFragment on Token {
@@ -133,15 +155,19 @@ function UniversalNftPreview({ tokenRef, size, ...props }: UniversalNftPreviewPr
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size }) ?? '';
 
-  return <UniversalNftPreviewInner {...props} tokenRef={token} tokenUrl={imageUrl} />;
+  return (
+    <UniversalNftPreviewInner {...props} queryRef={query} tokenRef={token} tokenUrl={imageUrl} />
+  );
 }
 
 type UniversalNftPreviewWithBoundaryProps = {
+  queryRef: UniversalNftPreviewWithBoundaryQueryFragment$key;
   tokenRef: UniversalNftPreviewWithBoundaryFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
 export function UniversalNftPreviewWithBoundary({
+  queryRef,
   tokenRef,
   onImageStateChange,
   resizeMode,
@@ -149,6 +175,14 @@ export function UniversalNftPreviewWithBoundary({
   onPress,
   size,
 }: UniversalNftPreviewWithBoundaryProps) {
+  const query = useFragment(
+    graphql`
+      fragment UniversalNftPreviewWithBoundaryQueryFragment on Query {
+        ...UniversalNftPreviewQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment UniversalNftPreviewWithBoundaryFragment on Token {
@@ -162,6 +196,7 @@ export function UniversalNftPreviewWithBoundary({
   return (
     <TokenFailureBoundary tokenRef={token}>
       <UniversalNftPreview
+        queryRef={query}
         tokenRef={token}
         onPress={onPress}
         onImageStateChange={onImageStateChange}

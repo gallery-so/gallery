@@ -12,14 +12,25 @@ import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/Univers
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommunityCollectorsGridItemFragment$key } from '~/generated/CommunityCollectorsGridItemFragment.graphql';
+import { CommunityCollectorsGridItemQueryFragment$key } from '~/generated/CommunityCollectorsGridItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
+  queryRef: CommunityCollectorsGridItemQueryFragment$key;
   tokenRef: CommunityCollectorsGridItemFragment$key;
   style?: ViewProps['style'];
 };
 
-export function CommunityCollectorsGridItem({ tokenRef, style }: Props) {
+export function CommunityCollectorsGridItem({ queryRef, tokenRef, style }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommunityCollectorsGridItemQueryFragment on Query {
+        ...UniversalNftPreviewWithBoundaryQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment CommunityCollectorsGridItemFragment on Token {
@@ -68,6 +79,7 @@ export function CommunityCollectorsGridItem({ tokenRef, style }: Props) {
     <View className="w-1/2 space-y-2" style={style}>
       <View className="h-[175] w-[175] max-w-full">
         <UniversalNftPreviewWithBoundary
+          queryRef={query}
           tokenRef={token}
           onPress={handlePress}
           resizeMode={ResizeMode.CONTAIN}

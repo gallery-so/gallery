@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -17,6 +18,7 @@ import { EventTokenGrid } from '../EventTokenGrid';
 import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
 
 type TokensAddedToCollectionFeedEventProps = {
+  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -24,11 +26,21 @@ type TokensAddedToCollectionFeedEventProps = {
 };
 
 export function TokensAddedToCollectionFeedEvent({
+  queryRef,
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
   onDoubleTap,
 }: TokensAddedToCollectionFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+        ...EventTokenGridQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const eventData = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -93,6 +105,7 @@ export function TokensAddedToCollectionFeedEvent({
 
       <View className="flex flex-grow">
         <EventTokenGrid
+          queryRef={query}
           onDoubleTap={onDoubleTap}
           imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
           allowPreserveAspectRatio={allowPreserveAspectRatio}

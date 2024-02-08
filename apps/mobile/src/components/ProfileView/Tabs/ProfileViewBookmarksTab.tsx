@@ -2,11 +2,15 @@ import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 
-import { useListContentStyle } from './useListContentStyle';
-import { removeNullValues } from 'shared/relay/removeNullValues';
+import { ProfileViewBookmarkItemFragment$key } from '~/generated/ProfileViewBookmarkItemFragment.graphql';
+import { ProfileViewBookmarksTabFragment$key } from '~/generated/ProfileViewBookmarksTabFragment.graphql';
+
 import ProfileViewBookmarkItem from '../ProfileViewBookmarkItem';
+import { useListContentStyle } from './useListContentStyle';
+import { Typography } from '~/components/Typography';
+import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 
 type Props = {
   queryRef: ProfileViewBookmarksTabFragment$key;
@@ -40,6 +44,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
             }
           }
         }
+        ...ProfileViewBookmarkItemQueryFragment
       }
     `,
     queryRef
@@ -49,6 +54,9 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
   const user = query.userByUsername;
   const bookmarkedTokens = useMemo(() => {
     const tokens = [];
+    if (!user || !user.tokensBookmarked) {
+      return [];
+    }
 
     for (const token of user.tokensBookmarked?.edges ?? []) {
       if (token?.node) {
@@ -57,7 +65,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
     }
 
     return tokens;
-  }, [user.tokensBookmarked?.edges]);
+  }, [user]);
 
   // group tokens into rows so they can be virtualized
   const groupedTokens = useMemo(() => {
@@ -73,7 +81,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
   const items = useMemo<ListItem[]>(() => {
     const items: ListItem[] = [];
     items.push({ kind: 'header' });
-    // return removeNullValues(user.tokensBookmarked);
+
     groupedTokens.forEach((row) => {
       items.push({ kind: 'bookmark-row', bookmarkedTokens: row });
     });
@@ -83,26 +91,26 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
   const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
     if (item.kind === 'header') {
       return (
-        <View className="flex flex-row items-center justify-center py-3" style={{ gap: 10 }}>
-          <Text>Bookmarks</Text>
+        <View className="flex flex-row px-4 pb-4 justify-start items-start" style={{ gap: 10 }}>
+          <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            Bookmarks
+          </Typography>
+          <BookmarkIcon />
         </View>
       );
     }
 
     if (item.kind === 'bookmark-row') {
-      console.log(item.bookmarkedTokens.length);
       return (
         // <View className="flex">
         <View className="flex flex-row space-x-2 w-full justify-center px-4 mb-4">
-          {item.bookmarkedTokens.map((bookmarkedToken) => {
-            return <ProfileViewBookmarkItem tokenRef={bookmarkedToken} />;
-          })}
-          {/* <View className="border border-black flex flex-1">
-              <Text>test</Text>
-            </View>
-            <View className="border border-black flex flex-1">
-              <Text>test</Text>
-            </View> */}
+          {/* {item.bookmarkedTokens.map((bookmarkedToken) => {
+            return <ProfileViewBookmarkItem queryRef={query} tokenRef={bookmarkedToken} />;
+          })} */}
+
+          <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[0]} />
+          <View className="w-4" />
+          <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[1]} />
         </View>
         // </View>
       );

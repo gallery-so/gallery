@@ -41,6 +41,7 @@ function CollectionScreenInner() {
         }
 
         ...GalleryProfileNavBarQueryFragment
+        ...GalleryVirtualizedRowQueryFragment
       }
     `,
     { collectionId: route.params.collectionId }
@@ -61,13 +62,16 @@ function CollectionScreenInner() {
     return createVirtualizedCollectionRows({ collectionRef: collection });
   }, [collection]);
 
-  const renderItem: ListRenderItem<ListItem> = useCallback(({ item }) => {
-    if (item.kind === 'description') {
-      return <Markdown>{item.description}</Markdown>;
-    } else {
-      return <GalleryVirtualizedRow item={item} isOnCollectionScreen />;
-    }
-  }, []);
+  const renderItem: ListRenderItem<ListItem> = useCallback(
+    ({ item }) => {
+      if (item.kind === 'description') {
+        return <Markdown>{item.description}</Markdown>;
+      } else {
+        return <GalleryVirtualizedRow queryRef={query} item={item} isOnCollectionScreen />;
+      }
+    },
+    [query]
+  );
 
   return (
     <View className="flex flex-col flex-1 bg-white dark:bg-black-900 pt-4">

@@ -4,24 +4,35 @@ import React, { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
+import { contexts } from 'shared/analytics/constants';
 import { useGetSinglePreviewImage } from 'shared/relay/useGetPreviewImages';
 
+import { truncateAddress } from 'shared/utils/wallet';
+import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
+
 import { ProfileViewBookmarkItemFragment$key } from '~/generated/ProfileViewBookmarkItemFragment.graphql';
+import { ProfileViewBookmarkItemQueryFragment$key } from '~/generated/ProfileViewBookmarkItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
-import { UniversalNftPreviewWithBoundary } from '../NftPreview/UniversalNftPreview';
-import { truncateAddress } from 'shared/utils/wallet';
-import { TitleXS } from '../Text';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { extractRelevantMetadataFromCommunity } from 'shared/utils/extractRelevantMetadataFromCommunity';
-import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
-import { contexts } from 'shared/analytics/constants';
+import { UniversalNftPreviewWithBoundary } from '../NftPreview/UniversalNftPreview';
+import { TitleXS } from '../Text';
 
 type Props = {
+  queryRef: ProfileViewBookmarkItemQueryFragment$key;
   tokenRef: ProfileViewBookmarkItemFragment$key;
 };
 
-export default function ProfileViewBookmarkItem({ tokenRef }: Props) {
+export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment ProfileViewBookmarkItemQueryFragment on Query {
+        ...UniversalNftPreviewWithBoundaryQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment ProfileViewBookmarkItemFragment on Token {
@@ -79,9 +90,10 @@ export default function ProfileViewBookmarkItem({ tokenRef }: Props) {
   }, [navigateToCommunity, token.definition.community]);
 
   return (
-    <View className="border border-black flex flex-column flex-1 space-x-1 h-full space-y-2">
+    <View className=" flex flex-column flex-1 space-x-1 h-full space-y-2 w-1/2">
       <View className="aspect-square">
         <UniversalNftPreviewWithBoundary
+          queryRef={query}
           tokenRef={token}
           onPress={handlePress}
           resizeMode={ResizeMode.CONTAIN}

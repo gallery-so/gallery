@@ -6,11 +6,13 @@ import { ContextMenuView, OnPressMenuItemEvent } from 'react-native-ios-context-
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
+import { UniversalNftPreviewContextMenuPopupQueryFragment$key } from '~/generated/UniversalNftPreviewContextMenuPopupQueryFragment.graphql';
 import { UniversalNftPreviewContextMenuPopupTokenFragment$key } from '~/generated/UniversalNftPreviewContextMenuPopupTokenFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
@@ -18,9 +20,9 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { fitDimensionsToContainerCover } from '~/shared/utils/fitDimensionsToContainer';
 
 import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
-import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
+  queryRef: UniversalNftPreviewContextMenuPopupQueryFragment$key;
   tokenRef: UniversalNftPreviewContextMenuPopupTokenFragment$key;
   imageDimensions: Dimensions | null;
   fallbackTokenUrl: string;
@@ -30,11 +32,20 @@ const ENABLED_ARTIST = false;
 
 export function UniversalNftPreviewContextMenuPopup({
   children,
-
+  queryRef,
   tokenRef,
   imageDimensions,
   fallbackTokenUrl,
 }: NftPreviewContextMenuPopupProps) {
+  const query = useFragment(
+    graphql`
+      fragment UniversalNftPreviewContextMenuPopupQueryFragment on Query {
+        ...useToggleTokenAdmireQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment UniversalNftPreviewContextMenuPopupTokenFragment on Token {
@@ -71,10 +82,7 @@ export function UniversalNftPreviewContextMenuPopup({
     setPopupAssetLoaded(true);
   }, []);
 
-  const {
-    hasViewerAdmiredEvent: hasViewerBookmarkedEvent,
-    toggleTokenAdmire: toggleTokenBookmark,
-  } = useToggleTokenAdmire({
+  const { hasViewerAdmiredEvent, toggleTokenAdmire: toggleTokenBookmark } = useToggleTokenAdmire({
     tokenRef: token,
     queryRef: query,
   });
@@ -89,10 +97,10 @@ export function UniversalNftPreviewContextMenuPopup({
       } else if (event.nativeEvent.actionKey === 'share') {
         shareUniversalToken(token);
       } else if (event.nativeEvent.actionKey === 'bookmark') {
-        // add or remove bookmark
+        toggleTokenBookmark();
       }
     },
-    [fallbackTokenUrl, navigation, token]
+    [fallbackTokenUrl, navigation, toggleTokenBookmark, token]
   );
 
   const track = useTrack();
@@ -114,7 +122,7 @@ export function UniversalNftPreviewContextMenuPopup({
           },
           {
             actionKey: 'bookmark',
-            actionTitle: 'Add to Bookmarks',
+            actionTitle: hasViewerAdmiredEvent ? 'Remove from Bookmarks' : 'Add to Bookmarks',
           },
           //   {
           //     actionKey: 'view-gallery',

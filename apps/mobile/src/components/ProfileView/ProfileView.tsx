@@ -1,4 +1,5 @@
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
@@ -6,7 +7,6 @@ import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { TopMemberBadgeIcon } from 'src/icons/TopMemberBadgeIcon';
-import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { ButtonChip } from '~/components/ButtonChip';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';

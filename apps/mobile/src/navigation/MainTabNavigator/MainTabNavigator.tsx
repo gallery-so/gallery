@@ -1,6 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useColorScheme } from 'nativewind';
-import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
@@ -8,7 +7,7 @@ import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallbac
 import { MainTabNavigatorAccountScreenQuery } from '~/generated/MainTabNavigatorAccountScreenQuery.graphql';
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
 import { MainTabStackNavigator } from '~/navigation/MainTabStackNavigator';
-import { MainTabNavigatorParamList, MainTabStackNavigatorParamList } from '~/navigation/types';
+import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
 import { PostStackNavigator } from '../PostStackNavigator';

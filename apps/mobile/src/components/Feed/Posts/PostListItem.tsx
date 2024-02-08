@@ -65,6 +65,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     graphql`
       fragment PostListItemQueryFragment on Query {
         ...useTogglePostAdmireQueryFragment
+        ...UniversalNftPreviewWithBoundaryQueryFragment
       }
     `,
     queryRef
@@ -175,6 +176,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     }
     return (
       <UniversalNftPreviewWithBoundary
+        queryRef={query}
         tokenRef={firstToken}
         onPress={handlePress}
         resizeMode={ResizeMode.CONTAIN}
@@ -182,7 +184,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
         size="large"
       />
     );
-  }, [firstToken, handleError, handleLoad, handlePress, imageUrl, resultDimensions]);
+  }, [firstToken, handleError, handleLoad, handlePress, imageUrl, query, resultDimensions]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>

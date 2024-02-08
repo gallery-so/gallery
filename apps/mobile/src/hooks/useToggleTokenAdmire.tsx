@@ -1,10 +1,11 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
-import { ButtonChip } from '~/components/ButtonChip';
 
+import { ButtonChip } from '~/components/ButtonChip';
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
 import { useToggleAdmireRemoveMutation } from '~/generated/useToggleAdmireRemoveMutation.graphql';
@@ -12,10 +13,9 @@ import { useToggleTokenAdmireAddMutation } from '~/generated/useToggleTokenAdmir
 import { useToggleTokenAdmireFragment$key } from '~/generated/useToggleTokenAdmireFragment.graphql';
 import { useToggleTokenAdmireQueryFragment$key } from '~/generated/useToggleTokenAdmireQueryFragment.graphql';
 import { useToggleTokenAdmireRemoveMutation } from '~/generated/useToggleTokenAdmireRemoveMutation.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-import { useNavigation } from '@react-navigation/native';
-import { MainTabStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
 type Args = {
   queryRef: useToggleTokenAdmireQueryFragment$key;
   tokenRef: useToggleTokenAdmireFragment$key;
@@ -366,10 +366,7 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       }
     }
   }, [
-    query.viewer?.__typename,
-    query.viewer?.user?.dbid,
-    query.viewer?.user?.id,
-    query.viewer?.user?.username,
+    query.viewer,
     token.dbid,
     token.id,
     token.definition.id,

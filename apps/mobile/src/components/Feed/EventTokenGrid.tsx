@@ -10,6 +10,7 @@ import {
   EventTokenGridFragment$data,
   EventTokenGridFragment$key,
 } from '~/generated/EventTokenGridFragment.graphql';
+import { EventTokenGridQueryFragment$key } from '~/generated/EventTokenGridQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
@@ -17,6 +18,7 @@ import { NftPreviewWithBoundary } from '../NftPreview/NftPreview';
 import { DOUBLE_TAP_WINDOW } from './constants';
 
 type EventTokenGridProps = {
+  queryRef: EventTokenGridQueryFragment$key;
   imagePriority: Priority;
   allowPreserveAspectRatio: boolean;
   collectionTokenRefs: EventTokenGridFragment$key;
@@ -25,11 +27,21 @@ type EventTokenGridProps = {
 };
 
 export function EventTokenGrid({
+  queryRef,
   collectionTokenRefs,
   allowPreserveAspectRatio,
   imagePriority,
   onDoubleTap,
 }: EventTokenGridProps) {
+  const query = useFragment(
+    graphql`
+      fragment EventTokenGridQueryFragment on Query {
+        ...NftPreviewWithBoundaryQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const collectionTokens = useFragment(
     graphql`
       fragment EventTokenGridFragment on CollectionToken @relay(plural: true) {
@@ -136,6 +148,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreviewWithBoundary
+                queryRef={query}
                 onPress={() => handlePress(firstToken, firstToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -145,6 +158,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreviewWithBoundary
+                queryRef={query}
                 onPress={() => handlePress(secondToken, secondToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -157,6 +171,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreviewWithBoundary
+                queryRef={query}
                 onPress={() => handlePress(thirdToken, thirdToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -166,6 +181,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreviewWithBoundary
+                queryRef={query}
                 onPress={() => handlePress(fourthToken, fourthToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -181,6 +197,7 @@ export function EventTokenGrid({
         <HalfHeightRow>
           <QuarterCell>
             <NftPreviewWithBoundary
+              queryRef={query}
               onPress={() => handlePress(firstToken, firstToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
@@ -190,6 +207,7 @@ export function EventTokenGrid({
           </QuarterCell>
           <QuarterCell>
             <NftPreviewWithBoundary
+              queryRef={query}
               onPress={() => handlePress(secondToken, secondToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
@@ -208,6 +226,7 @@ export function EventTokenGrid({
           }}
         >
           <NftPreviewWithBoundary
+            queryRef={query}
             onPress={() => handlePress(firstToken, firstToken.large)}
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}

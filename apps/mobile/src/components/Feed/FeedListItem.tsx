@@ -22,6 +22,8 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     graphql`
       fragment FeedListItemQueryFragment on Query {
         ...useToggleAdmireQueryFragment
+        ...NonRecursiveFeedListItemQueryFragment
+        ...GalleryUpdatedFeedEventQueryFragment
       }
     `,
     queryRef
@@ -70,6 +72,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
       return (
         <GalleryUpdatedFeedEvent
+          queryRef={query}
           onAdmire={handleAdmire}
           eventId={eventId}
           eventDataRef={event.eventData}
@@ -80,6 +83,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     return (
       <View className="overflow-hidden">
         <NonRecursiveFeedListItem
+          queryRef={query}
           onAdmire={handleAdmire}
           eventId={eventId}
           slideIndex={0}
@@ -88,7 +92,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
         />
       </View>
     );
-  }, [event.eventData, eventId, handleAdmire]);
+  }, [event.eventData, eventId, handleAdmire, query]);
 
   return <View>{inner}</View>;
 }

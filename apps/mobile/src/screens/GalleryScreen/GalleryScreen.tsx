@@ -34,6 +34,7 @@ function GalleryScreenInner() {
         }
 
         ...GalleryProfileNavBarQueryFragment
+        ...GalleryVirtualizedRowQueryFragment
       }
     `,
     { galleryId: route.params.galleryId }
@@ -86,17 +87,20 @@ function GalleryScreenInner() {
     return { items, stickyIndices };
   }, [gallery]);
 
-  const renderItem: ListRenderItem<ListItem> = useCallback(({ item }) => {
-    if (item.kind === 'description') {
-      return (
-        <View className="px-4">
-          <Markdown>{item.description}</Markdown>
-        </View>
-      );
-    } else {
-      return <GalleryVirtualizedRow item={item} />;
-    }
-  }, []);
+  const renderItem: ListRenderItem<ListItem> = useCallback(
+    ({ item }) => {
+      if (item.kind === 'description') {
+        return (
+          <View className="px-4">
+            <Markdown>{item.description}</Markdown>
+          </View>
+        );
+      } else {
+        return <GalleryVirtualizedRow queryRef={query} item={item} />;
+      }
+    },
+    [query]
+  );
 
   return (
     <View className="flex flex-col flex-1 bg-white dark:bg-black-900">
