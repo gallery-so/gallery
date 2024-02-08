@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BackButton } from '~/components/BackButton';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
@@ -36,8 +37,9 @@ export function OnboardingEmailScreen() {
     setError('');
     setEmail(text);
     if (!EMAIL_FORMAT.test(text)) {
-      setError('Please enter a valid email address');
-      return;
+      setError("That doesn't look like a valid email address. Please double-check and try again");
+    } else {
+      setError('');
     }
   }, []);
 
@@ -87,6 +89,7 @@ export function OnboardingEmailScreen() {
             authMechanismType: 'magicLink',
             token,
           },
+          email,
         });
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });
@@ -113,30 +116,33 @@ export function OnboardingEmailScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
       <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View className="relative flex-row items-center justify-between ">
-          <BackButton onPress={handleBack} />
+        <View>
+          <View className="relative flex-row items-center justify-between pb-4">
+            <BackButton onPress={handleBack} />
 
-          <View
-            className="absolute w-full flex flex-row justify-center items-center"
-            pointerEvents="none"
-          >
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Enter email
-            </Typography>
+            <View
+              className="absolute w-full flex flex-row justify-center items-center"
+              pointerEvents="none"
+            >
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Add your email
+              </Typography>
+            </View>
+
+            <View />
           </View>
 
-          <View />
+          <OnboardingProgressBar from={0} to={20} />
         </View>
-
         <View
-          className="flex-1  justify-center space-y-12 px-8"
+          className="flex-1 justify-center space-y-12 px-4"
           style={{
             marginBottom: bottom,
           }}
         >
           <OnboardingTextInput
             autoFocus
-            placeholder="name@email.com"
+            placeholder="your@email.com"
             keyboardType="email-address"
             autoComplete="email"
             value={email}
@@ -164,11 +170,13 @@ export function OnboardingEmailScreen() {
               className={clsx(
                 'text-sm text-red',
                 email.length > 0 && 'opacity-100',
-                email.length === 0 && 'opacity-0'
+                email.length === 0 && 'opacity-0',
+                error && 'text-red',
+                !error && 'text-shadow'
               )}
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              {error}
+              {error ? error : 'You will receive an email with a link to verify your account'}
             </Typography>
           </View>
           <View />

@@ -8,8 +8,11 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
+// import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
+// import { useToastActions } from '~/contexts/ToastContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -50,17 +53,20 @@ export function OnboardingUsernameScreen() {
   const user = query?.viewer?.user;
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
+
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
+  // const { pushToast } = useToastActions();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
+  // const email = route.params.email;
 
   const [username, setUsername] = useState(user?.username ?? '');
-  const [bio] = useState('');
+  const [bio] = useState('test');
 
   // This cannot be derived from a "null" `usernameError`
   // since the value starts off as empty when the form is empty
@@ -73,6 +79,37 @@ export function OnboardingUsernameScreen() {
 
   const { top, bottom } = useSafeAreaInsets();
 
+  // const updateEmail = useUpdateEmail();
+
+  // If user sign up, trigger the mutation to ask user verify email
+  // useEffect(() => {
+  //   if (user || !email) return;
+
+  //   // The user need to be logged in to update email
+  //   async function handleSendVerificationEmail() {
+  //     if (!email) return;
+  //     const result = await updateEmail(email);
+
+  //     if (result.updateEmail?.__typename === 'UpdateEmailPayload') {
+  //       pushToast({
+  //         children: (
+  //           <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+  //             We’ve sent a verification email to {''}
+  //             <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>{email}</Typography>
+  //           </Typography>
+  //         ),
+  //         position: 'top',
+  //         // 50 is the height of the header, 20 is the padding
+  //         offSet: 50 + 20,
+  //       });
+  //     }
+
+  //     return;
+  //   }
+
+  //   handleSendVerificationEmail();
+  // }, [email, pushToast, user]);
+
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -83,8 +120,6 @@ export function OnboardingUsernameScreen() {
   }, []);
 
   const handleNext = useCallback(async () => {
-    setUsernameError('');
-
     try {
       // If its existing user, update the username
       if (user?.username) {
@@ -102,7 +137,22 @@ export function OnboardingUsernameScreen() {
           syncTokens('Ethereum');
         }
 
-        navigation.navigate('OnboardingProfileBio');
+        const user = response.createUser.viewer?.user;
+
+        // 1. if the the dont have ens pfp, go to the pfp screen
+        // 2. if they do, go to the profile bio screen
+        if (user?.potentialEnsProfileImage) {
+          navigation.navigate('OnboardingProfileBio');
+        } else {
+          if (!isSyncing) {
+            syncTokens('Ethereum');
+          }
+
+          navigation.navigate('OnboardingNftSelector', {
+            page: 'Onboarding',
+            fullScreen: true,
+          });
+        }
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -191,21 +241,23 @@ export function OnboardingUsernameScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
       <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View className="relative flex-row items-center justify-between ">
-          <BackButton onPress={handleBack} />
+        <View>
+          <View className="relative flex-row items-center justify-between pb-4">
+            <BackButton onPress={handleBack} />
 
-          <View
-            className="absolute w-full flex flex-row justify-center items-center"
-            pointerEvents="none"
-          >
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Pick a username
-            </Typography>
+            <View
+              className="absolute w-full flex flex-row justify-center items-center"
+              pointerEvents="none"
+            >
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Pick a username
+              </Typography>
+            </View>
+
+            <View />
           </View>
-
-          <View />
+          <OnboardingProgressBar from={20} to={40} />
         </View>
-
         <View
           className="flex-1  justify-center space-y-12 px-8"
           style={{

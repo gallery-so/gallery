@@ -4,6 +4,7 @@ import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
 import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
+import { OnboardingPersonaScreen } from '~/screens/Onboarding/OnboardingPersonaScreen';
 import { OnboardingProfileBioScreen } from '~/screens/Onboarding/OnboardingProfileBioScreen';
 import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecommendedUsers';
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
@@ -36,6 +37,7 @@ export function LoginStackNavigator() {
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
       <Stack.Screen name="OnboardingRecommendedUsers" component={OnboardingRecommendedUsers} />
       <Stack.Screen name="OnboardingNftSelector" component={NftSelectorPickerScreen} />
+      <Stack.Screen name="OnboardingPersona" component={OnboardingPersonaScreen} />
     </Stack.Navigator>
   );
 }

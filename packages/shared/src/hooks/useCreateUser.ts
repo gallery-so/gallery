@@ -18,6 +18,25 @@ export default function useCreateUser() {
           __typename
           ... on CreateUserPayload {
             __typename
+            viewer {
+              ... on Viewer {
+                user {
+                  potentialEnsProfileImage {
+                    wallet {
+                      chainAddress {
+                        chain @required(action: NONE)
+                        address @required(action: NONE)
+                      }
+                    }
+                    profileImage {
+                      previewURLs {
+                        medium
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
           ... on ErrAuthenticationFailed {
             __typename

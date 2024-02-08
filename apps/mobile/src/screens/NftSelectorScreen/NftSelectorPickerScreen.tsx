@@ -1,7 +1,8 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { ChevronRightIcon } from 'src/icons/ChevronRightIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
@@ -9,7 +10,9 @@ import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
@@ -18,7 +21,7 @@ import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPick
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
 import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { LoginStackNavigatorProp, MainTabStackNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
 import { chains } from '~/shared/utils/chains';
@@ -46,6 +49,13 @@ const NETWORKS: {
     hasCreatorSupport: chain.hasCreatorSupport,
   })),
 ];
+
+const screenHeaderText = {
+  ProfilePicture: 'Select a profile picture',
+  Post: 'Select item to post',
+  Onboarding: 'Select profile picture',
+  Community: 'Select item to post',
+};
 
 function InnerNftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -90,7 +100,7 @@ function InnerNftSelectorPickerScreen() {
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
   const screenTitle = useMemo(() => {
-    return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
+    return screenHeaderText[currentScreen];
   }, [currentScreen]);
 
   const handleRefresh = useCallback(() => {
@@ -134,6 +144,11 @@ function InnerNftSelectorPickerScreen() {
     });
   }, [ownershipTypeFilter]);
 
+  const navigation = useNavigation<LoginStackNavigatorProp>();
+  const handleSkipProfilePictureOnboarding = useCallback(() => {
+    navigation.navigate('OnboardingProfileBio');
+  }, [navigation]);
+
   return (
     <>
       <View
@@ -143,19 +158,44 @@ function InnerNftSelectorPickerScreen() {
         }}
       >
         <View className="flex flex-col flex-grow space-y-8">
-          <View className="px-4 relative">
-            <BackButton />
+          <View>
+            <View className="px-4 relative flex-row justify-between items-center">
+              <BackButton />
 
-            <View
-              className="absolute inset-0 flex flex-row justify-center items-center"
-              pointerEvents="none"
-            >
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                {screenTitle}
-              </Typography>
+              <View
+                className="absolute inset-0 flex flex-row justify-center items-center"
+                pointerEvents="none"
+              >
+                <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {screenTitle}
+                </Typography>
+              </View>
+
+              {currentScreen === 'Onboarding' && (
+                <GalleryTouchableOpacity
+                  eventElementId="Skip profile picture onboarding button"
+                  eventName="Skip profile picture onboarding button pressed"
+                  eventContext={contexts.Onboarding}
+                  className="flex-row items-center gap-[5]"
+                  onPress={handleSkipProfilePictureOnboarding}
+                >
+                  <Typography
+                    className="text-sm text-metal"
+                    font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  >
+                    Skip
+                  </Typography>
+                  <ChevronRightIcon />
+                </GalleryTouchableOpacity>
+              )}
             </View>
-          </View>
 
+            {currentScreen === 'Onboarding' && (
+              <View className="pt-4">
+                <OnboardingProgressBar from={40} to={60} />
+              </View>
+            )}
+          </View>
           <View className="flex flex-col flex-grow space-y-4">
             <View className="px-4">
               <FadedInput

@@ -7,6 +7,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
@@ -104,21 +105,23 @@ export function OnboardingProfileBioScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
       <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View className="relative flex-row items-center justify-between ">
-          <BackButton onPress={handleBack} />
+        <View>
+          <View className="relative flex-row items-center justify-between pb-4">
+            <BackButton onPress={handleBack} />
 
-          <View
-            className="absolute w-full flex flex-row justify-center items-center"
-            pointerEvents="none"
-          >
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Set up your profile
-            </Typography>
+            <View
+              className="absolute w-full flex flex-row justify-center items-center"
+              pointerEvents="none"
+            >
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Add a bio
+              </Typography>
+            </View>
+
+            <View />
           </View>
-
-          <View />
+          <OnboardingProgressBar from={60} to={80} />
         </View>
-
         <View
           className="flex-1 items-center justify-center space-y-12 px-8"
           style={{

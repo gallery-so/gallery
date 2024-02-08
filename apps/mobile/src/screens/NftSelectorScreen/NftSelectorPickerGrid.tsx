@@ -462,8 +462,14 @@ function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleSelectNft = useCallback(() => {
+    if (screen === 'Onboarding') {
+      navigation.navigate('Login', {
+        screen: 'OnboardingProfileBio',
+      });
+      return;
+    }
     navigation.pop();
-  }, [navigation]);
+  }, [navigation, screen]);
 
   const [firstToken] = tokens;
   if (!firstToken) {

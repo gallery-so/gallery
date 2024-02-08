@@ -121,16 +121,18 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       if (!userExist) {
         provider?.disconnect();
 
-        navigation.navigate('OnboardingUsername', {
-          authMechanism: {
-            authMechanismType: 'eoa',
-            chain: 'Ethereum',
-            address,
-            nonce,
-            signature,
-            userFriendlyWalletName: 'Unknown',
-          },
-        });
+        // navigation.navigate('OnboardingUsername', {
+        //   authMechanism: {
+        //     authMechanismType: 'eoa',
+        //     chain: 'Ethereum',
+        //     address,
+        //     nonce,
+        //     signature,
+        //     userFriendlyWalletName: 'Unknown',
+        //   },
+        // });
+        // navigation.na
+        navigation.navigate('OnboardingEmail');
       }
 
       if (methodRef.current === 'add-wallet') {
