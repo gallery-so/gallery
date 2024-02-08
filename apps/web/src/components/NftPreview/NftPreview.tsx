@@ -34,6 +34,7 @@ type Props = {
   ownerUsername?: string;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
+  disableBookmarkOnHover?: boolean;
   columns?: number;
   isInFeedEvent?: boolean;
   shouldLiveRender?: boolean;
@@ -58,6 +59,7 @@ function NftPreview({
   onLoad,
   eventContext,
   className,
+  disableBookmarkOnHover = false,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -247,7 +249,7 @@ function NftPreview({
             {PreviewAsset}
           </StyledNftPreview>
         </LinkToFullPageNftDetailModal>
-        {isMobileOrLargeMobile ? null : (
+        {isMobileOrLargeMobile || disableBookmarkOnHover ? null : (
           <StyledNftHeader>
             <StyledBookmarkLabel tokenRef={token} queryRef={query} />
           </StyledNftHeader>
@@ -324,7 +326,6 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
   flex-grow: 1;
 
   &:hover {

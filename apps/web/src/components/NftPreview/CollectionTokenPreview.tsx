@@ -64,6 +64,7 @@ export default function CollectionTokenPreview({
       shouldLiveRender={shouldLiveRender}
       collectionId={collection.dbid}
       eventContext={contexts.UserCollection}
+      disableBookmarkOnHover
     />
   );
 }
