@@ -423,7 +423,7 @@ const StyledEmptyTokenPreview = styled.div`
 const StyledGalleryActionsContainer = styled.div`
   flex-shrink: 0;
   user-select: none;
-  z-index: 10;
+  z-index: 1;
 `;
 
 const StyledIconContainer = styled(IconContainer)<{ isDragging: boolean }>`
