@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useMemo } from 'react';
+import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -90,8 +90,11 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   const { pushToast } = useToastActions();
   const showAuthModal = useAuthModal('sign-in');
   const track = useTrack();
+  const [firstTimeFollow, setFirstTimeFollow] = useState(false);
 
   const handleFollowClick = useCallback(async () => {
+    setFirstTimeFollow(!firstTimeFollow);
+
     if (!loggedInUserId) {
       showAuthModal();
 
@@ -132,6 +135,20 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   const followChip = useMemo(() => {
     if (isSelf) {
       return null;
+    } if (firstTimeFollow) {
+      return (
+        <FirstFollow
+          eventElementId="Follow Chip"
+          eventName="Follow"
+          eventContext={contexts.Social}
+          properties={{ isFollowBack: followsYou }}
+          onClick={handleFollowClick}
+          className={className}
+          onMouseLeave={() => setFirstTimeFollow(false)}
+        >
+          Following
+        </FirstFollow>
+      )
     } else if (isFollowing) {
       return (
         // return following & hover show unfollow
@@ -173,7 +190,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
         </FollowChip>
       );
     }
-  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou]);
+  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou, firstTimeFollow]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to
@@ -196,7 +213,14 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
 const FollowingChip = styled(GalleryChip)`
   background-color: ${colors.faint};
   color: ${colors.black['800']};
+
 `;
+
+const FirstFollow = styled(GalleryChip)`
+  background-color: ${colors.white};
+  color: ${colors.black['800']};
+`;
+
 
 const UnfollowChipContainer = styled.div`
   position: absolute;
