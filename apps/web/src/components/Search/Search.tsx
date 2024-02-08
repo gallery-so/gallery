@@ -26,33 +26,6 @@ export default function Search() {
   const router = useRouter();
   const track = useTrack();
 
-  useHotkeys(
-    ['ArrowUp', 'ArrowDown'],
-    (event) => {
-      const allResults = Array.from(document.querySelectorAll('.SearchResult'));
-      const focused = document.querySelector('.SearchResult:focus');
-
-      let nextIndex = 0;
-      if (focused) {
-        const focusedIndex = allResults.indexOf(focused);
-        nextIndex = event.key === 'ArrowDown' ? focusedIndex + 1 : focusedIndex - 1;
-
-        // Loop around after reaching end / start
-        if (nextIndex >= allResults.length) {
-          nextIndex = 0;
-        } else if (nextIndex < 0) {
-          nextIndex = allResults.length - 1;
-        }
-      }
-
-      const nextResult = allResults[nextIndex];
-      if (nextResult instanceof HTMLElement) {
-        nextResult.focus();
-      }
-    },
-    { enableOnFormTags: true, preventDefault: true }
-  );
-
   const getRoute = useCallback((item: SearchItemType) => {
     if (item.type === 'User') {
       return {
@@ -91,6 +64,47 @@ export default function Search() {
       hideDrawer();
     },
     [getRoute, hideDrawer, keyword, router, track]
+  );
+
+  useHotkeys(
+    ['ArrowUp', 'ArrowDown', 'Enter'],
+    (event) => {
+      const allResults = Array.from(document.querySelectorAll('.SearchResult'));
+      const focused = document.querySelector('.SearchResult:focus');
+
+      if (event.key === 'Enter' && focused) {
+        const focusedIndex = allResults.indexOf(focused);
+        const focusedElement = allResults[focusedIndex];
+        console.log('focusedElement', focusedElement);
+
+        const routeString = focusedElement?.getAttribute('data-route');
+        console.log('routeString', routeString);
+
+        const routeObject = JSON.parse(routeString ?? '');
+        handleSelect(routeObject);
+        event.preventDefault(); // Prevent the default action of the Enter key
+        return;
+      }
+
+      let nextIndex = 0;
+      if (focused) {
+        const focusedIndex = allResults.indexOf(focused);
+        nextIndex = event.key === 'ArrowDown' ? focusedIndex + 1 : focusedIndex - 1;
+
+        // Loop around after reaching end / start
+        if (nextIndex >= allResults.length) {
+          nextIndex = 0;
+        } else if (nextIndex < 0) {
+          nextIndex = allResults.length - 1;
+        }
+      }
+
+      const nextResult = allResults[nextIndex];
+      if (nextResult instanceof HTMLElement) {
+        nextResult.focus();
+      }
+    },
+    { enableOnFormTags: true, preventDefault: true }
   );
 
   return (
