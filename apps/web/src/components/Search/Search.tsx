@@ -75,10 +75,8 @@ export default function Search() {
       if (event.key === 'Enter' && focused) {
         const focusedIndex = allResults.indexOf(focused);
         const focusedElement = allResults[focusedIndex];
-        console.log('focusedElement', focusedElement);
 
         const routeString = focusedElement?.getAttribute('data-route');
-        console.log('routeString', routeString);
 
         const routeObject = JSON.parse(routeString ?? '');
         handleSelect(routeObject);
