@@ -15,6 +15,7 @@ type Props = {
   disableLiverender?: boolean;
   columns?: number;
   isInFeedEvent?: boolean;
+  disableBookmarkOnHover?: boolean;
 };
 
 export default function CollectionTokenPreview({
@@ -23,6 +24,7 @@ export default function CollectionTokenPreview({
   disableLiverender,
   columns,
   isInFeedEvent,
+  disableBookmarkOnHover,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -64,7 +66,7 @@ export default function CollectionTokenPreview({
       shouldLiveRender={shouldLiveRender}
       collectionId={collection.dbid}
       eventContext={contexts.UserCollection}
-      disableBookmarkOnHover
+      disableBookmarkOnHover={disableBookmarkOnHover}
     />
   );
 }

@@ -115,7 +115,7 @@ export default function useAdmireToken() {
               newBookmarkedToken,
               'TokenBookmarkEdge'
             );
-            ConnectionHandler.insertEdgeAfter(bookmarkedTokensConnection, edge);
+            ConnectionHandler.insertEdgeBefore(bookmarkedTokensConnection, edge);
           }
         }
       };
