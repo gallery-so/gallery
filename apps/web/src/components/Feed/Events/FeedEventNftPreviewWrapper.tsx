@@ -47,7 +47,13 @@ function FeedEventNftPreviewWrapper({ queryRef, tokenRef, maxWidth, maxHeight }:
       maxHeight={maxHeight}
       onClick={(e) => e.stopPropagation()}
     >
-      <CollectionTokenPreview tokenRef={token} disableLiverender isInFeedEvent queryRef={query} />
+      <CollectionTokenPreview
+        tokenRef={token}
+        disableLiverender
+        isInFeedEvent
+        queryRef={query}
+        disableBookmarkOnHover
+      />
     </StyledNftPreviewWrapper>
   );
 }
