@@ -6,8 +6,10 @@ import { StyledVideo } from '~/components/LoadingAsset/VideoWithLoading';
 import CollectionTokenPreview from '~/components/NftPreview/CollectionTokenPreview';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
+import { FeedEventNftPreviewWrapperQueryFragment$key } from '~/generated/FeedEventNftPreviewWrapperQueryFragment.graphql';
 
 type Props = {
+  queryRef: FeedEventNftPreviewWrapperQueryFragment$key;
   tokenRef: FeedEventNftPreviewWrapperFragment$key;
   maxWidth: number;
   maxHeight: number;
@@ -21,7 +23,15 @@ function NftPreviewWithShimmer(props: Props) {
     </ShimmerProvider>
   );
 }
-function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
+function FeedEventNftPreviewWrapper({ queryRef, tokenRef, maxWidth, maxHeight }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FeedEventNftPreviewWrapperQueryFragment on Query {
+        ...CollectionTokenPreviewQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
@@ -37,7 +47,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
       maxHeight={maxHeight}
       onClick={(e) => e.stopPropagation()}
     >
-      <CollectionTokenPreview tokenRef={token} disableLiverender isInFeedEvent />
+      <CollectionTokenPreview tokenRef={token} disableLiverender isInFeedEvent queryRef={query} />
     </StyledNftPreviewWrapper>
   );
 }

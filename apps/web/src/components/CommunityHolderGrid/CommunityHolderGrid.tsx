@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -8,14 +8,24 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { GRID_ITEM_PER_PAGE } from '~/constants/community';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { CommunityHolderGridFragment$key } from '~/generated/CommunityHolderGridFragment.graphql';
+import { CommunityHolderGridQueryFragment$key } from '~/generated/CommunityHolderGridQueryFragment.graphql';
 
 import CommunityHolderGridItem from './CommunityHolderGridItem';
 
 type Props = {
+  queryRef: CommunityHolderGridQueryFragment$key;
   communityRef: CommunityHolderGridFragment$key;
 };
 
-export default function CommunityHolderGrid({ communityRef }: Props) {
+export default function CommunityHolderGrid({ queryRef, communityRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommunityHolderGridQueryFragment on Query {
+        ...CommunityHolderGridItemQueryFragment
+      }
+    `,
+    queryRef
+  );
   const {
     data: community,
     loadNext,
@@ -93,7 +103,9 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
         <VStack gap={16}>
           <StyledCommunityHolderGrid>
             {filteredTokens.map((holder) =>
-              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
+              holder ? (
+                <CommunityHolderGridItem queryRef={query} key={holder.id} holderRef={holder} />
+              ) : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -14,6 +14,7 @@ import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { BookmarkedTokenGridFragment$key } from '~/generated/BookmarkedTokenGridFragment.graphql';
+import { BookmarkedTokenGridQueryFragment$key } from '~/generated/BookmarkedTokenGridQueryFragment.graphql';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BookmarkIcon from '~/icons/BookmarkIcon';
 import { BOOKMARKS_PER_PAGE } from '~/pages/[username]/bookmarks';
@@ -29,10 +30,19 @@ const ITEMS_PER_ROW_MOBILE = 2;
 const ITEMS_PER_ROW_DESKTOP = 4;
 
 type Props = {
+  queryRef: BookmarkedTokenGridQueryFragment$key;
   userRef: BookmarkedTokenGridFragment$key;
 };
 
-export default function BookmarkedTokenGrid({ userRef }: Props) {
+export default function BookmarkedTokenGrid({ queryRef, userRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment BookmarkedTokenGridQueryFragment on Query {
+        ...BookmarkedTokenGridItemQueryFragment
+      }
+    `,
+    queryRef
+  );
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment BookmarkedTokenGridFragment on GalleryUser
@@ -102,14 +112,19 @@ export default function BookmarkedTokenGrid({ userRef }: Props) {
             <StyledGridRow ref={registerChild} key={key} style={style}>
               {/* adding non-null assertion after groupedTokens[index] because we check if it's defined above, but typescript doesnt recognize the check*/}
               {groupedTokens[index]!.map((token) => (
-                <BookmarkedTokenGridItem key={token.id} tokenRef={token} onNftLoad={measure} />
+                <BookmarkedTokenGridItem
+                  queryRef={query}
+                  key={token.id}
+                  tokenRef={token}
+                  onNftLoad={measure}
+                />
               ))}
             </StyledGridRow>
           )}
         </CellMeasurer>
       );
     },
-    [groupedTokens, measurerCache]
+    [groupedTokens, measurerCache, query]
   );
 
   const isRowLoaded = useCallback(

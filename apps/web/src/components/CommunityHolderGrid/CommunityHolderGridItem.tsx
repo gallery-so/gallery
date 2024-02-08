@@ -7,6 +7,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
+import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { StyledAnchorNftDetailModal } from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
@@ -17,12 +18,22 @@ import NftPreview from '../NftPreview/NftPreview';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
+  queryRef: CommunityHolderGridItemQueryFragment$key;
   holderRef: CommunityHolderGridItemFragment$key;
 };
 
 const TOKEN_SIZE = 300;
 
-export default function CommunityHolderGridItem({ holderRef }: Props) {
+export default function CommunityHolderGridItem({ queryRef, holderRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommunityHolderGridItemQueryFragment on Query {
+        ...NftPreviewQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
@@ -55,7 +66,7 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
     <VStack gap={8} justify="flex-end">
       <StyledNftPreviewWrapper resultHeight={resultDimensions.height}>
         <ShimmerProvider>
-          <NftPreview tokenRef={token} eventContext={contexts.Community} />
+          <StyledNftPreview queryRef={query} tokenRef={token} eventContext={contexts.Community} />
         </ShimmerProvider>
       </StyledNftPreviewWrapper>
       <StyledItemTextWrapper>
@@ -100,4 +111,8 @@ const StyledItemName = styled(BaseM)`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const StyledNftPreview = styled(NftPreview)`
+  align-self: end;
 `;

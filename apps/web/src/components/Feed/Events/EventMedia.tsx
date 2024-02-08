@@ -2,17 +2,28 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { EventMediaFragment$key } from '~/generated/EventMediaFragment.graphql';
+import { EventMediaQueryFragment$key } from '~/generated/EventMediaQueryFragment.graphql';
 
 import FeedEventNftPreviewWrapper from './FeedEventNftPreviewWrapper';
 
 type Props = {
+  queryRef: EventMediaQueryFragment$key;
   tokenRef: EventMediaFragment$key;
   maxWidth: number;
   maxHeight: number;
 };
 
 // Renders each NFT preview in an event feed row within the given dimensions
-export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
+export default function EventMedia({ queryRef, tokenRef, maxWidth, maxHeight }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment EventMediaQueryFragment on Query {
+        ...FeedEventNftPreviewWrapperQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const token = useFragment(
     graphql`
       fragment EventMediaFragment on CollectionToken {
@@ -24,7 +35,12 @@ export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
 
   return (
     <StyledEventMedia width={maxWidth} height={maxHeight}>
-      <FeedEventNftPreviewWrapper tokenRef={token} maxWidth={maxWidth} maxHeight={maxHeight} />
+      <FeedEventNftPreviewWrapper
+        queryRef={query}
+        tokenRef={token}
+        maxWidth={maxWidth}
+        maxHeight={maxHeight}
+      />
     </StyledEventMedia>
   );
 }

@@ -33,6 +33,7 @@ function CollectionGallery({ queryRef }: Props) {
           }
         }
         ...CollectionGalleryHeaderQueryFragment
+        ...NftGalleryQueryFragment
       }
     `,
     queryRef
@@ -50,7 +51,7 @@ function CollectionGallery({ queryRef }: Props) {
           mobileLayout={mobileLayout}
           setMobileLayout={setMobileLayout}
         />
-        <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+        <NftGallery queryRef={query} collectionRef={collection} mobileLayout={mobileLayout} />
       </NftGalleryWrapper>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {

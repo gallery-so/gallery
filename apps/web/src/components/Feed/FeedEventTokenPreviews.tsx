@@ -3,17 +3,31 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { FeedEventTokenPreviewsFragment$key } from '~/generated/FeedEventTokenPreviewsFragment.graphql';
+import { FeedEventTokenPreviewsQueryFragment$key } from '~/generated/FeedEventTokenPreviewsQueryFragment.graphql';
 import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
 
 import { FEED_EVENT_TOKEN_MARGIN, getFeedTokenDimensions, NumTokens } from './dimensions';
 import EventMedia from './Events/EventMedia';
 
 type Props = {
+  queryRef: FeedEventTokenPreviewsQueryFragment$key;
   tokenToPreviewRefs: FeedEventTokenPreviewsFragment$key;
   isInCaption: boolean;
 };
 
-export default function FeedEventTokenPreviews({ tokenToPreviewRefs, isInCaption }: Props) {
+export default function FeedEventTokenPreviews({
+  queryRef,
+  tokenToPreviewRefs,
+  isInCaption,
+}: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FeedEventTokenPreviewsQueryFragment on Query {
+        ...EventMediaQueryFragment
+      }
+    `,
+    queryRef
+  );
   const tokensToPreview = useFragment(
     graphql`
       fragment FeedEventTokenPreviewsFragment on CollectionToken @relay(plural: true) {
@@ -46,6 +60,7 @@ export default function FeedEventTokenPreviews({ tokenToPreviewRefs, isInCaption
           key={collectionToken.token?.dbid}
           maxWidth={sizePx}
           maxHeight={sizePx}
+          queryRef={query}
         />
       ))}
     </StyledFeedEventTokenPreviews>

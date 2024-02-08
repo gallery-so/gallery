@@ -35,6 +35,7 @@ function BookmarksPage({ queryRef }: BookmarksPageProps) {
         }
 
         ...UserGalleryHeaderQueryFragment
+        ...BookmarkedTokenGridQueryFragment
       }
     `,
     queryRef
@@ -46,7 +47,7 @@ function BookmarksPage({ queryRef }: BookmarksPageProps) {
       <VStack gap={isMobile ? 0 : 24}>
         <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
         <MobileSpacingContainer align="center">
-          <BookmarkedTokenGrid userRef={query.userByUsername} />
+          <BookmarkedTokenGrid queryRef={query} userRef={query.userByUsername} />
         </MobileSpacingContainer>
       </VStack>
     </GalleryPageSpacing>

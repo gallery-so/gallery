@@ -7,20 +7,29 @@ import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoadi
 import NftPreview from '~/components/NftPreview/NftPreview';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { PostNftPreviewFragment$key } from '~/generated/PostNftPreviewFragment.graphql';
+import { PostNftPreviewQueryFragment$key } from '~/generated/PostNftPreviewQueryFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
 import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
+  queryRef: PostNftPreviewQueryFragment$key;
   tokenRef: PostNftPreviewFragment$key;
-
   onNftLoad?: () => void;
 };
 
 export const DESKTOP_TOKEN_SIZE = 517;
 
-export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
+export default function PostNftPreview({ queryRef, tokenRef, onNftLoad }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment PostNftPreviewQueryFragment on Query {
+        ...NftPreviewQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment PostNftPreviewFragment on Token {
@@ -49,6 +58,7 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     <StyledPostNftPreview resultHeight={resultDimensions.height}>
       <ShimmerProvider>
         <NftPreview
+          queryRef={query}
           tokenRef={token}
           shouldLiveRender={shouldLiveRender}
           onLoad={onNftLoad}

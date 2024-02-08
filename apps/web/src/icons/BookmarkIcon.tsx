@@ -34,7 +34,7 @@ export default function BookmarkIcon({
     <svg
       width={width ?? '25'}
       height={width ? width + 1 : '24'}
-      viewBox="0 0 27 24"
+      viewBox="-0.5 0 27 24"
       fill={
         isActive
           ? COLOR_SCHEME[colorScheme].activeFillColor

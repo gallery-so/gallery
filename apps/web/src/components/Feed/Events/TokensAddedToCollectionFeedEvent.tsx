@@ -11,6 +11,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -33,14 +34,25 @@ import {
 type Props = {
   caption: string | null;
   isSubEvent?: boolean;
+  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
 };
 
 export default function TokensAddedToCollectionFeedEvent({
+  queryRef,
   caption,
   eventDataRef,
   isSubEvent = false,
 }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const event = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
@@ -127,6 +139,7 @@ export default function TokensAddedToCollectionFeedEvent({
             </StyledCaptionContainer>
           )}
           <FeedEventTokenPreviews
+            queryRef={query}
             isInCaption={Boolean(caption)}
             tokenToPreviewRefs={tokensToPreview}
           />
