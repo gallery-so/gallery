@@ -401,13 +401,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     }
 
     return undefined;
-  }, [
-    hideDrawer,
-    notification,
-    push,
-    query.viewer?.user?.username,
-    toggleSubView,
-  ]);
+  }, [hideDrawer, notification, push, query.viewer?.user?.username, toggleSubView]);
 
   const isClickable = Boolean(handleNotificationClick);
 
