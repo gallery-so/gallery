@@ -86,10 +86,10 @@ export function AnimatedToast({
 
   return (
     <Animated.View
-      className="absolute inset-x-0 z-50 justify-center items-center"
+      className="absolute inset-x-0 z-50 justify-center items-center max-w-full"
       style={[positionStyles, animatedStyles]}
     >
-      <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
+      <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain max-w-full">
         {message && (
           <Typography
             className="text-sm text-offBlack dark:text-offWhite"

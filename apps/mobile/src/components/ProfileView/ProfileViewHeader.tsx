@@ -72,6 +72,23 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewLensPillFragment
           }
         }
+        viewer {
+          ... on Viewer {
+            user {
+              bookmarksCount: tokensBookmarked(first: 1, after: null)
+                @connection(key: "ProfileViewHeaderFragment_bookmarksCount") {
+                # Relay doesn't allow @connection w/o edges so we must query for it
+                # eslint-disable-next-line relay/unused-fields
+                edges {
+                  __typename
+                }
+                pageInfo {
+                  total
+                }
+              }
+            }
+          }
+        }
 
         ...useLoggedInUserIdFragment
       }
@@ -96,9 +113,10 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
     );
   }, [user.galleries]);
   const totalPosts = user.feed?.pageInfo?.total ?? 0;
+  const totalBookmarks = query.viewer?.user?.bookmarksCount?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
-    return [
+    const routes = [
       {
         name: 'Featured',
       },
@@ -110,12 +128,22 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         name: 'Posts',
         counter: totalPosts,
       },
+
       {
         name: 'Followers',
         counter: totalFollowers,
       },
     ];
-  }, [totalGalleries, totalPosts, totalFollowers]);
+
+    if (isLoggedInUser) {
+      routes.splice(3, 0, {
+        name: 'Bookmarks',
+        counter: totalBookmarks,
+      });
+    }
+
+    return routes;
+  }, [totalGalleries, totalPosts, totalFollowers, isLoggedInUser, totalBookmarks]);
 
   const numPills = useMemo(() => {
     return [

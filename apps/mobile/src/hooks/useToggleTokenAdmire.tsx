@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
-import { Text } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { Text, View } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
-import { graphql, useFragment } from 'react-relay';
+import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
+import { ButtonChip } from '~/components/ButtonChip';
 
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
@@ -13,7 +14,8 @@ import { useToggleTokenAdmireQueryFragment$key } from '~/generated/useToggleToke
 import { useToggleTokenAdmireRemoveMutation } from '~/generated/useToggleTokenAdmireRemoveMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-
+import { useNavigation } from '@react-navigation/native';
+import { MainTabStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
 type Args = {
   queryRef: useToggleTokenAdmireQueryFragment$key;
   tokenRef: useToggleTokenAdmireFragment$key;
@@ -91,6 +93,14 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     }
   `);
 
+  const truncatedTokenName = useMemo(() => {
+    if (!token.definition.name) {
+      return '';
+    }
+    const name = token.definition.name;
+    return name.length > 15 ? name.substring(0, 15) + '...' : name;
+  }, [token.definition.name]);
+
   const [removeAdmire] = usePromisifiedMutation<useToggleTokenAdmireRemoveMutation>(graphql`
     mutation useToggleTokenAdmireRemoveMutation($admireId: DBID!) @raw_response_type {
       removeAdmire(admireId: $admireId) {
@@ -121,11 +131,37 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       store,
       response
     ) => {
-      if (response?.removeAdmire?.__typename === 'RemoveAdmirePayload') {
+      if (
+        response?.removeAdmire?.__typename === 'RemoveAdmirePayload' &&
+        query.viewer?.__typename === 'Viewer'
+      ) {
+        // Remove the admire from the store
         if (response.removeAdmire.admireID) {
           const relayId = `Admire:${response.removeAdmire.admireID}`;
 
           store.delete(relayId);
+        }
+
+        // Update the total count of bookmarks displayed in the profile nav tab
+        const bookmarksCountConnectionID = ConnectionHandler.getConnectionID(
+          `GalleryUser:${query.viewer?.user?.dbid}`,
+          'ProfileViewHeaderFragment_bookmarksCount'
+        );
+        const bookmarksCountStore = store.get(bookmarksCountConnectionID);
+        if (bookmarksCountStore) {
+          const pageInfo = bookmarksCountStore.getLinkedRecord('pageInfo');
+          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
+        }
+        // Remove the bookmarked token from the bookmarks list displayed on the user profile Bookmarks tab
+        const bookmarkedTokensConnectionID = ConnectionHandler.getConnectionID(
+          `GalleryUser:${query.viewer?.user?.dbid}`,
+          'ProfileViewBookmarksTab_tokensBookmarked'
+        );
+
+        const bookmarkedTokensConnection = store.get(bookmarkedTokensConnectionID);
+        const tokenRelayId = `Token:${token.dbid}`;
+        if (bookmarkedTokensConnection) {
+          ConnectionHandler.deleteNode(bookmarkedTokensConnection, tokenRelayId);
         }
       }
     };
@@ -153,7 +189,29 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         reportError(`Could not unadmire token, typename was ${response.removeAdmire?.__typename}`, {
           tags: errorMetadata,
         });
+        return;
       }
+
+      pushToast({
+        position: 'top',
+        children: (
+          <Text>
+            <Typography
+              className="text-sm text-offBlack dark:text-offWhite"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              Removed{' '}
+              <Typography
+                className="text-sm text-offBlack dark:text-offWhite"
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {truncatedTokenName}
+              </Typography>{' '}
+              from Bookmarks
+            </Typography>
+          </Text>
+        ),
+      });
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
@@ -163,7 +221,26 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
       }
     }
-  }, [reportError, removeAdmire, token.viewerAdmire?.dbid, token.dbid]);
+  }, [
+    token.viewerAdmire?.dbid,
+    token.dbid,
+    query.viewer,
+    removeAdmire,
+    pushToast,
+    reportError,
+    truncatedTokenName,
+  ]);
+
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleViewBookmarksPress = useCallback(() => {
+    if (query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username) {
+      navigation.navigate('Profile', {
+        username: query.viewer.user.username,
+        navigateToTab: 'Bookmarks',
+      });
+    }
+  }, [navigation, query.viewer]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -176,9 +253,49 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       tokenId: token.dbid,
     };
 
+    const updater: SelectorStoreUpdater<useToggleTokenAdmireAddMutation['response']> = (
+      store,
+      response
+    ) => {
+      if (
+        response?.admireToken?.__typename === 'AdmireTokenPayload' &&
+        query.viewer?.__typename === 'Viewer'
+      ) {
+        // Update the total count of bookmarks displayed in the profile nav tab
+        const bookmarksCountConnectionID = ConnectionHandler.getConnectionID(
+          `GalleryUser:${query.viewer?.user?.dbid}`,
+          'ProfileViewHeaderFragment_bookmarksCount'
+        );
+        const bookmarksCountStore = store.get(bookmarksCountConnectionID);
+        if (bookmarksCountStore) {
+          const pageInfo = bookmarksCountStore.getLinkedRecord('pageInfo');
+          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) + 1, 'total');
+        }
+        // Add the bookmarked token to the bookmarks list displayed on the user profile Bookmarks tab
+
+        const bookmarkedTokensConnectionID = ConnectionHandler.getConnectionID(
+          `GalleryUser:${query.viewer?.user?.dbid}`,
+          'ProfileViewBookmarksTab_tokensBookmarked'
+        );
+        const bookmarkedTokensConnection = store.get(bookmarkedTokensConnectionID);
+
+        const newBookmarkedToken = store.getRootField('admireToken')?.getLinkedRecord('token');
+        if (newBookmarkedToken && bookmarkedTokensConnection) {
+          const edge = ConnectionHandler.createEdge(
+            store,
+            bookmarkedTokensConnection,
+            newBookmarkedToken,
+            'TokenBookmarkEdge'
+          );
+          ConnectionHandler.insertEdgeBefore(bookmarkedTokensConnection, edge);
+        }
+      }
+    };
+
     try {
       const optimisticAdmireId = Math.random().toString();
       const response = await admire({
+        updater,
         optimisticResponse: {
           admireToken: {
             __typename: 'AdmireTokenPayload',
@@ -215,10 +332,11 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
         });
         return;
       }
+
       pushToast({
         position: 'top',
         children: (
-          <Text>
+          <View className="flex flex-row space-x-2 justify-center items-center max-w-screen">
             <Typography
               className="text-sm text-offBlack dark:text-offWhite"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -228,11 +346,14 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
                 className="text-sm text-offBlack dark:text-offWhite"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               >
-                {response.admireToken.token?.definition.name}
+                {truncatedTokenName}
               </Typography>{' '}
               to Bookmarks
             </Typography>
-          </Text>
+            <ButtonChip variant="primary" onPress={handleViewBookmarksPress} width="fixed-tight">
+              View
+            </ButtonChip>
+          </View>
         ),
       });
     } catch (error) {
@@ -245,14 +366,19 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
       }
     }
   }, [
-    admire,
+    query.viewer?.__typename,
+    query.viewer?.user?.dbid,
+    query.viewer?.user?.id,
+    query.viewer?.user?.username,
     token.dbid,
     token.id,
-    pushToast,
-    query.viewer,
-    reportError,
     token.definition.id,
     token.definition.name,
+    admire,
+    pushToast,
+    handleViewBookmarksPress,
+    reportError,
+    truncatedTokenName,
   ]);
 
   const hasViewerAdmiredEvent = Boolean(token.viewerAdmire);

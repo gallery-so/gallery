@@ -18,6 +18,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { fitDimensionsToContainerCover } from '~/shared/utils/fitDimensionsToContainer';
 
 import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   tokenRef: UniversalNftPreviewContextMenuPopupTokenFragment$key;
@@ -53,6 +54,7 @@ export function UniversalNftPreviewContextMenuPopup({
         }
         ...shareTokenUniversalFragment
         ...TokenFailureBoundaryFragment
+        ...useToggleTokenAdmireFragment
       }
     `,
     tokenRef
@@ -69,6 +71,14 @@ export function UniversalNftPreviewContextMenuPopup({
     setPopupAssetLoaded(true);
   }, []);
 
+  const {
+    hasViewerAdmiredEvent: hasViewerBookmarkedEvent,
+    toggleTokenAdmire: toggleTokenBookmark,
+  } = useToggleTokenAdmire({
+    tokenRef: token,
+    queryRef: query,
+  });
+
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
@@ -78,6 +88,8 @@ export function UniversalNftPreviewContextMenuPopup({
         });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareUniversalToken(token);
+      } else if (event.nativeEvent.actionKey === 'bookmark') {
+        // add or remove bookmark
       }
     },
     [fallbackTokenUrl, navigation, token]
@@ -99,6 +111,10 @@ export function UniversalNftPreviewContextMenuPopup({
           {
             actionKey: 'view-details',
             actionTitle: 'View Details',
+          },
+          {
+            actionKey: 'bookmark',
+            actionTitle: 'Add to Bookmarks',
           },
           //   {
           //     actionKey: 'view-gallery',

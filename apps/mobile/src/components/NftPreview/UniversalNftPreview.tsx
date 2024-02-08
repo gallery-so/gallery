@@ -87,6 +87,7 @@ function UniversalNftPreviewInner({
 
   return (
     <UniversalNftPreviewContextMenuPopup
+      queryRef={query}
       tokenRef={token}
       fallbackTokenUrl={tokenUrl}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
