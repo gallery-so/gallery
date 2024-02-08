@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -11,7 +12,6 @@ import { contexts } from '~/shared/analytics/constants';
 
 import { UnseenDot } from '../NotificationSkeleton';
 import { NotificationTokenPreviewWithBoundary } from './NotificationTokenPreview';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 
 type Props = {
   notificationRef: NewTokensFragment$key;
