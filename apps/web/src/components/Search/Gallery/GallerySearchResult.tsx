@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -28,18 +28,14 @@ export default function GallerySearchResult({ keyword, galleryRef, onSelect }: P
     galleryRef
   );
 
-  const route = useMemo(() => {
-    return {
-      type: 'Gallery' as const,
+  const handleClick = useCallback(() => {
+    onSelect({
+      type: 'Gallery',
       label: gallery.name ?? '',
       value: gallery.dbid,
       owner: gallery.owner?.username as string,
-    };
-  }, [gallery.name, gallery.dbid, gallery.owner?.username]);
-
-  const handleClick = useCallback(() => {
-    onSelect(route);
-  }, [onSelect, route]);
+    });
+  }, [gallery.dbid, gallery.name, gallery.owner?.username, onSelect]);
 
   return (
     <SearchResult
@@ -48,7 +44,6 @@ export default function GallerySearchResult({ keyword, galleryRef, onSelect }: P
       profilePicture={gallery.owner && <ProfilePicture userRef={gallery.owner} size="md" />}
       onClick={handleClick}
       keyword={keyword}
-      route={JSON.stringify(route)}
     />
   );
 }

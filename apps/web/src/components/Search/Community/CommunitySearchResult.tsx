@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
@@ -31,19 +31,15 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
 
   const communityPageUrl = getCommunityUrlFromCommunity(community);
 
-  const route = useMemo(() => {
-    return {
-      type: 'Community' as const,
+  const handleClick = useCallback(() => {
+    onSelect({
+      type: 'Community',
       label: community.name ?? '',
       value: community.dbid,
       communityPageUrl,
-    };
-  }, [community.name, community.dbid, communityPageUrl]);
-
-  const handleClick = useCallback(() => {
-    onSelect(route);
+    });
     return;
-  }, [onSelect, route]);
+  }, [onSelect, community.name, community.dbid, communityPageUrl]);
 
   return (
     <SearchResult
@@ -53,7 +49,6 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
       variant={variant}
       onClick={handleClick}
       keyword={keyword}
-      route={JSON.stringify(route)}
     />
   );
 }

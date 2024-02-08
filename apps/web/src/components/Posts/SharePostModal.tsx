@@ -148,12 +148,12 @@ export default function SharePostModal({ postId, tokenName = 'this', creatorName
     <StyledContainer>
       <VStack gap={16}>
         <HStack>
-            <MiniPostOpenGraphPreview
-              caption={caption}
-              username={username}
-              imageUrl={imageUrl ?? ''}
-              profileImageUrl={profileImageUrl ?? ''}
-            />
+          <MiniPostOpenGraphPreview
+            caption={caption}
+            username={username}
+            imageUrl={imageUrl ?? ''}
+            profileImageUrl={profileImageUrl ?? ''}
+          />
         </HStack>
         <HStack gap={8}>
           {shareButtonsDetails.map((btnData) => (

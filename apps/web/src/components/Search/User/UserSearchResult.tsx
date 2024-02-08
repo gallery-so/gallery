@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -27,17 +27,14 @@ export default function UserSearchResult({ keyword, userRef, variant, onSelect }
     `,
     userRef
   );
-  const route = useMemo(() => {
-    return {
-      type: 'User' as const,
-      label: user.username ?? '',
-      value: user.dbid,
-    };
-  }, [user.username, user.dbid]);
 
   const handleClick = useCallback(() => {
-    onSelect(route);
-  }, [onSelect, route]);
+    onSelect({
+      type: 'User',
+      label: user.username ?? '',
+      value: user.dbid,
+    });
+  }, [onSelect, user.dbid, user.username]);
 
   return (
     <SearchResult
@@ -47,7 +44,6 @@ export default function UserSearchResult({ keyword, userRef, variant, onSelect }
       variant={variant}
       onClick={handleClick}
       keyword={keyword}
-      route={JSON.stringify(route)}
     />
   );
 }

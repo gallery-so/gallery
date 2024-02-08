@@ -67,24 +67,10 @@ export default function Search() {
   );
 
   useHotkeys(
-    ['ArrowUp', 'ArrowDown', 'Enter'],
+    ['ArrowUp', 'ArrowDown'],
     (event) => {
       const allResults = Array.from(document.querySelectorAll('.SearchResult'));
       const focused = document.querySelector('.SearchResult:focus');
-
-      if (event.key === 'Enter' && focused) {
-        const focusedIndex = allResults.indexOf(focused);
-        const focusedElement = allResults[focusedIndex];
-        console.log('focusedElement', focusedElement);
-
-        const routeString = focusedElement?.getAttribute('data-route');
-        console.log('routeString', routeString);
-
-        const routeObject = JSON.parse(routeString ?? '');
-        handleSelect(routeObject);
-        event.preventDefault(); // Prevent the default action of the Enter key
-        return;
-      }
 
       let nextIndex = 0;
       if (focused) {
