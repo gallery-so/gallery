@@ -66,7 +66,7 @@ export function OnboardingUsernameScreen() {
   // const email = route.params.email;
 
   const [username, setUsername] = useState(user?.username ?? '');
-  const [bio] = useState('test');
+  const [bio] = useState('');
 
   // This cannot be derived from a "null" `usernameError`
   // since the value starts off as empty when the form is empty
