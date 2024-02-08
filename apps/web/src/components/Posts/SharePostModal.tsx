@@ -6,6 +6,7 @@ import { ReadOnlyInput } from '~/components/core/Input/Input';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SharePostModalQuery } from '~/generated/SharePostModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import FarcasterIcon from '~/icons/FarcasterIcon';
 import LensIcon from '~/icons/LensIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
