@@ -107,7 +107,7 @@ export default function NftPreviewBookmarkLabel({ tokenRef, queryRef }: Props) {
     ) {
       return;
     }
-    track('NFT hover: Clicked remve from bookmarks', {
+    track('NFT hover: Clicked remove from bookmarks', {
       tokenDbid: token.dbid,
       tokenName: decodedTokenName,
       route,
