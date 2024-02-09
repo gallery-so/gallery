@@ -69,6 +69,7 @@ export function OnboardingPersonaScreen() {
                 key={persona}
                 variant="secondary"
                 text={persona}
+                onPress={handleNext}
                 eventElementId="Onboarding Persona Button"
                 eventName="Onboarding Persona Button Press"
                 eventContext={contexts.Onboarding}
