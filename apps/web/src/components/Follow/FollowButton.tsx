@@ -90,10 +90,10 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   const { pushToast } = useToastActions();
   const showAuthModal = useAuthModal('sign-in');
   const track = useTrack();
-  const [firstTimeFollow, setFirstTimeFollow] = useState(false);
+  const [hasClickedFollowAndIsHovering, setHasClickedFollowAndIsHovering] = useState(false);
 
   const handleFollowClick = useCallback(async () => {
-    setFirstTimeFollow(!firstTimeFollow);
+    setHasClickedFollowAndIsHovering(true);
 
     if (!loggedInUserId) {
       showAuthModal();
@@ -135,7 +135,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   const followChip = useMemo(() => {
     if (isSelf) {
       return null;
-    } if (firstTimeFollow) {
+    } if (hasClickedFollowAndIsHovering) {
       return (
         <FirstFollow
           eventElementId="Follow Chip"
@@ -144,7 +144,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
           properties={{ isFollowBack: followsYou }}
           onClick={handleFollowClick}
           className={className}
-          onMouseLeave={() => setFirstTimeFollow(false)}
+          onMouseLeave={() => setHasClickedFollowAndIsHovering(false)}
         >
           Following
         </FirstFollow>
@@ -190,7 +190,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
         </FollowChip>
       );
     }
-  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou, firstTimeFollow]);
+  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou, hasClickedFollowAndIsHovering]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to
