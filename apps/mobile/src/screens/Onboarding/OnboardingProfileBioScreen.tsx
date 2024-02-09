@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -11,6 +11,7 @@ import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgres
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
+import { useToastActions } from '~/contexts/ToastContext';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -47,8 +48,20 @@ export function OnboardingProfileBioScreen() {
 
   const user = query?.viewer?.user;
   const { openManageWallet } = useManageWalletActions();
+  const { pushToast } = useToastActions();
 
   const farcasterBio = user?.socialAccounts?.farcaster?.bio;
+
+  useEffect(() => {
+    if (farcasterBio) {
+      pushToast({
+        message: "We've imported your bio from Farcaster. You can edit it or keep it as is.",
+        position: 'top',
+        // 50 is the height of the header, 20 is the padding
+        offSet: 50 + 20,
+      });
+    }
+  }, [farcasterBio, pushToast]);
 
   const track = useTrack();
   const navigation = useNavigation<LoginStackNavigatorProp>();
