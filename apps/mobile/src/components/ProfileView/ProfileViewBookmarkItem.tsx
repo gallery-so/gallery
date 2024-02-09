@@ -6,7 +6,6 @@ import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import { useGetSinglePreviewImage } from 'shared/relay/useGetPreviewImages';
-
 import { truncateAddress } from 'shared/utils/wallet';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
@@ -17,6 +16,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { UniversalNftPreviewWithBoundary } from '../NftPreview/UniversalNftPreview';
 import { TitleXS } from '../Text';
+import { Typography } from '../Typography';
 
 type Props = {
   queryRef: ProfileViewBookmarkItemQueryFragment$key;
@@ -109,7 +109,12 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
           eventElementId="Collection Name On Bookmarked Token In Bookmarks Tab"
           eventContext={contexts.Bookmarks}
         >
-          <Text>{collectionName}</Text>
+          <Typography
+            className="text-sm leading-4  text-black dark:text-white"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
+            {collectionName}
+          </Typography>
         </GalleryTouchableOpacity>
       </View>
     </View>

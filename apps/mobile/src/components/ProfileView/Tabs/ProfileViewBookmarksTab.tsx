@@ -88,36 +88,37 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
     return items;
   }, [groupedTokens]);
 
-  const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
-    if (item.kind === 'header') {
-      return (
-        <View className="flex flex-row px-4 pb-4 justify-start items-start" style={{ gap: 10 }}>
-          <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            Bookmarks
-          </Typography>
-          <BookmarkIcon />
-        </View>
-      );
-    }
+  const renderItem = useCallback<ListRenderItem<ListItem>>(
+    ({ item }) => {
+      if (item.kind === 'header') {
+        return (
+          <View className="flex flex-row px-4 pb-4 justify-start items-center" style={{ gap: 10 }}>
+            <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              Bookmarks
+            </Typography>
+            <BookmarkIcon colorTheme="black" active width={20} />
+          </View>
+        );
+      }
 
-    if (item.kind === 'bookmark-row') {
-      return (
-        // <View className="flex">
-        <View className="flex flex-row space-x-2 w-full justify-center px-4 mb-4">
-          {/* {item.bookmarkedTokens.map((bookmarkedToken) => {
-            return <ProfileViewBookmarkItem queryRef={query} tokenRef={bookmarkedToken} />;
-          })} */}
+      if (item.kind === 'bookmark-row') {
+        return (
+          <View className="flex flex-row space-x-2 w-full justify-center px-4 mb-8">
+            {item.bookmarkedTokens[0] && (
+              <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[0]} />
+            )}
+            <View className="w-4" />
+            {item.bookmarkedTokens[1] && (
+              <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[1]} />
+            )}
+          </View>
+        );
+      }
 
-          <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[0]} />
-          <View className="w-4" />
-          <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[1]} />
-        </View>
-        // </View>
-      );
-    }
-
-    return null;
-  }, []);
+      return null;
+    },
+    [query]
+  );
 
   const loadMore = useCallback(() => {
     if (hasNext) {
