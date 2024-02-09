@@ -28,6 +28,11 @@ export function OnboardingProfileBioScreen() {
               __typename
               dbid
               username
+              socialAccounts {
+                farcaster {
+                  bio
+                }
+              }
               primaryWallet {
                 __typename
               }
@@ -43,13 +48,15 @@ export function OnboardingProfileBioScreen() {
   const user = query?.viewer?.user;
   const { openManageWallet } = useManageWalletActions();
 
+  const farcasterBio = user?.socialAccounts?.farcaster?.bio;
+
   const track = useTrack();
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
 
   const { top, bottom } = useSafeAreaInsets();
 
-  const [bio, setBio] = useState('');
+  const [bio, setBio] = useState(farcasterBio ?? '');
 
   const updateUser = useUpdateUser();
 
