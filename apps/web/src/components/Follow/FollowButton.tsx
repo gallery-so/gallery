@@ -135,7 +135,8 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
   const followChip = useMemo(() => {
     if (isSelf) {
       return null;
-    } if (hasClickedFollowAndIsHovering) {
+    }
+    if (hasClickedFollowAndIsHovering) {
       return (
         <FirstFollow
           eventElementId="Follow Chip"
@@ -148,7 +149,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
         >
           Following
         </FirstFollow>
-      )
+      );
     } else if (isFollowing) {
       return (
         // return following & hover show unfollow
@@ -190,7 +191,15 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
         </FollowChip>
       );
     }
-  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou, hasClickedFollowAndIsHovering]);
+  }, [
+    isSelf,
+    isFollowing,
+    className,
+    handleUnfollowClick,
+    handleFollowClick,
+    followsYou,
+    hasClickedFollowAndIsHovering,
+  ]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to
@@ -213,14 +222,12 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
 const FollowingChip = styled(GalleryChip)`
   background-color: ${colors.faint};
   color: ${colors.black['800']};
-
 `;
 
 const FirstFollow = styled(GalleryChip)`
   background-color: ${colors.white};
   color: ${colors.black['800']};
 `;
-
 
 const UnfollowChipContainer = styled.div`
   position: absolute;
@@ -257,7 +264,6 @@ const FollowChip = styled(GalleryChip)`
 
 const UnfollowChip = styled(GalleryChip)`
   background-color: ${colors.offWhite};
-
   color: #c72905;
   border: 1px solid #c72905;
 `;
