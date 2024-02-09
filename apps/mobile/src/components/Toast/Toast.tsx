@@ -88,7 +88,7 @@ export function AnimatedToast({
 
   return (
     <Animated.View
-      className="absolute inset-x-0 z-50 justify-center items-center"
+      className="absolute inset-x-0 z-50 justify-center items-center px-6"
       style={[positionStyles, animatedStyles]}
     >
       <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
