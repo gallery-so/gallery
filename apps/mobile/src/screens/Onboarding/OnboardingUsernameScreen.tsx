@@ -41,17 +41,6 @@ export function OnboardingUsernameScreen() {
               username
               bio
               potentialEnsProfileImage {
-                wallet {
-                  chainAddress {
-                    chain @required(action: NONE)
-                    address @required(action: NONE)
-                  }
-                }
-                profileImage {
-                  previewURLs {
-                    medium
-                  }
-                }
                 token {
                   dbid
                 }
@@ -65,8 +54,6 @@ export function OnboardingUsernameScreen() {
   );
 
   const user = query?.viewer?.user;
-
-  console.log(user);
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
@@ -148,6 +135,7 @@ export function OnboardingUsernameScreen() {
     }
   }, [
     authMechanism,
+    authMethod,
     bio,
     createUser,
     isSyncing,
