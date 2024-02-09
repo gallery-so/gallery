@@ -33,6 +33,9 @@ export default function useCreateUser() {
                         medium
                       }
                     }
+                    token {
+                      dbid
+                    }
                   }
                 }
               }

@@ -38,7 +38,9 @@ function SignInBottomSheet(
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const handleEmailPress = useCallback(() => {
-    navigation.navigate('OnboardingEmail');
+    navigation.navigate('OnboardingEmail', {
+      auth: 'Email',
+    });
   }, [navigation]);
 
   const handleConnectWallet = useCallback(() => {

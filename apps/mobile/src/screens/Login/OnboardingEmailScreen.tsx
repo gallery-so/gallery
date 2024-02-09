@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton } from '~/components/BackButton';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
-import { LoginStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -23,6 +23,11 @@ const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in
 
 export function OnboardingEmailScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
+  const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingEmail'>>();
+
+  const authMethod = route.params.auth;
+  const authMechanism = route.params.authMechanism;
+
   const { top, bottom } = useSafeAreaInsets();
 
   const [email, setEmail] = useState('');
@@ -74,6 +79,17 @@ export function OnboardingEmailScreen() {
     try {
       hasNavigatedForward = true;
 
+      if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
+        // TODO: Verify the email if it's valid and available
+
+        // Redirect to the next screen with the wallet auth mechanism
+        navigation.navigate('OnboardingUsername', {
+          authMechanism,
+          auth: 'Wallet',
+        });
+        return;
+      }
+
       const token = await magic.auth.loginWithMagicLink({ email, showUI: false });
 
       if (!token) {
@@ -90,6 +106,7 @@ export function OnboardingEmailScreen() {
             token,
           },
           email,
+          auth: 'Email',
         });
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });
@@ -103,7 +120,7 @@ export function OnboardingEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [email, login, navigation, reportError, track]);
+  }, [authMechanism, authMethod, email, login, navigation, reportError, track]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();

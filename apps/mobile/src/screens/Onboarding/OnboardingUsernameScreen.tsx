@@ -11,8 +11,6 @@ import { Button } from '~/components/Button';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-// import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
-// import { useToastActions } from '~/contexts/ToastContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -42,6 +40,22 @@ export function OnboardingUsernameScreen() {
               dbid
               username
               bio
+              potentialEnsProfileImage {
+                wallet {
+                  chainAddress {
+                    chain @required(action: NONE)
+                    address @required(action: NONE)
+                  }
+                }
+                profileImage {
+                  previewURLs {
+                    medium
+                  }
+                }
+                token {
+                  dbid
+                }
+              }
             }
           }
         }
@@ -52,6 +66,8 @@ export function OnboardingUsernameScreen() {
 
   const user = query?.viewer?.user;
 
+  console.log(user);
+
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const { colorScheme } = useColorScheme();
@@ -60,10 +76,8 @@ export function OnboardingUsernameScreen() {
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
-  // const { pushToast } = useToastActions();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
-  // const email = route.params.email;
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [bio] = useState('');
@@ -76,39 +90,9 @@ export function OnboardingUsernameScreen() {
   const debouncedUsername = useDebounce(username, 500);
 
   const authMechanism = route.params.authMechanism;
+  const authMethod = route.params.auth;
 
   const { top, bottom } = useSafeAreaInsets();
-
-  // const updateEmail = useUpdateEmail();
-
-  // If user sign up, trigger the mutation to ask user verify email
-  // useEffect(() => {
-  //   if (user || !email) return;
-
-  //   // The user need to be logged in to update email
-  //   async function handleSendVerificationEmail() {
-  //     if (!email) return;
-  //     const result = await updateEmail(email);
-
-  //     if (result.updateEmail?.__typename === 'UpdateEmailPayload') {
-  //       pushToast({
-  //         children: (
-  //           <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-  //             We’ve sent a verification email to {''}
-  //             <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>{email}</Typography>
-  //           </Typography>
-  //         ),
-  //         position: 'top',
-  //         // 50 is the height of the header, 20 is the padding
-  //         offSet: 50 + 20,
-  //       });
-  //     }
-
-  //     return;
-  //   }
-
-  //   handleSendVerificationEmail();
-  // }, [email, pushToast, user]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -124,30 +108,33 @@ export function OnboardingUsernameScreen() {
       // If its existing user, update the username
       if (user?.username) {
         await updateUser(user.dbid, username, user.bio ?? '');
-
         navigation.navigate('OnboardingProfileBio');
+
         return;
       }
 
       const response = await createUser(authMechanism, username, bio);
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
+        // If the user is signing up with email, redirect to the bio screen
+        if (authMethod === 'Email') {
+          navigation.navigate('OnboardingProfileBio');
+          return;
+        }
+
         // TODO: Remove this once incremental sync is implemented
         if (!isSyncing) {
           syncTokens('Ethereum');
         }
 
         const user = response.createUser.viewer?.user;
-
         // 1. if the the dont have ens pfp, go to the pfp screen
         // 2. if they do, go to the profile bio screen
-        if (user?.potentialEnsProfileImage) {
+        if (user?.potentialEnsProfileImage?.token?.dbid) {
+          //TODO: If the user has an ENS profile image, assign it to the user
+
           navigation.navigate('OnboardingProfileBio');
         } else {
-          if (!isSyncing) {
-            syncTokens('Ethereum');
-          }
-
           navigation.navigate('OnboardingNftSelector', {
             page: 'Onboarding',
             fullScreen: true,

@@ -110,11 +110,15 @@ export type LoginStackNavigatorParamList = {
   NotificationUpsell: undefined;
 
   OnboardingVideo: undefined;
-  OnboardingEmail: undefined;
+  OnboardingEmail: {
+    auth: 'Email' | 'Wallet';
+    authMechanism?: AuthPayloadVariables;
+  };
 
   OnboardingUsername: {
     authMechanism: AuthPayloadVariables;
     email?: string;
+    auth: 'Email' | 'Wallet';
   };
 
   OnboardingProfileBio: undefined;
