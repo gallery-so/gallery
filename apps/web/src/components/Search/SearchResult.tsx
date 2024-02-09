@@ -17,6 +17,7 @@ type Props = {
 
   variant?: SearchResultVariant;
   onClick: () => void;
+  route?: string;
   keyword: string;
 };
 
@@ -24,9 +25,9 @@ export default function SearchResult({
   name,
   description,
   keyword,
-
   profilePicture,
   variant = 'default',
+  route,
   onClick,
 }: Props) {
   const highlightedName = useMemo(() => getHighlightedName(name, keyword), [keyword, name]);
@@ -37,7 +38,13 @@ export default function SearchResult({
   );
 
   return (
-    <StyledSearchResult className="SearchResult" tabIndex={0} onClick={onClick} variant={variant}>
+    <StyledSearchResult
+      className="SearchResult"
+      tabIndex={0}
+      onClick={onClick}
+      variant={variant}
+      data-route={route}
+    >
       <HStack gap={4} align="center">
         {profilePicture}
         <VStack>

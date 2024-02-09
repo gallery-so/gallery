@@ -139,11 +139,8 @@ export default function SharePostModal({ postId, tokenName = 'this', creatorName
   }
 
   const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
-  if (result.type !== 'valid') {
-    return null;
-  }
 
-  const imageUrl = result.urls.small ?? '';
+  const imageUrl = result?.type === 'valid' ? result?.urls?.small : '';
   const username = post.author.username ?? '';
   const caption = post.caption ?? '';
 
@@ -154,7 +151,7 @@ export default function SharePostModal({ postId, tokenName = 'this', creatorName
           <MiniPostOpenGraphPreview
             caption={caption}
             username={username}
-            imageUrl={imageUrl}
+            imageUrl={imageUrl ?? ''}
             profileImageUrl={profileImageUrl ?? ''}
           />
         </HStack>
