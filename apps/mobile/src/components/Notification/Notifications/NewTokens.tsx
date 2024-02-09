@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -57,9 +58,24 @@ export function NewTokens({ notificationRef }: Props) {
     });
   }, [navigation, token.dbid]);
 
+  const handleRowPress = useCallback(() => {
+    if (!token.dbid) return;
+
+    navigation.navigate('UniversalNftDetail', {
+      cachedPreviewAssetUrl: '',
+      tokenId: token.dbid,
+    });
+  }, [navigation, token.dbid]);
+
   return (
     <View className="flex flex-row items-center p-4">
-      <View className="flex-row flex-1 items-center space-x-2">
+      <GalleryTouchableOpacity
+        onPress={handleRowPress}
+        className="flex-row flex-1 items-center space-x-2"
+        eventElementId="Notification Row Clicked"
+        eventName="Notification Row Clicked"
+        eventContext={contexts.Notifications}
+      >
         {!notification.seen && (
           <View className={'w-[17px] flex-row items-center justify-start'}>
             <UnseenDot />
@@ -91,7 +107,7 @@ export function NewTokens({ notificationRef }: Props) {
             {token.definition?.name ? token.definition.name : 'Unknown'}
           </Typography>
         </View>
-      </View>
+      </GalleryTouchableOpacity>
       <Button
         onPress={handlePress}
         className="w-20"
@@ -101,8 +117,8 @@ export function NewTokens({ notificationRef }: Props) {
         fontWeight="Bold"
         // manually tracking this to be the same params as `NotificationSkeleton`,
         // since this component didn't use the NotificationSkeleton component
-        eventElementId="Notification Row"
-        eventName="Notification Row Clicked"
+        eventElementId="Notification Row Post Button"
+        eventName="Notification Row Post Button Clicked"
         eventContext={contexts.Notifications}
         properties={{ type: notification.__typename }}
       />

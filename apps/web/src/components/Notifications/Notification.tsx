@@ -12,19 +12,16 @@ import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import { contexts, flows } from '~/shared/analytics/constants';
+import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 
-import { PostComposerModal } from '../Posts/PostComposerModal';
 import { GalleryAnnouncement } from './notifications/GalleryAnnouncement';
 import { NewTokens, StyledPostPreview } from './notifications/NewTokens';
 import SomeoneAdmiredYourComment from './notifications/SomeoneAdmiredYourComment';
@@ -223,9 +220,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const { push } = useRouter();
 
   const clearAllNotifications = useClearNotifications();
-  const { showModal } = useModalActions();
   const { hideDrawer } = useDrawerActions();
-  const isMobile = useIsMobileWindowWidth();
 
   /**
    * Bear with me here, this `useMemo` returns a stable function
@@ -362,20 +357,14 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         },
       };
     } else if (notification.__typename === 'NewTokensNotification') {
+      const username = query.viewer?.user?.username;
       const tokenId = notification.token?.dbid ?? '';
       return {
         showCaret: false,
-        handleClick: function openPostComposer() {
-          showModal({
-            content: (
-              <PostComposerModal
-                tokenId={tokenId}
-                eventFlow={flows['Web Notifications Post Create Flow']}
-              />
-            ),
-            headerVariant: 'thicc',
-            isFullPage: isMobile,
-          });
+        handleClick: function navigateToNftDetailPage() {
+          if (username && tokenId) {
+            push({ pathname: '/[username]/token/[tokenId]', query: { username, tokenId } });
+          }
           hideDrawer();
         },
       };
@@ -412,15 +401,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     }
 
     return undefined;
-  }, [
-    hideDrawer,
-    isMobile,
-    notification,
-    push,
-    query.viewer?.user?.username,
-    showModal,
-    toggleSubView,
-  ]);
+  }, [hideDrawer, notification, push, query.viewer?.user?.username, toggleSubView]);
 
   const isClickable = Boolean(handleNotificationClick);
 
