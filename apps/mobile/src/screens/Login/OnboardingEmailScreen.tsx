@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -41,12 +41,11 @@ export function OnboardingEmailScreen() {
   const handleEmailChange = useCallback((text: string) => {
     setError('');
     setEmail(text);
-    if (!EMAIL_FORMAT.test(text)) {
-      setError("That doesn't look like a valid email address. Please double-check and try again");
-    } else {
-      setError('');
-    }
   }, []);
+
+  const isInvalidEmail = useMemo(() => {
+    return !EMAIL_FORMAT.test(email);
+  }, [email]);
 
   const handleContinue = useCallback(async () => {
     let hasNavigatedForward = false;
@@ -74,6 +73,12 @@ export function OnboardingEmailScreen() {
       if (hasNavigatedForward) {
         navigation.goBack();
       }
+    }
+
+    if (!EMAIL_FORMAT.test(email)) {
+      setError("That doesn't look like a valid email address. Please double-check and try again");
+      setIsLoggingIn(false);
+      return;
     }
 
     try {
@@ -178,8 +183,7 @@ export function OnboardingEmailScreen() {
               )}
               loading={isLoggingIn}
               onPress={handleContinue}
-              variant={Boolean(error) ? 'disabled' : 'primary'}
-              disabled={Boolean(error)}
+              variant={isInvalidEmail ? 'disabled' : 'primary'}
               text="Next"
             />
 
