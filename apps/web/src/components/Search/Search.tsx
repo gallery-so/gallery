@@ -30,7 +30,6 @@ export default function Search() {
     ['ArrowUp', 'ArrowDown'],
     (event) => {
       const allResults = Array.from(document.querySelectorAll('.SearchResult'));
-
       const focused = document.querySelector('.SearchResult:focus');
 
       let nextIndex = 0;
