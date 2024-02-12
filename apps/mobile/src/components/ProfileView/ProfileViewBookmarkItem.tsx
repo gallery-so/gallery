@@ -99,7 +99,8 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
       if (
         imageState.kind !== 'loaded' ||
         !imageState.dimensions?.width ||
-        !imageState.dimensions?.height
+        !imageState.dimensions?.height ||
+        selfHeight
       ) {
         return;
       }
@@ -107,14 +108,15 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
       // this is screen width - spacing / 2 (the number of items per row)
       const itemWidth = (screenWidth - 56) / 2;
       const ratio = imageState.dimensions?.width / itemWidth;
+
       setSelfHeight(imageState.dimensions?.height / ratio);
     },
-    [screenWidth]
+    [screenWidth, selfHeight]
   );
 
   return (
     <View className="flex flex-column flex-1 space-x-1 h-full space-y-2 w-1/2 justify-end ">
-      <View className="flex  " style={{ height: selfHeight }}>
+      <View className="flex" style={{ height: selfHeight }}>
         <UniversalNftPreviewWithBoundary
           queryRef={query}
           tokenRef={token}
