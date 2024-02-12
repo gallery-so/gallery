@@ -129,7 +129,7 @@ function WalletSelectorBottomSheet(
           </View>
         </View>
       </GalleryBottomSheetModal>
-      {/* <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata} /> */}
+      <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata} />
     </>
   );
 }

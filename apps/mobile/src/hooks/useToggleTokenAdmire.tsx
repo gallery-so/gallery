@@ -13,7 +13,7 @@ import { useToggleTokenAdmireAddMutation } from '~/generated/useToggleTokenAdmir
 import { useToggleTokenAdmireFragment$key } from '~/generated/useToggleTokenAdmireFragment.graphql';
 import { useToggleTokenAdmireQueryFragment$key } from '~/generated/useToggleTokenAdmireQueryFragment.graphql';
 import { useToggleTokenAdmireRemoveMutation } from '~/generated/useToggleTokenAdmireRemoveMutation.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { RootStackNavigatorProp } from '~/navigation/types';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 type Args = {
@@ -231,13 +231,19 @@ export function useToggleTokenAdmire({ tokenRef, queryRef }: Args) {
     truncatedTokenName,
   ]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
   const handleViewBookmarksPress = useCallback(() => {
     if (query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username) {
-      navigation.navigate('Profile', {
-        username: query.viewer.user.username,
-        navigateToTab: 'Bookmarks',
+      navigation.navigate('MainTabs', {
+        screen: 'AccountTab',
+        params: {
+          screen: 'Profile',
+          params: {
+            username: query.viewer.user.username,
+            navigateToTab: 'Bookmarks',
+          },
+        },
       });
     }
   }, [navigation, query.viewer]);

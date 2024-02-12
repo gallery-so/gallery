@@ -21,7 +21,11 @@ import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/Prof
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
-import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
+import {
+  MainTabStackNavigatorParamList,
+  MainTabStackNavigatorProp,
+  RootStackNavigatorProp,
+} from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
@@ -94,7 +98,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     }
   }, [selectedRoute]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigation = useNavigation<RootStackNavigatorProp>();
   useEffect(() => {
     if (navigateToTab) {
       setSelectedRoute(navigateToTab);
@@ -136,7 +140,11 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       </View>
 
       <View className="flex-grow">
-        <GalleryTabsContainer Header={Header} ref={containerRef}>
+        <GalleryTabsContainer
+          Header={Header}
+          ref={containerRef}
+          initialTabName={navigateToTab ?? 'Featured'}
+        >
           <Tabs.Tab name="Featured">
             <ProfileViewFeaturedTab queryRef={query} />
           </Tabs.Tab>

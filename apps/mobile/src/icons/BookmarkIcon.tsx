@@ -8,19 +8,6 @@ type Props = {
   colorTheme: 'white' | 'blue' | 'black';
 } & SvgProps;
 
-const colorMap = {
-  light: {
-    stroke: colors.black['DEFAULT'],
-    fill: colors.offWhite,
-    active: colors.activeBlue,
-  },
-  dark: {
-    stroke: colors.white,
-    fill: colors.black['DEFAULT'],
-    active: colors.activeBlue,
-  },
-};
-
 const COLOR_THEME = {
   white: {
     light: {

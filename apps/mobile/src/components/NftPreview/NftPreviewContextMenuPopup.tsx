@@ -123,7 +123,7 @@ export function NftPreviewContextMenuPopup({
       //   });
       // }
     },
-    [collectionToken.collection, fallbackTokenUrl, navigation, token]
+    [collectionToken.collection, fallbackTokenUrl, navigation, toggleTokenBookmark, token]
   );
 
   const track = useTrack();

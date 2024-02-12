@@ -238,7 +238,15 @@ export function EventTokenGrid({
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [collectionTokens, fullHeight, fullWidth, handlePress, imagePriority, preserveAspectRatio]);
+  }, [
+    collectionTokens,
+    fullHeight,
+    fullWidth,
+    handlePress,
+    imagePriority,
+    preserveAspectRatio,
+    query,
+  ]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 

@@ -1,16 +1,16 @@
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, usePaginationFragment } from 'react-relay';
+import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 
+import { Typography } from '~/components/Typography';
 import { ProfileViewBookmarkItemFragment$key } from '~/generated/ProfileViewBookmarkItemFragment.graphql';
 import { ProfileViewBookmarksTabFragment$key } from '~/generated/ProfileViewBookmarksTabFragment.graphql';
 
 import ProfileViewBookmarkItem from '../ProfileViewBookmarkItem';
 import { useListContentStyle } from './useListContentStyle';
-import { Typography } from '~/components/Typography';
-import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 
 type Props = {
   queryRef: ProfileViewBookmarksTabFragment$key;
@@ -37,7 +37,6 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
               @connection(key: "ProfileViewBookmarksTab_tokensBookmarked") {
               edges {
                 node {
-                  id
                   ...ProfileViewBookmarkItemFragment
                 }
               }

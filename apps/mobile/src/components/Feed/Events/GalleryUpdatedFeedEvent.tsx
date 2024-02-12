@@ -112,7 +112,7 @@ export function GalleryUpdatedFeedEvent({
     } else {
       return inner;
     }
-  }, [eventId, handleScroll, isPaginated, onAdmire, subEvents, width]);
+  }, [eventId, handleScroll, isPaginated, onAdmire, query, subEvents, width]);
 
   return (
     <View className="flex flex-col space-y-3">

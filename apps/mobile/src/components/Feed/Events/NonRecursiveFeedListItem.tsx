@@ -126,7 +126,7 @@ export function NonRecursiveFeedListItem({
       default:
         throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
-  }, [eventCount, eventData, eventId, onAdmire, slideIndex]);
+  }, [eventCount, eventData, eventId, onAdmire, query, slideIndex]);
 
   return (
     <View className="flex-1" style={{ width }}>
