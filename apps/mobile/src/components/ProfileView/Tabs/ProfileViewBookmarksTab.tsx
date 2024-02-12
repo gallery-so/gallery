@@ -106,7 +106,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
 
       if (item.kind === 'bookmark-row') {
         return (
-          // If adjusting the horizontal spacing between row items, be sure to adjust the dimension calculation in ProfileViewBookmarkItem
+          // Note to dev: If you're adjusting the horizontal spacing between row items, be sure to adjust the dimension calculation in ProfileViewBookmarkItem
           <View className="flex flex-row w-full justify-center px-4 mb-6">
             {item.bookmarkedTokens[0] && (
               <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[0]} />
