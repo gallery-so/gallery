@@ -1,13 +1,17 @@
+import { useNavigation } from '@react-navigation/native';
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, usePaginationFragment } from 'react-relay';
+import { contexts } from 'shared/analytics/constants';
 import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 
+import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 import { ProfileViewBookmarkItemFragment$key } from '~/generated/ProfileViewBookmarkItemFragment.graphql';
 import { ProfileViewBookmarksTabFragment$key } from '~/generated/ProfileViewBookmarksTabFragment.graphql';
+import { RootStackNavigatorProp } from '~/navigation/types';
 
 import ProfileViewBookmarkItem from '../ProfileViewBookmarkItem';
 import { useListContentStyle } from './useListContentStyle';
@@ -126,15 +130,52 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
     }
   }, [hasNext, loadNext]);
 
+  const navigation = useNavigation<RootStackNavigatorProp>();
+  const onExplorePress = useCallback(() => {
+    navigation.navigate('MainTabs', {
+      screen: 'HomeTab',
+      params: { screen: 'Home', params: { screen: 'For You', params: {} } },
+    });
+  }, [navigation]);
+
   return (
     <View style={contentContainerStyle}>
-      <Tabs.FlashList
-        // ref={ref}
-        data={items}
-        renderItem={renderItem}
-        estimatedItemSize={100}
-        onEndReached={loadMore}
-      />
+      {items.length > 0 ? (
+        <Tabs.FlashList
+          data={items}
+          renderItem={renderItem}
+          estimatedItemSize={100}
+          onEndReached={loadMore}
+        />
+      ) : (
+        <Tabs.ScrollView>
+          <View className="flex px-4">
+            <View className="flex flex-row mb-12  justify-start items-center" style={{ gap: 10 }}>
+              <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Bookmarks
+              </Typography>
+              <BookmarkIcon colorTheme="black" active width={20} />
+            </View>
+            <Typography
+              font={{
+                family: 'GTAlpina',
+                weight: 'StandardLight',
+              }}
+              className="text-center text-xl mb-6"
+            >
+              You haven’t Bookmarked anything yet! Tap the Bookmark icon on work you like to build
+              your collection.
+            </Typography>
+            <Button
+              text="Start Exploring"
+              eventElementId="Profile Bookmarks Tab Empty State Start Exploring Button"
+              eventName="Pressed Profile Bookmarks Tab Empty State Start Exploring Button"
+              eventContext={contexts.Bookmarks}
+              onPress={onExplorePress}
+            />
+          </View>
+        </Tabs.ScrollView>
+      )}
     </View>
   );
 }
