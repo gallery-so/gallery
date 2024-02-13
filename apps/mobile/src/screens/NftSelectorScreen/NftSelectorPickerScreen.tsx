@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import { ChevronRightIcon } from 'src/icons/ChevronRightIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
@@ -16,10 +16,9 @@ import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgres
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useNftSelectorContext } from '~/contexts/NftSelectorContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
-import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LoginStackNavigatorProp, MainTabStackNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -58,29 +57,16 @@ const screenHeaderText = {
 };
 
 function InnerNftSelectorPickerScreen() {
+  const { data, refetch } = useNftSelectorContext();
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
 
   const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
     graphql`
       query NftSelectorPickerScreenQuery {
-        ...NftSelectorPickerScreenFragment
         ...useExperienceFragment
       }
     `,
     {}
-  );
-
-  const [data, refetch] = useRefetchableFragment<
-    NftSelectorPickerScreenRefetchQuery,
-    NftSelectorPickerScreenFragment$key
-  >(
-    graphql`
-      fragment NftSelectorPickerScreenFragment on Query
-      @refetchable(queryName: "NftSelectorPickerScreenRefetchQuery") {
-        ...NftSelectorPickerGridFragment
-      }
-    `,
-    query
   );
 
   const currentScreen = route.params.page;
@@ -249,22 +235,23 @@ function InnerNftSelectorPickerScreen() {
                 />
               </View>
             </View>
-
-            <View className="flex-grow flex-1 w-full">
-              <Suspense fallback={<NftSelectorScreenFallback />}>
-                <NftSelectorPickerGrid
-                  searchCriteria={{
-                    searchQuery,
-                    ownerFilter: ownershipTypeFilter,
-                    networkFilter: networkFilter,
-                    sortView,
-                  }}
-                  queryRef={data}
-                  screen={currentScreen}
-                  onRefresh={handleRefresh}
-                />
-              </Suspense>
-            </View>
+            {data && (
+              <View className="flex-grow flex-1 w-full">
+                <Suspense fallback={<NftSelectorScreenFallback />}>
+                  <NftSelectorPickerGrid
+                    searchCriteria={{
+                      searchQuery,
+                      ownerFilter: ownershipTypeFilter,
+                      networkFilter: networkFilter,
+                      sortView,
+                    }}
+                    queryRef={data}
+                    screen={currentScreen}
+                    onRefresh={handleRefresh}
+                  />
+                </Suspense>
+              </View>
+            )}
           </View>
         </View>
       </View>

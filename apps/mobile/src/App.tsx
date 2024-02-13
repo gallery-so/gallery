@@ -27,6 +27,7 @@ import SearchProvider from './components/Search/SearchContext';
 import { Typography } from './components/Typography';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
+import NftSelectorProvider from './contexts/NftSelectorContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
@@ -158,21 +159,23 @@ export default function App() {
                       <magic.Relayer />
                       <SearchProvider>
                         <NavigationContainer ref={navigationRef}>
-                          <ToastProvider>
-                            <TokenStateManagerProvider>
-                              <BottomSheetModalProvider>
-                                <SyncTokensProvider>
-                                  <ManageWalletProvider>
-                                    {/* Register the user's push token if one exists (does not prompt the user) */}
-                                    <NotificationRegistrar />
-                                    <DevMenuItems />
-                                    <DeepLinkRegistrar />
-                                    <RootStackNavigator navigationContainerRef={navigationRef} />
-                                  </ManageWalletProvider>
-                                </SyncTokensProvider>
-                              </BottomSheetModalProvider>
-                            </TokenStateManagerProvider>
-                          </ToastProvider>
+                          <NftSelectorProvider>
+                            <ToastProvider>
+                              <TokenStateManagerProvider>
+                                <BottomSheetModalProvider>
+                                  <SyncTokensProvider>
+                                    <ManageWalletProvider>
+                                      {/* Register the user's push token if one exists (does not prompt the user) */}
+                                      <NotificationRegistrar />
+                                      <DevMenuItems />
+                                      <DeepLinkRegistrar />
+                                      <RootStackNavigator navigationContainerRef={navigationRef} />
+                                    </ManageWalletProvider>
+                                  </SyncTokensProvider>
+                                </BottomSheetModalProvider>
+                              </TokenStateManagerProvider>
+                            </ToastProvider>
+                          </NftSelectorProvider>
                         </NavigationContainer>
                       </SearchProvider>
                     </SafeAreaProvider>

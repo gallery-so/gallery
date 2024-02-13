@@ -10,6 +10,7 @@ import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { Typography } from '~/components/Typography';
+import { useNftSelectorContext } from '~/contexts/NftSelectorContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
@@ -52,6 +53,7 @@ export function OnboardingUsernameScreen() {
     `,
     {}
   );
+  const { refetch } = useNftSelectorContext();
 
   const user = query?.viewer?.user;
 
@@ -109,17 +111,18 @@ export function OnboardingUsernameScreen() {
           return;
         }
 
-        // TODO: Remove this once incremental sync is implemented
-        if (!isSyncing) {
-          syncTokens('Ethereum');
-        }
+        refetch(
+          {
+            network: 'Ethereum',
+          },
+          { fetchPolicy: 'network-only' }
+        );
 
         const user = response.createUser.viewer?.user;
         // 1. if the the dont have ens pfp, go to the pfp screen
         // 2. if they do, go to the profile bio screen
         if (user?.potentialEnsProfileImage?.token?.dbid) {
           //TODO: If the user has an ENS profile image, assign it to the user
-
           navigation.navigate('OnboardingProfileBio');
         } else {
           navigation.navigate('OnboardingNftSelector', {
@@ -140,6 +143,7 @@ export function OnboardingUsernameScreen() {
     createUser,
     isSyncing,
     navigation,
+    refetch,
     syncTokens,
     username,
     updateUser,
