@@ -13,7 +13,7 @@ export function QRCodeIcon({ height = 16, width = 16, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
-    <Svg width={width} height={height} fill="none" {...props}>
+    <Svg width={width} height={height} viewBox="0 0 24 24" fill="none" {...props}>
       <Path
         stroke={colorScheme === 'dark' ? colors.white : colors.black[800]}
         strokeMiterlimit={10}
