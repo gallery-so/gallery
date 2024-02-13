@@ -10,12 +10,10 @@ import { Button } from '~/components/Button';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
-import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
 
@@ -34,9 +32,6 @@ export function OnboardingProfileBioScreen() {
                   bio
                 }
               }
-              primaryWallet {
-                __typename
-              }
               ...ProfilePictureFragment
             }
           }
@@ -47,7 +42,6 @@ export function OnboardingProfileBioScreen() {
   );
 
   const user = query?.viewer?.user;
-  const { openManageWallet } = useManageWalletActions();
   const { pushToast } = useToastActions();
 
   const farcasterBio = user?.socialAccounts?.farcaster?.bio;
@@ -63,7 +57,6 @@ export function OnboardingProfileBioScreen() {
     }
   }, [farcasterBio, pushToast]);
 
-  const track = useTrack();
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
 
@@ -78,31 +71,11 @@ export function OnboardingProfileBioScreen() {
   }, [navigation]);
 
   const handleSelectProfilePicture = useCallback(() => {
-    if (!user?.primaryWallet) {
-      track('Profile Picture Pressed', {
-        id: 'Onboarding Profile Picture Selected',
-        name: 'Onboarding Profile Picture Selected',
-        screen: 'OnboardingProfileBio',
-      });
-
-      openManageWallet({
-        title: 'Connect your wallet to view your collection',
-        onSuccess: () => {
-          navigation.navigate('OnboardingNftSelector', {
-            page: 'ProfilePicture',
-            fullScreen: true,
-          });
-        },
-      });
-
-      return;
-    }
-
     navigation.navigate('OnboardingNftSelector', {
       page: 'ProfilePicture',
       fullScreen: true,
     });
-  }, [navigation, openManageWallet, track, user?.primaryWallet]);
+  }, [navigation]);
 
   const handleNext = useCallback(async () => {
     if (!user) return null;

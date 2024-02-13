@@ -8,11 +8,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
+import { Button } from '~/components/Button';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
@@ -26,6 +28,7 @@ import {
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
 import {
+  LoginStackNavigatorProp,
   MainTabStackNavigatorParamList,
   MainTabStackNavigatorProp,
   ScreenWithNftSelector,
@@ -71,6 +74,9 @@ export function NftSelectorPickerGrid({
                 creationTime
                 ...NftSelectorPickerGridTokensFragment
               }
+              primaryWallet {
+                __typename
+              }
             }
           }
         }
@@ -115,6 +121,8 @@ export function NftSelectorPickerGrid({
     `,
     tokenRefs
   );
+
+  const { openManageWallet } = useManageWalletActions();
 
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   // but also don't overdo it if there's sufficient differentiation between web and mobile UX
@@ -300,10 +308,41 @@ export function NftSelectorPickerGrid({
     [screen, searchCriteria.ownerFilter]
   );
 
+  const navigation = useNavigation<LoginStackNavigatorProp>();
+  const handleConnectWallet = useCallback(() => {
+    openManageWallet({
+      title: 'Connect your wallet to view your collection',
+      onSuccess: () => {
+        navigation.navigate('OnboardingNftSelector', {
+          page: 'ProfilePicture',
+          fullScreen: true,
+        });
+      },
+    });
+  }, [navigation, openManageWallet]);
+
   const isRefreshing = isSyncing || isSyncingCreatedTokens;
 
   if (isRefreshing) {
     return <NftSelectorLoadingSkeleton />;
+  }
+  const user = query?.viewer?.user;
+  if (!user?.primaryWallet) {
+    return (
+      <View className="flex flex-col flex-1 pt-16 space-y-6 w-[300] mx-auto" style={style}>
+        <Typography className="text-lg text-center" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          You need to connect a wallet to see your NFTs
+        </Typography>
+
+        <Button
+          text="Connect Wallet"
+          onPress={handleConnectWallet}
+          eventElementId="Connect Wallet Button"
+          eventName="Connect Wallet Button pressed"
+          eventContext={contexts.Social}
+        />
+      </View>
+    );
   }
 
   if (!rows.length) {
