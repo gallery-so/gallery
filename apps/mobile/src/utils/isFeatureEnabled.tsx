@@ -25,6 +25,9 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   EARLY_ACCESS: {
     KOALA: true,
   },
+  EMAIL_TESTER: {
+    KOALA: true,
+  },
 };
 
 /**

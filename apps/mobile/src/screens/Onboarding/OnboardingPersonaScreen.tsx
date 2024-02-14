@@ -2,7 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { graphql } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
 import colors from 'shared/theme/colors';
 import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 
@@ -11,13 +13,27 @@ import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { Typography } from '~/components/Typography';
+import {
+  OnboardingPersonaScreenMutation,
+  Persona,
+} from '~/generated/OnboardingPersonaScreenMutation.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
 
-const PERSONAS = ['collector', 'creator', 'both'];
+const PERSONAS = ['Collector', 'Creator', 'Both'] as Persona[];
 
 export function OnboardingPersonaScreen() {
+  const [setPersona] = usePromisifiedMutation<OnboardingPersonaScreenMutation>(graphql`
+    mutation OnboardingPersonaScreenMutation($input: Persona!) @raw_response_type {
+      setPersona(persona: $input) {
+        ... on SetPersonaPayload {
+          __typename
+        }
+      }
+    }
+  `);
+
   const { top } = useSafeAreaInsets();
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
@@ -25,9 +41,15 @@ export function OnboardingPersonaScreen() {
     navigation.goBack();
   }, [navigation]);
 
-  const handleNext = useCallback(async () => {
-    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
-  }, [navigation]);
+  const handleNext = useCallback(
+    async (persona: Persona) => {
+      setPersona({
+        variables: { input: persona },
+      });
+      await navigateToNotificationUpsellOrHomeScreen(navigation, true);
+    },
+    [navigation, setPersona]
+  );
 
   return (
     <View style={{ paddingTop: top }} className="bg-white flex-1">
@@ -35,7 +57,7 @@ export function OnboardingPersonaScreen() {
         <View className="relative flex-row items-center justify-between pb-4">
           <BackButton onPress={handleBack} />
           <GalleryTouchableOpacity
-            onPress={handleNext}
+            onPress={() => handleNext('None')}
             className="flex flex-row items-center space-x-2"
             eventElementId="Skip button on onboarding persona screen"
             eventName="Skip button on onboarding persona screen pressed"
@@ -69,7 +91,7 @@ export function OnboardingPersonaScreen() {
                 key={persona}
                 variant="secondary"
                 text={persona}
-                onPress={handleNext}
+                onPress={() => handleNext(persona)}
                 eventElementId="Onboarding Persona Button"
                 eventName="Onboarding Persona Button Press"
                 eventContext={contexts.Onboarding}
