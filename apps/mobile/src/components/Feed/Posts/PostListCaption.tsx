@@ -23,7 +23,6 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
     }
   };
 
-
   const feedPost = useFragment(
     graphql`
       fragment PostListCaptionFragment on Post {
@@ -45,7 +44,8 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
   return (
     <View className="px-4 pb-4">
       <View>
-        <GalleryTouchableOpacity eventElementId="Show more lines"
+        <GalleryTouchableOpacity
+          eventElementId="Show more lines"
           eventName="Show more lines"
           eventContext={eventContext}
           onPress={toggleText}
@@ -53,8 +53,12 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
           activeOpacity={0}
           ref={ref}
         >
-          <ProcessedText suppressHighlighting={true} numberOfLines={showAll ? undefined : 4} text={captionWithMarkdownLinks} mentionsRef={nonNullMentions} />
-
+          <ProcessedText
+            suppressHighlighting={true}
+            numberOfLines={showAll ? undefined : 4}
+            text={captionWithMarkdownLinks}
+            mentionsRef={nonNullMentions}
+          />
         </GalleryTouchableOpacity>
       </View>
     </View>
