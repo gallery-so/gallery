@@ -14,8 +14,8 @@ import {
   PfpBottomSheetRemoveProfileImageMutation,
   PfpBottomSheetRemoveProfileImageMutation$rawResponse,
 } from '~/generated/PfpBottomSheetRemoveProfileImageMutation.graphql';
-import { PfpBottomSheetSetEnsProfileImageMutation } from '~/generated/PfpBottomSheetSetEnsProfileImageMutation.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { useProfilePicture } from '~/screens/NftSelectorScreen/useProfilePicture';
 import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
@@ -51,17 +51,16 @@ function PfpBottomSheet(
               profileImage {
                 __typename
               }
-
               potentialEnsProfileImage {
+                profileImage {
+                  previewURLs {
+                    medium
+                  }
+                }
                 wallet {
                   chainAddress {
                     chain @required(action: NONE)
                     address @required(action: NONE)
-                  }
-                }
-                profileImage {
-                  previewURLs {
-                    medium
                   }
                 }
               }
@@ -90,54 +89,32 @@ function PfpBottomSheet(
       }
     `);
 
-  const [setEnsProfileImage, isSettingsEnsProfilePicture] =
-    usePromisifiedMutation<PfpBottomSheetSetEnsProfileImageMutation>(graphql`
-      mutation PfpBottomSheetSetEnsProfileImageMutation($input: SetProfileImageInput!)
-      @raw_response_type {
-        setProfileImage(input: $input) {
-          ... on SetProfileImagePayload {
-            viewer {
-              user {
-                ...ProfilePictureFragment
-              }
-            }
-          }
-        }
-      }
-    `);
-
   const reportError = useReportError();
   const { bottom } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const { setEnsProfileImage, isSettingsEnsProfilePicture } = useProfilePicture();
+
+  const user = query?.viewer?.user;
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const handleEnsPress = useCallback(() => {
-    const ensAddress = query.viewer?.user?.potentialEnsProfileImage?.wallet?.chainAddress;
+  const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
-    if (!ensAddress) {
-      return;
-    }
+  const handleEnsPress = useCallback(() => {
+    if (!ensAddress) return;
 
     setEnsProfileImage({
-      variables: {
-        input: {
-          walletAddress: { address: ensAddress.address, chain: ensAddress.chain },
-        },
-      },
+      address: ensAddress?.address,
+      chain: ensAddress?.chain,
     })
       .catch(reportError)
       .then(() => {
         bottomSheetRef.current?.close();
       });
-  }, [
-    query.viewer?.user?.potentialEnsProfileImage?.wallet?.chainAddress,
-    reportError,
-    setEnsProfileImage,
-  ]);
+  }, [ensAddress, reportError, setEnsProfileImage]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
     navigation.navigate('ProfilePicturePicker', {

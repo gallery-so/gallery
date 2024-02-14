@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { graphql } from 'react-relay';
 
-import { useProfilePictureMutation } from '~/generated/useProfilePictureMutation.graphql';
+import { Chain, useProfilePictureMutation } from '~/generated/useProfilePictureMutation.graphql';
+import { useProfilePictureSetEnsProfileImageMutation } from '~/generated/useProfilePictureSetEnsProfileImageMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -9,6 +10,21 @@ export function useProfilePicture() {
   const [setProfileImage, isSettingProfileImage] =
     usePromisifiedMutation<useProfilePictureMutation>(graphql`
       mutation useProfilePictureMutation($input: SetProfileImageInput!) {
+        setProfileImage(input: $input) {
+          ... on SetProfileImagePayload {
+            viewer {
+              user {
+                ...ProfilePictureFragment
+              }
+            }
+          }
+        }
+      }
+    `);
+  const [setEnsProfileImage, isSettingsEnsProfilePicture] =
+    usePromisifiedMutation<useProfilePictureSetEnsProfileImageMutation>(graphql`
+      mutation useProfilePictureSetEnsProfileImageMutation($input: SetProfileImageInput!)
+      @raw_response_type {
         setProfileImage(input: $input) {
           ... on SetProfileImagePayload {
             viewer {
@@ -42,8 +58,27 @@ export function useProfilePicture() {
     [reportError, setProfileImage]
   );
 
+  const handleSetEnsProfileImage = useCallback(
+    ({ address, chain }: { address: string; chain: Chain }) => {
+      if (!address || !chain) {
+        return Promise.resolve();
+      }
+
+      return setEnsProfileImage({
+        variables: {
+          input: {
+            walletAddress: { address, chain },
+          },
+        },
+      });
+    },
+    [setEnsProfileImage]
+  );
+
   return {
     setProfileImage: handlePress,
     isSettingProfileImage,
+    setEnsProfileImage: handleSetEnsProfileImage,
+    isSettingsEnsProfilePicture,
   };
 }

@@ -136,6 +136,14 @@ export default function useCreateUser() {
                 user {
                   # eslint-disable-next-line relay/unused-fields
                   id
+                  potentialEnsProfileImage {
+                    wallet {
+                      chainAddress {
+                        chain @required(action: NONE)
+                        address @required(action: NONE)
+                      }
+                    }
+                  }
                 }
               }
             }

@@ -16,7 +16,6 @@ import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgres
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
-import { useNftSelectorContext } from '~/contexts/NftSelectorContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
@@ -57,13 +56,13 @@ const screenHeaderText = {
 };
 
 function InnerNftSelectorPickerScreen() {
-  const { data, refetch } = useNftSelectorContext();
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
 
   const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
     graphql`
       query NftSelectorPickerScreenQuery {
         ...useExperienceFragment
+        ...NftSelectorPickerGridFragment
       }
     `,
     {}
@@ -85,16 +84,16 @@ function InnerNftSelectorPickerScreen() {
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
+  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
+    useSyncTokensActions();
+
   const screenTitle = useMemo(() => {
     return screenHeaderText[currentScreen];
   }, [currentScreen]);
 
   const handleRefresh = useCallback(() => {
-    refetch({ networkFilter }, { fetchPolicy: 'network-only' });
-  }, [networkFilter, refetch]);
-
-  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
-    useSyncTokensActions();
+    syncTokens(networkFilter);
+  }, [networkFilter, syncTokens]);
 
   const handleSync = useCallback(async () => {
     if (ownershipTypeFilter === 'Collected') {
@@ -235,23 +234,21 @@ function InnerNftSelectorPickerScreen() {
                 />
               </View>
             </View>
-            {data && (
-              <View className="flex-grow flex-1 w-full">
-                <Suspense fallback={<NftSelectorScreenFallback />}>
-                  <NftSelectorPickerGrid
-                    searchCriteria={{
-                      searchQuery,
-                      ownerFilter: ownershipTypeFilter,
-                      networkFilter: networkFilter,
-                      sortView,
-                    }}
-                    queryRef={data}
-                    screen={currentScreen}
-                    onRefresh={handleRefresh}
-                  />
-                </Suspense>
-              </View>
-            )}
+            <View className="flex-grow flex-1 w-full">
+              <Suspense fallback={<NftSelectorScreenFallback />}>
+                <NftSelectorPickerGrid
+                  searchCriteria={{
+                    searchQuery,
+                    ownerFilter: ownershipTypeFilter,
+                    networkFilter: networkFilter,
+                    sortView,
+                  }}
+                  queryRef={query}
+                  screen={currentScreen}
+                  onRefresh={handleRefresh}
+                />
+              </Suspense>
+            </View>
           </View>
         </View>
       </View>
