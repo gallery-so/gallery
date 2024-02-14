@@ -114,7 +114,7 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
 
   return (
     <View className="flex flex-column flex-1 space-x-1 h-full space-y-2 w-1/2 justify-end ">
-      <View className="flex border border-red" style={{ height: selfHeight }}>
+      <View className="flex" style={{ height: selfHeight }}>
         <UniversalNftPreviewWithBoundary
           queryRef={query}
           tokenRef={token}
