@@ -57,7 +57,7 @@ export function GalleryTouchableOpacity({
 
   if (withoutFeedback) {
     return (
-      <TouchableWithoutFeedback  {...props} onPress={handlePress}>
+      <TouchableWithoutFeedback {...props} onPress={handlePress}>
         {children}
       </TouchableWithoutFeedback>
     );
