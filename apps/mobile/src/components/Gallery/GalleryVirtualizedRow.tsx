@@ -1,10 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 
 import { CollectionRow } from '~/components/Gallery/CollectionVirtualizedRow';
 import { GalleryListItemType } from '~/components/Gallery/createVirtualizedGalleryRows';
 import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
+import { GalleryVirtualizedRowQueryFragment$key } from '~/generated/GalleryVirtualizedRowQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import unescape from '~/shared/utils/unescape';
@@ -12,11 +14,20 @@ import unescape from '~/shared/utils/unescape';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = {
+  queryRef: GalleryVirtualizedRowQueryFragment$key;
   item: GalleryListItemType;
   isOnCollectionScreen?: boolean;
 };
 
-export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
+export function GalleryVirtualizedRow({ queryRef, item, isOnCollectionScreen }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryVirtualizedRowQueryFragment on Query {
+        ...CollectionVirtualizedRowQueryFragment
+      }
+    `,
+    queryRef
+  );
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   if (item.kind === 'gallery-header') {
@@ -77,6 +88,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
   } else if (item.kind === 'collection-row') {
     return (
       <CollectionRow
+        queryRef={query}
         columns={item.columns}
         isLast={item.isLast}
         isFirst={item.isFirst}

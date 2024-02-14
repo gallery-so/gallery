@@ -9,7 +9,10 @@ import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewInnerFragment$key } from '~/generated/NftPreviewInnerFragment.graphql';
+import { NftPreviewInnerQueryFragment$key } from '~/generated/NftPreviewInnerQueryFragment.graphql';
+import { NftPreviewQueryFragment$key } from '~/generated/NftPreviewQueryFragment.graphql';
 import { NftPreviewWithBoundaryFragment$key } from '~/generated/NftPreviewWithBoundaryFragment.graphql';
+import { NftPreviewWithBoundaryQueryFragment$key } from '~/generated/NftPreviewWithBoundaryQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -24,19 +27,28 @@ import { GallerySkeleton } from '../GallerySkeleton';
 import { ImageState, NftPreviewSharedProps } from './UniversalNftPreview';
 
 type NftPreviewInnerProps = {
+  queryRef: NftPreviewInnerQueryFragment$key;
   collectionTokenRef: NftPreviewInnerFragment$key;
   tokenUrl: string | null | undefined;
 } & NftPreviewSharedProps;
 
 function NftPreviewInner({
+  queryRef,
   collectionTokenRef,
   tokenUrl,
   resizeMode,
   priority,
-
   onPress,
   onImageStateChange,
 }: NftPreviewInnerProps) {
+  const query = useFragment(
+    graphql`
+      fragment NftPreviewInnerQueryFragment on Query {
+        ...NftPreviewContextMenuPopupQueryFragment
+      }
+    `,
+    queryRef
+  );
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewInnerFragment on CollectionToken {
@@ -99,6 +111,7 @@ function NftPreviewInner({
 
   return (
     <NftPreviewContextMenuPopup
+      queryRef={query}
       fallbackTokenUrl={tokenUrl}
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
@@ -127,11 +140,20 @@ function NftPreviewInner({
 }
 
 type NftPreviewProps = {
+  queryRef: NftPreviewQueryFragment$key;
   collectionTokenRef: NftPreviewFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
-function NftPreview({ collectionTokenRef, size, ...props }: NftPreviewProps) {
+function NftPreview({ queryRef, collectionTokenRef, size, ...props }: NftPreviewProps) {
+  const query = useFragment(
+    graphql`
+      fragment NftPreviewQueryFragment on Query {
+        ...NftPreviewInnerQueryFragment
+      }
+    `,
+    queryRef
+  );
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
@@ -150,15 +172,24 @@ function NftPreview({ collectionTokenRef, size, ...props }: NftPreviewProps) {
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: collectionToken.token, size }) ?? '';
 
-  return <NftPreviewInner {...props} collectionTokenRef={collectionToken} tokenUrl={imageUrl} />;
+  return (
+    <NftPreviewInner
+      {...props}
+      queryRef={query}
+      collectionTokenRef={collectionToken}
+      tokenUrl={imageUrl}
+    />
+  );
 }
 
 type NftPreviewWithBoundaryProps = {
+  queryRef: NftPreviewWithBoundaryQueryFragment$key;
   collectionTokenRef: NftPreviewWithBoundaryFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
 export function NftPreviewWithBoundary({
+  queryRef,
   collectionTokenRef,
   onImageStateChange,
   resizeMode,
@@ -166,6 +197,14 @@ export function NftPreviewWithBoundary({
   onPress,
   size,
 }: NftPreviewWithBoundaryProps) {
+  const query = useFragment(
+    graphql`
+      fragment NftPreviewWithBoundaryQueryFragment on Query {
+        ...NftPreviewQueryFragment
+      }
+    `,
+    queryRef
+  );
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewWithBoundaryFragment on CollectionToken {
@@ -185,6 +224,7 @@ export function NftPreviewWithBoundary({
   return (
     <TokenFailureBoundary tokenRef={collectionToken.token}>
       <NftPreview
+        queryRef={query}
         collectionTokenRef={collectionToken}
         onPress={onPress}
         onImageStateChange={onImageStateChange}

@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import { Text, View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 
@@ -72,23 +72,33 @@ export function GalleryTabBar({
   activeRoute,
   onRouteChange,
 }: Props) {
+  const Tabs = useMemo(() => {
+    return routes.map((route) => {
+      return (
+        <TabItem
+          key={route.name}
+          route={route.name}
+          onRouteChange={onRouteChange}
+          activeRoute={activeRoute}
+          counter={route.counter}
+          eventElementId={eventElementId}
+          eventName={eventName}
+          eventContext={eventContext}
+          eventFlow={eventFlow}
+        />
+      );
+    });
+  }, [activeRoute, eventContext, eventElementId, eventFlow, eventName, onRouteChange, routes]);
   return (
     <View className="border-porcelain dark:border-black-500 mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
-      {routes.map((route) => {
-        return (
-          <TabItem
-            key={route.name}
-            route={route.name}
-            onRouteChange={onRouteChange}
-            activeRoute={activeRoute}
-            counter={route.counter}
-            eventElementId={eventElementId}
-            eventName={eventName}
-            eventContext={eventContext}
-            eventFlow={eventFlow}
-          />
-        );
-      })}
+      {/* ScrollView doesnt have a built in way to center the tabs if it doesnt overflow, so only use ScrollView if there are more than 4 tabs */}
+      {routes.length > 4 ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {Tabs}
+        </ScrollView>
+      ) : (
+        Tabs
+      )}
     </View>
   );
 }

@@ -280,7 +280,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         <View className="space-y-2">
           <Button
             variant="blue"
-            headerElement={<BookmarkIcon active={hasViewerBookmarkedEvent} />}
+            headerElement={<BookmarkIcon active={hasViewerBookmarkedEvent} colorTheme="blue" />}
             eventElementId={'NFT Detail Token Bookmark Button'}
             eventName={'NFT Detail Token Bookmark Button Clicked'}
             eventContext={contexts['NFT Detail']}

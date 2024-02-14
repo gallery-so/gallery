@@ -39,6 +39,7 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommunityCollectorsQueryFragment on Query {
+        ...CommunityCollectorsGridRowQueryFragment
         ...CommunityCollectorsListItemQueryFragment
       }
     `,
@@ -144,7 +145,7 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
         case 'collector-section-header':
           return <CommunityCollectorsHeader layout={tokenLayout} onLayoutChange={setTokenLayout} />;
         case 'collector-grid-item':
-          return <CommunityCollectorsGridRow tokenRefs={item.tokenRefs} />;
+          return <CommunityCollectorsGridRow queryRef={query} tokenRefs={item.tokenRefs} />;
         case 'collector-list-item':
           return <CommunityCollectorsListItem queryRef={query} userRef={item.userRef} />;
       }

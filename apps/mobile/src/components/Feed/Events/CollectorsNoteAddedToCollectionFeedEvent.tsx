@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -17,6 +18,7 @@ import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from '../FeedListCollectorsNote';
 
 type CollectorsNoteAddedToCollectionFeedEventProps = {
+  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -24,11 +26,20 @@ type CollectorsNoteAddedToCollectionFeedEventProps = {
 };
 
 export function CollectorsNoteAddedToCollectionFeedEvent({
+  queryRef,
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
   onDoubleTap,
 }: CollectorsNoteAddedToCollectionFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
+        ...EventTokenGridQueryFragment
+      }
+    `,
+    queryRef
+  );
   const eventData = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
@@ -87,6 +98,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
 
       <View className="flex flex-grow">
         <EventTokenGrid
+          queryRef={query}
           onDoubleTap={onDoubleTap}
           imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
           allowPreserveAspectRatio={allowPreserveAspectRatio}
