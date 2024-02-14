@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
+
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 export default function useUpdateEmail() {
@@ -25,13 +26,16 @@ export default function useUpdateEmail() {
     }
   `);
 
-  return useCallback((email: string) => {
-    return updateEmail({
-      variables: {
-        input: {
-          email,
+  return useCallback(
+    (email: string) => {
+      return updateEmail({
+        variables: {
+          input: {
+            email,
+          },
         },
-      },
-    });
-  }, []);
+      });
+    },
+    [updateEmail]
+  );
 }
