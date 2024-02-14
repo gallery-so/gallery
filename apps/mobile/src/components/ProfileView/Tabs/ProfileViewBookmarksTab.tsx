@@ -57,6 +57,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
   const user = query.userByUsername;
   const bookmarkedTokens = useMemo(() => {
     const tokens = [];
+
     if (!user || !user.tokensBookmarked) {
       return [];
     }
@@ -107,13 +108,15 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
       if (item.kind === 'bookmark-row') {
         return (
           // Note to dev: If you're adjusting the horizontal spacing between row items, be sure to adjust the dimension calculation in ProfileViewBookmarkItem
-          <View className="flex flex-row w-full justify-center px-4 mb-6">
+          <View className="flex flex-row w-full justify-start px-4 mb-6">
             {item.bookmarkedTokens[0] && (
               <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[0]} />
             )}
             <View className="w-4" />
-            {item.bookmarkedTokens[1] && (
+            {item.bookmarkedTokens[1] ? (
               <ProfileViewBookmarkItem queryRef={query} tokenRef={item.bookmarkedTokens[1]} />
+            ) : (
+              <View className="flex flex-1" />
             )}
           </View>
         );
@@ -140,7 +143,7 @@ export function ProfileViewBookmarksTab({ queryRef }: Props) {
 
   return (
     <View style={contentContainerStyle}>
-      {items.length > 0 ? (
+      {bookmarkedTokens.length > 0 ? (
         <Tabs.FlashList
           data={items}
           renderItem={renderItem}

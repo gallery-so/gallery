@@ -41,7 +41,6 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
           community {
             name
             ...useNavigateToCommunityScreenFragment
-            # ...getCommunityUrlFromCommunityFragment
           }
           contract {
             contractAddress {
@@ -99,24 +98,23 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
       if (
         imageState.kind !== 'loaded' ||
         !imageState.dimensions?.width ||
-        !imageState.dimensions?.height ||
-        selfHeight
+        !imageState.dimensions?.height
       ) {
         return;
       }
       // determine the intended width of the bookmark item.
       // this is screen width - spacing / 2 (the number of items per row)
-      const itemWidth = (screenWidth - 56) / 2;
+      const itemWidth = (screenWidth - 48) / 2;
       const ratio = imageState.dimensions?.width / itemWidth;
 
       setSelfHeight(imageState.dimensions?.height / ratio);
     },
-    [screenWidth, selfHeight]
+    [screenWidth]
   );
 
   return (
     <View className="flex flex-column flex-1 space-x-1 h-full space-y-2 w-1/2 justify-end ">
-      <View className="flex" style={{ height: selfHeight }}>
+      <View className="flex border border-red" style={{ height: selfHeight }}>
         <UniversalNftPreviewWithBoundary
           queryRef={query}
           tokenRef={token}
@@ -139,7 +137,6 @@ export default function ProfileViewBookmarkItem({ queryRef, tokenRef }: Props) {
             className="text-sm leading-4 text-black dark:text-white h-8 mt-1"
             numberOfLines={2}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            style={{}}
           >
             {collectionName}
           </Typography>
