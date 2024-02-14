@@ -11,7 +11,7 @@ import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMar
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
-  eventContext: GalleryElementTrackingProps['eventContext'];
+  eventContext?: GalleryElementTrackingProps['eventContext'];
 };
 
 export function PostListCaption({ feedPostRef, eventContext }: Props) {
@@ -47,7 +47,7 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
         <GalleryTouchableOpacity
           eventElementId="Show more lines"
           eventName="Show more lines"
-          eventContext={eventContext}
+          eventContext={eventContext || null}
           onPress={toggleText}
           withoutFeedback={true}
           activeOpacity={0}
