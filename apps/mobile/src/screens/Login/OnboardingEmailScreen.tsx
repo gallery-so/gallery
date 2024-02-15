@@ -3,10 +3,12 @@ import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
+import { OnboardingEmailScreenQuery } from '~/generated/OnboardingEmailScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { contexts } from '~/shared/analytics/constants';
@@ -22,6 +24,18 @@ import { magic } from '../../magic';
 const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
 
 export function OnboardingEmailScreen() {
+  const [availabilityEmail, setAvailabilityEmail] = useState('');
+  const query = useLazyLoadQuery<OnboardingEmailScreenQuery>(
+    graphql`
+      query OnboardingEmailScreenQuery($emailAddress: Email!) {
+        isEmailAddressAvailable(emailAddress: $emailAddress)
+      }
+    `,
+    {
+      emailAddress: availabilityEmail,
+    }
+  );
+
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingEmail'>>();
 
@@ -81,16 +95,33 @@ export function OnboardingEmailScreen() {
       return;
     }
 
+    // If it's a wallet auth mechanism, we need to check if the email is available
+    if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
+      try {
+        setAvailabilityEmail(email);
+
+        const isEmailAddressAvailable = query.isEmailAddressAvailable;
+
+        if (!isEmailAddressAvailable) {
+          setError('This email address is already in use');
+          setIsLoggingIn(false);
+          return;
+        }
+      } catch (error) {
+        handleLoginError({ message: FALLBACK_ERROR_MESSAGE, underlyingError: error as Error });
+        return;
+      }
+    }
+
     try {
       hasNavigatedForward = true;
 
       if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
-        // TODO: Verify the email if it's valid and available
-
         // Redirect to the next screen with the wallet auth mechanism
         navigation.navigate('OnboardingUsername', {
           authMechanism,
           auth: 'Wallet',
+          email,
         });
         return;
       }
@@ -125,7 +156,16 @@ export function OnboardingEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [authMechanism, authMethod, email, login, navigation, reportError, track]);
+  }, [
+    authMechanism,
+    authMethod,
+    email,
+    login,
+    navigation,
+    query.isEmailAddressAvailable,
+    reportError,
+    track,
+  ]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
