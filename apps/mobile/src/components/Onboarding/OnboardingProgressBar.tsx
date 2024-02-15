@@ -8,22 +8,27 @@ type Props = {
 };
 
 export function OnboardingProgressBar({ from, to }: Props) {
-  const widthAnim = useRef(new Animated.Value(from / 100)).current;
+  const initialWidth = Dimensions.get('window').width * (from / 100);
+
+  const widthAnim = useRef(new Animated.Value(initialWidth)).current;
 
   useEffect(() => {
+    // Calculate the final width in pixels based on the `to` prop.
+    const finalWidth = Dimensions.get('window').width * (to / 100);
+
     Animated.timing(widthAnim, {
-      toValue: Dimensions.get('window').width * (to / 100),
+      toValue: finalWidth,
       duration: 1000,
       useNativeDriver: false,
     }).start();
-  }, [to, widthAnim]);
+  }, [to]);
 
   return (
     <Animated.View
       style={{
         height: 4,
-        width: widthAnim,
         backgroundColor: colors.activeBlue,
+        width: widthAnim,
         borderTopRightRadius: 4,
         borderBottomRightRadius: 4,
         marginHorizontal: -16,
