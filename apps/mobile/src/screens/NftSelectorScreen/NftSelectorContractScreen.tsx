@@ -30,6 +30,8 @@ export function NftSelectorContractScreen() {
     {}
   );
 
+  const screen = route.params.page;
+
   const [data, refetch] = useRefetchableFragment<
     NftSelectorContractScreenRefetchQuery,
     NftSelectorContractScreenFragment$key
@@ -70,8 +72,14 @@ export function NftSelectorContractScreen() {
   const isCreator = route.params.ownerFilter === 'Created';
 
   const handleSelectNft = useCallback(() => {
+    if (screen === 'Onboarding') {
+      navigation.navigate('Login', {
+        screen: 'OnboardingProfileBio',
+      });
+      return;
+    }
     navigation.pop(2);
-  }, [navigation]);
+  }, [navigation, screen]);
 
   const tokens = useMemo(() => {
     return removeNullValues(

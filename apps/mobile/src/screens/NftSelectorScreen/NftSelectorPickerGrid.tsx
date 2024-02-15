@@ -441,16 +441,31 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
     return [{ tokens: nonNullTokens.slice(0, 2) }, { tokens: nonNullTokens.slice(2, 4) }];
   }, [tokens]);
 
-  return (
-    <GalleryTouchableOpacity
-      onPress={() => {
-        navigation.navigate('NftSelectorContractScreen', {
+  const handlePress = useCallback(() => {
+    if (screen === 'Onboarding') {
+      navigation.navigate('Login', {
+        screen: 'OnboardingNftSelectorContract',
+        params: {
           contractAddress: contractAddress,
           page: screen,
           ownerFilter: ownerFilter,
           fullScreen: isFullscreen,
-        });
-      }}
+        },
+      });
+      return;
+    }
+
+    navigation.navigate('NftSelectorContractScreen', {
+      contractAddress: contractAddress,
+      page: screen,
+      ownerFilter: ownerFilter,
+      fullScreen: isFullscreen,
+    });
+  }, [contractAddress, isFullscreen, navigation, ownerFilter, screen]);
+
+  return (
+    <GalleryTouchableOpacity
+      onPress={handlePress}
       style={style}
       eventElementId="NftSelectorPickerContractGroup"
       eventName={'NftSelectorPickerContractGroup pressed'}

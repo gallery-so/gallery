@@ -130,6 +130,13 @@ export type LoginStackNavigatorParamList = {
     fullScreen?: boolean;
   };
 
+  OnboardingNftSelectorContract: {
+    contractAddress: string;
+    fullScreen?: boolean;
+    ownerFilter?: 'Collected' | 'Created';
+    page: ScreenWithNftSelector;
+  };
+
   OnboardingPersona: undefined;
 };
 
