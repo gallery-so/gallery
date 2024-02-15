@@ -1,27 +1,24 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
-import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
+import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
-  eventContext?: GalleryElementTrackingProps['eventContext'];
 };
 
-export function PostListCaption({ feedPostRef, eventContext }: Props) {
+export function PostListCaption({ feedPostRef }: Props) {
   const [showAll, setShowAll] = useState(false);
   const ref = useRef(null);
-  const toggleText = () => {
-    if (!showAll) {
-      setShowAll(!showAll);
-    }
-  };
+  const toggleText = useCallback(() => {
+    setShowAll(true)
+  }, []);
 
   const feedPost = useFragment(
     graphql`
@@ -47,7 +44,7 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
         <GalleryTouchableOpacity
           eventElementId="Show more lines"
           eventName="Show more lines"
-          eventContext={eventContext || null}
+          eventContext={contexts.Posts}
           onPress={toggleText}
           withoutFeedback={true}
           activeOpacity={0}
@@ -58,6 +55,7 @@ export function PostListCaption({ feedPostRef, eventContext }: Props) {
             numberOfLines={showAll ? undefined : 4}
             text={captionWithMarkdownLinks}
             mentionsRef={nonNullMentions}
+
           />
         </GalleryTouchableOpacity>
       </View>
