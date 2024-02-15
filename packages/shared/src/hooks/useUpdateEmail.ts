@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { graphql } from 'relay-runtime';
+import { graphql,SelectorStoreUpdater } from 'relay-runtime';
 
 import { useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
 
@@ -27,13 +27,14 @@ export default function useUpdateEmail() {
   `);
 
   return useCallback(
-    (email: string) => {
+    (email: string, updater?: SelectorStoreUpdater<useUpdateEmailMutation['response']>) => {
       return updateEmail({
         variables: {
           input: {
             email,
           },
         },
+        updater,
       });
     },
     [updateEmail]
