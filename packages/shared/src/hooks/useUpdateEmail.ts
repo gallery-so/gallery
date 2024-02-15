@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { graphql,SelectorStoreUpdater } from 'relay-runtime';
+import { graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
 
