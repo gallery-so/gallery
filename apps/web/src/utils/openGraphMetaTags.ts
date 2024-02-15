@@ -28,12 +28,9 @@ export const openGraphMetaTags = ({
     { property: 'twitter:card', content: 'summary_large_image' },
     {
       property: 'twitter:image',
-      content: `${baseurl}?${new URLSearchParams({
-        path,
+      content: `${baseurl}${path}?${new URLSearchParams({
         width: WIDTH_OPENGRAPH_IMAGE.toString(),
         height: HEIGHT_OPENGRAPH_IMAGE.toString(),
-        fallback:
-          'https://storage.googleapis.com/gallery-prod-325303.appspot.com/gallery_full_logo_v2.1.png',
       }).toString()}`,
     },
   ];

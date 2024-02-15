@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
@@ -20,7 +21,11 @@ import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/Prof
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+import {
+  MainTabStackNavigatorParamList,
+  MainTabStackNavigatorProp,
+  RootStackNavigatorProp,
+} from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
@@ -31,6 +36,7 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { BadgeProfileBottomSheet } from './BadgeProfileBottomSheet';
+import { ProfileViewBookmarksTab } from './Tabs/ProfileViewBookmarksTab';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -51,6 +57,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         ...ProfileViewUsernameFragment
         ...ProfileViewConnectedProfilePictureFragment
         ...FollowButtonQueryFragment
+        ...ProfileViewBookmarksTabFragment
         viewer {
           ... on Viewer {
             user {
@@ -69,8 +76,10 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     `,
     queryRef
   );
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
 
-  const [selectedRoute, setSelectedRoute] = useState('Featured');
+  const navigateToTab = route.params?.navigateToTab;
+  const [selectedRoute, setSelectedRoute] = useState(navigateToTab ?? 'Featured');
 
   const Header = useCallback(() => {
     return (
@@ -88,6 +97,14 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       containerRef.current.jumpToTab(selectedRoute);
     }
   }, [selectedRoute]);
+
+  const navigation = useNavigation<RootStackNavigatorProp>();
+  useEffect(() => {
+    if (navigateToTab) {
+      setSelectedRoute(navigateToTab);
+      navigation.setParams({ navigateToTab: null });
+    }
+  }, [navigateToTab, navigation]);
 
   const isLoggedInUser = Boolean(
     query.userByUsername &&
@@ -123,7 +140,11 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       </View>
 
       <View className="flex-grow">
-        <GalleryTabsContainer Header={Header} ref={containerRef}>
+        <GalleryTabsContainer
+          Header={Header}
+          ref={containerRef}
+          initialTabName={navigateToTab ?? 'Featured'}
+        >
           <Tabs.Tab name="Featured">
             <ProfileViewFeaturedTab queryRef={query} />
           </Tabs.Tab>
@@ -133,6 +154,11 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           <Tabs.Tab name="Posts">
             <ProfileViewActivityTab queryRef={query} />
           </Tabs.Tab>
+          {isLoggedInUser ? (
+            <Tabs.Tab name="Bookmarks">
+              <ProfileViewBookmarksTab queryRef={query} />
+            </Tabs.Tab>
+          ) : null}
           <Tabs.Tab name="Followers">
             <ProfileViewFollowersTab queryRef={query} />
           </Tabs.Tab>

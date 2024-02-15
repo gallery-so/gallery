@@ -34,7 +34,10 @@ function AccountScreenInner() {
   return (
     <MainTabStackNavigator
       initialRouteName="Profile"
-      initialProfileParams={{ username: query.viewer?.user?.username ?? '', hideBackButton: true }}
+      initialProfileParams={{
+        username: query.viewer?.user?.username ?? '',
+        hideBackButton: true,
+      }}
     />
   );
 }

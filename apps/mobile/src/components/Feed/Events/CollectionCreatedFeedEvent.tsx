@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -17,6 +18,7 @@ import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from '../FeedListCollectorsNote';
 
 type CollectionCreatedFeedEventProps = {
+  queryRef: CollectionCreatedFeedEventQueryFragment$key;
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: CollectionCreatedFeedEventFragment$key;
@@ -24,11 +26,20 @@ type CollectionCreatedFeedEventProps = {
 };
 
 export function CollectionCreatedFeedEvent({
+  queryRef,
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
   onDoubleTap,
 }: CollectionCreatedFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionCreatedFeedEventQueryFragment on Query {
+        ...EventTokenGridQueryFragment
+      }
+    `,
+    queryRef
+  );
   const eventData = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -86,6 +97,7 @@ export function CollectionCreatedFeedEvent({
 
       <View className="flex flex-grow">
         <EventTokenGrid
+          queryRef={query}
           onDoubleTap={onDoubleTap}
           imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
           allowPreserveAspectRatio={allowPreserveAspectRatio}

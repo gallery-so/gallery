@@ -8,14 +8,25 @@ import { DisplayLayout } from '~/components/core/enums';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
+import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
 type Props = {
+  queryRef: CommunityPageCollectorsTabQueryFragment$key;
   communityRef: CommunityPageCollectorsTabFragment$key;
 };
 
-export default function CommunityPageCollectorsTab({ communityRef }: Props) {
+export default function CommunityPageCollectorsTab({ queryRef, communityRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommunityPageCollectorsTabQueryFragment on Query {
+        ...CommunityHolderGridQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const community = useFragment(
     graphql`
       fragment CommunityPageCollectorsTabFragment on Community {
@@ -38,7 +49,7 @@ export default function CommunityPageCollectorsTab({ communityRef }: Props) {
       {showGrid ? (
         <StyledGridViewContainer gap={24}>
           <StyledListWrapper>
-            <CommunityHolderGrid communityRef={community} />
+            <CommunityHolderGrid queryRef={query} communityRef={community} />
           </StyledListWrapper>
         </StyledGridViewContainer>
       ) : (

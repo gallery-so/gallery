@@ -28,6 +28,7 @@ export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps
             }
           }
         }
+        ...GalleryVirtualizedRowQueryFragment
       }
     `,
     queryRef
@@ -45,9 +46,12 @@ export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps
     });
   }, [user?.featuredGallery]);
 
-  const renderItem = useCallback<ListRenderItem<GalleryListItemType>>(({ item }) => {
-    return <GalleryVirtualizedRow item={item} />;
-  }, []);
+  const renderItem = useCallback<ListRenderItem<GalleryListItemType>>(
+    ({ item }) => {
+      return <GalleryVirtualizedRow queryRef={query} item={item} />;
+    },
+    [query]
+  );
 
   const contentContainerStyle = useListContentStyle();
 

@@ -26,7 +26,7 @@ export type RootStackNavigatorParamList = {
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
 export type MainTabStackNavigatorParamList = {
-  Profile: { username: string; hideBackButton?: boolean };
+  Profile: { username: string; hideBackButton?: boolean; navigateToTab?: string };
   NftDetail: {
     tokenId: string;
     collectionId: string | null;

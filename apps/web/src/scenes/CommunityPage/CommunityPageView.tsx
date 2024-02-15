@@ -45,6 +45,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         ...CommunityPagePostsTabQueryFragment
         ...CommunityPageViewHeaderQueryFragment
         ...CommunityPageGalleriesTabQueryFragment
+        ...CommunityPageCollectorsTabQueryFragment
       }
     `,
     queryRef
@@ -68,7 +69,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             {activeTab === 'posts' && (
               <CommunityPagePostsTab communityRef={community} queryRef={query} />
             )}
-            {activeTab === 'collectors' && <CommunityPageCollectorsTab communityRef={community} />}
+            {activeTab === 'collectors' && (
+              <CommunityPageCollectorsTab queryRef={query} communityRef={community} />
+            )}
             {activeTab === 'galleries' && (
               <CommunityPageGalleriesTab communityRef={community} queryRef={query} />
             )}

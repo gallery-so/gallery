@@ -6,6 +6,7 @@ import { graphql } from 'relay-runtime';
 
 import { NftPreviewWithBoundary } from '~/components/NftPreview/NftPreview';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
+import { GalleryTokenPreviewQueryFragment$key } from '~/generated/GalleryTokenPreviewQueryFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToContainer';
@@ -13,11 +14,24 @@ import { fitDimensionsToContainerContain } from '~/shared/utils/fitDimensionsToC
 import { ImageState } from '../NftPreview/UniversalNftPreview';
 
 type GalleryTokenPreviewProps = {
+  queryRef: GalleryTokenPreviewQueryFragment$key;
   tokenRef: GalleryTokenPreviewFragment$key;
   containerWidth: number;
 };
 
-export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPreviewProps) {
+export function GalleryTokenPreview({
+  queryRef,
+  tokenRef,
+  containerWidth,
+}: GalleryTokenPreviewProps) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryTokenPreviewQueryFragment on Query {
+        ...NftPreviewWithBoundaryQueryFragment
+      }
+    `,
+    queryRef
+  );
   const token = useFragment(
     graphql`
       fragment GalleryTokenPreviewFragment on CollectionToken {
@@ -103,6 +117,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
       style={resultDimensions ? resultDimensions : { width: containerWidth, aspectRatio: 1 }}
     >
       <NftPreviewWithBoundary
+        queryRef={query}
         onImageStateChange={handleImageStateChange}
         collectionTokenRef={token}
         resizeMode={ResizeMode.CONTAIN}

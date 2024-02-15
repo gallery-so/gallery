@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NonRecursiveFeedListItemFragment$key } from '~/generated/NonRecursiveFeedListItemFragment.graphql';
+import { NonRecursiveFeedListItemQueryFragment$key } from '~/generated/NonRecursiveFeedListItemQueryFragment.graphql';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
 import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
@@ -13,6 +14,7 @@ import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedE
 import { UserFollowedUsersFeedEvent } from './UserFollowedUsersFeedEvent';
 
 type NonRecursiveFeedListItemProps = {
+  queryRef: NonRecursiveFeedListItemQueryFragment$key;
   eventId: string;
   slideIndex: number;
   eventCount: number;
@@ -21,12 +23,24 @@ type NonRecursiveFeedListItemProps = {
 };
 
 export function NonRecursiveFeedListItem({
+  queryRef,
   eventId,
   eventDataRef,
   eventCount,
   slideIndex,
   onAdmire,
 }: NonRecursiveFeedListItemProps) {
+  const query = useFragment(
+    graphql`
+      fragment NonRecursiveFeedListItemQueryFragment on Query {
+        ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
+        ...CollectionUpdatedFeedEventQueryFragment
+        ...CollectionCreatedFeedEventQueryFragment
+        ...TokensAddedToCollectionFeedEventQueryFragment
+      }
+    `,
+    queryRef
+  );
   const eventData = useFragment(
     graphql`
       fragment NonRecursiveFeedListItemFragment on FeedEventData {
@@ -70,6 +84,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectorsNoteAddedToCollectionFeedEventData':
         return (
           <CollectorsNoteAddedToCollectionFeedEvent
+            queryRef={query}
             onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
@@ -79,6 +94,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionUpdatedFeedEventData':
         return (
           <CollectionUpdatedFeedEvent
+            queryRef={query}
             onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
@@ -88,6 +104,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionCreatedFeedEventData':
         return (
           <CollectionCreatedFeedEvent
+            queryRef={query}
             onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
@@ -97,6 +114,7 @@ export function NonRecursiveFeedListItem({
       case 'TokensAddedToCollectionFeedEventData':
         return (
           <TokensAddedToCollectionFeedEvent
+            queryRef={query}
             onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
@@ -108,7 +126,7 @@ export function NonRecursiveFeedListItem({
       default:
         throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
-  }, [eventCount, eventData, eventId, onAdmire, slideIndex]);
+  }, [eventCount, eventData, eventId, onAdmire, query, slideIndex]);
 
   return (
     <View className="flex-1" style={{ width }}>

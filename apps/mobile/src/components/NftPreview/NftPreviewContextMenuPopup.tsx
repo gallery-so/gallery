@@ -6,11 +6,13 @@ import { ContextMenuView, OnPressMenuItemEvent } from 'react-native-ios-context-
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
+import { NftPreviewContextMenuPopupQueryFragment$key } from '~/generated/NftPreviewContextMenuPopupQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -20,6 +22,7 @@ import { shareToken } from '../../utils/shareToken';
 import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
+  queryRef: NftPreviewContextMenuPopupQueryFragment$key;
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
   imageDimensions: Dimensions | null;
   fallbackTokenUrl: string;
@@ -28,11 +31,20 @@ type NftPreviewContextMenuPopupProps = PropsWithChildren<{
 const ENABLED_ARTIST = false;
 
 export function NftPreviewContextMenuPopup({
+  queryRef,
   collectionTokenRef,
   imageDimensions,
   fallbackTokenUrl,
   children,
 }: NftPreviewContextMenuPopupProps) {
+  const query = useFragment(
+    graphql`
+      fragment NftPreviewContextMenuPopupQueryFragment on Query {
+        ...useToggleTokenAdmireQueryFragment
+      }
+    `,
+    queryRef
+  );
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewContextMenuPopupFragment on CollectionToken {
@@ -63,6 +75,7 @@ export function NftPreviewContextMenuPopup({
 
           ...shareTokenFragment
           ...TokenFailureBoundaryFragment
+          ...useToggleTokenAdmireFragment
         }
       }
     `,
@@ -82,6 +95,11 @@ export function NftPreviewContextMenuPopup({
     setPopupAssetLoaded(true);
   }, []);
 
+  const { hasViewerAdmiredEvent, toggleTokenAdmire: toggleTokenBookmark } = useToggleTokenAdmire({
+    tokenRef: token,
+    queryRef: query,
+  });
+
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
@@ -96,6 +114,8 @@ export function NftPreviewContextMenuPopup({
         navigation.push('Gallery', {
           galleryId: collectionToken.collection?.gallery?.dbid ?? 'not-found',
         });
+      } else if (event.nativeEvent.actionKey === 'bookmark') {
+        toggleTokenBookmark();
       }
       // else if (event.nativeEvent.actionKey === 'view-artist') {
       //   navigation.push('Profile', {
@@ -103,7 +123,7 @@ export function NftPreviewContextMenuPopup({
       //   });
       // }
     },
-    [collectionToken.collection, fallbackTokenUrl, navigation, token]
+    [collectionToken.collection, fallbackTokenUrl, navigation, toggleTokenBookmark, token]
   );
 
   const track = useTrack();
@@ -122,6 +142,10 @@ export function NftPreviewContextMenuPopup({
           {
             actionKey: 'view-details',
             actionTitle: 'View Details',
+          },
+          {
+            actionKey: 'bookmark',
+            actionTitle: hasViewerAdmiredEvent ? 'Remove from Bookmarks' : 'Add to Bookmarks',
           },
           {
             actionKey: 'view-gallery',

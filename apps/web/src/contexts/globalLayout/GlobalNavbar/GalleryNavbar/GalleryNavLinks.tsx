@@ -44,6 +44,8 @@ export function GalleryNavLinks({ username, userRef, queryRef, className }: Prop
         }
         bookmarksCount: tokensBookmarked(first: 1, after: null)
           @connection(key: "GalleryNavLinksFragment_bookmarksCount") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
           edges {
             __typename
           }

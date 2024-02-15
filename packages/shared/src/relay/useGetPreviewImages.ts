@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -6,6 +6,7 @@ import { useGetPreviewImagesSingleFragment$key } from '~/generated/useGetPreview
 import { useGetPreviewImagesWithPollingFragment$key } from '~/generated/useGetPreviewImagesWithPollingFragment.graphql';
 
 import { useReportError } from '../contexts/ErrorReportingContext';
+import { CouldNotRenderNftError } from '../errors/CouldNotRenderNftError';
 import { StillLoadingNftError } from '../errors/StillLoadingNftError';
 import {
   getPreviewImageUrlsInlineDangerously,
@@ -83,7 +84,14 @@ export function useGetPreviewImagesWithPolling({
     tokenRef
   );
 
-  const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token, preferStillFrameFromGif });
+  const result = useMemo(
+    () =>
+      getPreviewImageUrlsInlineDangerously({
+        tokenRef: token,
+        preferStillFrameFromGif,
+      }),
+    [preferStillFrameFromGif, token]
+  );
 
   const reportError = useReportError();
   // explicitly throw the loading state. this will allow a boundary
@@ -97,7 +105,12 @@ export function useGetPreviewImagesWithPolling({
   useEffect(
     function silentlyReportError() {
       // quietly report the error if we opt out of throwing it
-      if (!shouldThrow && result.type === 'error') {
+      // unless its a CouldNotRenderNftError, because its eating up credits
+      if (
+        !shouldThrow &&
+        result.type === 'error' &&
+        !(result.error instanceof CouldNotRenderNftError)
+      ) {
         reportError(result.error);
       }
     },

@@ -12,6 +12,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import UserHoverCard from '~/components/HoverCard/UserHoverCard';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -30,14 +31,24 @@ import {
 } from './EventStyles';
 
 type Props = {
+  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
   isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
+  queryRef,
   eventDataRef,
   isSubEvent = false,
 }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
+  );
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
@@ -122,6 +133,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
               />
             </StyledQuote>
             <FeedEventTokenPreviews
+              queryRef={query}
               isInCaption={Boolean(event.newCollectorsNote)}
               tokenToPreviewRefs={nonNullTokens}
             />

@@ -12,21 +12,33 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
+import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 
 import { SUPPORTED_FEED_EVENT_TYPES } from '../constants';
 import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
 
 type GalleryUpdatedFeedEventProps = {
+  queryRef: GalleryUpdatedFeedEventQueryFragment$key;
   eventId: string;
   eventDataRef: GalleryUpdatedFeedEventFragment$key;
   onAdmire: () => void;
 };
 
 export function GalleryUpdatedFeedEvent({
+  queryRef,
   eventDataRef,
   eventId,
   onAdmire,
 }: GalleryUpdatedFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryUpdatedFeedEventQueryFragment on Query {
+        ...NonRecursiveFeedListItemQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const eventData = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -69,6 +81,7 @@ export function GalleryUpdatedFeedEvent({
     const inner = subEvents.map((subEvent, index) => {
       return (
         <NonRecursiveFeedListItem
+          queryRef={query}
           key={index}
           onAdmire={onAdmire}
           eventId={eventId}
@@ -99,7 +112,7 @@ export function GalleryUpdatedFeedEvent({
     } else {
       return inner;
     }
-  }, [eventId, handleScroll, isPaginated, onAdmire, subEvents, width]);
+  }, [eventId, handleScroll, isPaginated, onAdmire, query, subEvents, width]);
 
   return (
     <View className="flex flex-col space-y-3">

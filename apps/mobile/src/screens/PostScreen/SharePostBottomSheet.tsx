@@ -222,11 +222,8 @@ function SharePostBottomSheet(
   }
 
   const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
-  if (result.type !== 'valid') {
-    return null;
-  }
 
-  const imageUrl = result.urls.small ?? '';
+  const imageUrl = result?.type === 'valid' ? result?.urls?.small : '';
   const username = post.author.username ?? '';
   const caption = post.caption ?? '';
 
@@ -259,7 +256,7 @@ function SharePostBottomSheet(
           </Typography>
           <View>
             <MiniPostOpenGraphPreview
-              imageUrl={imageUrl}
+              imageUrl={imageUrl ?? ''}
               username={username}
               profileImageUrl={profileImageUrl ?? ''}
               caption={caption}

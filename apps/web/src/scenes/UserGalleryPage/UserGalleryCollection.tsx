@@ -48,6 +48,7 @@ function UserGalleryCollection({
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
         ...useLoggedInUserIdFragment
+        ...NftGalleryQueryFragment
       }
     `,
     queryRef
@@ -183,7 +184,7 @@ function UserGalleryCollection({
           </StyledCollectorsNote>
         )}
       </StyledCollectionHeader>
-      <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+      <NftGallery queryRef={query} collectionRef={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
 }

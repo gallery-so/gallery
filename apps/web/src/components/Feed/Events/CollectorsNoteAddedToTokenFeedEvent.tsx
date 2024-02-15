@@ -49,6 +49,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
         ...NftDetailViewQueryFragment
+        ...EventMediaQueryFragment
       }
     `,
     queryRef
@@ -126,7 +127,12 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
           <StyledEventContent align="center" justify="center" isSubEvent={isSubEvent}>
             <StyledContent align="center" justify="center" gap={MIDDLE_GAP}>
               <StyledMediaWrapper align="center">
-                <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
+                <EventMedia
+                  tokenRef={event.token}
+                  maxHeight={size}
+                  maxWidth={size}
+                  queryRef={query}
+                />
               </StyledMediaWrapper>
               {event.newCollectorsNote && (
                 <StyledNoteWrapper>

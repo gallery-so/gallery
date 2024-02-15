@@ -115,7 +115,7 @@ export default function useAdmireToken() {
               newBookmarkedToken,
               'TokenBookmarkEdge'
             );
-            ConnectionHandler.insertEdgeAfter(bookmarkedTokensConnection, edge);
+            ConnectionHandler.insertEdgeBefore(bookmarkedTokensConnection, edge);
           }
         }
       };
@@ -184,8 +184,9 @@ export default function useAdmireToken() {
           reportError(`Could not admire token, typename was ${response.admireToken?.__typename}`, {
             tags: errorMetadata,
           });
+        } else {
+          pushSuccessToast();
         }
-        pushSuccessToast();
       } catch (error) {
         pushErrorToast();
 

@@ -148,8 +148,21 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     ) {
       return;
     }
-    removeTokenAdmire(token.id, token.dbid, token.viewerAdmire.dbid, query.viewer?.user?.dbid);
-  }, [query.viewer, removeTokenAdmire, token.dbid, token.id, token.viewerAdmire?.dbid]);
+    removeTokenAdmire(
+      token.id,
+      token.dbid,
+      token.viewerAdmire?.dbid,
+      query.viewer?.user?.dbid,
+      decodedTokenName
+    );
+  }, [
+    decodedTokenName,
+    query.viewer,
+    removeTokenAdmire,
+    token.dbid,
+    token.id,
+    token.viewerAdmire?.dbid,
+  ]);
 
   const isMobile = useIsMobileWindowWidth();
 
