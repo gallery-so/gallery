@@ -17,6 +17,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
@@ -68,8 +69,12 @@ export function OnboardingUsernameScreen() {
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
+  const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
+  const userEmail = route.params.email;
+  const authMethod = route.params.auth;
+  const authMechanism = route.params.authMechanism;
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [bio] = useState('');
@@ -80,9 +85,6 @@ export function OnboardingUsernameScreen() {
   const [usernameError, setUsernameError] = useState('');
 
   const debouncedUsername = useDebounce(username, 500);
-
-  const authMechanism = route.params.authMechanism;
-  const authMethod = route.params.auth;
 
   const { top, bottom } = useSafeAreaInsets();
 
@@ -117,8 +119,9 @@ export function OnboardingUsernameScreen() {
           return;
         }
 
-        if (!isSyncing) {
-          await syncTokens('Ethereum');
+        // If the user is signing up with a wallet, attached the email to the user
+        if (authMethod === 'Wallet' && userEmail) {
+          await updateEmail(userEmail);
         }
 
         const user = response.createUser.viewer?.user;
@@ -131,8 +134,15 @@ export function OnboardingUsernameScreen() {
             address: ensAddress.address,
             chain: ensAddress.chain,
           });
+          if (!isSyncing) {
+            syncTokens('Ethereum');
+          }
           navigation.navigate('OnboardingProfileBio');
         } else {
+          if (!isSyncing) {
+            await syncTokens('Ethereum');
+          }
+
           navigation.navigate('OnboardingNftSelector', {
             page: 'Onboarding',
             fullScreen: true,
@@ -156,6 +166,8 @@ export function OnboardingUsernameScreen() {
     navigation,
     syncTokens,
     username,
+    userEmail,
+    updateEmail,
     updateUser,
     user,
   ]);
