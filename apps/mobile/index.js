@@ -1,3 +1,7 @@
+// polyfills for privy
+import 'react-native-get-random-values';
+import '@ethersproject/shims';
+
 import registerRootComponent from 'expo/build/launch/registerRootComponent';
 import { LogBox } from 'react-native';
 import { polyfill as polyfillEncoding } from 'react-native-polyfill-globals/src/encoding';

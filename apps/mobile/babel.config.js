@@ -13,6 +13,7 @@ module.exports = function (api) {
       ],
       'tsconfig-paths-module-resolver',
       '@babel/plugin-transform-flow-strip-types',
+      ['@babel/plugin-transform-class-properties', { loose: true }],
       ['@babel/plugin-proposal-private-methods', { loose: true }],
     ],
   };
