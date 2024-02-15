@@ -24,7 +24,7 @@ import { magic } from '../../magic';
 const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
 
 export function OnboardingEmailScreen() {
-  const [availabilityEmail, setAvailabilityEmail] = useState('');
+  const [email, setEmail] = useState('');
   const query = useLazyLoadQuery<OnboardingEmailScreenQuery>(
     graphql`
       query OnboardingEmailScreenQuery($emailAddress: Email!) {
@@ -32,7 +32,7 @@ export function OnboardingEmailScreen() {
       }
     `,
     {
-      emailAddress: availabilityEmail,
+      emailAddress: email,
     }
   );
 
@@ -44,7 +44,6 @@ export function OnboardingEmailScreen() {
 
   const { top, bottom } = useSafeAreaInsets();
 
-  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -98,8 +97,6 @@ export function OnboardingEmailScreen() {
     // If it's a wallet auth mechanism, we need to check if the email is available
     if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
       try {
-        setAvailabilityEmail(email);
-
         const isEmailAddressAvailable = query.isEmailAddressAvailable;
 
         if (!isEmailAddressAvailable) {
