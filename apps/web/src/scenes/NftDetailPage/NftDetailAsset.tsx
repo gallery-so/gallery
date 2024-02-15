@@ -1,5 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
@@ -15,6 +17,7 @@ import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetToken
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import SearchIcon from '~/icons/SearchIcon';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
@@ -24,6 +27,7 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
+import NftDetailLightbox from './NftDetailLightbox';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
 
@@ -185,10 +189,20 @@ function NftDetailAssetComponentWithouFallback({
 type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
-  visibility?: string; // prop to pass the visibility state of the selected NFT
+  visibility?: string; // whether or not the nft is currently the visible "slide" in the detail page carousel
+  toggleLightbox: () => void;
+  showLightbox?: boolean;
+  sizeBasis?: 'self' | 'container'; // if 'container', it will grow to fit its parent. if 'self', it will dictate its own size
 };
 
-function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props) {
+function NftDetailAsset({
+  tokenRef,
+  hasExtraPaddingForNote,
+  visibility,
+  toggleLightbox,
+  showLightbox,
+  sizeBasis = 'self',
+}: Props) {
   const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
@@ -259,38 +273,79 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
     handleNftLoaded();
   }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
 
+  const handleLightboxButtonClick = useCallback(() => {
+    console.log('open');
+    toggleLightbox();
+  }, [toggleLightbox]);
+
+  const [lightboxContainer, setLightboxContainer] = useState<HTMLElement | null>(null);
+  console.log({ lightboxContainer });
+
+  const portal = useMemo(
+    () =>
+      lightboxContainer
+        ? createPortal(
+            <AssetContainer isVisible={hasRawUrl}>
+              <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+            </AssetContainer>,
+            lightboxContainer
+          )
+        : null,
+    [handleRawLoad, hasRawUrl, lightboxContainer, token]
+  );
+
+  useEffect(() => {
+    setLightboxContainer(document.getElementById('lightbox-portal'));
+  }, []);
+
   return (
-    <StyledAssetContainer
-      data-tokenid={token.dbid}
-      footerHeight={GLOBAL_FOOTER_HEIGHT}
-      shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
-      hasExtraPaddingForNote={hasExtraPaddingForNote}
-      backgroundColorOverride={backgroundColorOverride}
-    >
-      <NftFailureBoundary tokenId={token.dbid}>
-        {/*
+    <>
+      <StyledAssetContainer
+        data-tokenid={token.dbid}
+        footerHeight={GLOBAL_FOOTER_HEIGHT}
+        shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
+        hasExtraPaddingForNote={hasExtraPaddingForNote}
+        backgroundColorOverride={backgroundColorOverride}
+      >
+        <NftFailureBoundary tokenId={token.dbid}>
+          {/*
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
-        <VisibilityContainer>
-          <AssetContainer isVisible={hasPreviewUrl}>
-            <StyledImage
-              src={cachedUrls[tokenId]?.url}
-              onLoad={handleNftLoaded}
-              height={resultDimensions.height}
-              width={resultDimensions.width}
-            />
-          </AssetContainer>
-          {shouldShowShimmer && (
-            <ShimmerContainer>
-              <Shimmer />
-            </ShimmerContainer>
-          )}
-          <AssetContainer isVisible={hasRawUrl}>
-            <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
-          </AssetContainer>
-        </VisibilityContainer>
-      </NftFailureBoundary>
-    </StyledAssetContainer>
+          <VisibilityContainer>
+            {!showLightbox && (
+              <StyledLightboxButton onClick={handleLightboxButtonClick}>
+                <SearchIcon color={colors.white} />
+              </StyledLightboxButton>
+            )}
+            {visibility === 'visible' &&
+              lightboxContainer &&
+              createPortal(
+                <>
+                  <AssetContainer isVisible={hasPreviewUrl}>
+                    <StyledImage
+                      src={cachedUrls[tokenId]?.url}
+                      onLoad={handleNftLoaded}
+                      height={resultDimensions.height}
+                      width={resultDimensions.width}
+                    />
+                  </AssetContainer>
+                  {shouldShowShimmer && (
+                    <ShimmerContainer>
+                      <Shimmer />
+                    </ShimmerContainer>
+                  )}
+                  <AssetContainer isVisible={hasRawUrl}>
+                    <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+                  </AssetContainer>
+                </>,
+                lightboxContainer
+              )}
+          </VisibilityContainer>
+        </NftFailureBoundary>
+        {/*  */}
+        <NftDetailLightbox isLightboxOpen={showLightbox} toggleLightbox={toggleLightbox} />
+      </StyledAssetContainer>
+    </>
   );
 }
 
@@ -301,13 +356,30 @@ type AssetContainerProps = {
   backgroundColorOverride: string;
 };
 
+const StyledLightboxButton = styled.div`
+  opacity: 0;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 10px;
+  right: 10px;
+  background: ${colors.black['800']};
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  transition: opacity 0.3s;
+`;
+
 const StyledAssetContainer = styled.div<AssetContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 2; /* Above footer in event they overlap */
+  z-index: 20000; /* Above footer in event they overlap */
   width: 100%;
 
   ${({ shouldEnforceSquareAspectRatio }) =>
@@ -324,6 +396,13 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   ${StyledImageWithLoading} {
     width: auto;
   }
+
+  &:hover {
+    ${StyledLightboxButton} {
+      opacity: 1;
+    }
+  }
+
 `;
 
 const StyledImage = styled.img`
@@ -356,6 +435,9 @@ const AssetContainer = styled.div<{ isVisible: boolean }>`
   opacity: 1;
   pointer-events: auto;
   `}
+
+  transition: width 1s, height 1s;
+  // border: 1px solid blue;
 `;
 
 const ShimmerContainer = styled.div`

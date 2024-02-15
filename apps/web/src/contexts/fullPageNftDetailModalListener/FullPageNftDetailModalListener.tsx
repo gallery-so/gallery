@@ -59,6 +59,7 @@ export default function FullPageNftDetailModalListener() {
     showModal({
       isFullPage: true,
       content,
+      isPaddingDisabled: true,
       onClose: async () => {
         await push(
           // @ts-expect-error originPage is guaranteed to be a valid path

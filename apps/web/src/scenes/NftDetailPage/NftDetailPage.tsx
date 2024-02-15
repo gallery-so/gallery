@@ -22,6 +22,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
+import NftDetailLightbox from './NftDetailLightbox';
 import NftDetailPageFallback from './NftDetailPageFallback';
 import NftDetailView from './NftDetailView';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
@@ -77,9 +78,11 @@ function NftDetailPage({
                 name
               }
             }
+            ...NftDetailLightboxFragment
             ...NftDetailViewFragment
           }
         }
+        ...NftDetailLightboxFragment
       }
     `,
     collectionTokenRef
@@ -204,13 +207,18 @@ function NftDetailPage({
   useKeyDown('ArrowLeft', handlePrevPress);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const [showLightbox, setShowLightbox] = useState(false);
+  const toggleLightbox = useCallback(() => {
+    setShowLightbox((prev) => !prev);
+  }, []);
+  console.log({ showLightbox });
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
       <GalleryViewEmitter queryRef={query} />
-      {!isMobile && prevNft && (
+      {!isMobile && prevNft && !showLightbox && (
         <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />
       )}
       {mountedNfts.map(({ token, visibility }) => (
@@ -220,12 +228,18 @@ function NftDetailPage({
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
             visibility={visibility}
+            toggleLightbox={toggleLightbox}
+            showLightbox={showLightbox}
           />
         </_DirectionalFade>
       ))}
-      {!isMobile && nextNft && (
+      {/* <NftDetailLightbox isLightboxOpen={showLightbox} /> */}
+      {!isMobile && nextNft && !showLightbox && (
         <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />
       )}
+      {/* {showLightbox && ( */}
+      {/* <NftDetailLightbox collectionTokenRef={selectedNft} toggleLightbox={toggleLightbox} /> */}
+      {/* )} */}
     </>
   );
 }
@@ -310,7 +324,9 @@ function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPage
 
 const _DirectionalFade = styled.div<{ visibility: string }>`
   position: absolute;
+  height: 100%;
   width: 100%;
+  display: flex;
   opacity: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
   transform: ${({ visibility }) => {
     if (visibility === 'visible') {

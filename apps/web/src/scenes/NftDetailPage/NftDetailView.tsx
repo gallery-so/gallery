@@ -1,5 +1,7 @@
+import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -9,9 +11,11 @@ import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.gra
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import SearchIcon from '~/icons/SearchIcon';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 
 import NftDetailAsset from './NftDetailAsset';
+import NftDetailLightbox from './NftDetailLightbox';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
 
@@ -20,6 +24,8 @@ type Props = {
   queryRef: NftDetailViewQueryFragment$key;
   collectionTokenRef: NftDetailViewFragment$key;
   visibility?: string;
+  toggleLightbox: () => void;
+  showLightbox: boolean;
 };
 
 type LoadableNftDetailViewProps = {
@@ -56,7 +62,10 @@ export default function NftDetailView({
   queryRef,
   collectionTokenRef,
   visibility = 'visible',
-}: Props) {
+  showLightbox,
+  toggleLightbox,
+}: // toggleLightbox,
+Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {
@@ -91,6 +100,17 @@ export default function NftDetailView({
   const assetHasNote = Boolean(token.collectorsNote);
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
+  // const [showLightbox, setShowLightbox] = useState(false);
+  // const toggleLightbox = useCallback(() => {
+  //   setShowLightbox((prev) => !prev);
+  // }, []);
+
+  // const handleLightboxButtonClick = useCallback(() => {
+  //   console.log('open');
+  //   toggleLightbox();
+  // }, [toggleLightbox]);
+  // console.log({ visibility });
+
   return (
     <StyledBody>
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
@@ -98,12 +118,14 @@ export default function NftDetailView({
       <StyledContentContainer>
         <StyledVStack>
           <StyledAssetAndNoteContainer>
-            <Container>
+            <Container showLightbox={showLightbox}>
               <ErrorBoundary fallback={<NftFailureFallback tokenId={token.dbid} />}>
                 <NftDetailAsset
                   tokenRef={collectionNft}
                   hasExtraPaddingForNote={showCollectorsNoteComponent}
                   visibility={visibility}
+                  toggleLightbox={toggleLightbox}
+                  showLightbox={showLightbox}
                 />
               </ErrorBoundary>
             </Container>
@@ -135,6 +157,7 @@ export default function NftDetailView({
         )}
       </StyledContentContainer>
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
+      {/* {showLightbox && <NftDetailLightbox toggleLightbox={toggleLightbox} />} */}
     </StyledBody>
   );
 }
@@ -165,11 +188,26 @@ const StyledContentContainer = styled.div`
   }
 `;
 
-const Container = styled.div`
+const StyledLightboxButton = styled.div`
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 10px;
+  right: 10px;
+  background: ${colors.black['800']};
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+`;
+
+const Container = styled.div<{ showLightbox: boolean }>`
   min-width: 0;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -188,6 +226,7 @@ const StyledAssetAndNoteContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const NotePositionWrapper = styled.div`
