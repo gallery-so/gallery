@@ -17,7 +17,7 @@ export function PostListCaption({ feedPostRef }: Props) {
   const [showAll, setShowAll] = useState(false);
   const ref = useRef(null);
   const toggleText = useCallback(() => {
-    setShowAll(true)
+    setShowAll(true);
   }, []);
 
   const feedPost = useFragment(
@@ -55,7 +55,6 @@ export function PostListCaption({ feedPostRef }: Props) {
             numberOfLines={showAll ? undefined : 4}
             text={captionWithMarkdownLinks}
             mentionsRef={nonNullMentions}
-
           />
         </GalleryTouchableOpacity>
       </View>
