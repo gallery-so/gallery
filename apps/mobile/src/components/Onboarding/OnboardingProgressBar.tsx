@@ -21,7 +21,7 @@ export function OnboardingProgressBar({ from, to }: Props) {
       duration: 1000,
       useNativeDriver: false,
     }).start();
-  }, [to]);
+  }, [to, widthAnim]);
 
   return (
     <Animated.View
