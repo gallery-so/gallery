@@ -3,12 +3,14 @@ import { ConfigContext, ExpoConfig } from 'expo/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { EnvironmentSchema } from './env/env';
+import { EnvironmentSchema, SecretsSchema } from './env/env';
 
-function readEnvironmentFromFile(file: string) {
+// TODO: fix zod return type later
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function readEnvironmentFromFile(file: string, schema: any) {
   const object = dotenv.parse(fs.readFileSync(file, 'utf-8'));
 
-  const result = EnvironmentSchema.safeParse(object);
+  const result = schema.safeParse(object);
 
   if (result.success === true) {
     return result.data;
@@ -21,7 +23,16 @@ const environmentVariablePath = path.join(
   __dirname,
   `./env/.env.${process.env.EXPO_PUBLIC_ENV ?? 'prod'}`
 );
-const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
+
+let environmentVariables = readEnvironmentFromFile(environmentVariablePath, EnvironmentSchema);
+
+if (process.env.NODE_ENV === 'development') {
+  const secretsPath = path.join(__dirname, `./env/.env.secret`);
+  environmentVariables = {
+    ...environmentVariables,
+    ...readEnvironmentFromFile(secretsPath, SecretsSchema),
+  };
+}
 
 const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
 
@@ -87,7 +98,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         config: {
           organization: 'usegallery',
           project: 'gallery-mobile',
-          authToken: 'b2ea4a67f0ed4409968c4725d550df82d5187c12908d441cbf4a43da145934b1',
+          authToken: process.env.SENTRY_AUTH_TOKEN,
         },
       },
     ],

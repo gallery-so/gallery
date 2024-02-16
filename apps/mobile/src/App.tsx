@@ -1,5 +1,6 @@
 import 'expo-dev-client';
 
+import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { addBreadcrumb } from '@sentry/react-native';
@@ -18,6 +19,7 @@ import { NotificationRegistrar } from '~/components/Notification/NotificationReg
 import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
+import { env } from '~/env/runtime';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
@@ -151,34 +153,36 @@ export default function App() {
         <RelayEnvironmentProvider environment={relayEnvironment}>
           <SWRConfig>
             <Suspense fallback={<LoadingView />}>
-              <MobileAnalyticsProvider>
-                <MobileErrorReportingProvider>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <SafeAreaProvider>
-                      <magic.Relayer />
-                      <SearchProvider>
-                        <NavigationContainer ref={navigationRef}>
-                          <ToastProvider>
-                            <TokenStateManagerProvider>
-                              <BottomSheetModalProvider>
-                                <SyncTokensProvider>
-                                  <ManageWalletProvider>
-                                    {/* Register the user's push token if one exists (does not prompt the user) */}
-                                    <NotificationRegistrar />
-                                    <DevMenuItems />
-                                    <DeepLinkRegistrar />
-                                    <RootStackNavigator navigationContainerRef={navigationRef} />
-                                  </ManageWalletProvider>
-                                </SyncTokensProvider>
-                              </BottomSheetModalProvider>
-                            </TokenStateManagerProvider>
-                          </ToastProvider>
-                        </NavigationContainer>
-                      </SearchProvider>
-                    </SafeAreaProvider>
-                  </GestureHandlerRootView>
-                </MobileErrorReportingProvider>
-              </MobileAnalyticsProvider>
+              <PrivyProvider appId={env.PRIVY_APP_ID}>
+                <MobileAnalyticsProvider>
+                  <MobileErrorReportingProvider>
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                      <SafeAreaProvider>
+                        <magic.Relayer />
+                        <SearchProvider>
+                          <NavigationContainer ref={navigationRef}>
+                            <ToastProvider>
+                              <TokenStateManagerProvider>
+                                <BottomSheetModalProvider>
+                                  <SyncTokensProvider>
+                                    <ManageWalletProvider>
+                                      {/* Register the user's push token if one exists (does not prompt the user) */}
+                                      <NotificationRegistrar />
+                                      <DevMenuItems />
+                                      <DeepLinkRegistrar />
+                                      <RootStackNavigator navigationContainerRef={navigationRef} />
+                                    </ManageWalletProvider>
+                                  </SyncTokensProvider>
+                                </BottomSheetModalProvider>
+                              </TokenStateManagerProvider>
+                            </ToastProvider>
+                          </NavigationContainer>
+                        </SearchProvider>
+                      </SafeAreaProvider>
+                    </GestureHandlerRootView>
+                  </MobileErrorReportingProvider>
+                </MobileAnalyticsProvider>
+              </PrivyProvider>
             </Suspense>
           </SWRConfig>
         </RelayEnvironmentProvider>

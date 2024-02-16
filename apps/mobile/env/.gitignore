@@ -1,3 +1,4 @@
 !.env.local
 !.env.prod
 !.env.dev
+.env.secret

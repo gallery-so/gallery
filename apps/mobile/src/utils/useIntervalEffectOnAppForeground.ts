@@ -3,7 +3,7 @@ import { AppState, AppStateStatus } from 'react-native';
 
 export function useIntervalEffectOnAppForeground(callback: () => void) {
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: number;
 
     // Set up the interval when the component mounts
     interval = setInterval(callback, 10000);
