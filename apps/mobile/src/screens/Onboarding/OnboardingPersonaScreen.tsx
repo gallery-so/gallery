@@ -74,7 +74,7 @@ export function OnboardingPersonaScreen() {
         </View>
 
         <View className="mb-10">
-          <OnboardingProgressBar from={90} to={95} />
+          <OnboardingProgressBar from={90} to={100} />
         </View>
 
         <View className="flex-grow space-y-12">
