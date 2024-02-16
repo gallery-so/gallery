@@ -18,7 +18,7 @@ export function OnboardingProgressBar({ from, to }: Props) {
 
     Animated.timing(widthAnim, {
       toValue: finalWidth,
-      duration: 1000,
+      duration: 300,
       useNativeDriver: false,
     }).start();
   }, [to, widthAnim]);
