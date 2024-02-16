@@ -116,31 +116,37 @@ export function OnboardingProfileBioScreen() {
           <OnboardingProgressBar from={60} to={80} />
         </View>
         <View
-          className="flex-1 items-center justify-center space-y-12 px-8"
+          className="flex-1 items-center justify-center space-y-[40px] px-8"
           style={{
             marginBottom: bottom,
           }}
         >
-          <View>
+          <View className="space-y-3">
             <ProfilePicture
               userRef={user}
               size="xxl"
               onPress={handleSelectProfilePicture}
               isEditable
             />
+            <Typography
+              className="text-2xl text-shadow text-center"
+              font={{ family: 'GTAlpina', weight: 'Light' }}
+            >
+              {user.username}
+            </Typography>
           </View>
 
           <TextInput
             style={{
-              fontSize: 24,
-              fontFamily: 'GTAlpinaStandardLight',
+              fontSize: 16,
+              fontFamily: 'ABCDiatype',
               textAlign: 'left',
             }}
             className="dark:text-white text-center"
             placeholderTextColor={colors.metal}
             selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
             textAlignVertical="center"
-            placeholder="tell us about yourself..."
+            placeholder="Add your bio..."
             value={bio}
             onChange={(e) => setBio(e.nativeEvent.text)}
             autoCapitalize="none"

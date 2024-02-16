@@ -21,6 +21,7 @@ export default function useCreateUser() {
             viewer {
               ... on Viewer {
                 user {
+                  username
                   potentialEnsProfileImage {
                     wallet {
                       chainAddress {
