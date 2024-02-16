@@ -6,9 +6,7 @@ import {
 } from '~/generated/isFeatureEnabledFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export enum FeatureFlag {
-  KOALA = 'KOALA',
-}
+export enum FeatureFlag {}
 
 // We need to ignore this fake value from Relay here since we're expecting
 // a caller to pass in a valid value. We are taking extra steps to ensure we're type safe.
@@ -16,18 +14,10 @@ export enum FeatureFlag {
 type Role = Exclude<RelayRole, '%future added value'>;
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
-  ADMIN: {
-    KOALA: true,
-  },
-  BETA_TESTER: {
-    KOALA: true,
-  },
-  EARLY_ACCESS: {
-    KOALA: true,
-  },
-  EMAIL_TESTER: {
-    KOALA: true,
-  },
+  ADMIN: {},
+  BETA_TESTER: {},
+  EARLY_ACCESS: {},
+  EMAIL_TESTER: {},
 };
 
 /**

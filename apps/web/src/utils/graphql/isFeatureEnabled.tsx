@@ -5,31 +5,17 @@ import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragme
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import isProduction from '~/utils/isProduction';
 
-export enum FeatureFlag {
-  KOALA = 'KOALA',
-}
+export enum FeatureFlag {}
 
-const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  KOALA: true,
-};
+const PROD_FLAGS: Record<FeatureFlag, boolean> = {};
 
-const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  KOALA: true,
-};
+const DEV_FLAGS: Record<FeatureFlag, boolean> = {};
 
 export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
-  ADMIN: {
-    KOALA: true,
-  },
-  BETA_TESTER: {
-    KOALA: true,
-  },
-  EARLY_ACCESS: {
-    KOALA: true,
-  },
-  EMAIL_TESTER: {
-    KOALA: true,
-  },
+  ADMIN: {},
+  BETA_TESTER: {},
+  EARLY_ACCESS: {},
+  EMAIL_TESTER: {},
 };
 
 /**
