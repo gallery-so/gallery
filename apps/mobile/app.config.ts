@@ -27,6 +27,7 @@ const environmentVariablePath = path.join(
 let environmentVariables = readEnvironmentFromFile(environmentVariablePath, EnvironmentSchema);
 
 if (process.env.NODE_ENV === 'development') {
+  console.log('env vars', process.env);
   const secretsPath = path.join(__dirname, `./env/.env.secret`);
   environmentVariables = {
     ...environmentVariables,
