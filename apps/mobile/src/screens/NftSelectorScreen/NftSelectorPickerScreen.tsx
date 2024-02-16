@@ -49,7 +49,7 @@ const NETWORKS: {
 ];
 
 const screenHeaderText = {
-  ProfilePicture: 'Select a profile picture',
+  ProfilePicture: 'Select profile picture',
   Post: 'Select item to post',
   Onboarding: 'Select profile picture',
   Community: 'Select item to post',
