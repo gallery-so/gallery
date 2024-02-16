@@ -6,11 +6,11 @@ import styled from 'styled-components';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
-import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
+import { useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useDebounce from '~/shared/hooks/useDebounce';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import colors from '~/shared/theme/colors';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
@@ -44,25 +44,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     queryRef
   );
 
-  const [updateEmail] = usePromisifiedMutation<EmailFormMutation>(graphql`
-    mutation EmailFormMutation($input: UpdateEmailInput!) @raw_response_type {
-      updateEmail(input: $input) {
-        __typename
-        ... on UpdateEmailPayload {
-          __typename
-          viewer {
-            email {
-              email
-              verificationStatus
-            }
-          }
-        }
-        ... on ErrInvalidInput {
-          __typename
-        }
-      }
-    }
-  `);
+  const updateEmail = useUpdateEmail();
 
   const savedEmail = query?.viewer?.email?.email;
   const userId = query?.viewer?.user?.id;
@@ -154,7 +136,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
       userId,
     };
 
-    const updater: SelectorStoreUpdater<EmailFormMutation['response']> = (store, response) => {
+    const updater: SelectorStoreUpdater<useUpdateEmailMutation['response']> = (store, response) => {
       if (response?.updateEmail?.__typename === 'UpdateEmailPayload') {
         const verificationStatus = response.updateEmail.viewer?.email?.verificationStatus;
 
@@ -166,10 +148,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     };
 
     try {
-      const response = await updateEmail({
-        variables: { input: { email } },
-        updater,
-      });
+      const response = await updateEmail(email, updater);
 
       if (response.updateEmail?.__typename !== 'UpdateEmailPayload') {
         // ERROR

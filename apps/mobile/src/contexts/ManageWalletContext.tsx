@@ -121,7 +121,8 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       if (!userExist) {
         provider?.disconnect();
 
-        navigation.navigate('OnboardingUsername', {
+        navigation.navigate('OnboardingEmail', {
+          authMethod: 'Wallet',
           authMechanism: {
             authMechanismType: 'eoa',
             chain: 'Ethereum',

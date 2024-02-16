@@ -360,6 +360,7 @@ type Community implements Node {
   holders(before: String, after: String, first: Int, last: Int): TokenHoldersConnection
   tokens(before: String, after: String, first: Int, last: Int): TokensConnection
   posts(before: String, after: String, first: Int, last: Int): PostsConnection
+  tokensForFrame(limit: Int!): [Token]
   contract: Contract @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   contractAddress: ChainAddress @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   chain: Chain @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
@@ -368,6 +369,7 @@ type Community implements Node {
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @deprecated(reason: "Use Community.tokens")
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
   galleries(maxPreviews: Int!, before: String, after: String, first: Int, last: Int): CommunityGalleriesConnection
+  viewerIsMember: Boolean
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
@@ -1205,6 +1207,7 @@ type Mutation {
   redeemMerch(input: RedeemMerchInput!): RedeemMerchPayloadOrError
   optInForRoles(roles: [Role!]!): OptInForRolesPayloadOrError
   optOutForRoles(roles: [Role!]!): OptOutForRolesPayloadOrError
+  setPersona(persona: Persona!): SetPersonaPayloadOrError
   addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
   revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
@@ -1305,6 +1308,13 @@ type PdfMedia implements Media {
   contentRenderURL: String
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
+}
+
+enum Persona {
+  None
+  Collector
+  Creator
+  Both
 }
 
 enum Platform {
@@ -1484,6 +1494,7 @@ type Query {
   a provider (e.g. Art Blocks) when searching for that provider's name (e.g. "art blocks").
   """
   searchCommunities(query: String!, limit: Int, nameWeight: Float, descriptionWeight: Float, poapAddressWeight: Float, providerNameWeight: Float): SearchCommunitiesPayloadOrError
+  isEmailAddressAvailable(emailAddress: Email!): Boolean
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
@@ -1611,6 +1622,7 @@ enum Role {
   ADMIN
   BETA_TESTER
   EARLY_ACCESS
+  EMAIL_TESTER
 }
 
 type SearchCommunitiesPayload {
@@ -1636,6 +1648,12 @@ type SetCommunityOverrideCreatorPayload {
 }
 
 union SetCommunityOverrideCreatorPayloadOrError = SetCommunityOverrideCreatorPayload | ErrNotAuthorized
+
+type SetPersonaPayload {
+  viewer: Viewer
+}
+
+union SetPersonaPayloadOrError = SetPersonaPayload | ErrNotAuthorized | ErrInvalidInput
 
 input SetProfileImageInput {
   tokenId: DBID
@@ -2430,6 +2448,7 @@ type Viewer implements Node {
   notifications(before: String, after: String, first: Int, last: Int): NotificationsConnection
   notificationSettings: NotificationSettings
   userExperiences: [UserExperience!]
+  persona: Persona
   suggestedUsers(before: String, after: String, first: Int, last: Int): UsersConnection
 }
 

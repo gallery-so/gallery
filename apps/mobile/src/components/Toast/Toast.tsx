@@ -23,6 +23,7 @@ type Props = {
   children?: JSX.Element;
   withoutNavbar?: boolean;
   position?: ToastPosition;
+  offSet?: number;
 };
 
 export function AnimatedToast({
@@ -32,6 +33,7 @@ export function AnimatedToast({
   children,
   withoutNavbar,
   position = 'bottom',
+  offSet = 0,
 }: Props) {
   const animationValue = useState(new Animated.Value(0))[0];
 
@@ -77,12 +79,12 @@ export function AnimatedToast({
 
   const positionStyles = useMemo(() => {
     if (position === 'top') {
-      return { top: top };
+      return { top: top + offSet };
     }
 
     // 56 is the height of the bottom navigation bar
-    return { bottom: bottom + (withoutNavbar ? 0 : 56) };
-  }, [bottom, position, top, withoutNavbar]);
+    return { bottom: bottom + offSet + (withoutNavbar ? 0 : 56) };
+  }, [bottom, offSet, position, top, withoutNavbar]);
 
   return (
     <Animated.View

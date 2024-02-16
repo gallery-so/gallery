@@ -12,6 +12,7 @@ type ToastProps = {
   children?: JSX.Element;
   withoutNavbar?: boolean;
   position?: ToastPosition;
+  offSet?: number;
 };
 
 type ToastActions = {
@@ -39,6 +40,7 @@ type ToastType = {
   children?: JSX.Element;
   withoutNavbar?: boolean;
   position?: ToastPosition;
+  offSet?: number;
 };
 
 type Props = { children: ReactNode };
@@ -54,6 +56,7 @@ const ToastProvider = memo(({ children }: Props) => {
       children,
       withoutNavbar = false,
       position = 'bottom',
+      offSet = 0,
     }: ToastProps) => {
       setToasts((previousMessages) => [
         ...previousMessages,
@@ -65,6 +68,7 @@ const ToastProvider = memo(({ children }: Props) => {
           children,
           withoutNavbar,
           position,
+          offSet,
         },
       ]);
     },
@@ -102,7 +106,7 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, autoClose, id, children, withoutNavbar, position }) => (
+      {toasts.map(({ message, autoClose, id, children, withoutNavbar, position, offSet }) => (
         <AnimatedToast
           data-testid={id}
           key={id}
@@ -112,6 +116,7 @@ const ToastProvider = memo(({ children }: Props) => {
           withoutNavbar={withoutNavbar}
           position={position}
           children={children}
+          offSet={offSet}
         ></AnimatedToast>
       ))}
       {children}

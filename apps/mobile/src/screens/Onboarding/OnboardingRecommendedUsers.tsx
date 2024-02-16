@@ -8,6 +8,7 @@ import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
@@ -20,8 +21,6 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
 import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
-
-import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
 
 const VERTICAL_GAP_OF_ITEMS = 16;
 const NUMBER_OF_ITEMS_EXCLUDING_USER_LIST = 2;
@@ -112,7 +111,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
 
   const handleNext = useCallback(async () => {
     if (!user) return null;
-    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
+    navigation.navigate('OnboardingPersona');
   }, [navigation, user]);
 
   const handleFollowAll = useCallback(async () => {
@@ -142,8 +141,8 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
 
   return (
     <View style={{ paddingTop: top }} className="bg-white">
-      <View className="flex flex-col flex-grow space-y-4 px-4 bg-white">
-        <View className="relative flex-row items-center justify-between ">
+      <View className="flex flex-col flex-grow space-y-3 px-4 bg-white">
+        <View className="relative flex-row items-center justify-between pb-4">
           <BackButton onPress={handleBack} />
           <GalleryTouchableOpacity
             onPress={handleNext}
@@ -163,6 +162,8 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           </GalleryTouchableOpacity>
         </View>
 
+        <OnboardingProgressBar from={80} to={90} />
+
         <View className="flex flex-col">
           <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Medium' }}>
             Recommended collectors for you
@@ -179,6 +180,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
           style={{
             height: heightOfUserList,
           }}
+          className="-mx-4"
         >
           <Suspense fallback={<UserFollowListFallback />}>
             <UserFollowList

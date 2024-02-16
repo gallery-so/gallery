@@ -53,7 +53,7 @@ export function NftSelectorPickerSingularAsset({
   const handlePress = useCallback(() => {
     setError(null);
 
-    if (currentScreen === 'ProfilePicture') {
+    if (currentScreen === 'ProfilePicture' || currentScreen === 'Onboarding') {
       setProfileImage(token.dbid).then(() => {
         onSelect();
       });

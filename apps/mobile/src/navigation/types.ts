@@ -24,7 +24,7 @@ export type RootStackNavigatorParamList = {
   };
 };
 
-export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community';
+export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
 export type MainTabStackNavigatorParamList = {
   Profile: { username: string; hideBackButton?: boolean; navigateToTab?: string };
   NftDetail: {
@@ -110,10 +110,15 @@ export type LoginStackNavigatorParamList = {
   NotificationUpsell: undefined;
 
   OnboardingVideo: undefined;
-  OnboardingEmail: undefined;
+  OnboardingEmail: {
+    authMethod: 'Email' | 'Wallet';
+    authMechanism?: AuthPayloadVariables;
+  };
 
   OnboardingUsername: {
     authMechanism: AuthPayloadVariables;
+    email?: string;
+    authMethod: 'Email' | 'Wallet';
   };
 
   OnboardingProfileBio: undefined;
@@ -124,6 +129,15 @@ export type LoginStackNavigatorParamList = {
     page: ScreenWithNftSelector;
     fullScreen?: boolean;
   };
+
+  OnboardingNftSelectorContract: {
+    contractAddress: string;
+    fullScreen?: boolean;
+    ownerFilter?: 'Collected' | 'Created';
+    page: ScreenWithNftSelector;
+  };
+
+  OnboardingPersona: undefined;
 };
 
 export type PostRedirect = 'Latest' | 'Community';

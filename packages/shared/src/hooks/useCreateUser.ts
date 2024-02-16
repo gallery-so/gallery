@@ -18,6 +18,29 @@ export default function useCreateUser() {
           __typename
           ... on CreateUserPayload {
             __typename
+            viewer {
+              ... on Viewer {
+                user {
+                  username
+                  potentialEnsProfileImage {
+                    wallet {
+                      chainAddress {
+                        chain @required(action: NONE)
+                        address @required(action: NONE)
+                      }
+                    }
+                    profileImage {
+                      previewURLs {
+                        medium
+                      }
+                    }
+                    token {
+                      dbid
+                    }
+                  }
+                }
+              }
+            }
           }
           ... on ErrAuthenticationFailed {
             __typename
@@ -114,6 +137,14 @@ export default function useCreateUser() {
                 user {
                   # eslint-disable-next-line relay/unused-fields
                   id
+                  potentialEnsProfileImage {
+                    wallet {
+                      chainAddress {
+                        chain @required(action: NONE)
+                        address @required(action: NONE)
+                      }
+                    }
+                  }
                 }
               }
             }

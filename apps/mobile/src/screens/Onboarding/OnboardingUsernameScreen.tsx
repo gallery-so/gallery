@@ -1,13 +1,14 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
@@ -16,6 +17,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
@@ -28,6 +30,8 @@ import {
   validate,
 } from '~/shared/utils/validators';
 
+import { useProfilePicture } from '../NftSelectorScreen/useProfilePicture';
+
 export function OnboardingUsernameScreen() {
   const query = useLazyLoadQuery<OnboardingUsernameScreenQuery>(
     graphql`
@@ -39,6 +43,13 @@ export function OnboardingUsernameScreen() {
               dbid
               username
               bio
+              potentialEnsProfileImage {
+                wallet {
+                  chainAddress {
+                    __typename
+                  }
+                }
+              }
             }
           }
         }
@@ -50,14 +61,20 @@ export function OnboardingUsernameScreen() {
   const user = query?.viewer?.user;
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
+  const { setEnsProfileImage } = useProfilePicture();
+
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
+  const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
+  const userEmail = route.params.email;
+  const authMethod = route.params.authMethod;
+  const authMechanism = route.params.authMechanism;
 
   const [username, setUsername] = useState(user?.username ?? '');
   const [bio] = useState('');
@@ -68,8 +85,6 @@ export function OnboardingUsernameScreen() {
   const [usernameError, setUsernameError] = useState('');
 
   const debouncedUsername = useDebounce(username, 500);
-
-  const authMechanism = route.params.authMechanism;
 
   const { top, bottom } = useSafeAreaInsets();
 
@@ -82,41 +97,83 @@ export function OnboardingUsernameScreen() {
     setUsername(text);
   }, []);
 
-  const handleNext = useCallback(async () => {
-    setUsernameError('');
+  const handleSyncSelectedChains = useCallback(async () => {
+    await syncTokens('Ethereum');
+    await syncTokens('Zora');
+    await syncTokens('Base');
+  }, [syncTokens]);
 
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const handleNext = useCallback(async () => {
     try {
       // If its existing user, update the username
       if (user?.username) {
         await updateUser(user.dbid, username, user.bio ?? '');
 
         navigation.navigate('OnboardingProfileBio');
+
         return;
       }
 
+      setIsCreatingUser(true);
       const response = await createUser(authMechanism, username, bio);
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
-        // TODO: Remove this once incremental sync is implemented
-        if (!isSyncing) {
-          syncTokens('Ethereum');
+        // If the user is signing up with email, redirect to the bio screen
+        if (authMethod === 'Email') {
+          navigation.navigate('OnboardingProfileBio');
+          return;
         }
 
-        navigation.navigate('OnboardingProfileBio');
+        // If the user is signing up with a wallet, attached the email to the user
+        if (authMethod === 'Wallet' && userEmail) {
+          await updateEmail(userEmail);
+        }
+
+        const user = response.createUser.viewer?.user;
+        const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
+
+        // 1. if the the dont have ens pfp, go to the pfp screen
+        // 2. if they do, set an ENS and go to the profile bio screen
+        if (ensAddress) {
+          await setEnsProfileImage({
+            address: ensAddress.address,
+            chain: ensAddress.chain,
+          });
+          if (!isSyncing) {
+            handleSyncSelectedChains();
+          }
+          navigation.navigate('OnboardingProfileBio');
+        } else {
+          if (!isSyncing) {
+            handleSyncSelectedChains();
+          }
+
+          navigation.navigate('OnboardingNftSelector', {
+            page: 'Onboarding',
+            fullScreen: true,
+          });
+        }
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setUsernameError(error.message);
       }
+    } finally {
+      setIsCreatingUser(false);
     }
   }, [
     authMechanism,
+    authMethod,
     bio,
     createUser,
+    handleSyncSelectedChains,
+    setEnsProfileImage,
     isSyncing,
     navigation,
-    syncTokens,
     username,
+    userEmail,
+    updateEmail,
     updateUser,
     user,
   ]);
@@ -184,6 +241,11 @@ export function OnboardingUsernameScreen() {
     [debouncedUsername, isUsernameAvailableFetcher, reportError, user?.username]
   );
 
+  const isLoading = useMemo(
+    () => isCheckingUsername || isSyncing || isCreatingUser,
+    [isCheckingUsername, isSyncing, isCreatingUser]
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -191,21 +253,23 @@ export function OnboardingUsernameScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
       <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View className="relative flex-row items-center justify-between ">
-          <BackButton onPress={handleBack} />
+        <View>
+          <View className="relative flex-row items-center justify-between pb-4">
+            <BackButton onPress={handleBack} />
 
-          <View
-            className="absolute w-full flex flex-row justify-center items-center"
-            pointerEvents="none"
-          >
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Pick a username
-            </Typography>
+            <View
+              className="absolute w-full flex flex-row justify-center items-center"
+              pointerEvents="none"
+            >
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Pick a username
+              </Typography>
+            </View>
+
+            <View />
           </View>
-
-          <View />
+          <OnboardingProgressBar from={20} to={40} />
         </View>
-
         <View
           className="flex-1  justify-center space-y-12 px-8"
           style={{
@@ -242,7 +306,7 @@ export function OnboardingUsernameScreen() {
               text="NEXT"
               variant={!isUsernameValid ? 'disabled' : 'primary'}
               disabled={!isUsernameValid}
-              loading={isCheckingUsername}
+              loading={isLoading}
             />
             <Typography
               className={clsx(

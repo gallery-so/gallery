@@ -4,7 +4,9 @@ import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { EmailIcon } from 'src/icons/EmailIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
+import { WalletIcon } from 'src/icons/WalletIcon';
 
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
@@ -27,6 +29,7 @@ function SignInBottomSheet(
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
+  const { openManageWallet } = useManageWalletActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -35,8 +38,17 @@ function SignInBottomSheet(
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const handleEmailPress = useCallback(() => {
-    navigation.navigate('OnboardingEmail');
+    navigation.navigate('OnboardingEmail', {
+      authMethod: 'Email',
+    });
   }, [navigation]);
+
+  const handleConnectWallet = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+    openManageWallet({
+      method: 'auth',
+    });
+  }, [openManageWallet]);
 
   return (
     <GalleryBottomSheetModal
@@ -63,22 +75,31 @@ function SignInBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Create an account or sign in
+            Sign in or sign up
           </Typography>
         </View>
 
         <View className="flex flex-col space-y-2">
           <BottomSheetRow
+            icon={<WalletIcon />}
+            text="Wallet"
+            onPress={handleConnectWallet}
+            eventContext={contexts.Authentication}
+            fontWeight="Bold"
+          />
+          <BottomSheetRow
             icon={<EmailIcon />}
             text="Email"
             onPress={handleEmailPress}
             eventContext={contexts.Authentication}
+            fontWeight="Bold"
           />
           <BottomSheetRow
             icon={<QRCodeIcon width={24} height={24} />}
-            text="QR Code (Sync with desktop)"
+            text="Sign in via Desktop"
             onPress={onQrCodePress}
             eventContext={contexts.Authentication}
+            fontWeight="Bold"
           />
         </View>
       </View>

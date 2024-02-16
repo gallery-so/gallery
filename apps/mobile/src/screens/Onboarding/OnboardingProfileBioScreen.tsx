@@ -1,19 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
+import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
-import { useManageWalletActions } from '~/contexts/ManageWalletContext';
+import { useToastActions } from '~/contexts/ToastContext';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
 
@@ -27,8 +27,10 @@ export function OnboardingProfileBioScreen() {
               __typename
               dbid
               username
-              primaryWallet {
-                __typename
+              socialAccounts {
+                farcaster {
+                  bio
+                }
               }
               ...ProfilePictureFragment
             }
@@ -40,15 +42,27 @@ export function OnboardingProfileBioScreen() {
   );
 
   const user = query?.viewer?.user;
-  const { openManageWallet } = useManageWalletActions();
+  const { pushToast } = useToastActions();
 
-  const track = useTrack();
+  const farcasterBio = user?.socialAccounts?.farcaster?.bio;
+
+  useEffect(() => {
+    if (farcasterBio) {
+      pushToast({
+        message: "We've imported your bio from Farcaster. You can edit it or keep it as is.",
+        position: 'top',
+        // 50 is the height of the header, 20 is the padding
+        offSet: 50 + 20,
+      });
+    }
+  }, [farcasterBio, pushToast]);
+
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
 
   const { top, bottom } = useSafeAreaInsets();
 
-  const [bio, setBio] = useState('');
+  const [bio, setBio] = useState(farcasterBio ?? '');
 
   const updateUser = useUpdateUser();
 
@@ -57,31 +71,11 @@ export function OnboardingProfileBioScreen() {
   }, [navigation]);
 
   const handleSelectProfilePicture = useCallback(() => {
-    if (!user?.primaryWallet) {
-      track('Profile Picture Pressed', {
-        id: 'Onboarding Profile Picture Selected',
-        name: 'Onboarding Profile Picture Selected',
-        screen: 'OnboardingProfileBio',
-      });
-
-      openManageWallet({
-        title: 'Connect your wallet to view your collection',
-        onSuccess: () => {
-          navigation.navigate('OnboardingNftSelector', {
-            page: 'ProfilePicture',
-            fullScreen: true,
-          });
-        },
-      });
-
-      return;
-    }
-
     navigation.navigate('OnboardingNftSelector', {
       page: 'ProfilePicture',
       fullScreen: true,
     });
-  }, [navigation, openManageWallet, track, user?.primaryWallet]);
+  }, [navigation]);
 
   const handleNext = useCallback(async () => {
     if (!user) return null;
@@ -104,47 +98,55 @@ export function OnboardingProfileBioScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
       <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View className="relative flex-row items-center justify-between ">
-          <BackButton onPress={handleBack} />
+        <View>
+          <View className="relative flex-row items-center justify-between pb-4">
+            <BackButton onPress={handleBack} />
 
-          <View
-            className="absolute w-full flex flex-row justify-center items-center"
-            pointerEvents="none"
-          >
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Set up your profile
-            </Typography>
+            <View
+              className="absolute w-full flex flex-row justify-center items-center"
+              pointerEvents="none"
+            >
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                Add a bio
+              </Typography>
+            </View>
+
+            <View />
           </View>
-
-          <View />
+          <OnboardingProgressBar from={60} to={80} />
         </View>
-
         <View
-          className="flex-1 items-center justify-center space-y-12 px-8"
+          className="flex-1 items-center justify-center space-y-[40px] px-8"
           style={{
             marginBottom: bottom,
           }}
         >
-          <View>
+          <View className="space-y-3">
             <ProfilePicture
               userRef={user}
               size="xxl"
               onPress={handleSelectProfilePicture}
               isEditable
             />
+            <Typography
+              className="text-2xl text-shadow text-center"
+              font={{ family: 'GTAlpina', weight: 'Light' }}
+            >
+              {user.username}
+            </Typography>
           </View>
 
           <TextInput
             style={{
-              fontSize: 24,
-              fontFamily: 'GTAlpinaStandardLight',
+              fontSize: 16,
+              fontFamily: 'ABCDiatype',
               textAlign: 'left',
             }}
             className="dark:text-white text-center"
             placeholderTextColor={colors.metal}
             selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
             textAlignVertical="center"
-            placeholder="tell us about yourself..."
+            placeholder="Add your bio..."
             value={bio}
             onChange={(e) => setBio(e.nativeEvent.text)}
             autoCapitalize="none"

@@ -3,13 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { EllipsesIcon } from 'src/icons/EllipsesIcon';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { OrderedListItem, Typography } from '~/components/Typography';
@@ -124,14 +122,13 @@ export function LandingScreen() {
         </View>
 
         <View className="flex flex-col space-y-4 w-8/12">
-          <View className="w-[160px] space-y-2 self-center">
-            <ConnectWalletButton />
+          <View className="w-[200px] space-y-2 self-center">
             <Button
               onPress={toggleOption}
-              variant="secondary"
-              headerElement={<EllipsesIcon />}
-              eventElementId="Secondary Login Options Ellipses"
-              eventName="Display Secondary Login Options"
+              variant="primary"
+              text="get started"
+              eventElementId="Get Started Button"
+              eventName="Get Started Button Clicked"
               eventContext={contexts.Authentication}
             />
 
