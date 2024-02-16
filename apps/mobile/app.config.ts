@@ -30,11 +30,7 @@ const isCloudExpoBuildContext = process.env.USER === 'expo';
 const isGithubBuildContext = 'GITHUB_JOB' in process.env;
 const isLocalContext = !isCloudExpoBuildContext && !isGithubBuildContext;
 
-console.log({ isCloudExpoBuildContext, isGithubBuildContext, isLocalContext });
-console.log('env', process.env);
-
 if (isLocalContext) {
-  console.log('attempt to load in secret');
   const secretsPath = path.join(__dirname, `./env/.env.secret`);
   environmentVariables = {
     ...environmentVariables,
