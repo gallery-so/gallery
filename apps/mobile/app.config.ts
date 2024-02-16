@@ -28,7 +28,11 @@ let environmentVariables = readEnvironmentFromFile(environmentVariablePath, Envi
 
 const isCloudExpoBuildContext = process.env.USER === 'expo';
 
+console.log({ isCloudExpoBuildContext });
+console.log('env', process.env);
+
 if (!isCloudExpoBuildContext) {
+  console.log('attempt to load in secret');
   const secretsPath = path.join(__dirname, `./env/.env.secret`);
   environmentVariables = {
     ...environmentVariables,
