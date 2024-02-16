@@ -27,11 +27,13 @@ const environmentVariablePath = path.join(
 let environmentVariables = readEnvironmentFromFile(environmentVariablePath, EnvironmentSchema);
 
 const isCloudExpoBuildContext = process.env.USER === 'expo';
+const isGithubBuildContext = 'GITHUB_JOB' in process.env;
+const isLocalContext = !isCloudExpoBuildContext && !isGithubBuildContext;
 
-console.log({ isCloudExpoBuildContext });
+console.log({ isCloudExpoBuildContext, isGithubBuildContext, isLocalContext });
 console.log('env', process.env);
 
-if (!isCloudExpoBuildContext) {
+if (isLocalContext) {
   console.log('attempt to load in secret');
   const secretsPath = path.join(__dirname, `./env/.env.secret`);
   environmentVariables = {
