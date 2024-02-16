@@ -14,6 +14,7 @@ import { MetaTagProps } from '~/pages/_app';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import CommunityPageScene from '~/scenes/CommunityPage/CommunityPage';
+import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -78,11 +79,19 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ query }) => {
   const contractAddress = query?.contractAddress ? (query.contractAddress as string) : '';
   const chain = query?.chain as Chain;
+  const addOpenGraphMetaTags = contractAddress && chain;
 
   return {
     props: {
       contractAddress,
       chain,
+      metaTags: addOpenGraphMetaTags
+        ? openGraphMetaTags({
+            title: `${contractAddress} | Gallery`,
+            path: `/community/${chain}/${contractAddress}`,
+            isFcFrameCompatible: true,
+          })
+        : null,
     },
   };
 };
