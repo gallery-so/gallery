@@ -26,7 +26,11 @@ const environmentVariablePath = path.join(
 
 let environmentVariables = readEnvironmentFromFile(environmentVariablePath, EnvironmentSchema);
 
-if (process.env.NODE_ENV === 'development') {
+const isCloudExpoBuildContext = process.env.USER === 'expo';
+const isGithubBuildContext = 'GITHUB_JOB' in process.env;
+const isLocalContext = !isCloudExpoBuildContext && !isGithubBuildContext;
+
+if (isLocalContext) {
   const secretsPath = path.join(__dirname, `./env/.env.secret`);
   environmentVariables = {
     ...environmentVariables,
