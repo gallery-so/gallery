@@ -88,7 +88,7 @@ export function OnboardingEmailScreen() {
       }
     }
 
-    if (!EMAIL_FORMAT.test(email)) {
+    if (isInvalidEmail) {
       setError("That doesn't look like a valid email address. Please double-check and try again");
       setIsLoggingIn(false);
       return;
@@ -157,6 +157,7 @@ export function OnboardingEmailScreen() {
     authMechanism,
     authMethod,
     email,
+    isInvalidEmail,
     login,
     navigation,
     query.isEmailAddressAvailable,
