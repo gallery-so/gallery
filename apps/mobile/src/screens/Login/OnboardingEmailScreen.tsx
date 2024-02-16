@@ -39,7 +39,7 @@ export function OnboardingEmailScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingEmail'>>();
 
-  const authMethod = route.params.auth;
+  const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
 
   const { top, bottom } = useSafeAreaInsets();
@@ -117,7 +117,7 @@ export function OnboardingEmailScreen() {
         // Redirect to the next screen with the wallet auth mechanism
         navigation.navigate('OnboardingUsername', {
           authMechanism,
-          auth: 'Wallet',
+          authMethod: 'Wallet',
           email,
         });
         return;
@@ -139,7 +139,7 @@ export function OnboardingEmailScreen() {
             token,
           },
           email,
-          auth: 'Email',
+          authMethod: 'Email',
         });
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });

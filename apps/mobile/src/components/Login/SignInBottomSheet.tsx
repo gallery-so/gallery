@@ -39,7 +39,7 @@ function SignInBottomSheet(
 
   const handleEmailPress = useCallback(() => {
     navigation.navigate('OnboardingEmail', {
-      auth: 'Email',
+      authMethod: 'Email',
     });
   }, [navigation]);
 

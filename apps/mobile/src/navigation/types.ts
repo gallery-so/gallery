@@ -111,14 +111,14 @@ export type LoginStackNavigatorParamList = {
 
   OnboardingVideo: undefined;
   OnboardingEmail: {
-    auth: 'Email' | 'Wallet';
+    authMethod: 'Email' | 'Wallet';
     authMechanism?: AuthPayloadVariables;
   };
 
   OnboardingUsername: {
     authMechanism: AuthPayloadVariables;
     email?: string;
-    auth: 'Email' | 'Wallet';
+    authMethod: 'Email' | 'Wallet';
   };
 
   OnboardingProfileBio: undefined;

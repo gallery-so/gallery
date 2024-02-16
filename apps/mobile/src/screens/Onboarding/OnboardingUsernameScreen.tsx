@@ -73,7 +73,7 @@ export function OnboardingUsernameScreen() {
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
   const userEmail = route.params.email;
-  const authMethod = route.params.auth;
+  const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
 
   const [username, setUsername] = useState(user?.username ?? '');

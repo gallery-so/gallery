@@ -122,7 +122,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         provider?.disconnect();
 
         navigation.navigate('OnboardingEmail', {
-          auth: 'Wallet',
+          authMethod: 'Wallet',
           authMechanism: {
             authMechanismType: 'eoa',
             chain: 'Ethereum',
