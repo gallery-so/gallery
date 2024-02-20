@@ -12,6 +12,7 @@ import MaintenanceStatusProvider from '~/shared/contexts/MaintenanceStatusContex
 import isProduction from '~/utils/isProduction';
 
 import AnalyticsProvider from './analytics/WebAnalyticsProvider';
+import BottomSheetProvider from './bottomsheet/BottomSheetContext';
 import Boundary from './boundary/Boundary';
 import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingProvider';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
@@ -64,9 +65,11 @@ export default function AppProvider({
                                       <GlobalLayoutContextProvider
                                         preloadedQuery={globalLayoutContextPreloadedQuery}
                                       >
-                                        <FullPageNftDetailModalListener />
-                                        {isProd ? null : <Debugger />}
-                                        {children}
+                                        <BottomSheetProvider>
+                                          <FullPageNftDetailModalListener />
+                                          {isProd ? null : <Debugger />}
+                                          {children}
+                                        </BottomSheetProvider>
                                       </GlobalLayoutContextProvider>
                                     </SnowProvider>
                                   </SearchProvider>
