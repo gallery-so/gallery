@@ -60,8 +60,7 @@ export default function NftDetailView({
   visibility = 'visible',
   showLightbox,
   toggleLightbox,
-}: // toggleLightbox,
-Props) {
+}: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {

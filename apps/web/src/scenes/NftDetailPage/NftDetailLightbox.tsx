@@ -15,15 +15,15 @@ type Props = {
 // It is responsible for the transition animations including sizing and fullscreen background.
 // To display the NFT itself, this component simply creates a portal destination in which another component (such as TokenDetailAsset) can place an NFT asset view inside.
 // This is necessary to use the exact same rendered asset when viewing it in on both fullscreen and non-fullscreen modes to achieve a seamless transition.
-
 export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, tokenId }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [distanceFromLeft, setDistanceFromLeft] = useState(0);
 
+  // Because the lightbox is originally positioned absolutely relative to the displayed nft on the detail page, when the lightbox is opened to be fullscreen
+  // we have to manually position it to aligned with the edge of the browser window.
   useEffect(() => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      console.log(rect);
       setDistanceFromLeft(rect.left);
     }
   }, []); // Empty dependency array means this runs once on mount

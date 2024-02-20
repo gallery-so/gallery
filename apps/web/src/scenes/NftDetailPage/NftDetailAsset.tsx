@@ -294,7 +294,7 @@ function NftDetailAsset({
         <VisibilityContainer>
           {!showLightbox && (
             <StyledLightboxButton onClick={toggleLightbox}>
-              <SearchIcon color={colors.white} />
+              <SearchIcon />
             </StyledLightboxButton>
           )}
           {visibility === 'visible' &&
@@ -353,6 +353,7 @@ export const StyledLightboxButton = styled.div`
   align-items: center;
   z-index: 10000;
   transition: opacity 0.3s;
+  color: ${colors.white};
 `;
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
@@ -419,7 +420,6 @@ const AssetContainer = styled.div<{ isVisible: boolean }>`
   `}
 
   transition: width 1s, height 1s;
-  // border: 1px solid blue;
 `;
 
 const ShimmerContainer = styled.div`

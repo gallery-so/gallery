@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
-import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
@@ -116,7 +115,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         <VisibilityContainer>
           {!showLightbox && (
             <StyledLightboxButton onClick={toggleLightbox}>
-              <SearchIcon color={colors.white} />
+              <SearchIcon />
             </StyledLightboxButton>
           )}
           {lightboxContainer &&
