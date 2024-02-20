@@ -65,27 +65,21 @@ function BottomSheetProvider({ children }: BottomSheetModalProviderProps) {
     [showBottomSheet, hideBottomSheet]
   );
 
-  if (!bottomSheetModalContent) {
-    return (
-      <BottomSheetActionsContext.Provider value={actions}>
-        {children}
-      </BottomSheetActionsContext.Provider>
-    );
-  }
-
   return (
     <BottomSheetActionsContext.Provider value={actions}>
-      <Drawer.Root open={open} onClose={hideBottomSheet} dismissible shouldScaleBackground>
-        <Drawer.Portal>
-          <StyledOverlay onClick={hideBottomSheet} />
-          <StyledContent>
-            <StyledDragHandleWrapper>
-              <StyledDragHandle />
-            </StyledDragHandleWrapper>
-            {bottomSheetModalContent.content}
-          </StyledContent>
-        </Drawer.Portal>
-      </Drawer.Root>
+      {bottomSheetModalContent && (
+        <Drawer.Root open={open} onClose={hideBottomSheet} dismissible shouldScaleBackground>
+          <Drawer.Portal>
+            <StyledOverlay onClick={hideBottomSheet} />
+            <StyledContent>
+              <StyledDragHandleWrapper>
+                <StyledDragHandle />
+              </StyledDragHandleWrapper>
+              {bottomSheetModalContent.content}
+            </StyledContent>
+          </Drawer.Portal>
+        </Drawer.Root>
+      )}
       {children}
     </BottomSheetActionsContext.Provider>
   );
