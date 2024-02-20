@@ -1,7 +1,5 @@
-import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -11,11 +9,9 @@ import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.gra
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import SearchIcon from '~/icons/SearchIcon';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 
 import NftDetailAsset from './NftDetailAsset';
-import NftDetailLightbox from './NftDetailLightbox';
 import NftDetailNote from './NftDetailNote';
 import NftDetailText from './NftDetailText';
 
@@ -100,17 +96,6 @@ Props) {
   const assetHasNote = Boolean(token.collectorsNote);
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
-  // const [showLightbox, setShowLightbox] = useState(false);
-  // const toggleLightbox = useCallback(() => {
-  //   setShowLightbox((prev) => !prev);
-  // }, []);
-
-  // const handleLightboxButtonClick = useCallback(() => {
-  //   console.log('open');
-  //   toggleLightbox();
-  // }, [toggleLightbox]);
-  // console.log({ visibility });
-
   return (
     <StyledBody>
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
@@ -118,7 +103,7 @@ Props) {
       <StyledContentContainer>
         <StyledVStack>
           <StyledAssetAndNoteContainer>
-            <Container showLightbox={showLightbox}>
+            <Container>
               <ErrorBoundary fallback={<NftFailureFallback tokenId={token.dbid} />}>
                 <NftDetailAsset
                   tokenRef={collectionNft}
@@ -157,7 +142,6 @@ Props) {
         )}
       </StyledContentContainer>
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
-      {/* {showLightbox && <NftDetailLightbox toggleLightbox={toggleLightbox} />} */}
     </StyledBody>
   );
 }
@@ -188,22 +172,7 @@ const StyledContentContainer = styled.div`
   }
 `;
 
-const StyledLightboxButton = styled.div`
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  top: 10px;
-  right: 10px;
-  background: ${colors.black['800']};
-  border-radius: 2px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 20;
-`;
-
-const Container = styled.div<{ showLightbox: boolean }>`
+const Container = styled.div`
   min-width: 0;
   position: relative;
   width: 100%;

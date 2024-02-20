@@ -1,42 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
 import colors from 'shared/theme/colors';
 import styled, { css, keyframes } from 'styled-components';
 
-import { NftDetailLightboxFragment$key } from '~/generated/NftDetailLightboxFragment.graphql';
-import useWindowSize from '~/hooks/useWindowSize';
+import { StyledContainer } from '~/contexts/modal/AnimatedModal';
 import CloseIcon from '~/icons/CloseIcon';
 
-import NftDetailAsset from './NftDetailAsset';
-
 type Props = {
-  collectionTokenRef: NftDetailLightboxFragment$key;
   toggleLightbox: () => void;
   isLightboxOpen: boolean;
+  tokenId: string;
 };
 
-export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen }: Props) {
-  // const token = useFragment(
-  //   graphql`
-  //     fragment NftDetailLightboxFragment on CollectionToken {
-  //       id
-  //       ...NftDetailAssetFragment
-  //     }
-  //   `,
-  //   collectionTokenRef
-  // );
-  // console.log({ collectionTokenRef });
-  console.log({ isLightboxOpen });
+// This component is used to display an NFT in fullscreen.
+// It is responsible for the transition animations including sizing and fullscreen background.
+// To display the NFT itself, this component simply creates a portal destination in which another component (such as TokenDetailAsset) can place an NFT asset view inside.
+// This is necessary to use the exact same rendered asset when viewing it in on both fullscreen and non-fullscreen modes to achieve a seamless transition.
 
-  // {/* <NftDetailAsset
-  //   tokenRef={token}
-  //   hasExtraPaddingForNote={false}
-  //   toggleLightbox={toggleLightbox}
-  // /> */}
-  const ref = useRef(null);
+export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, tokenId }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
   const [distanceFromLeft, setDistanceFromLeft] = useState(0);
-
-  const { width } = useWindowSize();
 
   useEffect(() => {
     if (ref.current) {
@@ -44,23 +26,16 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen }: Pr
       console.log(rect);
       setDistanceFromLeft(rect.left);
     }
-  }, [width]); // Empty dependency array means this runs once on mount
-
-  console.log({ distanceFromLeft });
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleCloseClick = useCallback(() => {
     setShouldFadeOut(true);
     toggleLightbox();
-    // setTimeout(() => {
-    // }, 500);
-    // toggleLightbox();
-    console.log('close');
   }, [toggleLightbox]);
 
-  // separate state for background because we need to delay unmounting it to show the fade out animation
+  // we have a separate state for the background because we need to delay unmounting it to show the fade out animation
   const [showBackground, setShowBackground] = useState(isLightboxOpen);
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-  // const
 
   useEffect(() => {
     if (isLightboxOpen) {
@@ -81,19 +56,17 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen }: Pr
         </StyledCloseButton>
       )}
       <StyledLightbox ref={ref} isLightboxOpen={isLightboxOpen} distanceFromLeft={distanceFromLeft}>
-        <StyledAssetPortalDestination id="lightbox-portal"></StyledAssetPortalDestination>
+        <StyledAssetPortalDestination
+          // make the id unique by using tokenId because if there are next/prev nfts, they will also have their own lightbox-portals
+          id={`lightbox-portal-${tokenId}`}
+        />
       </StyledLightbox>
       {showBackground && (
-        <StyledBackground
-          isLightboxOpen={isLightboxOpen}
-          shouldFadeOut={shouldFadeOut}
-        ></StyledBackground>
+        <StyledBackground isLightboxOpen={isLightboxOpen} shouldFadeOut={shouldFadeOut} />
       )}
     </>
   );
 }
-
-const LightboxContainer = styled.div``;
 
 const StyledCloseButton = styled.div`
   position: fixed;
@@ -108,29 +81,27 @@ const StyledLightbox = styled.div<{ isLightboxOpen: boolean; distanceFromLeft: n
   position: absolute;
   width: 100%;
   height: 100%;
-  // top: 0;
   left: 0;
   padding: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
   color: ${colors.white};
   transition: width 0.5s, height 0.5s, left 0.5s, padding 0.5s;
-  // border: 1px solid green;
+
   ${({ isLightboxOpen, distanceFromLeft }) =>
     isLightboxOpen &&
     `
-  padding: 80px;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-  // background-color: ${colors.black['800']};
+    padding: 80px;
     left: -${distanceFromLeft}px;
     height: 100vh;
     width: 100vw;
-  `};
+    
+    ${StyledContainer} {
+      overflow:hidden;
+    }
+    `};
 `;
 
 const fadeIn = keyframes`
@@ -142,11 +113,9 @@ const fadeOut = keyframes`
     to { opacity: 0 };
 `;
 const StyledBackground = styled.div<{ isLightboxOpen: boolean; shouldFadeOut: boolean }>`
-  // display: none;
   position: fixed;
   width: 100%;
   opacity: 0.96;
-
   height: 100%;
   top: 0;
   left: 0;
@@ -167,7 +136,6 @@ const StyledAssetPortalDestination = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
-  // border: 1px solid red;
   transition: width 1s, height 1s;
   position: relative;
 `;

@@ -1,5 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
@@ -12,9 +14,15 @@ import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragme
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
-import { NftDetailAssetComponent } from '~/scenes/NftDetailPage/NftDetailAsset';
+import SearchIcon from '~/icons/SearchIcon';
+import {
+  NftDetailAssetComponent,
+  StyledLightboxButton,
+} from '~/scenes/NftDetailPage/NftDetailAsset';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
+
+import NftDetailLightbox from '../NftDetailPage/NftDetailLightbox';
 
 type Props = {
   tokenRef: TokenDetailAssetFragment$key;
@@ -85,6 +93,17 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     handleNftLoaded();
   }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
 
+  const [showLightbox, setShowLightbox] = useState(false);
+  const toggleLightbox = useCallback(() => {
+    setShowLightbox((prev) => !prev);
+  }, []);
+  const [lightboxContainer, setLightboxContainer] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setLightboxContainer(document.getElementById(`lightbox-portal-${token.dbid}`));
+    // only need to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <StyledAssetContainer
       data-tokenid={token.dbid}
@@ -95,24 +114,40 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     >
       <NftFailureBoundary tokenId={token.dbid}>
         <VisibilityContainer>
-          <AssetContainer isVisible={hasPreviewUrl}>
-            <StyledImage
-              src={cachedUrls[tokenId]?.url}
-              onLoad={handleNftLoaded}
-              height={resultDimensions.height}
-              width={resultDimensions.width}
-            />
-          </AssetContainer>
-          {shouldShowShimmer && (
-            <ShimmerContainer>
-              <Shimmer />
-            </ShimmerContainer>
+          {!showLightbox && (
+            <StyledLightboxButton onClick={toggleLightbox}>
+              <SearchIcon color={colors.white} />
+            </StyledLightboxButton>
           )}
-          <AssetContainer isVisible={hasRawUrl}>
-            <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
-          </AssetContainer>
+          {lightboxContainer &&
+            createPortal(
+              <>
+                <AssetContainer isVisible={hasPreviewUrl}>
+                  <StyledImage
+                    src={cachedUrls[tokenId]?.url}
+                    onLoad={handleNftLoaded}
+                    height={resultDimensions.height}
+                    width={resultDimensions.width}
+                  />
+                </AssetContainer>
+                {shouldShowShimmer && (
+                  <ShimmerContainer>
+                    <Shimmer />
+                  </ShimmerContainer>
+                )}
+                <AssetContainer isVisible={hasRawUrl}>
+                  <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+                </AssetContainer>
+              </>,
+              lightboxContainer
+            )}
         </VisibilityContainer>
       </NftFailureBoundary>
+      <NftDetailLightbox
+        isLightboxOpen={showLightbox}
+        toggleLightbox={toggleLightbox}
+        tokenId={token.dbid}
+      />
     </StyledAssetContainer>
   );
 }
@@ -146,6 +181,12 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
+  }
+
+  &:hover {
+    ${StyledLightboxButton} {
+      opacity: 1;
+    }
   }
 `;
 

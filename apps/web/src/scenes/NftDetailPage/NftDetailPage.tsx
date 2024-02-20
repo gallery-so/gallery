@@ -22,7 +22,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
-import NftDetailLightbox from './NftDetailLightbox';
 import NftDetailPageFallback from './NftDetailPageFallback';
 import NftDetailView from './NftDetailView';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
@@ -211,7 +210,7 @@ function NftDetailPage({
   const toggleLightbox = useCallback(() => {
     setShowLightbox((prev) => !prev);
   }, []);
-  console.log({ showLightbox });
+
   return (
     <>
       <Head>
@@ -233,13 +232,9 @@ function NftDetailPage({
           />
         </_DirectionalFade>
       ))}
-      {/* <NftDetailLightbox isLightboxOpen={showLightbox} /> */}
       {!isMobile && nextNft && !showLightbox && (
         <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />
       )}
-      {/* {showLightbox && ( */}
-      {/* <NftDetailLightbox collectionTokenRef={selectedNft} toggleLightbox={toggleLightbox} /> */}
-      {/* )} */}
     </>
   );
 }
