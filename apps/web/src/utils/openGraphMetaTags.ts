@@ -9,6 +9,7 @@ type Params = {
   title: string;
   path: string;
   isFcFrameCompatible: boolean;
+  buttonContent?: string;
 };
 
 const baseurl = `https://gallery-opengraph${isProduction() ? '' : '-preview'}.vercel.app/api/og`;
@@ -17,6 +18,7 @@ export const openGraphMetaTags = ({
   title,
   path,
   isFcFrameCompatible,
+  buttonContent = '→',
 }: Params): Required<MetaTagProps['metaTags']> => {
   const tags = [
     { property: 'og:title', content: title },
@@ -45,7 +47,7 @@ export const openGraphMetaTags = ({
       },
       {
         property: `fc:frame:button:1`,
-        content: '→',
+        content: buttonContent,
       },
       {
         property: 'fc:frame:image',
