@@ -8,12 +8,14 @@ import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleXS } from '~/components/core/Text/Text';
+import { useBottomSheetActions } from '~/contexts/bottomsheet/BottomSheetContext';
 import useAuthModal from '~/hooks/useAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import Image from '../WelcomeAnimation/Image';
 import { AnimatedImage } from '../WelcomeAnimation/Images';
 import { animatedImages } from './LandingCoverAnimationImages';
+import { MobileAppsUpsellBottomSheet } from './MobileAppsUpsellBottomSheet';
 
 type AspectRatio = 'vertical' | 'horizontal' | undefined;
 const calc = (x: number, y: number) => [(x - window.innerWidth) / 2, (y - window.innerHeight) / 2];
@@ -59,6 +61,18 @@ export default function LandingCoverAnimation() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const showAuthModal = useAuthModal('sign-up');
 
+  const { showBottomSheet } = useBottomSheetActions();
+
+  const handleClickCta = useCallback(() => {
+    if (isMobile) {
+      showBottomSheet({
+        content: <MobileAppsUpsellBottomSheet onContinueInBrowserClick={showAuthModal} />,
+      });
+      return;
+    }
+    showAuthModal();
+  }, [isMobile, showAuthModal, showBottomSheet]);
+
   return (
     <StyledContainer onMouseMove={({ clientX: x, clientY: y }) => set({ xy: calc(x, y) })}>
       <animated.div
@@ -78,7 +92,7 @@ export default function LandingCoverAnimation() {
               eventContext={contexts.Onboarding}
               eventFlow={flows['Web Signup Flow']}
               properties={{ buttonLocation: 'Landing Page Splash Screen' }}
-              onClick={showAuthModal}
+              onClick={handleClickCta}
             >
               <StyledCtaText color={colors.white}>Get started</StyledCtaText>
             </StyledButton>
