@@ -195,7 +195,7 @@ export function OnboardingEmailScreen() {
           <OnboardingProgressBar from={0} to={20} />
         </View>
         <View
-          className="flex-1 justify-center space-y-12 px-4"
+          className="flex-1 justify-center items-center space-y-12 px-8"
           style={{
             marginBottom: bottom,
           }}
@@ -207,9 +207,8 @@ export function OnboardingEmailScreen() {
             autoComplete="email"
             value={email}
             onChange={(e) => handleEmailChange(e.nativeEvent.text)}
-            multiline
           />
-          <View className="space-y-4">
+          <View className="space-y-4 w-full">
             <Button
               eventElementId="Submit Email Button"
               eventName="Sign In Attempt"

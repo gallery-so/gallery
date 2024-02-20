@@ -3,7 +3,11 @@ import { TextInput } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-export function OnboardingTextInput({ ...props }: TextInput['props']) {
+type Props = {
+  style?: TextInput['props']['style'];
+} & TextInput['props'];
+
+export function OnboardingTextInput({ ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
@@ -12,7 +16,7 @@ export function OnboardingTextInput({ ...props }: TextInput['props']) {
         fontSize: 32,
         fontFamily: 'GTAlpinaStandardLight',
       }}
-      className="dark:text-white text-center"
+      className="dark:text-white"
       placeholderTextColor={colors.metal}
       selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
       textAlignVertical="center"
