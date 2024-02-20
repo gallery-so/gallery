@@ -12,7 +12,7 @@ import { useTokenStateManagerContext } from './TokenStateManagerContext';
 
 type SyncTokensActions = {
   isSyncing: boolean;
-  syncTokens: (chain: Chain) => void;
+  syncTokens: (chain: Chain | Chain[]) => void;
   isSyncingCreatedTokens: boolean;
   syncCreatedTokens: (chain: Chain) => void;
   isSyncingCreatedTokensForContract: boolean;
@@ -49,8 +49,8 @@ const SyncTokensProvider = memo(({ children }: Props) => {
 
   const [syncTokens] = usePromisifiedMutation<SyncTokensContextMutation>(
     graphql`
-      mutation SyncTokensContextMutation($chain: Chain!) {
-        syncTokens(chains: [$chain]) {
+      mutation SyncTokensContextMutation($chains: [Chain!]) {
+        syncTokens(chains: $chains) {
           __typename
           ... on SyncTokensPayload {
             viewer {
@@ -75,12 +75,12 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   );
 
   const sync = useCallback(
-    async (chain: Chain) => {
+    async (chain: Chain | Chain[]) => {
       try {
         setIsSyncing(true);
         const response = await syncTokens({
           variables: {
-            chain,
+            chains: Array.isArray(chain) ? chain : [chain],
           },
         });
 
@@ -115,6 +115,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                 ... on Viewer {
                   user {
                     tokens(ownershipFilter: [Creator, Holder]) {
+                      id
                       dbid
                     }
                   }

@@ -97,12 +97,6 @@ export function OnboardingUsernameScreen() {
     setUsername(text);
   }, []);
 
-  const handleSyncSelectedChains = useCallback(async () => {
-    await syncTokens('Ethereum');
-    await syncTokens('Zora');
-    await syncTokens('Base');
-  }, [syncTokens]);
-
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   const handleNext = useCallback(async () => {
     try {
@@ -141,12 +135,12 @@ export function OnboardingUsernameScreen() {
             chain: ensAddress.chain,
           });
           if (!isSyncing) {
-            handleSyncSelectedChains();
+            await syncTokens(['Ethereum', 'Zora', 'Base']);
           }
           navigation.navigate('OnboardingProfileBio');
         } else {
           if (!isSyncing) {
-            handleSyncSelectedChains();
+            await syncTokens(['Ethereum', 'Zora', 'Base']);
           }
 
           navigation.navigate('OnboardingNftSelector', {
@@ -167,10 +161,10 @@ export function OnboardingUsernameScreen() {
     authMethod,
     bio,
     createUser,
-    handleSyncSelectedChains,
     setEnsProfileImage,
     isSyncing,
     navigation,
+    syncTokens,
     username,
     userEmail,
     updateEmail,
