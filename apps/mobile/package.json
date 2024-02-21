@@ -26,6 +26,7 @@
     "expo-asset": "^8.9.1",
     "expo-av": "~13.4.1",
     "expo-barcode-scanner": "~12.5.3",
+    "expo-blur": "~12.4.1",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.12",
     "expo-device": "~5.4.0",
