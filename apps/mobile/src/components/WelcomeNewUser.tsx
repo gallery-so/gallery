@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 
 import { contexts } from '~/shared/analytics/constants';
@@ -12,12 +12,18 @@ import { Typography } from './Typography';
 
 type Props = {
   username: string;
+  onContinue: () => void;
 };
 
-export function WelcomeNewUser({ username }: Props) {
+export function WelcomeNewUser({ username, onContinue }: Props) {
   const snapPoints = useMemo(() => [360], []);
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   useEffect(() => bottomSheetRef.current?.present(), []);
+
+  const handleContinue = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+    onContinue();
+  }, [onContinue]);
 
   return (
     <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
@@ -28,7 +34,7 @@ export function WelcomeNewUser({ username }: Props) {
               className="text-3xl text-center"
               font={{ family: 'GTAlpina', weight: 'StandardLight' }}
             >
-              Welcome to your feed,
+              Welcome to Gallery,
             </Typography>
             <Typography
               className="text-3xl text-center"
@@ -38,16 +44,17 @@ export function WelcomeNewUser({ username }: Props) {
             </Typography>
           </View>
           <Typography className="text-center" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            This is where you'll see what people are collecting, creating and sharing. Choose 'For
-            You' for tailored content or 'Following' to see what your connections are up to!
+            This is where you’ll see updates from other Gallery users. Toggle between your
+            personalized 'Curated' feed and the 'Following' feed, showing the latest updates from
+            your connections.
           </Typography>
         </View>
 
         <Button
-          onPress={() => bottomSheetRef.current?.dismiss()}
+          onPress={handleContinue}
           text="continue"
-          eventElementId="welcome-bottom-sheet-continue"
-          eventName="welcome-bottom-sheet-continue"
+          eventElementId="Welcome New User Bottom Sheet"
+          eventName="Welcome New User Continue Clicked"
           eventContext={contexts.Onboarding}
         />
       </View>
