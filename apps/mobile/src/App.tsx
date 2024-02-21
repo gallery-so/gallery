@@ -1,5 +1,6 @@
 import 'expo-dev-client';
 
+import { PortalProvider } from '@gorhom/portal';
 import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
@@ -32,7 +33,6 @@ import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
-import WelcomeNewUserProvider from './contexts/WelcomeNewUserContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
 import { useSanityMaintenanceCheckMobile } from './utils/useSanityMaintenanceCheckMobile';
@@ -164,7 +164,7 @@ export default function App() {
                           <NavigationContainer ref={navigationRef}>
                             <ToastProvider>
                               <TokenStateManagerProvider>
-                                <WelcomeNewUserProvider>
+                                <PortalProvider>
                                   <BottomSheetModalProvider>
                                     <SyncTokensProvider>
                                       <ManageWalletProvider>
@@ -178,7 +178,7 @@ export default function App() {
                                       </ManageWalletProvider>
                                     </SyncTokensProvider>
                                   </BottomSheetModalProvider>
-                                </WelcomeNewUserProvider>
+                                </PortalProvider>
                               </TokenStateManagerProvider>
                             </ToastProvider>
                           </NavigationContainer>
