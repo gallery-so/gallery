@@ -1,10 +1,16 @@
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contexts } from 'shared/analytics/constants';
+import colors from 'shared/theme/colors';
 
-import { useWelcomeNewUserActions } from '~/contexts/WelcomeNewUserContext';
+import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
+import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
+import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
+import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
+import { LazyAccountTabItem } from '~/navigation/MainTabNavigator/TabBar';
 
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
@@ -15,7 +21,30 @@ type Props = {
 };
 
 export function WelcomeNewUserOnboarding({ username }: Props) {
-  const { step, nextStep } = useWelcomeNewUserActions();
+  // Step 1: Welcome message
+  // Step 2: Post message
+  // Step 3: Profile message
+  const [step, setStep] = useState(1);
+
+  const { bottom } = useSafeAreaInsets();
+  const hasSafeAreaIntersection = bottom !== 0;
+
+  const nextStep = useCallback(() => {
+    if (step === 3) {
+      setStep(0);
+      return;
+    }
+
+    if (step === 1) {
+      // Wait for the bottom sheet to dismiss before moving to the next step
+      setTimeout(() => {
+        setStep((prevStep) => prevStep + 1);
+      }, 400);
+      return;
+    }
+
+    setStep((prevStep) => prevStep + 1);
+  }, [step]);
 
   if (step > 3 || step === 0) {
     return null;
@@ -28,7 +57,7 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
   return (
     <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 z-30">
       <GalleryTouchableOpacity
-        className="absolute h-full w-full top-0 z-30"
+        className="relative h-full w-full"
         onPress={nextStep}
         eventElementId="Welcome New User Tutorial"
         eventName="Welcome New User Tutorial Clicked"
@@ -42,6 +71,27 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
         )}
 
         {step === 3 && <Toast message="Tap here to set up your Profile" step={step} />}
+
+        <View
+          style={hasSafeAreaIntersection ? { paddingBottom: bottom } : { paddingBottom: 12 }}
+          className="w-full bottom-0 bg-white dark:bg-black-900 absolute flex flex-row items-center justify-evenly border-t border-porcelain dark:border-black-600"
+        >
+          <TabItem onPress={nextStep} isFocused>
+            <GLogo />
+          </TabItem>
+          <TabItem onPress={nextStep}>
+            <SearchIcon />
+          </TabItem>
+          <TabItem active={step === 2} onPress={nextStep}>
+            <PostIcon color={colors.black['800']} />
+          </TabItem>
+          <TabItem onPress={nextStep}>
+            <NotificationsIcon />
+          </TabItem>
+          <TabItem active={step === 3} onPress={nextStep}>
+            <LazyAccountTabItem />
+          </TabItem>
+        </View>
       </GalleryTouchableOpacity>
     </BlurView>
   );
@@ -62,7 +112,7 @@ function Toast({ message, step }: { message: string; step: number }) {
   return (
     <Animated.View
       style={{ transform: [{ translateY }] }}
-      className={clsx('absolute bottom-0 justify-center w-full pb-2', {
+      className={clsx('absolute bottom-20 justify-center w-full pb-2', {
         'items-center': step === 2,
         'items-end pr-2': step === 3,
       })}
@@ -73,5 +123,36 @@ function Toast({ message, step }: { message: string; step: number }) {
         </Typography>
       </View>
     </Animated.View>
+  );
+}
+
+type TabItemProps = {
+  children: React.ReactNode;
+  active?: boolean;
+  onPress: () => void;
+  isFocused?: boolean;
+};
+
+function TabItem({ children, active = false, onPress, isFocused }: TabItemProps) {
+  return (
+    <GalleryTouchableOpacity
+      onPress={onPress}
+      accessibilityRole="button"
+      activeOpacity={1}
+      className="pt-3 px-4 flex items-center justify-center"
+      eventName="Welcome New User Tutorial Clicked"
+      eventElementId="Welcome New User Tutorial"
+      eventContext={contexts.Onboarding}
+    >
+      <View
+        className={clsx('px-0 flex h-8 w-8 items-center justify-center rounded-full', {
+          'opacity-25': !active,
+          'bg-activeBlue/10': active,
+          'border border-black dark:border-white ': isFocused,
+        })}
+      >
+        {children}
+      </View>
+    </GalleryTouchableOpacity>
   );
 }

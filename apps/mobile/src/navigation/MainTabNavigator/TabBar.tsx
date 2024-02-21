@@ -2,7 +2,7 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { ReactNode, Suspense, useCallback, useMemo, useState } from 'react';
+import { ReactNode, Suspense, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
@@ -11,7 +11,6 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { useWelcomeNewUserActions } from '~/contexts/WelcomeNewUserContext';
 import { TabBarLazyPostIconQuery } from '~/generated/TabBarLazyPostIconQuery.graphql';
 import { TabBarLazyProfilePictureQuery } from '~/generated/TabBarLazyProfilePictureQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
@@ -44,8 +43,6 @@ function TabItem({
   onPressOverride,
   ignoreActiveState = false,
 }: TabItemProps) {
-  const { isWelcomingNewUser, step, nextStep } = useWelcomeNewUserActions();
-
   const [isPressed, setIsPressed] = useState(false);
 
   const isFocused = activeRoute === route.name;
@@ -62,11 +59,6 @@ function TabItem({
   }, []);
 
   const onPress = useCallback(() => {
-    if (isWelcomingNewUser) {
-      nextStep();
-      return;
-    }
-
     const event = navigation.emit({
       type: 'tabPress',
       target: route.key,
@@ -78,17 +70,7 @@ function TabItem({
     } else if (!isFocused && !event.defaultPrevented) {
       navigation.navigate(route.name);
     }
-  }, [navigation, route.key, route.name, onPressOverride, isFocused, isWelcomingNewUser, nextStep]);
-
-  const isWelcomeStepForPost = useMemo(
-    () => step === 2 && route.name === 'PostTab',
-    [step, route.name]
-  );
-
-  const isWelcomeStepForProfile = useMemo(
-    () => step === 3 && route.name === 'AccountTab',
-    [step, route.name]
-  );
+  }, [navigation, route.key, route.name, onPressOverride, isFocused]);
 
   return (
     <GalleryTouchableOpacity
@@ -108,7 +90,6 @@ function TabItem({
         className={clsx(`px-0 flex h-8 w-8 items-center justify-center rounded-full`, {
           'border border-black dark:border-white ': isFocused && route.name !== 'PostTab',
           'bg-faint dark:bg-[#2B2B2B]': isPressed,
-          'bg-activeBlue/10': isWelcomeStepForPost || isWelcomeStepForProfile,
         })}
       >
         {icon}
@@ -187,7 +168,7 @@ function LazyNotificationIcon() {
   );
 }
 
-function LazyAccountTabItem() {
+export function LazyAccountTabItem() {
   return (
     <Suspense fallback={<AccountIcon />}>
       <LazyAccountIcon />
