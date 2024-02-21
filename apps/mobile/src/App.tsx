@@ -32,6 +32,7 @@ import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
+import WelcomeNewUserProvider from './contexts/WelcomeNewUserContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
 import { useSanityMaintenanceCheckMobile } from './utils/useSanityMaintenanceCheckMobile';
@@ -163,17 +164,21 @@ export default function App() {
                           <NavigationContainer ref={navigationRef}>
                             <ToastProvider>
                               <TokenStateManagerProvider>
-                                <BottomSheetModalProvider>
-                                  <SyncTokensProvider>
-                                    <ManageWalletProvider>
-                                      {/* Register the user's push token if one exists (does not prompt the user) */}
-                                      <NotificationRegistrar />
-                                      <DevMenuItems />
-                                      <DeepLinkRegistrar />
-                                      <RootStackNavigator navigationContainerRef={navigationRef} />
-                                    </ManageWalletProvider>
-                                  </SyncTokensProvider>
-                                </BottomSheetModalProvider>
+                                <WelcomeNewUserProvider>
+                                  <BottomSheetModalProvider>
+                                    <SyncTokensProvider>
+                                      <ManageWalletProvider>
+                                        {/* Register the user's push token if one exists (does not prompt the user) */}
+                                        <NotificationRegistrar />
+                                        <DevMenuItems />
+                                        <DeepLinkRegistrar />
+                                        <RootStackNavigator
+                                          navigationContainerRef={navigationRef}
+                                        />
+                                      </ManageWalletProvider>
+                                    </SyncTokensProvider>
+                                  </BottomSheetModalProvider>
+                                </WelcomeNewUserProvider>
                               </TokenStateManagerProvider>
                             </ToastProvider>
                           </NavigationContainer>

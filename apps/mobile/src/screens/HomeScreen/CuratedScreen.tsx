@@ -3,7 +3,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
-import { WelcomeNewUser } from '~/components/WelcomeNewUser';
+import { useWelcomeNewUserActions } from '~/contexts/WelcomeNewUserContext';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
@@ -52,7 +52,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     `,
     queryRef
   );
-
+  const { startWelcomingUser } = useWelcomeNewUserActions();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
@@ -61,15 +61,15 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   const curatedFeed = query.data.curatedFeed;
 
   const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
-  const [showWelcome, setShowWelcome] = useState(false);
 
   const { isNewUser } = route.params ?? {};
 
+  const username = query.data.viewer?.user?.username ?? '';
   useEffect(() => {
     if (isNewUser) {
-      setShowWelcome(true);
+      startWelcomingUser(username);
     }
-  }, [isNewUser, setShowWelcome]);
+  }, [isNewUser, startWelcomingUser, username]);
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -111,9 +111,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         feedEventRefs={events}
         queryRef={query.data}
       />
-      {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
       {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
-
       <Suspense fallback={null}>
         <SharePostBottomSheet
           shouldShowSheet

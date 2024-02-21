@@ -1,3 +1,4 @@
+import { BlurView } from 'expo-blur';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 
@@ -26,7 +27,12 @@ export function WelcomeNewUser({ username, onContinue }: Props) {
   }, [onContinue]);
 
   return (
-    <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
+    <GalleryBottomSheetModal
+      ref={bottomSheetRef}
+      index={0}
+      snapPoints={snapPoints}
+      backdropComponent={BackdropComponent}
+    >
       <View className="flex flex-column space-y-8 mx-4 mt-2">
         <View className="space-y-6">
           <View>
@@ -60,4 +66,8 @@ export function WelcomeNewUser({ username, onContinue }: Props) {
       </View>
     </GalleryBottomSheetModal>
   );
+}
+
+function BackdropComponent() {
+  return <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 "></BlurView>;
 }
