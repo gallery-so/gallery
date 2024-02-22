@@ -53,7 +53,7 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
         setShouldFadeOut(false);
       }, TRANSITION_TIME);
     }
-  }, [, isLightboxOpen]);
+  }, [isLightboxOpen]);
 
   return (
     <>

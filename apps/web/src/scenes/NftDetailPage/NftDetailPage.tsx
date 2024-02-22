@@ -337,7 +337,6 @@ const _DirectionalFade = styled.div<{ visibility: string; isLightboxOpen: boolea
       return `translate(-${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px,0px)`;
     }
   }};
-  // z-index: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
 
   transition: ${transitions.cubic};
 
