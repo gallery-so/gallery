@@ -1,5 +1,6 @@
 import 'expo-dev-client';
 
+import { PortalProvider } from '@gorhom/portal';
 import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
@@ -163,17 +164,21 @@ export default function App() {
                           <NavigationContainer ref={navigationRef}>
                             <ToastProvider>
                               <TokenStateManagerProvider>
-                                <BottomSheetModalProvider>
-                                  <SyncTokensProvider>
-                                    <ManageWalletProvider>
-                                      {/* Register the user's push token if one exists (does not prompt the user) */}
-                                      <NotificationRegistrar />
-                                      <DevMenuItems />
-                                      <DeepLinkRegistrar />
-                                      <RootStackNavigator navigationContainerRef={navigationRef} />
-                                    </ManageWalletProvider>
-                                  </SyncTokensProvider>
-                                </BottomSheetModalProvider>
+                                <PortalProvider>
+                                  <BottomSheetModalProvider>
+                                    <SyncTokensProvider>
+                                      <ManageWalletProvider>
+                                        {/* Register the user's push token if one exists (does not prompt the user) */}
+                                        <NotificationRegistrar />
+                                        <DevMenuItems />
+                                        <DeepLinkRegistrar />
+                                        <RootStackNavigator
+                                          navigationContainerRef={navigationRef}
+                                        />
+                                      </ManageWalletProvider>
+                                    </SyncTokensProvider>
+                                  </BottomSheetModalProvider>
+                                </PortalProvider>
                               </TokenStateManagerProvider>
                             </ToastProvider>
                           </NavigationContainer>

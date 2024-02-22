@@ -168,7 +168,7 @@ function LazyNotificationIcon() {
   );
 }
 
-function LazyAccountTabItem() {
+export function LazyAccountTabItem() {
   return (
     <Suspense fallback={<AccountIcon />}>
       <LazyAccountIcon />

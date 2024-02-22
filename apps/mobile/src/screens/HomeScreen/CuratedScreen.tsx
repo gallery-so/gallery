@@ -1,9 +1,10 @@
+import { Portal } from '@gorhom/portal';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
-import { WelcomeNewUser } from '~/components/WelcomeNewUser';
+import { WelcomeNewUserOnboarding } from '~/components/WelcomeNewUserOnboarding';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
@@ -52,7 +53,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     `,
     queryRef
   );
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'For You'>>();
@@ -64,6 +64,8 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   const [showWelcome, setShowWelcome] = useState(false);
 
   const { isNewUser } = route.params ?? {};
+
+  const username = query.data.viewer?.user?.username ?? '';
 
   useEffect(() => {
     if (isNewUser) {
@@ -111,9 +113,12 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         feedEventRefs={events}
         queryRef={query.data}
       />
-      {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
+      {showWelcome && (
+        <Portal>
+          <WelcomeNewUserOnboarding username={username} />
+        </Portal>
+      )}
       {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
-
       <Suspense fallback={null}>
         <SharePostBottomSheet
           shouldShowSheet

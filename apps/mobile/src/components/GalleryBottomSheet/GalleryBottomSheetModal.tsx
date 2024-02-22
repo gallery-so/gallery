@@ -23,7 +23,7 @@ function GalleryBottomSheetModal(
   { children, ...props }: GalleryBottomSheetModalProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
-  const { snapPoints, ...rest } = props;
+  const { snapPoints, backdropComponent, ...rest } = props;
 
   const navigation = useNavigation();
 
@@ -55,7 +55,7 @@ function GalleryBottomSheetModal(
         borderRadius: 20,
       }}
       backgroundComponent={GalleryBottomSheetBackground}
-      backdropComponent={GalleryBottomSheetBackdrop}
+      backdropComponent={backdropComponent || GalleryBottomSheetBackdrop}
       handleComponent={GalleryBottomSheetHandle}
       snapPoints={snapPoints}
       {...rest}
