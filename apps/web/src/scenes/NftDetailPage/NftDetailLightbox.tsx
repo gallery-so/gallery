@@ -98,7 +98,7 @@ const StyledLightbox = styled.div<{
   width: 100%;
   height: 100%;
   left: 0;
-  padding: 40px 0;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,7 +120,7 @@ const StyledLightbox = styled.div<{
     left: -${distanceFromLeft}px;
     height: 100vh;
     width: 100vw;
-
+    padding: 40px 0;
 
     
     ${StyledContainer} {
