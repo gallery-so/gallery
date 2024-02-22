@@ -51,8 +51,8 @@ export function WelcomeNewUser({ username, onContinue }: Props) {
           </View>
           <Typography className="text-center" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             This is where you’ll see updates from other Gallery users. Toggle between your
-            personalized 'Curated' feed and the 'Following' feed, showing the latest updates from
-            your connections.
+            personalized For 'You feed' and the 'Following' feed, showing the latest updates from
+            your connections
           </Typography>
         </View>
 
