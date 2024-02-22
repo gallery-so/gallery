@@ -132,6 +132,11 @@ type BanUserFromFeedPayload {
 
 union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
 
+enum BasicAuthType {
+  Retool
+  Monitoring
+}
+
 type BlockUserPayload {
   userId: DBID!
 }
@@ -553,7 +558,7 @@ scalar Email
 type EmailNotificationSettings {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
-  unsubscribedFromDigest: Boolean
+  unsubscribedFromDigest: Boolean!
 }
 
 enum EmailUnsubscriptionType {
@@ -2191,7 +2196,7 @@ input UpdateEmailInput {
 input UpdateEmailNotificationSettingsInput {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
-  unsubscribedFromDigest: Boolean
+  unsubscribedFromDigest: Boolean!
 }
 
 type UpdateEmailNotificationSettingsPayload {

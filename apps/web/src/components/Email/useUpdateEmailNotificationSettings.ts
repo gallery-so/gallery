@@ -4,6 +4,12 @@ import { graphql } from 'react-relay';
 import { useUpdateEmailNotificationSettingsMutation } from '~/generated/useUpdateEmailNotificationSettingsMutation.graphql';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
+type Props = {
+  unsubscribedFromNotifications: boolean;
+  unsubscribedFromDigest: boolean;
+  unsubscribedFromAll: boolean;
+};
+
 export default function useUpdateEmailNotificationSettings() {
   const [updateEmailNotificationSettings] =
     usePromisifiedMutation<useUpdateEmailNotificationSettingsMutation>(graphql`
@@ -16,6 +22,8 @@ export default function useUpdateEmailNotificationSettings() {
               email {
                 emailNotificationSettings {
                   unsubscribedFromNotifications
+                  unsubscribedFromDigest
+                  unsubscribedFromAll
                 }
               }
             }
@@ -28,11 +36,12 @@ export default function useUpdateEmailNotificationSettings() {
     `);
 
   return useCallback(
-    (unsubscribedFromNotifications: boolean, unsubscribedFromAll: boolean) => {
+    ({ unsubscribedFromNotifications, unsubscribedFromDigest, unsubscribedFromAll }: Props) => {
       return updateEmailNotificationSettings({
         variables: {
           enabledNotification: {
             unsubscribedFromNotifications,
+            unsubscribedFromDigest,
             unsubscribedFromAll,
           },
         },
