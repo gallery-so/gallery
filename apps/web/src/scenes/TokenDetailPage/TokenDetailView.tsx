@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -54,7 +54,6 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
-        dbid
         collectorsNote
         owner {
           username

@@ -18,7 +18,6 @@ import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsFo
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ExpandIcon from '~/icons/ExpandIcon';
-import SearchIcon from '~/icons/SearchIcon';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';

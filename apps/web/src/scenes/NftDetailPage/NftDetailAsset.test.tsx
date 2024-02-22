@@ -38,6 +38,8 @@ function Fixture() {
       authenticatedUserOwnsAsset={false}
       collectionTokenRef={query.collectionTokenById}
       visibility="visible"
+      toggleLightbox={() => {}}
+      isLightboxOpen={false}
     />
   );
 }
