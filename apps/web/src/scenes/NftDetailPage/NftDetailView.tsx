@@ -181,7 +181,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0 16px;
-  margin-top: 24px;
+  margin-top: 36px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;

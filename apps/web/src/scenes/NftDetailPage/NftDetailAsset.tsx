@@ -34,9 +34,14 @@ import NftDetailVideo from './NftDetailVideo';
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   onLoad: () => void;
+  toggleLightbox: () => void;
 };
 
-export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
+export function NftDetailAssetComponent({
+  tokenRef,
+  onLoad,
+  toggleLightbox,
+}: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
@@ -68,7 +73,11 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
         />
       }
     >
-      <NftDetailAssetComponentWithouFallback tokenRef={token} onLoad={onLoad} />
+      <NftDetailAssetComponentWithouFallback
+        tokenRef={token}
+        onLoad={onLoad}
+        toggleLightbox={toggleLightbox}
+      />
     </ReportingErrorBoundary>
   );
 }
@@ -76,11 +85,13 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
   onLoad: () => void;
+  toggleLightbox: () => void;
 };
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
   onLoad,
+  toggleLightbox,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
@@ -159,6 +170,10 @@ function NftDetailAssetComponentWithouFallback({
           onLoad={onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
+            if (toggleLightbox) {
+              toggleLightbox();
+              return;
+            }
             if (imageMedia.contentRenderURL) {
               window.open(imageMedia.contentRenderURL);
             }
@@ -173,6 +188,10 @@ function NftDetailAssetComponentWithouFallback({
           onLoad={onLoad}
           tokenRef={token}
           onClick={() => {
+            if (toggleLightbox) {
+              toggleLightbox();
+              return;
+            }
             if (gifMedia.contentRenderURL) {
               window.open(gifMedia.contentRenderURL);
             }
@@ -317,7 +336,11 @@ function NftDetailAsset({
                   </ShimmerContainer>
                 )}
                 <AssetContainer isVisible={hasRawUrl}>
-                  <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+                  <NftDetailAssetComponent
+                    onLoad={handleRawLoad}
+                    tokenRef={token}
+                    toggleLightbox={toggleLightbox}
+                  />
                 </AssetContainer>
               </>,
               lightboxContainer

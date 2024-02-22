@@ -35,7 +35,6 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
   }, []);
 
   const handleCloseClick = useCallback(() => {
-    setShouldFadeOut(true);
     toggleLightbox();
   }, [toggleLightbox]);
 
@@ -48,6 +47,7 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
     if (isLightboxOpen) {
       setShowBackground(true);
     } else {
+      setShouldFadeOut(true);
       setTimeout(() => {
         setShowBackground(false);
         setShouldFadeOut(false);
@@ -57,13 +57,13 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
 
   return (
     <>
-      {showBackground && (
-        <StyledBackground isLightboxOpen={isLightboxOpen} shouldFadeOut={shouldFadeOut} />
-      )}
       {isLightboxOpen && (
         <StyledCloseButton onClick={handleCloseClick}>
           <CloseIcon />
         </StyledCloseButton>
+      )}
+      {showBackground && (
+        <StyledBackground isLightboxOpen={isLightboxOpen} shouldFadeOut={shouldFadeOut} />
       )}
       <StyledLightbox
         ref={measuredRef}
@@ -119,6 +119,7 @@ const StyledLightbox = styled.div<{
     `
     left: -${distanceFromLeft}px;
     height: 100vh;
+    height: 100svh;
     width: 100vw;
     padding: 40px 0;
 

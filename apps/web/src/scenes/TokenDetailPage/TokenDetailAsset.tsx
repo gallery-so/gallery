@@ -140,7 +140,11 @@ function TokenDetailAsset({
                   </ShimmerContainer>
                 )}
                 <AssetContainer isVisible={hasRawUrl}>
-                  <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+                  <NftDetailAssetComponent
+                    onLoad={handleRawLoad}
+                    tokenRef={token}
+                    toggleLightbox={toggleLightbox}
+                  />
                 </AssetContainer>
               </>,
               lightboxContainer
