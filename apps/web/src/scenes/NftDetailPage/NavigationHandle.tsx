@@ -102,12 +102,12 @@ const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
     right: ${({ direction }) => (direction ? '0' : 'unset')};
     left: ${({ direction }) => (direction ? 'unset' : '0')};
     padding: 24px;
-    margin: auto;
+    margin: 0;
   }
 `;
 
 const StyledNavigationHandle = styled.div<{ direction: Directions }>`
-  z-index: 2;
+  z-index: 10;
 
   // MOBILE POSITIONING - FIXED TO BOTTOM WITH 50% OPACITY GRADIENT
   position: fixed;
@@ -121,11 +121,11 @@ const StyledNavigationHandle = styled.div<{ direction: Directions }>`
   left: ${({ direction }) => (direction ? 'unset' : '0')};
 
   @media only screen and ${breakpoints.desktop} {
-    height: 100%;
+    height: 50%;
     width: unset;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
   }
 
   // Prevent accidental selection rather than click

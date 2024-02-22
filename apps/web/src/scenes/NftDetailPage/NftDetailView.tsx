@@ -1,3 +1,4 @@
+import { useCallback, useRef, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -21,7 +22,7 @@ type Props = {
   collectionTokenRef: NftDetailViewFragment$key;
   visibility?: string;
   toggleLightbox: () => void;
-  showLightbox: boolean;
+  isLightboxOpen: boolean;
 };
 
 type LoadableNftDetailViewProps = {
@@ -58,8 +59,8 @@ export default function NftDetailView({
   queryRef,
   collectionTokenRef,
   visibility = 'visible',
-  showLightbox,
   toggleLightbox,
+  isLightboxOpen,
 }: Props) {
   const collectionNft = useFragment(
     graphql`
@@ -99,7 +100,7 @@ export default function NftDetailView({
     <StyledBody>
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
-      <StyledContentContainer>
+      <StyledContentContainer id="detail-view-content">
         <StyledVStack>
           <StyledAssetAndNoteContainer>
             <Container>
@@ -109,7 +110,7 @@ export default function NftDetailView({
                   hasExtraPaddingForNote={showCollectorsNoteComponent}
                   visibility={visibility}
                   toggleLightbox={toggleLightbox}
-                  showLightbox={showLightbox}
+                  isLightboxOpen={isLightboxOpen}
                 />
               </ErrorBoundary>
             </Container>
@@ -130,6 +131,7 @@ export default function NftDetailView({
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          toggleLightbox={toggleLightbox}
         />
         {isMobileOrMobileLarge && showCollectorsNoteComponent && (
           <NftDetailNote

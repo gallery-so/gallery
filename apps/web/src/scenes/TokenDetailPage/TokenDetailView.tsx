@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -53,6 +54,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
+        dbid
         collectorsNote
         owner {
           username
@@ -90,8 +92,13 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   const assetHasNote = Boolean(token.collectorsNote);
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const toggleLightbox = useCallback(() => {
+    setIsLightboxOpen((prev) => !prev);
+  }, []);
+
   return (
-    <StyledBody>
+    <StyledBody isLightboxOpen={isLightboxOpen}>
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
@@ -99,6 +106,8 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
             <TokenDetailAsset
               tokenRef={token}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
+              toggleLightbox={toggleLightbox}
+              isLightboxOpen={isLightboxOpen}
             />
           </Container>
 
@@ -112,6 +121,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          toggleLightbox={toggleLightbox}
         />
 
         {isMobileOrMobileLarge && token?.collectorsNote && (
@@ -125,9 +135,12 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   );
 }
 
-const StyledBody = styled.div`
+const StyledBody = styled.div<{ isLightboxOpen: boolean }>`
   display: flex;
   width: 100%;
+
+  // increase z-index when light box is open so that it sits above the modal close button
+  ${({ isLightboxOpen }) => isLightboxOpen && 'overflow:hidden; z-index: 5;'}
 `;
 
 const StyledContentContainer = styled.div`

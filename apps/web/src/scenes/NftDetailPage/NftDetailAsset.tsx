@@ -16,7 +16,8 @@ import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.g
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
-import { useBreakpoint } from '~/hooks/useWindowSize';
+import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ExpandIcon from '~/icons/ExpandIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -27,7 +28,7 @@ import NftDetailAnimation from './NftDetailAnimation';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
-import NftDetailLightbox from './NftDetailLightbox';
+import NftDetailLightbox, { getLightboxPortalElementId } from './NftDetailLightbox';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
 
@@ -191,7 +192,7 @@ type Props = {
   hasExtraPaddingForNote: boolean;
   visibility?: string; // whether or not the nft is currently the visible "slide" in the detail page carousel
   toggleLightbox: () => void;
-  showLightbox?: boolean;
+  isLightboxOpen?: boolean;
 };
 
 function NftDetailAsset({
@@ -199,7 +200,7 @@ function NftDetailAsset({
   hasExtraPaddingForNote,
   visibility,
   toggleLightbox,
-  showLightbox,
+  isLightboxOpen,
 }: Props) {
   const collectionToken = useFragment(
     graphql`
@@ -274,10 +275,12 @@ function NftDetailAsset({
   const [lightboxContainer, setLightboxContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setLightboxContainer(document.getElementById(`lightbox-portal-${token.dbid}`));
+    setLightboxContainer(document.getElementById(getLightboxPortalElementId(token.dbid)));
     // only need to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledAssetContainer
@@ -292,9 +295,9 @@ function NftDetailAsset({
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
         <VisibilityContainer>
-          {!showLightbox && (
+          {!isMobile && !isLightboxOpen && (
             <StyledLightboxButton onClick={toggleLightbox}>
-              <SearchIcon />
+              <ExpandIcon />
             </StyledLightboxButton>
           )}
           {visibility === 'visible' &&
@@ -323,7 +326,7 @@ function NftDetailAsset({
         </VisibilityContainer>
       </NftFailureBoundary>
       <NftDetailLightbox
-        isLightboxOpen={Boolean(showLightbox)}
+        isLightboxOpen={Boolean(isLightboxOpen)}
         toggleLightbox={toggleLightbox}
         tokenId={token.dbid}
       />
@@ -362,7 +365,7 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 20000; /* Above footer in event they overlap */
+  z-index: 100; /* Above footer in event they overlap */
   width: 100%;
 
   ${({ shouldEnforceSquareAspectRatio }) =>

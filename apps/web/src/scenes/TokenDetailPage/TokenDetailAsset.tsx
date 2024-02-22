@@ -12,8 +12,8 @@ import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPre
 import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
 import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
 import { useNftRetry } from '~/hooks/useNftRetry';
-import { useBreakpoint } from '~/hooks/useWindowSize';
-import SearchIcon from '~/icons/SearchIcon';
+import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ExpandIcon from '~/icons/ExpandIcon';
 import {
   NftDetailAssetComponent,
   StyledLightboxButton,
@@ -21,14 +21,21 @@ import {
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import NftDetailLightbox from '../NftDetailPage/NftDetailLightbox';
+import NftDetailLightbox, { getLightboxPortalElementId } from '../NftDetailPage/NftDetailLightbox';
 
 type Props = {
   tokenRef: TokenDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
+  isLightboxOpen: boolean;
+  toggleLightbox: () => void;
 };
 
-function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
+function TokenDetailAsset({
+  tokenRef,
+  hasExtraPaddingForNote,
+  isLightboxOpen,
+  toggleLightbox,
+}: Props) {
   // This is split up, so we can retry
   // this fragment when an NFT fails to load
   const token = useFragment<TokenDetailAssetFragment$key>(
@@ -92,16 +99,14 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     handleNftLoaded();
   }, [imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
 
-  const [showLightbox, setShowLightbox] = useState(false);
-  const toggleLightbox = useCallback(() => {
-    setShowLightbox((prev) => !prev);
-  }, []);
   const [lightboxContainer, setLightboxContainer] = useState<HTMLElement | null>(null);
   useEffect(() => {
-    setLightboxContainer(document.getElementById(`lightbox-portal-${token.dbid}`));
+    setLightboxContainer(document.getElementById(getLightboxPortalElementId(token.dbid)));
     // only need to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledAssetContainer
@@ -113,9 +118,9 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     >
       <NftFailureBoundary tokenId={token.dbid}>
         <VisibilityContainer>
-          {!showLightbox && (
+          {!isMobile && !isLightboxOpen && (
             <StyledLightboxButton onClick={toggleLightbox}>
-              <SearchIcon />
+              <ExpandIcon />
             </StyledLightboxButton>
           )}
           {lightboxContainer &&
@@ -143,7 +148,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         </VisibilityContainer>
       </NftFailureBoundary>
       <NftDetailLightbox
-        isLightboxOpen={showLightbox}
+        isLightboxOpen={isLightboxOpen}
         toggleLightbox={toggleLightbox}
         tokenId={token.dbid}
       />

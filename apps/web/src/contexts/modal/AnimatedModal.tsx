@@ -194,7 +194,7 @@ const StyledHeader = styled.div<{ isPaddingDisabled: boolean }>`
   padding: ${({ isPaddingDisabled }) =>
     isPaddingDisabled ? '0px' : `${MODAL_PADDING_PX}px ${MODAL_PADDING_PX}px 0px`};
   padding-bottom: ${MODAL_PADDING_PX};
-  z-index: 1;
+  // z-index: 1;
 `;
 
 const StyledTitleS = styled(TitleS)`
@@ -231,7 +231,7 @@ const StyledContent = styled.div<{ padding: string }>`
   flex-direction: column;
   height: 100%;
   padding: ${({ padding }) => padding};
-  z-index: 2;
+  // z-index: 2;
 `;
 
 const StyledModalActions = styled(HStack)`
