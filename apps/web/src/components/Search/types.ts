@@ -15,7 +15,7 @@ type GallerySearchItem = BaseSearchItem & {
 };
 
 type CommunitySearchItem = BaseSearchItem & {
-  type: 'Collection';
+  type: 'Community';
   communityPageUrl: Route;
 };
 

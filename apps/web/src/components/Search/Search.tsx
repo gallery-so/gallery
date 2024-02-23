@@ -32,7 +32,7 @@ export default function Search() {
         pathname: '/[username]',
         query: { username: item.label as string },
       } as Route;
-    } else if (item.type === 'Collection') {
+    } else if (item.type === 'Community') {
       return item.communityPageUrl;
     } else if (item.type === 'Gallery') {
       const { owner, value } = item;
