@@ -33,7 +33,7 @@ export default function CommunitySearchResult({ communityRef, keyword, variant, 
 
   const route = useMemo(() => {
     return {
-      type: 'Community' as const,
+      type: 'Collection' as const,
       label: community.name ?? '',
       value: community.dbid,
       communityPageUrl,

@@ -29,8 +29,8 @@ const filters: FilterElement = [
     value: 'gallery',
   },
   {
-    label: 'Communities',
-    value: 'community',
+    label: 'Collections',
+    value: 'collection',
   },
 ];
 
