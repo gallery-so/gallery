@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import colors from 'shared/theme/colors';
+import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { Web3WalletProvider } from '~/contexts/auth/Web3WalletContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
@@ -224,6 +227,14 @@ export default function MultichainWalletSelector({
           />
         </VStack>
       </VStack>
+      <StyledWalletHelperText>
+        You can always add more wallets across networks later when setting up your Gallery.
+      </StyledWalletHelperText>
     </WalletSelectorWrapper>
   );
 }
+
+const StyledWalletHelperText = styled(BaseM)`
+  max-width: 400px;
+  color: ${colors.shadow};
+`;

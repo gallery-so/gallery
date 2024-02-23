@@ -14,7 +14,7 @@ export function EmptyState({ title, description, children }: Props) {
   return (
     <VStack align="center" gap={12}>
       {title || description ? (
-        <VStack align="center">
+        <VStack align="center" gap={8}>
           <StyledTitle>{title}</StyledTitle>
           {description && (
             <StyledBody>

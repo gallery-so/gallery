@@ -83,9 +83,6 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
         {selectedAuthMethod === 'Wallet' && (
           <WalletContainer gap={12}>
             <WalletSelector queryRef={query} showEmail={false} />
-            <StyledWalletHelperText>
-              You can always add more wallets across networks later when setting up your Gallery.
-            </StyledWalletHelperText>
           </WalletContainer>
         )}
 
@@ -190,9 +187,4 @@ const StyledButtonIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const StyledWalletHelperText = styled(BaseM)`
-  max-width: 400px;
-  color: ${colors.shadow};
 `;
