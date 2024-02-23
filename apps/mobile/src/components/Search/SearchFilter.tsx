@@ -32,7 +32,7 @@ const filters: FilterElement = [
     value: 'gallery',
   },
   {
-    label: 'Communities',
+    label: 'Collections',
     value: 'community',
   },
 ];

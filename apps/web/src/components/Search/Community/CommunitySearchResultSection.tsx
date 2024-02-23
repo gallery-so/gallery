@@ -50,7 +50,7 @@ export default function CommunitySearchResultSection({
     <SearchSection
       title={title}
       isShowAll={isShowAll}
-      onShowAll={() => onChangeFilter('community')}
+      onShowAll={() => onChangeFilter('collection')}
       numResults={results.length}
       variant={variant}
     >

@@ -186,7 +186,7 @@ export function SearchResults({
       items.push({
         kind: 'search-section-header',
         sectionType: 'community',
-        sectionTitle: 'Communities',
+        sectionTitle: 'Collections',
         numberOfResults: searchCommunities.results.length,
       });
 
@@ -244,7 +244,7 @@ export function SearchResults({
         items.push({
           kind: 'search-section-header',
           sectionType: 'community',
-          sectionTitle: 'Communities',
+          sectionTitle: 'Collections',
           numberOfResults: searchCommunities.results.length,
         });
 

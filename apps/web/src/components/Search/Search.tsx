@@ -17,7 +17,7 @@ import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
 import { SearchItemType } from './types';
 
-export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
+export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'collection' | null;
 
 export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
