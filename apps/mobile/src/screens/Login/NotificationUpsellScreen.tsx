@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useRelayEnvironment } from 'react-relay';
@@ -6,7 +6,7 @@ import { useRelayEnvironment } from 'react-relay';
 import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
-import { LoginStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { markAsShown } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { contexts } from '~/shared/analytics/constants';
 
@@ -14,7 +14,9 @@ import { Typography } from '../../components/Typography';
 
 export function NotificationUpsellScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
+  const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'NotificationUpsell'>>();
 
+  const { isNewUser } = route.params ?? {};
   const [error, setError] = useState('');
 
   const navigateIntoApp = useCallback(() => {
@@ -25,11 +27,14 @@ export function NotificationUpsellScreen() {
       routes: [
         {
           name: 'MainTabs',
-          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'For You' } } },
+          params: {
+            screen: 'HomeTab',
+            params: { screen: 'Home', params: { screen: 'For You', params: { isNewUser } } },
+          },
         },
       ],
     });
-  }, [navigation]);
+  }, [isNewUser, navigation]);
 
   const relayEnvironment = useRelayEnvironment();
   const handleTurnOn = useCallback(async () => {
