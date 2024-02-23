@@ -3,9 +3,7 @@ export function getHighlightedName(text: string, keyword: string) {
     return text;
   }
 
-  // This line of code is sanitizing the keyword by replacing all instances of a single backslash with double backslashes.
-  // This is done to prevent any issues when the keyword is used in a regular expression, as backslashes are escape characters in regex.
-  const sanitizedKeyword = keyword.replace(/\\/g, '\\\\');
+  const sanitizedKeyword = sanitizeKeyword(keyword);
 
   const withoutMentionTag = sanitizedKeyword.replace(/^@/, '');
 
@@ -15,7 +13,8 @@ export function getHighlightedName(text: string, keyword: string) {
 export const MAX_DISPLAYED_DESCRIPTION_CHARS = 150;
 
 export function getHighlightedDescription(text: string, keyword: string) {
-  const sanitizedKeyword = keyword.replace(/\\/g, '\\\\');
+  const sanitizedKeyword = sanitizeKeyword(keyword);
+
   const regex = new RegExp(sanitizedKeyword, 'gi');
 
   const unformattedDescription = sanitizeMarkdown(text ?? '');
@@ -43,4 +42,10 @@ function sanitizeMarkdown(text: string) {
     .replace(/\*\*/g, '') // bold
     .replace(/\[([^[]*)\]\([^)]*\)/g, '$1') // link markdown tag from description
     .replace(/\n/g, ' '); // break line
+}
+
+// This line of code is sanitizing special characters, as well as replacing all instances of a single backslash with double backslashes.
+// This is done to prevent any issues when the keyword is used in a regular expression, as backslashes are escape characters in regex.
+function sanitizeKeyword(keyword: string) {
+  return keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
