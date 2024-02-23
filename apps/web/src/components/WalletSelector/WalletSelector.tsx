@@ -33,7 +33,6 @@ const NUM_OPTIONS_SUPPORTED = 5;
 export default function WalletSelector({
   queryRef,
   connectionMode = AUTH,
-  variant,
   onConnectWalletSuccess,
   showEmail = true,
 }: Props) {
@@ -77,7 +76,6 @@ export default function WalletSelector({
           <MultichainWalletSelector
             queryRef={query}
             connectionMode={connectionMode}
-            variant={variant}
             onConnectWalletSuccess={onConnectWalletSuccess}
             showEmail={showEmail}
           />

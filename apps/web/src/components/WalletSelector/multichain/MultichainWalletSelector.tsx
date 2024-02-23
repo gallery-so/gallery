@@ -1,10 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
-import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { Web3WalletProvider } from '~/contexts/auth/Web3WalletContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
@@ -32,7 +30,6 @@ export type OnConnectWalletSuccessFn = () => void;
 
 export type MultichainWalletSelectorProps = {
   connectionMode?: ConnectionMode;
-  variant?: WalletSelectorVariant;
   onConnectWalletSuccess?: OnConnectWalletSuccessFn;
   showEmail?: boolean;
 };
@@ -44,7 +41,6 @@ type Props = {
 export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
-  variant = 'sign-in',
   onConnectWalletSuccess,
   showEmail = true,
 }: Props) {
@@ -67,15 +63,6 @@ export default function MultichainWalletSelector({
 
   const connectEthereum = useConnectEthereum();
   const { requestPermissions: connectTezos } = useBeaconActions();
-
-  const subheading = useMemo(() => {
-    switch (variant) {
-      case 'sign-up':
-        return 'Join Gallery today to curate and display your NFT collection.';
-      default:
-        return '';
-    }
-  }, [variant]);
 
   const additionalEthereumChains = useMemo(
     () =>
@@ -154,7 +141,7 @@ export default function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.magicLink) {
     return (
       <WalletSelectorWrapper>
-        <MagicLinkLogin reset={reset} />
+        <MagicLinkLogin />
       </WalletSelectorWrapper>
     );
   }
@@ -164,7 +151,6 @@ export default function MultichainWalletSelector({
   return (
     <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
-        <StyledDescription>{subheading}</StyledDescription>
         <VStack justify="center" gap={12}>
           <WalletButton
             label={supportedAuthMethods.ethereum.name}
@@ -241,7 +227,3 @@ export default function MultichainWalletSelector({
     </WalletSelectorWrapper>
   );
 }
-
-const StyledDescription = styled(BaseM)`
-  text-align: left;
-`;

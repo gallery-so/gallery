@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -6,20 +7,17 @@ import { SlimInput } from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
 import ErrorText from '~/components/core/Text/ErrorText';
-import { BaseM, TitleS } from '~/components/core/Text/Text';
+import { BaseM, BaseS, TitleS } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackSignInSuccess } from '~/contexts/analytics/authUtil';
 import useMagicLogin from '~/hooks/useMagicLink';
+import { MagicLinkIcon } from '~/icons/MagicLinkIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 
-type Props = {
-  reset: () => void;
-};
-
-export default function MagicLinkLogin({ reset }: Props) {
+export default function MagicLinkLogin() {
   const sendMagicLink = useMagicLogin();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
   const trackSignInSuccess = useTrackSignInSuccess();
@@ -101,57 +99,36 @@ export default function MagicLinkLogin({ reset }: Props) {
   }
 
   return (
-    <EmptyState title="">
-      <VStack gap={24}>
-        <VStack align="center" gap={4}>
-          <TitleS>Magic Link</TitleS>
+    <VStack gap={24}>
+      <form>
+        <VStack gap={12}>
+          <SlimInput
+            onChange={handleInputChange}
+            placeholder="your@email.com"
+            autoFocus
+            defaultValue={email}
+          />
+          {errorMessage && <StyledErrorText message={errorMessage} />}
+          <Button
+            eventElementId="Send Magic Link Button"
+            eventName="Send Magic Link Login"
+            eventContext={contexts.Authentication}
+            onClick={handleSendClick}
+            disabled={!isValidEmail || clickedSendLink}
+            type="submit"
+          >
+            Submit
+          </Button>
         </VStack>
-        <VStack gap={8}>
-          <StyledText>
-            If you&#39;re an existing Gallery user with a verified email address, we&#39;ll deliver
-            a magic sign-in link to your inbox.
-          </StyledText>
-        </VStack>
-        <form>
-          <VStack gap={8}>
-            <SlimInput
-              onChange={handleInputChange}
-              placeholder="Email"
-              autoFocus
-              defaultValue={email}
-            />
-            {errorMessage && <StyledErrorText message={errorMessage} />}
-            <HStack gap={8} justify="flex-end">
-              <Button
-                eventElementId="Cancel Magic Link Login Button"
-                eventName="Cancel Magic Link Login"
-                eventContext={contexts.Authentication}
-                variant="secondary"
-                onClick={reset}
-              >
-                Back
-              </Button>
-              <Button
-                eventElementId="Send Magic Link Button"
-                eventName="Send Magic Link Login"
-                eventContext={contexts.Authentication}
-                onClick={handleSendClick}
-                disabled={!isValidEmail || clickedSendLink}
-                type="submit"
-              >
-                Send Magic Link
-              </Button>
-            </HStack>
-          </VStack>
-        </form>
-      </VStack>
-    </EmptyState>
+      </form>
+
+      <HStack gap={16} align="center" justify="center">
+        <BaseS color={colors.metal}>Secured by</BaseS>
+        <MagicLinkIcon />
+      </HStack>
+    </VStack>
   );
 }
-
-const StyledText = styled(BaseM)`
-  text-align: left;
-`;
 
 const StyledErrorText = styled(ErrorText)`
   text-align: left;

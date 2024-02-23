@@ -1,22 +1,21 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { contexts, flows } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
-import { SignUpButton } from '~/contexts/globalLayout/GlobalNavbar/SignUpButton';
+import { useBottomSheetActions } from '~/contexts/bottomsheet/BottomSheetContext';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import isIOS from '~/utils/isIOS';
 
-import { APP_STORE_URL } from './LandingPage';
+import { MobileAppsUpsellBottomSheet } from './MobileAppsUpsellBottomSheet';
 
 export default function LandingPageNavbar() {
-  const isIosDevice = useMemo(() => isIOS(), []);
   const isMobile = useIsMobileWindowWidth();
   const [opacity, setOpacity] = useState(0);
+  const showAuthModal = useUniversalAuthModal();
+  const { showBottomSheet } = useBottomSheetActions();
 
   const adjustNavbarOpacity = useCallback(() => {
     const windowHeight = window.innerHeight;
@@ -34,6 +33,16 @@ export default function LandingPageNavbar() {
     }
   }, []);
 
+  const handleClickGetStarted = useCallback(() => {
+    if (isMobile) {
+      showBottomSheet({
+        content: <MobileAppsUpsellBottomSheet onContinueInBrowserClick={showAuthModal} />,
+      });
+      return;
+    }
+    showAuthModal();
+  }, [isMobile, showAuthModal, showBottomSheet]);
+
   useEffect(() => {
     window.addEventListener('scroll', adjustNavbarOpacity);
     return () => {
@@ -43,21 +52,15 @@ export default function LandingPageNavbar() {
 
   return (
     <StyledNavbar opacity={opacity}>
-      <SignInButton buttonLocation="Landing Page Navbar" />
-      {isMobile && isIosDevice ? (
-        <GalleryLink href={APP_STORE_URL} target="_blank">
-          <StyledButton
-            eventElementId="Landing Page Navbar Download Button"
-            eventName="Clicked Landing Page Navbar Download Button"
-            eventContext={contexts.Onboarding}
-            eventFlow={flows['Web Signup Flow']}
-          >
-            <StyledButtonText>Download</StyledButtonText>
-          </StyledButton>
-        </GalleryLink>
-      ) : (
-        <SignUpButton buttonLocation="Landing Page Navbar" />
-      )}
+      <StyledButton
+        eventElementId="Authenticate Button"
+        eventName="Attempt Authenticate"
+        eventContext={contexts.Onboarding}
+        eventFlow={flows['Web Signup Flow']}
+        onClick={handleClickGetStarted}
+      >
+        <StyledButtonText>Get Started</StyledButtonText>
+      </StyledButton>
     </StyledNavbar>
   );
 }

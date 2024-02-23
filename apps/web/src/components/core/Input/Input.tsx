@@ -69,6 +69,7 @@ export const SlimInput = styled.input`
   padding: 6px 12px;
   width: 100%;
   height: 32px;
+  color: ${colors.black['800']};
 
   font-size: 16px; // on mobile, if input font is < 16px, OS will zoom automatically on the input which we dont want
 
