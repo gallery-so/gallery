@@ -99,7 +99,7 @@ export default function NftDetailView({
     <StyledBody>
       <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
-      <StyledContentContainer id="detail-view-content">
+      <StyledContentContainer>
         <StyledVStack>
           <StyledAssetAndNoteContainer>
             <Container>
