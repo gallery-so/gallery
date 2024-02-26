@@ -55,6 +55,8 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
     }
   }, [isLightboxOpen]);
 
+  console.log({ showBackground });
+
   return (
     <>
       {isLightboxOpen && (
@@ -82,8 +84,8 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
 
 const StyledCloseButton = styled.div`
   position: fixed;
-  top: 24px;
-  right: 24px;
+  top: 12px;
+  right: 12px;
   z-index: 15;
   color: ${colors.white};
   cursor: pointer;

@@ -3,7 +3,6 @@ import ArrowRight from 'public/icons/arrow_right.svg';
 import { ReactElement, useMemo } from 'react';
 import styled from 'styled-components';
 
-import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
 import IconContainer from '~/components/core/IconContainer';
@@ -24,17 +23,13 @@ const MOBILE_ARROWS = new Map<number, ReactElement>([
   [Directions.RIGHT, <ArrowRight key={2} />],
 ]);
 
-const HOVER_TEXT = new Map<number, string>([
-  [Directions.LEFT, 'Prev'],
-  [Directions.RIGHT, 'Next'],
-]);
-
 type Props = {
   direction: Directions;
   onClick: () => void;
+  hoverStyle: 'default' | 'transparent';
 };
 
-function NavigationHandle({ direction, onClick }: Props) {
+function NavigationHandle({ direction, onClick, hoverStyle = 'default' }: Props) {
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
   const arrow = useMemo(
@@ -42,25 +37,22 @@ function NavigationHandle({ direction, onClick }: Props) {
     [isMobileOrMobileLarge, direction]
   );
 
-  const hoverText = useMemo(() => HOVER_TEXT.get(direction) ?? '', [direction]);
+  console.log(hoverStyle);
 
   return (
     <StyledNavigationHandle direction={direction}>
-      <StyledTextWrapper align="center" gap={3} direction={direction} onClick={onClick}>
-        {arrow && <IconContainer variant="default" size="md" icon={arrow} />}
-        <StyledHoverText>
-          <ActionText>{hoverText}</ActionText>
-        </StyledHoverText>
+      <StyledTextWrapper
+        align="center"
+        gap={3}
+        direction={direction}
+        onClick={onClick}
+        hoverStyle={hoverStyle}
+      >
+        {arrow && <IconContainer size="md" icon={arrow} variant={hoverStyle} />}
       </StyledTextWrapper>
     </StyledNavigationHandle>
   );
 }
-
-const StyledHoverText = styled.div`
-  transition: ${transitions.cubic};
-  opacity: 0;
-  padding: 0px 4px;
-`;
 
 const StyledArrow = styled.div`
   path {
@@ -68,7 +60,10 @@ const StyledArrow = styled.div`
   }
 `;
 
-const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
+const StyledTextWrapper = styled(HStack)<{
+  direction: Directions;
+  hoverStyle: 'default' | 'transparent';
+}>`
   margin: auto;
   flex-direction: ${({ direction }) => (direction ? 'row-reverse' : 'row')};
   position: absolute;
@@ -82,18 +77,8 @@ const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
   right: ${({ direction }) => (direction ? '16px' : 'unset')};
   left: ${({ direction }) => (direction ? 'unset' : '16px')};
 
-  &:hover ${StyledHoverText} ${ActionText} {
-    color: ${colors.black['800']};
-  }
-
   &:hover ${StyledArrow} path {
     stroke: ${colors.black['800']};
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    &:hover ${StyledHoverText} {
-      opacity: 1;
-    }
   }
 
   @media only screen and ${breakpoints.tablet} {
@@ -101,7 +86,7 @@ const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
     top: unset;
     right: ${({ direction }) => (direction ? '0' : 'unset')};
     left: ${({ direction }) => (direction ? 'unset' : '0')};
-    padding: 24px;
+    padding: 4px;
     margin: 0;
   }
 `;

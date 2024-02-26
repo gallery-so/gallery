@@ -217,7 +217,11 @@ function NftDetailPage({
       </Head>
       <GalleryViewEmitter queryRef={query} />
       {!isMobile && prevNft && (
-        <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />
+        <NavigationHandle
+          direction={Directions.LEFT}
+          onClick={handlePrevPress}
+          hoverStyle={isLightboxOpen ? 'transparent' : 'default'}
+        />
       )}
       {mountedNfts.map(({ token, visibility }) => (
         <_DirectionalFade
@@ -236,7 +240,11 @@ function NftDetailPage({
         </_DirectionalFade>
       ))}
       {!isMobile && nextNft && (
-        <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />
+        <NavigationHandle
+          direction={Directions.RIGHT}
+          onClick={handleNextPress}
+          hoverStyle={isLightboxOpen ? 'transparent' : 'default'}
+        />
       )}
     </>
   );
