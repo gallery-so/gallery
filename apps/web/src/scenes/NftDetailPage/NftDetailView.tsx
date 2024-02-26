@@ -20,6 +20,8 @@ type Props = {
   queryRef: NftDetailViewQueryFragment$key;
   collectionTokenRef: NftDetailViewFragment$key;
   visibility?: string;
+  toggleLightbox: () => void;
+  isLightboxOpen: boolean;
 };
 
 type LoadableNftDetailViewProps = {
@@ -56,6 +58,8 @@ export default function NftDetailView({
   queryRef,
   collectionTokenRef,
   visibility = 'visible',
+  toggleLightbox,
+  isLightboxOpen,
 }: Props) {
   const collectionNft = useFragment(
     graphql`
@@ -104,6 +108,8 @@ export default function NftDetailView({
                   tokenRef={collectionNft}
                   hasExtraPaddingForNote={showCollectorsNoteComponent}
                   visibility={visibility}
+                  toggleLightbox={toggleLightbox}
+                  isLightboxOpen={isLightboxOpen}
                 />
               </ErrorBoundary>
             </Container>
@@ -124,6 +130,7 @@ export default function NftDetailView({
           queryRef={query}
           tokenRef={token}
           authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          toggleLightbox={toggleLightbox}
         />
         {isMobileOrMobileLarge && showCollectorsNoteComponent && (
           <NftDetailNote
@@ -169,12 +176,12 @@ const Container = styled.div`
   min-width: 0;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0 16px;
-  margin-top: 24px;
+  margin-top: 36px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 0;
@@ -188,6 +195,7 @@ const StyledAssetAndNoteContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const NotePositionWrapper = styled.div`

@@ -37,8 +37,8 @@ export default function BookmarkIcon({
       viewBox="-0.5 0 27 24"
       fill={
         isActive
-          ? COLOR_SCHEME[colorScheme].activeFillColor
-          : COLOR_SCHEME[colorScheme].inactiveFillColor
+          ? COLOR_SCHEME[colorScheme]?.activeFillColor
+          : COLOR_SCHEME[colorScheme]?.inactiveFillColor
       }
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -46,8 +46,8 @@ export default function BookmarkIcon({
         d="M19.3125 20L12.8125 14L6.3125 20V4H19.3125V20Z"
         stroke={
           isActive
-            ? COLOR_SCHEME[colorScheme].activeStrokeColor
-            : COLOR_SCHEME[colorScheme].inactiveStrokeColor
+            ? COLOR_SCHEME[colorScheme]?.activeStrokeColor
+            : COLOR_SCHEME[colorScheme]?.inactiveStrokeColor
         }
       />
     </svg>
