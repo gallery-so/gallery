@@ -107,7 +107,9 @@ export type LoginStackNavigatorParamList = {
   EnterEmail: undefined;
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
-  NotificationUpsell: undefined;
+  NotificationUpsell: {
+    isNewUser: boolean;
+  };
 
   OnboardingVideo: undefined;
   OnboardingEmail: {

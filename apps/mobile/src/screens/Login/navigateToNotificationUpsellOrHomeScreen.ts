@@ -35,7 +35,7 @@ export async function navigateToNotificationUpsellOrHomeScreen(
   } else {
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Login', params: { screen: 'NotificationUpsell' } }],
+      routes: [{ name: 'Login', params: { screen: 'NotificationUpsell', params: { isNewUser } } }],
     });
   }
 }
