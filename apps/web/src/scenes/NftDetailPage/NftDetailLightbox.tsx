@@ -55,8 +55,6 @@ export default function NftDetailLightbox({ toggleLightbox, isLightboxOpen, toke
     }
   }, [isLightboxOpen]);
 
-  console.log({ showBackground });
-
   return (
     <>
       {isLightboxOpen && (

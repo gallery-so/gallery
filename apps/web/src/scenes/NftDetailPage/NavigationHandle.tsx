@@ -37,8 +37,6 @@ function NavigationHandle({ direction, onClick, hoverStyle = 'default' }: Props)
     [isMobileOrMobileLarge, direction]
   );
 
-  console.log(hoverStyle);
-
   return (
     <StyledNavigationHandle direction={direction}>
       <StyledTextWrapper
