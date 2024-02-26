@@ -352,6 +352,8 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
+    ${({ backgroundColorOverride }) =>
+      backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
   }
 
   &:hover {
