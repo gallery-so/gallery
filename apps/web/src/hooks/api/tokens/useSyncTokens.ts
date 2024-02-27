@@ -13,7 +13,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type syncTokensProps = {
-  chain: Chain;
+  chain: Chain | Chain[];
   type: 'Collected' | 'Created';
   silent?: boolean;
 };
@@ -24,8 +24,8 @@ export default function useSyncTokens() {
 
   const [syncCollectedTokens] = usePromisifiedMutation<useSyncTokensCollectedMutation>(
     graphql`
-      mutation useSyncTokensCollectedMutation($chain: Chain!) {
-        syncTokens(chains: [$chain]) {
+      mutation useSyncTokensCollectedMutation($chains: [Chain!]) {
+        syncTokens(chains: $chains) {
           __typename
           ... on SyncTokensPayload {
             viewer {
@@ -57,8 +57,8 @@ export default function useSyncTokens() {
 
   const [syncCreatedTokens] = usePromisifiedMutation<useSyncTokensCreatedMutation>(
     graphql`
-      mutation useSyncTokensCreatedMutation($chain: Chain!) {
-        syncCreatedTokensForNewContracts(input: { includeChains: [$chain] }) {
+      mutation useSyncTokensCreatedMutation($chains: [Chain!]) {
+        syncCreatedTokensForNewContracts(input: { includeChains: $chains }) {
           __typename
           ... on SyncCreatedTokensForNewContractsPayload {
             viewer {
@@ -118,7 +118,7 @@ export default function useSyncTokens() {
         if (type === 'Collected') {
           const response = await syncCollectedTokens({
             variables: {
-              chain,
+              chains: Array.isArray(chain) ? chain : [chain],
             },
           });
 
@@ -136,7 +136,7 @@ export default function useSyncTokens() {
         } else {
           const response = await syncCreatedTokens({
             variables: {
-              chain,
+              chains: Array.isArray(chain) ? chain : [chain],
             },
           });
 
