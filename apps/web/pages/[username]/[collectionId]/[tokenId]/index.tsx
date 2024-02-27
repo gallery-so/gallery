@@ -43,6 +43,20 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
+  // Check if the url params match the legacy url format for Artblocks and Prohibition collection pages and if so redirect to the new collection page url.
+  // We updated the Artblocks and Prohibition collection page urls in Feb 2024 to add "/community/".
+  // Previously they were formatted like "/artblocks/0x123/123" which fits the nft detail page url pattern
+  if ((username === 'artblocks' || username === 'prohibition') && collectionId.startsWith('0x')) {
+    return (
+      <GalleryRedirect
+        to={{
+          pathname: `/community/${username}/[contractAddress]/[projectId]`,
+          query: { contractAddress: collectionId, projectId: tokenId },
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <GalleryLink to={collectionRoute}>
