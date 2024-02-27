@@ -82,7 +82,7 @@ export default function WelcomeAnimation() {
     setShouldFadeOut(true);
     setTimeout(() => {
       push({
-        pathname: '/onboarding/add-user-info',
+        pathname: '/onboarding/add-email',
         query: {
           ...query,
         },
