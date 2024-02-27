@@ -1,4 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
+import { useLoginWithEmail, usePrivy } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -59,6 +60,35 @@ export function LandingScreen() {
   const toggleOption = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
+
+  const { getAccessToken } = usePrivy();
+  useEffect(() => {
+    console.log('hey!');
+    async function getToken() {
+      const accessToken = await getAccessToken();
+      console.log({ accessToken });
+    }
+    getToken();
+  }, [getAccessToken]);
+
+  const { sendCode, loginWithCode } = useLoginWithEmail({
+    onLoginSuccess(user) {
+      console.log('login success:', user);
+    },
+    onError(error) {
+      console.log('login error', error);
+    },
+  });
+
+  const handleSendEmail = useCallback(async () => {
+    const result = await sendCode({ email: 'rk@gallery.so' });
+    console.log({ result });
+  }, [sendCode]);
+
+  const handleLoginWithCode = useCallback(async () => {
+    const result = await loginWithCode({ code: '175469' });
+    console.log({ result });
+  }, [loginWithCode]);
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
@@ -123,6 +153,22 @@ export function LandingScreen() {
 
         <View className="flex flex-col space-y-4 w-8/12">
           <View className="w-[200px] space-y-2 self-center">
+            <Button
+              onPress={handleSendEmail}
+              text="send email"
+              variant="secondary"
+              eventElementId="Secondary Login Options Ellipses"
+              eventName="Display Secondary Login Options"
+              eventContext={contexts.Authentication}
+            />
+            <Button
+              onPress={handleLoginWithCode}
+              text="login with code"
+              variant="secondary"
+              eventElementId="Secondary Login Options Ellipses"
+              eventName="Display Secondary Login Options"
+              eventContext={contexts.Authentication}
+            />
             <Button
               onPress={toggleOption}
               variant="primary"

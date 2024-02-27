@@ -61,6 +61,13 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
+
+  useEffect(() => {
+    tokens.forEach((token) => {
+      console.log('dbid', token.definition.contract.dbid);
+    });
+  }, [tokens]);
+
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
