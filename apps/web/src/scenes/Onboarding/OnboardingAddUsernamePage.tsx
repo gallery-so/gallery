@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import useCreateUser from 'shared/hooks/useCreateUser';
+import useUpdateEmail from 'shared/hooks/useUpdateEmail';
 import { useIsUsernameAvailableFetcher } from 'shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import styled from 'styled-components';
 
@@ -34,6 +35,7 @@ export function OnboardingAddUsernamePage() {
   const { setProfileImage } = useUpdateProfileImage();
   const { isLocked, syncTokens } = useSyncTokens();
   const { push } = useRouter();
+  const updateEmail = useUpdateEmail();
 
   const handleUsernameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -77,6 +79,12 @@ export function OnboardingAddUsernamePage() {
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
         const user = response.createUser.viewer?.user;
+
+        if (authPayloadQuery.authMechanismType === 'eoa' && authPayloadQuery.email) {
+          // Attach the email to the user
+          updateEmail(authPayloadQuery.email);
+        }
+
         const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
         // If the user has an ENS address, set the profile image to the ENS address
@@ -115,6 +123,7 @@ export function OnboardingAddUsernamePage() {
     setProfileImage,
     syncTokens,
     trackCreateUserSuccess,
+    updateEmail,
     username,
   ]);
 

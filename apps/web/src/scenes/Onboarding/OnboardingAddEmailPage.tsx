@@ -144,7 +144,7 @@ function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInput
 
     onSubmit();
     setIsCheckingEmail(false);
-  }, [isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
+  }, [emailAddress, isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
 
   const handleEmailChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -7,6 +7,7 @@ type EoaPayloadVariables = {
   nonce: string;
   signature: string;
   userFriendlyWalletName: string;
+  email: string;
 };
 
 type GnosisPayloadVariables = {
@@ -14,6 +15,7 @@ type GnosisPayloadVariables = {
   address: string;
   nonce: string;
   userFriendlyWalletName: string;
+  email?: string;
 };
 
 export type AuthPayloadVariables = EoaPayloadVariables | GnosisPayloadVariables;
@@ -37,7 +39,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   }
 
   if (query.authMechanismType === 'eoa') {
-    if (typeof query.signature !== 'string') {
+    if (typeof query.signature !== 'string' || typeof query.email !== 'string') {
       return null;
     }
 
@@ -48,6 +50,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
       nonce: query.nonce,
       signature: query.signature,
       userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
+      email: query.email,
     };
   }
 
