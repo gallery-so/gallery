@@ -2,6 +2,7 @@ import React, { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import { NewTooltip } from '../Tooltip/NewTooltip';
@@ -118,6 +119,7 @@ function IconContainer(
 ) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({ placement: tooltipPlacement });
+  const isMobile = useIsMobileWindowWidth();
   return (
     <div ref={ref}>
       <StyledIcon
@@ -148,7 +150,7 @@ function IconContainer(
           {icon}
         </HStack>
       </StyledIcon>
-      {tooltipLabel && (
+      {tooltipLabel && !isMobile && (
         <NewTooltip
           {...getFloatingProps()}
           style={floatingStyle}
