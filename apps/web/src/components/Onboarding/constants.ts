@@ -17,7 +17,7 @@ export const ONBOARDING_NEXT_BUTTON_TEXT_MAP: { [key in StepName]: string | null
   'add-user-info': 'Next',
   'add-email': null,
   'add-username': 'Next',
-  'add-profile-picture': 'Finish',
+  'add-profile-picture': 'Skip',
   'add-persona': 'Skip',
   'recommend-users': 'Skip',
 };

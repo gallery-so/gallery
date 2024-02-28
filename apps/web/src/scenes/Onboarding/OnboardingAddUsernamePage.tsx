@@ -85,6 +85,12 @@ export function OnboardingAddUsernamePage() {
           updateEmail(authPayloadQuery.email);
         }
 
+        if (!isLocked) {
+          // Start the sync tokens mutation so the user
+          // sees their NFTs loaded ASAP.
+          syncTokens({ type: 'Collected', chain: ['Ethereum', 'Zora', 'Base'], silent: true });
+        }
+
         const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
         // If the user has an ENS address, set the profile image to the ENS address
@@ -98,15 +104,10 @@ export function OnboardingAddUsernamePage() {
               chain,
             },
           });
+          push({ pathname: '/onboarding/add-user-info' });
+        } else {
+          push({ pathname: '/onboarding/add-profile-picture' });
         }
-
-        if (!isLocked) {
-          // Start the sync tokens mutation so the user
-          // sees their NFTs loaded ASAP.
-          syncTokens({ type: 'Collected', chain: ['Ethereum', 'Zora', 'Base'], silent: true });
-        }
-
-        push({ pathname: '/onboarding/add-user-info' });
 
         // if wallet user
         // If email user
