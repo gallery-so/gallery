@@ -2,8 +2,6 @@ import { useRouter } from 'next/router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
-import { useTrack } from 'shared/contexts/AnalyticsContext';
-import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
@@ -16,115 +14,28 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { OnboardingAddEmailPageQuery } from '~/generated/OnboardingAddEmailPageQuery.graphql';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
-const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
-
-export function InnerOnboardingAddEmailPage() {
+export function OnboardingAddEmailPage() {
   const [email, setEmail] = useState('');
 
-  const [finalizedEmail, setFinalizedEmail] = useState('');
-  const query = useLazyLoadQuery<OnboardingAddEmailPageQuery>(
-    graphql`
-      query OnboardingAddEmailPageQuery($emailAddress: Email!) {
-        isEmailAddressAvailable(emailAddress: $emailAddress)
-      }
-    `,
-    {
-      emailAddress: finalizedEmail,
-    }
-  );
   const { push, query: queryRouter } = useRouter();
-  const { pushToast } = useToastActions();
   const { query: routerQuery } = useRouter();
   const authMechanismType = routerQuery.authMechanismType;
-
-  const [error, setError] = useState('');
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const reportError = useReportError();
-  const track = useTrack();
 
   const isInvalidEmail = useMemo(() => {
     return !EMAIL_FORMAT.test(email);
   }, [email]);
 
-  const handleEmailChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setError('');
-    setEmail(event.target.value);
-  }, []);
-
   const handleContinue = useCallback(async () => {
-    function handleLoginError({
-      message,
-      underlyingError,
-    }: {
-      message: string;
-      underlyingError?: Error;
-    }) {
-      track('Sign In Failure', { 'Sign in method': 'Email', error: message });
-
-      if (underlyingError) {
-        reportError(underlyingError);
-      } else {
-        reportError(`LoginError: ${message}`);
-      }
-
-      setError(message);
-
-      pushToast({
-        message,
-      });
-    }
-
-    if (isInvalidEmail) {
-      pushToast({
-        message: "That doesn't look like a valid email address. Please double-check and try again",
-      });
-      setIsLoggingIn(false);
-      return;
-    }
-
-    setFinalizedEmail(email);
-
-    let isEmailAddressAvailable = false;
-
-    isEmailAddressAvailable = query.isEmailAddressAvailable ?? false;
-
-    // If it's a wallet auth mechanism, we need to check if the email is available
     if (authMechanismType === 'eoa') {
-      try {
-        if (!isEmailAddressAvailable) {
-          setError('This email address is already in use');
-          setIsLoggingIn(false);
-          return;
-        }
-      } catch (error) {
-        handleLoginError({ message: FALLBACK_ERROR_MESSAGE, underlyingError: error as Error });
-        return;
-      }
+      push({
+        pathname: '/onboarding/add-username',
+        query: {
+          ...queryRouter,
+          email,
+        },
+      });
     }
-
-    try {
-      if (authMechanismType === 'eoa') {
-        push({
-          pathname: '/onboarding/add-username',
-          query: {
-            ...queryRouter,
-            email: finalizedEmail,
-          },
-        });
-      }
-    } catch (error) {}
-  }, [
-    authMechanismType,
-    email,
-    finalizedEmail,
-    isInvalidEmail,
-    query.isEmailAddressAvailable,
-    push,
-    pushToast,
-    queryRouter,
-    reportError,
-    track,
-  ]);
+  }, [authMechanismType, email, push, queryRouter]);
 
   return (
     <VStack>
@@ -133,31 +44,36 @@ export function InnerOnboardingAddEmailPage() {
           <TitleDiatypeM>Add email</TitleDiatypeM>
 
           <HStack gap={16} align="center">
-            <StyledInput onChange={handleEmailChange} placeholder="Email address" autoFocus />
-
-            <Button
-              eventElementId="Save Email Button"
-              eventName="Save Email"
-              eventContext={contexts.Onboarding}
-              variant="primary"
-              disabled={isLoggingIn}
-              onClick={handleContinue}
+            <Suspense
+              fallback={
+                <>
+                  <StyledInput value={email} disabled />
+                  <Button
+                    eventElementId="Save Email Button"
+                    eventName="Save Email"
+                    eventContext={contexts.Onboarding}
+                    variant="primary"
+                    disabled
+                  >
+                    Submit
+                  </Button>
+                </>
+              }
             >
-              Submit
-            </Button>
+              <SubmitEmailButton
+                emailAddress={email}
+                onSubmit={handleContinue}
+                onEmailChange={setEmail}
+              />
+            </Suspense>
           </HStack>
 
-          <StyledText color={colors.shadow} shouldShow={!isInvalidEmail && !error}>
+          <StyledText color={colors.shadow} shouldShow={!isInvalidEmail}>
             You will receive an email with a link to verify your account
           </StyledText>
         </Container>
       </FullPageCenteredStep>
-      <OnboardingFooter
-        step={'add-email'}
-        onNext={() => {}}
-        isNextEnabled
-        previousTextOverride="Back"
-      />
+      <OnboardingFooter step={'add-email'} isNextEnabled previousTextOverride="Back" />
     </VStack>
   );
 }
@@ -178,10 +94,78 @@ const StyledText = styled(BaseM)<{ shouldShow?: boolean }>`
   opacity: ${({ shouldShow }) => (shouldShow ? 1 : 0)};
 `;
 
-export function OnboardingAddEmailPage() {
+type EmailInputProps = {
+  emailAddress: string;
+  onEmailChange: (email: string) => void;
+  onSubmit: () => void;
+};
+
+function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInputProps) {
+  const [finalizedEmail, setFinalizedEmail] = useState('');
+
+  const query = useLazyLoadQuery<OnboardingAddEmailPageQuery>(
+    graphql`
+      query OnboardingAddEmailPageQuery($emailAddress: Email!) {
+        isEmailAddressAvailable(emailAddress: $emailAddress)
+      }
+    `,
+    {
+      emailAddress: finalizedEmail,
+    }
+  );
+
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const { pushToast } = useToastActions();
+
+  const isInvalidEmail = useMemo(() => {
+    return !EMAIL_FORMAT.test(emailAddress);
+  }, [emailAddress]);
+
+  const handleSubmit = useCallback(() => {
+    setIsCheckingEmail(true);
+    setFinalizedEmail(emailAddress);
+    if (isInvalidEmail) {
+      pushToast({
+        message: "That doesn't look like a valid email address. Please double-check and try again",
+      });
+      setIsCheckingEmail(false);
+      return;
+    }
+
+    const isEmailAddressAvailable = query.isEmailAddressAvailable ?? false;
+
+    if (!isEmailAddressAvailable) {
+      pushToast({
+        message: 'This email address is already in use',
+      });
+      setIsCheckingEmail(false);
+      return;
+    }
+
+    onSubmit();
+    setIsCheckingEmail(false);
+  }, [isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
+
+  const handleEmailChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onEmailChange(event.target.value);
+    },
+    [onEmailChange]
+  );
+
   return (
-    <Suspense fallback={null}>
-      <InnerOnboardingAddEmailPage />
-    </Suspense>
+    <>
+      <StyledInput onChange={handleEmailChange} placeholder="Email address" autoFocus />
+      <Button
+        eventElementId="Save Email Button"
+        eventName="Save Email"
+        eventContext={contexts.Onboarding}
+        variant="primary"
+        disabled={isCheckingEmail}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
+    </>
   );
 }
