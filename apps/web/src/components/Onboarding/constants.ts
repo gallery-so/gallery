@@ -7,6 +7,7 @@ export const STEPS = [
   'add-username',
   'add-profile-picture',
   'add-persona',
+  'recommend-users',
 ] as const;
 
 export type StepName = (typeof STEPS)[number];
@@ -18,6 +19,7 @@ export const ONBOARDING_NEXT_BUTTON_TEXT_MAP: { [key in StepName]: string | null
   'add-username': 'Next',
   'add-profile-picture': 'Finish',
   'add-persona': 'Skip',
+  'recommend-users': 'Skip',
 };
 
 export function getStepIndex(step: StepName) {

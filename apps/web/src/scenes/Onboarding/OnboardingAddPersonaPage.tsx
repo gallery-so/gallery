@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
@@ -26,6 +27,8 @@ export function OnboardingAddPersonaPage() {
     }
   `);
 
+  const { push } = useRouter();
+
   const handlePersonaClick = useCallback(
     (persona: Persona) => {
       setPersona({
@@ -33,17 +36,20 @@ export function OnboardingAddPersonaPage() {
           input: persona,
         },
       });
+
+      push('/onboarding/recommend-users');
     },
-    [setPersona]
+    [push, setPersona]
   );
 
   const handleSkip = useCallback(() => {
     handlePersonaClick('None');
-  }, [handlePersonaClick]);
+    push('/onboarding/recommend-users');
+  }, [handlePersonaClick, push]);
 
   return (
     <VStack>
-      <FullPageCenteredStep from={90} to={100}>
+      <FullPageCenteredStep from={80} to={90}>
         <Container gap={16}>
           <TitleDiatypeM>What best describes you?</TitleDiatypeM>
           {PERSONAS.map((persona) => (

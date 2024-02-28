@@ -17,14 +17,42 @@ import colors from '~/shared/theme/colors';
 import breakpoints from '../core/breakpoints';
 import { GalleryChip } from '../core/Chip/Chip';
 
+type FollowButtonVariant = 'primary' | 'secondary';
+
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
   source?: string; // where the FollowButton is being used, for analytics
+  variant?: FollowButtonVariant;
 };
 
-export default function FollowButton({ queryRef, userRef, className, source }: Props) {
+const colorMap = {
+  follow: {
+    primary: {
+      background: colors.black['800'],
+      border: 'transparent',
+      padding: '0',
+    },
+    secondary: {
+      background: colors.white,
+      border: colors.faint,
+      padding: '8px 16px',
+    },
+  },
+  following: {
+    primary: colors.black['800'],
+    secondary: colors.black['800'],
+  },
+};
+
+export default function FollowButton({
+  queryRef,
+  userRef,
+  className,
+  source,
+  variant = 'primary',
+}: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -186,6 +214,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
           properties={{ isFollowBack: followsYou }}
           onClick={handleFollowClick}
           className={className}
+          variant={variant}
         >
           {followsYou ? 'Follow back' : 'Follow'}
         </FollowChip>
@@ -199,6 +228,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     handleFollowClick,
     followsYou,
     hasClickedFollowAndIsHovering,
+    variant,
   ]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
@@ -257,9 +287,16 @@ const FollowingChipContainer = styled.div`
   }
 `;
 
-const FollowChip = styled(GalleryChip)`
-  background-color: ${colors.black['800']};
-  color: ${colors.offWhite};
+const FollowChip = styled(GalleryChip)<{ variant: FollowButtonVariant }>`
+  color: ${colors.black['800']};
+  ${({ variant }) => {
+    const { background, border, padding } = colorMap.follow[variant as FollowButtonVariant];
+    return `
+      background-color: ${background};
+      border: 1px solid ${border};
+      padding: ${padding};
+    `;
+  }}
 `;
 
 const UnfollowChip = styled(GalleryChip)`
