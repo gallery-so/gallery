@@ -117,7 +117,7 @@ function PfpBottomSheet(
   }, [ensAddress, reportError, setEnsProfileImage]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
-    navigation.navigate('ProfilePicturePicker', {
+    navigation.navigate('NftSelector', {
       page: 'ProfilePicture',
     });
   }, [navigation]);

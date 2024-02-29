@@ -16,15 +16,16 @@ import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgres
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
+import { NftSelectorPickerScreenExperienceQuery } from '~/generated/NftSelectorPickerScreenExperienceQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LoginStackNavigatorProp, MainTabStackNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
 import { chains } from '~/shared/utils/chains';
 
-import { CreatorSupportAnnouncementBottomSheet } from './CreatorSupportAnnouncementBottomSheet';
+import CreatorSupportAnnouncementBottomSheetModal from './CreatorSupportAnnouncementBottomSheetModal';
 import {
   NetworkChoice,
   NftSelectorFilterBottomSheet,
@@ -56,24 +57,13 @@ const screenHeaderText = {
 };
 
 function InnerNftSelectorPickerScreen() {
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
-
-  const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
-    graphql`
-      query NftSelectorPickerScreenQuery {
-        ...useExperienceFragment
-        ...NftSelectorPickerGridFragment
-      }
-    `,
-    {}
-  );
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelector'>>();
 
   const currentScreen = route.params.page;
   const isFullscreen = route.params.fullScreen;
 
   const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const announcementBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleSettingsPress = useCallback(() => {
     filterBottomSheetRef.current?.present();
@@ -107,18 +97,6 @@ function InnerNftSelectorPickerScreen() {
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
   }, []);
-
-  const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = useExperience({
-    type: 'CreatorBetaMicroAnnouncementModal',
-    queryRef: query,
-  });
-
-  useEffect(() => {
-    if (ownershipTypeFilter === 'Created' && !creatorBetaAnnouncementSeen) {
-      announcementBottomSheetRef.current?.present();
-      setCreatorBetaAnnouncementSeen({ experienced: true });
-    }
-  }, [creatorBetaAnnouncementSeen, ownershipTypeFilter, setCreatorBetaAnnouncementSeen]);
 
   const decoratedNetworks = useMemo(() => {
     return NETWORKS.map((network) => {
@@ -243,7 +221,6 @@ function InnerNftSelectorPickerScreen() {
                     networkFilter: networkFilter,
                     sortView,
                   }}
-                  queryRef={query}
                   screen={currentScreen}
                   onRefresh={handleRefresh}
                 />
@@ -251,10 +228,52 @@ function InnerNftSelectorPickerScreen() {
             </View>
           </View>
         </View>
+        <Suspense>
+          <CreatorBottomSheetWrapper isViewingCreatedFilter={ownershipTypeFilter === 'Created'} />
+        </Suspense>
       </View>
-      <CreatorSupportAnnouncementBottomSheet ref={announcementBottomSheetRef} />
     </>
   );
+}
+
+function CreatorBottomSheetWrapper({
+  isViewingCreatedFilter,
+}: {
+  isViewingCreatedFilter: boolean;
+}) {
+  const experienceQuery = useLazyLoadQuery<NftSelectorPickerScreenExperienceQuery>(
+    graphql`
+      query NftSelectorPickerScreenExperienceQuery {
+        ...useExperienceFragment
+      }
+    `,
+    {}
+  );
+
+  const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = useExperience({
+    type: 'CreatorBetaMicroAnnouncementModal',
+    queryRef: experienceQuery,
+  });
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
+  useEffect(() => {
+    if (isViewingCreatedFilter && !creatorBetaAnnouncementSeen) {
+      showBottomSheetModal({
+        content: <CreatorSupportAnnouncementBottomSheetModal onClose={hideBottomSheetModal} />,
+      });
+      setCreatorBetaAnnouncementSeen({ experienced: true });
+    }
+  }, [
+    creatorBetaAnnouncementSeen,
+    hideBottomSheetModal,
+    isViewingCreatedFilter,
+    setCreatorBetaAnnouncementSeen,
+    showBottomSheetModal,
+  ]);
+
+  useEffect(() => {}, [hideBottomSheetModal, showBottomSheetModal]);
+
+  return <></>;
 }
 
 export function NftSelectorPickerScreen() {

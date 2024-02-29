@@ -46,7 +46,7 @@ export function SettingsScreen() {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
-  const { showBottomSheetModal } = useBottomSheetModalActions();
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleBugReportPress = useCallback(() => {
     showBottomSheetModal({ content: <FeedbackBottomSheetModal /> });

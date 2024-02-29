@@ -24,14 +24,14 @@ export function NftSelectorPickerScreenFallback() {
 
         <GallerySkeleton>
           <SkeletonPlaceholder.Item gap={32}>
-            <SkeletonPlaceholder.Item alignItems="center" justifyContent="center" height={32}>
+            {/* <SkeletonPlaceholder.Item alignItems="center" justifyContent="center" height={32}>
               <SkeletonPlaceholder.Item width={140} height={16} paddingTop={8} />
-            </SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item gap={16}>
-              <SkeletonPlaceholder.Item width="100%" height={36} borderRadius={80} />
+            </SkeletonPlaceholder.Item> */}
+            <SkeletonPlaceholder.Item gap={16} paddingTop={64}>
+              <SkeletonPlaceholder.Item width="100%" height={36} borderRadius={2} />
 
               <SkeletonPlaceholder.Item flexDirection="row" justifyContent="space-between">
-                <SkeletonPlaceholder.Item width={128} height={24} borderRadius={80} />
+                <SkeletonPlaceholder.Item width={128} height={24} borderRadius={2} />
 
                 <SkeletonPlaceholder.Item flexDirection="row" gap={4}>
                   <SkeletonPlaceholder.Item width={24} height={24} borderRadius={80} />
