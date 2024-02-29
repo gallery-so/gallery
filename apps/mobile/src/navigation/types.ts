@@ -48,7 +48,7 @@ export type MainTabStackNavigatorParamList = {
     projectId?: string;
   };
 
-  ProfilePicturePicker: {
+  NftSelector: {
     fullScreen?: boolean;
     page: ScreenWithNftSelector;
   };

@@ -241,7 +241,7 @@ function LazyPostIcon(props: TabItemProps) {
   const handlePressOverride = useCallback(() => {
     if (userHasWallet) {
       props.navigation.navigate('PostNftSelector', {
-        screen: 'Post',
+        page: 'Post',
         fullScreen: true,
       });
       return;
@@ -251,7 +251,7 @@ function LazyPostIcon(props: TabItemProps) {
       title: 'You need to connect a wallet to post',
       onSuccess: () => {
         props.navigation.navigate('PostNftSelector', {
-          screen: 'Post',
+          page: 'Post',
           fullScreen: true,
         });
       },
