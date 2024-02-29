@@ -16,7 +16,6 @@ import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPrev
 import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
 import { NftSelectorPickerGridQuery } from '~/generated/NftSelectorPickerGridQuery.graphql';
 import { NftSelectorPickerGridSinglePreviewFragment$key } from '~/generated/NftSelectorPickerGridSinglePreviewFragment.graphql';
@@ -85,28 +84,6 @@ export function NftSelectorPickerGrid({
     `,
     {}
   );
-
-  // const query = useFragment(
-  //   graphql`
-  //     fragment NftSelectorPickerGridFragment on Query {
-  //       viewer {
-  //         ... on Viewer {
-  //           user {
-  //             tokens {
-  //               creationTime
-  //               ...NftSelectorPickerGridTokensFragment
-  //             }
-  //             primaryWallet {
-  //               __typename
-  //             }
-  //           }
-  //         }
-  //       }
-  //       ...doesUserOwnWalletFromChainFamilyFragment
-  //     }
-  //   `,
-  //   queryRef
-  // );
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
     searchCriteria.networkFilter,

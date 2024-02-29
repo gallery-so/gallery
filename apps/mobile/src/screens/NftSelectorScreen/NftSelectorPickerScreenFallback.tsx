@@ -24,9 +24,6 @@ export function NftSelectorPickerScreenFallback() {
 
         <GallerySkeleton>
           <SkeletonPlaceholder.Item gap={32}>
-            {/* <SkeletonPlaceholder.Item alignItems="center" justifyContent="center" height={32}>
-              <SkeletonPlaceholder.Item width={140} height={16} paddingTop={8} />
-            </SkeletonPlaceholder.Item> */}
             <SkeletonPlaceholder.Item gap={16} paddingTop={64}>
               <SkeletonPlaceholder.Item width="100%" height={36} borderRadius={2} />
 
