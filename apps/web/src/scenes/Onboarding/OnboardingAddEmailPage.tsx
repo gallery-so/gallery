@@ -14,6 +14,8 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { OnboardingAddEmailPageQuery } from '~/generated/OnboardingAddEmailPageQuery.graphql';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
+const onboardingStepName = 'add-email';
+
 export function OnboardingAddEmailPage() {
   const [email, setEmail] = useState('');
 
@@ -39,7 +41,7 @@ export function OnboardingAddEmailPage() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={0} to={10}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <Container gap={16}>
           <TitleDiatypeM>Add email</TitleDiatypeM>
 
@@ -73,7 +75,7 @@ export function OnboardingAddEmailPage() {
           </StyledText>
         </Container>
       </FullPageCenteredStep>
-      <OnboardingFooter step={'add-email'} isNextEnabled previousTextOverride="Back" />
+      <OnboardingFooter step={onboardingStepName} isNextEnabled previousTextOverride="Back" />
     </VStack>
   );
 }

@@ -14,6 +14,8 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { OnboardingAddBioPageQuery } from '~/generated/OnboardingAddBioPageQuery.graphql';
 import unescape from '~/shared/utils/unescape';
 
+const onboardingStepName = 'add-user-info';
+
 export function OnboardingAddBioPage() {
   const query = useLazyLoadQuery<OnboardingAddBioPageQuery>(
     graphql`
@@ -76,7 +78,7 @@ export function OnboardingAddBioPage() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={40} to={80}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <Container gap={16}>
           <TitleDiatypeM>Complete your profile</TitleDiatypeM>
 
@@ -101,7 +103,7 @@ export function OnboardingAddBioPage() {
           </VStack>
         </Container>
       </FullPageCenteredStep>
-      <OnboardingFooter step={'add-username'} onNext={handleContinue} isNextEnabled />
+      <OnboardingFooter step={onboardingStepName} onNext={handleContinue} isNextEnabled />
     </VStack>
   );
 }

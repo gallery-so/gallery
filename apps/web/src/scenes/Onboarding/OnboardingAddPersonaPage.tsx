@@ -15,7 +15,7 @@ import {
 } from '~/generated/OnboardingAddPersonaPageMutation.graphql';
 
 const PERSONAS = ['Collector', 'Creator', 'Both'] as Persona[];
-
+const onboardingStepName = 'add-persona';
 export function OnboardingAddPersonaPage() {
   const [setPersona] = usePromisifiedMutation<OnboardingAddPersonaPageMutation>(graphql`
     mutation OnboardingAddPersonaPageMutation($input: Persona!) @raw_response_type {
@@ -49,7 +49,7 @@ export function OnboardingAddPersonaPage() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={80} to={90}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <Container gap={16}>
           <TitleDiatypeM>What best describes you?</TitleDiatypeM>
           {PERSONAS.map((persona) => (
@@ -60,7 +60,7 @@ export function OnboardingAddPersonaPage() {
         </Container>
       </FullPageCenteredStep>
       <OnboardingFooter
-        step="add-persona"
+        step={onboardingStepName}
         onNext={handleSkip}
         isNextEnabled
         nextButtonVariant="secondary"

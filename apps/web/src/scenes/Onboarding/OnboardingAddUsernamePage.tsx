@@ -23,6 +23,8 @@ import {
   validate,
 } from '~/shared/utils/validators';
 
+const onboardingStepName = 'add-username';
+
 export function OnboardingAddUsernamePage() {
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
@@ -130,7 +132,7 @@ export function OnboardingAddUsernamePage() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={10} to={40}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <Container gap={16}>
           <TitleDiatypeM>Pick a username</TitleDiatypeM>
 
@@ -147,7 +149,7 @@ export function OnboardingAddUsernamePage() {
         </Container>
       </FullPageCenteredStep>
       <OnboardingFooter
-        step={'add-username'}
+        step={onboardingStepName}
         onNext={handleContinue}
         isNextEnabled={isNextEnabled}
       />

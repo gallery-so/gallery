@@ -16,6 +16,9 @@ import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { OnboardingRecommendUsersQuery } from '~/generated/OnboardingRecommendUsersQuery.graphql';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
+
+const onboardingStepName = 'recommend-users';
+
 export function OnboardingRecommendUsers() {
   const query = useLazyLoadQuery<OnboardingRecommendUsersQuery>(
     graphql`
@@ -115,7 +118,7 @@ export function OnboardingRecommendUsers() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={90} to={100}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <Container gap={16}>
           <VStack gap={4}>
             <StyledHeaderText>Recommended collectors</StyledHeaderText>
@@ -152,7 +155,7 @@ export function OnboardingRecommendUsers() {
         </Container>
       </FullPageCenteredStep>
       <OnboardingFooter
-        step="recommend-users"
+        step={onboardingStepName}
         onNext={redirectToProfile}
         isNextEnabled
         nextButtonVariant="secondary"

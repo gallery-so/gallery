@@ -8,6 +8,7 @@ import useUpdateProfileImage from '~/components/NftSelector/useUpdateProfileImag
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 
+const onboardingStepName = 'add-profile-picture';
 export function OnboardingAddProfilePicture() {
   const { setProfileImage } = useUpdateProfileImage();
   const { push } = useRouter();
@@ -26,7 +27,7 @@ export function OnboardingAddProfilePicture() {
 
   return (
     <VStack>
-      <FullPageCenteredStep from={10} to={40}>
+      <FullPageCenteredStep stepName={onboardingStepName}>
         <NftSelector
           onSelectToken={handleSelectToken}
           headerText={'Select profile picture'}
@@ -34,7 +35,7 @@ export function OnboardingAddProfilePicture() {
         />
       </FullPageCenteredStep>
       <OnboardingFooter
-        step="add-profile-picture"
+        step={onboardingStepName}
         onNext={redirectToNextStep}
         isNextEnabled
         nextButtonVariant="secondary"
