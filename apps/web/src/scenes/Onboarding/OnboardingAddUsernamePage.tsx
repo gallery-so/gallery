@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import useCreateUser from 'shared/hooks/useCreateUser';
+import useDebounce from 'shared/hooks/useDebounce';
 import useUpdateEmail from 'shared/hooks/useUpdateEmail';
 import useUpdateUser from 'shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from 'shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
@@ -40,6 +41,9 @@ export function OnboardingAddUsernamePage() {
               dbid
               username
               bio
+              profileImage {
+                __typename
+              }
             }
           }
         }
@@ -50,7 +54,9 @@ export function OnboardingAddUsernamePage() {
 
   const user = query?.viewer?.user;
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(user?.username || '');
+  const debouncedUsername = useDebounce(username, 500);
+
   const [usernameError, setUsernameError] = useState('');
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const createUser = useCreateUser();
@@ -92,16 +98,29 @@ export function OnboardingAddUsernamePage() {
     }
 
     try {
-      // If existing user, update username
-      if (user?.username) {
-        await updateUser(user.dbid, username, user.bio || '');
-        push({ pathname: '/onboarding/add-user-info' });
+      // it doesn't make sense to tell users their current username is taken!
+      if (user?.username && debouncedUsername === user.username) {
+        if (
+          user?.profileImage?.__typename === 'TokenProfileImage' ||
+          user?.profileImage?.__typename === 'EnsProfileImage'
+        ) {
+          push({ pathname: '/onboarding/add-user-info' });
+        } else {
+          push({ pathname: '/onboarding/add-profile-picture' });
+        }
         return;
       }
 
       const isUsernameAvailable = await isUsernameAvailableFetcher(username);
       if (!isUsernameAvailable) {
         setUsernameError('Username is already taken');
+        return;
+      }
+
+      // If existing user, update username
+      if (user?.username) {
+        await updateUser(user.dbid, username, user.bio || '');
+        push({ pathname: '/onboarding/add-user-info' });
         return;
       }
 
@@ -154,6 +173,7 @@ export function OnboardingAddUsernamePage() {
   }, [
     authPayloadQuery,
     createUser,
+    debouncedUsername,
     isLocked,
     isUsernameAvailableFetcher,
     push,

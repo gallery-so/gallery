@@ -25,6 +25,10 @@ export function OnboardingAddProfilePicture() {
     [redirectToNextStep, setProfileImage]
   );
 
+  const handlePrevious = useCallback(() => {
+    push('/onboarding/add-username');
+  }, [push]);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -40,6 +44,7 @@ export function OnboardingAddProfilePicture() {
         isNextEnabled
         nextButtonVariant="secondary"
         previousTextOverride="Back"
+        onPrevious={handlePrevious}
       />
     </VStack>
   );

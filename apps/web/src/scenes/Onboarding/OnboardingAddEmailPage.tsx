@@ -39,6 +39,10 @@ export function OnboardingAddEmailPage() {
     }
   }, [authMechanismType, email, push, queryRouter]);
 
+  const handlePrevious = useCallback(() => {
+    push('/');
+  }, [push]);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -75,7 +79,12 @@ export function OnboardingAddEmailPage() {
           </StyledText>
         </Container>
       </FullPageCenteredStep>
-      <OnboardingFooter step={onboardingStepName} isNextEnabled previousTextOverride="Back" />
+      <OnboardingFooter
+        step={onboardingStepName}
+        isNextEnabled
+        previousTextOverride="Back"
+        onPrevious={handlePrevious}
+      />
     </VStack>
   );
 }

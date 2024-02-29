@@ -116,6 +116,10 @@ export function OnboardingRecommendUsers() {
     redirectToProfile();
   }, [followAllRecommendedUsers, redirectToProfile]);
 
+  const handlePrevious = useCallback(() => {
+    push('/onboarding/add-persona');
+  }, [push]);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -160,6 +164,7 @@ export function OnboardingRecommendUsers() {
         isNextEnabled
         nextButtonVariant="secondary"
         previousTextOverride="Back"
+        onPrevious={handlePrevious}
       />
     </VStack>
   );

@@ -47,6 +47,10 @@ export function OnboardingAddPersonaPage() {
     push('/onboarding/recommend-users');
   }, [handlePersonaClick, push]);
 
+  const handlePrevious = useCallback(() => {
+    push('/onboarding/add-user-info');
+  }, [push]);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -65,6 +69,7 @@ export function OnboardingAddPersonaPage() {
         isNextEnabled
         nextButtonVariant="secondary"
         previousTextOverride="Back"
+        onPrevious={handlePrevious}
       />
     </VStack>
   );

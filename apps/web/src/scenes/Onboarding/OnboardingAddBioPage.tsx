@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleL } from '~/components/core/Text/Text';
 import { TextArea } from '~/components/core/TextArea/TextArea';
+import { useNftSelectorForProfilePicture } from '~/components/NftSelector/useNftSelector';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
@@ -40,6 +41,7 @@ export function OnboardingAddBioPage() {
     {}
   );
 
+  const showNftSelector = useNftSelectorForProfilePicture();
   const updateUser = useUpdateUser();
   const { push } = useRouter();
 
@@ -76,6 +78,12 @@ export function OnboardingAddBioPage() {
     }
   }, [bio, updateUser, push, user?.dbid, user?.username]);
 
+  const handleToUsernameStep = useCallback(() => {
+    push({
+      pathname: '/onboarding/add-username',
+    });
+  }, [push]);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -83,8 +91,14 @@ export function OnboardingAddBioPage() {
           <TitleDiatypeM>Complete your profile</TitleDiatypeM>
 
           <HStack gap={16} align="center">
-            {user && <ProfilePicture size="xl" isEditable userRef={user} />}
-            <TitleL color={colors.shadow}>{user?.username}</TitleL>
+            {user && (
+              <div onClick={showNftSelector}>
+                <ProfilePicture size="xl" isEditable hasInset userRef={user} clickDisabled />
+              </div>
+            )}
+            <StyledUsernameText onClick={handleToUsernameStep} color={colors.shadow}>
+              {user?.username}
+            </StyledUsernameText>
           </HStack>
 
           <VStack gap={8}>
@@ -118,4 +132,8 @@ const StyledTextAreaWrapper = styled.div<{ isFocused?: boolean }>`
   background-color: ${colors.faint};
   height: 117px;
   border: 1px solid ${({ isFocused }) => (isFocused ? colors.porcelain : 'transparent')};
+`;
+
+const StyledUsernameText = styled(TitleL)`
+  cursor: pointer;
 `;
