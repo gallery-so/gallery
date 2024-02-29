@@ -140,8 +140,8 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
   const [hasFollowedSomeone, setHasFollowedSomeone] = useState(false);
 
   return (
-    <View style={{ paddingTop: top }} className="bg-white">
-      <View className="flex flex-col flex-grow space-y-3 px-4 bg-white">
+    <View style={{ paddingTop: top }} className="bg-white dark:bg-black-900">
+      <View className="flex flex-col flex-grow space-y-3 px-4 bg-white dark:bg-black-900">
         <View className="relative flex-row items-center justify-between pb-4">
           <BackButton onPress={handleBack} />
           <GalleryTouchableOpacity

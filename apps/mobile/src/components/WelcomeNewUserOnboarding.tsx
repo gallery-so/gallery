@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,6 +22,8 @@ type Props = {
 };
 
 export function WelcomeNewUserOnboarding({ username }: Props) {
+  const { colorScheme } = useColorScheme();
+
   // Step 1: Welcome message
   // Step 2: Post message
   // Step 3: Profile message
@@ -83,7 +86,7 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
             <SearchIcon />
           </TabItem>
           <TabItem active={step === 2} onPress={nextStep}>
-            <PostIcon color={colors.black['800']} />
+            <PostIcon color={colorScheme === 'dark' ? colors.white : colors.black['800']} />
           </TabItem>
           <TabItem onPress={nextStep}>
             <NotificationsIcon />
@@ -117,7 +120,7 @@ function Toast({ message, step }: { message: string; step: number }) {
         'items-end pr-2': step === 3,
       })}
     >
-      <View className="bg-white py-1 px-2 rounded-[1px]">
+      <View className="bg-white dark:bg-black-900 py-1 px-2 rounded-[1px]">
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {message}
         </Typography>
@@ -147,7 +150,7 @@ function TabItem({ children, active = false, onPress, isFocused }: TabItemProps)
       <View
         className={clsx('px-0 flex h-8 w-8 items-center justify-center rounded-full', {
           'opacity-25': !active,
-          'bg-activeBlue/10': active,
+          'bg-activeBlue/10 dark:bg-darkModeBlue/10': active,
           'border border-black dark:border-white ': isFocused,
         })}
       >
