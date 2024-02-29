@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -32,7 +32,7 @@ import {
 
 import { useProfilePicture } from '../NftSelectorScreen/useProfilePicture';
 
-export function OnboardingUsernameScreen() {
+function InnerOnboardingUsernameScreen() {
   const query = useLazyLoadQuery<OnboardingUsernameScreenQuery>(
     graphql`
       query OnboardingUsernameScreenQuery {
@@ -86,7 +86,7 @@ export function OnboardingUsernameScreen() {
 
   const debouncedUsername = useDebounce(username, 500);
 
-  const { top, bottom } = useSafeAreaInsets();
+  const { bottom } = useSafeAreaInsets();
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -241,80 +241,90 @@ export function OnboardingUsernameScreen() {
   );
 
   return (
+    <View className="flex flex-col flex-grow space-y-8 px-4">
+      <View>
+        <View className="relative flex-row items-center justify-between pb-4">
+          <BackButton onPress={handleBack} />
+
+          <View
+            className="absolute w-full flex flex-row justify-center items-center"
+            pointerEvents="none"
+          >
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              Pick a username
+            </Typography>
+          </View>
+
+          <View />
+        </View>
+        <OnboardingProgressBar from={20} to={40} />
+      </View>
+      <View
+        className="flex-1  justify-center space-y-12 px-8"
+        style={{
+          marginBottom: bottom,
+        }}
+      >
+        <TextInput
+          style={{
+            fontSize: 32,
+            fontFamily: 'GTAlpinaStandardLight',
+          }}
+          className="dark:text-white text-center"
+          placeholderTextColor={colors.metal}
+          selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
+          textAlignVertical="center"
+          placeholder="username"
+          value={username}
+          onChange={(e) => handleUsernameChange(e.nativeEvent.text)}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+
+        <View className="space-y-4">
+          <Button
+            onPress={handleNext}
+            className={clsx(
+              'w-full',
+              username.length > 0 && 'opacity-100',
+              username.length === 0 && 'opacity-0'
+            )}
+            eventElementId="Onboarding Username Next Pressed"
+            eventName="Onboarding Username Next Pressed"
+            eventContext={contexts.Onboarding}
+            text="NEXT"
+            variant={!isUsernameValid ? 'disabled' : 'primary'}
+            disabled={!isUsernameValid}
+            loading={isLoading}
+          />
+          <Typography
+            className={clsx(
+              'text-sm text-red',
+              username.length > 0 && 'opacity-100',
+              username.length === 0 && 'opacity-0'
+            )}
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {usernameError}
+          </Typography>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+export function OnboardingUsernameScreen() {
+  const { top } = useSafeAreaInsets();
+
+  return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ paddingTop: top }}
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
-      <View className="flex flex-col flex-grow space-y-8 px-4">
-        <View>
-          <View className="relative flex-row items-center justify-between pb-4">
-            <BackButton onPress={handleBack} />
-
-            <View
-              className="absolute w-full flex flex-row justify-center items-center"
-              pointerEvents="none"
-            >
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                Pick a username
-              </Typography>
-            </View>
-
-            <View />
-          </View>
-          <OnboardingProgressBar from={20} to={40} />
-        </View>
-        <View
-          className="flex-1  justify-center space-y-12 px-8"
-          style={{
-            marginBottom: bottom,
-          }}
-        >
-          <TextInput
-            style={{
-              fontSize: 32,
-              fontFamily: 'GTAlpinaStandardLight',
-            }}
-            className="dark:text-white text-center"
-            placeholderTextColor={colors.metal}
-            selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
-            textAlignVertical="center"
-            placeholder="username"
-            value={username}
-            onChange={(e) => handleUsernameChange(e.nativeEvent.text)}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-
-          <View className="space-y-4">
-            <Button
-              onPress={handleNext}
-              className={clsx(
-                'w-full',
-                username.length > 0 && 'opacity-100',
-                username.length === 0 && 'opacity-0'
-              )}
-              eventElementId="Onboarding Username Next Pressed"
-              eventName="Onboarding Username Next Pressed"
-              eventContext={contexts.Onboarding}
-              text="NEXT"
-              variant={!isUsernameValid ? 'disabled' : 'primary'}
-              disabled={!isUsernameValid}
-              loading={isLoading}
-            />
-            <Typography
-              className={clsx(
-                'text-sm text-red',
-                username.length > 0 && 'opacity-100',
-                username.length === 0 && 'opacity-0'
-              )}
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
-              {usernameError}
-            </Typography>
-          </View>
-        </View>
-      </View>
+      <Suspense fallback={null}>
+        <InnerOnboardingUsernameScreen />
+      </Suspense>
     </KeyboardAvoidingView>
   );
 }

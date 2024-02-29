@@ -14,6 +14,7 @@ import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 import { OnboardingRecommendedUsersInnerFragment$key } from '~/generated/OnboardingRecommendedUsersInnerFragment.graphql';
+import { OnboardingRecommendedUsersInnerQuery } from '~/generated/OnboardingRecommendedUsersInnerQuery.graphql';
 import { OnboardingRecommendedUsersQuery } from '~/generated/OnboardingRecommendedUsersQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
@@ -32,7 +33,7 @@ const HEIGHT_OF_FIXED_ITEMS_ON_SCREEN =
   FOOTER_BAR_HEIGHT +
   NUMBER_OF_ITEMS_EXCLUDING_USER_LIST * VERTICAL_GAP_OF_ITEMS;
 
-export function OnboardingRecommendedUsers() {
+function OnboardingRecommendedUsersInner() {
   const query = useLazyLoadQuery<OnboardingRecommendedUsersQuery>(
     graphql`
       query OnboardingRecommendedUsersQuery($usersLast: Int!, $usersBefore: String) {
@@ -45,19 +46,14 @@ export function OnboardingRecommendedUsers() {
     }
   );
 
-  return <OnboardingRecommendedUsersInner queryRef={query} />;
-}
-
-type OnboardingRecommendedUsersInnerProps = {
-  queryRef: OnboardingRecommendedUsersInnerFragment$key;
-};
-
-function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUsersInnerProps) {
   const {
     data: followingPagination,
     loadPrevious,
     hasPrevious,
-  } = usePaginationFragment(
+  } = usePaginationFragment<
+    OnboardingRecommendedUsersInnerQuery,
+    OnboardingRecommendedUsersInnerFragment$key
+  >(
     graphql`
       fragment OnboardingRecommendedUsersInnerFragment on Query
       @refetchable(queryName: "OnboardingRecommendedUsersInnerQuery") {
@@ -81,7 +77,7 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
         ...UserFollowListQueryFragment
       }
     `,
-    queryRef
+    query
   );
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
@@ -124,8 +120,6 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
     navigation.goBack();
   }, [navigation]);
 
-  const { top } = useSafeAreaInsets();
-
   const handleLoadMore = useCallback(() => {
     if (hasPrevious) {
       loadPrevious(USERS_PER_PAGE);
@@ -140,73 +134,81 @@ function OnboardingRecommendedUsersInner({ queryRef }: OnboardingRecommendedUser
   const [hasFollowedSomeone, setHasFollowedSomeone] = useState(false);
 
   return (
-    <View style={{ paddingTop: top }} className="bg-white dark:bg-black-900">
-      <View className="flex flex-col flex-grow space-y-3 px-4 bg-white dark:bg-black-900">
-        <View className="relative flex-row items-center justify-between pb-4">
-          <BackButton onPress={handleBack} />
-          <GalleryTouchableOpacity
-            onPress={handleNext}
-            className="flex flex-row items-center space-x-2"
-            eventElementId="Next button on onboarding recommended users screen"
-            eventName="Next button on onboarding recommended users screen"
-            properties={{ variant: hasFollowedSomeone ? 'Next' : 'Skip' }}
-            eventContext={contexts.Onboarding}
-          >
-            <Typography
-              className="text-sm text-metal"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
-              {hasFollowedSomeone ? 'Next' : 'Skip'}
-            </Typography>
-            <RightArrowIcon color={colors.metal} />
-          </GalleryTouchableOpacity>
-        </View>
-
-        <OnboardingProgressBar from={80} to={90} />
-
-        <View className="flex flex-col">
-          <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Medium' }}>
-            Recommended collectors for you
-          </Typography>
-          <Typography
-            className="text-md text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Medium' }}
-          >
-            Popular users on gallery
-          </Typography>
-        </View>
-
-        <View
-          style={{
-            height: heightOfUserList,
-          }}
-          className="-mx-4"
+    <View className="flex flex-col flex-grow space-y-3 px-4 bg-white dark:bg-black-900">
+      <View className="relative flex-row items-center justify-between pb-4">
+        <BackButton onPress={handleBack} />
+        <GalleryTouchableOpacity
+          onPress={handleNext}
+          className="flex flex-row items-center space-x-2"
+          eventElementId="Next button on onboarding recommended users screen"
+          eventName="Next button on onboarding recommended users screen"
+          properties={{ variant: hasFollowedSomeone ? 'Next' : 'Skip' }}
+          eventContext={contexts.Onboarding}
         >
-          <Suspense fallback={<UserFollowListFallback />}>
-            <UserFollowList
-              onLoadMore={handleLoadMore}
-              userRefs={recommendedUsers}
-              queryRef={followingPagination}
-              onUserPress={noop}
-              onFollowPress={() => setHasFollowedSomeone(true)}
-              isPresentational={true}
-            />
-          </Suspense>
-        </View>
-
-        <View className="flex justify-end mb-10">
-          <Button
-            onPress={handleFollowAll}
-            variant="primary"
-            size="md"
-            className="w-full"
-            eventElementId="Follow All button on onboarding recommended users screen"
-            eventName="Follow All button on onboarding recommended users screen"
-            eventContext={contexts.Onboarding}
-            text="FOLLOW ALL"
-          />
-        </View>
+          <Typography
+            className="text-sm text-metal"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {hasFollowedSomeone ? 'Next' : 'Skip'}
+          </Typography>
+          <RightArrowIcon color={colors.metal} />
+        </GalleryTouchableOpacity>
       </View>
+
+      <OnboardingProgressBar from={80} to={90} />
+
+      <View className="flex flex-col">
+        <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Medium' }}>
+          Recommended collectors for you
+        </Typography>
+        <Typography
+          className="text-md text-shadow"
+          font={{ family: 'ABCDiatype', weight: 'Medium' }}
+        >
+          Popular users on gallery
+        </Typography>
+      </View>
+
+      <View
+        style={{
+          height: heightOfUserList,
+        }}
+        className="-mx-4"
+      >
+        <Suspense fallback={<UserFollowListFallback />}>
+          <UserFollowList
+            onLoadMore={handleLoadMore}
+            userRefs={recommendedUsers}
+            queryRef={followingPagination}
+            onUserPress={noop}
+            onFollowPress={() => setHasFollowedSomeone(true)}
+            isPresentational={true}
+          />
+        </Suspense>
+      </View>
+
+      <View className="flex justify-end mb-10">
+        <Button
+          onPress={handleFollowAll}
+          variant="primary"
+          size="md"
+          className="w-full"
+          eventElementId="Follow All button on onboarding recommended users screen"
+          eventName="Follow All button on onboarding recommended users screen"
+          eventContext={contexts.Onboarding}
+          text="FOLLOW ALL"
+        />
+      </View>
+    </View>
+  );
+}
+
+export function OnboardingRecommendedUsers() {
+  const { top } = useSafeAreaInsets();
+
+  return (
+    <View style={{ paddingTop: top }} className="bg-white dark:bg-black-900">
+      <OnboardingRecommendedUsersInner />
     </View>
   );
 }
