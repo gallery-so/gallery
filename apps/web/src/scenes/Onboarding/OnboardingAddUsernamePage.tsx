@@ -1,7 +1,10 @@
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import useCreateUser from 'shared/hooks/useCreateUser';
 import useUpdateEmail from 'shared/hooks/useUpdateEmail';
+import useUpdateUser from 'shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from 'shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import styled from 'styled-components';
 
@@ -12,6 +15,7 @@ import useUpdateProfileImage from '~/components/NftSelector/useUpdateProfileImag
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
+import { OnboardingAddUsernamePageQuery } from '~/generated/OnboardingAddUsernamePageQuery.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
 import {
@@ -26,10 +30,31 @@ import {
 const onboardingStepName = 'add-username';
 
 export function OnboardingAddUsernamePage() {
+  const query = useLazyLoadQuery<OnboardingAddUsernamePageQuery>(
+    graphql`
+      query OnboardingAddUsernamePageQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+              dbid
+              username
+              bio
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const user = query?.viewer?.user;
+
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const createUser = useCreateUser();
+  const updateUser = useUpdateUser();
   const authPayloadQuery = useAuthPayloadQuery();
   const trackCreateUserSuccess = useTrackCreateUserSuccess(
     authPayloadQuery?.userFriendlyWalletName
@@ -38,6 +63,7 @@ export function OnboardingAddUsernamePage() {
   const { isLocked, syncTokens } = useSyncTokens();
   const { push } = useRouter();
   const updateEmail = useUpdateEmail();
+  const reportError = useReportError();
 
   const handleUsernameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -65,13 +91,20 @@ export function OnboardingAddUsernamePage() {
       setUsernameError('');
     }
 
-    const isUsernameAvailable = await isUsernameAvailableFetcher(username);
-    if (!isUsernameAvailable) {
-      setUsernameError('Username is already taken');
-      return;
-    }
-
     try {
+      // If existing user, update username
+      if (user?.username) {
+        await updateUser(user.dbid, username, user.bio || '');
+        push({ pathname: '/onboarding/add-user-info' });
+        return;
+      }
+
+      const isUsernameAvailable = await isUsernameAvailableFetcher(username);
+      if (!isUsernameAvailable) {
+        setUsernameError('Username is already taken');
+        return;
+      }
+
       // If new user, create user
       if (!authPayloadQuery) {
         throw new Error('Auth signature for creating user not found');
@@ -110,23 +143,27 @@ export function OnboardingAddUsernamePage() {
         } else {
           push({ pathname: '/onboarding/add-profile-picture' });
         }
-
-        // if wallet user
-        // If email user
       }
-
-      // If existing user, update username
-    } catch (error) {}
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError('Uncaught error in creating user');
+      }
+    }
   }, [
     authPayloadQuery,
     createUser,
     isLocked,
     isUsernameAvailableFetcher,
     push,
+    reportError,
     setProfileImage,
     syncTokens,
     trackCreateUserSuccess,
     updateEmail,
+    updateUser,
+    user,
     username,
   ]);
 
