@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
+import useIsCuratedProfilePage from '~/hooks/oneOffs/useIsCuratedProfilePage';
 import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FoundationLogoIcon } from '~/icons/FoundationLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
@@ -120,6 +121,12 @@ export function MintLinkButton({
     }
     return colors.black[800];
   }, [variant]);
+
+  const isCuratedProfilePage = useIsCuratedProfilePage();
+
+  if (isCuratedProfilePage) {
+    return null;
+  }
 
   if (MINT_LINK_DISABLED_CONTRACTS.has(contractAddress)) {
     return null;
