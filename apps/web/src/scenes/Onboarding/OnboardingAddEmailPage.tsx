@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import useDebounce from 'shared/hooks/useDebounce';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
@@ -18,6 +19,7 @@ const onboardingStepName = 'add-email';
 
 export function OnboardingAddEmailPage() {
   const [email, setEmail] = useState('');
+  const debouncedEmail = useDebounce(email, 500);
 
   const { push, query: queryRouter } = useRouter();
   const { query: routerQuery } = useRouter();
@@ -66,8 +68,8 @@ export function OnboardingAddEmailPage() {
                 </>
               }
             >
-              <SubmitEmailButton
-                emailAddress={email}
+              <SubmitEmailInput
+                emailAddress={debouncedEmail}
                 onSubmit={handleContinue}
                 onEmailChange={setEmail}
               />
@@ -105,15 +107,13 @@ const StyledText = styled(BaseM)<{ shouldShow?: boolean }>`
   opacity: ${({ shouldShow }) => (shouldShow ? 1 : 0)};
 `;
 
-type EmailInputProps = {
+type SubmitEmailInputProps = {
   emailAddress: string;
   onEmailChange: (email: string) => void;
   onSubmit: () => void;
 };
 
-function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInputProps) {
-  const [finalizedEmail, setFinalizedEmail] = useState('');
-
+function SubmitEmailInput({ emailAddress, onEmailChange, onSubmit }: SubmitEmailInputProps) {
   const query = useLazyLoadQuery<OnboardingAddEmailPageQuery>(
     graphql`
       query OnboardingAddEmailPageQuery($emailAddress: Email!) {
@@ -121,7 +121,7 @@ function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInput
       }
     `,
     {
-      emailAddress: finalizedEmail,
+      emailAddress,
     }
   );
 
@@ -134,7 +134,6 @@ function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInput
 
   const handleSubmit = useCallback(() => {
     setIsCheckingEmail(true);
-    setFinalizedEmail(emailAddress);
     if (isInvalidEmail) {
       pushToast({
         message: "That doesn't look like a valid email address. Please double-check and try again",
@@ -155,7 +154,7 @@ function SubmitEmailButton({ emailAddress, onEmailChange, onSubmit }: EmailInput
 
     onSubmit();
     setIsCheckingEmail(false);
-  }, [emailAddress, isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
+  }, [isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
 
   const handleEmailChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
