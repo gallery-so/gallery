@@ -7,7 +7,6 @@ import useDebounce from 'shared/hooks/useDebounce';
 import useUpdateEmail from 'shared/hooks/useUpdateEmail';
 import useUpdateUser from 'shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from 'shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
-import styled from 'styled-components';
 
 import Input from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -27,6 +26,8 @@ import {
   required,
   validate,
 } from '~/shared/utils/validators';
+
+import { OnboardingContainer } from './style';
 
 const onboardingStepName = 'add-username';
 
@@ -196,7 +197,7 @@ export function OnboardingAddUsernamePage() {
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
-        <Container gap={16}>
+        <OnboardingContainer>
           <TitleDiatypeM>Pick a username</TitleDiatypeM>
 
           <HStack gap={16} align="center">
@@ -209,7 +210,7 @@ export function OnboardingAddUsernamePage() {
               variant="grande"
             />
           </HStack>
-        </Container>
+        </OnboardingContainer>
       </FullPageCenteredStep>
       <OnboardingFooter
         step={onboardingStepName}
@@ -219,7 +220,3 @@ export function OnboardingAddUsernamePage() {
     </VStack>
   );
 }
-
-const Container = styled(VStack)`
-  width: 480px;
-`;

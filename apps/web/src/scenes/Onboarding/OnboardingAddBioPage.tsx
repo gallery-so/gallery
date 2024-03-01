@@ -5,6 +5,7 @@ import useUpdateUser, { BIO_MAX_CHAR_COUNT } from 'shared/hooks/useUpdateUser';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleL } from '~/components/core/Text/Text';
 import { TextArea } from '~/components/core/TextArea/TextArea';
@@ -14,6 +15,8 @@ import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { OnboardingAddBioPageQuery } from '~/generated/OnboardingAddBioPageQuery.graphql';
 import unescape from '~/shared/utils/unescape';
+
+import { OnboardingContainer } from './style';
 
 const onboardingStepName = 'add-user-info';
 
@@ -87,7 +90,7 @@ export function OnboardingAddBioPage() {
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
-        <Container gap={16}>
+        <StyledOnboardingContainer>
           <TitleDiatypeM>Complete your profile</TitleDiatypeM>
 
           <HStack gap={16} align="center">
@@ -115,16 +118,12 @@ export function OnboardingAddBioPage() {
             )}
             {error && <BaseM color={colors.red}>{error}</BaseM>}
           </VStack>
-        </Container>
+        </StyledOnboardingContainer>
       </FullPageCenteredStep>
       <OnboardingFooter step={onboardingStepName} onNext={handleContinue} isNextEnabled />
     </VStack>
   );
 }
-
-const Container = styled(VStack)`
-  width: 480px;
-`;
 
 const StyledTextAreaWrapper = styled.div<{ isFocused?: boolean }>`
   height: 144px;
@@ -136,4 +135,12 @@ const StyledTextAreaWrapper = styled.div<{ isFocused?: boolean }>`
 
 const StyledUsernameText = styled(TitleL)`
   cursor: pointer;
+`;
+
+const StyledOnboardingContainer = styled(OnboardingContainer)`
+  padding: 0 16px;
+  width: 100%;
+  @media only screen and ${breakpoints.tablet} {
+    width: 480px;
+  }
 `;

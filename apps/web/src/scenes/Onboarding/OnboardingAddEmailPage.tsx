@@ -15,6 +15,8 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { OnboardingAddEmailPageQuery } from '~/generated/OnboardingAddEmailPageQuery.graphql';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
+import { OnboardingContainer } from './style';
+
 const onboardingStepName = 'add-email';
 
 export function OnboardingAddEmailPage() {
@@ -48,7 +50,7 @@ export function OnboardingAddEmailPage() {
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
-        <Container gap={16}>
+        <OnboardingContainer>
           <TitleDiatypeM>Add email</TitleDiatypeM>
 
           <HStack gap={16} align="center">
@@ -79,7 +81,7 @@ export function OnboardingAddEmailPage() {
           <StyledText color={colors.shadow} shouldShow={!isInvalidEmail}>
             You will receive an email with a link to verify your account
           </StyledText>
-        </Container>
+        </OnboardingContainer>
       </FullPageCenteredStep>
       <OnboardingFooter
         step={onboardingStepName}
@@ -97,10 +99,6 @@ const StyledInput = styled.input`
   padding: 6px 12px;
   width: 300px;
   height: 32px;
-`;
-
-const Container = styled(VStack)`
-  width: 480px;
 `;
 
 const StyledText = styled(BaseM)<{ shouldShow?: boolean }>`

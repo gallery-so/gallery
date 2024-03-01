@@ -6,6 +6,7 @@ import { contexts } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -16,6 +17,8 @@ import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { OnboardingRecommendUsersQuery } from '~/generated/OnboardingRecommendUsersQuery.graphql';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
+
+import { OnboardingContainer } from './style';
 
 const onboardingStepName = 'recommend-users';
 
@@ -123,7 +126,7 @@ export function OnboardingRecommendUsers() {
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
-        <Container gap={16}>
+        <StyledOnboardingContainer>
           <VStack gap={4}>
             <StyledHeaderText>Recommended collectors</StyledHeaderText>
             <BaseM color={colors.shadow}>{subheadingText}</BaseM>
@@ -156,7 +159,7 @@ export function OnboardingRecommendUsers() {
               Follow all
             </Button>
           </StyledButtonContainer>
-        </Container>
+        </StyledOnboardingContainer>
       </FullPageCenteredStep>
       <OnboardingFooter
         step={onboardingStepName}
@@ -169,10 +172,6 @@ export function OnboardingRecommendUsers() {
     </VStack>
   );
 }
-
-const Container = styled(VStack)`
-  width: 480px;
-`;
 
 const StyledHeaderText = styled(BaseM)`
   font-weight: 700;
@@ -193,4 +192,12 @@ const StyledListUsersContainer = styled(VStack)`
 `;
 const StyledButtonContainer = styled(VStack)`
   padding: 24px 16px;
+`;
+
+const StyledOnboardingContainer = styled(OnboardingContainer)`
+  padding: 0 16px;
+  width: 100%;
+  @media only screen and ${breakpoints.tablet} {
+    width: 480px;
+  }
 `;
