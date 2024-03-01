@@ -53,7 +53,6 @@ type NftSelectorPickerGridProps = {
     sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
-  // queryRef: NftSelectorPickerGridFragment$key;
   onRefresh: () => void;
 };
 
