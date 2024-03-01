@@ -32,12 +32,14 @@ const colorMap = {
     primary: {
       background: colors.black['800'],
       border: 'transparent',
-      padding: '0',
+      padding: '0 4px',
+      color: colors.white,
     },
     secondary: {
       background: colors.white,
       border: colors.faint,
       padding: '8px 16px',
+      color: colors.black['800'],
     },
   },
   following: {
@@ -290,11 +292,12 @@ const FollowingChipContainer = styled.div`
 const FollowChip = styled(GalleryChip)<{ variant: FollowButtonVariant }>`
   color: ${colors.black['800']};
   ${({ variant }) => {
-    const { background, border, padding } = colorMap.follow[variant as FollowButtonVariant];
+    const { background, border, color, padding } = colorMap.follow[variant as FollowButtonVariant];
     return `
       background-color: ${background};
       border: 1px solid ${border};
       padding: ${padding};
+      color: ${color};
     `;
   }}
 `;
