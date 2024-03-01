@@ -380,7 +380,7 @@ function PostComposerScreenSkeleton() {
         </Typography>
       </View>
 
-      <View className="py-2 px-3 bg-faint dark:bg-black-900 h-28 mb-4">
+      <View className="py-4 px-3 bg-faint dark:bg-black-900 h-28 mb-4">
         <Typography
           className="text-sm text-shadow"
           font={{
