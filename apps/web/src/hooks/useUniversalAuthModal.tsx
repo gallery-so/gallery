@@ -15,7 +15,6 @@ import { useUniversalAuthModalQuery } from '~/generated/useUniversalAuthModalQue
 import { useUniversalAuthModalQueryFragment$key } from '~/generated/useUniversalAuthModalQueryFragment.graphql';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { EmailIcon } from '~/icons/EmailIcon';
-import { QrCodeIcon } from '~/icons/QrCodeIcon';
 import { WalletIcon } from '~/icons/WalletIcon';
 
 type authMethod = 'Wallet' | 'Email' | 'Sign in via mobile';
@@ -105,12 +104,6 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
               disabled={false}
               onClick={() => setSelectedAuthMethod('Email')}
               icon={<EmailIcon />}
-            />
-            <Row
-              label="Sign in via mobile"
-              disabled={false}
-              onClick={() => setSelectedAuthMethod('Sign in via mobile')}
-              icon={<QrCodeIcon />}
             />
           </WalletSelectorWrapper>
         )}
