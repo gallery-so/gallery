@@ -81,6 +81,16 @@ export default function WelcomeAnimation() {
     // Delay next so we can show a transition animation
     setShouldFadeOut(true);
     setTimeout(() => {
+      if (query.authMechanismType === 'magicLink') {
+        push({
+          pathname: '/onboarding/add-username',
+          query: {
+            ...query,
+          },
+        });
+        return;
+      }
+
       push({
         pathname: '/onboarding/add-email',
         query: {

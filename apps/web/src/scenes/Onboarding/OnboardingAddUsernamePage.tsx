@@ -134,6 +134,12 @@ export function OnboardingAddUsernamePage() {
       if (response.createUser?.__typename === 'CreateUserPayload') {
         const user = response.createUser.viewer?.user;
 
+        // If it's a magic link, skip the profile picture step
+        if (authPayloadQuery.authMechanismType === 'magicLink') {
+          push('/onboarding/add-user-info');
+          return;
+        }
+
         if (authPayloadQuery.authMechanismType === 'eoa' && authPayloadQuery.email) {
           // Attach the email to the user
           updateEmail(authPayloadQuery.email);

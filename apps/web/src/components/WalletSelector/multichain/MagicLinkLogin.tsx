@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
@@ -21,6 +22,7 @@ export default function MagicLinkLogin() {
   const sendMagicLink = useMagicLogin();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
   const trackSignInSuccess = useTrackSignInSuccess();
+  const { push } = useRouter();
 
   const [email, setEmail] = useState('');
   const [clickedSendLink, setClickedSendLink] = useState(false);
@@ -34,11 +36,13 @@ export default function MagicLinkLogin() {
     setErrorMessage('');
     setClickedSendLink(true);
 
+    let magicLinkToken: string | null = null;
+
     try {
       // send Magic Link email and wait for user to click link
-      const token = await sendMagicLink(email);
+      magicLinkToken = await sendMagicLink(email);
 
-      if (token === null) {
+      if (magicLinkToken === null) {
         throw new Error('Invalid token'); // `sendMagicLink` resolves and returns a token if the magic link is opened, so if the token is null it most likely is an issue with the magic link api which should be rare
       }
 
@@ -50,7 +54,7 @@ export default function MagicLinkLogin() {
         authMechanism: {
           mechanism: {
             magicLink: {
-              token,
+              token: magicLinkToken,
             },
           },
         },
@@ -63,13 +67,20 @@ export default function MagicLinkLogin() {
         throw new Error('Invalid token');
       }
     } catch (error: unknown) {
-      setErrorMessage(
-        `There was an error signing in. Please verify that the email address is correct.`
-      );
+      if (magicLinkToken) {
+        push({
+          pathname: '/onboarding/welcome',
+          query: {
+            authMechanismType: 'magicLink',
+            token: magicLinkToken,
+            userFriendlyWalletName: 'unknown',
+          },
+        });
+      }
       setIsAttemptingSignIn(false);
       setClickedSendLink(false);
     }
-  }, [email, loginOrRedirectToOnboarding, sendMagicLink, trackSignInSuccess]);
+  }, [email, loginOrRedirectToOnboarding, push, sendMagicLink, trackSignInSuccess]);
 
   const isValidEmail = useMemo(() => EMAIL_FORMAT.test(email), [email]);
 

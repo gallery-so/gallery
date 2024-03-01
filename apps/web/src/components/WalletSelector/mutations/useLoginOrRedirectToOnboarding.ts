@@ -104,6 +104,17 @@ export default function useLoginOrRedirectToOnboarding() {
           });
         }
 
+        if (authMechanism.mechanism.magicLink) {
+          push({
+            pathname: '/onboarding/welcome',
+            query: {
+              authMechanismType: 'magicLink',
+              token: authMechanism.mechanism.magicLink.token,
+              userFriendlyWalletName,
+            },
+          });
+        }
+
         return;
       }
     },
