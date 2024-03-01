@@ -21,6 +21,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import { noop } from '~/shared/utils/noop';
 
+import CopyToClipboard from '../CopyToClipboard/CopyToClipboard';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
@@ -203,6 +204,10 @@ export default function Gallery({
     query: { username: gallery.owner.username, galleryId: gallery.dbid },
   };
 
+  const galleryUrl = useMemo(() => {
+    return `${window.location.origin}/${gallery?.owner?.username}/galleries/${gallery.dbid}`;
+  }, [gallery.dbid, gallery.owner.username]);
+
   const galleryEditLink: Route = useMemo(
     () => ({
       pathname: '/gallery/[galleryId]/edit',
@@ -304,6 +309,15 @@ export default function Gallery({
                               label="Hide"
                             />
                           </>
+                        )}
+                        {!hidden && (
+                          <CopyToClipboard textToCopy={galleryUrl}>
+                            <DropdownItem
+                              name="Share Gallery"
+                              eventContext={contexts.Editor}
+                              label="Share"
+                            />
+                          </CopyToClipboard>
                         )}
                         <DropdownItem
                           onClick={handleDeleteGallery}
