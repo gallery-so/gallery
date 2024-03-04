@@ -26,6 +26,12 @@ Install our node version:
 nvm install && nvm use
 ```
 
+Install correct yarn version (3.4.1):
+
+```bash
+yarn set version 3.4.1
+```
+
 Install dependencies:
 
 ```bash
