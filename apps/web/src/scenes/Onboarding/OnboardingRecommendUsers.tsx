@@ -29,15 +29,7 @@ export function OnboardingRecommendUsers() {
         viewer @required(action: THROW) {
           ... on Viewer {
             id
-            user {
-              username
-            }
-            socialAccounts {
-              farcaster {
-                __typename
-              }
-            }
-            suggestedUsers(last: 5) {
+            suggestedUsers(first: 24) {
               edges {
                 node {
                   __typename
@@ -50,6 +42,22 @@ export function OnboardingRecommendUsers() {
                 }
               }
             }
+            suggestedUsersFarcaster(first: 24) @required(action: THROW) {
+              edges {
+                node {
+                  __typename
+                  dbid
+                  id
+                  username
+                  bio
+                  ...ProfilePictureFragment
+                  ...FollowButtonUserFragment
+                }
+              }
+              pageInfo {
+                total
+              }
+            }
           }
         }
         ...FollowButtonQueryFragment
@@ -60,19 +68,34 @@ export function OnboardingRecommendUsers() {
   );
 
   const { push } = useRouter();
-  const username = query.viewer?.user?.username;
-  const farcaster = query.viewer?.socialAccounts?.farcaster;
+
+  const userHasFarcasterSocialGraph = useMemo(() => {
+    if (
+      query?.viewer?.suggestedUsersFarcaster?.pageInfo?.total &&
+      query?.viewer?.suggestedUsersFarcaster?.pageInfo?.total > 0
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [query?.viewer?.suggestedUsersFarcaster?.pageInfo?.total]);
 
   const subheadingText = useMemo(() => {
-    if (farcaster) {
+    if (userHasFarcasterSocialGraph) {
       return 'Based on your onchain contacts from places like Farcaster';
     }
 
     return 'Based on your collection';
-  }, [farcaster]);
+  }, [userHasFarcasterSocialGraph]);
 
   const nonNullUsers = useMemo(() => {
     const users = [];
+
+    for (const edge of query.viewer.suggestedUsersFarcaster?.edges ?? []) {
+      if (edge?.node) {
+        users.push(edge.node);
+      }
+    }
 
     for (const edge of query.viewer.suggestedUsers?.edges ?? []) {
       if (edge?.node) {
@@ -81,7 +104,7 @@ export function OnboardingRecommendUsers() {
     }
 
     return users;
-  }, [query.viewer.suggestedUsers?.edges]);
+  }, [query.viewer.suggestedUsers?.edges, query.viewer.suggestedUsersFarcaster?.edges]);
 
   const suggestedFollowingIds = useMemo(() => {
     const userIds = [];
@@ -97,13 +120,12 @@ export function OnboardingRecommendUsers() {
 
   const userProfileRoute: Route = useMemo(
     () => ({
-      pathname: '/[username]',
+      pathname: '/',
       query: {
-        username: `${username as string}`,
         onboarding: 'true',
       },
     }),
-    [username]
+    []
   );
 
   const redirectToProfile = useCallback(() => {
@@ -189,6 +211,15 @@ const StyledSubHeaderText = styled(BaseM)`
 
 const StyledListUsersContainer = styled(VStack)`
   padding: 0 16px;
+
+  max-height: 416px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const StyledButtonContainer = styled(VStack)`
   padding: 24px 16px;
