@@ -1,6 +1,7 @@
 import { contexts } from 'shared/analytics/constants';
 import styled from 'styled-components';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleL } from '../core/Text/Text';
@@ -34,9 +35,13 @@ export function WelcomeNewUserModal({ username, onContinue }: Props) {
 }
 
 const StyledWelcomeModal = styled(VStack)`
-  width: 500px;
+  width: 100%;
   padding: 24px 32px;
   text-align: center;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 500px;
+  }
 `;
 
 const StyledButton = styled(Button)`

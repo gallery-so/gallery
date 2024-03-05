@@ -8,6 +8,7 @@ import SidebarPfp from '~/contexts/globalLayout/GlobalSidebar/SidebarPfp';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { WelcomeNewUserFragment$key } from '~/generated/WelcomeNewUserFragment.graphql';
 import { WelcomeNewUserQueryFragment$key } from '~/generated/WelcomeNewUserQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import HomeIcon from '~/icons/HomeIcon';
@@ -19,6 +20,7 @@ import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 import breakpoints from '../core/breakpoints';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseS } from '../core/Text/Text';
+import transitions from '../core/transitions';
 import { WelcomeNewUserModal } from './WelcomeNewUserModal';
 
 type Props = {
@@ -125,24 +127,82 @@ function MockSidebar({ queryRef, onNextStep, step }: MockSidebarProps) {
     queryRef
   );
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  if (isMobile) {
+    return (
+      <MockMobileSidebarContainer>
+        <StyledStandardSidebar>
+          <StyledMobileIconContainer align="center" justify="space-around">
+            <StyledSidebarIconContainer>
+              <SidebarIcon
+                to={{ pathname: '/home' }}
+                tooltipLabel="Home"
+                onClick={onNextStep}
+                icon={<HomeIcon />}
+              />
+            </StyledSidebarIconContainer>
+            <StyledSidebarIconContainer>
+              <SidebarIcon tooltipLabel="Search" onClick={onNextStep} icon={<SearchIcon />} />
+            </StyledSidebarIconContainer>
+            <StyledSidebarIconContainer active={step === 3}>
+              <SidebarIcon
+                tooltipLabel="Create a post"
+                onClick={onNextStep}
+                icon={<PlusSquareIcon />}
+              />
+            </StyledSidebarIconContainer>
+            <StyledSidebarIconContainer>
+              <SidebarIcon tooltipLabel="Notifications" onClick={onNextStep} icon={<BellIcon />} />
+            </StyledSidebarIconContainer>
+            <StyledSidebarIconContainer active={step === 2}>
+              {query.viewer?.__typename === 'Viewer' && query?.viewer?.user && (
+                <SidebarPfp userRef={query.viewer.user} onClick={onNextStep} />
+              )}
+            </StyledSidebarIconContainer>
+          </StyledMobileIconContainer>
+        </StyledStandardSidebar>
+
+        <StyledMobileStyledTooltipContainer
+          align="flex-end"
+          active={step === 2}
+          style={{
+            paddingRight: 8,
+          }}
+        >
+          <StyledMobileStyledTooltip gap={10} align="center">
+            <StyledTooltipText>This is where you can set up your own Gallery</StyledTooltipText>
+            <StyledTooltipTextProgress>1/2</StyledTooltipTextProgress>
+          </StyledMobileStyledTooltip>
+        </StyledMobileStyledTooltipContainer>
+
+        <StyledMobileStyledTooltipContainer align="center" active={step === 3}>
+          <StyledMobileStyledTooltip gap={10} align="center">
+            <StyledTooltipText>Tap here to post an item from your collection</StyledTooltipText>
+            <StyledTooltipTextProgress>2/2</StyledTooltipTextProgress>
+          </StyledMobileStyledTooltip>
+        </StyledMobileStyledTooltipContainer>
+      </MockMobileSidebarContainer>
+    );
+  }
+
   return (
     <MockSidebarContainer>
       <StyledStandardSidebar>
         <StyledIconContainer align="center" justify="space-between">
           <VStack gap={18}>
-            {query.viewer?.__typename === 'Viewer' && query?.viewer?.user && (
-              <SidebarPfp userRef={query.viewer.user} onClick={onNextStep} />
-            )}
-            {step === 2 && (
-              <StyledTooltip gap={10} align="center" step="profile">
-                <StyledTooltipText>This is where you can set up your own Gallery</StyledTooltipText>
-                <StyledTooltipTextProgress>1/2</StyledTooltipTextProgress>
-              </StyledTooltip>
-            )}
+            <StyledSidebarIconContainer active={step === 2}>
+              {query.viewer?.__typename === 'Viewer' && query?.viewer?.user && (
+                <SidebarPfp userRef={query.viewer.user} onClick={onNextStep} />
+              )}
+            </StyledSidebarIconContainer>
+            <StyledTooltip gap={10} align="center" step="profile" active={step === 2}>
+              <StyledTooltipText>This is where you can set up your own Gallery</StyledTooltipText>
+              <StyledTooltipTextProgress>1/2</StyledTooltipTextProgress>
+            </StyledTooltip>
           </VStack>
           <VStack gap={24}>
             <StyledSidebarIconContainer>
-              <StyledSidebarIcon
+              <SidebarIcon
                 to={{ pathname: '/home' }}
                 tooltipLabel="Home"
                 onClick={onNextStep}
@@ -154,40 +214,32 @@ function MockSidebar({ queryRef, onNextStep, step }: MockSidebarProps) {
                 position: 'relative',
               }}
             >
-              <StyledSidebarIconContainer>
-                <StyledSidebarIcon
+              <StyledSidebarIconContainer active={step === 3}>
+                <SidebarIcon
                   tooltipLabel="Create a post"
                   onClick={onNextStep}
                   icon={<PlusSquareIcon />}
                 />
               </StyledSidebarIconContainer>
 
-              {step === 3 && (
-                <StyledTooltip gap={10} align="center" step="post">
-                  <StyledTooltipText>
-                    Tap here to post an item from your collection
-                  </StyledTooltipText>
-                  <StyledTooltipTextProgress>2/2</StyledTooltipTextProgress>
-                </StyledTooltip>
-              )}
+              <StyledTooltip gap={10} align="center" step="post" active={step === 3}>
+                <StyledTooltipText>Tap here to post an item from your collection</StyledTooltipText>
+                <StyledTooltipTextProgress>2/2</StyledTooltipTextProgress>
+              </StyledTooltip>
             </div>
             <StyledSidebarIconContainer>
-              <StyledSidebarIcon tooltipLabel="Search" onClick={onNextStep} icon={<SearchIcon />} />
+              <SidebarIcon tooltipLabel="Search" onClick={onNextStep} icon={<SearchIcon />} />
             </StyledSidebarIconContainer>
             <StyledSidebarIconContainer>
-              <StyledSidebarIcon
-                tooltipLabel="Notifications"
-                onClick={onNextStep}
-                icon={<BellIcon />}
-              />
+              <SidebarIcon tooltipLabel="Notifications" onClick={onNextStep} icon={<BellIcon />} />
             </StyledSidebarIconContainer>
           </VStack>
           <VStack gap={24}>
             <StyledSidebarIconContainer>
-              <StyledSidebarIcon tooltipLabel="Settings" onClick={onNextStep} icon={<CogIcon />} />
+              <SidebarIcon tooltipLabel="Settings" onClick={onNextStep} icon={<CogIcon />} />
             </StyledSidebarIconContainer>
             <StyledSidebarIconContainer>
-              <StyledSidebarIcon
+              <SidebarIcon
                 href="#"
                 tooltipLabel="Support/FAQ"
                 onClick={onNextStep}
@@ -207,6 +259,16 @@ const MockSidebarContainer = styled.div`
   width: 64px;
 `;
 
+const MockMobileSidebarContainer = styled.div`
+  height: 100vh;
+  background: ${colors.white};
+  width: 100%;
+
+  height: 48px;
+  bottom: 0;
+  position: absolute;
+`;
+
 const StyledStandardSidebar = styled.div`
   min-width: 100%;
   height: 100%;
@@ -215,10 +277,10 @@ const StyledStandardSidebar = styled.div`
     padding: 16px 0;
   }
 `;
-const StyledSidebarIcon = styled(SidebarIcon)``;
 
 const StyledSidebarIconContainer = styled(VStack)<{ active?: boolean }>`
-  svg {
+  svg,
+  img {
     opacity: ${({ active }) => (active ? 1 : 0.25)};
   }
 `;
@@ -227,7 +289,7 @@ const StyledIconContainer = styled(VStack)`
   height: 100%;
 `;
 
-const StyledTooltip = styled(HStack)<{ step: 'profile' | 'post' }>`
+const StyledTooltip = styled(HStack)<{ step: 'profile' | 'post'; active?: boolean }>`
   padding: 4px 8px;
   background: ${colors.white};
   border-radius: 1px;
@@ -241,13 +303,30 @@ const StyledTooltip = styled(HStack)<{ step: 'profile' | 'post' }>`
       left: 72px;
     `
       : `
-      top: 0;
+      top: 4px;
       left: 60px;
     `}
 
   width: max-content;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transition: opacity ${transitions.cubic};
+`;
 
-  /* transition: top 1s ease, left 1s ease; */
+const StyledMobileStyledTooltipContainer = styled(VStack)<{ active?: boolean }>`
+  width: 100%;
+  position: absolute;
+  top: -32px;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transition: opacity ${transitions.cubic};
+`;
+
+const StyledMobileStyledTooltip = styled(HStack)`
+  padding: 4px 8px;
+  background: ${colors.white};
+  border-radius: 1px;
+
+  width: max-content;
+  transition: opacity ${transitions.cubic};
 `;
 
 const StyledTooltipText = styled(BaseS)`
@@ -256,4 +335,8 @@ const StyledTooltipText = styled(BaseS)`
 
 const StyledTooltipTextProgress = styled(BaseS)`
   color: ${colors.shadow};
+`;
+
+const StyledMobileIconContainer = styled(HStack)`
+  height: 100%;
 `;
