@@ -3,6 +3,7 @@ import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
@@ -125,7 +126,10 @@ const Container = styled(VStack)`
 
 const WalletContainer = styled(VStack)`
   width: 100%;
-  min-width: 400px;
+
+  @media only screen and ${breakpoints.tablet} {
+    min-width: 400px;
+  }
 `;
 
 type RowProps = {
