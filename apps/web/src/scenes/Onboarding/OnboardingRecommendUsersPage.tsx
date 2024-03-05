@@ -15,17 +15,17 @@ import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { OnboardingRecommendUsersQuery } from '~/generated/OnboardingRecommendUsersQuery.graphql';
+import { OnboardingRecommendUsersPageQuery } from '~/generated/OnboardingRecommendUsersPageQuery.graphql';
 import useFollowAllRecommendedUsers from '~/shared/relay/useFollowAllRecommendedUsers';
 
 import { OnboardingContainer } from './style';
 
 const onboardingStepName = 'recommend-users';
 
-export function OnboardingRecommendUsers() {
-  const query = useLazyLoadQuery<OnboardingRecommendUsersQuery>(
+export function OnboardingRecommendUsersPage() {
+  const query = useLazyLoadQuery<OnboardingRecommendUsersPageQuery>(
     graphql`
-      query OnboardingRecommendUsersQuery {
+      query OnboardingRecommendUsersPageQuery {
         viewer @required(action: THROW) {
           ... on Viewer {
             id

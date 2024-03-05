@@ -9,7 +9,7 @@ import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 
 const onboardingStepName = 'add-profile-picture';
-export function OnboardingAddProfilePicture() {
+export function OnboardingAddProfilePicturePage() {
   const { setProfileImage } = useUpdateProfileImage();
   const { push } = useRouter();
 

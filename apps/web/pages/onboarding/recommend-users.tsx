@@ -1,5 +1,5 @@
-import { OnboardingRecommendUsers } from '~/scenes/Onboarding/OnboardingRecommendUsers';
+import { OnboardingRecommendUsersPage } from '~/scenes/Onboarding/OnboardingRecommendUsersPage';
 
 export default function RecommendUsers() {
-  return <OnboardingRecommendUsers />;
+  return <OnboardingRecommendUsersPage />;
 }

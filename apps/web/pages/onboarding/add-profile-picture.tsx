@@ -1,5 +1,5 @@
-import { OnboardingAddProfilePicture } from '~/scenes/Onboarding/OnboardingAddProfilePicture';
+import { OnboardingAddProfilePicturePage } from '~/scenes/Onboarding/OnboardingAddProfilePicturePage';
 
 export default function AddProfilePicture() {
-  return <OnboardingAddProfilePicture />;
+  return <OnboardingAddProfilePicturePage />;
 }
