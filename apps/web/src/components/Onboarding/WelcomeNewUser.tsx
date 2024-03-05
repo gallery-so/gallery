@@ -45,7 +45,7 @@ export function WelcomeNewUser({ queryRef }: Props) {
     queryRef
   );
 
-  const username = query?.viewer?.user?.username ?? '';
+  const username = query?.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : '';
 
   useClearURLQueryParams(['onboarding']);
 
@@ -65,7 +65,7 @@ export function WelcomeNewUser({ queryRef }: Props) {
       showModal({
         content: (
           <WelcomeNewUserModal
-            username={username}
+            username={username ?? ''}
             onContinue={() => {
               setStep(2);
               hideModal();
