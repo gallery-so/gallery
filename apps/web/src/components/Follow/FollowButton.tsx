@@ -43,8 +43,8 @@ const colorMap = {
     },
   },
   following: {
-    primary: colors.black['800'],
-    secondary: colors.black['800'],
+    primary: { color: colors.black['800'], padding: '0 4px' },
+    secondary: { color: colors.black['800'], padding: '8px 9px' },
   },
 };
 
@@ -190,6 +190,7 @@ export default function FollowButton({
             eventName={null}
             eventContext={null}
             className={className}
+            variant={variant}
           >
             Following
           </FollowingChip>
@@ -251,9 +252,16 @@ export default function FollowButton({
   );
 }
 
-const FollowingChip = styled(GalleryChip)`
+const FollowingChip = styled(GalleryChip)<{ variant: FollowButtonVariant }>`
   background-color: ${colors.faint};
-  color: ${colors.black['800']};
+
+  ${({ variant }) => {
+    const { color, padding } = colorMap.following[variant as FollowButtonVariant];
+    return `
+      padding: ${padding};
+      color: ${color};
+    `;
+  }}
 `;
 
 const FirstFollow = styled(GalleryChip)`
