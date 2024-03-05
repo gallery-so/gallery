@@ -1,8 +1,9 @@
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 
 type Props = {
@@ -10,20 +11,20 @@ type Props = {
   className?: string;
 };
 
-export function SignInButton({ className, buttonLocation }: Props) {
-  const showAuthModal = useAuthModal('sign-in');
+export function AuthButton({ className, buttonLocation }: Props) {
+  const showAuthModal = useUniversalAuthModal();
 
   return (
     <StyledButton
-      eventElementId="Sign In Button"
-      eventName="Attempt Sign In"
+      eventElementId="Auth Button"
+      eventName="Attempt to auth"
       eventContext={contexts.Authentication}
       properties={{ buttonLocation }}
       onClick={showAuthModal}
       className={className}
-      variant="secondary"
+      variant="primary"
     >
-      <StyledButtonText>Sign in</StyledButtonText>
+      <StyledButtonText>Get Started</StyledButtonText>
     </StyledButton>
   );
 }
@@ -36,4 +37,5 @@ const StyledButtonText = styled(TitleDiatypeL)`
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
+  color: ${colors.white};
 `;

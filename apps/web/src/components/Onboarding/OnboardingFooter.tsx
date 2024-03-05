@@ -5,10 +5,14 @@ import {
 } from '~/components/Onboarding/constants';
 import { WizardFooter } from '~/components/WizardFooter';
 
+import { ButtonProps } from '../core/Button/Button';
+
 type Props = {
   step: StepName;
-  onNext: () => void | Promise<unknown>;
+  onNext?: () => void | Promise<unknown>;
   isNextEnabled: boolean;
+  nextButtonVariant?: ButtonProps['variant'];
+
   onPrevious?: () => void;
   previousTextOverride?: string;
 };
@@ -19,6 +23,7 @@ export function OnboardingFooter({
   step,
   isNextEnabled,
   previousTextOverride,
+  nextButtonVariant,
 }: Props) {
   const stepIndex = getStepIndex(step);
   const isFirstStep = stepIndex === 0;
@@ -33,6 +38,7 @@ export function OnboardingFooter({
       previousText={isFirstStep ? 'Cancel' : previousTextOverride}
       onNext={onNext}
       onPrevious={onPrevious}
+      nextButtonVariant={nextButtonVariant}
     />
   );
 }

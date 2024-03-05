@@ -10,16 +10,14 @@ import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
 import FollowButton from '~/components/Follow/FollowButton';
+import { AuthButton } from '~/contexts/globalLayout/GlobalNavbar/AuthButton';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
-import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectionRightContentFragment$key } from '~/generated/CollectionRightContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 import { contexts } from '~/shared/analytics/constants';
-
-import { SignUpButton } from '../SignUpButton';
 
 type CollectionRightContentProps = {
   username: string;
@@ -158,9 +156,7 @@ export function CollectionRightContent({
   } else if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
-        <SignInButton buttonLocation="Gallery Collection View Navbar" />
-        {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-        {!isMobile && <SignUpButton buttonLocation="Gallery Collection View Navbar" />}
+        <AuthButton buttonLocation="Gallery Collection View Navbar" />
       </HStack>
     );
   }
