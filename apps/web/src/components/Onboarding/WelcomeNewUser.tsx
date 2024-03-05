@@ -34,6 +34,7 @@ export function WelcomeNewUser({ queryRef }: Props) {
         ...WelcomeNewUserQueryFragment
         viewer {
           ... on Viewer {
+            __typename
             user {
               username
             }
@@ -80,7 +81,7 @@ export function WelcomeNewUser({ queryRef }: Props) {
     }
   }, [hideModal, showModal, step, username]);
 
-  if (step > 3) {
+  if (step > 3 || query.viewer?.__typename !== 'Viewer') {
     return null;
   }
 
