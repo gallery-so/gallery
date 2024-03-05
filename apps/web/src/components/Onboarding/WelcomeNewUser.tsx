@@ -19,7 +19,7 @@ import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import breakpoints from '../core/breakpoints';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseS } from '../core/Text/Text';
+import { BaseM } from '../core/Text/Text';
 import transitions from '../core/transitions';
 import { WelcomeNewUserModal } from './WelcomeNewUserModal';
 
@@ -172,14 +172,12 @@ function MockSidebar({ queryRef, onNextStep, step }: MockSidebarProps) {
         >
           <StyledMobileStyledTooltip gap={10} align="center">
             <StyledTooltipText>This is where you can set up your own Gallery</StyledTooltipText>
-            <StyledTooltipTextProgress>1/2</StyledTooltipTextProgress>
           </StyledMobileStyledTooltip>
         </StyledMobileStyledTooltipContainer>
 
         <StyledMobileStyledTooltipContainer align="center" active={step === 3}>
           <StyledMobileStyledTooltip gap={10} align="center">
             <StyledTooltipText>Tap here to post an item from your collection</StyledTooltipText>
-            <StyledTooltipTextProgress>2/2</StyledTooltipTextProgress>
           </StyledMobileStyledTooltip>
         </StyledMobileStyledTooltipContainer>
       </MockMobileSidebarContainer>
@@ -316,7 +314,7 @@ const StyledTooltip = styled(HStack)<{ step: 'profile' | 'post'; active?: boolea
 const StyledMobileStyledTooltipContainer = styled(VStack)<{ active?: boolean }>`
   width: 100%;
   position: absolute;
-  top: -32px;
+  top: -36px;
   opacity: ${({ active }) => (active ? 1 : 0)};
   transition: opacity ${transitions.cubic};
 `;
@@ -330,11 +328,11 @@ const StyledMobileStyledTooltip = styled(HStack)`
   transition: opacity ${transitions.cubic};
 `;
 
-const StyledTooltipText = styled(BaseS)`
+const StyledTooltipText = styled(BaseM)`
   font-weight: 700;
 `;
 
-const StyledTooltipTextProgress = styled(BaseS)`
+const StyledTooltipTextProgress = styled(BaseM)`
   color: ${colors.shadow};
 `;
 
