@@ -65,7 +65,7 @@ export function OnboardingRecommendUsers() {
 
   const subheadingText = useMemo(() => {
     if (farcaster) {
-      return 'Based on your onchain contacts from places like Farcaster and Lens';
+      return 'Based on your onchain contacts from places like Farcaster';
     }
 
     return 'Based on your collection';
