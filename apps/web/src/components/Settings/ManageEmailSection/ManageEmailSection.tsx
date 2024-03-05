@@ -34,6 +34,7 @@ export default function ManageEmailSection({ queryRef }: Props) {
               emailNotificationSettings {
                 unsubscribedFromAll
                 unsubscribedFromNotifications
+                unsubscribedFromDigest
               }
             }
           }
@@ -48,6 +49,9 @@ export default function ManageEmailSection({ queryRef }: Props) {
   const userEmail = query?.viewer?.email?.email;
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
+
+  const unsubscribedFromDigest =
+    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromDigest ?? false;
 
   const isEmailNotificationSubscribed =
     !query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications;
@@ -75,7 +79,8 @@ export default function ManageEmailSection({ queryRef }: Props) {
       try {
         const response = await updateEmailNotificationSettings(
           unsubscribedFromNotifications,
-          isEmailUnsubscribedFromAll
+          isEmailUnsubscribedFromAll,
+          unsubscribedFromDigest
         );
 
         if (
@@ -105,7 +110,13 @@ export default function ManageEmailSection({ queryRef }: Props) {
         setIsPending(false);
       }
     },
-    [isEmailUnsubscribedFromAll, pushToast, reportError, updateEmailNotificationSettings]
+    [
+      isEmailUnsubscribedFromAll,
+      pushToast,
+      reportError,
+      unsubscribedFromDigest,
+      updateEmailNotificationSettings,
+    ]
   );
 
   const toggleEmailNotification = useCallback(
