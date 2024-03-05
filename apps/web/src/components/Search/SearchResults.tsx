@@ -140,12 +140,12 @@ export default function SearchResults({
     );
   }
 
-  if (activeFilter === 'community') {
+  if (activeFilter === 'collection') {
     return (
       <StyledSearchResultContainer isLoading={isLoading}>
         {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
           <CommunitySearchResultSection
-            title="communities"
+            title="collections"
             resultRefs={query?.searchCommunities?.results}
             onChangeFilter={onChangeFilter}
             isShowAll

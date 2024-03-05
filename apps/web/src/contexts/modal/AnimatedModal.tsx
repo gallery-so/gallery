@@ -200,7 +200,7 @@ const StyledTitleS = styled(TitleS)`
   padding-bottom: ${MODAL_PADDING_PX}px;
 `;
 
-const StyledContainer = styled.div<{
+export const StyledContainer = styled.div<{
   isFullPage: boolean;
   maxWidth: string;
   width: string;

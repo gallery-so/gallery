@@ -1,38 +1,43 @@
-import { useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
+import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
-import Shimmer from '~/components/Shimmer/Shimmer';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
-import { useContainedDimensionsForToken } from '~/hooks/useContainedDimensionsForToken';
-import { useNftRetry } from '~/hooks/useNftRetry';
-import { useBreakpoint } from '~/hooks/useWindowSize';
+import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ExpandIcon from '~/icons/ExpandIcon';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftDetailAnimation from './NftDetailAnimation';
+import NftDetailAssetContainer from './NftDetailAssetContainer';
 import NftDetailAudio from './NftDetailAudio';
 import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
+import NftDetailLightbox, { getLightboxPortalElementId } from './NftDetailLightbox';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
   onLoad: () => void;
+  toggleLightbox: () => void;
 };
 
-export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
+export function NftDetailAssetComponent({
+  tokenRef,
+  onLoad,
+  toggleLightbox,
+}: NftDetailAssetComponentProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
@@ -64,7 +69,11 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
         />
       }
     >
-      <NftDetailAssetComponentWithouFallback tokenRef={token} onLoad={onLoad} />
+      <NftDetailAssetComponentWithouFallback
+        tokenRef={token}
+        onLoad={onLoad}
+        toggleLightbox={toggleLightbox}
+      />
     </ReportingErrorBoundary>
   );
 }
@@ -72,17 +81,18 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
   onLoad: () => void;
+  toggleLightbox: () => void;
 };
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
   onLoad,
+  toggleLightbox,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
         dbid
-        ...useGetPreviewImagesSingleFragment
         definition {
           name
 
@@ -155,6 +165,10 @@ function NftDetailAssetComponentWithouFallback({
           onLoad={onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
+            if (toggleLightbox) {
+              toggleLightbox();
+              return;
+            }
             if (imageMedia.contentRenderURL) {
               window.open(imageMedia.contentRenderURL);
             }
@@ -169,6 +183,10 @@ function NftDetailAssetComponentWithouFallback({
           onLoad={onLoad}
           tokenRef={token}
           onClick={() => {
+            if (toggleLightbox) {
+              toggleLightbox();
+              return;
+            }
             if (gifMedia.contentRenderURL) {
               window.open(gifMedia.contentRenderURL);
             }
@@ -185,10 +203,18 @@ function NftDetailAssetComponentWithouFallback({
 type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
-  visibility?: string; // prop to pass the visibility state of the selected NFT
+  visibility?: string; // whether or not the nft is currently the visible "slide" in the detail page carousel
+  toggleLightbox: () => void;
+  isLightboxOpen?: boolean;
 };
 
-function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props) {
+function NftDetailAsset({
+  tokenRef,
+  hasExtraPaddingForNote,
+  visibility,
+  toggleLightbox,
+  isLightboxOpen,
+}: Props) {
   const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
@@ -213,15 +239,12 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
             }
           }
           media @required(action: THROW) {
-            ...useContainedDimensionsForTokenFragment
             ... on HtmlMedia {
               __typename
             }
           }
         }
-
-        ...useGetPreviewImagesSingleFragment
-        ...NftDetailAssetComponentFragment
+        ...NftDetailAssetContainerFragment
       }
     `,
     collectionToken.token
@@ -237,27 +260,15 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   const shouldEnforceSquareAspectRatio =
     !isIframe && (breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const { handleNftLoaded } = useNftRetry({
-    tokenId: token.dbid,
-  });
+  const [lightboxContainer, setLightboxContainer] = useState<HTMLElement | null>(null);
 
-  const resultDimensions = useContainedDimensionsForToken({ mediaRef: token.definition.media });
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
+  useEffect(() => {
+    setLightboxContainer(document.getElementById(getLightboxPortalElementId(token.dbid)));
+    // only need to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
-  const tokenId = token.dbid;
-
-  const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
-  const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
-  const shouldShowShimmer = !(hasPreviewUrl || hasRawUrl);
-
-  // only update the state if the selected token is set to 'visible'
-  const handleRawLoad = useCallback(() => {
-    if (visibility === 'visible') {
-      cacheLoadedImageUrls(tokenId, 'raw', imageUrl, resultDimensions);
-    }
-    handleNftLoaded();
-  }, [visibility, imageUrl, handleNftLoaded, cacheLoadedImageUrls, tokenId, resultDimensions]);
+  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StyledAssetContainer
@@ -272,24 +283,24 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
           [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
         */}
         <VisibilityContainer>
-          <AssetContainer isVisible={hasPreviewUrl}>
-            <StyledImage
-              src={cachedUrls[tokenId]?.url}
-              onLoad={handleNftLoaded}
-              height={resultDimensions.height}
-              width={resultDimensions.width}
-            />
-          </AssetContainer>
-          {shouldShowShimmer && (
-            <ShimmerContainer>
-              <Shimmer />
-            </ShimmerContainer>
+          {!isMobile && !isLightboxOpen && (
+            <StyledLightboxButton onClick={toggleLightbox}>
+              <ExpandIcon />
+            </StyledLightboxButton>
           )}
-          <AssetContainer isVisible={hasRawUrl}>
-            <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
-          </AssetContainer>
+          {visibility === 'visible' &&
+            lightboxContainer &&
+            createPortal(
+              <NftDetailAssetContainer tokenRef={token} toggleLightbox={toggleLightbox} />,
+              lightboxContainer
+            )}
         </VisibilityContainer>
       </NftFailureBoundary>
+      <NftDetailLightbox
+        isLightboxOpen={Boolean(isLightboxOpen)}
+        toggleLightbox={toggleLightbox}
+        tokenId={token.dbid}
+      />
     </StyledAssetContainer>
   );
 }
@@ -301,13 +312,31 @@ type AssetContainerProps = {
   backgroundColorOverride: string;
 };
 
+export const StyledLightboxButton = styled.div`
+  opacity: 0;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 10px;
+  right: 10px;
+  background: ${colors.black['800']};
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  transition: opacity 0.3s;
+  color: ${colors.white};
+`;
+
 const StyledAssetContainer = styled.div<AssetContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 2; /* Above footer in event they overlap */
+  z-index: 100; /* Above footer in event they overlap */
   width: 100%;
 
   ${({ shouldEnforceSquareAspectRatio }) =>
@@ -323,50 +352,22 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
   // enforce auto width on NFT detail page as to not stretch to shimmer container
   ${StyledImageWithLoading} {
     width: auto;
+    ${({ backgroundColorOverride }) =>
+      backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
   }
-`;
 
-const StyledImage = styled.img`
-  border: none;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  &:hover {
+    ${StyledLightboxButton} {
+      opacity: 1;
+    }
+  }
+
 `;
 
 const VisibilityContainer = styled.div`
   position: relative;
   width: inherit;
   padding-top: 100%; /* This creates a square container based on aspect ratio */
-`;
-
-const AssetContainer = styled.div<{ isVisible: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  ${({ isVisible }) =>
-    isVisible &&
-    `
-  opacity: 1;
-  pointer-events: auto;
-  `}
-`;
-
-const ShimmerContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 `;
 
 export default NftDetailAsset;

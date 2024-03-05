@@ -4,7 +4,7 @@ import { ResizeMode } from 'expo-av';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useFragment } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
@@ -16,8 +16,8 @@ import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPrev
 import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
+import { NftSelectorPickerGridQuery } from '~/generated/NftSelectorPickerGridQuery.graphql';
 import { NftSelectorPickerGridSinglePreviewFragment$key } from '~/generated/NftSelectorPickerGridSinglePreviewFragment.graphql';
 import {
   NftSelectorPickerGridTokenGridFragment$data,
@@ -53,20 +53,18 @@ type NftSelectorPickerGridProps = {
     sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
-  queryRef: NftSelectorPickerGridFragment$key;
   onRefresh: () => void;
 };
 
 export function NftSelectorPickerGrid({
-  queryRef,
   searchCriteria,
   screen,
   style,
   onRefresh,
 }: NftSelectorPickerGridProps) {
-  const query = useFragment(
+  const query = useLazyLoadQuery<NftSelectorPickerGridQuery>(
     graphql`
-      fragment NftSelectorPickerGridFragment on Query {
+      query NftSelectorPickerGridQuery {
         viewer {
           ... on Viewer {
             user {
@@ -83,7 +81,7 @@ export function NftSelectorPickerGrid({
         ...doesUserOwnWalletFromChainFamilyFragment
       }
     `,
-    queryRef
+    {}
   );
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(

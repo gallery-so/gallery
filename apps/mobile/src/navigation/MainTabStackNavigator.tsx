@@ -35,7 +35,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="Collection" component={CollectionScreen} />
       <Stack.Screen name="FeedEvent" component={FeedEventScreen} />
       <Stack.Screen name="Community" component={CommunityScreen} />
-      <Stack.Screen name="ProfilePicturePicker" component={NftSelectorPickerScreen} />
+      <Stack.Screen name="NftSelector" component={NftSelectorPickerScreen} />
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />

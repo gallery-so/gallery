@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback } from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -85,6 +85,11 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
   const track = useTrack();
 
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const toggleLightbox = useCallback(() => {
+    setIsLightboxOpen((prev) => !prev);
+  }, []);
+
   const handleEventClick = useCallback<MouseEventHandler>(
     (e) => {
       e.preventDefault();
@@ -97,13 +102,15 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
               queryRef={query}
               authenticatedUserOwnsAsset={false}
               collectionTokenRef={event.token}
+              isLightboxOpen={isLightboxOpen}
+              toggleLightbox={toggleLightbox}
             />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [query, event.token, showModal, track]
+    [track, showModal, query, event.token, isLightboxOpen, toggleLightbox]
   );
 
   return (

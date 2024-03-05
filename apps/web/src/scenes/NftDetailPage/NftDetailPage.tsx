@@ -77,6 +77,7 @@ function NftDetailPage({
                 name
               }
             }
+
             ...NftDetailViewFragment
           }
         }
@@ -204,6 +205,11 @@ function NftDetailPage({
   useKeyDown('ArrowLeft', handlePrevPress);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const toggleLightbox = useCallback(() => {
+    setIsLightboxOpen((prev) => !prev);
+  }, []);
+
   return (
     <>
       <Head>
@@ -211,20 +217,34 @@ function NftDetailPage({
       </Head>
       <GalleryViewEmitter queryRef={query} />
       {!isMobile && prevNft && (
-        <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />
+        <NavigationHandle
+          direction={Directions.LEFT}
+          onClick={handlePrevPress}
+          hoverStyle={isLightboxOpen ? 'transparent' : 'default'}
+        />
       )}
       {mountedNfts.map(({ token, visibility }) => (
-        <_DirectionalFade key={token.token.dbid} visibility={visibility}>
+        <_DirectionalFade
+          key={token.token.dbid}
+          visibility={visibility}
+          isLightboxOpen={isLightboxOpen}
+        >
           <NftDetailView
             queryRef={query}
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
             visibility={visibility}
+            toggleLightbox={toggleLightbox}
+            isLightboxOpen={isLightboxOpen}
           />
         </_DirectionalFade>
       ))}
       {!isMobile && nextNft && (
-        <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />
+        <NavigationHandle
+          direction={Directions.RIGHT}
+          onClick={handleNextPress}
+          hoverStyle={isLightboxOpen ? 'transparent' : 'default'}
+        />
       )}
     </>
   );
@@ -308,9 +328,11 @@ function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPage
   );
 }
 
-const _DirectionalFade = styled.div<{ visibility: string }>`
+const _DirectionalFade = styled.div<{ visibility: string; isLightboxOpen: boolean }>`
   position: absolute;
+  height: 100%;
   width: 100%;
+  display: flex;
   opacity: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
   transform: ${({ visibility }) => {
     if (visibility === 'visible') {
@@ -323,13 +345,19 @@ const _DirectionalFade = styled.div<{ visibility: string }>`
       return `translate(-${ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE}px,0px)`;
     }
   }};
-  z-index: ${({ visibility }) => (visibility === 'visible' ? 1 : 0)};
 
   transition: ${transitions.cubic};
+
+  // increase z-index when light box is open so that it sits above the modal close button
+  ${({ isLightboxOpen }) => isLightboxOpen && 'overflow:hidden;'}
+  z-index: ${({ isLightboxOpen, visibility }) =>
+    visibility === 'visible' ? (isLightboxOpen ? 5 : 1) : 0}
 `;
 
 const StyledNftDetailPage = styled.div`
-  width: 100%;
+  width: 100vw;
+  overflow-x: hidden;
+  position: relative;
   height: 100vh;
 
   display: flex;

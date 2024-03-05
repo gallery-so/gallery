@@ -6,6 +6,7 @@ import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
+import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
@@ -26,6 +27,7 @@ import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BookmarkIcon from '~/icons/BookmarkIcon';
+import ExpandIcon from '~/icons/ExpandIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { contexts, flows } from '~/shared/analytics/constants';
@@ -46,9 +48,10 @@ type Props = {
   tokenRef: NftDetailTextFragment$key;
   queryRef: NftDetailTextQueryFragment$key;
   authenticatedUserOwnsAsset: boolean;
+  toggleLightbox?: () => void;
 };
 
-function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props) {
+function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleLightbox }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
@@ -151,7 +154,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
     removeTokenAdmire(
       token.id,
       token.dbid,
-      token.viewerAdmire?.dbid,
+      token.viewerAdmire.dbid,
       query.viewer?.user?.dbid,
       decodedTokenName
     );
@@ -252,6 +255,14 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset }: Props
         <VStack gap={8}>
           <HStack gap={8} justify="space-between">
             {name && <TitleM>{decodedTokenName}</TitleM>}
+            {isMobile && toggleLightbox && (
+              <IconContainer
+                variant="default"
+                size="md"
+                icon={<ExpandIcon width={16} />}
+                onClick={toggleLightbox}
+              />
+            )}
           </HStack>
           <HStack align="center" gap={4}>
             {communityUrl && token.definition.community ? (

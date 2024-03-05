@@ -3,11 +3,14 @@ import clsx from 'clsx';
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
+import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
 import { PostMintLinkInput } from '~/components/Post/PostMintLinkInput';
@@ -313,7 +316,7 @@ export function PostComposerScreen() {
       eventContext={null}
     >
       <View className="flex-1 bg-offWhite dark:bg-black-900" style={{ paddingTop: top }}>
-        <Suspense fallback={null}>
+        <Suspense fallback={<PostComposerScreenSkeleton />}>
           <PostComposerScreenInner />
         </Suspense>
       </View>
@@ -350,6 +353,63 @@ export function ToastMessage({ tokenRef }: ToastMessageProps) {
       >
         {token.definition?.name}
       </Typography>
+    </View>
+  );
+}
+
+function PostComposerScreenSkeleton() {
+  return (
+    <View className="flex-column px-4 \">
+      <View className="relative flex-row items-center justify-between mb-8">
+        <BackButton />
+
+        <View className="flex flex-row justify-center items-center" pointerEvents="none">
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            New post
+          </Typography>
+        </View>
+
+        <Typography
+          className="text-sm text-metal"
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+        >
+          POST
+        </Typography>
+      </View>
+
+      <View className="py-4 px-3 bg-faint dark:bg-black-900 h-28 mb-4">
+        <Typography
+          className="text-sm text-shadow"
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Regular',
+          }}
+        >
+          Loading...
+        </Typography>
+      </View>
+      <View className="flex-row items-center gap-1 mb-6">
+        <Typography
+          className="text-lg"
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+        >
+          Mint link
+        </Typography>
+        <InfoCircleIcon />
+      </View>
+      <GallerySkeleton>
+        <SkeletonPlaceholder.Item gap={8} flexDirection="column">
+          <SkeletonPlaceholder.Item width="100%" height={320} />
+          <SkeletonPlaceholder.Item width={240} height={24} />
+          <SkeletonPlaceholder.Item width={240} height={24} />
+        </SkeletonPlaceholder.Item>
+      </GallerySkeleton>
     </View>
   );
 }

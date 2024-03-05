@@ -48,7 +48,7 @@ export type MainTabStackNavigatorParamList = {
     projectId?: string;
   };
 
-  ProfilePicturePicker: {
+  NftSelector: {
     fullScreen?: boolean;
     page: ScreenWithNftSelector;
   };
@@ -107,7 +107,9 @@ export type LoginStackNavigatorParamList = {
   EnterEmail: undefined;
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
-  NotificationUpsell: undefined;
+  NotificationUpsell: {
+    isNewUser: boolean;
+  };
 
   OnboardingVideo: undefined;
   OnboardingEmail: {

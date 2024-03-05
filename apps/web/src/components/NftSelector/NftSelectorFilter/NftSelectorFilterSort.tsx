@@ -39,7 +39,12 @@ export function NftSelectorFilterSort({
 
   return (
     <Container>
-      <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
+      <Selector
+        gap={10}
+        justify="space-between"
+        align="center"
+        onClick={() => setIsDropdownOpen(true)}
+      >
         <BaseM>{selectedView}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>

@@ -32,9 +32,9 @@ export default function ManageEmailSection({ queryRef }: Props) {
               email
               verificationStatus
               emailNotificationSettings {
-                unsubscribedFromAll
                 unsubscribedFromNotifications
                 unsubscribedFromDigest
+                unsubscribedFromAll
               }
             }
           }
@@ -50,11 +50,10 @@ export default function ManageEmailSection({ queryRef }: Props) {
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
 
-  const unsubscribedFromDigest =
-    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromDigest ?? false;
+  const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
 
   const isEmailNotificationSubscribed =
-    !query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications;
+    !currentEmailNotificationSettings?.unsubscribedFromNotifications;
 
   const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState<boolean>(
     isEmailNotificationSubscribed
@@ -62,8 +61,9 @@ export default function ManageEmailSection({ queryRef }: Props) {
   const { pushToast } = useToastActions();
   const reportError = useReportError();
 
-  const isEmailUnsubscribedFromAll =
-    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
+  const isEmailUnsubscribedFromAll = currentEmailNotificationSettings?.unsubscribedFromAll ?? false;
+  const isEmailUnsubscribedFromDigest =
+    currentEmailNotificationSettings?.unsubscribedFromDigest ?? false;
 
   const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState<boolean>(
     Boolean(userEmail)
@@ -77,11 +77,11 @@ export default function ManageEmailSection({ queryRef }: Props) {
       setIsEmailNotificationChecked(!checked);
       setIsPending(true);
       try {
-        const response = await updateEmailNotificationSettings(
+        const response = await updateEmailNotificationSettings({
           unsubscribedFromNotifications,
-          isEmailUnsubscribedFromAll,
-          unsubscribedFromDigest
-        );
+          unsubscribedFromDigest: isEmailUnsubscribedFromDigest,
+          unsubscribedFromAll: isEmailUnsubscribedFromAll,
+        });
 
         if (
           response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings
@@ -112,9 +112,9 @@ export default function ManageEmailSection({ queryRef }: Props) {
     },
     [
       isEmailUnsubscribedFromAll,
+      isEmailUnsubscribedFromDigest,
       pushToast,
       reportError,
-      unsubscribedFromDigest,
       updateEmailNotificationSettings,
     ]
   );

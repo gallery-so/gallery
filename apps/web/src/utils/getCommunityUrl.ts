@@ -24,13 +24,13 @@ export function getCommunityUrlFromCommunity(
   if (subtype === 'ArtBlocksCommunity') {
     if (chain === 'Ethereum') {
       return {
-        pathname: `/artblocks/[contractAddress]/[projectId]`,
+        pathname: `/community/artblocks/[contractAddress]/[projectId]`,
         query: { contractAddress, projectId },
       };
     }
     if (chain === 'Arbitrum') {
       return {
-        pathname: `/prohibition/[contractAddress]/[projectId]`,
+        pathname: `/community/prohibition/[contractAddress]/[projectId]`,
         query: { contractAddress, projectId },
       };
     }
