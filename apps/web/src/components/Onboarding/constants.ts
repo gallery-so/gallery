@@ -51,7 +51,7 @@ export const ONBOARDING_PROGRESS_BAR_STEPS: {
   },
   'recommend-users': {
     from: 90,
-    to: 100,
+    to: 95,
   },
 };
 
