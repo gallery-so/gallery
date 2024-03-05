@@ -120,7 +120,7 @@ export function OnboardingRecommendUsers() {
 
   const userProfileRoute: Route = useMemo(
     () => ({
-      pathname: '/',
+      pathname: '/home',
       query: {
         onboarding: 'true',
       },
@@ -137,8 +137,7 @@ export function OnboardingRecommendUsers() {
     queryRef: query,
   });
   const handleFollowAll = useCallback(() => {
-    followAllRecommendedUsers();
-    redirectToProfile();
+    Promise.all([followAllRecommendedUsers(), redirectToProfile()]);
   }, [followAllRecommendedUsers, redirectToProfile]);
 
   const handlePrevious = useCallback(() => {
