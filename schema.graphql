@@ -111,6 +111,7 @@ input AuthMechanism {
   debug: DebugAuth
   magicLink: MagicLinkAuth
   oneTimeLoginToken: OneTimeLoginTokenAuth
+  privy: PrivyAuth
 }
 
 type AuthNonce {
@@ -131,6 +132,11 @@ type BanUserFromFeedPayload {
 }
 
 union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
+
+enum BasicAuthType {
+  Retool
+  Monitoring
+}
 
 type BlockUserPayload {
   userId: DBID!
@@ -553,7 +559,7 @@ scalar Email
 type EmailNotificationSettings {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
-  unsubscribedFromDigest: Boolean
+  unsubscribedFromDigest: Boolean!
 }
 
 enum EmailUnsubscriptionType {
@@ -1426,6 +1432,10 @@ type PreviewURLSet {
   blurhash: String
 }
 
+input PrivyAuth {
+  token: String!
+}
+
 union ProfileImage = TokenProfileImage | EnsProfileImage
 
 scalar PubKey
@@ -2191,7 +2201,7 @@ input UpdateEmailInput {
 input UpdateEmailNotificationSettingsInput {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
-  unsubscribedFromDigest: Boolean
+  unsubscribedFromDigest: Boolean!
 }
 
 type UpdateEmailNotificationSettingsPayload {
@@ -2450,6 +2460,7 @@ type Viewer implements Node {
   userExperiences: [UserExperience!]
   persona: Persona
   suggestedUsers(before: String, after: String, first: Int, last: Int): UsersConnection
+  suggestedUsersFarcaster(before: String, after: String, first: Int, last: Int): UsersConnection
 }
 
 type ViewerGallery {
