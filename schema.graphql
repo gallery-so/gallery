@@ -111,6 +111,7 @@ input AuthMechanism {
   debug: DebugAuth
   magicLink: MagicLinkAuth
   oneTimeLoginToken: OneTimeLoginTokenAuth
+  privy: PrivyAuth
 }
 
 type AuthNonce {
@@ -1431,6 +1432,10 @@ type PreviewURLSet {
   blurhash: String
 }
 
+input PrivyAuth {
+  token: String!
+}
+
 union ProfileImage = TokenProfileImage | EnsProfileImage
 
 scalar PubKey
@@ -2455,6 +2460,7 @@ type Viewer implements Node {
   userExperiences: [UserExperience!]
   persona: Persona
   suggestedUsers(before: String, after: String, first: Int, last: Int): UsersConnection
+  suggestedUsersFarcaster(before: String, after: String, first: Int, last: Int): UsersConnection
 }
 
 type ViewerGallery {
