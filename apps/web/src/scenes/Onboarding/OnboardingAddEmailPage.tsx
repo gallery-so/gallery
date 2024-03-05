@@ -47,6 +47,10 @@ export function OnboardingAddEmailPage() {
     push('/');
   }, [push]);
 
+  const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  }, []);
+
   return (
     <VStack>
       <FullPageCenteredStep stepName={onboardingStepName}>
@@ -54,27 +58,22 @@ export function OnboardingAddEmailPage() {
           <TitleDiatypeM>Add email</TitleDiatypeM>
 
           <HStack gap={16} align="center">
+            <StyledInput onChange={handleEmailChange} placeholder="Email address" autoFocus />
+
             <Suspense
               fallback={
-                <>
-                  <StyledInput value={email} disabled />
-                  <Button
-                    eventElementId="Save Email Button"
-                    eventName="Save Email"
-                    eventContext={contexts.Onboarding}
-                    variant="primary"
-                    disabled
-                  >
-                    Submit
-                  </Button>
-                </>
+                <Button
+                  eventElementId="Save Email Button"
+                  eventName="Save Email"
+                  eventContext={contexts.Onboarding}
+                  variant="primary"
+                  disabled
+                >
+                  Submit
+                </Button>
               }
             >
-              <SubmitEmailInput
-                emailAddress={debouncedEmail}
-                onSubmit={handleContinue}
-                onEmailChange={setEmail}
-              />
+              <SubmitEmailButton emailAddress={debouncedEmail} onSubmit={handleContinue} />
             </Suspense>
           </HStack>
 
@@ -105,13 +104,12 @@ const StyledText = styled(BaseM)<{ shouldShow?: boolean }>`
   opacity: ${({ shouldShow }) => (shouldShow ? 1 : 0)};
 `;
 
-type SubmitEmailInputProps = {
+type SubmitEmailButtonProps = {
   emailAddress: string;
-  onEmailChange: (email: string) => void;
   onSubmit: () => void;
 };
 
-function SubmitEmailInput({ emailAddress, onEmailChange, onSubmit }: SubmitEmailInputProps) {
+function SubmitEmailButton({ emailAddress, onSubmit }: SubmitEmailButtonProps) {
   const query = useLazyLoadQuery<OnboardingAddEmailPageQuery>(
     graphql`
       query OnboardingAddEmailPageQuery($emailAddress: Email!) {
@@ -154,26 +152,16 @@ function SubmitEmailInput({ emailAddress, onEmailChange, onSubmit }: SubmitEmail
     setIsCheckingEmail(false);
   }, [isInvalidEmail, pushToast, query.isEmailAddressAvailable, onSubmit]);
 
-  const handleEmailChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onEmailChange(event.target.value);
-    },
-    [onEmailChange]
-  );
-
   return (
-    <>
-      <StyledInput onChange={handleEmailChange} placeholder="Email address" autoFocus />
-      <Button
-        eventElementId="Save Email Button"
-        eventName="Save Email"
-        eventContext={contexts.Onboarding}
-        variant="primary"
-        disabled={isCheckingEmail}
-        onClick={handleSubmit}
-      >
-        Submit
-      </Button>
-    </>
+    <Button
+      eventElementId="Save Email Button"
+      eventName="Save Email"
+      eventContext={contexts.Onboarding}
+      variant="primary"
+      disabled={isCheckingEmail}
+      onClick={handleSubmit}
+    >
+      Submit
+    </Button>
   );
 }
