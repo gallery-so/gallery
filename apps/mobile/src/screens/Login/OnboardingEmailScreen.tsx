@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import useDebounce from 'shared/hooks/useDebounce';
 
 import { BackButton } from '~/components/BackButton';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
@@ -25,16 +26,7 @@ const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in
 
 function InnerOnboardingEmailScreen() {
   const [email, setEmail] = useState('');
-  const query = useLazyLoadQuery<OnboardingEmailScreenQuery>(
-    graphql`
-      query OnboardingEmailScreenQuery($emailAddress: Email!) {
-        isEmailAddressAvailable(emailAddress: $emailAddress)
-      }
-    `,
-    {
-      emailAddress: email,
-    }
-  );
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingEmail'>>();
@@ -45,7 +37,6 @@ function InnerOnboardingEmailScreen() {
   const { bottom } = useSafeAreaInsets();
 
   const [error, setError] = useState('');
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [login] = useLogin();
   const reportError = useReportError();
@@ -56,15 +47,11 @@ function InnerOnboardingEmailScreen() {
     setEmail(text);
   }, []);
 
-  const isInvalidEmail = useMemo(() => {
-    return !EMAIL_FORMAT.test(email);
-  }, [email]);
-
-  const handleContinue = useCallback(async () => {
+  const handleContinueEmailFlow = useCallback(async () => {
     let hasNavigatedForward = false;
 
-    setError('');
     setIsLoggingIn(true);
+    setError('');
 
     function handleLoginError({
       message,
@@ -88,40 +75,8 @@ function InnerOnboardingEmailScreen() {
       }
     }
 
-    if (isInvalidEmail) {
-      setError("That doesn't look like a valid email address. Please double-check and try again");
-      setIsLoggingIn(false);
-      return;
-    }
-
-    // If it's a wallet auth mechanism, we need to check if the email is available
-    if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
-      try {
-        const isEmailAddressAvailable = query.isEmailAddressAvailable;
-
-        if (!isEmailAddressAvailable) {
-          setError('This email address is already in use');
-          setIsLoggingIn(false);
-          return;
-        }
-      } catch (error) {
-        handleLoginError({ message: FALLBACK_ERROR_MESSAGE, underlyingError: error as Error });
-        return;
-      }
-    }
-
     try {
       hasNavigatedForward = true;
-
-      if (authMethod === 'Wallet' && authMechanism?.authMechanismType === 'eoa') {
-        // Redirect to the next screen with the wallet auth mechanism
-        navigation.navigate('OnboardingUsername', {
-          authMechanism,
-          authMethod: 'Wallet',
-          email,
-        });
-        return;
-      }
 
       const token = await magic.auth.loginWithMagicLink({ email, showUI: false });
 
@@ -153,17 +108,25 @@ function InnerOnboardingEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [
-    authMechanism,
-    authMethod,
-    email,
-    isInvalidEmail,
-    login,
-    navigation,
-    query.isEmailAddressAvailable,
-    reportError,
-    track,
-  ]);
+  }, [email, login, navigation, reportError, track]);
+
+  const handleContinueWalletFlow = useCallback(() => {
+    if (authMechanism?.authMechanismType === 'eoa') {
+      navigation.navigate('OnboardingUsername', {
+        authMechanism,
+        authMethod: 'Wallet',
+        email,
+      });
+    }
+  }, [authMechanism, email, navigation]);
+
+  const handleContinue = useCallback(() => {
+    if (authMethod === 'Email') {
+      handleContinueEmailFlow();
+    } else {
+      handleContinueWalletFlow();
+    }
+  }, [authMethod, handleContinueEmailFlow, handleContinueWalletFlow]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -204,20 +167,25 @@ function InnerOnboardingEmailScreen() {
           onChange={(e) => handleEmailChange(e.nativeEvent.text)}
         />
         <View className="space-y-4 w-full">
-          <Button
-            eventElementId="Submit Email Button"
-            eventName="Sign In Attempt"
-            eventContext={contexts.Onboarding}
-            className={clsx(
-              'w-full',
-              email.length > 0 && 'opacity-100',
-              email.length === 0 && 'opacity-0'
-            )}
-            loading={isLoggingIn}
-            onPress={handleContinue}
-            variant={isInvalidEmail ? 'disabled' : 'primary'}
-            text="Next"
-          />
+          <Suspense
+            fallback={
+              <Button
+                eventElementId="Submit Email Button"
+                eventName="Sign In Attempt"
+                eventContext={contexts.Onboarding}
+                className="w-full"
+                text="Next"
+              />
+            }
+          >
+            <SubmitEmailButton
+              authMethod={authMethod}
+              email={email}
+              onSubmit={handleContinue}
+              onErrorMessage={setError}
+              isLoggingIn={isLoggingIn}
+            />
+          </Suspense>
 
           <Typography
             className={clsx(
@@ -235,6 +203,74 @@ function InnerOnboardingEmailScreen() {
         <View />
       </View>
     </View>
+  );
+}
+
+type SubmitEmailButtonProps = {
+  authMethod: 'Email' | 'Wallet';
+  email: string;
+  onSubmit: () => void;
+  onErrorMessage: (message: string) => void;
+  isLoggingIn: boolean;
+};
+
+function SubmitEmailButton({
+  authMethod,
+  email,
+  onErrorMessage,
+  onSubmit,
+  isLoggingIn,
+}: SubmitEmailButtonProps) {
+  const debouncedEmail = useDebounce(email, 500);
+
+  const query = useLazyLoadQuery<OnboardingEmailScreenQuery>(
+    graphql`
+      query OnboardingEmailScreenQuery($emailAddress: Email!) {
+        isEmailAddressAvailable(emailAddress: $emailAddress)
+      }
+    `,
+    {
+      emailAddress: debouncedEmail,
+    }
+  );
+
+  const isInvalidEmail = useMemo(() => {
+    return !EMAIL_FORMAT.test(email);
+  }, [email]);
+
+  const handleSubmit = useCallback(() => {
+    if (isInvalidEmail) {
+      onErrorMessage(
+        "That doesn't look like a valid email address. Please double-check and try again"
+      );
+      return;
+    }
+
+    const isEmailAddressAvailable = query.isEmailAddressAvailable ?? false;
+
+    if (!isEmailAddressAvailable && authMethod === 'Wallet') {
+      onErrorMessage('This email address is already in use');
+      return;
+    }
+
+    onSubmit();
+  }, [authMethod, isInvalidEmail, onErrorMessage, onSubmit, query.isEmailAddressAvailable]);
+
+  return (
+    <Button
+      eventElementId="Submit Email Button"
+      eventName="Sign In Attempt"
+      eventContext={contexts.Onboarding}
+      className={clsx(
+        'w-full',
+        email.length > 0 && 'opacity-100',
+        email.length === 0 && 'opacity-0'
+      )}
+      loading={isLoggingIn}
+      onPress={handleSubmit}
+      variant={isInvalidEmail ? 'disabled' : 'primary'}
+      text="Next"
+    />
   );
 }
 
