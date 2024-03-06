@@ -10,7 +10,11 @@ type GalleryRefreshControlProps = {
   onRefresh: () => void;
   refreshing: boolean;
 };
-export function GalleryRefreshControl({ onRefresh, refreshing }: GalleryRefreshControlProps) {
+export function GalleryRefreshControl({
+  onRefresh,
+  refreshing,
+  ...props
+}: GalleryRefreshControlProps) {
   const { colorScheme } = useColorScheme();
 
   const handleRefresh = useCallback(() => {
@@ -26,6 +30,7 @@ export function GalleryRefreshControl({ onRefresh, refreshing }: GalleryRefreshC
       colors={colorScheme === 'dark' ? [colors.white] : [colors.black.DEFAULT]}
       refreshing={refreshing}
       onRefresh={handleRefresh}
+      {...props}
     />
   );
 }
