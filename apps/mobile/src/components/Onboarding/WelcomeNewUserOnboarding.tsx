@@ -13,20 +13,23 @@ import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LazyAccountTabItem } from '~/navigation/MainTabNavigator/TabBar';
 
-import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
-import { Typography } from './Typography';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 import { WelcomeNewUser } from './WelcomeNewUser';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 
 type Props = {
   username: string;
+  onComplete: () => void;
 };
 
-export function WelcomeNewUserOnboarding({ username }: Props) {
+export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
   const { colorScheme } = useColorScheme();
 
   // Step 1: Welcome message
   // Step 2: Post message
   // Step 3: Profile message
+
   const [step, setStep] = useState(1);
 
   const { bottom } = useSafeAreaInsets();
@@ -35,6 +38,7 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
   const nextStep = useCallback(() => {
     if (step === 3) {
       setStep(0);
+      onComplete();
       return;
     }
 

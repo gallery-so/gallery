@@ -4,12 +4,12 @@ import { View } from 'react-native';
 
 import { contexts } from '~/shared/analytics/constants';
 
-import { Button } from './Button';
+import { Button } from '../Button';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
-} from './GalleryBottomSheet/GalleryBottomSheetModal';
-import { Typography } from './Typography';
+} from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { Typography } from '../Typography';
 
 type Props = {
   username: string;
