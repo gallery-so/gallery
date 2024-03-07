@@ -207,7 +207,7 @@ export function OnboardingRecommendedUsers() {
   const { top } = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingTop: top }} className="bg-white dark:bg-black-900">
+    <View style={{ paddingTop: top }} className="flex flex-1 flex-col bg-white dark:bg-black-900">
       <OnboardingRecommendedUsersInner />
     </View>
   );
