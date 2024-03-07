@@ -2,6 +2,15 @@ import keyBy from 'lodash.keyby';
 
 export const chains = [
   {
+    name: 'All Networks',
+    shortName: 'ALL',
+    icon: '/icons/all_logo.svg',
+    baseChain: 'N/A',
+    hasCreatorSupport: false,
+    isEnabled: true,
+    shouldAutoRefresh: false,
+  },
+  {
     name: 'Ethereum',
     shortName: 'ETH',
     icon: '/icons/ethereum_logo.svg',

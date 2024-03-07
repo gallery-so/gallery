@@ -29,6 +29,8 @@ import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSele
 import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import NftSelectorTokens from './NftSelectorTokens';
+import { chains } from '~/shared/utils/chains';
+import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 
 type Props = {
   onSelectToken: (tokenId: string) => void;
@@ -157,6 +159,11 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
         return true;
       }
 
+      // Check if network is 'All Networks', then return true for all tokens
+      if (network === 'All Networks') {
+        return true;
+      }
+
       if (token.definition.chain !== network) {
         return false;
       }
@@ -215,11 +222,18 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     return filteredTokens;
   }, [filterType, isSearching, network, sortType, tokenSearchResults]);
 
-  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(network, query);
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    network as Chain,
+    query
+  );
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
+
+  const availableChains = chains
+    .filter((chain) => chain.name !== 'All Networks')
+    .map((chain) => chain.name as Exclude<(typeof chains)[number]['name'], 'All Networks'>);
 
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -234,8 +248,10 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     if (filterType === 'Hidden') {
       return;
     }
-
-    await syncTokens({ type: filterType, chain: network });
+    await syncTokens({
+      type: filterType,
+      chain: network === 'All Networks' ? availableChains : network,
+    });
   }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
 
   const [syncCreatedTokensForExistingContract, isContractRefreshing] =
