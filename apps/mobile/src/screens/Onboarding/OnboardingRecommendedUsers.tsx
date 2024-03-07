@@ -192,7 +192,9 @@ function OnboardingRecommendedUsersInner() {
           className="text-md text-shadow"
           font={{ family: 'ABCDiatype', weight: 'Medium' }}
         >
-          Popular users on gallery
+          {userHasFarcasterSocialGraph
+            ? 'Based on your onchain connections from places like Farcaster'
+            : 'Based on your collection'}
         </Typography>
       </View>
 
