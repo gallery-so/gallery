@@ -15,8 +15,8 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import FollowButton from '~/components/Follow/FollowButton';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import Settings from '~/components/Settings/Settings';
+import { AuthButton } from '~/contexts/globalLayout/GlobalNavbar/AuthButton';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
-import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
@@ -28,7 +28,6 @@ import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-import { SignUpButton } from '../SignUpButton';
 import QRCodeButton from './QRCodeButton';
 
 type GalleryRightContentProps = {
@@ -252,9 +251,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
-        <SignInButton buttonLocation="Gallery Navbar" />
-        {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-        {!isMobile && <SignUpButton buttonLocation="Gallery Navbar" />}
+        <AuthButton buttonLocation="Gallery Navbar" />
       </HStack>
     );
   }

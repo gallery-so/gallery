@@ -7,6 +7,7 @@ type EoaPayloadVariables = {
   nonce: string;
   signature: string;
   userFriendlyWalletName: string;
+  email?: string;
 };
 
 type GnosisPayloadVariables = {
@@ -14,9 +15,19 @@ type GnosisPayloadVariables = {
   address: string;
   nonce: string;
   userFriendlyWalletName: string;
+  email?: string;
 };
 
-export type AuthPayloadVariables = EoaPayloadVariables | GnosisPayloadVariables;
+type MagicLinkPayloadVariables = {
+  authMechanismType: 'magicLink';
+  token: string;
+  userFriendlyWalletName: string;
+};
+
+export type AuthPayloadVariables =
+  | EoaPayloadVariables
+  | GnosisPayloadVariables
+  | MagicLinkPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {
   return payload.authMechanismType === 'eoa';
@@ -24,6 +35,14 @@ export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPaylo
 
 export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   const { query } = useRouter();
+
+  if (query.authMechanismType === 'magicLink') {
+    return {
+      authMechanismType: 'magicLink',
+      token: query.token as string,
+      userFriendlyWalletName: (query.userFriendlyWalletName as string) || 'unknown',
+    };
+  }
 
   // need weird typechecking logic in this func due to the fact that nextjs queries can be
   // a variety of types, and doesn't offer generics
@@ -36,11 +55,11 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
     return null;
   }
 
-  if (query.authMechanismType === 'eoa') {
-    if (typeof query.signature !== 'string') {
-      return null;
-    }
+  if (typeof query.signature !== 'string') {
+    return null;
+  }
 
+  if (query.authMechanismType === 'eoa') {
     return {
       authMechanismType: 'eoa',
       chain: query.chain as EoaPayloadVariables['chain'],
@@ -48,6 +67,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
       nonce: query.nonce,
       signature: query.signature,
       userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
+      email: (query.email as string) || undefined,
     };
   }
 

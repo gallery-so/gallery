@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import ActionText from '~/components/core/ActionText/ActionText';
-import { Button } from '~/components/core/Button/Button';
+import { Button, ButtonProps } from '~/components/core/Button/Button';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FOOTER_HEIGHT, StepName } from '~/components/Onboarding/constants';
+import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import colors from '~/shared/theme/colors';
@@ -13,10 +13,11 @@ import isPromise from '~/utils/isPromise';
 type Props = {
   step: StepName;
   isNextEnabled: boolean;
-  nextText: string;
+  nextText?: string | null;
+  nextButtonVariant?: ButtonProps['variant'];
   previousText?: string;
   onPrevious?: () => void;
-  onNext: () => void | Promise<unknown>;
+  onNext?: () => void | Promise<unknown>;
 };
 
 export function WizardFooter({
@@ -26,11 +27,15 @@ export function WizardFooter({
   nextText,
   previousText,
   step,
+  nextButtonVariant = 'primary',
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const reportError = useReportError();
   const handleNextClick = useCallback(async () => {
+    if (!onNext) {
+      return;
+    }
     const response = onNext();
 
     // If onNext is an async function, activate the loader
@@ -58,14 +63,27 @@ export function WizardFooter({
   }, [onNext, reportError]);
 
   return (
-    <StyledWizardFooter>
-      <HStack gap={40} align="center">
-        {previousText && (
-          <ActionText color={colors.metal} onClick={onPrevious}>
+    <StyledWizardFooter align="center" justify="space-between">
+      {previousText ? (
+        <StyledButton
+          onClick={onPrevious}
+          data-testid="wizard-footer-previous-button"
+          eventElementId="Onboarding Wizard Button"
+          eventName="Onboarding Wizard Next Click"
+          eventContext={contexts.Onboarding}
+          variant="secondary"
+        >
+          <HStack align="center" gap={4}>
+            <ChevronLeftIcon />
             {previousText}
-          </ActionText>
-        )}
-        <Button
+          </HStack>
+        </StyledButton>
+      ) : (
+        <div />
+      )}
+
+      {nextText && (
+        <StyledButton
           eventElementId="Onboarding Wizard Button"
           eventName="Onboarding Wizard Next Click"
           eventContext={contexts.Onboarding}
@@ -74,28 +92,31 @@ export function WizardFooter({
           disabled={!isNextEnabled}
           pending={isLoading}
           data-testid="wizard-footer-next-button"
+          variant={nextButtonVariant}
         >
           {nextText}
-        </Button>
-      </HStack>
+        </StyledButton>
+      )}
     </StyledWizardFooter>
   );
 }
 
-const StyledWizardFooter = styled.div`
+const StyledWizardFooter = styled(HStack)`
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 1;
 
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
   height: ${FOOTER_HEIGHT}px;
   width: 100%;
   padding-right: 24px;
+  padding-left: 24px;
 
   border-top: 1px solid ${colors.porcelain};
   background: ${colors.white};
+`;
+
+const StyledButton = styled(Button)`
+  width: 150px;
+  padding: 12px 16px;
 `;

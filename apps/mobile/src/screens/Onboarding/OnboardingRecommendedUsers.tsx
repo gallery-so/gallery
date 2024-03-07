@@ -71,6 +71,18 @@ function OnboardingRecommendedUsersInner() {
                 }
               }
             }
+            suggestedUsersFarcaster(last: $usersLast, before: $usersBefore) {
+              edges {
+                node {
+                  id
+                  __typename
+                  ...UserFollowListFragment
+                }
+              }
+              pageInfo {
+                total
+              }
+            }
           }
         }
         ...useFollowAllRecommendedUsersQueryFragment
@@ -84,8 +96,23 @@ function OnboardingRecommendedUsersInner() {
 
   const user = followingPagination?.viewer?.id;
 
+  const totalFarcasterUsers = followingPagination?.viewer?.suggestedUsersFarcaster?.pageInfo?.total;
+
+  const userHasFarcasterSocialGraph = useMemo(() => {
+    if (totalFarcasterUsers && totalFarcasterUsers > 0) {
+      return true;
+    }
+    return false;
+  }, [totalFarcasterUsers]);
+
   const suggestedFollowingIds = useMemo(() => {
     const userIds = [];
+
+    for (const edge of followingPagination.viewer?.suggestedUsersFarcaster?.edges ?? []) {
+      if (edge?.node?.__typename === 'GalleryUser') {
+        userIds.push(edge?.node.id);
+      }
+    }
 
     for (const edge of followingPagination.viewer?.suggestedUsers?.edges ?? []) {
       if (edge?.node?.__typename === 'GalleryUser') {

@@ -5,14 +5,12 @@ import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
+import { AuthButton } from '../AuthButton';
 import { NavbarLink } from '../NavbarLink';
-import { SignInButton } from '../SignInButton';
-import { SignUpButton } from '../SignUpButton';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -62,8 +60,6 @@ export function HomeNavbar({ queryRef }: Props) {
   const latestRoute: Route = { pathname: '/latest', query: {} };
   const followingRoute: Route = { pathname: '/following', query: {} };
   const exploreRoute: Route = { pathname: '/explore', query: {} };
-
-  const isMobile = useIsMobileWindowWidth();
 
   return (
     <StandardNavbarContainer>
@@ -124,9 +120,7 @@ export function HomeNavbar({ queryRef }: Props) {
       <NavbarRightContent>
         {isLoggedIn ? null : (
           <HStack gap={8} align="center">
-            <SignInButton buttonLocation="Home Navbar" />
-            {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-            {!isMobile && <SignUpButton buttonLocation="Home Navbar" />}
+            <AuthButton buttonLocation="Home Navbar" />
           </HStack>
         )}
       </NavbarRightContent>

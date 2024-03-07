@@ -33,14 +33,14 @@ function ManageWallets({ newAddress, queryRef, onConnectWalletSuccess }: Props) 
           ... on Viewer {
             user {
               wallets {
-                dbid @required(action: THROW)
+                dbid
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
                   chain @required(action: THROW)
                   ...ManageWalletsRow
                 }
               }
-              primaryWallet @required(action: THROW) {
+              primaryWallet {
                 dbid @required(action: THROW)
                 chainAddress @required(action: THROW) {
                   chain @required(action: THROW)

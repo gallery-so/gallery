@@ -9,7 +9,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleCondensed, TitleXS } from '~/components/core/Text/Text';
 import { useBottomSheetActions } from '~/contexts/bottomsheet/BottomSheetContext';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import useWindowSize, { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import Image from '../WelcomeAnimation/Image';
@@ -59,7 +59,7 @@ export default function LandingCoverAnimation() {
   }, [windowSize]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
-  const showAuthModal = useAuthModal('sign-up');
+  const showAuthModal = useUniversalAuthModal();
 
   const { showBottomSheet } = useBottomSheetActions();
 

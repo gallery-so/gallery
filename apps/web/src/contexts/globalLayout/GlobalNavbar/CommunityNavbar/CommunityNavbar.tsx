@@ -8,10 +8,8 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { CommunityNavbarFragment$key } from '~/generated/CommunityNavbarFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
-import { SignInButton } from '../SignInButton';
-import { SignUpButton } from '../SignUpButton';
+import { AuthButton } from '../AuthButton';
 
 type CommunityNavbarProps = {
   queryRef: CommunityNavbarFragment$key;
@@ -31,8 +29,6 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
     queryRef
   );
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent />
@@ -41,9 +37,7 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
 
       {query.viewer?.__typename === 'Viewer' ? null : (
         <HStack gap={8} align="center">
-          <SignInButton buttonLocation="Collection Page Navbar" />
-          {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
-          {!isMobile && <SignUpButton buttonLocation="Collection Page Navbar" />}
+          <AuthButton buttonLocation="Collection Page Navbar" />
         </HStack>
       )}
     </StandardNavbarContainer>

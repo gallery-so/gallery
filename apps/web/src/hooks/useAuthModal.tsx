@@ -26,7 +26,7 @@ export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
 
   return (
     <Container>
-      <WalletSelector queryRef={query} variant={variant} showEmail={variant !== 'sign-up'} />
+      <WalletSelector queryRef={query} showEmail={variant !== 'sign-up'} />
     </Container>
   );
 };
