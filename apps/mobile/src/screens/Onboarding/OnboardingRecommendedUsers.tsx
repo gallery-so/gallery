@@ -237,7 +237,9 @@ export function OnboardingRecommendedUsers() {
 
   return (
     <View style={{ paddingTop: top }} className="flex flex-1 flex-col bg-white dark:bg-black-900">
-      <OnboardingRecommendedUsersInner />
+      <Suspense fallback={null}>
+        <OnboardingRecommendedUsersInner />
+      </Suspense>
     </View>
   );
 }

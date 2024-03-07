@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -194,7 +194,9 @@ export function OnboardingProfileBioScreen() {
       style={{ paddingTop: top }}
       className="flex flex-1 flex-col bg-white dark:bg-black-900"
     >
-      <InnerOnboardingProfileBioScreen />
+      <Suspense fallback={null}>
+        <InnerOnboardingProfileBioScreen />
+      </Suspense>
     </KeyboardAvoidingView>
   );
 }
