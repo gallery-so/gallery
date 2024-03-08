@@ -253,7 +253,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       type: filterType,
       chain: network === 'All Networks' ? availableChains : network,
     });
-  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
+  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network, availableChains]);
 
   const [syncCreatedTokensForExistingContract, isContractRefreshing] =
     useSyncCreatedTokensForExistingContract();

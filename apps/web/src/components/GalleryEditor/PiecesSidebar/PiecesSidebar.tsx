@@ -223,7 +223,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       type: selectedView,
       chain: selectedChain.name === 'All Networks' ? availableChains : selectedChain.name,
     });
-  }, [isRefreshDisabled, selectedView, syncTokens, selectedChain.name]);
+  }, [isRefreshDisabled, selectedView, syncTokens, selectedChain.name, availableChains]);
 
   // Auto-sync tokens when the chain changes, and there are 0 tokens to display
   useEffect(() => {

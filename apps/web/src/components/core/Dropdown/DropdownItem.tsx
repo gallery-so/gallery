@@ -52,7 +52,7 @@ export function DropdownItem({
 
       onClick?.(event);
     },
-    [track, name, eventContext, eventFlow, label, eventSelection, properties, onClick]
+    [track, name, eventContext, eventFlow, label, eventSelection, properties, onClick, disabled]
   );
 
   if (label) {
