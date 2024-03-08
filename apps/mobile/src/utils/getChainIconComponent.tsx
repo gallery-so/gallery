@@ -6,12 +6,15 @@ import { OptimismIcon } from 'src/icons/OptimismIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
+import { WorldIcon } from 'src/icons/WorldIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { ChainMetadata } from '~/shared/utils/chains';
 
 export function getChainIconComponent(chain: ChainMetadata) {
   switch (chain.name) {
+    case 'All Networks':
+      return <WorldIcon />;
     case 'Ethereum':
       return <EthIcon />;
 
