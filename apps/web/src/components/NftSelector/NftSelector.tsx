@@ -154,6 +154,9 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   const tokensToDisplay = useMemo(() => {
     // Filter tokens
     const filteredTokens = tokenSearchResults.filter((token) => {
+      const isSpam =
+        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
+
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
         return true;
@@ -161,7 +164,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
       // Check if network is 'All Networks', then return true for all tokens
       if (network === 'All Networks') {
-        return true;
+        return !isSpam;
       }
 
       if (token.definition.chain !== network) {
@@ -181,8 +184,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       }
 
       // ...but incorporate with spam filtering logic for Collected view
-      const isSpam =
-        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
       if (filterType === 'Hidden') {
         return isSpam;
       }

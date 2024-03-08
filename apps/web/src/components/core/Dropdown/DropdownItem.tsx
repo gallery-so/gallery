@@ -38,6 +38,9 @@ export function DropdownItem({
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
     (event) => {
+      if (disabled) {
+        return;
+      }
       track('Dropdown Item Click', {
         id: `${name} Dropdown Item`,
         name: `${name} Dropdown Item Click`,

@@ -85,7 +85,7 @@ const PostComposerProvider = memo(({ children }: Props) => {
 
   const [filterType, setFilterType] = useState<TokenFilterType>('Collected');
   const [sortType, setSortType] = useState<NftSelectorSortView>('Recently added');
-  const [network, setNetwork] = useState<Chain>('Ethereum');
+  const [network, setNetwork] = useState<Chain>('All Networks');
   const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
 
   const isMobile = useIsMobileWindowWidth();
