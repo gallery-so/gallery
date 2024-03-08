@@ -18,7 +18,7 @@ export const openGraphMetaTags = ({
   title,
   path,
   isFcFrameCompatible,
-  buttonContent = '→',
+  buttonContent = 'Explore',
 }: Params): Required<MetaTagProps['metaTags']> => {
   const tags = [
     { property: 'og:title', content: title },
@@ -48,6 +48,10 @@ export const openGraphMetaTags = ({
       {
         property: `fc:frame:button:1`,
         content: buttonContent,
+      },
+      {
+        property: `fc:frame:button:1:action`,
+        content: 'post',
       },
       {
         property: 'fc:frame:image',
