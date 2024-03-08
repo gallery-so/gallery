@@ -12,6 +12,7 @@ import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarT
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
@@ -19,7 +20,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
-import { ChainMetadata, chainsMap, chains } from '~/shared/utils/chains';
+import { ChainMetadata, chains, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -30,7 +31,6 @@ import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarViewSelector, TokenFilterType } from './SidebarViewSelector';
 import SidebarWalletSelector, { SidebarWallet } from './SidebarWalletSelector';
 import useTokenSearchResults from './useTokenSearchResults';
-import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;

@@ -4,6 +4,7 @@ import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/us
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
+import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
@@ -12,6 +13,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { chains } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import breakpoints from '../core/breakpoints';
@@ -29,8 +31,6 @@ import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSele
 import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import NftSelectorTokens from './NftSelectorTokens';
-import { chains } from '~/shared/utils/chains';
-import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 
 type Props = {
   onSelectToken: (tokenId: string) => void;
