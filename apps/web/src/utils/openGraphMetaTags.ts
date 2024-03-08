@@ -50,6 +50,10 @@ export const openGraphMetaTags = ({
         content: buttonContent,
       },
       {
+        property: `fc:frame:button:1:action`,
+        content: 'post',
+      },
+      {
         property: 'fc:frame:image',
         content: `${baseurl}${path}/fcframe`,
       },
