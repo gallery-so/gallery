@@ -7,6 +7,8 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 type Props = {
   unsubscribedFromNotifications: boolean;
   unsubscribedFromDigest: boolean;
+  unsubscribedFromMarketing: boolean;
+  unsubscribedFromMembersClub: boolean;
   unsubscribedFromAll: boolean;
 };
 
@@ -23,6 +25,8 @@ export default function useUpdateEmailNotificationSettings() {
                 emailNotificationSettings {
                   unsubscribedFromNotifications
                   unsubscribedFromDigest
+                  unsubscribedFromMarketing
+                  unsubscribedFromMembersClub
                   unsubscribedFromAll
                 }
               }
@@ -36,12 +40,20 @@ export default function useUpdateEmailNotificationSettings() {
     `);
 
   return useCallback(
-    ({ unsubscribedFromNotifications, unsubscribedFromDigest, unsubscribedFromAll }: Props) => {
+    ({
+      unsubscribedFromNotifications,
+      unsubscribedFromDigest,
+      unsubscribedFromMarketing,
+      unsubscribedFromMembersClub,
+      unsubscribedFromAll,
+    }: Props) => {
       return updateEmailNotificationSettings({
         variables: {
           enabledNotification: {
             unsubscribedFromNotifications,
             unsubscribedFromDigest,
+            unsubscribedFromMarketing,
+            unsubscribedFromMembersClub,
             unsubscribedFromAll,
           },
         },

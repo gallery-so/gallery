@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeL } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import useUpdateEmailNotificationSettings from '~/components/Email/useUpdateEmailNotificationSettings';
@@ -20,6 +20,10 @@ type Props = {
   queryRef: ManageEmailSectionFragment$key;
 };
 
+const SettingsRowTitle = styled(BaseM)`
+  max-width: 380px;
+`;
+
 const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
 
 export default function ManageEmailSection({ queryRef }: Props) {
@@ -28,12 +32,17 @@ export default function ManageEmailSection({ queryRef }: Props) {
       fragment ManageEmailSectionFragment on Query {
         viewer {
           ... on Viewer {
+            user {
+              roles
+            }
             email {
               email
               verificationStatus
               emailNotificationSettings {
                 unsubscribedFromNotifications
                 unsubscribedFromDigest
+                unsubscribedFromMarketing
+                unsubscribedFromMembersClub
                 unsubscribedFromAll
               }
             }
@@ -52,78 +61,153 @@ export default function ManageEmailSection({ queryRef }: Props) {
 
   const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
 
-  const isEmailNotificationSubscribed =
-    !currentEmailNotificationSettings?.unsubscribedFromNotifications;
+  const hasEarlyAccess = useMemo(() => {
+    return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
+  }, [query]);
 
-  const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState<boolean>(
-    isEmailNotificationSubscribed
+  const [emailSettings, setEmailSettings] = useState({
+    notifications: !currentEmailNotificationSettings?.unsubscribedFromNotifications,
+    marketing: !currentEmailNotificationSettings?.unsubscribedFromMarketing,
+    digest: !currentEmailNotificationSettings?.unsubscribedFromDigest,
+    membersClub: hasEarlyAccess
+      ? !currentEmailNotificationSettings?.unsubscribedFromMembersClub
+      : false,
+    // currently cannot toggle all notifs from notif setting
+    all: false,
+  });
+
+  const emailNotificationSettingData = useMemo(
+    () => [
+      {
+        key: 'notifications',
+        title: 'Notifications',
+        description: 'Weekly summary of your unread notifications',
+      },
+      {
+        key: 'marketing',
+        title: 'General Marketing',
+        description: 'Product updates, artist collabs, and airdrops',
+      },
+      // Conditionally add the 'Members Club' entry if `hasEarlyAccess` is true
+      ...(hasEarlyAccess
+        ? [
+            {
+              key: 'membersClub',
+              title: 'Members Club',
+              description: 'Exclusive updates for Members Club Holders',
+            },
+          ]
+        : []),
+      {
+        key: 'digest',
+        title: 'Digest',
+        description: 'Weekly digest of top interacted galleries, artists, and posts',
+      },
+    ],
+    [hasEarlyAccess]
   );
+
+  // Adjusted toggle handler to manage multiple settings
+  const handleToggle = async (settingType) => {
+    // Invert the current setting to reflect the change immediately in the UI
+    const newSettingValue = !emailSettings[settingType];
+
+    setEmailSettings((prevSettings) => ({
+      ...prevSettings,
+      [settingType]: newSettingValue,
+    }));
+
+    try {
+      await handleEmailNotificationChange(settingType, newSettingValue);
+
+      // Assuming success if no errors thrown
+      pushToast({
+        message: `Settings successfully updated. You have ${
+          newSettingValue ? 'subscribed to' : 'unsubscribed from'
+        } ${settingType}.`,
+      });
+    } catch (error) {
+      // On failure, revert the optimistic UI update to maintain consistency with the server state
+      setEmailSettings((prevSettings) => ({
+        ...prevSettings,
+        [settingType]: !newSettingValue,
+      }));
+
+      // Handle and report the error appropriately
+      reportError('Failed to update email notification settings', error.message);
+
+      pushToast({
+        message: 'Unfortunately, there was an error updating your notification settings.',
+      });
+    }
+  };
+
   const { pushToast } = useToastActions();
   const reportError = useReportError();
-
-  const isEmailUnsubscribedFromAll = currentEmailNotificationSettings?.unsubscribedFromAll ?? false;
-  const isEmailUnsubscribedFromDigest =
-    currentEmailNotificationSettings?.unsubscribedFromDigest ?? false;
 
   const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState<boolean>(
     Boolean(userEmail)
   );
 
-  const [isPending, setIsPending] = useState(false);
-
+  const [isPending, setIsPending] = useState({
+    notifications: false,
+    marketing: false,
+    digest: false,
+    membersClub: false,
+    // Add other settings as needed
+  });
   const handleEmailNotificationChange = useCallback(
-    async (checked: boolean) => {
-      const unsubscribedFromNotifications = checked;
-      setIsEmailNotificationChecked(!checked);
-      setIsPending(true);
+    async (settingType, newSettingValue) => {
+      // Determine which setting is being updated and its new value
+      const settingsUpdate = {
+        ...emailSettings, // Assuming emailSettings is a new state that holds all settings
+        [settingType]: newSettingValue,
+      };
+
+      setIsPending((prev) => ({ ...prev, [settingType]: true }));
       try {
+        // Call the API to update the email notification settings
+        // You need to adjust the payload according to your backend requirements
         const response = await updateEmailNotificationSettings({
-          unsubscribedFromNotifications,
-          unsubscribedFromDigest: isEmailUnsubscribedFromDigest,
-          unsubscribedFromAll: isEmailUnsubscribedFromAll,
+          unsubscribedFromNotifications: !settingsUpdate.notifications,
+          unsubscribedFromDigest: !settingsUpdate.digest,
+          unsubscribedFromMarketing: !settingsUpdate.marketing,
+          unsubscribedFromMembersClub: !settingsUpdate.membersClub ?? false,
+          unsubscribedFromAll: false,
         });
 
+        // Update local state based on the response
+        // Assuming response structure is similar, adjust as necessary
         if (
-          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings
-            ?.unsubscribedFromNotifications
+          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings[
+            settingType
+          ] === newSettingValue
         ) {
+          setEmailSettings(settingsUpdate);
           pushToast({
-            message:
-              'Settings successfully updated. You will no longer receive notification emails',
+            message: `Settings successfully updated. You will ${
+              settingsUpdate[settingType] ? 'no longer' : 'now'
+            } receive ${settingsUpdate[settingType].label} emails.`,
           });
-          return;
         }
-        pushToast({
-          message: 'Settings successfully updated. You will now receive notification emails',
-        });
-        return;
       } catch (error) {
         if (error instanceof Error) {
-          reportError('Failed to update email notification settings');
+          reportError('Failed to update email notification settings', error.message);
         }
         pushToast({
-          message: 'Unfortunately there was an error to update your notification settings',
+          message: 'Unfortunately, there was an error updating your notification settings.',
         });
-        // If its failed, revert the toggle state
-        setIsEmailNotificationChecked(checked);
+        // No need to explicitly revert the toggle state here if using a centralized state approach
       } finally {
         setIsPending(false);
       }
     },
     [
-      isEmailUnsubscribedFromAll,
-      isEmailUnsubscribedFromDigest,
+      emailSettings, // Make sure to include this in your dependencies if you're using it
       pushToast,
       reportError,
       updateEmailNotificationSettings,
     ]
-  );
-
-  const toggleEmailNotification = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      handleEmailNotificationChange(!event.target.checked);
-    },
-    [handleEmailNotificationChange]
   );
 
   const handleOpenEmailManager = useCallback(() => {
@@ -140,14 +224,16 @@ export default function ManageEmailSection({ queryRef }: Props) {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
   }, [query]);
 
-  const isToggleChecked = useMemo(() => {
-    // if the user dont have an email or not verified, we want to toggle off
-    if (!userEmail || isEmailUnverified) {
-      return false;
-    }
-    setIsEmailNotificationChecked(isEmailNotificationSubscribed);
-    return isEmailNotificationChecked;
-  }, [isEmailNotificationChecked, isEmailNotificationSubscribed, isEmailUnverified, userEmail]);
+  const isToggleChecked = useCallback(
+    (notifType) => {
+      // if the user dont have an email or not verified, we want to toggle off
+      if (!userEmail || isEmailUnverified) {
+        return false;
+      }
+      return emailSettings[notifType];
+    },
+    [isEmailUnverified, userEmail, emailSettings]
+  );
 
   return (
     <VStack gap={16}>
@@ -174,17 +260,26 @@ export default function ManageEmailSection({ queryRef }: Props) {
             add email address
           </StyledButton>
         )}
-        <Divider />
-        <HStack justify="space-between" align="center">
-          <strong>
-            <SettingsRowDescription>Receive weekly recaps</SettingsRowDescription>
-          </strong>
-          <Toggle
-            checked={isToggleChecked}
-            isPending={isPending || isEmailUnverified}
-            onChange={toggleEmailNotification}
-          />
-        </HStack>
+        <VStack gap={14}>
+          {emailNotificationSettingData.map((emailNotifSetting, idx) => (
+            <>
+              <Divider />
+              <HStack justify="space-between" align="center" key={idx} gap={6}>
+                <VStack>
+                  <strong>
+                    <SettingsRowTitle>{emailNotifSetting.title}</SettingsRowTitle>
+                  </strong>
+                  <SettingsRowDescription>{emailNotifSetting.description}</SettingsRowDescription>
+                </VStack>
+                <Toggle
+                  checked={isToggleChecked(emailNotifSetting.key)}
+                  isPending={isPending[emailNotifSetting.key]}
+                  onChange={() => handleToggle(emailNotifSetting.key)}
+                />
+              </HStack>
+            </>
+          ))}
+        </VStack>
       </StyledButtonContainer>
     </VStack>
   );

@@ -560,12 +560,16 @@ type EmailNotificationSettings {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
   unsubscribedFromDigest: Boolean!
+  unsubscribedFromMarketing: Boolean
+  unsubscribedFromMembersClub: Boolean
 }
 
 enum EmailUnsubscriptionType {
   All
   Notifications
   Digest
+  Marketing
+  MembersClub
 }
 
 enum EmailVerificationStatus {
@@ -2202,6 +2206,8 @@ input UpdateEmailNotificationSettingsInput {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
   unsubscribedFromDigest: Boolean!
+  unsubscribedFromMarketing: Boolean
+  unsubscribedFromMembersClub: Boolean
 }
 
 type UpdateEmailNotificationSettingsPayload {
