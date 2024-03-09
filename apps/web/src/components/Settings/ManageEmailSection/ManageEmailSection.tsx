@@ -81,12 +81,12 @@ export default function ManageEmailSection({ queryRef }: Props) {
       {
         key: 'notifications',
         title: 'Notifications',
-        description: 'Weekly summary of your unread notifications',
+        description: 'Notification summary emails',
       },
       {
         key: 'marketing',
         title: 'General Marketing',
-        description: 'Product updates, artist collabs, and airdrops',
+        description: 'Product marketing emails',
       },
       // Conditionally add the 'Members Club' entry if `hasEarlyAccess` is true
       ...(hasEarlyAccess
@@ -94,14 +94,14 @@ export default function ManageEmailSection({ queryRef }: Props) {
             {
               key: 'membersClub',
               title: 'Members Club',
-              description: 'Exclusive updates for Members Club Holders',
+              description: 'Exclusively for Members Club Holders',
             },
           ]
         : []),
       {
         key: 'digest',
-        title: 'Digest',
-        description: 'Weekly digest of top interacted galleries, artists, and posts',
+        title: 'Weekly Digest',
+        description: 'Featured Galleries, Collections and more',
       },
     ],
     [hasEarlyAccess]
@@ -273,7 +273,7 @@ export default function ManageEmailSection({ queryRef }: Props) {
                 </VStack>
                 <Toggle
                   checked={isToggleChecked(emailNotifSetting.key)}
-                  isPending={isPending[emailNotifSetting.key]}
+                  isPending={isPending[emailNotifSetting.key] || isEmailUnverified}
                   onChange={() => handleToggle(emailNotifSetting.key)}
                 />
               </HStack>
