@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
 import { useUpdateEmailNotificationSettingsMutation } from '~/generated/useUpdateEmailNotificationSettingsMutation.graphql';
+
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 type Props = {
