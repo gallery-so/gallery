@@ -8,6 +8,7 @@ import colors from 'shared/theme/colors';
 import { CircleCheckIcon } from 'src/icons/CircleCheckIcon';
 
 import { BackButton } from '~/components/BackButton';
+import { useColorScheme } from 'nativewind';
 import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { Toggle } from '~/components/Toggle';
@@ -129,7 +130,6 @@ export function NotificationSettingsScreen() {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
   }, [query]);
 
-
   const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
 
   const [emailSettings, setEmailSettings] = useState({
@@ -142,9 +142,12 @@ export function NotificationSettingsScreen() {
     // currently cannot toggle all notifs from notif setting
     all: false,
   });
-  
-  const shouldShowEmailSettings = useMemo(() => (userEmail && !isEmailUnverified), [userEmail, isEmailUnverified])
-  
+
+  const shouldShowEmailSettings = useMemo(
+    () => userEmail && !isEmailUnverified,
+    [userEmail, isEmailUnverified]
+  );
+
   const isToggleChecked = useCallback(
     (notifType: string | number) => {
       // if the user dont have an email or not verified, we want to toggle off
@@ -245,6 +248,8 @@ export function NotificationSettingsScreen() {
     ]
   );
 
+  const { colorScheme } = useColorScheme();
+
   // TODOs:
   // add query to get if member's club or not
   // add verified check to show email setting
@@ -255,60 +260,66 @@ export function NotificationSettingsScreen() {
         <BackButton />
       </View>
       {shouldShowEmailSettings && (
-      <View className="px-4 pt-8 space-y-2 flex flex-col">
-        <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Email notifications
-        </Typography>
-        <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Receive weekly recaps that show your most recent admires, comments, and followers.
-        </Typography>
-        <View className="p-3 space-y-3 bg-offWhite">
-          <View>
-            <View className="flex">
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                {'username@email.com'}
-              </Typography>
-              <View className="flex flex-col justify-between">
-                <View className="flex flex-row items-center space-x-1">
-                  <CircleCheckIcon stroke={colors.shadow} width="20" height="20" />
-                  <Typography
-                    className="text-sm text-shadow"
-                    font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  >
-                    {'verified'}
-                  </Typography>
+        <View className="px-4 pt-8 space-y-2 flex flex-col">
+          <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            Email notifications
+          </Typography>
+          <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            Receive weekly recaps that show your most recent admires, comments, and followers.
+          </Typography>
+          <View className="p-3 space-y-3 bg-offWhite dark:bg-black-700">
+            <View>
+              <View className="flex">
+                <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                  {'username@email.com'}
+                </Typography>
+                <View className="flex flex-col justify-between">
+                  <View className="flex flex-row items-center space-x-1">
+                    <CircleCheckIcon
+                      stroke={colorScheme === 'dark' ? colors.metal : colors.shadow}
+                      width="20"
+                      height="20"
+                    />
+                    <Typography
+                      className="text-sm text-shadow dark:text-metal"
+                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                    >
+                      verified
+                    </Typography>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          <View className="w-full h-px bg-porcelain" />
-          <View className="bg-offWhite">
-            {emailNotificationSettingData.map((notifSetting, idx) => (
-              <View className="space-y-3" key={idx}>
-                <View className="flex flex-row justify-between items-center">
-                  <View className="max-w-[280px]">
-                    <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                      {notifSetting.title}
-                    </Typography>
-                    <Typography
-                      className="text-sm"
-                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                    >
-                      {notifSetting.description}
-                    </Typography>
+            <View className="bg-offWhite dark:bg-black-700">
+              {emailNotificationSettingData.map((notifSetting, idx) => (
+                <View className="space-y-3" key={idx}>
+                  <View className="w-full h-px bg-porcelain dark:bg-shadow" />
+                  <View className="flex flex-row justify-between items-center">
+                    <View className="max-w-[280px] mb-3">
+                      <Typography
+                        className="text-sm"
+                        font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                      >
+                        {notifSetting.title}
+                      </Typography>
+                      <Typography
+                        className="text-sm"
+                        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                      >
+                        {notifSetting.description}
+                      </Typography>
+                    </View>
+                    <Toggle
+                      checked={isToggleChecked(notifSetting.key)}
+                      onToggle={() => handleToggle(notifSetting.key, notifSetting.title)}
+                    />
                   </View>
-                  <Toggle
-                    checked={isToggleChecked(notifSetting.key)}
-                    onToggle={() => handleToggle(notifSetting.key, notifSetting.title)}
-                  />
                 </View>
-                <View className="w-full h-px mb-3 bg-porcelain" />
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
         </View>
-      </View>)
-      }
+      )}
       <View className="px-4 pt-8 space-y-6 flex flex-col">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Push notifications
