@@ -69,7 +69,6 @@ export function NotificationSettingsScreen() {
         title: 'General Marketing',
         description: 'Product updates, artist collabs, and airdrops',
       },
-      // Conditionally add the 'Members Club' entry if `hasEarlyAccess` is true
       ...(hasEarlyAccess
         ? [
             {
@@ -160,9 +159,7 @@ export function NotificationSettingsScreen() {
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
 
-  // Adjusted toggle handler to manage multiple settings
   const handleToggle = async (settingType: string, settingTitle: string) => {
-    // Invert the current setting to reflect the change immediately in the UI
     const newSettingValue = !emailSettings[settingType];
 
     setEmailSettings((prevSettings) => ({
@@ -173,20 +170,17 @@ export function NotificationSettingsScreen() {
     try {
       await handleEmailNotificationChange(settingType, newSettingValue, settingTitle);
 
-      // Assuming success if no errors thrown
       pushToast({
         message: `Settings successfully updated. You have ${
           newSettingValue ? 'subscribed to' : 'unsubscribed from'
         } ${settingTitle}.`,
       });
     } catch (error) {
-      // On failure, revert the optimistic UI update to maintain consistency with the server state
       setEmailSettings((prevSettings) => ({
         ...prevSettings,
         [settingType]: !newSettingValue,
       }));
 
-      // Handle and report the error appropriately
       reportError('Failed to update email notification settings');
 
       pushToast({
@@ -197,15 +191,12 @@ export function NotificationSettingsScreen() {
 
   const handleEmailNotificationChange = useCallback(
     async (settingType: string, newSettingValue: boolean, settingTitle: string) => {
-      // Determine which setting is being updated and its new value
       const settingsUpdate = {
-        ...emailSettings, // Assuming emailSettings is a new state that holds all settings
+        ...emailSettings,
         [settingType]: newSettingValue,
       };
 
       try {
-        // Call the API to update the email notification settings
-        // You need to adjust the payload according to your backend requirements
         const response = await updateEmailNotificationSettings({
           unsubscribedFromNotifications: !settingsUpdate.notifications,
           unsubscribedFromDigest: !settingsUpdate.digest,
@@ -214,8 +205,6 @@ export function NotificationSettingsScreen() {
           unsubscribedFromAll: false,
         });
 
-        // Update local state based on the response
-        // Assuming response structure is similar, adjust as necessary
         if (
           response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings &&
           settingType in
@@ -239,22 +228,13 @@ export function NotificationSettingsScreen() {
         pushToast({
           message: 'Unfortunately, there was an error updating your notification settings.',
         });
-        // No need to explicitly revert the toggle state here if using a centralized state approach
       }
     },
-    [
-      emailSettings, // Make sure to include this in your dependencies if you're using it
-      pushToast,
-      updateEmailNotificationSettings,
-    ]
+    [emailSettings, pushToast, updateEmailNotificationSettings]
   );
 
   const { colorScheme } = useColorScheme();
 
-  // TODOs:
-  // add query to get if member's club or not
-  // add verified check to show email setting
-  // add logic to actually update user settings (copy from web)
   return (
     <View className="relative pt-4 flex-1 bg-white dark:bg-black-900">
       <View className="px-4 relative mb-2">
@@ -272,7 +252,7 @@ export function NotificationSettingsScreen() {
             <View>
               <View className="flex">
                 <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                  {'username@email.com'}
+                  {userEmail}
                 </Typography>
                 <View className="flex flex-col justify-between">
                   <View className="flex flex-row items-center space-x-1">
