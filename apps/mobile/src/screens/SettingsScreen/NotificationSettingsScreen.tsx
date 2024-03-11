@@ -1,5 +1,6 @@
 import * as Application from 'expo-application';
 import * as Notifications from 'expo-notifications';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { useRelayEnvironment } from 'react-relay';
@@ -8,7 +9,6 @@ import colors from 'shared/theme/colors';
 import { CircleCheckIcon } from 'src/icons/CircleCheckIcon';
 
 import { BackButton } from '~/components/BackButton';
-import { useColorScheme } from 'nativewind';
 import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { Toggle } from '~/components/Toggle';
@@ -18,19 +18,7 @@ import { NotificationSettingsScreensQuery } from '~/generated/NotificationSettin
 import { contexts } from '~/shared/analytics/constants';
 import useUpdateEmailNotificationSettings from '~/shared/hooks/useUpdateEmailNotificationSettings';
 
-const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
-
 export function NotificationSettingsScreen() {
-  const relayEnvironment = useRelayEnvironment();
-
-  const [pushNotificationPermissions, setPushNotificationPermissions] =
-    useState<Notifications.NotificationPermissionsStatus | null>(null);
-
-  const checkPushNotificationPermission = useCallback(async () => {
-    const existingPermissions = await Notifications.getPermissionsAsync();
-    setPushNotificationPermissions(existingPermissions);
-  }, []);
-
   const query = useLazyLoadQuery<NotificationSettingsScreensQuery>(
     graphql`
       query NotificationSettingsScreensQuery {
@@ -47,7 +35,6 @@ export function NotificationSettingsScreen() {
                 unsubscribedFromDigest
                 unsubscribedFromMarketing
                 unsubscribedFromMembersClub
-                unsubscribedFromAll
               }
             }
           }
@@ -56,6 +43,16 @@ export function NotificationSettingsScreen() {
     `,
     {}
   );
+  const relayEnvironment = useRelayEnvironment();
+
+  const [pushNotificationPermissions, setPushNotificationPermissions] =
+    useState<Notifications.NotificationPermissionsStatus | null>(null);
+
+  const checkPushNotificationPermission = useCallback(async () => {
+    const existingPermissions = await Notifications.getPermissionsAsync();
+    setPushNotificationPermissions(existingPermissions);
+  }, []);
+
   const hasEarlyAccess = useMemo(() => {
     return query.viewer?.user?.roles?.includes('EARLY_ACCESS') ?? false;
   }, [query]);
@@ -124,15 +121,21 @@ export function NotificationSettingsScreen() {
     () => pushNotificationPermissions?.status === 'granted',
     [pushNotificationPermissions]
   );
+
   const userEmail = query?.viewer?.email?.email;
 
   const isEmailUnverified = useMemo(() => {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
   }, [query]);
 
+  const shouldShowEmailSettings = useMemo(
+    () => userEmail && !isEmailUnverified,
+    [userEmail, isEmailUnverified]
+  );
+
   const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
 
-  const [emailSettings, setEmailSettings] = useState({
+  const [emailSettings, setEmailSettings] = useState<EmailNotificationSettings>({
     notifications: !currentEmailNotificationSettings?.unsubscribedFromNotifications,
     marketing: !currentEmailNotificationSettings?.unsubscribedFromMarketing,
     digest: !currentEmailNotificationSettings?.unsubscribedFromDigest,
@@ -142,11 +145,6 @@ export function NotificationSettingsScreen() {
     // currently cannot toggle all notifs from notif setting
     all: false,
   });
-
-  const shouldShowEmailSettings = useMemo(
-    () => userEmail && !isEmailUnverified,
-    [userEmail, isEmailUnverified]
-  );
 
   const isToggleChecked = useCallback(
     (notifType: string | number) => {
@@ -173,7 +171,7 @@ export function NotificationSettingsScreen() {
     }));
 
     try {
-      await handleEmailNotificationChange(settingType, newSettingValue);
+      await handleEmailNotificationChange(settingType, newSettingValue, settingTitle);
 
       // Assuming success if no errors thrown
       pushToast({
@@ -189,7 +187,7 @@ export function NotificationSettingsScreen() {
       }));
 
       // Handle and report the error appropriately
-      reportError('Failed to update email notification settings', error.message);
+      reportError('Failed to update email notification settings');
 
       pushToast({
         message: 'Unfortunately, there was an error updating your notification settings.',
@@ -198,7 +196,7 @@ export function NotificationSettingsScreen() {
   };
 
   const handleEmailNotificationChange = useCallback(
-    async (settingType: string | number, newSettingValue: any) => {
+    async (settingType: string, newSettingValue: boolean, settingTitle: string) => {
       // Determine which setting is being updated and its new value
       const settingsUpdate = {
         ...emailSettings, // Assuming emailSettings is a new state that holds all settings
@@ -219,26 +217,29 @@ export function NotificationSettingsScreen() {
         // Update local state based on the response
         // Assuming response structure is similar, adjust as necessary
         if (
-          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings[
-            settingType
-          ] === newSettingValue
+          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings &&
+          settingType in
+            response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings
         ) {
-          setEmailSettings(settingsUpdate);
-          pushToast({
-            message: `Settings successfully updated. You will ${
-              settingsUpdate[settingType] ? 'no longer' : 'now'
-            } receive ${settingsUpdate[settingType].label} emails.`,
-          });
+          const settings =
+            response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings;
+          if (settings[settingType as keyof EmailSettings] === newSettingValue) {
+            setEmailSettings(settingsUpdate);
+            pushToast({
+              message: `Settings successfully updated. You will ${
+                settingsUpdate[settingType] ? 'no longer' : 'now'
+              } receive ${settingTitle} emails.`,
+            });
+          }
         }
       } catch (error) {
         if (error instanceof Error) {
-          reportError('Failed to update email notification settings', error.message);
+          reportError('Failed to update email notification settings');
         }
         pushToast({
           message: 'Unfortunately, there was an error updating your notification settings.',
         });
         // No need to explicitly revert the toggle state here if using a centralized state approach
-      } finally {
       }
     },
     [
@@ -284,7 +285,7 @@ export function NotificationSettingsScreen() {
                       className="text-sm text-shadow dark:text-metal"
                       font={{ family: 'ABCDiatype', weight: 'Regular' }}
                     >
-                      verified
+                      Verified
                     </Typography>
                   </View>
                 </View>
@@ -310,7 +311,7 @@ export function NotificationSettingsScreen() {
                       </Typography>
                     </View>
                     <Toggle
-                      checked={isToggleChecked(notifSetting.key)}
+                      checked={isToggleChecked(notifSetting.key) ?? false}
                       onToggle={() => handleToggle(notifSetting.key, notifSetting.title)}
                     />
                   </View>
@@ -345,3 +346,22 @@ export function NotificationSettingsScreen() {
     </View>
   );
 }
+
+const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
+
+type EmailSettings = {
+  readonly unsubscribedFromAll: boolean;
+  readonly unsubscribedFromDigest: boolean;
+  readonly unsubscribedFromMarketing: boolean;
+  readonly unsubscribedFromMembersClub: boolean;
+  readonly unsubscribedFromNotifications: boolean;
+};
+
+type EmailNotificationSettings = {
+  notifications: boolean;
+  marketing: boolean;
+  digest: boolean;
+  membersClub: boolean;
+  all: boolean;
+  [key: string]: boolean;
+};
