@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { useRelayEnvironment } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import colors from 'shared/theme/colors';
 import { CircleCheckIcon } from 'src/icons/CircleCheckIcon';
 
@@ -11,7 +12,12 @@ import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { Toggle } from '~/components/Toggle';
 import { Typography } from '~/components/Typography';
+import { useToastActions } from '~/contexts/ToastContext';
+import { NotificationSettingsScreensQuery } from '~/generated/NotificationSettingsScreensQuery.graphql';
 import { contexts } from '~/shared/analytics/constants';
+import useUpdateEmailNotificationSettings from '~/shared/hooks/useUpdateEmailNotificationSettings';
+
+const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
 
 export function NotificationSettingsScreen() {
   const relayEnvironment = useRelayEnvironment();
@@ -24,7 +30,31 @@ export function NotificationSettingsScreen() {
     setPushNotificationPermissions(existingPermissions);
   }, []);
 
-  const query = { viewer: null };
+  const query = useLazyLoadQuery<NotificationSettingsScreensQuery>(
+    graphql`
+      query NotificationSettingsScreensQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              roles
+            }
+            email {
+              email
+              verificationStatus
+              emailNotificationSettings {
+                unsubscribedFromNotifications
+                unsubscribedFromDigest
+                unsubscribedFromMarketing
+                unsubscribedFromMembersClub
+                unsubscribedFromAll
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
   const hasEarlyAccess = useMemo(() => {
     return query.viewer?.user?.roles?.includes('EARLY_ACCESS') ?? false;
   }, [query]);
@@ -93,17 +123,138 @@ export function NotificationSettingsScreen() {
     () => pushNotificationPermissions?.status === 'granted',
     [pushNotificationPermissions]
   );
+  const userEmail = query?.viewer?.email?.email;
+
+  const isEmailUnverified = useMemo(() => {
+    return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
+  }, [query]);
+
+
+  const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
+
+  const [emailSettings, setEmailSettings] = useState({
+    notifications: !currentEmailNotificationSettings?.unsubscribedFromNotifications,
+    marketing: !currentEmailNotificationSettings?.unsubscribedFromMarketing,
+    digest: !currentEmailNotificationSettings?.unsubscribedFromDigest,
+    membersClub: hasEarlyAccess
+      ? !currentEmailNotificationSettings?.unsubscribedFromMembersClub
+      : false,
+    // currently cannot toggle all notifs from notif setting
+    all: false,
+  });
+  
+  const shouldShowEmailSettings = useMemo(() => (userEmail && !isEmailUnverified), [userEmail, isEmailUnverified])
+  
+  const isToggleChecked = useCallback(
+    (notifType: string | number) => {
+      // if the user dont have an email or not verified, we want to toggle off
+      if (!shouldShowEmailSettings) {
+        return false;
+      }
+      return emailSettings[notifType];
+    },
+    [shouldShowEmailSettings, emailSettings]
+  );
+  const { pushToast } = useToastActions();
+
+  const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
+
+  // Adjusted toggle handler to manage multiple settings
+  const handleToggle = async (settingType: string, settingTitle: string) => {
+    // Invert the current setting to reflect the change immediately in the UI
+    const newSettingValue = !emailSettings[settingType];
+
+    setEmailSettings((prevSettings) => ({
+      ...prevSettings,
+      [settingType]: newSettingValue,
+    }));
+
+    try {
+      await handleEmailNotificationChange(settingType, newSettingValue);
+
+      // Assuming success if no errors thrown
+      pushToast({
+        message: `Settings successfully updated. You have ${
+          newSettingValue ? 'subscribed to' : 'unsubscribed from'
+        } ${settingTitle}.`,
+      });
+    } catch (error) {
+      // On failure, revert the optimistic UI update to maintain consistency with the server state
+      setEmailSettings((prevSettings) => ({
+        ...prevSettings,
+        [settingType]: !newSettingValue,
+      }));
+
+      // Handle and report the error appropriately
+      reportError('Failed to update email notification settings', error.message);
+
+      pushToast({
+        message: 'Unfortunately, there was an error updating your notification settings.',
+      });
+    }
+  };
+
+  const handleEmailNotificationChange = useCallback(
+    async (settingType: string | number, newSettingValue: any) => {
+      // Determine which setting is being updated and its new value
+      const settingsUpdate = {
+        ...emailSettings, // Assuming emailSettings is a new state that holds all settings
+        [settingType]: newSettingValue,
+      };
+
+      try {
+        // Call the API to update the email notification settings
+        // You need to adjust the payload according to your backend requirements
+        const response = await updateEmailNotificationSettings({
+          unsubscribedFromNotifications: !settingsUpdate.notifications,
+          unsubscribedFromDigest: !settingsUpdate.digest,
+          unsubscribedFromMarketing: !settingsUpdate.marketing,
+          unsubscribedFromMembersClub: !settingsUpdate.membersClub ?? false,
+          unsubscribedFromAll: false,
+        });
+
+        // Update local state based on the response
+        // Assuming response structure is similar, adjust as necessary
+        if (
+          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings[
+            settingType
+          ] === newSettingValue
+        ) {
+          setEmailSettings(settingsUpdate);
+          pushToast({
+            message: `Settings successfully updated. You will ${
+              settingsUpdate[settingType] ? 'no longer' : 'now'
+            } receive ${settingsUpdate[settingType].label} emails.`,
+          });
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError('Failed to update email notification settings', error.message);
+        }
+        pushToast({
+          message: 'Unfortunately, there was an error updating your notification settings.',
+        });
+        // No need to explicitly revert the toggle state here if using a centralized state approach
+      } finally {
+      }
+    },
+    [
+      emailSettings, // Make sure to include this in your dependencies if you're using it
+      pushToast,
+      updateEmailNotificationSettings,
+    ]
+  );
 
   // TODOs:
-  // fix row styling
   // add query to get if member's club or not
+  // add verified check to show email setting
   // add logic to actually update user settings (copy from web)
-  // find out if you need to add the edit button logic
   return (
     <View className="relative pt-4 flex-1 bg-white dark:bg-black-900">
       <View className="px-4 relative mb-2">
         <BackButton />
       </View>
+      {shouldShowEmailSettings && (
       <View className="px-4 pt-8 space-y-2 flex flex-col">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Email notifications
@@ -127,20 +278,18 @@ export function NotificationSettingsScreen() {
                     {'verified'}
                   </Typography>
                 </View>
-                <Button className="w-[80px]" variant="secondary" text="EDIT" onPress={() => {}} />
               </View>
             </View>
           </View>
           <View className="w-full h-px bg-porcelain" />
           <View className="bg-offWhite">
-            {emailNotificationSettingData.map((notifSetting) => (
-              <View className="space-y-3">
-                <View className="flex flex-col">
+            {emailNotificationSettingData.map((notifSetting, idx) => (
+              <View className="space-y-3" key={idx}>
+                <View className="flex flex-row justify-between items-center">
                   <View className="max-w-[280px]">
                     <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                       {notifSetting.title}
                     </Typography>
-
                     <Typography
                       className="text-sm"
                       font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -148,14 +297,18 @@ export function NotificationSettingsScreen() {
                       {notifSetting.description}
                     </Typography>
                   </View>
-                  <Toggle checked={true} onToggle={() => {}} />
+                  <Toggle
+                    checked={isToggleChecked(notifSetting.key)}
+                    onToggle={() => handleToggle(notifSetting.key, notifSetting.title)}
+                  />
                 </View>
                 <View className="w-full h-px mb-3 bg-porcelain" />
               </View>
             ))}
           </View>
         </View>
-      </View>
+      </View>)
+      }
       <View className="px-4 pt-8 space-y-6 flex flex-col">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Push notifications
