@@ -151,7 +151,7 @@ export const CommentBox = forwardRef(
           >
             <View
               className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
-            ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
+            ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue dark:bg-darkModeBlue'}
         `}
             >
               <SendIcon />

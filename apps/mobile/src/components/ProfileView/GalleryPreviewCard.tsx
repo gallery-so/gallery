@@ -71,7 +71,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
         </View>
 
         {isFeatured ? (
-          <View className="border-activeBlue dark:border-offWhite py-1/2 rounded-sm border px-1">
+          <View className="border-activeBlue dark:border-darkModeBlue dark:border-offWhite py-1/2 rounded-sm border px-1">
             <Typography
               className="text-activeBlue dark:text-offWhite text-xs"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
