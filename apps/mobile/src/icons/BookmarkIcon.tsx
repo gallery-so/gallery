@@ -34,7 +34,7 @@ const COLOR_THEME = {
       activeFillColor: colors.darkModeBlue,
       activeStrokeColor: colors.darkModeBlue,
       inactiveFillColor: 'none',
-      inactiveStrokeColor: colors.black['800'],
+      inactiveStrokeColor: colors.white,
     },
   },
   black: {
