@@ -17,7 +17,6 @@ export default function useUpdateEmailNotificationSettings({
   hasEarlyAccess,
   shouldShowEmailSettings,
 }: useUpdateEmailNotificationSettingsProps) {
-  console.log('queryRef', queryRef);
   const query = useFragment(
     graphql`
       fragment useUpdateEmailNotificationSettingsFragment on Query {
