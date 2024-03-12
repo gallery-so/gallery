@@ -107,5 +107,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner', 'expo-font', 'expo-secure-store'],
+  plugins: [
+    ['sentry-expo', { setCommits: true }],
+    'expo-barcode-scanner',
+    'expo-font',
+    'expo-secure-store',
+  ],
 });
