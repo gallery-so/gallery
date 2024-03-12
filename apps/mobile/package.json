@@ -43,7 +43,7 @@
     "expo-web-browser": "~12.8.2",
     "lodash.merge": "^4.6.2",
     "lru-cache": "^9.1.1",
-    "mixpanel-react-native": "^2.2.5",
+    "mixpanel-react-native": "^3.0.0-beta.2",
     "nativewind": "^2.0.11",
     "node-html-parser": "^6.1.5",
     "react": "18.2.0",

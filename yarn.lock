@@ -6824,6 +6824,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-async-storage/async-storage@npm:^1.21.0":
+  version: 1.22.3
+  resolution: "@react-native-async-storage/async-storage@npm:1.22.3"
+  dependencies:
+    merge-options: ^3.0.4
+  peerDependencies:
+    react-native: ^0.0.0-0 || >=0.60 <1.0
+  checksum: bbf0f49c4441361d24f5c7a236862757d1addb7332d4c11ed7238b7023e882d2280290059602d9099cee094f60aeb11aad3f2017652ab6e143544e61dccadb73
+  languageName: node
+  linkType: hard
+
 "@react-native-clipboard/clipboard@npm:^1.12.1":
   version: 1.12.1
   resolution: "@react-native-clipboard/clipboard@npm:1.12.1"
@@ -24394,10 +24405,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mixpanel-react-native@npm:^2.2.5":
-  version: 2.2.5
-  resolution: "mixpanel-react-native@npm:2.2.5"
-  checksum: 2b9c0291fdbdd31811dfc1d209523780cc5966e7a513f8fbc5566ce576c912c7c08bfee49782f2794ca28a0d180e52589f2b7050cd457fc8e1ea6e507a8874ff
+"mixpanel-react-native@npm:^3.0.0-beta.2":
+  version: 3.0.0-beta.2
+  resolution: "mixpanel-react-native@npm:3.0.0-beta.2"
+  dependencies:
+    "@react-native-async-storage/async-storage": ^1.21.0
+    uuid: 3.3.2
+  checksum: 81f243de5a19285299ecf56985c213d131cb039bc1ca6008aa907a92780b5f70cc5f50ec77c1ac22832eb83181bd3c042c305a71d410ce507fef7b544b74c8f3
   languageName: node
   linkType: hard
 
@@ -24477,7 +24491,7 @@ __metadata:
     expo-web-browser: ~12.8.2
     lodash.merge: ^4.6.2
     lru-cache: ^9.1.1
-    mixpanel-react-native: ^2.2.5
+    mixpanel-react-native: ^3.0.0-beta.2
     nativewind: ^2.0.11
     node-html-parser: ^6.1.5
     react: 18.2.0
@@ -31476,6 +31490,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid@npm:3.3.2":
+  version: 3.3.2
+  resolution: "uuid@npm:3.3.2"
+  bin:
+    uuid: ./bin/uuid
+  checksum: 8793629d2799f500aeea9fcd0aec6c4e9fbcc4d62ed42159ad96be345c3fffac1bbf61a23e18e2782600884fee05e6d4012ce4b70d0037c8e987533ae6a77870
   languageName: node
   linkType: hard
 
