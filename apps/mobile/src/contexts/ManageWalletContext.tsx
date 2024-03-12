@@ -1,13 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import { useWalletConnectModal } from '@walletconnect/modal-react-native';
-import { ethers } from 'ethers';
 import {
   createContext,
   memo,
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -20,7 +17,6 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useAddWallet from '~/shared/hooks/useAddWallet';
-import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { noop } from '~/shared/utils/noop';
 
 import { useSyncTokensActions } from './SyncTokensContext';
@@ -35,7 +31,6 @@ type ManageWalletActions = {
   openManageWallet: ({ title, method, onSuccess }: openManageWalletProps) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
-  address?: string;
   signature?: string;
   nonce?: string;
 };
@@ -54,12 +49,9 @@ export const useManageWalletActions = (): ManageWalletActions => {
 type Props = { children: ReactNode };
 
 const ManageWalletProvider = memo(({ children }: Props) => {
-  const navigation = useNavigation<LoginStackNavigatorProp>();
-
-  const { address, isConnected, provider } = useWalletConnectModal();
   const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
-  const createNonce = useCreateNonce();
   const addWallet = useAddWallet();
+  const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const [login] = useLogin();
   const track = useTrack();
@@ -67,17 +59,10 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const { isSyncing, syncTokens } = useSyncTokensActions();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [title, setTitle] = useState('Network');
+  const [title, setTitle] = useState('Select wallet');
 
-  // To track if the user has signed the message
-  const hasSigned = useRef(false);
   const onSuccessRef = useRef<(() => void) | null>(null);
   const methodRef = useRef<'auth' | 'add-wallet'>('add-wallet');
-
-  const web3Provider = useMemo(
-    () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
-    [provider]
-  );
 
   const openManageWallet = useCallback(
     ({ title, onSuccess = noop, method = 'add-wallet' }: openManageWalletProps) => {
@@ -100,27 +85,9 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     bottomSheet.current?.dismiss();
   }, []);
 
-  const clearState = useCallback(() => {
-    setIsSigningIn(false);
-    provider?.disconnect();
-  }, [provider]);
-
-  const handleSignMessage = useCallback(async () => {
-    if (!web3Provider || !address || hasSigned.current) {
-      return;
-    }
-
-    const signer = web3Provider.getSigner();
-    const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
-
-    try {
-      setIsSigningIn(true);
-      const signature = await signer.signMessage(nonce);
-      hasSigned.current = true;
-
+  const handleOnSignedIn = useCallback(
+    async (address: string, nonce: string, signature: string, userExist: boolean) => {
       if (!userExist) {
-        provider?.disconnect();
-
         navigation.navigate('OnboardingEmail', {
           authMethod: 'Wallet',
           authMechanism: {
@@ -178,49 +145,18 @@ const ManageWalletProvider = memo(({ children }: Props) => {
           await navigateToNotificationUpsellOrHomeScreen(navigation);
         }
       }
-
-      if (onSuccessRef.current) {
-        onSuccessRef.current();
-        onSuccessRef.current = null;
-      }
-
-      bottomSheet.current?.dismiss();
-    } catch (error) {
-      provider?.disconnect();
-    } finally {
-      clearState();
-    }
-  }, [
-    address,
-    addWallet,
-    clearState,
-    createNonce,
-    login,
-    isSyncing,
-    navigation,
-    provider,
-    syncTokens,
-    track,
-    web3Provider,
-  ]);
-
-  useEffect(() => {
-    if (isConnected && !hasSigned.current) {
-      handleSignMessage();
-    } else {
-      clearState();
-    }
-  }, [clearState, isConnected, handleSignMessage]);
+    },
+    [addWallet, isSyncing, login, navigation, syncTokens, track, methodRef]
+  );
 
   const value = useMemo(
     () => ({
-      address,
       dismissManageWallet,
       openManageWallet,
       isSigningIn,
       title,
     }),
-    [address, dismissManageWallet, openManageWallet, isSigningIn, title]
+    [dismissManageWallet, openManageWallet, isSigningIn, title]
   );
 
   return (
@@ -228,8 +164,10 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       <WalletSelectorBottomSheet
         title={value.title}
         ref={bottomSheet}
-        isSignedIn={isSigningIn}
         onDismiss={dismissManageWallet}
+        onSignedIn={handleOnSignedIn}
+        isSigningIn={isSigningIn}
+        setIsSigningIn={setIsSigningIn}
       />
       {children}
     </ManageWalletActionsContext.Provider>
