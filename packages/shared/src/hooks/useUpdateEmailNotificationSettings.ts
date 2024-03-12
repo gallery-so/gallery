@@ -1,20 +1,68 @@
-import { useCallback } from 'react';
-import { graphql } from 'react-relay';
+import { useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 
+import { useUpdateEmailNotificationSettingsFragment$key } from '~/generated/useUpdateEmailNotificationSettingsFragment.graphql';
 import { useUpdateEmailNotificationSettingsMutation } from '~/generated/useUpdateEmailNotificationSettingsMutation.graphql';
 
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
-type Props = {
-  unsubscribedFromNotifications: boolean;
-  unsubscribedFromDigest: boolean;
-  unsubscribedFromMarketing: boolean;
-  unsubscribedFromMembersClub: boolean;
-  unsubscribedFromAll: boolean;
+type useUpdateEmailNotificationSettingsProps = {
+  queryRef: useUpdateEmailNotificationSettingsFragment$key;
+  hasEarlyAccess: boolean;
+  shouldShowEmailSettings: boolean;
 };
 
-export default function useUpdateEmailNotificationSettings() {
-  const [updateEmailNotificationSettings] =
+export default function useUpdateEmailNotificationSettings({
+  queryRef,
+  hasEarlyAccess,
+  shouldShowEmailSettings,
+}: useUpdateEmailNotificationSettingsProps) {
+  console.log('queryRef', queryRef);
+  const query = useFragment(
+    graphql`
+      fragment useUpdateEmailNotificationSettingsFragment on Query {
+        viewer {
+          ... on Viewer {
+            email {
+              emailNotificationSettings {
+                unsubscribedFromNotifications
+                unsubscribedFromDigest
+                unsubscribedFromMarketing
+                unsubscribedFromMembersClub
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
+
+  const [emailSettings, setEmailSettings] = useState<EmailNotificationSettings>({
+    notifications: !currentEmailNotificationSettings?.unsubscribedFromNotifications,
+    marketing: !currentEmailNotificationSettings?.unsubscribedFromMarketing,
+    digest: !currentEmailNotificationSettings?.unsubscribedFromDigest,
+    membersClub: hasEarlyAccess
+      ? !currentEmailNotificationSettings?.unsubscribedFromMembersClub
+      : false,
+    // currently cannot toggle all notifs from notif setting
+    all: false,
+  });
+
+  const computeToggleChecked = useCallback(
+    (notifType: string | number) => {
+      // if the user dont have an email or not verified, we want to toggle off
+      if (!shouldShowEmailSettings) {
+        return false;
+      }
+      return emailSettings[notifType];
+    },
+    [shouldShowEmailSettings, emailSettings]
+  );
+
+  const [updateEmailNotificationSettingsMutation] =
     usePromisifiedMutation<useUpdateEmailNotificationSettingsMutation>(graphql`
       mutation useUpdateEmailNotificationSettingsMutation(
         $enabledNotification: UpdateEmailNotificationSettingsInput!
@@ -40,15 +88,15 @@ export default function useUpdateEmailNotificationSettings() {
       }
     `);
 
-  return useCallback(
+  const updateEmailNotificationSettings = useCallback(
     ({
       unsubscribedFromNotifications,
       unsubscribedFromDigest,
       unsubscribedFromMarketing,
       unsubscribedFromMembersClub,
       unsubscribedFromAll,
-    }: Props) => {
-      return updateEmailNotificationSettings({
+    }: updateEmailNotificationSettingsProps) => {
+      return updateEmailNotificationSettingsMutation({
         variables: {
           enabledNotification: {
             unsubscribedFromNotifications,
@@ -60,6 +108,140 @@ export default function useUpdateEmailNotificationSettings() {
         },
       });
     },
-    [updateEmailNotificationSettings]
+    [updateEmailNotificationSettingsMutation]
+  );
+
+  const handleEmailNotificationChange = useCallback(
+    async ({
+      settingType,
+      newSettingValue,
+      settingTitle,
+      pushToast,
+    }: handleEmailNotificationChangeProps) => {
+      const settingsUpdate = {
+        ...emailSettings,
+        [settingType]: newSettingValue,
+      };
+
+      try {
+        const response = await updateEmailNotificationSettings({
+          unsubscribedFromNotifications: !settingsUpdate.notifications,
+          unsubscribedFromDigest: !settingsUpdate.digest,
+          unsubscribedFromMarketing: !settingsUpdate.marketing,
+          unsubscribedFromMembersClub: !settingsUpdate.membersClub ?? false,
+          unsubscribedFromAll: false,
+        });
+
+        if (
+          response.updateEmailNotificationSettings?.viewer?.email?.emailNotificationSettings &&
+          settingType in
+            response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings
+        ) {
+          const settings =
+            response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings;
+          if (settings[settingType as keyof EmailSettings] === newSettingValue) {
+            setEmailSettings(settingsUpdate);
+            pushToast({
+              message: `Settings successfully updated. You will ${
+                settingsUpdate[settingType] ? 'no longer' : 'now'
+              } receive ${settingTitle} emails.`,
+            });
+          }
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError('Failed to update email notification settings');
+        }
+        pushToast({
+          message: 'Unfortunately, there was an error updating your notification settings.',
+        });
+      }
+    },
+    [emailSettings, updateEmailNotificationSettings]
+  );
+
+  const handleToggle = useCallback(
+    async ({ settingType, settingTitle, pushToast }: handleToggleProps) => {
+      const newSettingValue = !emailSettings[settingType];
+
+      setEmailSettings((prevSettings) => ({
+        ...prevSettings,
+        [settingType]: newSettingValue,
+      }));
+
+      try {
+        await handleEmailNotificationChange({
+          settingType,
+          newSettingValue,
+          settingTitle,
+          pushToast,
+        });
+
+        pushToast({
+          message: `Settings successfully updated. You have ${
+            newSettingValue ? 'subscribed to' : 'unsubscribed from'
+          } ${settingTitle}.`,
+        });
+      } catch (error) {
+        setEmailSettings((prevSettings) => ({
+          ...prevSettings,
+          [settingType]: !newSettingValue,
+        }));
+
+        reportError('Failed to update email notification settings');
+
+        pushToast({
+          message: 'Unfortunately, there was an error updating your notification settings.',
+        });
+      }
+    },
+    [emailSettings, handleEmailNotificationChange]
+  );
+
+  return useMemo(
+    () => ({
+      emailSettings,
+      computeToggleChecked,
+      handleToggle,
+    }),
+    [emailSettings, computeToggleChecked, handleToggle]
   );
 }
+
+type EmailNotificationSettings = {
+  notifications: boolean;
+  marketing: boolean;
+  digest: boolean;
+  membersClub: boolean;
+  all: boolean;
+  [key: string]: boolean;
+};
+
+type EmailSettings = {
+  readonly unsubscribedFromAll: boolean;
+  readonly unsubscribedFromDigest: boolean;
+  readonly unsubscribedFromMarketing: boolean;
+  readonly unsubscribedFromMembersClub: boolean;
+  readonly unsubscribedFromNotifications: boolean;
+};
+
+type updateEmailNotificationSettingsProps = {
+  unsubscribedFromNotifications: boolean;
+  unsubscribedFromDigest: boolean;
+  unsubscribedFromMarketing: boolean;
+  unsubscribedFromMembersClub: boolean;
+  unsubscribedFromAll: boolean;
+};
+
+type handleToggleProps = {
+  settingType: string;
+  settingTitle: string;
+  pushToast: ({ message }: { message: string }) => void;
+};
+
+type handleEmailNotificationChangeProps = {
+  settingType: string;
+  newSettingValue: boolean;
+  settingTitle: string;
+  pushToast: ({ message }: { message: string }) => void;
+};
