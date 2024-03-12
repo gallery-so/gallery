@@ -73,7 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     blockedPermissions: ['android.permission.RECORD_AUDIO'],
-    package: 'com.usegallery.gallery',
+    package: 'com.usegalleryandroid.gallery',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',

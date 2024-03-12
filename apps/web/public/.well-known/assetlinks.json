@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.usegallery.gallery",
+      "package_name": "com.usegalleryandroid.gallery",
       "sha256_cert_fingerprints": [
         "FA:6A:56:7C:CE:73:FD:B9:3A:0D:A6:E9:33:CC:E4:2F:73:AF:EE:93:88:93:D6:EB:1B:5E:FC:74:BF:9D:16:63"
       ]
