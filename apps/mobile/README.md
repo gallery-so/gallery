@@ -8,7 +8,7 @@ moon run mobile:android
 Start the mobile app against dev
 
 ```bash
-ENV=dev moon run mobile:ios
+EXPO_PUBLIC_ENV=dev moon run mobile:ios
 ```
 
 How to open the Debugger (available only on local env)
