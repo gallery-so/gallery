@@ -167,6 +167,11 @@ export function NotificationSkeleton({
             }
           }
         }
+        ... on SomeoneYouFollowOnFarcasterJoinedNotification {
+          user {
+            ...FollowButtonUserFragment
+          }
+        }
       }
     `,
     notificationRef
@@ -247,7 +252,11 @@ export function NotificationSkeleton({
     );
   }, [notification]);
 
-  const lastFollower = useMemo(() => notification.followers?.edges?.[0]?.node, [notification]);
+  // TODO: this is a bit messy and too coupled with logic specific to SomeonRepliedToYourComment - should refactor
+  const userToFollow = useMemo(
+    () => notification.followers?.edges?.[0]?.node ?? notification.user,
+    [notification.followers?.edges, notification.user]
+  );
 
   return (
     <GalleryTouchableOpacity
@@ -285,9 +294,9 @@ export function NotificationSkeleton({
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
 
-      {shouldShowFollowBackButton && lastFollower && (
+      {shouldShowFollowBackButton && userToFollow && (
         <View className="flex justify-center">
-          <FollowButton queryRef={query} userRef={lastFollower} width="fixed-tight" />
+          <FollowButton queryRef={query} userRef={userToFollow} width="fixed-tight" />
         </View>
       )}
 

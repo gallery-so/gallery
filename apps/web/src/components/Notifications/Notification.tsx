@@ -32,6 +32,7 @@ import { SomeoneMentionedYou } from './notifications/SomeoneMentionedYou';
 import { SomeoneMentionedYourCommunity } from './notifications/SomeoneMentionedYourCommunity';
 import SomeonePostedYourWork from './notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './notifications/SomeoneRepliedToYourComment';
+import SomeoneYouFollowOnFarcasterJoined from './notifications/SomeoneYouFollowOnFarcasterJoined';
 import { SomeoneYouFollowPostedTheirFirstPost } from './notifications/SomeoneYouFollowPostedTheirFirstPost';
 import YouReceivedTopActivityBadge from './notifications/YouReceivedTopActivityBadge';
 
@@ -189,6 +190,13 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
                 dbid
               }
             }
+          }
+        }
+
+        ... on SomeoneYouFollowOnFarcasterJoinedNotification {
+          __typename
+          user {
+            username
           }
         }
 
@@ -398,6 +406,16 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           hideDrawer();
         },
       };
+    } else if (notification.__typename === 'SomeoneYouFollowOnFarcasterJoinedNotification') {
+      return {
+        showCaret: false,
+        handleClick: function navigateToProfilePage() {
+          if (notification.user?.username) {
+            push({ pathname: '/[username]', query: { username: notification.user.username } });
+          }
+          hideDrawer();
+        },
+      };
     }
 
     return undefined;
@@ -453,6 +471,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'YouReceivedTopActivityBadgeNotification',
       'GalleryAnnouncementNotification',
       'SomeoneAdmiredYourCommentNotification',
+      'SomeoneYouFollowOnFarcasterJoinedNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -602,6 +621,11 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...SomeoneAdmiredYourCommentFragment
         }
+
+        ... on SomeoneYouFollowOnFarcasterJoinedNotification {
+          __typename
+          ...SomeoneYouFollowOnFarcasterJoinedFragment
+        }
       }
     `,
     notificationRef
@@ -613,6 +637,7 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
         ...SomeoneFollowedYouQueryFragment
         ...SomeoneCommentedOnYourPostQueryFragment
         ...SomeoneRepliedToYourCommentQueryFragment
+        ...SomeoneYouFollowOnFarcasterJoinedQueryFragment
       }
     `,
     queryRef
@@ -676,6 +701,14 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <GalleryAnnouncement notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
     return <SomeoneAdmiredYourComment notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneYouFollowOnFarcasterJoinedNotification') {
+    return (
+      <SomeoneYouFollowOnFarcasterJoined
+        notificationRef={notification}
+        queryRef={query}
+        onClose={handleClose}
+      />
+    );
   }
 
   return null;

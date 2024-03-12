@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
+import GallerySelects from './GallerySelects';
 import SuggestedSection from './SuggestedSection';
 import TrendingSection from './TrendingSection';
 
@@ -50,6 +51,7 @@ export default function Explore({ queryRef }: Props) {
 
   return (
     <StyledExplorePage gap={48}>
+      <GallerySelects />
       {query.viewer?.__typename === 'Viewer' && (
         <>
           {

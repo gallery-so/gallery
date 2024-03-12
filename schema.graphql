@@ -560,12 +560,16 @@ type EmailNotificationSettings {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
   unsubscribedFromDigest: Boolean!
+  unsubscribedFromMarketing: Boolean
+  unsubscribedFromMembersClub: Boolean
 }
 
 enum EmailUnsubscriptionType {
   All
   Notifications
   Digest
+  Marketing
+  MembersClub
 }
 
 enum EmailVerificationStatus {
@@ -1876,6 +1880,15 @@ type SomeoneViewedYourGalleryNotification implements Notification & Node & Group
   gallery: Gallery
 }
 
+type SomeoneYouFollowOnFarcasterJoinedNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  user: GalleryUser
+}
+
 type SomeoneYouFollowPostedTheirFirstPostNotification implements Notification & Node {
   id: ID!
   dbid: DBID!
@@ -2202,6 +2215,8 @@ input UpdateEmailNotificationSettingsInput {
   unsubscribedFromAll: Boolean!
   unsubscribedFromNotifications: Boolean!
   unsubscribedFromDigest: Boolean!
+  unsubscribedFromMarketing: Boolean
+  unsubscribedFromMembersClub: Boolean
 }
 
 type UpdateEmailNotificationSettingsPayload {
