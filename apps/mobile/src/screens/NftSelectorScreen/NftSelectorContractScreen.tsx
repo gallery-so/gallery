@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
@@ -10,9 +10,7 @@ import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
-import { NftSelectorContractScreenFragment$key } from '~/generated/NftSelectorContractScreenFragment.graphql';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
-import { NftSelectorContractScreenRefetchQuery } from '~/generated/NftSelectorContractScreenRefetchQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -24,21 +22,6 @@ export function NftSelectorContractScreen() {
   const query = useLazyLoadQuery<NftSelectorContractScreenQuery>(
     graphql`
       query NftSelectorContractScreenQuery {
-        ...NftSelectorContractScreenFragment
-      }
-    `,
-    {}
-  );
-
-  const screen = route.params.page;
-
-  const [data, refetch] = useRefetchableFragment<
-    NftSelectorContractScreenRefetchQuery,
-    NftSelectorContractScreenFragment$key
-  >(
-    graphql`
-      fragment NftSelectorContractScreenFragment on Query
-      @refetchable(queryName: "NftSelectorContractScreenRefetchQuery") {
         viewer {
           ... on Viewer {
             user {
@@ -63,8 +46,10 @@ export function NftSelectorContractScreen() {
         }
       }
     `,
-    query
+    {}
   );
+
+  const screen = route.params.page;
 
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -83,13 +68,13 @@ export function NftSelectorContractScreen() {
 
   const tokens = useMemo(() => {
     return removeNullValues(
-      data.viewer?.user?.tokens?.filter((token) => {
+      query.viewer?.user?.tokens?.filter((token) => {
         return (
           token?.definition?.contract?.contractAddress?.address === route.params.contractAddress
         );
       })
     );
-  }, [data.viewer?.user?.tokens, route.params.contractAddress]);
+  }, [query.viewer?.user?.tokens, route.params.contractAddress]);
 
   const contractName = tokens[0]?.definition?.community?.name;
   // [TODO-subcomref] might switch this to community ID
@@ -101,10 +86,6 @@ export function NftSelectorContractScreen() {
   const handleSyncTokensForContract = useCallback(async () => {
     syncCreatedTokensForExistingContract(contractId);
   }, [syncCreatedTokensForExistingContract, contractId]);
-
-  const handleRefresh = useCallback(() => {
-    refetch({}, { fetchPolicy: 'network-only' });
-  }, [refetch]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -167,7 +148,6 @@ export function NftSelectorContractScreen() {
               <AnimatedRefreshIcon
                 isSyncing={isSyncingCreatedTokensForContract}
                 onSync={handleSyncTokensForContract}
-                onRefresh={handleRefresh}
                 eventElementId="NftSelectorSyncCreatedTokensForExistingContractButton"
                 eventName="Nft Selector SyncCreatedTokensForExistingContractButton pressed"
               />
@@ -186,14 +166,7 @@ export function NftSelectorContractScreen() {
                 isCreator ? (
                   <GalleryRefreshControl
                     refreshing={isSyncingCreatedTokensForContract}
-                    onRefresh={
-                      // TODO: `handleRefresh` should just be defined within `handleSyncTokensForContract`
-                      // this will require refactoring out the `onRefresh` prep from AnimatedRefreshIcon
-                      async () => {
-                        await handleSyncTokensForContract();
-                        handleRefresh();
-                      }
-                    }
+                    onRefresh={handleSyncTokensForContract}
                   />
                 ) : undefined
               }

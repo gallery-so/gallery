@@ -222,8 +222,7 @@ export function NftSelectorPickerGrid({
     return groups;
   }, [sortedTokens]);
 
-  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
-    useSyncTokensActions();
+  const { isSyncing, isSyncingCreatedTokens } = useSyncTokensActions();
 
   // TODO: this logic is messy and shared with web; should be refactored
   const handleRefresh = useCallback(() => {
@@ -231,31 +230,8 @@ export function NftSelectorPickerGrid({
       return;
     }
 
-    if (searchCriteria.ownerFilter === 'Collected') {
-      if (isSyncing) {
-        return;
-      }
-      syncTokens(searchCriteria.networkFilter);
-      onRefresh();
-    }
-
-    if (searchCriteria.ownerFilter === 'Created') {
-      if (isSyncingCreatedTokens) {
-        return;
-      }
-      syncCreatedTokens(searchCriteria.networkFilter);
-      onRefresh();
-    }
-  }, [
-    isSyncing,
-    isSyncingCreatedTokens,
-    onRefresh,
-    ownsWalletFromSelectedChainFamily,
-    searchCriteria.networkFilter,
-    searchCriteria.ownerFilter,
-    syncCreatedTokens,
-    syncTokens,
-  ]);
+    onRefresh();
+  }, [onRefresh, ownsWalletFromSelectedChainFamily]);
 
   // Auto-sync tokens when the chain or Collected/Created filter changes, and there are 0 tokens to display
   useEffect(() => {
