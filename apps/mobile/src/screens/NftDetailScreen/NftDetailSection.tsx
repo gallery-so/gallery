@@ -165,7 +165,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const { contractName } = extractRelevantMetadataFromToken(token);
 
   const blueToDisplay = useMemo(
-    () => (colorScheme === 'dark' ? '[#7597FF]' : 'activeBlue'),
+    () => (colorScheme === 'dark' ? 'darkModeBlue' : 'activeBlue'),
     [colorScheme]
   );
 

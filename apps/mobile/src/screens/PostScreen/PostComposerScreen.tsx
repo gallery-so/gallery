@@ -242,7 +242,7 @@ function PostComposerScreenInner() {
         >
           <Typography
             className={clsx('text-sm', {
-              'text-activeBlue': !isPostButtonDisabled,
+              'text-activeBlue dark:text-darkModeBlue': !isPostButtonDisabled,
               'text-metal': isPostButtonDisabled,
             })}
             font={{
