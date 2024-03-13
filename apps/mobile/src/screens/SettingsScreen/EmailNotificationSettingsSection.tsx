@@ -19,9 +19,6 @@ export function EmailNotificationSettingsSection() {
       query EmailNotificationSettingsSectionQuery {
         viewer {
           ... on Viewer {
-            user {
-              roles
-            }
             email {
               email
               verificationStatus
@@ -32,40 +29,6 @@ export function EmailNotificationSettingsSection() {
       }
     `,
     {}
-  );
-
-  const hasEarlyAccess = useMemo(() => {
-    return query.viewer?.user?.roles?.includes('EARLY_ACCESS') ?? false;
-  }, [query]);
-
-  const emailNotificationSettingData = useMemo(
-    () => [
-      {
-        key: 'unsubscribedFromNotifications',
-        title: 'Notifications',
-        description: 'Weekly summary of your unread notifications',
-      },
-      {
-        key: 'unsubscribedFromMarketing',
-        title: 'General Marketing',
-        description: 'Product updates, artist collabs, and airdrops',
-      },
-      ...(hasEarlyAccess
-        ? [
-            {
-              key: 'unsubscribedFromMembersClub',
-              title: 'Members Club',
-              description: 'Exclusive updates for Members Club Holders',
-            },
-          ]
-        : []),
-      {
-        key: 'unsubscribedFromDigest',
-        title: 'Digest',
-        description: 'Weekly digest of top interacted galleries, artists, and posts',
-      },
-    ],
-    [hasEarlyAccess]
   );
 
   const userEmail = query?.viewer?.email?.email;
@@ -81,11 +44,11 @@ export function EmailNotificationSettingsSection() {
     [userEmail, isEmailUnverified]
   );
 
-  const { computeToggleChecked, handleToggle } = useUpdateEmailNotificationSettings({
-    queryRef: query,
-    hasEarlyAccess,
-    shouldShowEmailSettings: Boolean(shouldShowEmailSettings),
-  });
+  const { emailNotificationSettingData, computeToggleChecked, handleToggle } =
+    useUpdateEmailNotificationSettings({
+      queryRef: query,
+      shouldShowEmailSettings: Boolean(shouldShowEmailSettings),
+    });
 
   if (!shouldShowEmailSettings) {
     return null;

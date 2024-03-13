@@ -31,9 +31,6 @@ export default function ManageEmailSection({ queryRef }: Props) {
       fragment ManageEmailSectionFragment on Query {
         viewer {
           ... on Viewer {
-            user {
-              roles
-            }
             email {
               email
               verificationStatus
@@ -49,41 +46,6 @@ export default function ManageEmailSection({ queryRef }: Props) {
   );
 
   const userEmail = query?.viewer?.email?.email;
-
-  const hasEarlyAccess = useMemo(() => {
-    return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
-  }, [query]);
-
-  const emailNotificationSettingData = useMemo(
-    () => [
-      {
-        key: 'unsubscribedFromNotifications',
-        title: 'Notifications',
-        description: 'Notification summary emails',
-      },
-      {
-        key: 'unsubscribedFromMarketing',
-        title: 'General Marketing',
-        description: 'Product marketing emails',
-      },
-      // Conditionally add the 'Members Club' entry if `hasEarlyAccess` is true
-      ...(hasEarlyAccess
-        ? [
-            {
-              key: 'unsubscribedFromMembersClub',
-              title: 'Members Club',
-              description: 'Exclusively for Members Club Holders',
-            },
-          ]
-        : []),
-      {
-        key: 'unsubscribedFromDigest',
-        title: 'Weekly Digest',
-        description: 'Featured Galleries, Collections and more',
-      },
-    ],
-    [hasEarlyAccess]
-  );
 
   const { pushToast } = useToastActions();
 
@@ -110,11 +72,11 @@ export default function ManageEmailSection({ queryRef }: Props) {
     [userEmail, isEmailUnverified]
   );
 
-  const { computeToggleChecked, handleToggle } = useUpdateEmailNotificationSettings({
-    queryRef: query,
-    hasEarlyAccess: Boolean(hasEarlyAccess),
-    shouldShowEmailSettings: Boolean(shouldShowEmailSettings),
-  });
+  const { emailNotificationSettingData, computeToggleChecked, handleToggle } =
+    useUpdateEmailNotificationSettings({
+      queryRef: query,
+      shouldShowEmailSettings: Boolean(shouldShowEmailSettings),
+    });
 
   return (
     <VStack gap={16}>

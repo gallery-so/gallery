@@ -8,13 +8,11 @@ import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 type useUpdateEmailNotificationSettingsProps = {
   queryRef: useUpdateEmailNotificationSettingsFragment$key;
-  hasEarlyAccess: boolean;
   shouldShowEmailSettings: boolean;
 };
 
 export default function useUpdateEmailNotificationSettings({
   queryRef,
-  hasEarlyAccess,
   shouldShowEmailSettings,
 }: useUpdateEmailNotificationSettingsProps) {
   const query = useFragment(
@@ -22,6 +20,9 @@ export default function useUpdateEmailNotificationSettings({
       fragment useUpdateEmailNotificationSettingsFragment on Query {
         viewer {
           ... on Viewer {
+            user {
+              roles
+            }
             email {
               emailNotificationSettings {
                 unsubscribedFromNotifications
@@ -37,7 +38,14 @@ export default function useUpdateEmailNotificationSettings({
     queryRef
   );
 
-  const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
+  const currentEmailNotificationSettings = useMemo(
+    () => query?.viewer?.email?.emailNotificationSettings,
+    [query]
+  );
+
+  const hasEarlyAccess = useMemo(() => {
+    return query.viewer?.user?.roles?.includes('EARLY_ACCESS') ?? false;
+  }, [query]);
 
   const [emailSettings, setEmailSettings] = useState<EmailNotificationSettings>({
     unsubscribedFromNotifications:
@@ -51,13 +59,43 @@ export default function useUpdateEmailNotificationSettings({
     unsubscribedFromAll: false,
   });
 
+  const emailNotificationSettingData = useMemo(
+    () => [
+      {
+        key: 'unsubscribedFromNotifications',
+        title: 'Notifications',
+        description: 'Weekly summary of your unread notifications',
+      },
+      {
+        key: 'unsubscribedFromMarketing',
+        title: 'General Marketing',
+        description: 'Product updates, artist collabs, and airdrops',
+      },
+      ...(hasEarlyAccess
+        ? [
+            {
+              key: 'unsubscribedFromMembersClub',
+              title: 'Members Club',
+              description: 'Exclusive updates for Members Club Holders',
+            },
+          ]
+        : []),
+      {
+        key: 'unsubscribedFromDigest',
+        title: 'Digest',
+        description: 'Weekly digest of top interacted galleries, artists, and posts',
+      },
+    ],
+    [hasEarlyAccess]
+  );
+
   const computeToggleChecked = useCallback(
     (notifType: keyof EmailNotificationSettings) => {
       // if the user dont have an email or not verified, we want to toggle off
       if (!shouldShowEmailSettings) {
         return false;
       }
-      return emailSettings[notifType];
+      return !emailSettings[notifType];
     },
     [shouldShowEmailSettings, emailSettings]
   );
@@ -176,23 +214,11 @@ export default function useUpdateEmailNotificationSettings({
           settingTitle,
           pushToast,
         });
-
-        pushToast({
-          message: `Settings successfully updated. You have ${
-            newSettingValue ? 'subscribed to' : 'unsubscribed from'
-          } ${settingTitle}.`,
-        });
       } catch (error) {
         setEmailSettings((prevSettings) => ({
           ...prevSettings,
           [settingType]: !newSettingValue,
         }));
-
-        reportError('Failed to update email notification settings');
-
-        pushToast({
-          message: 'Unfortunately, there was an error updating your notification settings.',
-        });
       }
     },
     [emailSettings, handleEmailNotificationChange]
@@ -203,8 +229,9 @@ export default function useUpdateEmailNotificationSettings({
       emailSettings,
       computeToggleChecked,
       handleToggle,
+      emailNotificationSettingData,
     }),
-    [emailSettings, computeToggleChecked, handleToggle]
+    [emailSettings, computeToggleChecked, handleToggle, emailNotificationSettingData]
   );
 }
 
