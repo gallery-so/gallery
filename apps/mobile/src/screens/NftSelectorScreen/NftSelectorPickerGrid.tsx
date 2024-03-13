@@ -123,31 +123,37 @@ export function NftSelectorPickerGrid({
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
-    return tokens
-      .filter((token) => {
-        const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
+    let filtered = tokens;
 
-        return !isSpam;
-      })
-      .filter((token) => {
-        if (!searchCriteria.searchQuery) {
-          return true;
-        }
+    // Filter out spam tokens
+    filtered = filtered.filter((token) => {
+      const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
+      return !isSpam;
+    });
 
-        return token.definition?.community?.name
-          ?.toLowerCase()
-          .includes(searchCriteria.searchQuery.toLowerCase());
-      })
-      .filter((token) => {
-        return token.definition?.chain === searchCriteria.networkFilter;
-      })
-      .filter((token) => {
-        if (searchCriteria.ownerFilter === 'Collected') {
-          return token.ownerIsHolder;
-        }
+    // Filter by search query if present
+    if (searchCriteria.searchQuery) {
+      const searchQueryLower = searchCriteria.searchQuery.toLowerCase();
+      filtered = filtered.filter((token) =>
+        token.definition?.community?.name?.toLowerCase().includes(searchQueryLower)
+      );
+    }
 
-        return token.ownerIsCreator;
-      });
+    // Filter by network if not 'All Networks'
+    if (searchCriteria.networkFilter !== 'All Networks') {
+      filtered = filtered.filter(
+        (token) => token.definition?.chain === searchCriteria.networkFilter
+      );
+    }
+
+    // Filter by owner status
+    if (searchCriteria.ownerFilter === 'Collected') {
+      filtered = filtered.filter((token) => token.ownerIsHolder);
+    } else if (searchCriteria.ownerFilter === 'Created') {
+      filtered = filtered.filter((token) => token.ownerIsCreator);
+    }
+
+    return filtered;
   }, [
     searchCriteria.networkFilter,
     searchCriteria.ownerFilter,
