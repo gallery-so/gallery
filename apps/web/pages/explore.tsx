@@ -6,41 +6,10 @@ import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
 
-// [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
-//
-// export default function Explore() {
-//   const query = useLazyLoadQuery<exploreQuery>(
-//     graphql`
-//       query exploreQuery($twitterListFirst: Int!, $twitterListAfter: String) {
-//         ...ExploreHomePageFragment
-//         ...HomeNavbarFragment
-//         ...StandardSidebarFragment
-
-//         ...useOpenTwitterFollowingModalFragment
-//       }
-//     `,
-//     {
-//       twitterListFirst: USER_PER_PAGE,
-//       twitterListAfter: null,
-//     }
-//   );
-
-//   useOpenTwitterFollowingModal(query);
-
-//   return (
-//     <GalleryRoute
-//       navbar={<HomeNavbar queryRef={query} />}
-//       sidebar={<StandardSidebar queryRef={query} />}
-//       element={<ExplorePage queryRef={query} />}
-//     />
-//   );
-// }
-
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
       query exploreQuery {
-        ...ExploreHomePageFragment
         ...HomeNavbarFragment
         ...StandardSidebarFragment
       }
@@ -52,7 +21,7 @@ export default function Explore() {
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
       sidebar={<StandardSidebar queryRef={query} />}
-      element={<ExplorePage queryRef={query} />}
+      element={<ExplorePage />}
     />
   );
 }
