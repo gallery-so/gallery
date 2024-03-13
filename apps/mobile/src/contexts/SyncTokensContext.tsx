@@ -56,8 +56,29 @@ const SyncTokensProvider = memo(({ children }: Props) => {
             viewer {
               ... on Viewer {
                 user {
-                  tokens(ownershipFilter: [Creator, Holder]) {
+                  tokens {
+                    id
                     dbid
+                    creationTime
+                    definition {
+                      chain
+                      contract {
+                        isSpam
+                        contractAddress {
+                          address
+                        }
+                      }
+                      community {
+                        # Keeping name in the cache so the contract picker screen
+                        # already has the name in the cache
+                        # eslint-disable-next-line relay/unused-fields
+                        name
+                      }
+                    }
+                    creationTime
+                    isSpamByUser
+                    ownerIsHolder
+                    ownerIsCreator
                   }
                 }
               }
@@ -114,9 +135,29 @@ const SyncTokensProvider = memo(({ children }: Props) => {
               viewer {
                 ... on Viewer {
                   user {
-                    tokens(ownershipFilter: [Creator, Holder]) {
+                    tokens {
                       id
                       dbid
+                      creationTime
+                      definition {
+                        chain
+                        contract {
+                          isSpam
+                          contractAddress {
+                            address
+                          }
+                        }
+                        community {
+                          # Keeping name in the cache so the contract picker screen
+                          # already has the name in the cache
+                          # eslint-disable-next-line relay/unused-fields
+                          name
+                        }
+                      }
+                      creationTime
+                      isSpamByUser
+                      ownerIsHolder
+                      ownerIsCreator
                     }
                   }
                 }
@@ -178,8 +219,29 @@ const SyncTokensProvider = memo(({ children }: Props) => {
             viewer {
               ... on Viewer {
                 user {
-                  tokens(ownershipFilter: [Creator, Holder]) {
+                  tokens {
+                    id
                     dbid
+                    creationTime
+                    definition {
+                      chain
+                      contract {
+                        isSpam
+                        contractAddress {
+                          address
+                        }
+                      }
+                      community {
+                        # Keeping name in the cache so the contract picker screen
+                        # already has the name in the cache
+                        # eslint-disable-next-line relay/unused-fields
+                        name
+                      }
+                    }
+                    creationTime
+                    isSpamByUser
+                    ownerIsHolder
+                    ownerIsCreator
                   }
                 }
               }

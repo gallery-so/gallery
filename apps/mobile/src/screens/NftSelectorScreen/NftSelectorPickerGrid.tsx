@@ -69,6 +69,7 @@ export function NftSelectorPickerGrid({
           ... on Viewer {
             user {
               tokens {
+                dbid
                 creationTime
                 ...NftSelectorPickerGridTokensFragment
               }
@@ -93,6 +94,7 @@ export function NftSelectorPickerGrid({
   const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
     graphql`
       fragment NftSelectorPickerGridTokensFragment on Token @relay(plural: true) {
+        dbid
         definition {
           chain
           contract {
