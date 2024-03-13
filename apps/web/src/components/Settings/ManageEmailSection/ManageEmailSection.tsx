@@ -10,7 +10,9 @@ import EmailManager from '~/components/Email/EmailManager';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageEmailSectionFragment$key } from '~/generated/ManageEmailSectionFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
-import useUpdateEmailNotificationSettings from '~/shared/hooks/useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings, {
+  EmailNotificationSettings,
+} from '~/shared/hooks/useUpdateEmailNotificationSettings';
 import colors from '~/shared/theme/colors';
 
 import SettingsRowDescription from '../SettingsRowDescription';
@@ -55,12 +57,12 @@ export default function ManageEmailSection({ queryRef }: Props) {
   const emailNotificationSettingData = useMemo(
     () => [
       {
-        key: 'notifications',
+        key: 'unsubscribedFromNotifications',
         title: 'Notifications',
         description: 'Notification summary emails',
       },
       {
-        key: 'marketing',
+        key: 'unsubscribedFromMarketing',
         title: 'General Marketing',
         description: 'Product marketing emails',
       },
@@ -68,14 +70,14 @@ export default function ManageEmailSection({ queryRef }: Props) {
       ...(hasEarlyAccess
         ? [
             {
-              key: 'membersClub',
+              key: 'unsubscribedFromMembersClub',
               title: 'Members Club',
               description: 'Exclusively for Members Club Holders',
             },
           ]
         : []),
       {
-        key: 'digest',
+        key: 'unsubscribedFromDigest',
         title: 'Weekly Digest',
         description: 'Featured Galleries, Collections and more',
       },
@@ -151,10 +153,14 @@ export default function ManageEmailSection({ queryRef }: Props) {
                   <SettingsRowDescription>{emailNotifSetting.description}</SettingsRowDescription>
                 </VStack>
                 <Toggle
-                  checked={computeToggleChecked(emailNotifSetting.key) ?? false}
+                  checked={
+                    computeToggleChecked(
+                      emailNotifSetting.key as keyof EmailNotificationSettings
+                    ) ?? false
+                  }
                   onChange={() =>
                     handleToggle({
-                      settingType: emailNotifSetting.key,
+                      settingType: emailNotifSetting.key as keyof EmailNotificationSettings,
                       settingTitle: emailNotifSetting.title,
                       pushToast,
                     })

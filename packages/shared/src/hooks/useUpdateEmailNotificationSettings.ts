@@ -40,18 +40,19 @@ export default function useUpdateEmailNotificationSettings({
   const currentEmailNotificationSettings = query?.viewer?.email?.emailNotificationSettings;
 
   const [emailSettings, setEmailSettings] = useState<EmailNotificationSettings>({
-    notifications: !currentEmailNotificationSettings?.unsubscribedFromNotifications,
-    marketing: !currentEmailNotificationSettings?.unsubscribedFromMarketing,
-    digest: !currentEmailNotificationSettings?.unsubscribedFromDigest,
-    membersClub: hasEarlyAccess
-      ? !currentEmailNotificationSettings?.unsubscribedFromMembersClub
+    unsubscribedFromNotifications:
+      currentEmailNotificationSettings?.unsubscribedFromNotifications ?? false,
+    unsubscribedFromMarketing: currentEmailNotificationSettings?.unsubscribedFromMarketing ?? false,
+    unsubscribedFromDigest: currentEmailNotificationSettings?.unsubscribedFromDigest ?? false,
+    unsubscribedFromMembersClub: hasEarlyAccess
+      ? Boolean(currentEmailNotificationSettings?.unsubscribedFromMembersClub)
       : false,
     // currently cannot toggle all notifs from notif setting
-    all: false,
+    unsubscribedFromAll: false,
   });
 
   const computeToggleChecked = useCallback(
-    (notifType: string | number) => {
+    (notifType: keyof EmailNotificationSettings) => {
       // if the user dont have an email or not verified, we want to toggle off
       if (!shouldShowEmailSettings) {
         return false;
@@ -94,7 +95,7 @@ export default function useUpdateEmailNotificationSettings({
       unsubscribedFromMarketing,
       unsubscribedFromMembersClub,
       unsubscribedFromAll,
-    }: updateEmailNotificationSettingsProps) => {
+    }: EmailNotificationSettings) => {
       return updateEmailNotificationSettingsMutation({
         variables: {
           enabledNotification: {
@@ -117,17 +118,17 @@ export default function useUpdateEmailNotificationSettings({
       settingTitle,
       pushToast,
     }: handleEmailNotificationChangeProps) => {
-      const settingsUpdate = {
+      const settingsUpdate: EmailNotificationSettings = {
         ...emailSettings,
         [settingType]: newSettingValue,
       };
 
       try {
         const response = await updateEmailNotificationSettings({
-          unsubscribedFromNotifications: !settingsUpdate.notifications,
-          unsubscribedFromDigest: !settingsUpdate.digest,
-          unsubscribedFromMarketing: !settingsUpdate.marketing,
-          unsubscribedFromMembersClub: !settingsUpdate.membersClub ?? false,
+          unsubscribedFromNotifications: settingsUpdate.unsubscribedFromNotifications,
+          unsubscribedFromDigest: settingsUpdate.unsubscribedFromDigest,
+          unsubscribedFromMarketing: settingsUpdate.unsubscribedFromMarketing,
+          unsubscribedFromMembersClub: settingsUpdate.unsubscribedFromMembersClub ?? false,
           unsubscribedFromAll: false,
         });
 
@@ -136,9 +137,9 @@ export default function useUpdateEmailNotificationSettings({
           settingType in
             response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings
         ) {
-          const settings =
-            response.updateEmailNotificationSettings.viewer.email.emailNotificationSettings;
-          if (settings[settingType as keyof EmailSettings] === newSettingValue) {
+          const settings = response.updateEmailNotificationSettings.viewer.email
+            .emailNotificationSettings as EmailNotificationSettings;
+          if (settings[settingType] === newSettingValue) {
             setEmailSettings(settingsUpdate);
             pushToast({
               message: `Settings successfully updated. You will ${
@@ -207,40 +208,18 @@ export default function useUpdateEmailNotificationSettings({
   );
 }
 
-type EmailNotificationSettings = {
-  notifications: boolean;
-  marketing: boolean;
-  digest: boolean;
-  membersClub: boolean;
-  all: boolean;
-  [key: string]: boolean;
-};
-
-type EmailSettings = {
-  readonly unsubscribedFromAll: boolean;
-  readonly unsubscribedFromDigest: boolean;
-  readonly unsubscribedFromMarketing: boolean;
-  readonly unsubscribedFromMembersClub: boolean;
-  readonly unsubscribedFromNotifications: boolean;
-};
-
-type updateEmailNotificationSettingsProps = {
-  unsubscribedFromNotifications: boolean;
+export type EmailNotificationSettings = {
+  unsubscribedFromAll: boolean;
   unsubscribedFromDigest: boolean;
   unsubscribedFromMarketing: boolean;
   unsubscribedFromMembersClub: boolean;
-  unsubscribedFromAll: boolean;
+  unsubscribedFromNotifications: boolean;
 };
 
 type handleToggleProps = {
-  settingType: string;
+  settingType: keyof EmailNotificationSettings;
   settingTitle: string;
   pushToast: ({ message }: { message: string }) => void;
 };
 
-type handleEmailNotificationChangeProps = {
-  settingType: string;
-  newSettingValue: boolean;
-  settingTitle: string;
-  pushToast: ({ message }: { message: string }) => void;
-};
+type handleEmailNotificationChangeProps = handleToggleProps & { newSettingValue: boolean };
