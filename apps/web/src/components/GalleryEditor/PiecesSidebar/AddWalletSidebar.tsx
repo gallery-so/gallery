@@ -58,7 +58,9 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
     <VStack align="center" grow justify="center">
       <EmptyState
         title="It's looking empty"
-        description={`You do not have any ${selectedChain} pieces`}
+        description={`You do not have any ${
+          selectedChain === 'All Networks' ? 'pieces' : `${selectedChain} pieces`
+        }`}
       >
         <StyledButtonContainer>
           <Button
@@ -68,7 +70,7 @@ export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Pro
             variant="secondary"
             onClick={handleManageWalletsClick}
           >
-            {ctaButtonText}
+            {selectedChain === 'All Networks' ? 'Connect any account' : ctaButtonText}
           </Button>
         </StyledButtonContainer>
       </EmptyState>

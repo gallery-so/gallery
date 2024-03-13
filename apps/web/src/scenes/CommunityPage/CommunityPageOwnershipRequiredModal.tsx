@@ -41,7 +41,7 @@ export default function CommunityPageOwnershipRequiredModal({
 
   // Acknowledgment: This could let a user refresh a chain they can't access in the Editor
   const handleRefreshCollectionClick = useCallback(async () => {
-    if (!chain) {
+    if (!chain || chain === 'All Networks') {
       return;
     }
 

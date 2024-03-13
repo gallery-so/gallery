@@ -19,7 +19,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
-import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
+import { AvailableChains, ChainMetadata, chains, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -95,16 +95,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     rawTokensToDisplay: allTokens,
   });
 
-  const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
+  const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['All Networks']);
   const [selectedWallet, setSelectedWallet] = useState<SidebarWallet>('All');
   const [selectedView, setSelectedView] = useState<TokenFilterType>('Collected');
 
   const navbarHeight = useGlobalNavbarHeight();
 
-  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
-    selectedChain.name,
-    query
-  );
+  const ownsWalletFromSelectedChainFamily =
+    selectedChain.name === 'All Networks' ||
+    doesUserOwnWalletFromChainFamily(selectedChain.name, query);
 
   const handleAddBlankBlockClick = useCallback(() => {
     addWhitespace();
@@ -114,9 +113,17 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   // there's also wallet-specific token filtering happening in a child component, which should be lifted up here
   const tokensToDisplay = useMemo(() => {
     return tokenSearchResults.filter((token) => {
+      const isSpam =
+        token.isSpamByUser === null ? token.definition.contract?.isSpam : token.isSpamByUser;
+
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
         return true;
+      }
+
+      // Check if network is 'All Networks', then return true for all tokens except spam
+      if (selectedChain.name === 'All Networks') {
+        return !isSpam;
       }
 
       if (token.definition.chain !== selectedChain.name) {
@@ -145,8 +152,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       }
 
       // ...but incorporate with spam filtering logic for Collected view
-      const isSpam =
-        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
       if (selectedView === 'Hidden') {
         return isSpam;
       }
@@ -155,7 +160,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [tokenSearchResults, isSearching, selectedChain, selectedView, selectedWallet]);
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
-  const refreshDisabled =
+  const shouldDisableRefresh =
     isRefreshDisabledAtUserLevel ||
     !doesUserOwnWalletFromChainFamily(selectedChain.name, query) ||
     isLocked;
@@ -199,8 +204,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     setSelectedWallet('All');
   }, []);
 
+  const availableChains = useMemo(() => {
+    return chains
+      .filter((chain) => chain.name !== 'All Networks')
+      .map((chain) => chain.name as AvailableChains);
+  }, []);
+
   const handleRefresh = useCallback(async () => {
-    if (refreshDisabled) {
+    if (shouldDisableRefresh) {
       return;
     }
 
@@ -208,8 +219,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       return;
     }
 
-    await syncTokens({ type: selectedView, chain: selectedChain.name });
-  }, [refreshDisabled, selectedView, syncTokens, selectedChain.name]);
+    await syncTokens({
+      type: selectedView,
+      chain: selectedChain.name === 'All Networks' ? availableChains : selectedChain.name,
+    });
+  }, [shouldDisableRefresh, selectedView, syncTokens, selectedChain.name, availableChains]);
 
   // Auto-sync tokens when the chain changes, and there are 0 tokens to display
   useEffect(() => {
@@ -280,6 +294,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               isSearching={isSearching}
               selectedView={selectedView}
               onSelectedViewChange={handleSelectedViewChange}
+              isAllNetworksSelected={selectedChain.name === 'All Networks'}
             />
           </Header>
           <Header align="center" justify="space-between" gap={4}>
@@ -336,7 +351,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               eventContext={contexts.Editor}
               onClick={handleRefresh}
               variant="primary"
-              disabled={refreshDisabled}
+              disabled={shouldDisableRefresh}
             >
               <HStack gap={8} align="center">
                 {isLocked ? (

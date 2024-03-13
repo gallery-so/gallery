@@ -34,6 +34,7 @@ export function AnimatedRefreshIcon({
       eventName={eventName}
       eventContext={contexts.Posts}
       style={{ opacity: isSyncing ? 0.3 : 1 }}
+      disabled={isSyncing}
     />
   );
 }

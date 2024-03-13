@@ -6,6 +6,7 @@ import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { AvailableChains, Chain, chains } from 'shared/utils/chains';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
@@ -33,10 +34,7 @@ import {
   MainTabStackNavigatorProp,
   ScreenWithNftSelector,
 } from '~/navigation/types';
-import {
-  NetworkChoice,
-  NftSelectorSortView,
-} from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
+import { NftSelectorSortView } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -49,7 +47,7 @@ type NftSelectorPickerGridProps = {
   searchCriteria: {
     searchQuery: string;
     ownerFilter: 'Collected' | 'Created';
-    networkFilter: NetworkChoice;
+    networkFilter: Chain;
     sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
@@ -125,31 +123,37 @@ export function NftSelectorPickerGrid({
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
-    return tokens
-      .filter((token) => {
-        const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
+    let filtered = tokens;
 
-        return !isSpam;
-      })
-      .filter((token) => {
-        if (!searchCriteria.searchQuery) {
-          return true;
-        }
+    // Filter out spam tokens
+    filtered = filtered.filter((token) => {
+      const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
+      return !isSpam;
+    });
 
-        return token.definition?.community?.name
-          ?.toLowerCase()
-          .includes(searchCriteria.searchQuery.toLowerCase());
-      })
-      .filter((token) => {
-        return token.definition?.chain === searchCriteria.networkFilter;
-      })
-      .filter((token) => {
-        if (searchCriteria.ownerFilter === 'Collected') {
-          return token.ownerIsHolder;
-        }
+    // Filter by search query if present
+    if (searchCriteria.searchQuery) {
+      const searchQueryLower = searchCriteria.searchQuery.toLowerCase();
+      filtered = filtered.filter((token) =>
+        token.definition?.community?.name?.toLowerCase().includes(searchQueryLower)
+      );
+    }
 
-        return token.ownerIsCreator;
-      });
+    // Filter by network if not 'All Networks'
+    if (searchCriteria.networkFilter !== 'All Networks') {
+      filtered = filtered.filter(
+        (token) => token.definition?.chain === searchCriteria.networkFilter
+      );
+    }
+
+    // Filter by owner status
+    if (searchCriteria.ownerFilter === 'Collected') {
+      filtered = filtered.filter((token) => token.ownerIsHolder);
+    } else if (searchCriteria.ownerFilter === 'Created') {
+      filtered = filtered.filter((token) => token.ownerIsCreator);
+    }
+
+    return filtered;
   }, [
     searchCriteria.networkFilter,
     searchCriteria.ownerFilter,
@@ -223,6 +227,12 @@ export function NftSelectorPickerGrid({
   const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
     useSyncTokensActions();
 
+  const availableChains = useMemo(() => {
+    return chains
+      .filter((chain) => chain.name !== 'All Networks')
+      .map((chain) => chain.name as AvailableChains);
+  }, []);
+
   // TODO: this logic is messy and shared with web; should be refactored
   const handleRefresh = useCallback(() => {
     if (!ownsWalletFromSelectedChainFamily) {
@@ -233,11 +243,18 @@ export function NftSelectorPickerGrid({
       if (isSyncing) {
         return;
       }
-      syncTokens(searchCriteria.networkFilter);
+      syncTokens(
+        searchCriteria.networkFilter === 'All Networks'
+          ? availableChains
+          : searchCriteria.networkFilter
+      );
       onRefresh();
     }
 
-    if (searchCriteria.ownerFilter === 'Created') {
+    if (
+      searchCriteria.ownerFilter === 'Created' &&
+      searchCriteria.networkFilter !== 'All Networks'
+    ) {
       if (isSyncingCreatedTokens) {
         return;
       }
@@ -245,6 +262,7 @@ export function NftSelectorPickerGrid({
       onRefresh();
     }
   }, [
+    availableChains,
     isSyncing,
     isSyncingCreatedTokens,
     onRefresh,
