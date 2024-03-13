@@ -23,7 +23,7 @@ import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LoginStackNavigatorProp, MainTabStackNavigatorParamList } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
-import { chains } from '~/shared/utils/chains';
+import { AvailableChains, chains } from '~/shared/utils/chains';
 
 import CreatorSupportAnnouncementBottomSheetModal from './CreatorSupportAnnouncementBottomSheetModal';
 import {
@@ -71,7 +71,7 @@ function InnerNftSelectorPickerScreen() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [ownershipTypeFilter, setFilter] = useState<'Collected' | 'Created'>('Collected');
-  const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
+  const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('All Networks');
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
   const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
@@ -81,18 +81,24 @@ function InnerNftSelectorPickerScreen() {
     return screenHeaderText[currentScreen];
   }, [currentScreen]);
 
+  const availableChains = useMemo(() => {
+    return chains
+      .filter((chain) => chain.name !== 'All Networks')
+      .map((chain) => chain.name as AvailableChains);
+  }, []);
+
   const handleRefresh = useCallback(() => {
-    syncTokens(networkFilter);
-  }, [networkFilter, syncTokens]);
+    syncTokens(networkFilter === 'All Networks' ? availableChains : networkFilter);
+  }, [availableChains, networkFilter, syncTokens]);
 
   const handleSync = useCallback(async () => {
     if (ownershipTypeFilter === 'Collected') {
-      await syncTokens(networkFilter);
+      await syncTokens(networkFilter === 'All Networks' ? availableChains : networkFilter);
     }
-    if (ownershipTypeFilter === 'Created') {
+    if (ownershipTypeFilter === 'Created' && networkFilter !== 'All Networks') {
       await syncCreatedTokens(networkFilter);
     }
-  }, [ownershipTypeFilter, syncTokens, networkFilter, syncCreatedTokens]);
+  }, [ownershipTypeFilter, networkFilter, syncTokens, availableChains, syncCreatedTokens]);
 
   const handleNetworkChange = useCallback((network: NetworkChoice) => {
     setNetworkFilter(network);
