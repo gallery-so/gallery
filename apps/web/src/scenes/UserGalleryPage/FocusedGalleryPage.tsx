@@ -8,6 +8,8 @@ import { GalleryPageSpacing } from '~/pages/[username]';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
+import { MobileSpacingContainer } from './UserGallery';
+
 type FocusedGalleryPageProps = {
   queryRef: FocusedGalleryPageFragment$key;
 };
@@ -57,7 +59,9 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
         <title>{headTitle}</title>
       </Head>
       <GalleryPageSpacing>
-        <UserGalleryLayout galleryRef={query.galleryById} queryRef={query} />
+        <MobileSpacingContainer>
+          <UserGalleryLayout galleryRef={query.galleryById} queryRef={query} />
+        </MobileSpacingContainer>
       </GalleryPageSpacing>
     </>
   );

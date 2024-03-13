@@ -90,7 +90,6 @@ export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async 
             title: `${contractAddress} | Gallery`,
             path: `/community/${chain}/${contractAddress}`,
             isFcFrameCompatible: true,
-            buttonContent: 'Explore',
           })
         : null,
     },
