@@ -1,26 +1,11 @@
 import Head from 'next/head';
-import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import Explore from '~/components/Explore/Explore';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { ExploreHomePageFragment$key } from '~/generated/ExploreHomePageFragment.graphql';
 
-type Props = {
-  queryRef: ExploreHomePageFragment$key;
-};
-
-export default function ExploreHomePage({ queryRef }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment ExploreHomePageFragment on Query {
-        ...ExploreFragment
-      }
-    `,
-    queryRef
-  );
-
+export default function ExploreHomePage() {
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
@@ -29,7 +14,7 @@ export default function ExploreHomePage({ queryRef }: Props) {
         <title>Gallery | Explore</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        <Explore queryRef={query} />
+        <Explore />
       </StyledPage>
     </>
   );
