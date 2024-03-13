@@ -9,12 +9,13 @@ import { TezosIcon } from 'src/icons/TezosIcon';
 import { WorldIcon } from 'src/icons/WorldIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
-import { ChainMetadata } from '~/shared/utils/chains';
+import { Chain } from '~/shared/utils/chains';
 
-export function getChainIconComponent(chain: ChainMetadata) {
-  switch (chain.name) {
-    case 'All Networks':
+export function getChainIconComponent(chain: Chain) {
+  switch (chain) {
+    case 'All Networks' as Chain:
       return <WorldIcon />;
+
     case 'Ethereum':
       return <EthIcon />;
 

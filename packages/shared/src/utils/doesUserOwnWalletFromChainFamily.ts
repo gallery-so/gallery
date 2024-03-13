@@ -31,6 +31,9 @@ export function doesUserOwnWalletFromChainFamily(
   );
 
   return query.viewer?.user?.wallets?.some((wallet) => {
+    if (_chain === 'All Networks') {
+      return true
+    }
     if (_chain === '%future added value') {
       return false;
     }

@@ -4,7 +4,6 @@ import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/us
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
-import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
@@ -155,7 +154,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     // Filter tokens
     const filteredTokens = tokenSearchResults.filter((token) => {
       const isSpam =
-        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
+        token.isSpamByUser === null ? token.definition.contract?.isSpam : token.isSpamByUser;
 
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
@@ -223,10 +222,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     return filteredTokens;
   }, [filterType, isSearching, network, sortType, tokenSearchResults]);
 
-  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
-    network as Chain,
-    query
-  );
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(network, query);
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =

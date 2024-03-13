@@ -12,7 +12,6 @@ import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarT
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { Chain } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
@@ -20,7 +19,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts, flows } from '~/shared/analytics/constants';
 import useExperience from '~/shared/hooks/useExperience';
 import colors from '~/shared/theme/colors';
-import { ChainMetadata, chains, chainsMap } from '~/shared/utils/chains';
+import { AvailableChains, ChainMetadata, chains, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -104,7 +103,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const ownsWalletFromSelectedChainFamily =
     selectedChain.name === 'All Networks' ||
-    doesUserOwnWalletFromChainFamily(selectedChain.name as Chain, query);
+    doesUserOwnWalletFromChainFamily(selectedChain.name, query);
 
   const handleAddBlankBlockClick = useCallback(() => {
     addWhitespace();
@@ -115,7 +114,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const tokensToDisplay = useMemo(() => {
     return tokenSearchResults.filter((token) => {
       const isSpam =
-        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
+        token.isSpamByUser === null ? token.definition.contract?.isSpam : token.isSpamByUser;
 
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
@@ -163,9 +162,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const shouldDisableRefresh =
     isRefreshDisabledAtUserLevel ||
-    !doesUserOwnWalletFromChainFamily(selectedChain.name as Chain, query) ||
+    !doesUserOwnWalletFromChainFamily(selectedChain.name, query) ||
     isLocked;
-  const isRefreshDisabled = selectedChain.name !== 'All Networks' ? shouldDisableRefresh : false;
 
   const [creatorBetaAnnouncementSeen, setCreatorBetaAnnouncementSeen] = useExperience({
     type: 'CreatorBetaMicroAnnouncementModal',
@@ -206,12 +204,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     setSelectedWallet('All');
   }, []);
 
-  const availableChains = chains
-    .filter((chain) => chain.name !== 'All Networks')
-    .map((chain) => chain.name as Exclude<(typeof chains)[number]['name'], 'All Networks'>);
+  const availableChains = useMemo(() => {
+    return chains
+      .filter((chain) => chain.name !== 'All Networks')
+      .map((chain) => chain.name as AvailableChains);
+  }, []);
 
   const handleRefresh = useCallback(async () => {
-    if (isRefreshDisabled) {
+    if (shouldDisableRefresh) {
       return;
     }
 
@@ -223,7 +223,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       type: selectedView,
       chain: selectedChain.name === 'All Networks' ? availableChains : selectedChain.name,
     });
-  }, [isRefreshDisabled, selectedView, syncTokens, selectedChain.name, availableChains]);
+  }, [shouldDisableRefresh, selectedView, syncTokens, selectedChain.name, availableChains]);
 
   // Auto-sync tokens when the chain changes, and there are 0 tokens to display
   useEffect(() => {
@@ -351,7 +351,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               eventContext={contexts.Editor}
               onClick={handleRefresh}
               variant="primary"
-              disabled={isRefreshDisabled}
+              disabled={shouldDisableRefresh}
             >
               <HStack gap={8} align="center">
                 {isLocked ? (
