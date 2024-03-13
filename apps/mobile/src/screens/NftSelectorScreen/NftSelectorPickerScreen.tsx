@@ -31,9 +31,8 @@ import {
   NftSelectorFilterBottomSheet,
   NftSelectorSortView,
 } from './NftSelectorFilterBottomSheet';
+import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
-import { NftSelectorPickerScreenFallback } from './NftSelectorPickerScreenFallback';
-import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
 const NETWORKS: {
   label: string;
@@ -219,7 +218,7 @@ function InnerNftSelectorPickerScreen() {
               </View>
             </View>
             <View className="flex-grow flex-1 w-full">
-              <Suspense fallback={<NftSelectorScreenFallback />}>
+              <Suspense fallback={<NftSelectorLoadingSkeleton />}>
                 <NftSelectorPickerGrid
                   searchCriteria={{
                     searchQuery,
@@ -284,7 +283,7 @@ function CreatorBottomSheetWrapper({
 
 export function NftSelectorPickerScreen() {
   return (
-    <Suspense fallback={<NftSelectorPickerScreenFallback />}>
+    <Suspense fallback={<NftSelectorLoadingSkeleton />}>
       <InnerNftSelectorPickerScreen />
     </Suspense>
   );

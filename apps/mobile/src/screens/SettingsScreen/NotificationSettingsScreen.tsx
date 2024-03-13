@@ -1,6 +1,6 @@
 import * as Application from 'expo-application';
 import * as Notifications from 'expo-notifications';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { useRelayEnvironment } from 'react-relay';
 
@@ -9,6 +9,8 @@ import { Button } from '~/components/Button';
 import { registerNotificationToken } from '~/components/Notification/registerNotificationToken';
 import { Typography } from '~/components/Typography';
 import { contexts } from '~/shared/analytics/constants';
+
+import { EmailNotificationSettingsSection } from './EmailNotificationSettingsSection';
 
 export function NotificationSettingsScreen() {
   const relayEnvironment = useRelayEnvironment();
@@ -60,6 +62,9 @@ export function NotificationSettingsScreen() {
       <View className="px-4 relative mb-2">
         <BackButton />
       </View>
+      <Suspense fallback={null}>
+        <EmailNotificationSettingsSection />
+      </Suspense>
       <View className="px-4 pt-8 space-y-6 flex flex-col">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Push notifications

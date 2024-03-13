@@ -1,3 +1,4 @@
+import Skeleton from 'react-loading-skeleton';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -5,6 +6,7 @@ import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment
 import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 
+import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
 import ExploreList from './ExploreList';
@@ -48,10 +50,52 @@ export default function TrendingSection({ trendingUsersRef, queryRef, title, sub
   );
 }
 
+export function TrendingSectionLoadingState({
+  title,
+  subTitle,
+}: {
+  title: string;
+  subTitle: string;
+}) {
+  return (
+    <StyledTrendingSection gap={32}>
+      <VStack gap={4}>
+        <Title>{title}</Title>
+        <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
+      </VStack>
+      <StyledCardContainer>
+        {[...Array(4)].map((_, index) => (
+          <UserCardPlaceholder key={index}>
+            <Skeleton height={'100%'} />
+          </UserCardPlaceholder>
+        ))}
+      </StyledCardContainer>
+    </StyledTrendingSection>
+  );
+}
+
 const StyledTrendingSection = styled(VStack)`
   width: 100%;
 `;
 
 const Title = styled(TitleDiatypeL)`
   font-size: 24px;
+`;
+
+const StyledCardContainer = styled.div`
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0px, 1fr));
+  grid-template-rows: repeat(2, minmax(0px, 1fr));
+
+  @media only screen and (${breakpoints.tablet}) {
+    grid-template-columns: repeat(4, minmax(0px, 1fr));
+    grid-template-rows: repeat(1, minmax(0px, 1fr));
+  }
+`;
+
+const UserCardPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1.5;
 `;

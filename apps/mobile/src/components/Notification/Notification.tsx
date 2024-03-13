@@ -21,6 +21,7 @@ import { SomeoneMentionedYourCommunity } from './Notifications/SomeoneMentionedY
 import { SomeonePostedYourWork } from './Notifications/SomeonePostedYourWork';
 import { SomeoneRepliedToYourComment } from './Notifications/SomeoneRepliedToYourComment';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
+import SomeoneYouFollowOnFarcasterJoined from './Notifications/SomeoneYouFollowOnFarcasterJoined';
 import { SomeoneYouFollowPostedTheirFirstPost } from './Notifications/SomeoneYouFollowPostedTheirFirstPost';
 import { YouReceivedTopActivityBadge } from './Notifications/YouReceivedTopActivityBadge';
 
@@ -49,6 +50,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...YouReceivedTopActivityBadgeQueryFragment
         ...SomeoneAdmiredYourCommentQueryFragment
         ...GalleryAnnouncementQueryFragment
+        ...SomeoneYouFollowOnFarcasterJoinedQueryFragment
       }
     `,
     queryRef
@@ -145,6 +147,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           platform
           ...GalleryAnnouncementFragment
         }
+        ... on SomeoneYouFollowOnFarcasterJoinedNotification {
+          __typename
+          ...SomeoneYouFollowOnFarcasterJoinedFragment
+        }
       }
     `,
     notificationRef
@@ -195,6 +201,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
       return notification.platform === 'Web' ? null : (
         <GalleryAnnouncement notificationRef={notification} queryRef={query} />
       );
+    } else if (notification.__typename === 'SomeoneYouFollowOnFarcasterJoinedNotification') {
+      return <SomeoneYouFollowOnFarcasterJoined queryRef={query} notificationRef={notification} />;
     }
     return <View />;
   }, [notification, query]);
