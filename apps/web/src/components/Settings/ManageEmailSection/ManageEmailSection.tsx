@@ -10,9 +10,7 @@ import EmailManager from '~/components/Email/EmailManager';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageEmailSectionFragment$key } from '~/generated/ManageEmailSectionFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
-import useUpdateEmailNotificationSettings, {
-  EmailNotificationSettings,
-} from '~/shared/hooks/useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings from '~/shared/hooks/useUpdateEmailNotificationSettings';
 import colors from '~/shared/theme/colors';
 
 import SettingsRowDescription from '../SettingsRowDescription';
