@@ -21,7 +21,7 @@ export default function Explore() {
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
       sidebar={<StandardSidebar queryRef={query} />}
-      element={<ExplorePage queryRef={query} />}
+      element={<ExplorePage />}
     />
   );
 }
