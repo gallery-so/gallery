@@ -60,32 +60,37 @@ export default function useUpdateEmailNotificationSettings({
   });
 
   const emailNotificationSettingData = useMemo(
-    () => [
-      {
-        key: 'unsubscribedFromNotifications',
-        title: 'Notifications',
-        description: 'Weekly summary of your unread notifications',
-      },
-      {
-        key: 'unsubscribedFromMarketing',
-        title: 'General Marketing',
-        description: 'Product updates, artist collabs, and airdrops',
-      },
-      ...(hasEarlyAccess
-        ? [
-            {
-              key: 'unsubscribedFromMembersClub',
-              title: 'Members Club',
-              description: 'Exclusive updates for Members Club Holders',
-            },
-          ]
-        : []),
-      {
-        key: 'unsubscribedFromDigest',
-        title: 'Digest',
-        description: 'Weekly digest of top interacted galleries, artists, and posts',
-      },
-    ],
+    () =>
+      [
+        {
+          key: 'unsubscribedFromNotifications',
+          title: 'Notifications',
+          description: 'Weekly summary of your unread notifications',
+        },
+        {
+          key: 'unsubscribedFromMarketing',
+          title: 'General Marketing',
+          description: 'Product updates, artist collabs, and airdrops',
+        },
+        ...(hasEarlyAccess
+          ? [
+              {
+                key: 'unsubscribedFromMembersClub',
+                title: 'Members Club',
+                description: 'Exclusive updates for Members Club Holders',
+              },
+            ]
+          : []),
+        {
+          key: 'unsubscribedFromDigest',
+          title: 'Digest',
+          description: 'Weekly digest of trending galleries, artists, and posts',
+        },
+      ] as {
+        key: keyof EmailNotificationSettings;
+        title: string;
+        description: string;
+      }[],
     [hasEarlyAccess]
   );
 

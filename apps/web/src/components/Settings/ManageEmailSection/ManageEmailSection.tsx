@@ -115,14 +115,10 @@ export default function ManageEmailSection({ queryRef }: Props) {
                   <SettingsRowDescription>{emailNotifSetting.description}</SettingsRowDescription>
                 </VStack>
                 <Toggle
-                  checked={
-                    computeToggleChecked(
-                      emailNotifSetting.key as keyof EmailNotificationSettings
-                    ) ?? false
-                  }
+                  checked={computeToggleChecked(emailNotifSetting.key)}
                   onChange={() =>
                     handleToggle({
-                      settingType: emailNotifSetting.key as keyof EmailNotificationSettings,
+                      settingType: emailNotifSetting.key,
                       settingTitle: emailNotifSetting.title,
                       pushToast,
                     })
