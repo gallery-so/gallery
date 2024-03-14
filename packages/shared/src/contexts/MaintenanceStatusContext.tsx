@@ -30,7 +30,7 @@ type SanityMaintenanceResponse = {
   displayType: 'banner' | 'fullScreen';
 };
 
-type MaintenanceContent = Pick<SanityMaintenanceResponse, 'id' | 'isActive' | 'message'>;
+export type MaintenanceContent = Pick<SanityMaintenanceResponse, 'id' | 'isActive' | 'message'>;
 
 type MaintenanceStatusValue = {
   fetchMaintenanceModeStatus: () => void;
