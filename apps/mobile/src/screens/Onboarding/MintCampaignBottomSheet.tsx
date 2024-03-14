@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 
 import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
+import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 export default function MintCampaignBottomSheet() {
   return <IntroScreen />;
@@ -42,6 +43,12 @@ function IntroScreen() {
         Thank you for supporting Gallery. To show our appreciation, enjoy a a free generative
         artwork by MCHX, on us
       </BaseM>
+      <Image
+        className="w-full aspect-square my-4"
+        source={{
+          uri: 'https://highlight-creator-assets.highlight.xyz/tmp/gen-previews/26666dba-e5ab-4a24-a6ee-af9e358ed115/1710381305822.png',
+        }}
+      />
       <View className="flex flex-row space-apart justify-between">
         <View>
           <BaseM>Open edition</BaseM>
@@ -52,6 +59,12 @@ function IntroScreen() {
           <TitleLItalic>Gallery x MCHX</TitleLItalic>
         </View>
       </View>
+      <Button
+        text="mint"
+        eventElementId="Mint Campaign Mint Button"
+        eventName="Pressed Mint Campaign Mint Button"
+        eventContext={null}
+      />
       <BaseS>
         Note: Image above is an indicative preview only, final artwork will be uniquely generated.
         Powered by highlight.xyz
