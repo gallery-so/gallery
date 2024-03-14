@@ -22,12 +22,13 @@ import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingPro
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { env } from '~/env/runtime';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
+import MaintenanceStatusProvider from '~/shared/contexts/MaintenanceStatusContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
+import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
-import { Typography } from './components/Typography';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
@@ -35,7 +36,6 @@ import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
-import { useSanityMaintenanceCheckMobile } from './utils/useSanityMaintenanceCheckMobile';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -115,82 +115,68 @@ export default function App() {
     [colorScheme, colorSchemeLoaded]
   );
 
-  // NOTE: this is deprecated and should use shared/MaintenanceStatusContext instead
-  const { maintenanceCheckLoadedOrError, maintenanceModeResponse } =
-    useSanityMaintenanceCheckMobile();
-
   useEffect(
     function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
-      if (fontsLoaded && colorSchemeLoaded && maintenanceCheckLoadedOrError) {
+      if (fontsLoaded && colorSchemeLoaded) {
         SplashScreen.hideAsync();
       }
     },
-    [colorSchemeLoaded, fontsLoaded, maintenanceCheckLoadedOrError]
+    [colorSchemeLoaded, fontsLoaded]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded || !maintenanceCheckLoadedOrError || !introVideoLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !introVideoLoaded) {
     return null;
-  }
-
-  if (maintenanceModeResponse?.isActive) {
-    return (
-      <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center p-6">
-        <Typography className="text-l mb-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Maintenance in Progress
-        </Typography>
-        <Typography
-          className="text-l text-center leading-6"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
-          {maintenanceModeResponse?.message}
-        </Typography>
-      </View>
-    );
   }
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
       <ReportingErrorBoundary fallback={<LoadingView />}>
-        <RelayEnvironmentProvider environment={relayEnvironment}>
-          <SWRConfig>
-            <Suspense fallback={<LoadingView />}>
-              <PrivyProvider appId={env.PRIVY_APP_ID}>
-                <MobileAnalyticsProvider>
-                  <MobileErrorReportingProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <SafeAreaProvider>
-                        <magic.Relayer />
-                        <SearchProvider>
-                          <NavigationContainer ref={navigationRef}>
-                            <ToastProvider>
-                              <TokenStateManagerProvider>
-                                <PortalProvider>
-                                  <BottomSheetModalProvider>
-                                    <SyncTokensProvider>
-                                      <ManageWalletProvider>
-                                        {/* Register the user's push token if one exists (does not prompt the user) */}
-                                        <NotificationRegistrar />
-                                        <DevMenuItems />
-                                        <DeepLinkRegistrar />
-                                        <RootStackNavigator
-                                          navigationContainerRef={navigationRef}
-                                        />
-                                      </ManageWalletProvider>
-                                    </SyncTokensProvider>
-                                  </BottomSheetModalProvider>
-                                </PortalProvider>
-                              </TokenStateManagerProvider>
-                            </ToastProvider>
-                          </NavigationContainer>
-                        </SearchProvider>
-                      </SafeAreaProvider>
-                    </GestureHandlerRootView>
-                  </MobileErrorReportingProvider>
-                </MobileAnalyticsProvider>
-              </PrivyProvider>
-            </Suspense>
-          </SWRConfig>
-        </RelayEnvironmentProvider>
+        <MaintenanceStatusProvider
+          sanityProjectId={env.EXPO_PUBLIC_SANITY_PROJECT_ID}
+          MaintenancePageComponent={<MaintenanceScreen />}
+          MaintenanceChecker={<CheckMaintenanceOnAppForeground />}
+        >
+          <RelayEnvironmentProvider environment={relayEnvironment}>
+            <SWRConfig>
+              <Suspense fallback={<LoadingView />}>
+                <PrivyProvider appId={env.PRIVY_APP_ID}>
+                  <MobileAnalyticsProvider>
+                    <MobileErrorReportingProvider>
+                      <GestureHandlerRootView style={{ flex: 1 }}>
+                        <SafeAreaProvider>
+                          <magic.Relayer />
+                          <SearchProvider>
+                            <NavigationContainer ref={navigationRef}>
+                              <ToastProvider>
+                                <TokenStateManagerProvider>
+                                  <PortalProvider>
+                                    <BottomSheetModalProvider>
+                                      <SyncTokensProvider>
+                                        <ManageWalletProvider>
+                                          {/* Register the user's push token if one exists (does not prompt the user) */}
+                                          <NotificationRegistrar />
+                                          <DevMenuItems />
+                                          <DeepLinkRegistrar />
+                                          <RootStackNavigator
+                                            navigationContainerRef={navigationRef}
+                                          />
+                                        </ManageWalletProvider>
+                                      </SyncTokensProvider>
+                                    </BottomSheetModalProvider>
+                                  </PortalProvider>
+                                </TokenStateManagerProvider>
+                              </ToastProvider>
+                            </NavigationContainer>
+                          </SearchProvider>
+                        </SafeAreaProvider>
+                      </GestureHandlerRootView>
+                    </MobileErrorReportingProvider>
+                  </MobileAnalyticsProvider>
+                </PrivyProvider>
+              </Suspense>
+            </SWRConfig>
+          </RelayEnvironmentProvider>
+        </MaintenanceStatusProvider>
       </ReportingErrorBoundary>
     </View>
   );
