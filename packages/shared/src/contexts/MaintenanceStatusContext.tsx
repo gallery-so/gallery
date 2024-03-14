@@ -23,17 +23,20 @@ export const fetchSanityContent =
     return response.result;
   };
 
-type SanityMaintenanceModeResponse = {
+type SanityMaintenanceResponse = {
+  id: string;
   isActive: boolean;
   message: string;
+  displayType: 'banner' | 'fullScreen';
 };
+
+type MaintenanceContent = Pick<SanityMaintenanceResponse, 'id' | 'isActive' | 'message'>;
 
 type MaintenanceStatusValue = {
   fetchMaintenanceModeStatus: () => void;
   maintenanceCheckLoadedOrError: boolean;
-  maintenanceId: string;
-  upcomingMaintenanceNoticeContent: SanityMaintenanceModeResponse | null;
-  currentlyActiveMaintenanceNoticeContent: SanityMaintenanceModeResponse | null;
+  upcomingMaintenanceNoticeContent: MaintenanceContent | null;
+  currentlyActiveMaintenanceNoticeContent: MaintenanceContent | null;
 };
 
 const MaintenanceStatusContext = createContext<MaintenanceStatusValue | undefined>(undefined);
@@ -50,18 +53,17 @@ type Props = {
   children: ReactNode;
   sanityProjectId?: string;
   MaintenancePageComponent: ReactElement;
+  MaintenanceChecker?: ReactElement | null;
 };
 
 const MaintenanceStatusProvider = memo(
-  ({ sanityProjectId, children, MaintenancePageComponent }: Props) => {
+  ({ sanityProjectId, children, MaintenancePageComponent, MaintenanceChecker = null }: Props) => {
     if (!sanityProjectId) {
       throw new Error('MaintenanceStatusProvider initiated without a sanity project ID!');
     }
 
     const [sanityLoadedOrError, setSanityLoadedOrError] = useState(false);
-    // feature flag for maintenance
-    const [maintenanceId, setMaintenanceId] = useState('');
-    // this content will likely appear in a dismissable banner
+    // this content will likely appear in a dismissable banner or bottomsheet
     const [upcomingMaintenanceNoticeContent, setUpcomingMaintenanceNoticeContent] =
       useState<MaintenanceStatusValue['upcomingMaintenanceNoticeContent']>(null);
     // this content will likely appear on a full-page screen takeover
@@ -70,9 +72,9 @@ const MaintenanceStatusProvider = memo(
 
     const fetchMaintenanceModeFromSanity = useCallback(async () => {
       try {
-        const response = await Promise.race([
+        const response: SanityMaintenanceResponse[] = await Promise.race([
           fetchSanityContent(sanityProjectId)(
-            '*[_type == "maintenanceMode"] { isActive, message }'
+            '*[_type == "maintenanceManager"] { id, isActive, message, displayType }'
           ),
           new Promise(
             (_, reject) =>
@@ -80,12 +82,24 @@ const MaintenanceStatusProvider = memo(
           ),
         ]);
 
-        setCurrentlyActiveMaintenanceNoticeContent(response?.[0]);
-        if (typeof response?.[1]?.message === 'string') {
-          const [maintenanceId, message] = response[1].message.split('%%%%%');
-          setMaintenanceId(maintenanceId);
-          response[1].message = message;
-          setUpcomingMaintenanceNoticeContent(response[1]);
+        if (!response[0]) {
+          return;
+        }
+
+        const { id, isActive, message, displayType } = response[0];
+
+        if (displayType === 'banner') {
+          setUpcomingMaintenanceNoticeContent({
+            id,
+            isActive,
+            message,
+          });
+        } else {
+          setCurrentlyActiveMaintenanceNoticeContent({
+            id,
+            isActive,
+            message,
+          });
         }
       } finally {
         // the app is ready to be shown in these 3 cases: Sanity responded with a valid response, Sanity responded with an error, or Sanity timed out
@@ -101,14 +115,12 @@ const MaintenanceStatusProvider = memo(
       () => ({
         fetchMaintenanceModeStatus: fetchMaintenanceModeFromSanity,
         maintenanceCheckLoadedOrError: sanityLoadedOrError,
-        maintenanceId,
         upcomingMaintenanceNoticeContent,
         currentlyActiveMaintenanceNoticeContent,
       }),
       [
         currentlyActiveMaintenanceNoticeContent,
         fetchMaintenanceModeFromSanity,
-        maintenanceId,
         sanityLoadedOrError,
         upcomingMaintenanceNoticeContent,
       ]
@@ -120,6 +132,7 @@ const MaintenanceStatusProvider = memo(
           maintenanceIsActive={Boolean(currentlyActiveMaintenanceNoticeContent?.isActive)}
           MaintenancePageComponent={MaintenancePageComponent}
         >
+          {MaintenanceChecker}
           {children}
         </MaintenancePageOrChildren>
       </MaintenanceStatusContext.Provider>

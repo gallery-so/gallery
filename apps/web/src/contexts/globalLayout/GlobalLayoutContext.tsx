@@ -386,8 +386,8 @@ function GlobalNavbarWithFadeEnabled({
   const {
     shouldDisplayBanner: shouldDisplayMaintenanceBanner,
     handleDismissBanner,
-    maintenanceId,
     message,
+    maintenanceId,
   } = useUpcomingMaintenanceBannerWeb();
 
   const MOBILE_BETA_UPSELL_FLAG = 'MobileBetaUpsell';
