@@ -13,16 +13,35 @@ export const TitleXS = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const BaseM = ({
+export const TitleL = ({
   children,
-  weight = 'Regular',
+  classNameOverride,
 }: {
   children: React.ReactNode;
-  weight?: Weight;
+  classNameOverride: string;
 }) => {
   return (
     <Typography
-      className="text-black-900 dark:text-white text-sm leading-5"
+      className={`text-black-900 dark:text-white text-lg leading-6 ${classNameOverride}`}
+      font={{ family: 'ABCDiatype', weight: 'Bold' }}
+    >
+      {children}
+    </Typography>
+  );
+};
+
+export const BaseM = ({
+  children,
+  weight = 'Regular',
+  classNameOverride,
+}: {
+  children: React.ReactNode;
+  weight?: Weight;
+  classNameOverride?: string;
+}) => {
+  return (
+    <Typography
+      className={`text-black-900 dark:text-white text-sm leading-5 ${classNameOverride}`}
       font={{ family: 'ABCDiatype', weight }}
     >
       {children}
