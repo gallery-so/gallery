@@ -79,6 +79,10 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                     isSpamByUser
                     ownerIsHolder
                     ownerIsCreator
+
+                    # Refresh tokens for post composer
+                    ...NftSelectorPickerGridTokenGridFragment
+                    ...NftSelectorPickerGridOneOrManyFragment
                   }
                 }
               }
@@ -161,6 +165,10 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                       isSpamByUser
                       ownerIsHolder
                       ownerIsCreator
+
+                      # Refresh tokens for post composer
+                      ...NftSelectorPickerGridTokenGridFragment
+                      ...NftSelectorPickerGridOneOrManyFragment
                     }
                   }
                 }
@@ -248,6 +256,10 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                     isSpamByUser
                     ownerIsHolder
                     ownerIsCreator
+
+                    # Refresh tokens for post composer
+                    ...NftSelectorPickerGridTokenGridFragment
+                    ...NftSelectorPickerGridOneOrManyFragment
                   }
                 }
               }
