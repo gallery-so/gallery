@@ -5,10 +5,7 @@ import { useEffectOnAppForeground } from 'src/utils/useEffectOnAppForeground';
 import { Typography } from './Typography';
 
 export function MaintenanceScreen() {
-  const { currentlyActiveMaintenanceNoticeContent, fetchMaintenanceModeStatus } =
-    useMaintenanceContext();
-
-  useEffectOnAppForeground(fetchMaintenanceModeStatus);
+  const { currentlyActiveMaintenanceNoticeContent } = useMaintenanceContext();
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900 flex justify-center items-center p-6">
