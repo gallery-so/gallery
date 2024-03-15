@@ -20,7 +20,7 @@ export function useWalletConnect({ onConnect = noop, onSignedIn, onIsSigningIn }
   const createNonce = useCreateNonce();
 
   const web3Provider = useMemo(
-    () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
+    () => (provider ? new ethers.BrowserProvider(provider) : undefined),
     [provider]
   );
 
