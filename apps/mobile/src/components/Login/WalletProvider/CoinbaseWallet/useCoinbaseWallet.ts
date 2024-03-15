@@ -63,7 +63,7 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
     } finally {
       onIsSigningIn(false);
     }
-  }, [address, createNonce, onSignedIn, track]);
+  }, [address, createNonce, onIsSigningIn, onSignedIn, track]);
 
   // Initiate connection to Wallet
   const connectWallet = useCallback(async () => {
