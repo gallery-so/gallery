@@ -6,6 +6,7 @@
     "@aveq-research/localforage-asyncstorage-driver": "^3.0.1",
     "@coinbase/wallet-mobile-sdk": "^1.0.13",
     "@ethersproject/shims": "^5.7.0",
+    "@farcaster/auth-kit": "^0.2.1",
     "@gorhom/bottom-sheet": "4.4.7",
     "@gorhom/portal": "^1.0.14",
     "@magic-sdk/react-native-expo": "^16.0.0",
