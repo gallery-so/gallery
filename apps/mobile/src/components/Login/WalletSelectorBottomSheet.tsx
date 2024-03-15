@@ -63,7 +63,6 @@ function WalletSelectorBottomSheet(
 
   const handleSelectWallet = useCallback(
     (wallet: WalletSupport) => {
-      console.log('selected wallet', wallet);
       if (wallet === 'CoinbaseWallet') {
         openCoinbaseWallet();
         return;
