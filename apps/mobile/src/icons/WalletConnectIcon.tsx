@@ -1,4 +1,4 @@
-import Svg, { Path,Rect, SvgProps } from 'react-native-svg';
+import Svg, { Path, Rect, SvgProps } from 'react-native-svg';
 
 export function WalletConnectIcon(props: SvgProps) {
   return (
