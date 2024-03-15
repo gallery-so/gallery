@@ -1,9 +1,12 @@
 import { configure, handleResponse, WalletMobileSDKEVMProvider } from '@coinbase/wallet-mobile-sdk';
+import * as Device from 'expo-device';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Linking } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
+
+import { useToastActions } from '~/contexts/ToastContext';
 
 type Props = {
   onIsSigningIn: (isSigningIn: boolean) => void;
@@ -65,8 +68,17 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
     }
   }, [address, createNonce, onIsSigningIn, onSignedIn, track]);
 
+  const { pushToast } = useToastActions();
+
   // Initiate connection to Wallet
   const connectWallet = useCallback(async () => {
+    if (!Device.isDevice) {
+      pushToast({
+        message: 'This will only work on a physical device with CBW installed.',
+      });
+      return;
+    }
+
     try {
       const accounts = (await provider.request({
         method: 'eth_requestAccounts',
@@ -86,7 +98,7 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
         track('Failed to retrieve account from Coinbase Wallet');
       }
     }
-  }, [personalSign, track]);
+  }, [personalSign, pushToast, track]);
 
   return {
     isConnected,
