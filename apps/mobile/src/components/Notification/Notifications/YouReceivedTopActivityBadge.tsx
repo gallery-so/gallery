@@ -69,7 +69,7 @@ export function YouReceivedTopActivityBadge({
         </View>
       }
     >
-      <View className="flex">
+      <View className="flex w-72">
         <Text className="dark:text-white">
           <Typography
             font={{
