@@ -56,8 +56,33 @@ const SyncTokensProvider = memo(({ children }: Props) => {
             viewer {
               ... on Viewer {
                 user {
-                  tokens(ownershipFilter: [Creator, Holder]) {
+                  tokens {
+                    id
                     dbid
+                    creationTime
+                    definition {
+                      chain
+                      contract {
+                        isSpam
+                        contractAddress {
+                          address
+                        }
+                      }
+                      community {
+                        # Keeping name in the cache so the contract picker screen
+                        # already has the name in the cache
+                        # eslint-disable-next-line relay/unused-fields
+                        name
+                      }
+                    }
+                    creationTime
+                    isSpamByUser
+                    ownerIsHolder
+                    ownerIsCreator
+
+                    # Refresh tokens for post composer
+                    ...NftSelectorPickerGridTokenGridFragment
+                    ...NftSelectorPickerGridOneOrManyFragment
                   }
                 }
               }
@@ -77,6 +102,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const sync = useCallback(
     async (chain: Chain | Chain[]) => {
       try {
+        if (isSyncing) {
+          return;
+        }
         setIsSyncing(true);
         const response = await syncTokens({
           variables: {
@@ -100,7 +128,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncing(false);
       }
     },
-    [clearTokenFailureState, showFailure, syncTokens]
+    [clearTokenFailureState, isSyncing, showFailure, syncTokens]
   );
 
   const [syncCreatedTokensMutation] =
@@ -114,9 +142,33 @@ const SyncTokensProvider = memo(({ children }: Props) => {
               viewer {
                 ... on Viewer {
                   user {
-                    tokens(ownershipFilter: [Creator, Holder]) {
+                    tokens {
                       id
                       dbid
+                      creationTime
+                      definition {
+                        chain
+                        contract {
+                          isSpam
+                          contractAddress {
+                            address
+                          }
+                        }
+                        community {
+                          # Keeping name in the cache so the contract picker screen
+                          # already has the name in the cache
+                          # eslint-disable-next-line relay/unused-fields
+                          name
+                        }
+                      }
+                      creationTime
+                      isSpamByUser
+                      ownerIsHolder
+                      ownerIsCreator
+
+                      # Refresh tokens for post composer
+                      ...NftSelectorPickerGridTokenGridFragment
+                      ...NftSelectorPickerGridOneOrManyFragment
                     }
                   }
                 }
@@ -138,6 +190,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const syncCreatedTokens = useCallback(
     async (chain: Chain) => {
       try {
+        if (isSyncingCreatedTokens) {
+          return;
+        }
         setIsSyncingCreatedTokens(true);
         const response = await syncCreatedTokensMutation({
           variables: {
@@ -164,7 +219,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncingCreatedTokens(false);
       }
     },
-    [clearTokenFailureState, showFailure, syncCreatedTokensMutation]
+    [clearTokenFailureState, isSyncingCreatedTokens, showFailure, syncCreatedTokensMutation]
   );
 
   const [syncCreatedTokensForExistingContractMutate] =
@@ -178,8 +233,33 @@ const SyncTokensProvider = memo(({ children }: Props) => {
             viewer {
               ... on Viewer {
                 user {
-                  tokens(ownershipFilter: [Creator, Holder]) {
+                  tokens {
+                    id
                     dbid
+                    creationTime
+                    definition {
+                      chain
+                      contract {
+                        isSpam
+                        contractAddress {
+                          address
+                        }
+                      }
+                      community {
+                        # Keeping name in the cache so the contract picker screen
+                        # already has the name in the cache
+                        # eslint-disable-next-line relay/unused-fields
+                        name
+                      }
+                    }
+                    creationTime
+                    isSpamByUser
+                    ownerIsHolder
+                    ownerIsCreator
+
+                    # Refresh tokens for post composer
+                    ...NftSelectorPickerGridTokenGridFragment
+                    ...NftSelectorPickerGridOneOrManyFragment
                   }
                 }
               }
@@ -200,6 +280,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
   const syncCreatedTokensForExistingContract = useCallback(
     async (contractId: string) => {
       try {
+        if (isSyncingCreatedTokensForContract) {
+          return;
+        }
         setIsSyncingCreatedTokensForContract(true);
         const response = await syncCreatedTokensForExistingContractMutate({
           variables: { input: { contractId } },
@@ -226,7 +309,12 @@ const SyncTokensProvider = memo(({ children }: Props) => {
       }
     },
 
-    [syncCreatedTokensForExistingContractMutate, showFailure, clearTokenFailureState]
+    [
+      isSyncingCreatedTokensForContract,
+      syncCreatedTokensForExistingContractMutate,
+      showFailure,
+      clearTokenFailureState,
+    ]
   );
 
   const value = useMemo(() => {

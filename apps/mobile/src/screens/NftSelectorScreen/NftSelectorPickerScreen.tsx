@@ -80,10 +80,6 @@ function InnerNftSelectorPickerScreen() {
     return screenHeaderText[currentScreen];
   }, [currentScreen]);
 
-  const handleRefresh = useCallback(() => {
-    syncTokens(networkFilter);
-  }, [networkFilter, syncTokens]);
-
   const handleSync = useCallback(async () => {
     if (ownershipTypeFilter === 'Collected') {
       await syncTokens(networkFilter);
@@ -184,7 +180,6 @@ function InnerNftSelectorPickerScreen() {
               <View className="flex flex-row space-x-1">
                 <AnimatedRefreshIcon
                   onSync={handleSync}
-                  onRefresh={handleRefresh}
                   isSyncing={
                     ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens
                   }
@@ -221,7 +216,7 @@ function InnerNftSelectorPickerScreen() {
                     sortView,
                   }}
                   screen={currentScreen}
-                  onRefresh={handleRefresh}
+                  onRefresh={handleSync}
                 />
               </Suspense>
             </View>

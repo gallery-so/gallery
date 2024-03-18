@@ -3,8 +3,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Suspense, useEffect } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext';
 
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
+import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
@@ -43,6 +45,8 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
   const track = useTrack();
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
+  const { upcomingMaintenanceNoticeContent } = useMaintenanceContext();
+
   useEffect(() => {
     const unsubscribe = navigationContainerRef.addListener('state', () => {
       track('Page View', {
@@ -55,42 +59,47 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
   }, [navigationContainerRef, track]);
 
   return (
-    <Stack.Navigator
-      screenOptions={{ header: Empty }}
-      initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
-    >
-      <Stack.Screen name="Login" component={LoginStackNavigator} />
+    <>
+      {upcomingMaintenanceNoticeContent?.isActive && (
+        <MaintenanceNoticeBottomSheetWrapper noticeContent={upcomingMaintenanceNoticeContent} />
+      )}
+      <Stack.Navigator
+        screenOptions={{ header: Empty }}
+        initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
+      >
+        <Stack.Screen name="Login" component={LoginStackNavigator} />
 
-      <Stack.Screen name="PostNftSelector" component={NftSelectorPickerScreen} />
-      <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
-      <Stack.Screen name="PostComposer" component={PostComposerScreen} />
+        <Stack.Screen name="PostNftSelector" component={NftSelectorPickerScreen} />
+        <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
+        <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 
-      <Stack.Screen name="MainTabs">
-        {(props) => <MainScreen {...props} queryRef={query} />}
-      </Stack.Screen>
+        <Stack.Screen name="MainTabs">
+          {(props) => <MainScreen {...props} queryRef={query} />}
+        </Stack.Screen>
 
-      <Stack.Screen
-        name="ProfileQRCode"
-        options={{ presentation: 'modal' }}
-        component={ProfileQRCodeScreen}
-      />
-      <Stack.Screen
-        name="UserSuggestionList"
-        options={{
-          presentation: 'modal',
-        }}
-        component={UserSuggestionListScreen}
-      />
-      <Stack.Screen
-        name="TwitterSuggestionList"
-        options={{
-          presentation: 'modal',
-        }}
-        component={TwitterSuggestionListScreen}
-      />
-      <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
-      <Stack.Screen name="Debugger" component={Debugger} />
-    </Stack.Navigator>
+        <Stack.Screen
+          name="ProfileQRCode"
+          options={{ presentation: 'modal' }}
+          component={ProfileQRCodeScreen}
+        />
+        <Stack.Screen
+          name="UserSuggestionList"
+          options={{
+            presentation: 'modal',
+          }}
+          component={UserSuggestionListScreen}
+        />
+        <Stack.Screen
+          name="TwitterSuggestionList"
+          options={{
+            presentation: 'modal',
+          }}
+          component={TwitterSuggestionListScreen}
+        />
+        <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
+        <Stack.Screen name="Debugger" component={Debugger} />
+      </Stack.Navigator>
+    </>
   );
 }
 

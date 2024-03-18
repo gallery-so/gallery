@@ -328,5 +328,7 @@ export function NotificationSkeleton({
 }
 
 export function UnseenDot({ ...props }) {
-  return <View className="bg-activeBlue h-2 w-2 rounded-full" {...props}></View>;
+  return (
+    <View className="bg-activeBlue dark:bg-darkModeBlue h-2 w-2 rounded-full" {...props}></View>
+  );
 }

@@ -6,7 +6,11 @@ import colors from '~/shared/theme/colors';
 
 export function CircleCheckIcon(props: SvgProps) {
   const { colorScheme } = useColorScheme();
-  const stroke = colorScheme === 'dark' ? colors.white : colors.black['800'];
+  const stroke = props.stroke
+    ? props.stroke
+    : colorScheme === 'dark'
+    ? colors.white
+    : colors.black['800'];
   return (
     <Svg width="48" height="48" viewBox="0 0 48 48" fill="none" {...props}>
       <Path

@@ -57,7 +57,7 @@ function GalleryBottomSheetModal(
       backgroundComponent={GalleryBottomSheetBackground}
       backdropComponent={backdropComponent || GalleryBottomSheetBackdrop}
       handleComponent={GalleryBottomSheetHandle}
-      snapPoints={snapPoints}
+      snapPoints={snapPoints as (string | number)[] | SharedValue<(string | number)[]>}
       {...rest}
     >
       {/* Pass the parent's navigation down to this bottom sheet so it has */}

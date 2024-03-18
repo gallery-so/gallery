@@ -43,13 +43,14 @@ const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
 
+  scheme: 'gallerylabs',
   name: 'Gallery Labs',
   slug: 'gallery-mobile',
   privacy: 'unlisted',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.50',
+  version: '1.0.52',
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -107,5 +108,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
+  plugins: [
+    ['sentry-expo', { setCommits: true }],
+    'expo-barcode-scanner',
+    'expo-font',
+    'expo-secure-store',
+  ],
 });

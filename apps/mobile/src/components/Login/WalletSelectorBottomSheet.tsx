@@ -2,12 +2,11 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { ArbitrumIcon } from 'src/icons/ArbitrumIcon';
-import { EthIcon } from 'src/icons/EthIcon';
-import { OptimismIcon } from 'src/icons/OptimismIcon';
-import { PolygonIcon } from 'src/icons/PolygonIcon';
+import { CoinbaseWalletIcon } from 'src/icons/CoinbaseWalletIcon';
+import { MetamaskIcon } from 'src/icons/MetamaskIcon';
+import { RainbowIcon } from 'src/icons/RainbowIcon';
 import { SpinnerIcon } from 'src/icons/SpinnerIcon';
-import { ZoraIcon } from 'src/icons/ZoraIcon';
+import { WalletConnectIcon } from 'src/icons/WalletConnectIcon';
 
 import { contexts } from '~/shared/analytics/constants';
 
@@ -18,10 +17,11 @@ import {
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
+import { useCoinbaseWallet } from './WalletProvider/CoinbaseWallet/useCoinbaseWallet';
 import { useWalletConnect } from './WalletProvider/WalletConnect/useWallectConnect';
 import { WalletConnectProvider } from './WalletProvider/WalletConnect/WalletConnectProvider';
 
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
+const SNAP_POINTS = [300, 'CONTENT_HEIGHT'];
 
 type Props = {
   title?: string;
@@ -31,7 +31,7 @@ type Props = {
   setIsSigningIn: (isSigningIn: boolean) => void;
 };
 
-type WalletSupport = 'WalletConnect';
+type WalletSupport = 'WalletConnect' | 'CoinbaseWallet';
 
 function WalletSelectorBottomSheet(
   { onDismiss, title = 'Network', onSignedIn, isSigningIn, setIsSigningIn }: Props,
@@ -55,9 +55,23 @@ function WalletSelectorBottomSheet(
     onIsSigningIn: setIsSigningIn,
     onSignedIn: handleOnSignedIn,
   });
-  const handleSelectWallet = useCallback(() => {
-    open();
-  }, [open]);
+
+  const { open: openCoinbaseWallet } = useCoinbaseWallet({
+    onIsSigningIn: setIsSigningIn,
+    onSignedIn: handleOnSignedIn,
+  });
+
+  const handleSelectWallet = useCallback(
+    (wallet: WalletSupport) => {
+      if (wallet === 'CoinbaseWallet') {
+        openCoinbaseWallet();
+        return;
+      }
+
+      open();
+    },
+    [open, openCoinbaseWallet]
+  );
 
   return (
     <>
@@ -108,7 +122,7 @@ function IconWrapper({
   return (
     <View
       className={clsx(
-        'border-2 border-white dark:border-black-800 rounded-full w-5 h-5',
+        'bg-white items-center justify-center border-2 border-white dark:border-black-800 rounded-full w-6 h-6',
         className
       )}
       style={style}
@@ -134,15 +148,24 @@ function WalletOptions({ onSelect, title }: WalletOptionsProps) {
 
       <View className="flex flex-col space-y-2">
         <BottomSheetRow
-          icon={
-            <View className="bg-white p-1 rounded-full">
-              <EthIcon width={24} height={24} />
-            </View>
-          }
+          icon={<WalletStackedIcons />}
           fontWeight="Bold"
-          text="Ethereum and L2s"
+          text="MetaMask or Rainbow"
           onPress={() => onSelect('WalletConnect')}
-          rightIcon={<EvmStackedIcons />}
+          eventContext={contexts.Authentication}
+        />
+        <BottomSheetRow
+          icon={<CoinbaseWalletIcon />}
+          fontWeight="Bold"
+          text="Coinbase Wallet"
+          onPress={() => onSelect('CoinbaseWallet')}
+          eventContext={contexts.Authentication}
+        />
+        <BottomSheetRow
+          icon={<WalletConnectIcon />}
+          fontWeight="Bold"
+          text="Other (via WalletConnect)"
+          onPress={() => onSelect('WalletConnect')}
           eventContext={contexts.Authentication}
         />
       </View>
@@ -177,20 +200,14 @@ function SignedInWalletMessage() {
   );
 }
 
-function EvmStackedIcons() {
+function WalletStackedIcons() {
   return (
     <View className="flex-row">
       <IconWrapper>
-        <ArbitrumIcon />
+        <MetamaskIcon />
       </IconWrapper>
       <IconWrapper className="-ml-2">
-        <OptimismIcon />
-      </IconWrapper>
-      <IconWrapper className="-ml-2">
-        <ZoraIcon />
-      </IconWrapper>
-      <IconWrapper className="-ml-2">
-        <PolygonIcon width={24} height={24} />
+        <RainbowIcon />
       </IconWrapper>
     </View>
   );

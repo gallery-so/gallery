@@ -56,21 +56,29 @@ type BottomSheetModalProviderProps = {
 
 type BottomSheetModal = {
   content: React.ReactNode;
+  onDismiss?: () => void;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
-  const [bottomSheetModalContent, setBottomSheetModalContent] = useState<BottomSheetModal>();
+  const [bottomSheetModal, setBottomSheetModal] = useState<BottomSheetModal>();
   const bottomSheetModalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const showBottomSheetModal = useCallback((modal: BottomSheetModal) => {
-    setBottomSheetModalContent(modal);
+    setBottomSheetModal(modal);
   }, []);
 
   const hideBottomSheetModal = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
     // delay clearing the content to allow the modal to animate out
-    setTimeout(() => setBottomSheetModalContent(undefined), 300);
+    setTimeout(() => setBottomSheetModal(undefined), 300);
   }, []);
+
+  const handleDismissBottomSheetModal = useCallback(() => {
+    if (bottomSheetModal?.onDismiss) {
+      bottomSheetModal.onDismiss();
+    }
+    hideBottomSheetModal();
+  }, [bottomSheetModal, hideBottomSheetModal]);
 
   const { bottom } = useSafeAreaPadding(); // Use this for handling safe area, if necessary
 
@@ -88,18 +96,18 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
   // immediately present the modal when content is set
   useEffect(() => {
     bottomSheetModalRef?.current?.present();
-  }, [bottomSheetModalContent]);
+  }, [bottomSheetModal]);
 
   return (
     <GorhomBottomSheetModalProvider>
       <BottomSheetModalActionsContext.Provider value={actions}>
         {children}
-        {bottomSheetModalContent && (
+        {bottomSheetModal && (
           <GalleryBottomSheetModal
             snapPoints={animatedSnapPoints}
             handleHeight={animatedHandleHeight}
             contentHeight={animatedContentHeight}
-            onDismiss={hideBottomSheetModal}
+            onDismiss={handleDismissBottomSheetModal}
             index={0}
             ref={bottomSheetModalRef}
           >
@@ -108,7 +116,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
               style={{ paddingBottom: bottom }}
               className="p-4 flex flex-col space-y-6"
             >
-              {bottomSheetModalContent.content}
+              {bottomSheetModal.content}
             </View>
           </GalleryBottomSheetModal>
         )}
