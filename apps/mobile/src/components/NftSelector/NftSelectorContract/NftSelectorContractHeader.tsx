@@ -1,15 +1,34 @@
+import { useCallback } from 'react';
 import { View, ViewProps } from 'react-native';
 
+import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
 import { Typography } from '~/components/Typography';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 
 type Props = {
   title: string;
   rightButton?: React.ReactNode;
   style?: ViewProps['style'];
+  contractId?: string;
+  isCreator?: boolean;
 };
 
-export function NftSelectorContractHeader({ title, rightButton, style }: Props) {
+export function NftSelectorContractHeader({
+  title,
+  rightButton,
+  style,
+  contractId,
+  isCreator,
+}: Props) {
+  const { isSyncingCreatedTokensForContract, syncCreatedTokensForExistingContract } =
+    useSyncTokensActions();
+
+  const handleSyncTokensForContract = useCallback(async () => {
+    if (!contractId) return;
+    syncCreatedTokensForExistingContract(contractId);
+  }, [syncCreatedTokensForExistingContract, contractId]);
+
   return (
     <View className="px-4 relative flex flex-row justify-between items-center" style={style}>
       <View>
@@ -29,7 +48,7 @@ export function NftSelectorContractHeader({ title, rightButton, style }: Props) 
         </Typography>
       </View>
       {rightButton ? <View>{rightButton}</View> : null}
-      {/* {isCreator ? (
+      {isCreator && contractId ? (
         <View>
           <AnimatedRefreshIcon
             isSyncing={isSyncingCreatedTokensForContract}
@@ -38,7 +57,7 @@ export function NftSelectorContractHeader({ title, rightButton, style }: Props) 
             eventName="Nft Selector SyncCreatedTokensForExistingContractButton pressed"
           />
         </View>
-      ) : null} */}
+      ) : null}
     </View>
   );
 }

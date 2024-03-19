@@ -21,6 +21,7 @@ export function OnboardingNftSelectorContractScreen() {
                 __typename
                 definition {
                   contract {
+                    dbid
                     name
                     contractAddress {
                       address
@@ -65,14 +66,15 @@ export function OnboardingNftSelectorContractScreen() {
     return tokens;
   }, [query.viewer?.user?.tokens, contractAddress]);
 
-  const contractName = useMemo(
-    () => nonNullableTokens[0]?.definition?.contract?.name ?? '',
-    [nonNullableTokens]
-  );
-
+  const contractName = nonNullableTokens[0]?.definition?.contract?.name ?? '';
+  const contractId = nonNullableTokens[0]?.definition?.contract?.dbid ?? '';
   return (
     <NftSelectorContractWrapper isFullscreen>
-      <NftSelectorContractHeader title={contractName} />
+      <NftSelectorContractHeader
+        title={contractName}
+        isCreator={isCreator}
+        contractId={contractId}
+      />
       <NftSelectorContractPickerGrid
         isCreator={isCreator}
         tokenRefs={nonNullableTokens}
