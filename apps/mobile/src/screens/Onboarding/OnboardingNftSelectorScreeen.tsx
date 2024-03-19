@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense,useCallback } from 'react';
+import { Suspense, useCallback } from 'react';
 import { View } from 'react-native';
 import { contexts } from 'shared/analytics/constants';
 import { ChevronRightIcon } from 'src/icons/ChevronRightIcon';

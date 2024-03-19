@@ -1,12 +1,12 @@
-import { RouteProp,useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
-import { graphql,useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { NftSelectorContractHeader } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractHeader';
 import { NftSelectorContractPickerGrid } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractPickerGrid';
 import { NftSelectorContractWrapper } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractWrapper';
 import { CommunityNftSelectorScreenQuery } from '~/generated/CommunityNftSelectorScreenQuery.graphql';
-import { MainTabStackNavigatorParamList,MainTabStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 
 export function CommunityNftSelectorScreen() {
   const query = useLazyLoadQuery<CommunityNftSelectorScreenQuery>(
