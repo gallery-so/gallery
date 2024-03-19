@@ -58,6 +58,12 @@ export type MainTabStackNavigatorParamList = {
     ownerFilter?: 'Collected' | 'Created';
     page: ScreenWithNftSelector;
   };
+  CommunityNftSelectorScreen: {
+    contractAddress: string;
+    fullScreen?: boolean;
+    ownerFilter?: 'Collected' | 'Created';
+    page: ScreenWithNftSelector;
+  };
   SettingsProfile: undefined;
   Post: { postId: string; commentId?: string; replyToComment?: OnReplyPressParams };
   NotificationSettingsScreen: undefined;

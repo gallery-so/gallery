@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { CollectionScreen } from '~/screens/CollectionScreen/CollectionScreen';
+import { CommunityNftSelectorScreen } from '~/screens/CommunityScreen/CommunityNftSelectorScreen';
 import { CommunityScreen } from '~/screens/CommunityScreen/CommunityScreen';
 import { FeedEventScreen } from '~/screens/FeedEventScreen';
 import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
@@ -38,6 +39,8 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
 
       <Stack.Screen name="NftSelector" component={PfpSelectorScreen} />
       <Stack.Screen name="NftSelectorContractScreen" component={PfpSelectorContractScreen} />
+
+      <Stack.Screen name="CommunityNftSelectorScreen" component={CommunityNftSelectorScreen} />
 
       <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />
