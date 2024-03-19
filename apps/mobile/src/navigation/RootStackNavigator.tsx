@@ -16,9 +16,9 @@ import { Debugger } from '~/screens/Debugger';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
-import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
-import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { PostComposerScreen } from '~/screens/PostScreen/PostComposerScreen';
+import { PostNftSelectorContractScreen } from '~/screens/PostScreen/PostNftSelectorContractScreen';
+import { PostNftSelectorScreen } from '~/screens/PostScreen/PostNftSelectorScreen';
 import { ProfileQRCodeScreen } from '~/screens/ProfileQRCodeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 const Stack = createNativeStackNavigator<RootStackNavigatorParamList>();
@@ -69,8 +69,8 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
       >
         <Stack.Screen name="Login" component={LoginStackNavigator} />
 
-        <Stack.Screen name="PostNftSelector" component={NftSelectorPickerScreen} />
-        <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
+        <Stack.Screen name="PostNftSelector" component={PostNftSelectorScreen} />
+        <Stack.Screen name="NftSelectorContractScreen" component={PostNftSelectorContractScreen} />
         <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 
         <Stack.Screen name="MainTabs">
