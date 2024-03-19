@@ -22,14 +22,8 @@ export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, 
       fragment NftSelectorContractPickerGridFragment on Token @relay(plural: true) {
         dbid
         definition {
-          community {
-            name
-          }
           contract {
             dbid
-            contractAddress {
-              address
-            }
           }
         }
 
