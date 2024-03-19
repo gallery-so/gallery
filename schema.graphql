@@ -591,6 +591,10 @@ input EoaAuth {
   signature: String!
 }
 
+type ErrAddressNotOwnedByUser implements Error {
+  message: String!
+}
+
 type ErrAddressOwnedByUser implements Error {
   message: String!
 }
@@ -636,6 +640,18 @@ type ErrFeedEventNotFound implements Error {
 }
 
 type ErrGalleryNotFound implements Error {
+  message: String!
+}
+
+type ErrHighlightChainNotSupported implements Error {
+  message: String!
+}
+
+type ErrHighlightMintUnavailable implements Error {
+  message: String!
+}
+
+type ErrHighlightTxnFailed implements Error {
   message: String!
 }
 
@@ -951,6 +967,30 @@ type GroupNotificationUsersConnection {
   pageInfo: PageInfo
 }
 
+input HighlightClaimMintInput {
+  collectionId: String!
+  recipientWalletId: DBID!
+}
+
+type HighlightClaimMintPayload {
+  claimId: DBID!
+}
+
+union HighlightClaimMintPayloadOrError = HighlightClaimMintPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrHighlightChainNotSupported | ErrAddressNotOwnedByUser | ErrNotAuthorized
+
+type HighlightMintClaimStatusPayload {
+  status: HighlightTxStatus!
+  token: Token
+}
+
+union HighlightMintClaimStatusPayloadOrError = HighlightMintClaimStatusPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrNotAuthorized
+
+enum HighlightTxStatus {
+  TX_PENDING
+  TX_COMPLETE
+  TOKEN_SYNCED
+}
+
 type HtmlMedia implements Media {
   previewURLs: PreviewURLSet
   mediaURL: String
@@ -1199,6 +1239,7 @@ type Mutation {
   referralPostToken(input: ReferralPostTokenInput!): ReferralPostTokenPayloadOrError
   referralPostPreflight(input: ReferralPostPreflightInput!): ReferralPostPreflightPayloadOrError
   deletePost(postId: DBID!): DeletePostPayloadOrError
+  highlightClaimMint(input: HighlightClaimMintInput!): HighlightClaimMintPayloadOrError
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
   viewToken(tokenID: DBID!, collectionID: DBID!): ViewTokenPayloadOrError
   updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
@@ -1516,6 +1557,7 @@ type Query {
   postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
   contractCommunityByKey(key: ContractCommunityKeyInput!): CommunityByKeyOrError
   artBlocksCommunityByKey(key: ArtBlocksCommunityKeyInput!): CommunityByKeyOrError
+  highlightMintClaimStatus(claimId: DBID!): HighlightMintClaimStatusPayloadOrError
 }
 
 input RedeemMerchInput {
