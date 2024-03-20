@@ -1,14 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { Button } from '~/components/Button';
 
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { ProfileViewGalleriesTabFragment$key } from '~/generated/ProfileViewGalleriesTabFragment.graphql';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type ListItem = {
@@ -56,13 +60,29 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
     });
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
-  const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
-    return (
-      <View className="px-4 pb-8">
-        <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
-      </View>
-    );
-  }, []);
+  const navigation = useNavigation<NativeStackNavigationProp<MainTabStackNavigatorParamList>>();
+  const handleEditGallery = useCallback(() => {
+    navigation.navigate('GalleryEditor');
+  }, [navigation]);
+
+  const renderItem = useCallback<ListRenderItem<ListItem>>(
+    ({ item }) => {
+      return (
+        <View className="px-4 pb-8">
+          <Button
+            className="mb-4"
+            text="View Gallery"
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            onPress={handleEditGallery}
+          />
+          <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
+        </View>
+      );
+    },
+    [handleEditGallery]
+  );
 
   const contentContainerStyle = useListContentStyle();
 

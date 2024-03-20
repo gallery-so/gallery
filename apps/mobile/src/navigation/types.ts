@@ -68,6 +68,8 @@ export type MainTabStackNavigatorParamList = {
   Post: { postId: string; commentId?: string; replyToComment?: OnReplyPressParams };
   NotificationSettingsScreen: undefined;
 
+  GalleryEditor: undefined;
+
   // The main five tabs
   Account: undefined;
   Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
