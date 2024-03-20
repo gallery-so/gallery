@@ -203,6 +203,13 @@ function NftPreview({
     return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
   }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, onNftLoad, fullHeight]);
 
+  const isInteractive = useMemo(
+    () =>
+      (shouldLiveRender && token.definition.media?.__typename === 'GltfMedia') ||
+      isIFrameLiveDisplay,
+    [isIFrameLiveDisplay, shouldLiveRender, token.definition.media?.__typename]
+  );
+
   // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
 
@@ -234,12 +241,7 @@ function NftPreview({
       }
     >
       <StyledContainer className={className}>
-        <LinkToFullPageNftDetailModal
-          username={ownerUsername ?? ''}
-          collectionId={collectionId}
-          tokenId={token.dbid}
-          eventContext={eventContext}
-        >
+        {isInteractive ? (
           <StyledNftPreview
             backgroundColorOverride={backgroundColorOverride}
             fullWidth={fullWidth}
@@ -248,7 +250,23 @@ function NftPreview({
           >
             {PreviewAsset}
           </StyledNftPreview>
-        </LinkToFullPageNftDetailModal>
+        ) : (
+          <LinkToFullPageNftDetailModal
+            username={ownerUsername ?? ''}
+            collectionId={collectionId}
+            tokenId={token.dbid}
+            eventContext={eventContext}
+          >
+            <StyledNftPreview
+              backgroundColorOverride={backgroundColorOverride}
+              fullWidth={fullWidth}
+              fullHeight={fullHeight}
+              data-tokenid={token.dbid}
+            >
+              {PreviewAsset}
+            </StyledNftPreview>
+          </LinkToFullPageNftDetailModal>
+        )}
         {isMobileOrLargeMobile || disableBookmarkOnHover ? null : (
           <StyledNftHeader>
             <StyledBookmarkLabel tokenRef={token} queryRef={query} />
