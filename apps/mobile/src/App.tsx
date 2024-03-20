@@ -27,6 +27,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
+import { FarcasterAuthProvider } from './components/Login/AuthProvider/Farcaster/FarcasterAuthProvider';
 import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
@@ -152,15 +153,17 @@ export default function App() {
                                   <PortalProvider>
                                     <BottomSheetModalProvider>
                                       <SyncTokensProvider>
-                                        <ManageWalletProvider>
-                                          {/* Register the user's push token if one exists (does not prompt the user) */}
-                                          <NotificationRegistrar />
-                                          <DevMenuItems />
-                                          <DeepLinkRegistrar />
-                                          <RootStackNavigator
-                                            navigationContainerRef={navigationRef}
-                                          />
-                                        </ManageWalletProvider>
+                                        <FarcasterAuthProvider>
+                                          <ManageWalletProvider>
+                                            {/* Register the user's push token if one exists (does not prompt the user) */}
+                                            <NotificationRegistrar />
+                                            <DevMenuItems />
+                                            <DeepLinkRegistrar />
+                                            <RootStackNavigator
+                                              navigationContainerRef={navigationRef}
+                                            />
+                                          </ManageWalletProvider>
+                                        </FarcasterAuthProvider>
                                       </SyncTokensProvider>
                                     </BottomSheetModalProvider>
                                   </PortalProvider>
