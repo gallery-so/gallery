@@ -1,31 +1,70 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
-
-import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
-import { Button } from '~/components/Button';
-import { Typography } from '~/components/Typography';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import { useHighlightClaimMint } from 'src/hooks/useHighlightClaimMint';
 import { SpinnerIcon } from 'src/icons/SpinnerIcon';
+
+import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
+import { MintCampaignBottomSheetQuery } from '~/generated/MintCampaignBottomSheetQuery.graphql';
 
 type MintState = 'PRE_TXN' | 'TXN_PENDING' | 'TXN_COMPLETE' | 'TOKEN_SYNCED';
+
+const MCHX_COLLECTION_ID = '65ec1cefb5813a0adf4dff4e';
+
 export default function MintCampaignBottomSheet() {
   const [state, setState] = useState<MintState>('PRE_TXN');
+
+  // the identifer used to poll for the status of the mint
+  const [claimCode, setClaimCode] = useState<string | null>(null);
+
+  const query = useLazyLoadQuery<MintCampaignBottomSheetQuery>(
+    graphql`
+      query MintCampaignBottomSheetQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              primaryWallet {
+                dbid
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  console.log(query.viewer.user?.primaryWallet);
 
   const handleTxnComplete = useCallback(() => {
     setState('TXN_COMPLETE');
   }, []);
 
-  if (state === 'PRE_TXN' || state === 'TXN_PENDING') {
-    return <PreTransactionScreen onTransactionSuccess={handleTxnComplete} />;
-  } else if (state === 'TXN_COMPLETE' || state === 'TOKEN_SYNCED') {
-    return <PostTransactionScreen />;
+  if (claimCode) {
+    return <PostTransactionScreen claimCode={claimCode} />;
   }
+
+  return (
+    <PreTransactionScreen
+      setClaimCode={setClaimCode}
+      recipientWalletId={query.viewer.user?.primaryWallet.dbid}
+      claimCode={claimCode}
+    />
+  );
 }
 
 export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-03-30T00:00:00-05:00';
 
-function PreTransactionScreen({ onTransactionSuccess }: { onTransactionSuccess: () => void }) {
+function PreTransactionScreen({
+  setClaimCode,
+  recipientWalletId,
+}: {
+  setClaimCode: (claimCode: string) => void;
+  recipientWalletId: string;
+}) {
   const calculateTimeLeftText = useCallback(() => {
     const endDate = new Date(MCHX_MINT_CAMPAIGN_END_DATE).getTime();
     const now = new Date().getTime();
@@ -58,17 +97,30 @@ function PreTransactionScreen({ onTransactionSuccess }: { onTransactionSuccess: 
   //   TXN_COMPLETE
   //   TOKEN_SYNCED
 
-  const handlePress = useCallback(() => {
-    console.log('mint');
-    setMintPending(true);
+  const { claimMint, isClamingMint } = useHighlightClaimMint();
 
-    setTimeout(() => {
-      onTransactionSuccess();
-    }, 2000);
+  const handlePress = useCallback(async () => {
+    console.log('mint', recipientWalletId);
+
+    setMintPending(true);
+    const claimCode = await claimMint({
+      collectionId: MCHX_COLLECTION_ID,
+      recipientWalletId,
+    });
+
+    console.log('claimCode', claimCode);
+
+    if (claimCode) {
+      setClaimCode(claimCode);
+      // next, poll for status in other screen
+    }
+
+    // setTimeout(() => {
+    // }, 2000);
 
     // trigger mint mutation
     //
-  }, [onTransactionSuccess]);
+  }, [claimMint, recipientWalletId, setClaimCode]);
   return (
     <View>
       <TitleS>Exclusive free mint</TitleS>
@@ -109,7 +161,7 @@ function PreTransactionScreen({ onTransactionSuccess }: { onTransactionSuccess: 
   );
 }
 
-function PostTransactionScreen() {
+function PostTransactionScreen({ claimCode }: { claimCode: string }) {
   const [state, setState] = useState<MintState>('TXN_COMPLETE');
 
   const handlePostPress = useCallback(() => {
