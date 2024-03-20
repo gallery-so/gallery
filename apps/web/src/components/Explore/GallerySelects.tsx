@@ -4,13 +4,20 @@ import styled from 'styled-components';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
 
 import breakpoints from '../core/breakpoints';
+import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleM } from '../core/Text/Text';
 
 const ELLE_ARTICLE_URL = 'https://gallery.mirror.xyz/bcWLpLKxVVJCOvzRHY7F-XAD5PO-3T-Ahc9pZzAhX6k';
 function Article() {
   return (
-    <StyledArticle href={ELLE_ARTICLE_URL} target="_blank" rel="noreferrer">
+    <StyledArticle
+      eventElementId="Explore Page Article"
+      eventName="Clicked Explore Page Article"
+      href={ELLE_ARTICLE_URL}
+      target="_blank"
+      rel="noreferrer"
+    >
       <StyledArticleContent>
         <StyledArticleImage src="https://images.mirror-media.xyz/publication-images/BIYb97ZD_2ZiEm5UcQUJn.png?height=2284&width=4568" />
         <StyledArticleText justify="space-between" gap={24}>
@@ -28,7 +35,7 @@ function Article() {
               on-chain art. ⌒ ﾟ( -⩊- )ﾟ⌒
             </StyledArticleDescription>
           </VStack>
-          <ArticleLinkButton href={ELLE_ARTICLE_URL} target="_blank">
+          <ArticleLinkButton>
             <HStack gap={4} align="center" justify="center">
               <BaseM color={colors.white}>View Article</BaseM>
               <ArrowUpRightIcon />
@@ -40,7 +47,7 @@ function Article() {
   );
 }
 
-const StyledArticle = styled.a`
+const StyledArticle = styled(GalleryLink)`
   width: 100%;
   text-decoration: none;
 `;
@@ -71,7 +78,7 @@ const StyledArticleDescription = styled(BaseM)`
   color: ${colors.shadow};
 `;
 
-const ArticleLinkButton = styled.a`
+const ArticleLinkButton = styled.div`
   background-color: ${colors.black['800']};
   border-radius: 4px;
   padding: 6px 12px;
