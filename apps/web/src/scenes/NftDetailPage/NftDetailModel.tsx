@@ -58,6 +58,7 @@ function NftDetailModel({ mediaRef, onLoad, fullHeight }: Props) {
         style={{
           width: '100%',
           height: fullHeight ? '100%' : undefined,
+          aspectRatio: fullHeight ? 1 : undefined,
         }}
       />
     </StyledNftDetailModel>
