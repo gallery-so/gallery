@@ -42,7 +42,7 @@ export function useWalletConnect({ onConnect = noop, onSignedIn, onIsSigningIn }
 
     isSigningIn.current = true;
 
-    const signer = web3Provider.getSigner();
+    const signer = await web3Provider.getSigner();
     const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
 
     try {

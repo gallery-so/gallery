@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { EmailIcon } from 'src/icons/EmailIcon';
-import { FarcasterOutlineIcon } from 'src/icons/FarcasterOutlineIcon';
+// import { FarcasterOutlineIcon } from 'src/icons/FarcasterOutlineIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
 import { WalletIcon } from 'src/icons/WalletIcon';
 
@@ -18,7 +18,7 @@ import {
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
-import { useLoginWithFarcaster } from './AuthProvider/Farcaster/FarcasterAuthProvider';
+// import { useLoginWithFarcaster } from './AuthProvider/Farcaster/FarcasterAuthProvider';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
@@ -50,7 +50,7 @@ function SignInBottomSheet(
     openManageWallet({ method: 'auth' });
   }, [openManageWallet]);
 
-  const { open: handleConnectFarcaster } = useLoginWithFarcaster();
+  // const { open: handleConnectFarcaster } = useLoginWithFarcaster();
 
   return (
     <GalleryBottomSheetModal
