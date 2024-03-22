@@ -17,9 +17,9 @@ import {
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
-import { useCoinbaseWallet } from './WalletProvider/CoinbaseWallet/useCoinbaseWallet';
-import { useWalletConnect } from './WalletProvider/WalletConnect/useWallectConnect';
-import { WalletConnectProvider } from './WalletProvider/WalletConnect/WalletConnectProvider';
+import { useCoinbaseWallet } from './AuthProvider/CoinbaseWallet/useCoinbaseWallet';
+import { useWalletConnect } from './AuthProvider/WalletConnect/useWallectConnect';
+import { WalletConnectProvider } from './AuthProvider/WalletConnect/WalletConnectProvider';
 
 const SNAP_POINTS = [300, 'CONTENT_HEIGHT'];
 
