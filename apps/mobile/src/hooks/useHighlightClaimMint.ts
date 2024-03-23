@@ -37,21 +37,8 @@ export function useHighlightClaimMint() {
       collectionId: string;
       recipientWalletId: string;
     }) => {
-      const updater: SelectorStoreUpdater<useHighlightClaimMintMutation['response']> = (
-        store,
-        response
-      ) => {
-        if (response.highlightClaimMint?.__typename === 'HighlightClaimMintPayload') {
-          // do nothing
-        }
-      };
-      console.log({
-        collectionId,
-        recipientWalletId,
-      });
       try {
         const response = await claimMint({
-          // updater,
           variables: {
             input: {
               collectionId,
@@ -60,13 +47,11 @@ export function useHighlightClaimMint() {
           },
         });
 
-        console.log({ response });
-
         if (response.highlightClaimMint?.__typename !== 'HighlightClaimMintPayload') {
-          // do nothing
           reportError(
             `Error while claiming mint, typename was ${response.highlightClaimMint?.__typename}`
           );
+          throw new Error(response.highlightClaimMint?.__typename);
         }
 
         return response.highlightClaimMint?.claimId;
@@ -77,6 +62,7 @@ export function useHighlightClaimMint() {
         } else {
           reportError('Error while claiming mint');
         }
+        throw error;
       }
     },
     [claimMint, reportError]

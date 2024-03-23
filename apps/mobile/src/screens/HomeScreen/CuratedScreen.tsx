@@ -5,7 +5,6 @@ import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
 import { WelcomeNewUserOnboarding } from '~/components/Onboarding/WelcomeNewUserOnboarding';
-import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
@@ -14,7 +13,6 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
-import MintCampaignBottomSheet from '../Onboarding/MintCampaignBottomSheet';
 import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
 
 type CuratedScreenInnerProps = {
@@ -70,28 +68,15 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 
   const [showWelcome, setShowWelcome] = useState(false);
 
-  const { showBottomSheetModal } = useBottomSheetModalActions();
-
-  const showMintCampaign = useCallback(() => {
-    // check eligibility
-    // dont show if
-    // - user claimed already
-    // - device claimed already
-    showBottomSheetModal({ content: <MintCampaignBottomSheet /> });
-  }, [showBottomSheetModal]);
-
   const handleWelcomeTooltipCompleted = useCallback(() => {
     setShowWelcome(false);
-    showMintCampaign();
-  }, [showMintCampaign]);
+  }, []);
 
   useEffect(() => {
     if (isNewUser) {
       setShowWelcome(true);
-    } else {
-      showMintCampaign();
     }
-  }, [isNewUser, setShowWelcome, showMintCampaign]);
+  }, [isNewUser, setShowWelcome]);
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);

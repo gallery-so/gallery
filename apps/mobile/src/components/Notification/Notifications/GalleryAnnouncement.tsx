@@ -11,6 +11,8 @@ import { GalleryAnnouncementQueryFragment$key } from '~/generated/GalleryAnnounc
 import { contexts } from '~/shared/analytics/constants';
 
 import { NotificationSkeleton } from '../NotificationSkeleton';
+import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 
 type Props = {
   notificationRef: GalleryAnnouncementFragment$key;
@@ -27,6 +29,7 @@ export function GalleryAnnouncement({ queryRef, notificationRef }: Props) {
         ctaText
         ctaLink
         imageUrl
+        internalId
         ...NotificationSkeletonFragment
       }
     `,
@@ -42,12 +45,18 @@ export function GalleryAnnouncement({ queryRef, notificationRef }: Props) {
     queryRef
   );
 
-  const { title, description, ctaText, ctaLink, imageUrl } = notification;
-
+  const { title, description, ctaText, ctaLink, imageUrl, internalId } = notification;
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
+    console.log(internalId);
+    if (internalId === 'apr-2024-mchx-collab') {
+      console.log('open bottom sheet');
+      showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+      return;
+    }
     if (!ctaLink) return;
     Linking.openURL(ctaLink);
-  }, [ctaLink]);
+  }, [ctaLink, hideBottomSheetModal, internalId, showBottomSheetModal]);
 
   return (
     <NotificationSkeleton

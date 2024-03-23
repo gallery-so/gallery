@@ -2,10 +2,16 @@ import { Typography } from './Typography';
 
 type Weight = 'Regular' | 'Bold';
 
-export const TitleLItalic = ({ children }: { children: React.ReactNode }) => {
+export const TitleLItalic = ({
+  children,
+  classNameOverride,
+}: {
+  children: React.ReactNode;
+  classNameOverride?: string;
+}) => {
   return (
     <Typography
-      className="text-black-900 dark:text-white text-2xl leading-7 tracking-tighter"
+      className={`text-black-900 dark:text-white text-2xl leading-7 tracking-tighter ${classNameOverride}`}
       font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
     >
       {children}
