@@ -121,6 +121,8 @@ const StyledBaseM = styled(BaseM)`
   word-wrap: break-word;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  overflow: hidden;
   text-overflow: ellipsis;
+  max-height: 300px;
+  padding-right: 20px;
+  overflow-y: scroll;
 `;
