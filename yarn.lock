@@ -18897,7 +18897,7 @@ __metadata:
     relay-runtime: ^15.0.0
     tsconfig-moon: ^1.2.2
     typescript: ^5.0.0
-    web3-utils: ^4.1.0
+    web3-utils: ^4.2.1
   languageName: unknown
   linkType: soft
 
@@ -32272,7 +32272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-errors@npm:^1.1.3, web3-errors@npm:^1.1.4":
+"web3-errors@npm:^1.1.4":
   version: 1.1.4
   resolution: "web3-errors@npm:1.1.4"
   dependencies:
@@ -32322,10 +32322,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-types@npm:^1.3.0, web3-types@npm:^1.3.1":
+"web3-types@npm:^1.3.1":
   version: 1.3.1
   resolution: "web3-types@npm:1.3.1"
   checksum: 02819f803f926b45843335705343ace1ee6fe84bf5d09be9382532389ce7ef47ed7f95b23ef61330979039442062f0089ab4bac6000cb7246202b17a14b44878
+  languageName: node
+  linkType: hard
+
+"web3-types@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "web3-types@npm:1.5.0"
+  checksum: b309a38fddd4b3217b5a0a64abc9148f33d145bca80c118cb07353e9643af7a09414a8397f7f6a62a2a183bcfc98c2ad74014426f55e816a34307e89235a18ce
   languageName: node
   linkType: hard
 
@@ -32344,28 +32351,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-utils@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "web3-utils@npm:4.1.0"
+"web3-utils@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "web3-utils@npm:4.2.1"
   dependencies:
     ethereum-cryptography: ^2.0.0
+    eventemitter3: ^5.0.1
     web3-errors: ^1.1.4
-    web3-types: ^1.3.1
-    web3-validator: ^2.0.3
-  checksum: 5072ebc78ac62f26b5e17043f327f1046b4284a8e8a80f4771712ee9fc2ee895a0e292a225785b7392b647b6edc090d57f2262de5efd0a19571cd583c708c1c3
+    web3-types: ^1.5.0
+    web3-validator: ^2.0.4
+  checksum: 68fcfeaf75f43a3c841998d785c6d787f14c61aeb67a45e586098b7c79411e36f11b676968721198477757443bc605ce0a71efcaac193a673b8cb9c34ac17992
   languageName: node
   linkType: hard
 
-"web3-validator@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "web3-validator@npm:2.0.3"
+"web3-validator@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "web3-validator@npm:2.0.4"
   dependencies:
     ethereum-cryptography: ^2.0.0
     util: ^0.12.5
-    web3-errors: ^1.1.3
-    web3-types: ^1.3.0
+    web3-errors: ^1.1.4
+    web3-types: ^1.3.1
     zod: ^3.21.4
-  checksum: 523eeb48e3b5a04faa53e9073e4b07a6cf493174d3a211c7f299f9efb54e5e555a953e424aae49b7c53d57c2372ce943154c1bfbe8f072a5867550a8dc9ac989
+  checksum: 9d41bfe5764343d05f045ce526715dfd1bd88dba146ba96c2d3199c3dc9bb66c01d9dac334251078542c00f82e273489700a54db365800c16e29a2c2b30f9929
   languageName: node
   linkType: hard
 
@@ -32480,7 +32488,7 @@ __metadata:
     vaul: ^0.9.0
     viem: ^1.2.12
     wagmi: ^1.3.10
-    web3-utils: ^4.1.0
+    web3-utils: ^4.2.1
   languageName: unknown
   linkType: soft
 
