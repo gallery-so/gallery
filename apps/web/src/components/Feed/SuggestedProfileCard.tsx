@@ -119,7 +119,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
           )}
         </TokenPreviewContainer>
         <ProfileDetailsContainer>
-          <ProfileDetailsText>
+          <ProfileDetailsText gap={4}>
             <HStack gap={4} align="center" justify="space-between">
               <HStack>
                 <Username>
@@ -131,7 +131,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
                   ))}
                 </HStack>
               </HStack>
-              {!isMobile && !isOwnProfile && (
+              {isMobile && !isOwnProfile && (
                 <StyledFollowButton
                   userRef={user}
                   queryRef={query}
@@ -142,8 +142,8 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
             <StyledUserBio>
               <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
             </StyledUserBio>
-            {isMobile && !isOwnProfile && (
-              <StyledFollowButton userRef={user} queryRef={query} source="Explore Page user card" />
+            {!isMobile && !isOwnProfile && (
+              <WideFollowButton userRef={user} queryRef={query} source="Curated Feed user card" />
             )}
           </ProfileDetailsText>
         </ProfileDetailsContainer>
@@ -153,7 +153,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
 }
 
 const StyledSuggestedProfileCard = styled(GalleryLink)`
-  border-radius: 12px;
+  border-radius: 4px;
   background-color: ${colors.offWhite};
   padding: 12px;
   cursor: pointer;
@@ -204,6 +204,9 @@ const StyledUserBio = styled(BaseM)`
 export const TokenPreviewContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+
+  min-height: 120px;
+  min-width: 241px;
   grid-gap: 2px;
 `;
 
@@ -217,6 +220,17 @@ export const TokenPreview = styled.img`
 const Username = styled(TitleM)`
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const WideFollowButton = styled(FollowButton)`
+  padding: 2px 8px;
+  width: 100%;
+  height: 24px;
+
+  @media only screen and ${breakpoints.desktop} {
+    width: 100%;
+    height: 24px;
+  }
 `;
 
 const StyledFollowButton = styled(FollowButton)`

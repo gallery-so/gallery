@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -49,9 +49,22 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
   const itemsPerSlide = 4;
   const [profiles, setProfiles] = useState([]);
 
-  if (!query.viewer?.suggestedUsers) {
-    return null;
-  }
+  // map edge nodes to an array of GalleryUsers
+  const nonNullUsers = useMemo(() => {
+    const users = [];
+
+    for (const edge of query.viewer.suggestedUsers?.edges ?? []) {
+      if (edge?.node) {
+        users.push(edge.node);
+      }
+    }
+
+    return users;
+  }, [query.viewer.suggestedUsers?.edges]);
+
+  useEffect(() => {
+    setProfiles(nonNullUsers);
+  }, [nonNullUsers]);
 
   const slideContent = useMemo(() => {
     const rows = [];
@@ -73,9 +86,15 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     return rows;
   }, [itemsPerSlide, profiles]);
 
+  if (!query.viewer?.suggestedUsers) {
+    return null;
+  }
+
   return (
     <FeedSuggestedProfileSectionContainer gap={16}>
-      <StyledTitle>Suggested creators and collectors</StyledTitle>
+      <StyledTitleContainer>
+        <StyledTitle>Suggested creators and collectors</StyledTitle>
+      </StyledTitleContainer>
       <StyledContainer gap={16}>
         <Carousel slideContent={slideContent} />
       </StyledContainer>
@@ -90,6 +109,11 @@ const StyledContainer = styled(VStack)`
     width: 100%;
     overflow-x: hidden;
   }
+`;
+
+const StyledTitleContainer = styled(HStack)`
+  padding-left: 45px;
+  padding-top: 40px;
 `;
 
 const StyledTitle = styled(BaseM)`
@@ -126,6 +150,7 @@ const FeedSuggestedProfileSectionContainer = styled(VStack)`
   margin: 8px auto;
 
   padding: 12px 0px;
+  height: min-content;
 
   @media only screen and ${breakpoints.desktop} {
     padding: 24px 16px;
