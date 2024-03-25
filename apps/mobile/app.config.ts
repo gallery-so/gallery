@@ -113,13 +113,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-font',
     'expo-secure-store',
     [
-      "expo-build-properties",
+      'expo-build-properties',
       {
-        "android": {
-          "compileSdkVersion": 34,
-          "targetSdkVersion": 34,
-        }
-      }
-    ]
+        android: {
+          compileSdkVersion: 34,
+          targetSdkVersion: 34,
+        },
+      },
+    ],
   ],
 });
