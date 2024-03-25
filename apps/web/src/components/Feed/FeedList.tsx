@@ -10,6 +10,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
+import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileSection';
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
@@ -37,6 +38,7 @@ export default function FeedList({
       fragment FeedListFragment on Query {
         ...PostItemWithErrorBoundaryQueryFragment
         ...FeedEventItemWithErrorBoundaryQueryFragment
+        ...FeedSuggestedProfileSectionWithBoundaryFragment
       }
     `,
     queryRef
@@ -172,6 +174,33 @@ export default function FeedList({
                   key={content.dbid}
                   queryRef={query}
                   feedMode={feedMode}
+                />
+              </div>
+            )}
+          </CellMeasurer>
+        );
+      }
+
+      if (content.__typename === 'SuggestedUserSection') {
+        return (
+          <CellMeasurer
+            cache={measurerCache}
+            columnIndex={0}
+            rowIndex={index}
+            key={key}
+            parent={parent}
+          >
+            {({ registerChild }) => (
+              // @ts-expect-error: this is the suggested usage of registerChild
+              <div ref={registerChild} style={style} key={key}>
+                <FeedSuggestedUserSection
+                  // Here, we're listening to our children for anything that might cause
+                  // the height of this list item to change height.
+                  // Right now, this consists of "admiring", and "commenting"
+                  //
+                  // Whenever the height changes, we need to ask react-virtualized
+                  // to re-evaluate the height of the item to keep the virtualization good.
+                  queryRef={query}
                 />
               </div>
             )}
