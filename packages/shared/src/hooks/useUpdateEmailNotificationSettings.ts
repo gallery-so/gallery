@@ -70,7 +70,7 @@ export default function useUpdateEmailNotificationSettings({
         {
           key: 'unsubscribedFromMarketing',
           title: 'General Marketing',
-          description: 'Product updates, artist collabs, and airdrops',
+          description: 'Product updates, artist collabs, and announcements',
         },
         ...(hasEarlyAccess
           ? [
