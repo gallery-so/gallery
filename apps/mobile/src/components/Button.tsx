@@ -191,7 +191,8 @@ export function Button({
     buttonVariants[colorScheme][disabled ? 'disabled' : variant][active ? 'active' : 'inactive'];
 
   const sizeVariants: { [size in Size]: string } = {
-    xs: 'h-[24] px-2',
+    // TODO: check regression
+    xs: 'h-[24] px-4',
     sm: 'h-[36] px-4',
     md: 'h-[44] px-6',
   };

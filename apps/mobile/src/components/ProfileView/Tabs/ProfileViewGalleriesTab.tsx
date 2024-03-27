@@ -6,8 +6,8 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { Button } from '~/components/Button';
 
+import { Button } from '~/components/Button';
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
@@ -19,6 +19,7 @@ type ListItem = {
   kind: 'gallery';
   isFeatured: boolean;
   gallery: GalleryPreviewCardFragment$key;
+  galleryId: string;
 };
 
 type ProfileViewGalleriesTabProps = {
@@ -55,15 +56,22 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
         kind: 'gallery',
 
         gallery,
+        galleryId: gallery.dbid,
         isFeatured: user?.featuredGallery?.dbid === gallery.dbid,
       };
     });
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
   const navigation = useNavigation<NativeStackNavigationProp<MainTabStackNavigatorParamList>>();
-  const handleEditGallery = useCallback(() => {
-    navigation.navigate('GalleryEditor');
-  }, [navigation]);
+
+  const handleEditGallery = useCallback(
+    (galleryId: string) => {
+      navigation.navigate('GalleryEditor', {
+        galleryId,
+      });
+    },
+    [navigation]
+  );
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
     ({ item }) => {
@@ -71,11 +79,11 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
         <View className="px-4 pb-8">
           <Button
             className="mb-4"
-            text="View Gallery"
+            text="edit Gallery"
             eventElementId={null}
             eventName={null}
             eventContext={null}
-            onPress={handleEditGallery}
+            onPress={() => handleEditGallery(item.galleryId)}
           />
           <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
         </View>

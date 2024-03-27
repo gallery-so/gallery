@@ -1,3 +1,5 @@
+import { ViewProps } from 'react-native';
+
 import { Typography } from './Typography';
 
 type Weight = 'Regular' | 'Bold';
@@ -34,15 +36,18 @@ export const BaseM = ({
   children,
   weight = 'Regular',
   classNameOverride,
+  style,
 }: {
   children: React.ReactNode;
   weight?: Weight;
   classNameOverride?: string;
+  style?: ViewProps['style'];
 }) => {
   return (
     <Typography
       className={`text-black-900 dark:text-white text-sm leading-5 ${classNameOverride}`}
       font={{ family: 'ABCDiatype', weight }}
+      style={style}
     >
       {children}
     </Typography>
