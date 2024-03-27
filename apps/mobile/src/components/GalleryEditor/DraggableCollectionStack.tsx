@@ -5,18 +5,16 @@ import {
   DraggableStack,
   DraggableStackProps,
 } from '@mgcrea/react-native-dnd';
-import { useState } from 'react';
 import { View } from 'react-native';
 import { State } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 
 import { GalleryEditorSection } from './GalleryEditorSection';
 
 export function DraggableCollectionStack() {
-  const { collections } = useGalleryEditorActions();
-
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const { collections, moveRow } = useGalleryEditorActions();
 
   const onStackOrderChange: DraggableStackProps['onOrderChange'] = (value) => {
     console.log('onStackOrderChange', value);
@@ -28,8 +26,13 @@ export function DraggableCollectionStack() {
   const handleDragEnd: DndProviderProps['onDragEnd'] = ({ active, over }) => {
     'worklet';
     if (over) {
-      console.log('onDragEnd', { active, over });
-      // runOnJS(updateCollectionOrder)(active.id.toString(), over.id.toString());
+      console.log('onDragEnd');
+      runOnJS(moveRow)(
+        active.id.toString(),
+        // active.data.value.sectionId,
+        over.id.toString()
+        // over.data.value.sectionId
+      );
     }
   };
 
@@ -62,11 +65,7 @@ export function DraggableCollectionStack() {
         >
           {collections.map((collection) => (
             <Draggable key={collection.dbid} id={collection.dbid}>
-              <GalleryEditorSection
-                collection={collection}
-                onActiveChange={setActiveId}
-                isSectionActive={activeId === collection.dbid}
-              />
+              <GalleryEditorSection collection={collection} />
             </Draggable>
           ))}
         </DraggableStack>

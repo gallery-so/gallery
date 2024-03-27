@@ -1,10 +1,18 @@
-import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
-import { StagedCollection, StagedCollectionList, StagedSection } from './types';
+import { StagedCollection, StagedCollectionList, StagedSection, StagedSectionList } from './types';
 
 type GalleryEditorActions = {
   galleryName: string;
@@ -20,11 +28,18 @@ type GalleryEditorActions = {
   incrementColumns: (sectionId: string) => void;
   decrementColumns: (sectionId: string) => void;
 
-  activateCollection: (collectionId: string) => void;
+  activateCollection: (collectionId: string | null) => void;
   collectionIdBeingEdited: string | null;
 
   activeSectionId: string | null;
   activateSection: (sectionId: string) => void;
+
+  moveRow: (
+    activeRowId: string,
+    // activeCollectionId: string,
+    overRowId: string
+    // overCollectionId: string
+  ) => void;
 };
 
 const GalleryEditorActionsContext = createContext<GalleryEditorActions | undefined>(undefined);
@@ -71,9 +86,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     getInitialCollectionsFromServer(gallery)
   );
 
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(null);
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(
+    '2Knyn8Kw0L1aPqCJVCfsQabm2z7'
+  );
 
-  const activateCollection = useCallback((collectionId: string) => {
+  const activateCollection = useCallback((collectionId: string | null) => {
     setCollectionIdBeingEdited(collectionId);
   }, []);
 
@@ -120,6 +137,33 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       ? collections.find((collection) => collection.dbid === collectionIdBeingEdited)
       : null;
   }, [collectionIdBeingEdited, collections]);
+
+  const sections: StagedSectionList = useMemo(() => {
+    return collectionBeingEdited?.sections ?? [];
+  }, [collectionBeingEdited?.sections]);
+
+  const setSections: Dispatch<SetStateAction<StagedSectionList>> = useCallback(
+    (value) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      updateCollection(collectionIdBeingEdited, (previousCollection) => {
+        let nextSections;
+        if (typeof value === 'function') {
+          nextSections = value(previousCollection.sections);
+        } else {
+          nextSections = value;
+        }
+
+        return {
+          ...previousCollection,
+          sections: nextSections,
+        };
+      });
+    },
+    [collectionIdBeingEdited, updateCollection]
+  );
 
   const setActiveSectionId = useCallback(
     (sectionId: string) => {
@@ -192,6 +236,23 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateSection]
   );
 
+  // TODO: Add support for moving rows between sections
+  const moveRow = useCallback(
+    (
+      activeRowId: string,
+      // activeCollectionId: string,
+      overRowId: string
+      // overCollectionId: string
+    ) => {
+      setSections((previousSections) => {
+        const activeRowIndex = previousSections.findIndex((section) => section.id === activeRowId);
+        const overRowIndex = previousSections.findIndex((section) => section.id === overRowId);
+        return arrayMove(previousSections, activeRowIndex, overRowIndex);
+      });
+    },
+    [setSections]
+  );
+
   const value = useMemo(
     () => ({
       galleryName,
@@ -212,6 +273,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activeSectionId,
       activateSection,
+
+      moveRow,
     }),
     [
       galleryName,
@@ -230,6 +293,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activeSectionId,
       activateSection,
+
+      moveRow,
     ]
   );
 
@@ -243,3 +308,19 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 GalleryEditorProvider.displayName = 'GalleryEditorProvider';
 
 export default GalleryEditorProvider;
+
+// https://github.com/clauderic/dnd-kit/blob/694dcc2f62e5269541fc941fa6c9af46ccd682ad/packages/sortable/src/utilities/arrayMove.ts
+/**
+ * Move an array item to a different position. Returns a new array with the item moved to the new position.
+ */
+export function arrayMove<T>(array: T[], from: number, to: number): T[] {
+  const newArray = array.slice();
+  const element = newArray.splice(from, 1)[0];
+
+  if (element === undefined) {
+    throw new Error(`No element found at index ${from}`);
+  }
+
+  newArray.splice(to < 0 ? newArray.length + to : to, 0, element);
+  return newArray;
+}

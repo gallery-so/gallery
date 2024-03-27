@@ -10,11 +10,10 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { BaseM } from '../Text';
 
 type Props = {
-  sectionId: string;
   row: StagedSection;
 };
 
-export function GalleryEditorActiveActions({ sectionId, row }: Props) {
+export function GalleryEditorActiveActions({ row }: Props) {
   const { incrementColumns, decrementColumns } = useGalleryEditorActions();
 
   return (
@@ -31,7 +30,6 @@ export function GalleryEditorActiveActions({ sectionId, row }: Props) {
             eventContext={null}
             onPress={(e: GestureResponderEvent) => {
               e.stopPropagation();
-              console.log('minus the column');
               decrementColumns(row.id);
             }}
           >
@@ -47,9 +45,7 @@ export function GalleryEditorActiveActions({ sectionId, row }: Props) {
             eventContext={null}
             onPress={(e: GestureResponderEvent) => {
               e.stopPropagation();
-              console.log('plus the column');
               incrementColumns(row.id);
-              console.log(sectionId);
             }}
           >
             <PlusCircleIcon />

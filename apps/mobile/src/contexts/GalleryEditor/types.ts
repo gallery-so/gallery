@@ -1,8 +1,8 @@
-import { GalleryEditorSectionTokenFragment$key } from '~/generated/GalleryEditorSectionTokenFragment.graphql';
+import { GalleryEditorTokenPreviewFragment$key } from '~/generated/GalleryEditorTokenPreviewFragment.graphql';
 
 export type StagedItem =
   | { kind: 'whitespace'; id: string }
-  | { kind: 'token'; id: string; tokenRef: GalleryEditorSectionTokenFragment$key };
+  | { kind: 'token'; id: string; tokenRef: GalleryEditorTokenPreviewFragment$key };
 
 export type StagedSection = {
   id: string;

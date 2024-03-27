@@ -33,7 +33,7 @@ export function getInitialCollectionsFromServer(
             token {
               dbid
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...GalleryEditorSectionTokenFragment
+              ...GalleryEditorTokenPreviewFragment
             }
           }
         }
@@ -62,9 +62,7 @@ export function getInitialCollectionsFromServer(
     }
 
     const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
-    // console.log(
-    //   parsed.map((parsedSection) => parsedSection.items.map((item) => item.token?.definition?.name))
-    // );
+
     parsed.forEach((parsedSection) => {
       sections.push({
         id: parsedSection.id,
