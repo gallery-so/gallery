@@ -92,6 +92,8 @@ export function RawLinkableAddress({
   eventContext,
   eventFlow,
 }: RawLinkableAddressProps) {
+  const truncatedChainAddress = `${address?.slice(0, 6)}...${address?.slice(-4)}` ?? address;
+
   return (
     <GalleryLink
       href={link}
@@ -103,7 +105,7 @@ export function RawLinkableAddress({
       eventContext={eventContext}
       eventFlow={eventFlow}
     >
-      {truncatedAddress || address}
+      {truncatedAddress || truncatedChainAddress}
     </GalleryLink>
   );
 }
