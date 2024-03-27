@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'nativewind';
 import { Suspense, useEffect, useState } from 'react';
-import { Appearance, View } from 'react-native';
+import { Appearance, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -131,6 +131,10 @@ export default function App() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
+      <StatusBar
+        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={colorScheme === 'dark' ? '#000' : '#FFF'}
+      />
       <ReportingErrorBoundary fallback={<LoadingView />}>
         <MaintenanceStatusProvider
           sanityProjectId={env.EXPO_PUBLIC_SANITY_PROJECT_ID}

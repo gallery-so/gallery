@@ -113,5 +113,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-barcode-scanner',
     'expo-font',
     'expo-secure-store',
+    [
+      'expo-build-properties',
+      {
+        android: {
+          compileSdkVersion: 34,
+          targetSdkVersion: 34,
+        },
+      },
+    ],
   ],
 });
