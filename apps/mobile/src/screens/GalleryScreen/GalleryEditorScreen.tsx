@@ -6,12 +6,13 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DraggableCollectionStack } from '~/components/GalleryEditor/DraggableCollectionStack';
 import { GalleryEditorHeader } from '~/components/GalleryEditor/GalleryEditorHeader';
 import { GalleryEditorNavbar } from '~/components/GalleryEditor/GalleryEditorNavbar';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import GalleryEditorProvider from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { GalleryEditorScreenQuery } from '~/generated/GalleryEditorScreenQuery.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { RootStackNavigatorParamList } from '~/navigation/types';
 
 function InnerGalleryEditorScreen() {
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'GalleryEditor'>>();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
 
   const query = useLazyLoadQuery<GalleryEditorScreenQuery>(
     graphql`
@@ -32,6 +33,7 @@ function InnerGalleryEditorScreen() {
   );
 
   const gallery = query.galleryById;
+  const { top } = useSafeAreaPadding();
 
   if (!gallery) {
     throw new Error('GalleryEditor rendered without a Gallery');
@@ -39,7 +41,12 @@ function InnerGalleryEditorScreen() {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <View className="flex flex-col flex-1 bg-white dark:bg-black-900">
+      <View
+        className="flex flex-col flex-1 bg-white dark:bg-black-900"
+        style={{
+          paddingTop: top,
+        }}
+      >
         <GalleryEditorNavbar />
         <ScrollView className="flex-1">
           <GalleryEditorHeader galleryRef={gallery} />

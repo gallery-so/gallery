@@ -138,10 +138,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       : null;
   }, [collectionIdBeingEdited, collections]);
 
-  const sections: StagedSectionList = useMemo(() => {
-    return collectionBeingEdited?.sections ?? [];
-  }, [collectionBeingEdited?.sections]);
-
   const setSections: Dispatch<SetStateAction<StagedSectionList>> = useCallback(
     (value) => {
       if (!collectionIdBeingEdited) {

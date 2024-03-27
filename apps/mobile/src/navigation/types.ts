@@ -22,6 +22,9 @@ export type RootStackNavigatorParamList = {
     tokenId: string;
     redirectTo?: PostRedirect;
   };
+  GalleryEditor: {
+    galleryId: string;
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
@@ -67,10 +70,6 @@ export type MainTabStackNavigatorParamList = {
   SettingsProfile: undefined;
   Post: { postId: string; commentId?: string; replyToComment?: OnReplyPressParams };
   NotificationSettingsScreen: undefined;
-
-  GalleryEditor: {
-    galleryId: string;
-  };
 
   // The main five tabs
   Account: undefined;

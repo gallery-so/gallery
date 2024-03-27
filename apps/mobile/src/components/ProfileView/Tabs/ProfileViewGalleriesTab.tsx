@@ -12,7 +12,7 @@ import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard'
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { ProfileViewGalleriesTabFragment$key } from '~/generated/ProfileViewGalleriesTabFragment.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { RootStackNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type ListItem = {
@@ -62,7 +62,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
     });
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
-  const navigation = useNavigation<NativeStackNavigationProp<MainTabStackNavigatorParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackNavigatorParamList>>();
 
   const handleEditGallery = useCallback(
     (galleryId: string) => {

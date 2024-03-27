@@ -5,7 +5,6 @@ import { CollectionScreen } from '~/screens/CollectionScreen/CollectionScreen';
 import { CommunityNftSelectorScreen } from '~/screens/CommunityScreen/CommunityNftSelectorScreen';
 import { CommunityScreen } from '~/screens/CommunityScreen/CommunityScreen';
 import { FeedEventScreen } from '~/screens/FeedEventScreen';
-import { GalleryEditorScreen } from '~/screens/GalleryScreen/GalleryEditorScreen';
 import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
@@ -46,8 +45,6 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="NotificationSettingsScreen" component={NotificationSettingsScreen} />
-
-      <Stack.Screen name="GalleryEditor" component={GalleryEditorScreen} />
 
       {/* The 5 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />
