@@ -18,6 +18,7 @@ import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   userRef: SuggestedProfileCardFragment$key;
@@ -42,6 +43,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
           }
           hidden
         }
+        ...ProfilePictureFragment
         ...FollowButtonUserFragment
       }
     `,
@@ -120,8 +122,9 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
         </TokenPreviewContainer>
         <ProfileDetailsContainer>
           <ProfileDetailsText gap={4}>
-            <HStack gap={4} align="center" justify="space-between">
-              <HStack>
+            <HStack gap={8} align="center" justify="space-between">
+              <HStack gap={4} align="center">
+                <ProfilePicture userRef={user} size="xs" />
                 <Username>
                   <strong>{user.username}</strong>
                 </Username>
@@ -139,12 +142,14 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
                 />
               )}
             </HStack>
-            <StyledUserBio>
-              <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
-            </StyledUserBio>
-            {!isMobile && !isOwnProfile && (
-              <WideFollowButton userRef={user} queryRef={query} source="Curated Feed user card" />
-            )}
+            <StyledUserDetailsContainer gap={8}>
+              <StyledUserBio>
+                <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
+              </StyledUserBio>
+              {!isMobile && !isOwnProfile && (
+                <WideFollowButton userRef={user} queryRef={query} source="Curated Feed user card" />
+              )}
+            </StyledUserDetailsContainer>
           </ProfileDetailsText>
         </ProfileDetailsContainer>
       </StyledContent>
@@ -155,7 +160,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
 const StyledSuggestedProfileCard = styled(GalleryLink)`
   border-radius: 4px;
   background-color: ${colors.offWhite};
-  padding: 12px;
+  padding: 8px;
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
@@ -165,7 +170,8 @@ const StyledSuggestedProfileCard = styled(GalleryLink)`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    height: 100%;
+    min-width: 200px;
+    min-height: 183px;
   }
 `;
 
@@ -192,10 +198,15 @@ const ProfileDetailsText = styled(VStack)`
   width: 100%;
 `;
 
+const StyledUserDetailsContainer = styled(VStack)``;
+
 const StyledUserBio = styled(BaseM)`
   height: 20px; // ensure consistent height even if bio is not present
 
+  font-size: 14px;
+  font-weight: 400;
   line-clamp: 1;
+  overflow: hidden;
   -webkit-line-clamp: 1;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -205,8 +216,7 @@ export const TokenPreviewContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 
-  min-height: 120px;
-  min-width: 241px;
+  min-height: 97px;
   grid-gap: 2px;
 `;
 
@@ -217,7 +227,10 @@ export const TokenPreview = styled.img`
   object-fit: cover;
 `;
 
-const Username = styled(TitleM)`
+const Username = styled(BaseM)`
+  font-size: 16px;
+  font-weight: 700;
+
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -226,6 +239,7 @@ const WideFollowButton = styled(FollowButton)`
   padding: 2px 8px;
   width: 100%;
   height: 24px;
+  line-height: 0;
 
   @media only screen and ${breakpoints.desktop} {
     width: 100%;
