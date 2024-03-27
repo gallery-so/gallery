@@ -114,7 +114,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
       eventName="Explore User Card Click"
       eventContext={contexts.Explore}
     >
-      <StyledContent gap={12} justify="space-between">
+      <StyledContent gap={4} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
             (url) => url?.large && <TokenPreview src={url.large} key={url.large} />
