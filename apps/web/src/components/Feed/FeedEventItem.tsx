@@ -86,6 +86,11 @@ export default function FeedEventItemWithBoundary({
           ... on UserFollowedUsersFeedEventData {
             __typename
           }
+          ... on GalleryUpdatedFeedEventData {
+            subEventDatas {
+              __typename
+            }
+          }
         }
         ...FeedEventSocializeSectionFragment
         ...FeedEventItemFragment
@@ -109,6 +114,18 @@ export default function FeedEventItemWithBoundary({
   const handlePotentialLayoutShift = useCallback(() => {
     onPotentialLayoutShift(index);
   }, [index, onPotentialLayoutShift]);
+
+  // check that subEvents is non-empty
+  if (event.eventData?.__typename !== 'UserFollowedUsersFeedEventData') {
+    // ignore GalleryInfoUpdatedFeedEventData events because we have no component to handle that right now
+    const subEvents = event?.eventData?.subEventDatas
+      ?.slice(0, 4)
+      .filter((event) => event.__typename !== 'GalleryInfoUpdatedFeedEventData');
+
+    if (!subEvents?.length) {
+      return null;
+    }
+  }
 
   return (
     <ReportingErrorBoundary fallback={<></>}>
