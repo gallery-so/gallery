@@ -10,6 +10,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
+import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileSection';
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
@@ -37,6 +38,7 @@ export default function FeedList({
       fragment FeedListFragment on Query {
         ...PostItemWithErrorBoundaryQueryFragment
         ...FeedEventItemWithErrorBoundaryQueryFragment
+        ...FeedSuggestedProfileSectionWithBoundaryFragment
       }
     `,
     queryRef
@@ -65,6 +67,10 @@ export default function FeedList({
   const feedDataRef = useRef(feedData);
   feedDataRef.current = feedData;
 
+  const finalFeedList = useMemo(() => {
+    return [...feedData, { __typename: 'SuggestedProfileSection' }];
+  }, [feedData]);
+
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       // This is critical to ensure heights aren't cached from the wrong item.
@@ -83,8 +89,8 @@ export default function FeedList({
 
   // Function responsible for tracking the loaded state of each row.
   const isRowLoaded = useCallback(
-    ({ index }: { index: number }) => !hasNext || Boolean(feedData[index]),
-    [feedData, hasNext]
+    ({ index }: { index: number }) => !hasNext || Boolean(finalFeedList[index]),
+    [finalFeedList, hasNext]
   );
 
   const virtualizedListRef = useRef<List | null>(null);
@@ -114,8 +120,8 @@ export default function FeedList({
         return <div />;
       }
       // graphql returns the oldest event at the top of the list, so display in opposite order
-      const content = feedData[feedData.length - index - 1];
-
+      const content = finalFeedList[finalFeedList.length - index - 1];
+      console.log('content', content);
       // Better safe than sorry :)
       if (!content) {
         return;
@@ -179,9 +185,25 @@ export default function FeedList({
         );
       }
 
+      if (content.__typename === 'SuggestedProfileSection') {
+        return (
+          <CellMeasurer
+            cache={measurerCache}
+            columnIndex={0}
+            rowIndex={index}
+            key={key}
+            parent={parent}
+          >
+            <div>
+              <FeedSuggestedProfileSection queryRef={query} />
+            </div>
+          </CellMeasurer>
+        );
+      }
+
       return null;
     },
-    [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
+    [finalFeedList, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );
 
   const [, setIsLoading] = useState(false);
@@ -196,10 +218,10 @@ export default function FeedList({
     function recalculateHeightsWhenEventsChange() {
       virtualizedListRef.current?.recomputeRowHeights();
     },
-    [feedData, measurerCache]
+    [finalFeedList, measurerCache]
   );
 
-  const rowCount = hasNext ? feedData.length + 1 : feedData.length;
+  const rowCount = hasNext ? finalFeedList.length + 1 : finalFeedList.length;
 
   return (
     <WindowScroller>
@@ -224,7 +246,7 @@ export default function FeedList({
                       width={width}
                       height={height}
                       rowRenderer={rowRenderer}
-                      rowCount={feedData.length}
+                      rowCount={finalFeedList.length}
                       rowHeight={measurerCache.rowHeight}
                       scrollTop={scrollTop}
                       overscanRowCount={2}
