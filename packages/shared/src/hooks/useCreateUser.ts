@@ -67,7 +67,7 @@ export default function useCreateUser() {
       let authMechanism: useCreateUserMutation['variables']['authMechanism'];
 
       if (isEoaPayload(authPayloadVariables)) {
-        const { chain, address, nonce, signature } = authPayloadVariables;
+        const { chain, address, nonce, message, signature } = authPayloadVariables;
 
         authMechanism = {
           eoa: {
@@ -76,6 +76,7 @@ export default function useCreateUser() {
               pubKey: address,
             },
             nonce,
+            message,
             signature,
           },
         };
@@ -87,11 +88,12 @@ export default function useCreateUser() {
           },
         };
       } else {
-        const { address, nonce } = authPayloadVariables;
+        const { address, nonce, message } = authPayloadVariables;
         authMechanism = {
           gnosisSafe: {
             address,
             nonce,
+            message,
           },
         };
       }
