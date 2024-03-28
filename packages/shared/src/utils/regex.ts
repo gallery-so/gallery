@@ -12,7 +12,7 @@ export const VALID_URL_IGNORE_MARKDOWN =
   /(\[([^\]]*?)\]\((https?:\/\/[^\s,)]+)\))|((https?:\/\/|www\.)[^\s,)]+)/g;
 
 // standard email format x@x.xx
-export const EMAIL_FORMAT = /^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/;
+export const EMAIL_FORMAT = /^[\w-\.+]+@([\w-]+\.)+[\w-]+$/;
 
 // break lines
 export const BREAK_LINES = /(\r\n|\n|\r|\\\n)/gm;
