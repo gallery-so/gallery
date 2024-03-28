@@ -1,6 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import { signMessage } from '@wagmi/core';
 import { useCallback, useEffect, useState } from 'react';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import { useAccount } from 'wagmi';
 
 import { EmptyState } from '~/components/EmptyState/EmptyState';
@@ -28,6 +29,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
 
   const trackSignInAttempt = useTrackSignInAttempt();
@@ -46,9 +48,10 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt('Ethereum');
 
-      const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
+      const { nonce, message } = await createNonce();
+      const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Ethereum' }));
 
-      const signature = await signMessage({ message: nonce });
+      const signature = await signMessage({ message });
 
       const userId = await loginOrRedirectToOnboarding({
         authMechanism: {
@@ -59,6 +62,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
                 pubKey: address,
               },
               nonce,
+              message,
               signature,
             },
           },
@@ -70,7 +74,13 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
         trackSignInSuccess('Ethereum');
       }
     },
-    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess]
+    [
+      trackSignInAttempt,
+      createNonce,
+      getUserByWalletAddress,
+      loginOrRedirectToOnboarding,
+      trackSignInSuccess,
+    ]
   );
 
   useEffect(() => {
