@@ -67,10 +67,10 @@ function OnboardingProgressBar({ from, to }: OnboardingProgressBarProps) {
 }
 
 const StyledBar = styled(motion.div)`
-  height: 12px;
+  height: 8px;
   background-color: ${colors.activeBlue};
   position: absolute;
   top: 0;
   left: 0;
-  border-bottom-right-radius: 8px;
+  border-bottom-right-radius: 4px;
 `;
