@@ -13,6 +13,7 @@ import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/Analyti
 
 export type GalleryTouchableOpacityProps = {
   withoutFeedback?: boolean;
+  ref?: React.Ref<TouchableOpacity>;
 } & GalleryElementTrackingProps &
   TouchableOpacityProps;
 
@@ -25,6 +26,7 @@ export function GalleryTouchableOpacity({
   onPress,
   properties,
   withoutFeedback,
+  ref,
   ...props
 }: GalleryTouchableOpacityProps) {
   const track = useTrack();

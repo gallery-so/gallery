@@ -112,7 +112,7 @@ export function PostItem({
   return (
     <StyledPostItem useVerticalLayout={false}>
       <PostNfts queryRef={query} postRef={post} onNftLoad={measure} />
-      <StyledDesktopPostData gap={16} justify="space-between">
+      <StyledDesktopPostData gap={24} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <VStack gap={8}>
           <PostCreatorAndCollectionSection tokenRef={token} />
