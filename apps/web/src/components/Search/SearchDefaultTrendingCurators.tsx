@@ -61,7 +61,7 @@ export default function SearchDefaultTrendingCuratorsSection({
     return users;
   }, [query, selectedFilter]);
 
-  const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator', [selectedFilter]);
+  const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator');
 
   const handleToggleShowAll = useCallback(() => {
     if (isSelectedFilterCurator) {

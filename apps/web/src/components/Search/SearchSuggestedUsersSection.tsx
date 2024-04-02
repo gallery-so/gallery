@@ -1,8 +1,9 @@
 import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
+import styled from 'styled-components';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
-import { HStack } from '../core/Spacer/Stack';
+import { VStack, HStack } from '../core/Spacer/Stack';
 import SearchResultsHeader from './SearchResultsHeader';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
 
@@ -60,7 +61,7 @@ export default function SearchSuggestedUsersSection({ queryRef, variant }: Props
   }
 
   return (
-    <>
+    <StyledWrapper gap={8}>
       <SearchResultsHeader variant={variant}>Suggested Collectors and Creators</SearchResultsHeader>
       <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
         {nonNullProfiles?.map((profile) => (
@@ -72,6 +73,10 @@ export default function SearchSuggestedUsersSection({ queryRef, variant }: Props
           />
         ))}
       </HStack>
-    </>
+    </StyledWrapper>
   );
 }
+
+const StyledWrapper = styled(VStack)`
+  padding-bottom: 12px;
+`;
