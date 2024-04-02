@@ -1,9 +1,11 @@
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
+
 import { HStack } from '../core/Spacer/Stack';
 import SearchFeaturedProfile from './SearchFeaturedProfile';
 import SearchResultsHeader from './SearchResultsHeader';
 
 type Props = {
-  profiles: [];
+  profiles: CmsTypes.FeaturedProfile[];
   variant?: 'default' | 'compact';
 };
 

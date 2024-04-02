@@ -178,7 +178,6 @@ const StyledSuggestedProfileCard = styled(GalleryLink)`
 
   @media only screen and ${breakpoints.desktop} {
     min-width: 200px;
-    min-height: 183px;
   }
 `;
 
