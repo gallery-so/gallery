@@ -10,6 +10,7 @@ import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
 import UserSearchResult from './User/UserSearchResult';
+import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCurators';
 
 type Props = {
   variant?: 'default' | 'compact';
@@ -22,15 +23,6 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
   const query = useLazyLoadQuery<SearchDefaultQuery>(
     graphql`
       query SearchDefaultQuery {
-        trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
-          ... on TrendingUsersPayload {
-            __typename
-            users {
-              id
-              ...UserSearchResultFragment
-            }
-          }
-        }
         viewer @required(action: THROW) {
           ... on Viewer {
             suggestedUsers(first: 2) @required(action: THROW) {
@@ -49,6 +41,7 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
           }
         }
         ...SearchSuggestedUsersSectionFollowFragment
+        ...SearchDefaultTrendingCuratorsSectionFragment
       }
     `,
     {}
@@ -67,20 +60,11 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
     return users;
   }, [query.viewer?.suggestedUsers?.edges]);
 
-  if (
-    query.trendingUsers5Days?.__typename !== 'TrendingUsersPayload' ||
-    !query.trendingUsers5Days.users
-  ) {
-    return null;
-  }
-
   if (query.viewer?.suggestedUsers?.__typename !== 'UsersConnection') {
     return null;
   }
 
   const { featuredProfiles } = pageContent ?? [];
-
-  const { users: trendingUsers } = query.trendingUsers5Days;
 
   const featuredProfilesData = featuredProfiles?.slice(0, 2);
 
@@ -88,16 +72,11 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
     <VStack>
       <SearchFeaturedCollectionSection profiles={featuredProfilesData} variant={variant} />
       <SearchSuggestedUsersSection profiles={nonNullProfiles} variant={variant} />
-      <SearchResultsHeader variant={variant}>Trending Curators</SearchResultsHeader>
-      {trendingUsers.map((user) => (
-        <UserSearchResult
-          key={user.id}
-          userRef={user}
-          variant={variant}
-          onSelect={onSelect}
-          keyword=""
-        />
-      ))}
+      <SearchDefaultTrendingCuratorsSection
+        queryRef={query}
+        variant={variant}
+        onSelect={onSelect}
+      />
     </VStack>
   );
 }

@@ -1,24 +1,17 @@
 import { graphql, useFragment } from 'react-relay';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
-import { SearchSuggestedUsersSectionFollowFragment$key } from '~/generated/SearchSuggestedUsersSectionFollowFragment.graphql';
 import { HStack } from '../core/Spacer/Stack';
 import SearchResultsHeader from './SearchResultsHeader';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
 
 type Props = {
   queryRef: SearchSuggestedUsersSectionFragment$key;
-  userRef: SearchSuggestedUsersSectionFollowFragment$key;
   profiles: any[];
   variant?: 'default' | 'compact';
 };
 
-export default function SearchSuggestedUsersSection({
-  queryRef,
-  userRef,
-  profiles,
-  variant,
-}: Props) {
+export default function SearchSuggestedUsersSection({ queryRef, profiles, variant }: Props) {
   const query = useFragment(
     graphql`
       fragment SearchSuggestedUsersSectionFollowFragment on Query {
