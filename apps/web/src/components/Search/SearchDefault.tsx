@@ -19,7 +19,6 @@ type Props = {
 };
 
 export default function SearchDefault({ variant = 'default', onSelect, pageContent }: Props) {
-  console.log('pageContent', pageContent);
   const query = useLazyLoadQuery<SearchDefaultQuery>(
     graphql`
       query SearchDefaultQuery {
