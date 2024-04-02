@@ -26,7 +26,6 @@ type Props = {
 };
 
 export default function Search({ pageContent }: Props) {
-  console.log('seee');
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
   const { hideDrawer } = useDrawerActions();
@@ -136,7 +135,12 @@ export default function Search({ pageContent }: Props) {
               onSelect={handleSelect}
             />
           ) : (
-            <SearchDefault onSelect={handleSelect} pageContent={pageContent} />
+            <SearchDefault
+              onSelect={handleSelect}
+              pageContent={pageContent}
+              selectedFilter={selectedFilter}
+              onChangeFilter={setSelectedFilter}
+            />
           )}
         </Suspense>
       </StyledSearchContent>

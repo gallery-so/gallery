@@ -8,15 +8,24 @@ import SearchFeaturedCollectionSection from './SearchFeaturedCollectionSection';
 import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import { SearchItemType } from './types';
 import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCurators';
+import { SearchFilterType } from './Search';
 
 type Props = {
   variant?: 'default' | 'compact';
 
   pageContent: CmsTypes.LandingPage;
+  selectedFilter: SearchFilterType;
+  onChangeFilter: (filter: SearchFilterType) => void;
   onSelect: (item: SearchItemType) => void;
 };
 
-export default function SearchDefault({ variant = 'default', onSelect, pageContent }: Props) {
+export default function SearchDefault({
+  variant = 'default',
+  onSelect,
+  selectedFilter,
+  onChangeFilter,
+  pageContent,
+}: Props) {
   const query = useLazyLoadQuery<SearchDefaultQuery>(
     graphql`
       query SearchDefaultQuery {
@@ -32,12 +41,19 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
 
   return (
     <VStack>
-      <SearchFeaturedCollectionSection profiles={featuredProfilesData} variant={variant} />
-      <SearchSuggestedUsersSection queryRef={query} variant={variant} />
+      {selectedFilter !== 'curator' && (
+        <>
+          <SearchFeaturedCollectionSection profiles={featuredProfilesData} variant={variant} />
+          <SearchSuggestedUsersSection queryRef={query} variant={variant} />
+        </>
+      )}
       <SearchDefaultTrendingCuratorsSection
         queryRef={query}
         variant={variant}
         onSelect={onSelect}
+        selectedFilter={selectedFilter}
+        onChangeFilter={onChangeFilter}
+        showAllButton={true}
       />
     </VStack>
   );
