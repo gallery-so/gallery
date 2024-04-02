@@ -74,10 +74,9 @@ const StyledPlaceholder = styled.div`
 
 type FeaturedProfileProps = {
   profile: CmsTypes.FeaturedProfile;
-  size: 'sm' | 'lg';
 };
 
-export function FeaturedProfile({ profile, size = 'lg' }: FeaturedProfileProps) {
+export function FeaturedProfile({ profile }: FeaturedProfileProps) {
   return (
     <StyledLinkWrapper
       href={`/${profile.username}`}

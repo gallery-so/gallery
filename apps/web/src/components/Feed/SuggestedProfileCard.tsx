@@ -23,9 +23,14 @@ import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 type Props = {
   userRef: SuggestedProfileCardFragment$key;
   queryRef: SuggestedProfileCardFollowFragment$key;
+  shouldShowFollowButton?: boolean;
 };
 
-export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
+export default function SuggestedProfileCard({
+  userRef,
+  queryRef,
+  showFollowButton = true,
+}: Props) {
   const user = useFragment(
     graphql`
       fragment SuggestedProfileCardFragment on GalleryUser {
@@ -104,6 +109,8 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
     return unescapedBio.split('\n')[0] ?? '';
   }, [unescapedBio]);
 
+  const shouldShowFollowButton = showFollowButton && !isMobile && !isOwnProfile;
+
   return (
     <StyledSuggestedProfileCard
       to={{
@@ -146,7 +153,7 @@ export default function SuggestedProfileCard({ userRef, queryRef }: Props) {
               <StyledUserBio>
                 <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
               </StyledUserBio>
-              {!isMobile && !isOwnProfile && (
+              {shouldShowFollowButton && (
                 <WideFollowButton userRef={user} queryRef={query} source="Curated Feed user card" />
               )}
             </StyledUserDetailsContainer>

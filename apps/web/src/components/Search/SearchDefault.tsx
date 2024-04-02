@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
+import SearchFeaturedProfile from './SearchFeaturedProfile';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
 import UserSearchResult from './User/UserSearchResult';
-import { FeaturedProfile } from '../../scenes/ContentPages/ContentModules/FeaturedProfiles';
 
 type Props = {
   variant?: 'default' | 'compact';
@@ -83,20 +83,25 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
 
   const { users: trendingUsers } = query.trendingUsers5Days;
 
-  console.log('nonNullProfiles', nonNullProfiles);
+  const featuredProfilesData = featuredProfiles.slice(0, 2);
 
   return (
     <VStack>
       <SearchResultsHeader variant={variant}>Featured Collections</SearchResultsHeader>
       <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
-        {featuredProfiles?.map((profile) => (
-          <FeaturedProfile key={profile.id} profile={profile} />
+        {featuredProfilesData?.map((profile) => (
+          <SearchFeaturedProfile key={profile.id} profile={profile} />
         ))}
       </HStack>
       <SearchResultsHeader variant={variant}>Suggested Collectors and Creators</SearchResultsHeader>
       <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
         {nonNullProfiles?.map((user) => (
-          <SuggestedProfileCard key={user.id} userRef={user} queryRef={query} />
+          <SuggestedProfileCard
+            key={user.id}
+            userRef={user}
+            queryRef={query}
+            showFollowButton={false}
+          />
         ))}
       </HStack>
       <SearchResultsHeader variant={variant}>Trending Curators</SearchResultsHeader>

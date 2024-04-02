@@ -3,10 +3,10 @@ import { Route, route } from 'nextjs-routes';
 import { Suspense, useCallback, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 

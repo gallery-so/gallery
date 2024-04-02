@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -24,6 +23,7 @@ import HomeIcon from '~/icons/HomeIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import SearchIcon from '~/icons/SearchIcon';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';

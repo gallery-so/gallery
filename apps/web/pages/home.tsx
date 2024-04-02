@@ -7,8 +7,10 @@ import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/Home
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { homePageCuratedQuery } from '~/generated/homePageCuratedQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import CuratedHomePage from '~/scenes/Home/CuratedHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import { fetchSanityContent } from '~/utils/sanity';
 
 const homePageCuratedQueryNode = graphql`
   query homePageCuratedQuery(
@@ -30,18 +32,18 @@ const homePageCuratedQueryNode = graphql`
 
 type Props = {
   preloadedQuery: PreloadedQuery<homePageCuratedQuery>;
+  pageContent: CmsTypes.LandingPage;
 };
 
-export default function Home({ preloadedQuery }: Props) {
+export default function Home({ preloadedQuery, pageContent }: Props) {
   const query = usePreloadedQuery(homePageCuratedQueryNode, preloadedQuery);
-
   // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
   // useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
-      sidebar={<StandardSidebar queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} pageContent={pageContent} />}
       element={<CuratedHomePage queryRef={query} />}
       footer={false}
     />
@@ -95,7 +97,32 @@ Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
  *   7) transition ends
  */
 export const getServerSideProps = async () => {
+  const content = await fetchSanityContent(queryString);
+
   return {
-    props: {},
+    props: {
+      pageContent: content[0],
+    },
   };
 };
+
+const queryString = `*[_type == "landingPage"]{
+  ...,
+  "featuredProfiles": featuredProfiles[]->{
+    coverImages[]{
+      asset->{
+        url
+      },
+      alt
+    },
+    pfp{
+      asset->{
+        url
+      },
+      alt
+    },
+    username,
+    bio,
+    profileType
+  }
+}`;
