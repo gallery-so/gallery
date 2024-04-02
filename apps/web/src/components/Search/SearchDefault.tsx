@@ -5,8 +5,8 @@ import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
-import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
-import SearchFeaturedProfile from './SearchFeaturedProfile';
+import SearchFeaturedCollectionSection from './SearchFeaturedCollectionSection';
+import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
 import UserSearchResult from './User/UserSearchResult';
@@ -41,14 +41,14 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
                   ... on GalleryUser {
                     id
                     __typename
-                    ...SuggestedProfileCardFragment
                   }
+                  ...SuggestedProfileCardFragment
                 }
               }
             }
           }
         }
-        ...SuggestedProfileCardFollowFragment
+        ...SearchSuggestedUsersSectionFollowFragment
       }
     `,
     {}
@@ -82,27 +82,12 @@ export default function SearchDefault({ variant = 'default', onSelect, pageConte
 
   const { users: trendingUsers } = query.trendingUsers5Days;
 
-  const featuredProfilesData = featuredProfiles.slice(0, 2);
+  const featuredProfilesData = featuredProfiles?.slice(0, 2);
 
   return (
     <VStack>
-      <SearchResultsHeader variant={variant}>Featured Collections</SearchResultsHeader>
-      <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
-        {featuredProfilesData?.map((profile) => (
-          <SearchFeaturedProfile key={profile.id} profile={profile} />
-        ))}
-      </HStack>
-      <SearchResultsHeader variant={variant}>Suggested Collectors and Creators</SearchResultsHeader>
-      <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
-        {nonNullProfiles?.map((user) => (
-          <SuggestedProfileCard
-            key={user.id}
-            userRef={user}
-            queryRef={query}
-            showFollowButton={false}
-          />
-        ))}
-      </HStack>
+      <SearchFeaturedCollectionSection profiles={featuredProfilesData} variant={variant} />
+      <SearchSuggestedUsersSection profiles={nonNullProfiles} variant={variant} />
       <SearchResultsHeader variant={variant}>Trending Curators</SearchResultsHeader>
       {trendingUsers.map((user) => (
         <UserSearchResult

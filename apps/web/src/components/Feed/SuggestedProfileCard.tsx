@@ -23,7 +23,7 @@ import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 type Props = {
   userRef: SuggestedProfileCardFragment$key;
   queryRef: SuggestedProfileCardFollowFragment$key;
-  shouldShowFollowButton?: boolean;
+  showFollowButton?: boolean;
 };
 
 export default function SuggestedProfileCard({
