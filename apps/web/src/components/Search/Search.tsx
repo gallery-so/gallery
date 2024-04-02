@@ -3,6 +3,7 @@ import { Route, route } from 'nextjs-routes';
 import { Suspense, useCallback, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
@@ -12,6 +13,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
 import { useSearchContext } from './SearchContext';
+import SearchDefault from './SearchDefault';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -19,7 +21,12 @@ import { SearchItemType } from './types';
 
 export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'collection' | null;
 
-export default function Search() {
+type Props = {
+  pageContent?: CmsTypes.LandingPage;
+};
+
+export default function Search({ pageContent }: Props) {
+  console.log('seee');
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
   const { hideDrawer } = useDrawerActions();
@@ -121,13 +128,15 @@ export default function Search() {
             </StyledSpinnerContainer>
           }
         >
-          {keyword && (
+          {keyword ? (
             <SearchResults
               activeFilter={selectedFilter}
               keyword={keyword}
               onChangeFilter={setSelectedFilter}
               onSelect={handleSelect}
             />
+          ) : (
+            <SearchDefault onSelect={handleSelect} pageContent={pageContent} />
           )}
         </Suspense>
       </StyledSearchContent>

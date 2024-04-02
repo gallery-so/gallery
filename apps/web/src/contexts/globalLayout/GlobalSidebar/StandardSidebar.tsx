@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -34,9 +35,10 @@ import SidebarPfp from './SidebarPfp';
 
 type Props = {
   queryRef: StandardSidebarFragment$key;
+  pageContent?: CmsTypes.LandingPage;
 };
 
-export function StandardSidebar({ queryRef }: Props) {
+export function StandardSidebar({ queryRef, pageContent }: Props) {
   const query = useFragment(
     graphql`
       fragment StandardSidebarFragment on Query {
@@ -178,13 +180,13 @@ export function StandardSidebar({ queryRef }: Props) {
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
     showDrawer({
-      content: <Search />,
+      content: <Search pageContent={pageContent} />,
     });
-  }, [showDrawer, track]);
+  }, [showDrawer, pageContent, track]);
 
   useSearchHotkey(() => {
     showDrawer({
-      content: <Search />,
+      content: <Search pageContent={pageContent} />,
     });
   });
 
