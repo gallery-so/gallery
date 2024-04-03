@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import transitions from '~/components/core/transitions';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
@@ -62,6 +61,11 @@ export default function SearchFeaturedProfile({ profile }: SearchFeaturedProfile
   );
 }
 
+const fadeIn = keyframes`
+    from { opacity: 0 };
+    to { opacity: 0.96 };
+`;
+
 const StyledLinkWrapper = styled(GalleryLink)`
   width: 100%;
 `;
@@ -81,6 +85,8 @@ const StyledProfile = styled(VStack)`
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
+
+  animation: ${fadeIn} 0.2s ease-out forwards;
 
   &:hover {
     background-color: ${colors.faint};

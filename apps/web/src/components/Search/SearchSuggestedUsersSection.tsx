@@ -1,6 +1,6 @@
 import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
 import { VStack, HStack } from '../core/Spacer/Stack';
@@ -77,6 +77,11 @@ export default function SearchSuggestedUsersSection({ queryRef, variant }: Props
   );
 }
 
+const fadeIn = keyframes`
+    from { opacity: 0 };
+    to { opacity: 0.96 };
+`;
 const StyledWrapper = styled(VStack)`
+  animation: ${fadeIn} 0.2s ease-out forwards;
   padding-bottom: 12px;
 `;
