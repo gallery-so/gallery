@@ -4,14 +4,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Linking } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
+import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 
 import { useToastActions } from '~/contexts/ToastContext';
 
 type Props = {
   onIsSigningIn: (isSigningIn: boolean) => void;
   onConnect?: () => void;
-  onSignedIn: (address: string, nonce: string, signature: string, userExist: boolean) => void;
+  onSignedIn: (p: SignerVariables & { userExists: boolean }) => void;
 };
 
 // Configure Mobile SDK
@@ -26,6 +28,7 @@ const storage = new MMKV();
 
 export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
   const track = useTrack();
 
   const cachedAddress = useMemo(() => storage.getString('address'), []);
@@ -50,7 +53,8 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
     }
 
     onIsSigningIn(true);
-    const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
+    const { nonce, message } = await createNonce();
+    const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Ethereum' }));
 
     try {
       const signature = (await provider.request({
@@ -58,7 +62,13 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
         params: [nonce, address],
       })) as string;
 
-      onSignedIn(address, nonce, signature, userExist);
+      onSignedIn({
+        address,
+        nonce,
+        message,
+        signature,
+        userExists,
+      });
     } catch (e) {
       if (e instanceof Error) {
         track('Failed to sign message with Coinbase Wallet');
@@ -66,7 +76,7 @@ export function useCoinbaseWallet({ onIsSigningIn, onSignedIn }: Props) {
     } finally {
       onIsSigningIn(false);
     }
-  }, [address, createNonce, onIsSigningIn, onSignedIn, track]);
+  }, [address, createNonce, getUserByWalletAddress, onIsSigningIn, onSignedIn, track]);
 
   const { pushToast } = useToastActions();
 

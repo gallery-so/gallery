@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import { useLogin } from 'src/hooks/useLogin';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -86,8 +87,16 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   }, []);
 
   const handleOnSignedIn = useCallback(
-    async (address: string, nonce: string, signature: string, userExist: boolean) => {
-      if (!userExist) {
+    async ({
+      address,
+      nonce,
+      message,
+      signature,
+      userExists,
+    }: SignerVariables & {
+      userExists: boolean;
+    }) => {
+      if (!userExists) {
         navigation.navigate('OnboardingEmail', {
           authMethod: 'Wallet',
           authMechanism: {
@@ -95,6 +104,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
             chain: 'Ethereum',
             address,
             nonce,
+            message,
             signature,
             userFriendlyWalletName: 'Unknown',
           },
@@ -105,8 +115,9 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {
-              signature,
               nonce,
+              message,
+              signature,
               chainPubKey: {
                 pubKey: address,
                 chain: 'Ethereum',
@@ -126,11 +137,12 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         if (!isSyncing) {
           syncTokens('Ethereum');
         }
-      } else if (methodRef.current === 'auth' && userExist) {
+      } else if (methodRef.current === 'auth' && userExists) {
         const result = await login({
           eoa: {
-            signature,
             nonce,
+            message,
+            signature,
             chainPubKey: {
               pubKey: address,
               chain: 'Ethereum',

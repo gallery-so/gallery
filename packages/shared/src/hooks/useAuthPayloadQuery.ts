@@ -1,18 +1,22 @@
-type EoaPayloadVariables = {
-  authMechanismType: 'eoa' | 'gnosisSafe';
-  chain: 'Ethereum' | 'Tezos';
+export type SignerVariables = {
   address: string;
   nonce: string;
+  message: string;
   signature: string;
-  userFriendlyWalletName: string;
 };
 
-type GnosisPayloadVariables = {
+export type EoaPayloadVariables = {
   authMechanismType: 'eoa' | 'gnosisSafe';
-  address: string;
-  nonce: string;
+  chain: 'Ethereum' | 'Tezos';
   userFriendlyWalletName: string;
-};
+  email?: string;
+} & SignerVariables;
+
+export type GnosisPayloadVariables = {
+  authMechanismType: 'eoa' | 'gnosisSafe';
+  userFriendlyWalletName: string;
+  email?: string;
+} & SignerVariables;
 
 type EmailPayloadVariables = {
   authMechanismType: 'magicLink';
