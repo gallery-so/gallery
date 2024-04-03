@@ -39,6 +39,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
             }
           }
         }
+        ...GalleryPreviewCardQueryFragment
       }
     `,
     queryRef
@@ -58,13 +59,20 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
     });
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
-  const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
-    return (
-      <View className="px-4 pb-8">
-        <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
-      </View>
-    );
-  }, []);
+  const renderItem = useCallback<ListRenderItem<ListItem>>(
+    ({ item }) => {
+      return (
+        <View className="px-4 pb-8">
+          <GalleryPreviewCard
+            isFeatured={item.isFeatured}
+            galleryRef={item.gallery}
+            queryRef={query}
+          />
+        </View>
+      );
+    },
+    [query]
+  );
 
   const contentContainerStyle = useListContentStyle();
 

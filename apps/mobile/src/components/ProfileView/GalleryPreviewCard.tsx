@@ -5,6 +5,7 @@ import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { OptionIcon } from 'src/icons/OptionIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
@@ -12,6 +13,7 @@ import { Typography } from '~/components/Typography';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
+import { GalleryPreviewCardQueryFragment$key } from '~/generated/GalleryPreviewCardQueryFragment.graphql';
 import { MainTabStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -24,9 +26,10 @@ import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 type GalleryPreviewCardProps = {
   isFeatured: boolean;
   galleryRef: GalleryPreviewCardFragment$key;
+  queryRef: GalleryPreviewCardQueryFragment$key;
 };
 
-export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCardProps) {
+export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: GalleryPreviewCardProps) {
   const gallery = useFragment(
     graphql`
       fragment GalleryPreviewCardFragment on Gallery {
@@ -42,6 +45,17 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
     `,
     galleryRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment GalleryPreviewCardQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isGalleryEditorEnabled = isFeatureEnabled(FeatureFlag.GALLERY_EDITOR, query);
 
   const [firstToken, secondToken, thirdToken, fourthToken] = gallery.tokenPreviews ?? [];
   const descriptionFirstLine = gallery.description?.split('\n')[0];
@@ -98,14 +112,16 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
             <View />
           )}
 
-          <GalleryTouchableOpacity
-            onPress={handleOptionPress}
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
-          >
-            <OptionIcon />
-          </GalleryTouchableOpacity>
+          {isGalleryEditorEnabled && (
+            <GalleryTouchableOpacity
+              onPress={handleOptionPress}
+              eventElementId={null}
+              eventName={null}
+              eventContext={null}
+            >
+              <OptionIcon />
+            </GalleryTouchableOpacity>
+          )}
         </View>
       </View>
 
