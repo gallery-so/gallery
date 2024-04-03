@@ -125,7 +125,7 @@ export function SomeoneCommentedOnYourFeedEvent({
       responsibleUserRefs={commenters}
       notificationRef={notification}
     >
-      <View className="flex space-y-0.5">
+      <View className="flex space-y-0.5 w-72">
         <Text className="dark:text-white">
           <Typography
             font={{
@@ -157,7 +157,7 @@ export function SomeoneCommentedOnYourFeedEvent({
             {getTimeSince(notification.updatedTime)}
           </Typography>
         </Text>
-        <View className="border-l-2 border-[#d9d9d9] pl-2">
+        <View className="border-l-2 border-[#d9d9d9] pl-2 w-64">
           <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
         </View>
       </View>

@@ -28,7 +28,7 @@ type openManageWalletProps = {
 };
 
 type ManageWalletActions = {
-  openManageWallet: ({ title, method, onSuccess }: openManageWalletProps) => void;
+  openManageWallet: (o: openManageWalletProps) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
   signature?: string;

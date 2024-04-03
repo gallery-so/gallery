@@ -38,6 +38,7 @@ type CommentNoteProps = {
   isReply?: boolean;
   footerElement?: React.ReactNode;
   onReplyClick: (params: OnReplyClickParams) => void;
+  hasReplies?: boolean;
 };
 
 export function CommentNote({
@@ -47,6 +48,7 @@ export function CommentNote({
   isReply,
   onReplyClick,
   queryRef,
+  hasReplies,
 }: CommentNoteProps) {
   const comment = useFragment(
     graphql`
@@ -128,6 +130,10 @@ export function CommentNote({
   // END TEMPORARY FIX
 
   const isCommentActive = activeCommentId === comment.dbid;
+
+  if (comment.deleted && !hasReplies) {
+    return null;
+  }
 
   return (
     <StyledListItem

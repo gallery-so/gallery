@@ -1,31 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback } from 'react';
-import { View } from 'react-native';
+import { useCallback } from 'react';
 
-import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
-import { NftSelectorToolbar } from '~/components/NftSelector/NftSelectorToolbar';
-import { NftSelectorWrapper } from '~/components/NftSelector/NftSelectorWrapper';
+import { NftSelector } from '~/components/NftSelector/NftSelector';
 import { useNftSelector } from '~/components/NftSelector/useNftSelector';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
-import { NftSelectorLoadingSkeleton } from '../NftSelectorScreen/NftSelectorLoadingSkeleton';
-import { NftSelectorPickerGrid } from '../NftSelectorScreen/NftSelectorPickerGrid';
 import { useProfilePicture } from '../NftSelectorScreen/useProfilePicture';
 
 export function PfpSelectorScreen() {
-  const {
-    searchQuery,
-    setSearchQuery,
-    ownershipTypeFilter,
-    setFilter,
-    networkFilter,
-    setNetworkFilter,
-    sortView,
-    setSortView,
-    sync,
-    isSyncing,
-    isSyncingCreatedTokens,
-  } = useNftSelector();
+  const { ownershipTypeFilter } = useNftSelector();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const { setProfileImage } = useProfilePicture();
@@ -44,45 +27,18 @@ export function PfpSelectorScreen() {
       navigation.navigate('NftSelectorContractScreen', {
         contractAddress: contractAddress,
         page: 'Post',
-        ownerFilter: 'Collected',
+        ownerFilter: ownershipTypeFilter,
         fullScreen: true,
       });
     },
-    [navigation]
+    [navigation, ownershipTypeFilter]
   );
+
   return (
-    <NftSelectorWrapper ownershipTypeFilter={ownershipTypeFilter}>
-      <View className="gap-8">
-        <NftSelectorHeader title="Select profile picture" />
-        <NftSelectorToolbar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          ownershipTypeFilter={ownershipTypeFilter}
-          setFilter={setFilter}
-          networkFilter={networkFilter}
-          setNetworkFilter={setNetworkFilter}
-          sortView={sortView}
-          setSortView={setSortView}
-          isSyncing={isSyncing}
-          isSyncingCreatedTokens={isSyncingCreatedTokens}
-          handleSync={sync}
-        />
-      </View>
-      <View className="flex-grow flex-1 w-full">
-        <Suspense fallback={<NftSelectorLoadingSkeleton />}>
-          <NftSelectorPickerGrid
-            searchCriteria={{
-              searchQuery,
-              ownerFilter: ownershipTypeFilter,
-              networkFilter: networkFilter,
-              sortView,
-            }}
-            onRefresh={sync}
-            onSelect={handleSelectNft}
-            onSelectNftGroup={handleSelectNftGroup}
-          />
-        </Suspense>
-      </View>
-    </NftSelectorWrapper>
+    <NftSelector
+      title="Select profile picture"
+      onSelectNft={handleSelectNft}
+      onSelectNftGroup={handleSelectNftGroup}
+    />
   );
 }

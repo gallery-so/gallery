@@ -19,3 +19,4 @@ Other commands
 - `moon run mobile:relay-codegen` to run relay compiler
 - `moon run mobile:typecheck` for checking type validity
 - `moon run mobile:lint` for linting
+- `moon run android-physical-device` for starting dev server and running it on physical device (make sure to scan QR code)

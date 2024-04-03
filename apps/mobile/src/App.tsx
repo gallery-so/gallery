@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'nativewind';
 import { Suspense, useEffect, useState } from 'react';
-import { Appearance, View } from 'react-native';
+import { Appearance, StatusBar, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -27,6 +27,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
+import { FarcasterAuthProvider } from './components/Login/AuthProvider/Farcaster/FarcasterAuthProvider';
 import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
@@ -130,6 +131,10 @@ export default function App() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
+      <StatusBar
+        barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={colorScheme === 'dark' ? '#000' : '#FFF'}
+      />
       <ReportingErrorBoundary fallback={<LoadingView />}>
         <MaintenanceStatusProvider
           sanityProjectId={env.EXPO_PUBLIC_SANITY_PROJECT_ID}
@@ -152,15 +157,17 @@ export default function App() {
                                   <PortalProvider>
                                     <BottomSheetModalProvider>
                                       <SyncTokensProvider>
-                                        <ManageWalletProvider>
-                                          {/* Register the user's push token if one exists (does not prompt the user) */}
-                                          <NotificationRegistrar />
-                                          <DevMenuItems />
-                                          <DeepLinkRegistrar />
-                                          <RootStackNavigator
-                                            navigationContainerRef={navigationRef}
-                                          />
-                                        </ManageWalletProvider>
+                                        <FarcasterAuthProvider>
+                                          <ManageWalletProvider>
+                                            {/* Register the user's push token if one exists (does not prompt the user) */}
+                                            <NotificationRegistrar />
+                                            <DevMenuItems />
+                                            <DeepLinkRegistrar />
+                                            <RootStackNavigator
+                                              navigationContainerRef={navigationRef}
+                                            />
+                                          </ManageWalletProvider>
+                                        </FarcasterAuthProvider>
                                       </SyncTokensProvider>
                                     </BottomSheetModalProvider>
                                   </PortalProvider>

@@ -1,10 +1,8 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { NftSelectorContractHeader } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractHeader';
-import { NftSelectorContractPickerGrid } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractPickerGrid';
-import { NftSelectorContractWrapper } from '~/components/NftSelector/NftSelectorContract/NftSelectorContractWrapper';
+import { NftSelectorContract } from '~/components/NftSelector/NftSelectorContract/NftSelectorContract';
 import { PostNftSelectorContractScreenQuery } from '~/generated/PostNftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -12,25 +10,7 @@ export function PostNftSelectorContractScreen() {
   const query = useLazyLoadQuery<PostNftSelectorContractScreenQuery>(
     graphql`
       query PostNftSelectorContractScreenQuery {
-        viewer {
-          ... on Viewer {
-            user {
-              tokens {
-                __typename
-                definition {
-                  contract {
-                    dbid
-                    name
-                    contractAddress {
-                      address
-                    }
-                  }
-                }
-                ...NftSelectorContractPickerGridFragment
-              }
-            }
-          }
-        }
+        ...NftSelectorContractFragment
       }
     `,
     {}
@@ -38,8 +18,6 @@ export function PostNftSelectorContractScreen() {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
-  const contractAddress = route.params.contractAddress;
-  const isCreator = route.params.ownerFilter === 'Created';
 
   const handleSelectNft = useCallback(
     (tokenId: string) => {
@@ -50,33 +28,13 @@ export function PostNftSelectorContractScreen() {
     [navigation]
   );
 
-  const nonNullableTokens = useMemo(() => {
-    const tokens = [];
-
-    for (const token of query.viewer?.user?.tokens ?? []) {
-      if (token?.definition?.contract?.contractAddress?.address === contractAddress) {
-        tokens.push(token);
-      }
-    }
-
-    return tokens;
-  }, [query.viewer?.user?.tokens, contractAddress]);
-
-  const contractName = nonNullableTokens[0]?.definition?.contract?.name ?? '';
-  const contractId = nonNullableTokens[0]?.definition?.contract?.dbid ?? '';
-
   return (
-    <NftSelectorContractWrapper isFullscreen>
-      <NftSelectorContractHeader
-        title={contractName}
-        isCreator={isCreator}
-        contractId={contractId}
-      />
-      <NftSelectorContractPickerGrid
-        isCreator={isCreator}
-        tokenRefs={nonNullableTokens}
-        onSelect={handleSelectNft}
-      />
-    </NftSelectorContractWrapper>
+    <NftSelectorContract
+      contractAddress={route.params.contractAddress}
+      onSelectNft={handleSelectNft}
+      queryRef={query}
+      isCreator={route.params.ownerFilter === 'Created'}
+      isFullScreen
+    />
   );
 }

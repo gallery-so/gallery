@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
-import { BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
+import { ANIMATION_CONFIGS, BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
 import { NavigationContext, useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useEffect, useRef } from 'react';
 import { Keyboard } from 'react-native';
-import { SharedValue } from 'react-native-reanimated';
+import { ReduceMotion, SharedValue } from 'react-native-reanimated';
 
 import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackdrop';
 import { GalleryBottomSheetBackground } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackground';
@@ -43,6 +43,7 @@ function GalleryBottomSheetModal(
 
   return (
     <BottomSheetModal
+      animationConfigs={{ ...ANIMATION_CONFIGS, reduceMotion: ReduceMotion.Never }}
       ref={(element) => {
         bottomSheetRef.current = element;
         if (typeof ref === 'function') {
