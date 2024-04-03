@@ -60,7 +60,7 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           <path
             d="M14.4529 28.2202C25.2627 28.2202 34.0258 19.4571 34.0258 8.6472C34.0258 -2.16266 25.2627 -10.9258 14.4529 -10.9258C3.64301 -10.9258 -5.12012 -2.16266 -5.12012 8.6472C-5.12012 19.4571 3.64301 28.2202 14.4529 28.2202Z"
             fill="url(#paint1_radial_902_1565)"
-            fill-opacity="0.9"
+            fillOpacity="0.9"
           />
         </g>
       </g>
@@ -72,9 +72,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="31.5472"
           height="31.5394"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="1.48421" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -85,9 +85,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="32.6451"
           height="32.653"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="2.96841" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -98,9 +98,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="26.1069"
           height="26.1147"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="1.11316" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -111,9 +111,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="19.8144"
           height="19.8144"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="2.22631" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -124,9 +124,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="10.2933"
           height="10.2933"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="1.48421" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -137,9 +137,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           width="43.5981"
           height="43.5981"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feGaussianBlur stdDeviation="1.11316" result="effect1_foregroundBlur_902_1565" />
         </filter>
@@ -151,8 +151,8 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(15.9338 6.14842) rotate(128.228) scale(20.4486 20.447)"
         >
-          <stop offset="0.286458" stop-color="#387AFA" />
-          <stop offset="0.647782" stop-color="#387AFA" stop-opacity="0" />
+          <stop offset="0.286458" stopColor="#387AFA" />
+          <stop offset="0.647782" stopColor="#387AFA" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint1_radial_902_1565"
@@ -162,9 +162,9 @@ export function ZoraLogoIcon(props: SVGProps<SVGSVGElement>) {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(14.4529 8.6472) rotate(90) scale(19.573)"
         >
-          <stop offset="0.598958" stop-opacity="0" />
+          <stop offset="0.598958" stopOpacity="0" />
           <stop offset="0.671875" />
-          <stop offset="0.734375" stop-opacity="0" />
+          <stop offset="0.734375" stopOpacity="0" />
         </radialGradient>
       </defs>
     </svg>

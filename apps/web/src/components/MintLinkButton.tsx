@@ -161,8 +161,8 @@ export function MintLinkButton({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} stroke-miterlimit="10" />
-          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} stroke-miterlimit="10" />
+          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} strokeMiterlimit="10" />
+          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} strokeMiterlimit="10" />
         </svg>
       </HStack>
     </Button>

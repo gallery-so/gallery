@@ -1,7 +1,7 @@
 export default function TopActivityBadgeIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <g clip-path="url(#clip0_1369_15132)">
+      <g clipPath="url(#clip0_1369_15132)">
         <path
           d="M17.06 13.3398L20.5 19.4998H17L15.5 22.4998L12 16.4998L8.5 22.4998L7 19.4998H3.5L6.94 13.3398"
           fill="#0022F0"
