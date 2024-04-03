@@ -61,7 +61,7 @@ export default function SearchDefaultTrendingCuratorsSection({
     return users;
   }, [query, selectedFilter]);
 
-  const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator');
+  const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator', [selectedFilter]);
 
   const handleToggleShowAll = useCallback(() => {
     if (isSelectedFilterCurator) {
@@ -100,7 +100,7 @@ export default function SearchDefaultTrendingCuratorsSection({
 }
 
 const StyledResultHeader = styled(HStack)`
-  padding: 0 12px;
+  padding-right: 12px;
 `;
 
 const StyledGalleryLink = styled(GalleryLink)`

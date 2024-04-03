@@ -1,5 +1,5 @@
 import { graphql, useFragment } from 'react-relay';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
@@ -66,7 +66,7 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
   return (
     <StyledWrapper gap={8}>
       <SearchResultsHeader variant={variant}>Suggested Collectors and Creators</SearchResultsHeader>
-      <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
+      <HStack justify="space-between">
         {nonNullProfiles?.map((profile) => (
           <SuggestedProfileCard
             key={profile.dbid}
