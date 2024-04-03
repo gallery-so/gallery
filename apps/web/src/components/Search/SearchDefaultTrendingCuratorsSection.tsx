@@ -1,4 +1,4 @@
-import { useCallback,useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,7 +7,7 @@ import { SearchDefaultTrendingCuratorsSectionFragment$key } from '~/generated/Se
 import { contexts } from '~/shared/analytics/constants';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
-import { HStack,VStack } from '../core/Spacer/Stack';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import { SearchFilterType } from './Search';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
@@ -47,21 +47,17 @@ export default function SearchDefaultTrendingCuratorsSection({
     queryRef
   );
 
-  if (
-    query.trendingUsers5Days?.__typename !== 'TrendingUsersPayload' ||
-    !query.trendingUsers5Days.users
-  ) {
-    return null;
-  }
-
   const trendingUsers = useMemo(() => {
-    const { users } = query.trendingUsers5Days;
+    if (query.trendingUsers5Days?.__typename === 'TrendingUsersPayload') {
+      const { users } = query.trendingUsers5Days;
 
-    if (selectedFilter === 'curator') {
-      return users;
+      if (selectedFilter === 'curator') {
+        return users;
+      }
+
+      return users?.slice(0, 4);
     }
-
-    return users?.slice(0, 4);
+    return [];
   }, [query, selectedFilter]);
 
   const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator', [selectedFilter]);
@@ -73,6 +69,13 @@ export default function SearchDefaultTrendingCuratorsSection({
       onChangeFilter('curator');
     }
   }, [isSelectedFilterCurator, onChangeFilter]);
+
+  if (
+    query.trendingUsers5Days?.__typename !== 'TrendingUsersPayload' ||
+    !query.trendingUsers5Days.users
+  ) {
+    return null;
+  }
 
   return (
     <VStack gap={4}>
@@ -90,7 +93,7 @@ export default function SearchDefaultTrendingCuratorsSection({
         )}
       </StyledResultHeader>
       <VStack>
-        {trendingUsers.map((user) => (
+        {trendingUsers?.map((user) => (
           <UserSearchResult
             key={user.id}
             userRef={user}

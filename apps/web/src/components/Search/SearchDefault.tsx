@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
@@ -11,12 +12,11 @@ import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import { SearchItemType } from './types';
 
 type Props = {
-  variant?: 'default' | 'compact';
-
-  pageContent: CmsTypes.LandingPage;
   selectedFilter: SearchFilterType;
   onChangeFilter: (filter: SearchFilterType) => void;
   onSelect: (item: SearchItemType) => void;
+  pageContent?: CmsTypes.LandingPage;
+  variant?: 'default' | 'compact';
 };
 
 export default function SearchDefault({
@@ -36,15 +36,19 @@ export default function SearchDefault({
     {}
   );
 
-  const { featuredProfiles } = pageContent ?? [];
-  const featuredProfilesData = featuredProfiles?.slice(0, 2);
+  const featuredProfiles = useMemo(() => {
+    if (pageContent) {
+      return pageContent.featuredProfiles?.slice(0, 2);
+    }
+    return [];
+  }, [pageContent]);
 
   return (
     <VStack gap={18}>
       {!selectedFilter && (
         <VStack gap={12}>
           <SearchFeaturedCollectionSection
-            profiles={featuredProfilesData}
+            profiles={featuredProfiles}
             variant={variant}
             onSelect={onSelect}
           />

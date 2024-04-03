@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
 
-import { HStack,VStack } from '../core/Spacer/Stack';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
@@ -71,7 +71,6 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
       <HStack gap={4}>
         {nonNullProfiles?.map((profile) => (
           <SuggestedProfileCard
-            compact={true}
             key={profile.dbid}
             userRef={profile}
             queryRef={query}

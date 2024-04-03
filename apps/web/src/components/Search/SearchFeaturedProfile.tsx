@@ -1,13 +1,10 @@
-import { useCallback,useMemo } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { useCallback, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { SearchFeaturedProfileFragment$key } from '~/generated/SearchFeaturedProfileFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
@@ -72,10 +69,6 @@ export default function SearchFeaturedProfile({ profile, onSelect }: SearchFeatu
 const fadeIn = keyframes`
     from { opacity: 0 };
     to { opacity: 0.96 };
-`;
-
-const StyledLinkWrapper = styled(GalleryLink)`
-  width: 100%;
 `;
 
 export const TokenPreviewContainer = styled.div`
