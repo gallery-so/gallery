@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) 
         ? openGraphMetaTags({
             title: `Gallery`, //todo opengraph title and content
             path: `/post/${postId}`,
-            isFcFrameCompatible: true,
+            isFcFrameCompatible: false,
           })
         : null,
     },
