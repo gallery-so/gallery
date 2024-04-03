@@ -1,7 +1,7 @@
 import { useDraggable, useDroppable } from '@mgcrea/react-native-dnd';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
-import { useWindowDimensions, View, ViewProps } from 'react-native';
+import { GestureResponderEvent, useWindowDimensions, View, ViewProps } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
@@ -53,11 +53,12 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
   const widthPerToken = totalSpaceForTokens / column;
 
   const handleSectionPress = useCallback(
-    (sectionId: string) => {
+    (e: GestureResponderEvent) => {
+      e.stopPropagation();
       activateCollection(collectionId);
-      activateSection(sectionId);
+      activateSection(section.id);
     },
-    [activateCollection, activateSection, collectionId]
+    [activateCollection, activateSection, collectionId, section.id]
   );
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -94,10 +95,7 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
         eventElementId={null}
         eventName={null}
         eventContext={null}
-        onPress={(e) => {
-          e.stopPropagation();
-          handleSectionPress(section.id);
-        }}
+        onPress={handleSectionPress}
         className={clsx('border border-transparent relative', {
           'border-activeBlue': activeSectionId === section.id,
         })}

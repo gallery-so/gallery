@@ -83,12 +83,7 @@ export function getInitialCollectionsFromServer(
       });
     });
 
-    let activeSectionId = sections[0]?.id;
-
-    if (!activeSectionId) {
-      activeSectionId = generate12DigitId();
-      sections.push({ id: activeSectionId, items: [], columns: 3 });
-    }
+    const activeSectionId = null;
 
     const liveDisplayTokenIds = new Set<string>();
     const highDefinitionTokenIds = new Set<string>();

@@ -1,16 +1,19 @@
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { useTrack } from 'shared/contexts/AnalyticsContext';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from 'shared/errors/ErrorWithSentryMetadata';
+import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
 
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
+import {
+  CreateCollectionInGalleryInput,
+  GalleryEditorContextSaveGalleryMutation,
+  UpdateCollectionInput,
+} from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 
+import { useToastActions } from '../ToastContext';
+import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
 import { StagedCollection, StagedCollectionList, StagedSection, StagedSectionList } from './types';
 
@@ -28,18 +31,22 @@ type GalleryEditorActions = {
   incrementColumns: (sectionId: string) => void;
   decrementColumns: (sectionId: string) => void;
 
-  activateCollection: (collectionId: string | null) => void;
+  activateCollection: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
 
   activeSectionId: string | null;
   activateSection: (sectionId: string) => void;
 
   moveRow: (
+    collectionId: string,
+
     activeRowId: string,
     // activeCollectionId: string,
     overRowId: string
     // overCollectionId: string
   ) => void;
+
+  saveGallery: () => void;
 };
 
 const GalleryEditorActionsContext = createContext<GalleryEditorActions | undefined>(undefined);
@@ -62,6 +69,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         galleryById(id: $galleryId) @required(action: THROW) {
           ... on Gallery {
             __typename
+            dbid
             name
             description
             ...getInitialCollectionsFromServerFragment
@@ -72,12 +80,43 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     queryRef
   );
 
+  const [save] = usePromisifiedMutation<GalleryEditorContextSaveGalleryMutation>(graphql`
+    mutation GalleryEditorContextSaveGalleryMutation($input: UpdateGalleryInput!) {
+      updateGallery(input: $input) {
+        __typename
+        ... on UpdateGalleryPayload {
+          gallery {
+            name
+            description
+            # collections {
+            #   # All of these are to ensure relevant components get their data refetched
+            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            #   ...NftGalleryFragment
+            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            #   ...UserGalleryCollectionFragment
+            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            #   ...CollectionGalleryHeaderFragment
+            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            #   ...CollectionLinkFragment
+            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            #   ...FeaturedCollectorCardCollectionFragment
+            # }
+
+            ...getInitialCollectionsFromServerFragment
+          }
+        }
+      }
+    }
+  `);
+
   if (query.galleryById?.__typename !== 'Gallery') {
     throw new Error(
       `Expected gallery to have typename \`Gallery\`, but received ${query.galleryById?.__typename}`
     );
   }
   const gallery = query.galleryById;
+  const track = useTrack();
+  const { pushToast } = useToastActions();
 
   const [galleryName, setGalleryName] = useState(gallery.name ?? '');
   const [galleryDescription, setGalleryDescription] = useState(gallery.description ?? '');
@@ -86,11 +125,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     getInitialCollectionsFromServer(gallery)
   );
 
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(
-    '2Knyn8Kw0L1aPqCJVCfsQabm2z7'
-  );
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(null);
 
-  const activateCollection = useCallback((collectionId: string | null) => {
+  const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
+    return new Set<string>();
+  });
+
+  const activateCollection = useCallback((collectionId: string) => {
     setCollectionIdBeingEdited(collectionId);
   }, []);
 
@@ -138,28 +179,29 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       : null;
   }, [collectionIdBeingEdited, collections]);
 
-  const setSections: Dispatch<SetStateAction<StagedSectionList>> = useCallback(
-    (value) => {
-      if (!collectionIdBeingEdited) {
-        return;
-      }
-
-      updateCollection(collectionIdBeingEdited, (previousCollection) => {
-        let nextSections;
-        if (typeof value === 'function') {
-          nextSections = value(previousCollection.sections);
-        } else {
-          nextSections = value;
+  const setSections: (collectionId: string, value: SetStateAction<StagedSectionList>) => void =
+    useCallback(
+      (collectionId: string, value) => {
+        if (!collectionId) {
+          return;
         }
 
-        return {
-          ...previousCollection,
-          sections: nextSections,
-        };
-      });
-    },
-    [collectionIdBeingEdited, updateCollection]
-  );
+        updateCollection(collectionId, (previousCollection) => {
+          let nextSections;
+          if (typeof value === 'function') {
+            nextSections = value(previousCollection.sections);
+          } else {
+            nextSections = value;
+          }
+
+          return {
+            ...previousCollection,
+            sections: nextSections,
+          };
+        });
+      },
+      [updateCollection]
+    );
 
   const setActiveSectionId = useCallback(
     (sectionId: string) => {
@@ -234,13 +276,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   // TODO: Add support for moving rows between sections
   const moveRow = useCallback(
-    (
-      activeRowId: string,
-      // activeCollectionId: string,
-      overRowId: string
-      // overCollectionId: string
-    ) => {
-      setSections((previousSections) => {
+    (collectionId: string, activeRowId: string, overRowId: string) => {
+      setSections(collectionId, (previousSections) => {
         const activeRowIndex = previousSections.findIndex((section) => section.id === activeRowId);
         const overRowIndex = previousSections.findIndex((section) => section.id === overRowId);
         return arrayMove(previousSections, activeRowIndex, overRowIndex);
@@ -248,6 +285,160 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     },
     [setSections]
   );
+
+  const reportError = useReportError();
+  const saveGallery = useCallback(async () => {
+    const galleryId = gallery.dbid;
+
+    if (!galleryId) {
+      reportError('Tried to save a gallery without a gallery id');
+      return;
+    }
+
+    const localCollectionToUpdatedCollection = (
+      collection: StagedCollection
+    ): UpdateCollectionInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollection(collection.sections);
+
+      return {
+        collectorsNote: collection.collectorsNote,
+        dbid: collection.dbid,
+        hidden: collection.hidden,
+        tokenSettings: tokens.map((token) => {
+          return {
+            tokenId: token.id,
+            renderLive: collection.liveDisplayTokenIds.has(token.id),
+            highDefinition: collection.highDefinitionTokenIds.has(token.id),
+          };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const localCollectionToCreatedCollection = (
+      collection: StagedCollection
+    ): CreateCollectionInGalleryInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollection(collection.sections);
+
+      return {
+        givenID: collection.dbid,
+        hidden: collection.hidden,
+        collectorsNote: collection.collectorsNote,
+        tokenSettings: tokens.map((token) => {
+          return {
+            tokenId: token.id,
+            renderLive: collection.liveDisplayTokenIds.has(token.id),
+            highDefinition: collection.highDefinitionTokenIds.has(token.id),
+          };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const updatedCollections: UpdateCollectionInput[] = collections
+      .filter((collection) => !collection.localOnly)
+      .map(localCollectionToUpdatedCollection);
+
+    const createdCollections: CreateCollectionInGalleryInput[] = collections
+      .filter((collection) => collection.localOnly)
+      .map(localCollectionToCreatedCollection);
+
+    const deletedCollections = [...deletedCollectionIds];
+
+    const order = [...collections.map((collection) => collection.dbid)];
+
+    const payload = {
+      galleryId,
+
+      name: galleryName,
+      description: galleryDescription,
+      caption: null,
+
+      order,
+
+      createdCollections,
+      updatedCollections,
+      deletedCollections,
+
+      // editId: editSessionID,
+    };
+
+    track('Save Gallery', payload);
+
+    try {
+      const { updateGallery } = await save({
+        variables: {
+          input: payload,
+        },
+      });
+
+      if (updateGallery?.__typename !== 'UpdateGalleryPayload' || !updateGallery.gallery) {
+        throw new ErrorWithSentryMetadata(
+          'Update gallery response did not have the expected typename',
+          { __typename: updateGallery?.__typename }
+        );
+      }
+
+      const serverSourcedCollections = getInitialCollectionsFromServer(updateGallery.gallery);
+
+      // Make sure we reset our "Has unsaved changes comparison point"
+      // setInitialName(name);
+      // setInitialDescription(description);
+      // setInitialCollections(serverSourcedCollections);
+
+      // Make sure the UI is reflecting what the server tells us happened.
+      setCollections(serverSourcedCollections);
+
+      // Reset the deleted collection ids since we just deleted them
+      setDeletedCollectionIds(new Set());
+
+      const indexOfCollectionBeingEdited = collections.findIndex(
+        (collection) => collection.dbid === collectionIdBeingEdited
+      );
+      const newCollectionIdBeingEdited =
+        serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
+
+      setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
+    } catch (error) {
+      pushToast({
+        autoClose: false,
+        message: "Something went wrong while saving your gallery. We're looking into it.",
+      });
+
+      if (error instanceof Error) {
+        reportError(error, { tags: { galleryId } });
+      } else {
+        reportError(
+          new ErrorWithSentryMetadata('Something unexpected went wrong while saving a gallery', {
+            galleryId,
+          })
+        );
+      }
+    }
+  }, [
+    collectionIdBeingEdited,
+    collections,
+    deletedCollectionIds,
+    gallery.dbid,
+    galleryName,
+    galleryDescription,
+    pushToast,
+    reportError,
+    save,
+    track,
+  ]);
 
   const value = useMemo(
     () => ({
@@ -271,6 +462,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       activateSection,
 
       moveRow,
+
+      saveGallery,
     }),
     [
       galleryName,
@@ -291,6 +484,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       activateSection,
 
       moveRow,
+
+      saveGallery,
     ]
   );
 
