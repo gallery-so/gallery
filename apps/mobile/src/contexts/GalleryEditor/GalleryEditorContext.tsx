@@ -1,3 +1,4 @@
+import { UniqueIdentifier } from '@mgcrea/react-native-dnd';
 import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
@@ -45,6 +46,8 @@ type GalleryEditorActions = {
     overRowId: string
     // overCollectionId: string
   ) => void;
+
+  updateSectionOrder: (sectionIds: UniqueIdentifier[]) => void;
 
   saveGallery: () => void;
 };
@@ -123,6 +126,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   const [collections, setCollections] = useState<StagedCollectionList>(() =>
     getInitialCollectionsFromServer(gallery)
+  );
+
+  const [sectionIdsOrder, setSectionIdsOrder] = useState<Set<string>>(
+    new Set(collections.map((collection) => collection.dbid)) || new Set<string>()
   );
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(null);
@@ -357,7 +364,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
     const deletedCollections = [...deletedCollectionIds];
 
-    const order = [...collections.map((collection) => collection.dbid)];
+    // Sort the updated collections based on the order of the sectionIdsOrder
+    const order = Array.from(sectionIdsOrder);
 
     const payload = {
       galleryId,
@@ -437,8 +445,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     pushToast,
     reportError,
     save,
+    sectionIdsOrder,
     track,
   ]);
+
+  const handleUpdateSectionOrder = useCallback((sectionIds: UniqueIdentifier[]) => {
+    setSectionIdsOrder(new Set(sectionIds.map(String)));
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -464,6 +477,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       moveRow,
 
       saveGallery,
+
+      updateSectionOrder: handleUpdateSectionOrder,
     }),
     [
       galleryName,
@@ -486,6 +501,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       moveRow,
 
       saveGallery,
+
+      handleUpdateSectionOrder,
     ]
   );
 
