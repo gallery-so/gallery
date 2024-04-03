@@ -1,12 +1,13 @@
-import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
-import breakpoints from '~/components/core/breakpoints';
 
+import breakpoints from '~/components/core/breakpoints';
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
-import { VStack, HStack } from '../core/Spacer/Stack';
-import SearchResultsHeader from './SearchResultsHeader';
+
+import { HStack,VStack } from '../core/Spacer/Stack';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
+import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
 
 type Props = {
@@ -67,9 +68,10 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
           Suggested Collectors and Creators
         </SearchResultsHeader>
       </HeaderWrapper>
-      <HStack justify="space-between">
+      <HStack gap={4}>
         {nonNullProfiles?.map((profile) => (
           <SuggestedProfileCard
+            compact={true}
             key={profile.dbid}
             userRef={profile}
             queryRef={query}
@@ -93,7 +95,7 @@ const HeaderWrapper = styled(HStack)`
 
   @media only screen and ${breakpoints.desktop} {
     padding-right: 12px;
-    padding-left: 0px;
+    padding-left: 8px;
   }
 `;
 

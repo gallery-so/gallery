@@ -1,19 +1,19 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback,useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
-import { SearchFeaturedProfileFragment$key } from '~/generated/SearchFeaturedProfileFragment.graphql';
 import breakpoints from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { SearchFeaturedProfileFragment$key } from '~/generated/SearchFeaturedProfileFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
-import { SearchItemType } from './types';
 
 import { CmsTypes } from '../../scenes/ContentPages/cms_types';
+import { SearchItemType } from './types';
 
 type SearchFeaturedProfileProps = {
   profile: CmsTypes.FeaturedProfile;

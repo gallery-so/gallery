@@ -1,16 +1,17 @@
-import { SearchDefaultTrendingCuratorsSectionFragment$key } from '~/generated/SearchDefaultTrendingCuratorsSectionFragment.graphql';
+import { useCallback,useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { useMemo, useCallback } from 'react';
 import styled from 'styled-components';
-import { contexts } from '~/shared/analytics/constants';
-import breakpoints from '~/components/core/breakpoints';
 
-import { VStack, HStack } from '../core/Spacer/Stack';
+import breakpoints from '~/components/core/breakpoints';
+import { SearchDefaultTrendingCuratorsSectionFragment$key } from '~/generated/SearchDefaultTrendingCuratorsSectionFragment.graphql';
+import { contexts } from '~/shared/analytics/constants';
+
 import GalleryLink from '../core/GalleryLink/GalleryLink';
-import SearchResultsHeader from './SearchResultsHeader';
-import UserSearchResult from './User/UserSearchResult';
-import { SearchItemType } from './types';
+import { HStack,VStack } from '../core/Spacer/Stack';
 import { SearchFilterType } from './Search';
+import SearchResultsHeader from './SearchResultsHeader';
+import { SearchItemType } from './types';
+import UserSearchResult from './User/UserSearchResult';
 
 type Props = {
   queryRef: SearchDefaultTrendingCuratorsSectionFragment$key;
@@ -56,10 +57,11 @@ export default function SearchDefaultTrendingCuratorsSection({
   const trendingUsers = useMemo(() => {
     const { users } = query.trendingUsers5Days;
 
-    if (selectedFilter !== 'curator') {
-      return users?.slice(0, 4);
+    if (selectedFilter === 'curator') {
+      return users;
     }
-    return users;
+
+    return users?.slice(0, 4);
   }, [query, selectedFilter]);
 
   const isSelectedFilterCurator = useMemo(() => selectedFilter === 'curator', [selectedFilter]);
@@ -73,7 +75,7 @@ export default function SearchDefaultTrendingCuratorsSection({
   }, [isSelectedFilterCurator, onChangeFilter]);
 
   return (
-    <VStack>
+    <VStack gap={4}>
       <StyledResultHeader align="center" justify="space-between">
         <SearchResultsHeader variant={variant}>Trending Curators</SearchResultsHeader>
         {showAllButton && (
@@ -87,15 +89,17 @@ export default function SearchDefaultTrendingCuratorsSection({
           </StyledGalleryLink>
         )}
       </StyledResultHeader>
-      {trendingUsers.map((user) => (
-        <UserSearchResult
-          key={user.id}
-          userRef={user}
-          variant={variant}
-          onSelect={onSelect}
-          keyword=""
-        />
-      ))}
+      <VStack>
+        {trendingUsers.map((user) => (
+          <UserSearchResult
+            key={user.id}
+            userRef={user}
+            variant="compact"
+            onSelect={onSelect}
+            keyword=""
+          />
+        ))}
+      </VStack>
     </VStack>
   );
 }
@@ -105,7 +109,7 @@ const StyledResultHeader = styled(HStack)`
 
   @media only screen and ${breakpoints.desktop} {
     padding-right: 12px;
-    padding-left: 0px;
+    padding-left: 8px;
   }
 `;
 

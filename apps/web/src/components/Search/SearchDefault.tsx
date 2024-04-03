@@ -4,11 +4,11 @@ import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import { VStack } from '../core/Spacer/Stack';
+import { SearchFilterType } from './Search';
+import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCuratorsSection';
 import SearchFeaturedCollectionSection from './SearchFeaturedCollectionSection';
 import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import { SearchItemType } from './types';
-import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCurators';
-import { SearchFilterType } from './Search';
 
 type Props = {
   variant?: 'default' | 'compact';
@@ -40,8 +40,8 @@ export default function SearchDefault({
   const featuredProfilesData = featuredProfiles?.slice(0, 2);
 
   return (
-    <VStack gap={12}>
-      {selectedFilter !== 'curator' && (
+    <VStack gap={18}>
+      {!selectedFilter && (
         <VStack gap={12}>
           <SearchFeaturedCollectionSection
             profiles={featuredProfilesData}
