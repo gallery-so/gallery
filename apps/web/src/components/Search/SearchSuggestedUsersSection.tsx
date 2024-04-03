@@ -1,18 +1,20 @@
 import { graphql, useFragment } from 'react-relay';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
 import { VStack, HStack } from '../core/Spacer/Stack';
 import SearchResultsHeader from './SearchResultsHeader';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
+import { SearchItemType } from './types';
 
 type Props = {
   queryRef: SearchSuggestedUsersSectionFragment$key;
   variant?: 'default' | 'compact';
+  onSelect: (item: SearchItemType) => void;
 };
 
-export default function SearchSuggestedUsersSection({ queryRef, variant }: Props) {
+export default function SearchSuggestedUsersSection({ queryRef, variant, onSelect }: Props) {
   const query = useFragment(
     graphql`
       fragment SearchSuggestedUsersSectionFragment on Query {
@@ -24,7 +26,8 @@ export default function SearchSuggestedUsersSection({ queryRef, variant }: Props
                 node {
                   __typename
                   ... on GalleryUser {
-                    id
+                    username
+                    dbid
                     __typename
                   }
                   ...SuggestedProfileCardFragment
@@ -66,9 +69,16 @@ export default function SearchSuggestedUsersSection({ queryRef, variant }: Props
       <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
         {nonNullProfiles?.map((profile) => (
           <SuggestedProfileCard
-            key={profile.id}
+            key={profile.dbid}
             userRef={profile}
             queryRef={query}
+            onClick={() =>
+              onSelect({
+                type: 'User' as const,
+                label: profile.username ?? '',
+                value: profile.dbid,
+              })
+            }
             showFollowButton={false}
           />
         ))}
@@ -81,6 +91,7 @@ const fadeIn = keyframes`
     from { opacity: 0 };
     to { opacity: 0.96 };
 `;
+
 const StyledWrapper = styled(VStack)`
   animation: ${fadeIn} 0.2s ease-out forwards;
   padding-bottom: 12px;

@@ -43,8 +43,12 @@ export default function SearchDefault({
     <VStack>
       {selectedFilter !== 'curator' && (
         <>
-          <SearchFeaturedCollectionSection profiles={featuredProfilesData} variant={variant} />
-          <SearchSuggestedUsersSection queryRef={query} variant={variant} />
+          <SearchFeaturedCollectionSection
+            profiles={featuredProfilesData}
+            variant={variant}
+            onSelect={onSelect}
+          />
+          <SearchSuggestedUsersSection queryRef={query} variant={variant} onSelect={onSelect} />
         </>
       )}
       <SearchDefaultTrendingCuratorsSection

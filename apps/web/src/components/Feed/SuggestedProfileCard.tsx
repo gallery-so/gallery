@@ -24,11 +24,13 @@ type Props = {
   userRef: SuggestedProfileCardFragment$key;
   queryRef: SuggestedProfileCardFollowFragment$key;
   showFollowButton?: boolean;
+  onClick?: () => void;
 };
 
 export default function SuggestedProfileCard({
   userRef,
   queryRef,
+  onClick,
   showFollowButton = true,
 }: Props) {
   const user = useFragment(
@@ -112,15 +114,7 @@ export default function SuggestedProfileCard({
   const shouldShowFollowButton = showFollowButton && !isMobile && !isOwnProfile;
 
   return (
-    <StyledSuggestedProfileCard
-      to={{
-        pathname: '/[username]',
-        query: { username: user?.username ?? '' },
-      }}
-      eventElementId="Explore User Card"
-      eventName="Explore User Card Click"
-      eventContext={contexts.Explore}
-    >
+    <StyledSuggestedProfileCard onClick={onClick}>
       <StyledContent gap={4} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
@@ -164,7 +158,7 @@ export default function SuggestedProfileCard({
   );
 }
 
-const StyledSuggestedProfileCard = styled(GalleryLink)`
+const StyledSuggestedProfileCard = styled(HStack)`
   border-radius: 4px;
   background-color: ${colors.offWhite};
   padding: 8px;

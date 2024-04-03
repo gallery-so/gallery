@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
+import { SearchFeaturedProfileFragment$key } from '~/generated/SearchFeaturedProfileFragment.graphql';
 import breakpoints from '~/components/core/breakpoints';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import Markdown from '~/components/core/Markdown/Markdown';
@@ -9,14 +11,16 @@ import { BaseM } from '~/components/core/Text/Text';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
+import { SearchItemType } from './types';
 
 import { CmsTypes } from '../../scenes/ContentPages/cms_types';
 
 type SearchFeaturedProfileProps = {
   profile: CmsTypes.FeaturedProfile;
+  onSelect: (item: SearchItemType) => void;
 };
 
-export default function SearchFeaturedProfile({ profile }: SearchFeaturedProfileProps) {
+export default function SearchFeaturedProfile({ profile, onSelect }: SearchFeaturedProfileProps) {
   const unescapedBio = useMemo(() => (profile.bio ? unescape(profile.bio) : ''), [profile.bio]);
 
   const bioFirstLine = useMemo(() => {
@@ -26,38 +30,42 @@ export default function SearchFeaturedProfile({ profile }: SearchFeaturedProfile
     return unescapedBio.split('\n')[0] ?? '';
   }, [unescapedBio]);
 
-  return (
-    <StyledLinkWrapper
-      href={`/${profile.username}`}
-      target="_blank"
-      eventElementId="Search Default Featured User"
-      eventName="Clicked Search Default Featured User"
-      properties={{ username: profile.username }}
-    >
-      <StyledProfile gap={16}>
-        <TokenPreviewContainer gap={4}>
-          {profile.coverImages.map((image) => (
-            <StyledImageContainer key={image.asset.url}>
-              <StyledImage key={image.asset.url} src={image.asset.url} />
-            </StyledImageContainer>
-          ))}
-        </TokenPreviewContainer>
-        <VStack gap={4}>
-          <HStack gap={4} align="center" justify="space-between">
-            <HStack gap={6} align="center">
-              <StyledPfp src={profile.pfp?.asset.url} />
-              <Username>
-                <strong>{profile.username}</strong>
-              </Username>
-            </HStack>
-          </HStack>
+  const route = useMemo(() => {
+    return {
+      type: 'User' as const,
+      label: profile.username ?? '',
+      value: profile.id,
+    };
+  }, [profile.username, profile.id]);
 
-          <StyledUserBio>
-            <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
-          </StyledUserBio>
-        </VStack>
-      </StyledProfile>
-    </StyledLinkWrapper>
+  const handleClick = useCallback(() => {
+    onSelect(route);
+  }, [onSelect, route]);
+
+  return (
+    <StyledProfile gap={16} onClick={handleClick}>
+      <TokenPreviewContainer>
+        {profile.coverImages.map((image) => (
+          <StyledImageContainer key={image.asset.url}>
+            <StyledImage key={image.asset.url} src={image.asset.url} />
+          </StyledImageContainer>
+        ))}
+      </TokenPreviewContainer>
+      <VStack gap={4}>
+        <HStack gap={4} align="center" justify="space-between">
+          <HStack gap={6} align="center">
+            <StyledPfp src={profile.pfp?.asset.url} />
+            <Username>
+              <strong>{profile.username}</strong>
+            </Username>
+          </HStack>
+        </HStack>
+
+        <StyledUserBio>
+          <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
+        </StyledUserBio>
+      </VStack>
+    </StyledProfile>
   );
 }
 
