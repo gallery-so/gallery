@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
-import { HStack,VStack } from '../core/Spacer/Stack';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import SearchFeaturedProfile from './SearchFeaturedProfile';
 import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
