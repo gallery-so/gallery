@@ -1,6 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 import { useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
+import breakpoints from '~/components/core/breakpoints';
 
 import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
 import { VStack, HStack } from '../core/Spacer/Stack';
@@ -43,7 +44,6 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
     queryRef
   );
 
-  // map edge nodes to an array of GalleryUsers
   const nonNullProfiles = useMemo(() => {
     const users = [];
 
@@ -56,16 +56,17 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
     return users;
   }, [query.viewer?.suggestedUsers?.edges]);
 
-  if (query.viewer?.suggestedUsers?.__typename !== 'UsersConnection') {
-    return null;
-  }
-  if (!nonNullProfiles) {
+  if (query.viewer?.suggestedUsers?.__typename !== 'UsersConnection' || !nonNullProfiles) {
     return null;
   }
 
   return (
     <StyledWrapper gap={8}>
-      <SearchResultsHeader variant={variant}>Suggested Collectors and Creators</SearchResultsHeader>
+      <HeaderWrapper>
+        <SearchResultsHeader variant={variant}>
+          Suggested Collectors and Creators
+        </SearchResultsHeader>
+      </HeaderWrapper>
       <HStack justify="space-between">
         {nonNullProfiles?.map((profile) => (
           <SuggestedProfileCard
@@ -87,6 +88,15 @@ export default function SearchSuggestedUsersSection({ queryRef, variant, onSelec
   );
 }
 
+const HeaderWrapper = styled(HStack)`
+  padding: 0px 12px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding-right: 12px;
+    padding-left: 0px;
+  }
+`;
+
 const fadeIn = keyframes`
     from { opacity: 0 };
     to { opacity: 0.96 };
@@ -94,5 +104,4 @@ const fadeIn = keyframes`
 
 const StyledWrapper = styled(VStack)`
   animation: ${fadeIn} 0.2s ease-out forwards;
-  padding-bottom: 12px;
 `;

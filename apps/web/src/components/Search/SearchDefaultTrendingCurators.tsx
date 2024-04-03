@@ -3,8 +3,9 @@ import { graphql, useFragment } from 'react-relay';
 import { useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { contexts } from '~/shared/analytics/constants';
+import breakpoints from '~/components/core/breakpoints';
 
-import { HStack } from '../core/Spacer/Stack';
+import { VStack, HStack } from '../core/Spacer/Stack';
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import SearchResultsHeader from './SearchResultsHeader';
 import UserSearchResult from './User/UserSearchResult';
@@ -72,7 +73,7 @@ export default function SearchDefaultTrendingCuratorsSection({
   }, [isSelectedFilterCurator, onChangeFilter]);
 
   return (
-    <>
+    <VStack>
       <StyledResultHeader align="center" justify="space-between">
         <SearchResultsHeader variant={variant}>Trending Curators</SearchResultsHeader>
         {showAllButton && (
@@ -95,12 +96,17 @@ export default function SearchDefaultTrendingCuratorsSection({
           keyword=""
         />
       ))}
-    </>
+    </VStack>
   );
 }
 
 const StyledResultHeader = styled(HStack)`
-  padding-right: 12px;
+  padding: 0px 12px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding-right: 12px;
+    padding-left: 0px;
+  }
 `;
 
 const StyledGalleryLink = styled(GalleryLink)`

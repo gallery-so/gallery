@@ -1,4 +1,6 @@
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
+import breakpoints from '~/components/core/breakpoints';
+import styled from 'styled-components';
 
 import { VStack, HStack } from '../core/Spacer/Stack';
 import SearchFeaturedProfile from './SearchFeaturedProfile';
@@ -17,7 +19,9 @@ export default function SearchFeaturedCollectionSection({ profiles, variant, onS
   }
   return (
     <VStack gap={8}>
-      <SearchResultsHeader variant={variant}>Featured Collections</SearchResultsHeader>
+      <HeaderWrapper>
+        <SearchResultsHeader variant={variant}>Featured Collections</SearchResultsHeader>
+      </HeaderWrapper>
       <HStack justify="space-between" style={{ paddingBottom: '12px' }}>
         {profiles?.map((profile) => (
           <SearchFeaturedProfile onSelect={onSelect} key={profile.id} profile={profile} />
@@ -26,3 +30,12 @@ export default function SearchFeaturedCollectionSection({ profiles, variant, onS
     </VStack>
   );
 }
+
+const HeaderWrapper = styled(HStack)`
+  padding: 0px 12px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding-right: 12px;
+    padding-left: 0px;
+  }
+`;

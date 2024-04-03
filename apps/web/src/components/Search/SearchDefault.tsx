@@ -40,16 +40,16 @@ export default function SearchDefault({
   const featuredProfilesData = featuredProfiles?.slice(0, 2);
 
   return (
-    <VStack>
+    <VStack gap={12}>
       {selectedFilter !== 'curator' && (
-        <>
+        <VStack gap={12}>
           <SearchFeaturedCollectionSection
             profiles={featuredProfilesData}
             variant={variant}
             onSelect={onSelect}
           />
           <SearchSuggestedUsersSection queryRef={query} variant={variant} onSelect={onSelect} />
-        </>
+        </VStack>
       )}
       <SearchDefaultTrendingCuratorsSection
         queryRef={query}

@@ -13,7 +13,6 @@ import unescape from '~/shared/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
-import GalleryLink from '../core/GalleryLink/GalleryLink';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -75,8 +74,14 @@ export default function SuggestedProfileCard({
   }
 
   const { bio } = user;
-
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
+
+  const bioFirstLine = useMemo(() => {
+    if (!unescapedBio) {
+      return '';
+    }
+    return unescapedBio.split('\n')[0] ?? '';
+  }, [unescapedBio]);
 
   const userGalleries = useMemo(() => {
     return user.galleries ?? [];
@@ -103,14 +108,6 @@ export default function SuggestedProfileCard({
   }, [user.badges]);
 
   const isMobile = useIsMobileWindowWidth();
-
-  const bioFirstLine = useMemo(() => {
-    if (!unescapedBio) {
-      return '';
-    }
-    return unescapedBio.split('\n')[0] ?? '';
-  }, [unescapedBio]);
-
   const shouldShowFollowButton = showFollowButton && !isMobile && !isOwnProfile;
 
   return (
