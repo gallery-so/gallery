@@ -18,9 +18,9 @@ export function PostListCaption({ feedPostRef }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
 
-  const toggleExpanded = () => {
+  const toggleExpanded = useCallback(() => {
     setIsExpanded((prev) => !prev);
-  };
+  }, []);
 
   const feedPost = useFragment(
     graphql`
