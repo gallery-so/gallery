@@ -1,5 +1,6 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+
 import { useMaxColumnsGalleryEditorFragment$key } from '~/generated/useMaxColumnsGalleryEditorFragment.graphql';
 
 const USER_IDS_WITH_10_COLUMNS_ENABLED = [
