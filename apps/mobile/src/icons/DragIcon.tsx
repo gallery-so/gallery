@@ -1,4 +1,4 @@
-import Svg, { ClipPath,Defs, G, Path, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 export function DragIcon(props: SvgProps) {
   return (
     <Svg width={20} height={20} fill="none" {...props}>

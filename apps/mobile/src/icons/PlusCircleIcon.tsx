@@ -1,4 +1,4 @@
-import Svg, { Path,SvgProps } from 'react-native-svg';
+import Svg, { Path, SvgProps } from 'react-native-svg';
 
 export function PlusCircleIcon(props: SvgProps) {
   return (
