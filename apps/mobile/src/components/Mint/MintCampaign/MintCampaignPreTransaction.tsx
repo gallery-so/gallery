@@ -13,7 +13,7 @@ import { MCHX_CLAIM_CODE_KEY } from './MintCampaignBottomSheet';
 
 export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-05-05T10:00:00-04:00';
 
-const MCHX_COLLECTION_ID = '65ec1cefb5813a0adf4dff4e';
+const MCHX_COLLECTION_ID = '660d4342c6bc04d5dc5598e7'
 
 export default function MintCampaignPreTransaction({
   setClaimCode,
