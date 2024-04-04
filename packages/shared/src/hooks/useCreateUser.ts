@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
-import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
+import { CreateUserInput, useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
 import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
 
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
@@ -63,7 +63,17 @@ export default function useCreateUser() {
   );
 
   return useCallback(
-    async (authPayloadVariables: AuthPayloadVariables, username: string, bio: string) => {
+    async ({
+      authPayloadVariables,
+      username,
+      bio,
+      email,
+    }: {
+      authPayloadVariables: AuthPayloadVariables;
+      username: string;
+      bio: string;
+      email?: string;
+    }) => {
       let authMechanism: useCreateUserMutation['variables']['authMechanism'];
 
       if (isEoaPayload(authPayloadVariables)) {
@@ -83,8 +93,8 @@ export default function useCreateUser() {
       } else if (isEmailPayload(authPayloadVariables)) {
         const { token } = authPayloadVariables;
         authMechanism = {
-          magicLink: {
-            token,
+          privy: {
+            token: token!,
           },
         };
       } else {
@@ -98,13 +108,19 @@ export default function useCreateUser() {
         };
       }
 
+      const createUserInput: CreateUserInput = {
+        username,
+        bio,
+      };
+
+      if (email) {
+        createUserInput.email = email;
+      }
+
       const response = await createUser({
         variables: {
           authMechanism,
-          input: {
-            username,
-            bio,
-          },
+          input: createUserInput,
         },
       });
 

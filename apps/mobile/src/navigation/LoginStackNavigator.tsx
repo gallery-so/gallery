@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
+import { Onboarding2FAScreen } from '~/screens/Login/Onboarding2FAScreen';
 import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { OnboardingNftSelectorContractScreen } from '~/screens/Onboarding/OnboardingNftSelectorContractScreen';
 import { OnboardingNftSelectorScreen } from '~/screens/Onboarding/OnboardingNftSelectorScreeen';
@@ -34,6 +35,7 @@ export function LoginStackNavigator() {
 
       <Stack.Screen name="OnboardingVideo" component={OnboardingVideoScreen} />
       <Stack.Screen name="OnboardingEmail" component={OnboardingEmailScreen} />
+      <Stack.Screen name="Onboarding2FA" component={Onboarding2FAScreen} />
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
       <Stack.Screen name="OnboardingRecommendedUsers" component={OnboardingRecommendedUsers} />

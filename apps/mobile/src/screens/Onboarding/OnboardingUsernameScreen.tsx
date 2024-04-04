@@ -72,7 +72,7 @@ function InnerOnboardingUsernameScreen() {
   const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
-  const userEmail = route.params.email;
+  const email = route.params.email;
   const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
 
@@ -110,18 +110,26 @@ function InnerOnboardingUsernameScreen() {
       }
 
       setIsCreatingUser(true);
-      const response = await createUser(authMechanism, username, bio);
+
+      console.log('creating user', {
+        authPayloadVariables: authMechanism,
+        username,
+        bio,
+        email,
+      });
+
+      const response = await createUser({
+        authPayloadVariables: authMechanism,
+        username,
+        bio,
+        email,
+      });
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
         // If the user is signing up with email, redirect to the bio screen
-        if (authMethod === 'Email') {
+        if (authMethod === 'Privy') {
           navigation.navigate('OnboardingProfileBio');
           return;
-        }
-
-        // If the user is signing up with a wallet, attached the email to the user
-        if (authMethod === 'Wallet' && userEmail) {
-          await updateEmail(userEmail);
         }
 
         const user = response.createUser.viewer?.user;
@@ -166,8 +174,7 @@ function InnerOnboardingUsernameScreen() {
     navigation,
     syncTokens,
     username,
-    userEmail,
-    updateEmail,
+    email,
     updateUser,
     user,
   ]);
@@ -294,7 +301,7 @@ function InnerOnboardingUsernameScreen() {
             eventContext={contexts.Onboarding}
             text="NEXT"
             variant={!isUsernameValid ? 'disabled' : 'primary'}
-            disabled={!isUsernameValid}
+            disabled={!isUsernameValid || isLoading}
             loading={isLoading}
           />
           <Typography

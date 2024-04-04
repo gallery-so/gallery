@@ -6494,64 +6494,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/api-base@npm:0.4.3, @privy-io/api-base@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "@privy-io/api-base@npm:0.4.3"
+"@privy-io/api-base@npm:0.4.6, @privy-io/api-base@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "@privy-io/api-base@npm:0.4.6"
   dependencies:
     zod: ^3.21.4
-  checksum: 0a12bd8a202a4185ed3a4be3dd0caf3dd4bf1c38f0ab1eb1a5787962a7c640e3c4da1ce0aefde631a80274315e6e2eed90eb1c4f7989d9ef270e432fbc44fdcc
+  checksum: 0f54786ea680a5ce078a6a13ea3909a302df6b6e6ba0f3feb7b6579dad4fc934756ad7bbb13156ee7cff39f9353d6d3252ec532417d6ecef92537fbe681d335a
   languageName: node
   linkType: hard
 
-"@privy-io/expo@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@privy-io/expo@npm:0.6.0"
+"@privy-io/expo@npm:^0.11.2":
+  version: 0.11.2
+  resolution: "@privy-io/expo@npm:0.11.2"
   dependencies:
-    "@privy-io/js-sdk-core": 0.12.0
+    "@privy-io/js-sdk-core": 0.15.3
     react-fast-compare: ^3.2.2
   peerDependencies:
     expo-application: "*"
     expo-constants: "*"
+    expo-crypto: "*"
     expo-linking: "*"
     expo-secure-store: "*"
     expo-web-browser: "*"
     react: "*"
     react-native: "*"
+    react-native-passkeys: ^0.2.1
     react-native-webview: "*"
-  checksum: 3758d268b0f9114b842772ad261ab5489997b089ad7c83328c8233aa7783490e593ef8132c118cb70418961f85b21c0db0b1f07eeb64dcb9a2474c2e044e8236
+  checksum: 8dfebfa0993274ba23e06c11bfc19e79a8e4bf2019d5ffdb9e33fe5954f570d5a6202b9c0d0014099dfa8f2c0f45121f9682d702b880a61f85f228257f5fafe5
   languageName: node
   linkType: hard
 
-"@privy-io/js-sdk-core@npm:0.12.0":
-  version: 0.12.0
-  resolution: "@privy-io/js-sdk-core@npm:0.12.0"
+"@privy-io/js-sdk-core@npm:0.15.3":
+  version: 0.15.3
+  resolution: "@privy-io/js-sdk-core@npm:0.15.3"
   dependencies:
     "@ethersproject/abstract-signer": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/providers": ^5.7.2
     "@ethersproject/units": ^5.7.0
-    "@privy-io/api-base": ^0.4.3
-    "@privy-io/public-api": 1.7.2
+    "@privy-io/api-base": ^0.4.6
+    "@privy-io/public-api": 1.11.2
     eventemitter3: ^5.0.1
     fetch-retry: ^5.0.6
-    jose: ^4.11.2
+    jose: ^4.15.5
     js-cookie: ^3.0.5
     set-cookie-parser: ^2.6.0
-    text-encoding: ^0.7.0
     uuid: ">=8 <10"
-  checksum: db938444e21ed8262122fa351aa62317712274542122613ef6f7a1ba291c556473c19448c72fadf227e3dbb049afdab721a8cb0a571a61703bb82fefe583c185
+  checksum: 976dfe3a7b859c3a449acc3e5c40e2a8369acd78fc78c2e58806175dab03ecadea19717fd66f53d64e4cd3b0e9f16f85fda64177dd7a4d865d7828ef6e5eafe0
   languageName: node
   linkType: hard
 
-"@privy-io/public-api@npm:1.7.2":
-  version: 1.7.2
-  resolution: "@privy-io/public-api@npm:1.7.2"
+"@privy-io/public-api@npm:1.11.2":
+  version: 1.11.2
+  resolution: "@privy-io/public-api@npm:1.11.2"
   dependencies:
-    "@privy-io/api-base": 0.4.3
+    "@privy-io/api-base": 0.4.6
     ethers: ^5.7.2
     libphonenumber-js: ^1.10.31
     zod: ^3.22.4
-  checksum: 7d050a6f97d69398f4cdbe217a4712c5ef76fae5ab2acbc0a296ad62c79055e81a85a83ec1ac8b5ffa83ec6bd33cfa710ec8de4c9b57648f0e875cfe352eb043
+  checksum: 1dbeba83a64c9ff8ac5e4433cd1509f7e40cf2591171192e54e8db791e4e3593f8438bf8471f24fed71043964d931b6e22aa74e1d5306b3271f29880c5678bfc
   languageName: node
   linkType: hard
 
@@ -13007,7 +13008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-js@npm:^1.2.3, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
+"base64-js@npm:^1.2.3, base64-js@npm:^1.3.0, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
   checksum: 669632eb3745404c2f822a18fc3a0122d2f9a7a13f7fb8b5823ee19d1d2ff9ee5b52c53367176ea4ad093c332fd5ab4bd0ebae5a8e27917a4105a4cfc86b1005
@@ -17656,6 +17657,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 2141ae97a484827f13fdd34c3e39a2a7b9a4ffa10d14428f7b91b252ffab316c997bc40149bac11bc920559496fc2f28bdb3064a24974abb25f47deec76d5e6a
+  languageName: node
+  linkType: hard
+
+"expo-crypto@npm:~12.8.1":
+  version: 12.8.1
+  resolution: "expo-crypto@npm:12.8.1"
+  dependencies:
+    base64-js: ^1.3.0
+  peerDependencies:
+    expo: "*"
+  checksum: ec3e8cfe65914b05e5ce0cc47180eaa2e6ecad70c9e07ce7ddd0c2fc583350fcdf76a6e746f8dec66267ba4f904817d7967dbd0bb8397758e97a0a49f67397b0
   languageName: node
   linkType: hard
 
@@ -22380,10 +22392,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.11.2":
-  version: 4.15.4
-  resolution: "jose@npm:4.15.4"
-  checksum: dccad91cb3357f36423774a0b89ad830dd84b31090de65cd139b85488439f16a00f8c59c0773825e8a1adb0dd9d13ad725ad66e6ea33880ecb3959bb99e1ea5b
+"jose@npm:^4.15.5":
+  version: 4.15.5
+  resolution: "jose@npm:4.15.5"
+  checksum: 7dde76447c7707bd4b448f914b216f3858e701aa83f00447434252461af5b9e159dcbffb88badea3f9616739526763581267c9560622f0a058df8d68c86d7f79
   languageName: node
   linkType: hard
 
@@ -24628,7 +24640,7 @@ __metadata:
     "@gorhom/portal": ^1.0.14
     "@magic-sdk/react-native-expo": ^16.0.0
     "@moonrepo/cli": ^1.21.2
-    "@privy-io/expo": ^0.6.0
+    "@privy-io/expo": ^0.11.2
     "@react-native-async-storage/async-storage": 1.21.0
     "@react-native-clipboard/clipboard": ^1.12.1
     "@react-native-masked-view/masked-view": 0.3.0
@@ -24656,6 +24668,7 @@ __metadata:
     expo-blur: ~12.9.2
     expo-build-properties: ^0.11.1
     expo-constants: ~15.4.5
+    expo-crypto: ~12.8.1
     expo-dev-client: ~3.3.9
     expo-device: ~5.9.3
     expo-file-system: ~16.0.8

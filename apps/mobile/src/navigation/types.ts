@@ -1,3 +1,4 @@
+import { LoginWithEmailHookResult } from '@privy-io/expo';
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -108,6 +109,8 @@ export type MainTabNavigatorParamList = {
   PostTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
+export type AuthMethodTitle = 'Privy' | 'Wallet' | 'Farcaster';
+
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
@@ -119,14 +122,21 @@ export type LoginStackNavigatorParamList = {
 
   OnboardingVideo: undefined;
   OnboardingEmail: {
-    authMethod: 'Email' | 'Wallet';
+    authMethod: AuthMethodTitle;
     authMechanism?: AuthPayloadVariables;
+  };
+
+  Onboarding2FA: {
+    authMethod: AuthMethodTitle;
+    email: string;
+    authMechanism: AuthPayloadVariables;
+    loginWithCode: LoginWithEmailHookResult['loginWithCode'];
   };
 
   OnboardingUsername: {
     authMechanism: AuthPayloadVariables;
     email?: string;
-    authMethod: 'Email' | 'Wallet';
+    authMethod: AuthMethodTitle;
   };
 
   OnboardingProfileBio: undefined;

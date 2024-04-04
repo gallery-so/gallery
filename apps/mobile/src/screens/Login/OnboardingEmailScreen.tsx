@@ -1,6 +1,7 @@
+import { useLoginWithEmail, usePrivy } from '@privy-io/expo';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -10,8 +11,11 @@ import { BackButton } from '~/components/BackButton';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
 import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
 import { OnboardingEmailScreenQuery } from '~/generated/OnboardingEmailScreenQuery.graphql';
-import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
-import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import {
+  AuthMethodTitle,
+  LoginStackNavigatorParamList,
+  LoginStackNavigatorProp,
+} from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -19,11 +23,17 @@ import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
-import { useLogin } from '../../hooks/useLogin';
-import { magic } from '../../magic';
 
 const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
 
+/**
+ * There are three entrypoints into this screen:
+ * 1) Email auth. User has opted to log in or sign up with email
+ * 2) Wallet auth. User has authenticated through Coinbase or WalletConnect and we're additionally collecting their email
+ * 3) Farcaster auth. User has authenticated through Farcaster and we're additionally collecting their email
+ *
+ * In all of these cases, we'll want the user to go through 2FA via Privy.
+ */
 function InnerOnboardingEmailScreen() {
   const [email, setEmail] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -38,7 +48,6 @@ function InnerOnboardingEmailScreen() {
 
   const [error, setError] = useState('');
 
-  const [login] = useLogin();
   const reportError = useReportError();
   const track = useTrack();
 
@@ -47,7 +56,22 @@ function InnerOnboardingEmailScreen() {
     setEmail(text);
   }, []);
 
-  const handleContinueEmailFlow = useCallback(async () => {
+  const { sendCode, loginWithCode } = useLoginWithEmail({
+    onSendCodeSuccess() {
+      // TODO: track this. not a blocker
+      console.log('successfully sent code');
+    },
+    onLoginSuccess(user) {
+      // TODO: track this. not a blocker
+      console.log('login success:', user);
+    },
+    onError(error) {
+      // TODO: track this. not a blocker
+      console.log('login error:', error);
+    },
+  });
+
+  const handleContinueTo2FA = useCallback(async () => {
     let hasNavigatedForward = false;
 
     setIsLoggingIn(true);
@@ -78,59 +102,58 @@ function InnerOnboardingEmailScreen() {
     try {
       hasNavigatedForward = true;
 
-      const token = await magic.auth.loginWithMagicLink({ email, showUI: false });
+      const { success } = await sendCode({ email });
 
-      if (!token) {
-        return handleLoginError({ message: FALLBACK_ERROR_MESSAGE });
+      if (!success) {
+        throw new Error('Error sending 2FA code to email address');
       }
 
-      const result = await login({ magicLink: { token } });
-
-      // If user not found, create a new user
-      if (result.kind === 'failure') {
-        navigation.navigate('OnboardingUsername', {
+      // on the next screen we'll either log the user in or create a new account
+      if (authMethod === 'Privy') {
+        navigation.navigate('Onboarding2FA', {
+          authMethod: 'Privy',
           authMechanism: {
-            authMechanismType: 'magicLink',
-            token,
+            authMechanismType: 'privy',
           },
           email,
-          authMethod: 'Email',
+          loginWithCode,
         });
-      } else {
-        track('Sign In Success', { 'Sign in method': 'Email' });
-        await navigateToNotificationUpsellOrHomeScreen(navigation);
+      }
+
+      // a wallet-login user will only end up here if they're a new user
+      // a farcaster-login user will only end up here if they're a new user
+      if (authMechanism && (authMethod === 'Wallet' || authMethod === 'Farcaster')) {
+        navigation.navigate('Onboarding2FA', {
+          authMethod,
+          authMechanism,
+          loginWithCode,
+          email,
+        });
       }
     } catch (error) {
-      handleLoginError({
-        message: FALLBACK_ERROR_MESSAGE,
-        underlyingError: error as Error,
-      });
+      if (error instanceof Error) {
+        handleLoginError({
+          message: error.message || FALLBACK_ERROR_MESSAGE,
+          underlyingError: error,
+        });
+      }
     } finally {
       setIsLoggingIn(false);
     }
-  }, [email, login, navigation, reportError, track]);
-
-  const handleContinueWalletFlow = useCallback(() => {
-    if (authMechanism?.authMechanismType === 'eoa') {
-      navigation.navigate('OnboardingUsername', {
-        authMechanism,
-        authMethod: 'Wallet',
-        email,
-      });
-    }
-  }, [authMechanism, email, navigation]);
-
-  const handleContinue = useCallback(() => {
-    if (authMethod === 'Email') {
-      handleContinueEmailFlow();
-    } else {
-      handleContinueWalletFlow();
-    }
-  }, [authMethod, handleContinueEmailFlow, handleContinueWalletFlow]);
+  }, [authMechanism, authMethod, email, loginWithCode, navigation, reportError, sendCode, track]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
+
+  const { logout: logoutOfPrivy } = usePrivy();
+
+  useEffect(() => {
+    // ensures fresh start. this will throw a warning if the user is already logged out,
+    // which we can safely ignore
+    logoutOfPrivy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View className="flex flex-col flex-grow space-y-8 px-4">
@@ -143,7 +166,7 @@ function InnerOnboardingEmailScreen() {
             pointerEvents="none"
           >
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Add your email
+              Your email
             </Typography>
           </View>
 
@@ -181,7 +204,7 @@ function InnerOnboardingEmailScreen() {
             <SubmitEmailButton
               authMethod={authMethod}
               email={email}
-              onSubmit={handleContinue}
+              onSubmit={handleContinueTo2FA}
               onErrorMessage={setError}
               isLoggingIn={isLoggingIn}
             />
@@ -207,7 +230,7 @@ function InnerOnboardingEmailScreen() {
 }
 
 type SubmitEmailButtonProps = {
-  authMethod: 'Email' | 'Wallet';
+  authMethod: AuthMethodTitle;
   email: string;
   onSubmit: () => void;
   onErrorMessage: (message: string) => void;

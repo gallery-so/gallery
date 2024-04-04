@@ -18,20 +18,26 @@ export type GnosisPayloadVariables = {
   email?: string;
 } & SignerVariables;
 
-type EmailPayloadVariables = {
-  authMechanismType: 'magicLink';
-  token: string;
+export type EmailPayloadVariables = {
+  authMechanismType: 'privy';
+  token?: string;
 };
+
+export type NeynarPayloadVariables = {
+  authMechanismType: 'neynar';
+  primaryAddress?: string;
+} & SignerVariables;
 
 export type AuthPayloadVariables =
   | EoaPayloadVariables
   | GnosisPayloadVariables
-  | EmailPayloadVariables;
+  | EmailPayloadVariables
+  | NeynarPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {
   return payload.authMechanismType === 'eoa';
 }
 
 export function isEmailPayload(payload: AuthPayloadVariables): payload is EmailPayloadVariables {
-  return payload.authMechanismType === 'magicLink';
+  return payload.authMechanismType === 'privy';
 }
