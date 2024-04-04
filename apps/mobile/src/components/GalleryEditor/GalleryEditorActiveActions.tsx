@@ -4,13 +4,13 @@ import { MinusCircleIcon } from 'src/icons/MinusCircleIcon';
 import { PlusCircleIcon } from 'src/icons/PlusCircleIcon';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
-import { StagedSection } from '~/contexts/GalleryEditor/types';
+import { StagedRow } from '~/contexts/GalleryEditor/types';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { BaseM } from '../Text';
 
 type Props = {
-  row: StagedSection;
+  row: StagedRow;
 };
 
 export function GalleryEditorActiveActions({ row }: Props) {

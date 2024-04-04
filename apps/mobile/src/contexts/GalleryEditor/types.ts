@@ -4,14 +4,14 @@ export type StagedItem =
   | { kind: 'whitespace'; id: string }
   | { kind: 'token'; id: string; tokenRef: GalleryEditorTokenPreviewFragment$key };
 
-export type StagedSection = {
+export type StagedRow = {
   id: string;
   columns: number;
   items: StagedItem[];
 };
-export type StagedSectionList = StagedSection[];
+export type StagedRowList = StagedRow[];
 
-export type StagedCollection = {
+export type StagedSection = {
   dbid: string;
   localOnly: boolean;
 
@@ -22,8 +22,8 @@ export type StagedCollection = {
   collectorsNote: string;
   hidden: boolean;
 
-  sections: StagedSectionList;
+  sections: StagedRowList;
   activeSectionId: string | null;
 };
 
-export type StagedCollectionList = StagedCollection[];
+export type StagedCollectionList = StagedSection[];

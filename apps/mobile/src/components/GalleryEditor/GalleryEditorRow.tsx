@@ -5,7 +5,7 @@ import { GestureResponderEvent, useWindowDimensions, View, ViewProps } from 'rea
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
-import { StagedSection } from '~/contexts/GalleryEditor/types';
+import { StagedRow } from '~/contexts/GalleryEditor/types';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { BaseM } from '../Text';
@@ -17,7 +17,7 @@ const inBetweenColumnPadding = 0;
 
 type Props = {
   collectionId: string;
-  section: StagedSection;
+  section: StagedRow;
   style?: ViewProps['style'];
 };
 
