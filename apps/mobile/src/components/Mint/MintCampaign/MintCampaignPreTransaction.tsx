@@ -1,14 +1,18 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
 import { useHighlightClaimMint } from 'src/hooks/useHighlightClaimMint';
+import usePersistedState from 'src/hooks/usePersistedState';
 
 import { Button } from '~/components/Button';
 import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
 import { MintCampaignPreTransactionQuery } from '~/generated/MintCampaignPreTransactionQuery.graphql';
 
-export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-03-30T00:00:00-05:00';
+import { MCHX_CLAIM_CODE_KEY } from './MintCampaignBottomSheet';
+
+export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-05-05T10:00:00-04:00';
+
 const MCHX_COLLECTION_ID = '65ec1cefb5813a0adf4dff4e';
 
 export default function MintCampaignPreTransaction({
@@ -32,8 +36,14 @@ export default function MintCampaignPreTransaction({
     return 'Campaign ended';
   }, []);
 
+  const isMintOver = useMemo(() => {
+    const endDate = new Date(MCHX_MINT_CAMPAIGN_END_DATE).getTime();
+    const now = new Date().getTime();
+    return now > endDate;
+  }, []);
+
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeftText());
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -44,6 +54,8 @@ export default function MintCampaignPreTransaction({
   });
 
   const { claimMint, isClamingMint } = useHighlightClaimMint();
+
+  const [, setClaimCodeLocalStorage] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
 
   const handlePress = useCallback(
     async (recipientWalletId: string) => {
@@ -58,11 +70,11 @@ export default function MintCampaignPreTransaction({
         });
 
         if (claimCode) {
+          setClaimCodeLocalStorage(claimCode);
           setClaimCode(claimCode);
           // TODO: save claim code in local storage to check status later
         }
       } catch (e) {
-        console.error(e);
         if (e === 'ErrHighlightMintUnavailable') {
           setError('Minting is currently unavailable.');
           return;
@@ -70,20 +82,20 @@ export default function MintCampaignPreTransaction({
         setError('Something went wrong while minting. Please try again.');
       }
     },
-    [claimMint, setClaimCode]
+    [claimMint, setClaimCode, setClaimCodeLocalStorage]
   );
 
   return (
     <View>
       <TitleS>Exclusive free mint</TitleS>
       <BaseM classNameOverride="mt-1">
-        Thank you for supporting Gallery. To show our appreciation, enjoy a a free generative
-        artwork by MCHX, on us
+        Thank you for downloading the Gallery app. As a token of our gratitude, we invite you to
+        mint Radiance by MCHX, on us.
       </BaseM>
       <Image
         className="w-full aspect-square my-4"
         source={{
-          uri: 'https://highlight-creator-assets.highlight.xyz/main/base-dir/0e3a9abb-5b8a-4ecb-92c2-881ef173f299/previews/1.png',
+          uri: 'https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fhighlight-creator-assets.highlight.xyz%2Fmain%2Fimage%2Fad73bc52-3e26-45c7-a73c-3666f165e9fa.png%3Fd%3D1000x1000',
         }}
       />
       <View className="flex flex-row space-apart justify-between">
@@ -109,7 +121,7 @@ export default function MintCampaignPreTransaction({
             />
           }
         >
-          <MintButton onPress={handlePress} isClamingMint={isClamingMint} />
+          <MintButton onPress={handlePress} isClamingMint={isClamingMint} isMintOver={isMintOver} />
         </Suspense>
         {error && <BaseM classNameOverride="text-red">{error}</BaseM>}
       </View>
@@ -124,9 +136,11 @@ export default function MintCampaignPreTransaction({
 function MintButton({
   isClamingMint,
   onPress,
+  isMintOver,
 }: {
   isClamingMint: boolean;
   onPress: (recipientWalletId: string) => void;
+  isMintOver: boolean;
 }) {
   const query = useLazyLoadQuery<MintCampaignPreTransactionQuery>(
     graphql`
@@ -145,17 +159,17 @@ function MintButton({
     {}
   );
 
-  const recipientWalletId = query.viewer.user?.primaryWallet.dbid;
+  const recipientWalletId = query.viewer?.user?.primaryWallet?.dbid;
 
   return (
     <Button
       text={isClamingMint ? 'Minting...' : 'Mint'}
       eventElementId="Mint Campaign Mint Button"
       eventName="Pressed Mint Campaign Mint Button"
-      eventContext={contexts.MintCampaign}
+      eventContext={contexts['Mint Campaign']}
       className="my-2"
       onPress={() => onPress(recipientWalletId ?? '')}
-      disabled={isClamingMint || !recipientWalletId}
+      disabled={isClamingMint || !recipientWalletId || isMintOver}
     />
   );
 }

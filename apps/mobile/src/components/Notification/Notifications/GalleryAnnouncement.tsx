@@ -5,14 +5,14 @@ import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
+import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { GalleryAnnouncementFragment$key } from '~/generated/GalleryAnnouncementFragment.graphql';
 import { GalleryAnnouncementQueryFragment$key } from '~/generated/GalleryAnnouncementQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 
 import { NotificationSkeleton } from '../NotificationSkeleton';
-import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
-import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 
 type Props = {
   notificationRef: GalleryAnnouncementFragment$key;
@@ -48,9 +48,7 @@ export function GalleryAnnouncement({ queryRef, notificationRef }: Props) {
   const { title, description, ctaText, ctaLink, imageUrl, internalId } = notification;
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
-    console.log(internalId);
     if (internalId === 'apr-2024-mchx-collab') {
-      console.log('open bottom sheet');
       showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
       return;
     }

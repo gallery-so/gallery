@@ -15,11 +15,16 @@ import { SpinnerIcon } from 'src/icons/SpinnerIcon';
 
 import { Button } from '~/components/Button';
 import { BaseM, TitleS } from '~/components/Text';
+import {
+  HighlightTxStatus,
+  MintCampaignPostTransactionMintStatusQuery,
+  MintCampaignPostTransactionMintStatusQuery$data,
+} from '~/generated/MintCampaignPostTransactionMintStatusQuery.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { NftDetailAsset } from '../../../screens/NftDetailScreen/NftDetailAsset/NftDetailAsset';
 
-type MintState = 'PRE_TXN' | 'TX_PENDING' | 'TX_COMPLETE' | 'TOKEN_SYNCED';
+type Token = MintCampaignPostTransactionMintStatusQuery$data['highlightMintClaimStatus']['token'];
 
 export default function MintCampaignPostTransaction({
   claimCode,
@@ -28,23 +33,21 @@ export default function MintCampaignPostTransaction({
   claimCode: string;
   onClose: () => void;
 }) {
-  const [state, setState] = useState<MintState>('TX_PENDING');
-  const [token, setToken] = useState(null);
+  const [state, setState] = useState<HighlightTxStatus>('TX_PENDING');
+  const [token, setToken] = useState<Token | null>(null);
   const [error, setError] = useState('');
   const relayEnvironment = useRelayEnvironment();
 
   useEffect(() => {
-    console.log('effect');
     let isSubscribed = true;
 
     const fetchData = async () => {
-      console.log({ isSubscribed });
       if (!isSubscribed) {
         return;
       }
-      console.log('fetch', isSubscribed, claimCode);
+
       try {
-        const data = await fetchQuery(
+        const data = await fetchQuery<MintCampaignPostTransactionMintStatusQuery>(
           relayEnvironment,
           graphql`
             query MintCampaignPostTransactionMintStatusQuery($claimCode: DBID!) {
@@ -55,12 +58,9 @@ export default function MintCampaignPostTransaction({
                     status
                     token {
                       dbid
-                      name
-                      # definition {
-                      #   community {
-                      #     ...useNavigateToCommunityScreenFragment
-                      #   }
-                      # }
+                      definition {
+                        name
+                      }
                       ...NftDetailAssetFragment
                     }
                   }
@@ -70,19 +70,19 @@ export default function MintCampaignPostTransaction({
           `,
           { claimCode }
         ).toPromise();
-        //   console.log('data', data.highlightMintClaimStatus);
-        console.log('typename', data.highlightMintClaimStatus.__typename);
-        if (data.highlightMintClaimStatus.__typename !== 'HighlightMintClaimStatusPayload') {
+
+        if (
+          !data ||
+          data.highlightMintClaimStatus?.__typename !== 'HighlightMintClaimStatusPayload'
+        ) {
           throw new Error('There was an error fetching the mint status');
         }
 
         if (isSubscribed && data.highlightMintClaimStatus) {
-          console.log('data', data.highlightMintClaimStatus.status);
           const { status } = data.highlightMintClaimStatus;
           setState(status);
           // If status is TOKEN_SYNCED, stop polling
           if (status === 'TOKEN_SYNCED') {
-            console.log('tokenId', data.highlightMintClaimStatus.token);
             setToken(data.highlightMintClaimStatus.token);
             isSubscribed = false; // Prevent further state updates
           }
@@ -107,8 +107,6 @@ export default function MintCampaignPostTransaction({
     // only run effect once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // const [state, setState] = useState<MintState>('TX_COMPLETE');
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePostPress = useCallback(() => {
@@ -137,7 +135,7 @@ export default function MintCampaignPostTransaction({
       <View>
         <View className="mb-1">
           <TitleS>Congratulations!</TitleS>
-          <TitleS>You collected {`${token?.name} by MCHX`}</TitleS>
+          <TitleS>You collected {`${token?.definition.name} by MCHX`}</TitleS>
         </View>
         {/* <BaseM>You have collected {`${token?.name} by MCHX`}</BaseM> */}
         <BaseM>
@@ -150,7 +148,7 @@ export default function MintCampaignPostTransaction({
           text="Post"
           eventElementId="Mint Campaign Post Button"
           eventName="Pressed Mint Campaign Post Button"
-          eventContext={contexts.MintCampaign}
+          eventContext={contexts['Mint Campaign']}
           className="mb-2"
           onPress={handlePostPress}
         />
@@ -159,7 +157,7 @@ export default function MintCampaignPostTransaction({
           variant="secondary"
           eventElementId="Mint Campaign See Collection Button"
           eventName="Pressed Mint Campaign See Collection Button"
-          eventContext={contexts.MintCampaign}
+          eventContext={contexts['Mint Campaign']}
           onPress={handleSeeCollectionPress}
         />
       </View>

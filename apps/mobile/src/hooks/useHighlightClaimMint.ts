@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { SelectorStoreUpdater } from 'relay-runtime';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
 
@@ -56,7 +55,6 @@ export function useHighlightClaimMint() {
 
         return response.highlightClaimMint?.claimId;
       } catch (error) {
-        console.log({ error });
         if (error instanceof Error) {
           reportError(error);
         } else {

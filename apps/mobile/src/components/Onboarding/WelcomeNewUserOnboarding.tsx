@@ -16,7 +16,6 @@ import { LazyAccountTabItem } from '~/navigation/MainTabNavigator/TabBar';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import { WelcomeNewUser } from './WelcomeNewUser';
-import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 
 type Props = {
   username: string;
@@ -51,7 +50,7 @@ export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
     }
 
     setStep((prevStep) => prevStep + 1);
-  }, [step]);
+  }, [onComplete, step]);
 
   if (step > 3 || step === 0) {
     return null;

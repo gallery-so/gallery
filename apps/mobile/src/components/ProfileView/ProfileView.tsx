@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, ViewProps, Text } from 'react-native';
+import { Text, View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
