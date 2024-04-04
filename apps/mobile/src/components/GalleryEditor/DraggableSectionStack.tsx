@@ -8,12 +8,27 @@ import {
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
+import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
+import { DraggableSectionStackFragment$key } from '~/generated/DraggableSectionStackFragment.graphql';
 
 import { GalleryEditorSection } from './GalleryEditorSection';
 
-export function DraggableSectionStack() {
+type Props = {
+  queryRef: DraggableSectionStackFragment$key;
+};
+
+export function DraggableSectionStack({ queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment DraggableSectionStackFragment on Query {
+        ...GalleryEditorSectionFragment
+      }
+    `,
+    queryRef
+  );
+
   const { activeRowId, sections, moveRow, updateSectionOrder } = useGalleryEditorActions();
 
   const onStackOrderChange: DraggableStackProps['onOrderChange'] = (value) => {
@@ -41,7 +56,7 @@ export function DraggableSectionStack() {
               id={section.dbid}
               disabled={disabledSectionDrag}
             >
-              <GalleryEditorSection section={section} />
+              <GalleryEditorSection section={section} queryRef={query} />
             </Draggable>
           ))}
         </DraggableStack>

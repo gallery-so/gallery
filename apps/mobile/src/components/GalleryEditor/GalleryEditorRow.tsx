@@ -3,9 +3,11 @@ import clsx from 'clsx';
 import React, { useCallback } from 'react';
 import { GestureResponderEvent, useWindowDimensions, View, ViewProps } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedRow } from '~/contexts/GalleryEditor/types';
+import { GalleryEditorRowFragment$key } from '~/generated/GalleryEditorRowFragment.graphql';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { BaseM } from '../Text';
@@ -19,9 +21,19 @@ type Props = {
   sectionId: string;
   row: StagedRow;
   style?: ViewProps['style'];
+  queryRef: GalleryEditorRowFragment$key;
 };
 
-export function GalleryEditorRow({ sectionId, row, style }: Props) {
+export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryEditorRowFragment on Query {
+        ...GalleryEditorActiveActionsFragment
+      }
+    `,
+    queryRef
+  );
+
   const { activateRow, activeRowId } = useGalleryEditorActions();
 
   const { offset, setNodeRef, activeId, setNodeLayout } = useDraggable({
@@ -120,7 +132,7 @@ export function GalleryEditorRow({ sectionId, row, style }: Props) {
               }
             })}
           </View>
-          {activeRowId === row.id && <GalleryEditorActiveActions row={row} />}
+          {activeRowId === row.id && <GalleryEditorActiveActions row={row} queryRef={query} />}
         </View>
       </GalleryTouchableOpacity>
     </Animated.View>

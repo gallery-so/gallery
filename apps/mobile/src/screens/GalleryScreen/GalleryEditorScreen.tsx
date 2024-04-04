@@ -27,6 +27,7 @@ function InnerGalleryEditorScreen() {
           ...GalleryEditorHeaderFragment
         }
         ...GalleryEditorContextFragment
+        ...DraggableSectionStackFragment
       }
     `,
     { galleryId: route.params.galleryId }
@@ -50,7 +51,7 @@ function InnerGalleryEditorScreen() {
         <GalleryEditorNavbar />
         <ScrollView className="flex-1">
           <GalleryEditorHeader galleryRef={gallery} />
-          <DraggableSectionStack />
+          <DraggableSectionStack queryRef={query} />
         </ScrollView>
       </View>
     </GalleryEditorProvider>

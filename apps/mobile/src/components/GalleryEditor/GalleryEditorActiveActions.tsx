@@ -1,20 +1,55 @@
+import { useCallback } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 import { DragIcon } from 'src/icons/DragIcon';
 import { MinusCircleIcon } from 'src/icons/MinusCircleIcon';
 import { PlusCircleIcon } from 'src/icons/PlusCircleIcon';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedRow } from '~/contexts/GalleryEditor/types';
+import { GalleryEditorActiveActionsFragment$key } from '~/generated/GalleryEditorActiveActionsFragment.graphql';
+import useMaxColumnsGalleryEditor from '~/shared/hooks/useMaxColumnsGalleryEditor';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { BaseM } from '../Text';
 
 type Props = {
   row: StagedRow;
+  queryRef: GalleryEditorActiveActionsFragment$key;
 };
 
-export function GalleryEditorActiveActions({ row }: Props) {
+export function GalleryEditorActiveActions({ row, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryEditorActiveActionsFragment on Query {
+        viewer {
+          __typename
+          ...useMaxColumnsGalleryEditorFragment
+        }
+      }
+    `,
+    queryRef
+  );
+
+  if (query.viewer?.__typename !== 'Viewer') {
+    throw new Error('Expected viewer to be present');
+  }
+
   const { incrementColumns, decrementColumns } = useGalleryEditorActions();
+
+  const maxColumns = useMaxColumnsGalleryEditor(query.viewer);
+
+  const handleIncrementPress = useCallback(() => {
+    if (row.columns < maxColumns) {
+      incrementColumns(row.id);
+    }
+  }, [row.columns, incrementColumns, maxColumns]);
+
+  const handleDecrementPress = useCallback(() => {
+    if (row.columns > 1) {
+      decrementColumns(row.id);
+    }
+  }, [row.columns, decrementColumns]);
 
   return (
     <View className="absolute right-0 top-0 flex-row gap-1 z-10">
@@ -30,7 +65,7 @@ export function GalleryEditorActiveActions({ row }: Props) {
             eventContext={null}
             onPress={(e: GestureResponderEvent) => {
               e.stopPropagation();
-              decrementColumns(row.id);
+              handleDecrementPress();
             }}
           >
             <MinusCircleIcon />
@@ -45,7 +80,7 @@ export function GalleryEditorActiveActions({ row }: Props) {
             eventContext={null}
             onPress={(e: GestureResponderEvent) => {
               e.stopPropagation();
-              incrementColumns(row.id);
+              handleIncrementPress();
             }}
           >
             <PlusCircleIcon />

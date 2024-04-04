@@ -1,10 +1,12 @@
 import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 import { DragIcon } from 'src/icons/DragIcon';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSection } from '~/contexts/GalleryEditor/types';
+import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSectionFragment.graphql';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
@@ -13,9 +15,19 @@ import { GalleryEditorRow } from './GalleryEditorRow';
 
 type Props = {
   section: StagedSection;
+  queryRef: GalleryEditorSectionFragment$key;
 };
 
-export function GalleryEditorSection({ section }: Props) {
+export function GalleryEditorSection({ section, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment GalleryEditorSectionFragment on Query {
+        ...GalleryEditorRowFragment
+      }
+    `,
+    queryRef
+  );
+
   const { sectionIdBeingEdited, activeRowId, activateSection, clearActiveRow } =
     useGalleryEditorActions();
 
@@ -54,7 +66,14 @@ export function GalleryEditorSection({ section }: Props) {
 
         <View className="space-y-2">
           {section.rows.map((row, index) => {
-            return <GalleryEditorRow key={row.id + index} sectionId={section.dbid} row={row} />;
+            return (
+              <GalleryEditorRow
+                key={row.id + index}
+                sectionId={section.dbid}
+                row={row}
+                queryRef={query}
+              />
+            );
           })}
         </View>
       </View>
