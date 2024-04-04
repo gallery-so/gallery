@@ -39,17 +39,26 @@ export function GalleryEditorActiveActions({ row, queryRef }: Props) {
 
   const maxColumns = useMaxColumnsGalleryEditor(query.viewer);
 
-  const handleIncrementPress = useCallback(() => {
-    if (row.columns < maxColumns) {
-      incrementColumns(row.id);
-    }
-  }, [row.columns, incrementColumns, maxColumns]);
+  const handleIncrementPress = useCallback(
+    (e: GestureResponderEvent) => {
+      e.stopPropagation();
 
-  const handleDecrementPress = useCallback(() => {
-    if (row.columns > 1) {
-      decrementColumns(row.id);
-    }
-  }, [row.columns, decrementColumns]);
+      if (row.columns < maxColumns) {
+        incrementColumns(row.id);
+      }
+    },
+    [row.columns, row.id, incrementColumns, maxColumns]
+  );
+
+  const handleDecrementPress = useCallback(
+    (e: GestureResponderEvent) => {
+      e.stopPropagation();
+      if (row.columns > 1) {
+        decrementColumns(row.id);
+      }
+    },
+    [row.columns, row.id, decrementColumns]
+  );
 
   return (
     <View className="absolute right-0 top-0 flex-row gap-1 z-10">
@@ -63,10 +72,7 @@ export function GalleryEditorActiveActions({ row, queryRef }: Props) {
             eventElementId={null}
             eventName={null}
             eventContext={null}
-            onPress={(e: GestureResponderEvent) => {
-              e.stopPropagation();
-              handleDecrementPress();
-            }}
+            onPress={handleDecrementPress}
           >
             <MinusCircleIcon />
           </GalleryTouchableOpacity>
@@ -78,10 +84,7 @@ export function GalleryEditorActiveActions({ row, queryRef }: Props) {
             eventElementId={null}
             eventName={null}
             eventContext={null}
-            onPress={(e: GestureResponderEvent) => {
-              e.stopPropagation();
-              handleIncrementPress();
-            }}
+            onPress={handleIncrementPress}
           >
             <PlusCircleIcon />
           </GalleryTouchableOpacity>
