@@ -16,7 +16,7 @@ import {
 import { useToastActions } from '../ToastContext';
 import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
-import { StagedCollection, StagedCollectionList, StagedSection, StagedSectionList } from './types';
+import { StagedCollectionList,StagedRow, StagedRowList, StagedSection } from './types';
 
 type GalleryEditorActions = {
   galleryName: string;
@@ -143,7 +143,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   }, []);
 
   const updateCollection = useCallback(
-    (collectionId: string, value: SetStateAction<StagedCollection>) => {
+    (collectionId: string, value: SetStateAction<StagedSection>) => {
       setCollections((previousCollections) => {
         return previousCollections.map((previousCollection) => {
           if (previousCollection.dbid === collectionId) {
@@ -186,7 +186,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       : null;
   }, [collectionIdBeingEdited, collections]);
 
-  const setSections: (collectionId: string, value: SetStateAction<StagedSectionList>) => void =
+  const setSections: (collectionId: string, value: SetStateAction<StagedRowList>) => void =
     useCallback(
       (collectionId: string, value) => {
         if (!collectionId) {
@@ -239,23 +239,23 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   }, [collectionBeingEdited?.activeSectionId, collectionIdBeingEdited]);
 
   const updateSection = useCallback(
-    (sectionId: string, value: SetStateAction<StagedSection>) => {
+    (sectionId: string, value: SetStateAction<StagedRow>) => {
       if (!collectionIdBeingEdited) {
         return;
       }
       updateCollection(collectionIdBeingEdited, (previousCollection) => {
         return {
           ...previousCollection,
-          sections: previousCollection.sections.map((previousSection) => {
-            if (previousSection.id === sectionId) {
+          sections: previousCollection.sections.map((previousRow) => {
+            if (previousRow.id === sectionId) {
               if (typeof value === 'function') {
-                return value(previousSection);
+                return value(previousRow);
               } else {
                 return value;
               }
             }
 
-            return previousSection;
+            return previousRow;
           }),
         };
       });
@@ -303,10 +303,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     }
 
     const localCollectionToUpdatedCollection = (
-      collection: StagedCollection
+      collection: StagedSection
     ): UpdateCollectionInput => {
-      const tokens = Object.values(collection.sections).flatMap((section) =>
-        section.items.filter((item) => item.kind === 'token')
+      const tokens = Object.values(collection.sections).flatMap((row) =>
+        row.items.filter((item) => item.kind === 'token')
       );
 
       const layout = generateLayoutFromCollection(collection.sections);
@@ -329,10 +329,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     };
 
     const localCollectionToCreatedCollection = (
-      collection: StagedCollection
+      collection: StagedSection
     ): CreateCollectionInGalleryInput => {
-      const tokens = Object.values(collection.sections).flatMap((section) =>
-        section.items.filter((item) => item.kind === 'token')
+      const tokens = Object.values(collection.sections).flatMap((row) =>
+        row.items.filter((item) => item.kind === 'token')
       );
 
       const layout = generateLayoutFromCollection(collection.sections);

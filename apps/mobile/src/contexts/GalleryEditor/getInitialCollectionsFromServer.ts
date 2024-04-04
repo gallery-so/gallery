@@ -5,7 +5,7 @@ import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInit
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { parseCollectionLayoutGraphql } from './collectionLayout';
-import { StagedCollection, StagedCollectionList, StagedSectionList } from './types';
+import { StagedCollectionList,StagedRowList, StagedSection } from './types';
 import { generate12DigitId } from './util';
 
 export function getInitialCollectionsFromServer(
@@ -54,7 +54,7 @@ export function getInitialCollectionsFromServer(
   }
 
   for (const collection of queryCollections) {
-    const sections: StagedSectionList = [];
+    const sections: StagedRowList = [];
     const nonNullTokens = removeNullValues(collection.tokens);
 
     if (!collection.layout) {
@@ -112,7 +112,7 @@ export function getInitialCollectionsFromServer(
   return collections;
 }
 
-export function createEmptyCollection(): StagedCollection {
+export function createEmptyCollection(): StagedSection {
   const generatedCollectionId = generate12DigitId();
   const generatedSectionId = generate12DigitId();
 

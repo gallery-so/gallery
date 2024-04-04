@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { DragIcon } from 'src/icons/DragIcon';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
-import { StagedCollection } from '~/contexts/GalleryEditor/types';
+import { StagedSection } from '~/contexts/GalleryEditor/types';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
@@ -12,7 +12,7 @@ import { BaseM } from '../Text';
 import { GalleryEditorRow } from './GalleryEditorRow';
 
 type Props = {
-  collection: StagedCollection;
+  collection: StagedSection;
 };
 
 export function GalleryEditorSection({ collection }: Props) {
@@ -52,9 +52,9 @@ export function GalleryEditorSection({ collection }: Props) {
         <ProcessedText text={collection.collectorsNote || ''} />
 
         <View className="space-y-2">
-          {collection.sections.map((section) => {
+          {collection.sections.map((row, index) => {
             return (
-              <GalleryEditorRow key={section.id} collectionId={collection.dbid} section={section} />
+              <GalleryEditorRow key={row.id + index} collectionId={collection.dbid} section={row} />
             );
           })}
         </View>
