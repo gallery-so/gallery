@@ -11,7 +11,7 @@ import { Button } from '../Button';
 import { BaseM } from '../Text';
 
 export function GalleryEditorNavbar() {
-  const { activeRowId, collections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
+  const { activeRowId, sections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
@@ -21,11 +21,11 @@ export function GalleryEditorNavbar() {
         <DebuggerBottomSheet
           activeSectionId={sectionIdBeingEdited}
           activeRowId={activeRowId}
-          collections={collections}
+          sections={sections}
         />
       ),
     });
-  }, [activeRowId, collections, sectionIdBeingEdited, showBottomSheetModal]);
+  }, [activeRowId, sections, sectionIdBeingEdited, showBottomSheetModal]);
 
   return (
     <View className="p-4 flex-row items-center justify-between">
@@ -59,30 +59,26 @@ export function GalleryEditorNavbar() {
 type DebuggerBottomSheetProps = {
   activeSectionId: string | null;
   activeRowId: string | null;
-  collections: StagedSectionList;
+  sections: StagedSectionList;
 };
 
-function DebuggerBottomSheet({
-  activeRowId,
-  activeSectionId,
-  collections,
-}: DebuggerBottomSheetProps) {
+function DebuggerBottomSheet({ activeRowId, activeSectionId, sections }: DebuggerBottomSheetProps) {
   // console.log(collections);
   return (
     <View className="gap-2">
       <View className="gap-2">
-        {collections.map((collection) => {
+        {sections.map((section) => {
           return (
-            <View key={collection.dbid}>
+            <View key={section.dbid}>
               <BaseM
                 classNameOverride={clsx(
-                  collection.dbid === activeSectionId ? 'text-activeBlue' : null
+                  section.dbid === activeSectionId ? 'text-activeBlue' : null
                 )}
               >
-                {collection.name || 'Empty'} -
-                <BaseM classNameOverride="text-gray-500">{collection.dbid}</BaseM>
+                {section.name || 'Empty'} -
+                <BaseM classNameOverride="text-gray-500">{section.dbid}</BaseM>
               </BaseM>
-              {collection.rows.map((row, index) => {
+              {section.rows.map((row, index) => {
                 return (
                   <View key={row.id}>
                     <BaseM

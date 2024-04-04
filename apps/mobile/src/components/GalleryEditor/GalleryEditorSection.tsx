@@ -12,19 +12,19 @@ import { BaseM } from '../Text';
 import { GalleryEditorRow } from './GalleryEditorRow';
 
 type Props = {
-  collection: StagedSection;
+  section: StagedSection;
 };
 
-export function GalleryEditorSection({ collection }: Props) {
+export function GalleryEditorSection({ section }: Props) {
   const { sectionIdBeingEdited, activeRowId, activateSection } = useGalleryEditorActions();
 
   const highlightedSection = useMemo(() => {
-    return sectionIdBeingEdited === collection.dbid && !activeRowId;
-  }, [collection.dbid, sectionIdBeingEdited, activeRowId]);
+    return sectionIdBeingEdited === section.dbid && !activeRowId;
+  }, [section.dbid, sectionIdBeingEdited, activeRowId]);
 
   const handleSelectSection = useCallback(() => {
-    activateSection(collection.dbid);
-  }, [activateSection, collection.dbid]);
+    activateSection(section.dbid);
+  }, [activateSection, section.dbid]);
 
   return (
     <GalleryTouchableOpacity
@@ -46,13 +46,13 @@ export function GalleryEditorSection({ collection }: Props) {
           </View>
         )}
         <BaseM classNameOverride="text-base" weight="Bold">
-          {collection.name} {collection.dbid}
+          {section.name}
         </BaseM>
-        <ProcessedText text={collection.collectorsNote || ''} />
+        <ProcessedText text={section.collectorsNote || ''} />
 
         <View className="space-y-2">
-          {collection.rows.map((row, index) => {
-            return <GalleryEditorRow key={row.id + index} sectionId={collection.dbid} row={row} />;
+          {section.rows.map((row, index) => {
+            return <GalleryEditorRow key={row.id + index} sectionId={section.dbid} row={row} />;
           })}
         </View>
       </View>

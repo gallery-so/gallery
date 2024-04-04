@@ -13,7 +13,7 @@ import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorC
 import { GalleryEditorSection } from './GalleryEditorSection';
 
 export function DraggableCollectionStack() {
-  const { collections, moveRow, updateSectionOrder } = useGalleryEditorActions();
+  const { sections, moveRow, updateSectionOrder } = useGalleryEditorActions();
 
   const onStackOrderChange: DraggableStackProps['onOrderChange'] = (value) => {
     updateSectionOrder(value);
@@ -30,9 +30,9 @@ export function DraggableCollectionStack() {
     <View className="px-2">
       <DndProvider onDragEnd={handleDragEnd} activationDelay={300}>
         <DraggableStack direction="column" gap={16} onOrderChange={onStackOrderChange}>
-          {collections.map((collection, index) => (
-            <Draggable key={collection.dbid + index} id={collection.dbid}>
-              <GalleryEditorSection collection={collection} />
+          {sections.map((section, index) => (
+            <Draggable key={section.dbid + index} id={section.dbid}>
+              <GalleryEditorSection section={section} />
             </Draggable>
           ))}
         </DraggableStack>

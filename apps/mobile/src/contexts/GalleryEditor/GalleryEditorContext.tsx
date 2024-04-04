@@ -26,7 +26,7 @@ type GalleryEditorActions = {
   galleryDescription: string;
   setGalleryDescription: (description: string) => void;
 
-  collections: StagedSectionList;
+  sections: StagedSectionList;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
@@ -38,7 +38,7 @@ type GalleryEditorActions = {
   activateRow: (sectionId: string, rowId: string) => void;
 
   moveRow: (
-    collectionId: string,
+    sectionId: string,
 
     activeRowId: string,
     // activeCollectionId: string,
@@ -109,12 +109,12 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   const [galleryName, setGalleryName] = useState(gallery.name ?? '');
   const [galleryDescription, setGalleryDescription] = useState(gallery.description ?? '');
 
-  const [collections, setCollections] = useState<StagedSectionList>(() =>
+  const [sections, setSections] = useState<StagedSectionList>(() =>
     getInitialCollectionsFromServer(gallery)
   );
 
   const [sectionIdsOrder, setSectionIdsOrder] = useState<Set<string>>(
-    new Set(collections.map((collection) => collection.dbid)) || new Set<string>()
+    new Set(sections.map((section) => section.dbid)) || new Set<string>()
   );
 
   const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(null);
@@ -128,22 +128,22 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   }, []);
 
   const updateSection = useCallback(
-    (collectionId: string, value: SetStateAction<StagedSection>) => {
-      setCollections((previousCollections) => {
-        return previousCollections.map((previousCollection) => {
-          if (previousCollection.dbid === collectionId) {
+    (sectionId: string, value: SetStateAction<StagedSection>) => {
+      setSections((previousSections) => {
+        return previousSections.map((previousSection) => {
+          if (previousSection.dbid === sectionId) {
             if (typeof value === 'function') {
-              return value(previousCollection);
+              return value(previousSection);
             } else {
               return value;
             }
           }
 
-          return previousCollection;
+          return previousSection;
         });
       });
     },
-    [setCollections]
+    [setSections]
   );
 
   const updateRow = useCallback(
@@ -152,10 +152,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         return;
       }
 
-      updateSection(sectionIdBeingEdited, (previousCollection) => {
+      updateSection(sectionIdBeingEdited, (previousSection) => {
         return {
-          ...previousCollection,
-          rows: previousCollection.rows.map((previousSection) => {
+          ...previousSection,
+          rows: previousSection.rows.map((previousSection) => {
             if (previousSection.id === sectionId) {
               if (typeof value === 'function') {
                 return value(previousSection);
@@ -174,9 +174,9 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   const sectionBeingEdited = useMemo(() => {
     return sectionIdBeingEdited
-      ? collections.find((collection) => collection.dbid === sectionIdBeingEdited)
+      ? sections.find((section) => section.dbid === sectionIdBeingEdited)
       : null;
-  }, [sectionIdBeingEdited, collections]);
+  }, [sectionIdBeingEdited, sections]);
 
   // const setRows: Dispatch<SetStateAction<StagedRowList>> = useCallback(
   //   (value) => {
@@ -325,12 +325,12 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       };
     };
 
-    const updatedCollections: UpdateCollectionInput[] = collections
-      .filter((collection) => !collection.localOnly)
+    const updatedCollections: UpdateCollectionInput[] = sections
+      .filter((section) => !section.localOnly)
       .map(localCollectionToUpdatedCollection);
 
-    const createdCollections: CreateCollectionInGalleryInput[] = collections
-      .filter((collection) => collection.localOnly)
+    const createdCollections: CreateCollectionInGalleryInput[] = sections
+      .filter((section) => section.localOnly)
       .map(localCollectionToCreatedCollection);
 
     const deletedCollections = [...deletedCollectionIds];
@@ -378,13 +378,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       // setInitialCollections(serverSourcedCollections);
 
       // Make sure the UI is reflecting what the server tells us happened.
-      setCollections(serverSourcedCollections);
+      setSections(serverSourcedCollections);
 
       // Reset the deleted collection ids since we just deleted them
       setDeletedCollectionIds(new Set());
 
-      const indexOfCollectionBeingEdited = collections.findIndex(
-        (collection) => collection.dbid === sectionIdBeingEdited
+      const indexOfCollectionBeingEdited = sections.findIndex(
+        (section) => section.dbid === sectionIdBeingEdited
       );
       const newSectionIdBeingEdited = serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
 
@@ -407,7 +407,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     }
   }, [
     sectionIdBeingEdited,
-    collections,
+    sections,
     deletedCollectionIds,
     gallery.dbid,
     galleryName,
@@ -431,7 +431,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       galleryDescription,
       setGalleryDescription,
 
-      collections,
+      sections,
 
       incrementColumns,
       decrementColumns,
@@ -454,7 +454,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       setGalleryName,
       setGalleryDescription,
 
-      collections,
+      sections,
 
       incrementColumns,
       decrementColumns,
