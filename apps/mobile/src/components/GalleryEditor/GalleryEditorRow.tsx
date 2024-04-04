@@ -10,7 +10,6 @@ import { StagedRow } from '~/contexts/GalleryEditor/types';
 import { GalleryEditorRowFragment$key } from '~/generated/GalleryEditorRowFragment.graphql';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { BaseM } from '../Text';
 import { GalleryEditorActiveActions } from './GalleryEditorActiveActions';
 import { GalleryEditorTokenPreview } from './GalleryEditorTokenPreview';
 
@@ -116,7 +115,7 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
           <View className="flex-row flex-wrap gap-2">
             {row.items.map((item) => {
               if (item.kind === 'whitespace') {
-                return <BaseM key={item.id}>Whitespace</BaseM>;
+                return <WhiteSpace key={item.id} size={widthPerToken - 8} />;
               } else {
                 return (
                   <View
@@ -137,4 +136,13 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
       </GalleryTouchableOpacity>
     </Animated.View>
   );
+}
+
+type WhiteSpaceProps = {
+  size: number;
+  style?: ViewProps['style'];
+};
+
+function WhiteSpace({ size, style }: WhiteSpaceProps) {
+  return <View style={[{ width: size, height: size }, style]} />;
 }
