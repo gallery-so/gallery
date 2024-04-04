@@ -62,6 +62,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     associatedDomains: ['applinks:gallery.so', 'applinks:gallery-dev.vercel.app'],
     supportsTablet: false,
     bundleIdentifier: 'com.usegallery.gallery',
+    infoPlist: {
+      NSPrivacyAccessedAPICategoryFileTimestamp: "Gallery requires access to file timestamps to organize and manage your photos efficiently.",
+      NSPrivacyAccessedAPICategoryDiskSpace: "Gallery needs to know the available disk space to ensure your device has enough room for new downloads and to optimize app storage."
+    },
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',
