@@ -16,29 +16,29 @@ const horizontalRowPadding = 16;
 const inBetweenColumnPadding = 0;
 
 type Props = {
-  collectionId: string;
-  section: StagedRow;
+  sectionId: string;
+  row: StagedRow;
   style?: ViewProps['style'];
 };
 
-export function GalleryEditorRow({ collectionId, section, style }: Props) {
-  const { activateCollection, activateSection, activeSectionId } = useGalleryEditorActions();
+export function GalleryEditorRow({ sectionId, row, style }: Props) {
+  const { activateRow, activeRowId } = useGalleryEditorActions();
 
   const { offset, setNodeRef, activeId, setNodeLayout } = useDraggable({
-    id: section.id,
+    id: row.id,
     data: {
-      id: section.id,
-      sectionId: collectionId,
+      id: row.id,
+      sectionId,
       type: 'row',
     },
     disabled: false,
   });
 
   const { setNodeRef: setDropRef, setNodeLayout: setDropLayout } = useDroppable({
-    id: section.id,
+    id: row.id,
     data: {
-      id: section.id,
-      sectionId: collectionId,
+      id: row.id,
+      sectionId,
       type: 'row',
     },
     disabled: false,
@@ -46,7 +46,7 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
 
   const screenDimensions = useWindowDimensions();
 
-  const column = section.columns;
+  const column = row.columns;
   const totalSpaceForTokens =
     screenDimensions.width - horizontalRowPadding * 2 - inBetweenColumnPadding * (column - 1);
 
@@ -55,14 +55,13 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
   const handleSectionPress = useCallback(
     (e: GestureResponderEvent) => {
       e.stopPropagation();
-      activateCollection(collectionId);
-      activateSection(section.id);
+      activateRow(sectionId, row.id);
     },
-    [activateCollection, activateSection, collectionId, section.id]
+    [activateRow, sectionId, row.id]
   );
 
   const animatedStyle = useAnimatedStyle(() => {
-    const isActive = activeId.value === section.id;
+    const isActive = activeId.value === row.id;
     const style = {
       opacity: isActive ? 0.5 : 1,
       zIndex: isActive ? 999 : 1,
@@ -76,7 +75,7 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
       ],
     };
     return style;
-  }, [section.id]);
+  }, [row.id]);
 
   return (
     <Animated.View
@@ -97,13 +96,13 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
         eventContext={null}
         onPress={handleSectionPress}
         className={clsx('border border-transparent relative', {
-          'border-activeBlue': activeSectionId === section.id,
+          'border-activeBlue': activeRowId === row.id,
         })}
         style={style}
       >
         <View>
           <View className="flex-row flex-wrap gap-2">
-            {section.items.map((item) => {
+            {row.items.map((item) => {
               if (item.kind === 'whitespace') {
                 return <BaseM key={item.id}>Whitespace</BaseM>;
               } else {
@@ -121,7 +120,7 @@ export function GalleryEditorRow({ collectionId, section, style }: Props) {
               }
             })}
           </View>
-          {activeSectionId === section.id && <GalleryEditorActiveActions row={section} />}
+          {activeRowId === row.id && <GalleryEditorActiveActions row={row} />}
         </View>
       </GalleryTouchableOpacity>
     </Animated.View>

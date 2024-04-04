@@ -22,8 +22,8 @@ export type StagedSection = {
   collectorsNote: string;
   hidden: boolean;
 
-  sections: StagedRowList;
-  activeSectionId: string | null;
+  rows: StagedRowList;
+  activeRowId: string | null;
 };
 
-export type StagedCollectionList = StagedSection[];
+export type StagedSectionList = StagedSection[];

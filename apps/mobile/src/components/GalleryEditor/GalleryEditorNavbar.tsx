@@ -1,15 +1,17 @@
+import clsx from 'clsx';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
+import { StagedSectionList } from '~/contexts/GalleryEditor/types';
 
 import { BackButton } from '../BackButton';
 import { Button } from '../Button';
 import { BaseM } from '../Text';
 
 export function GalleryEditorNavbar() {
-  const { activeSectionId, collectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
+  const { activeRowId, collections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
@@ -17,12 +19,13 @@ export function GalleryEditorNavbar() {
     showBottomSheetModal({
       content: (
         <DebuggerBottomSheet
-          activeSectionId={activeSectionId}
-          activeCollectionId={collectionIdBeingEdited}
+          activeSectionId={sectionIdBeingEdited}
+          activeRowId={activeRowId}
+          collections={collections}
         />
       ),
     });
-  }, [activeSectionId, collectionIdBeingEdited, showBottomSheetModal]);
+  }, [activeRowId, collections, sectionIdBeingEdited, showBottomSheetModal]);
 
   return (
     <View className="p-4 flex-row items-center justify-between">
@@ -55,14 +58,45 @@ export function GalleryEditorNavbar() {
 
 type DebuggerBottomSheetProps = {
   activeSectionId: string | null;
-  activeCollectionId: string | null;
+  activeRowId: string | null;
+  collections: StagedSectionList;
 };
 
-function DebuggerBottomSheet({ activeSectionId, activeCollectionId }: DebuggerBottomSheetProps) {
+function DebuggerBottomSheet({
+  activeRowId,
+  activeSectionId,
+  collections,
+}: DebuggerBottomSheetProps) {
+  // console.log(collections);
   return (
-    <View>
-      <BaseM>Active Section ID: {activeSectionId}</BaseM>
-      <BaseM>Active Collection ID: {activeCollectionId}</BaseM>
+    <View className="gap-2">
+      <View className="gap-2">
+        {collections.map((collection) => {
+          return (
+            <View key={collection.dbid}>
+              <BaseM
+                classNameOverride={clsx(
+                  collection.dbid === activeSectionId ? 'text-activeBlue' : null
+                )}
+              >
+                {collection.name || 'Empty'} -
+                <BaseM classNameOverride="text-gray-500">{collection.dbid}</BaseM>
+              </BaseM>
+              {collection.rows.map((row, index) => {
+                return (
+                  <View key={row.id}>
+                    <BaseM
+                      classNameOverride={clsx(row.id === activeRowId ? 'text-activeBlue' : null)}
+                    >
+                      {index + 1}. {row.id} - columns ({row.columns})
+                    </BaseM>
+                  </View>
+                );
+              })}
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }

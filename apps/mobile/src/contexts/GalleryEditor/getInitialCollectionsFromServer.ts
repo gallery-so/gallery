@@ -5,12 +5,12 @@ import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInit
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { parseCollectionLayoutGraphql } from './collectionLayout';
-import { StagedCollectionList,StagedRowList, StagedSection } from './types';
+import { StagedRowList, StagedSection, StagedSectionList } from './types';
 import { generate12DigitId } from './util';
 
 export function getInitialCollectionsFromServer(
   galleryRef: getInitialCollectionsFromServerFragment$key
-): StagedCollectionList {
+): StagedSectionList {
   const gallery = readInlineData(
     graphql`
       fragment getInitialCollectionsFromServerFragment on Gallery @inline {
@@ -42,7 +42,7 @@ export function getInitialCollectionsFromServer(
     galleryRef
   );
 
-  const collections: StagedCollectionList = [];
+  const collections: StagedSectionList = [];
 
   const queryCollections = removeNullValues(gallery?.collections);
 
@@ -54,7 +54,7 @@ export function getInitialCollectionsFromServer(
   }
 
   for (const collection of queryCollections) {
-    const sections: StagedRowList = [];
+    const rows: StagedRowList = [];
     const nonNullTokens = removeNullValues(collection.tokens);
 
     if (!collection.layout) {
@@ -64,7 +64,7 @@ export function getInitialCollectionsFromServer(
     const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
 
     parsed.forEach((parsedSection) => {
-      sections.push({
+      rows.push({
         id: parsedSection.id,
         columns: parsedSection.columns,
         items: parsedSection.items.map((item) => {
@@ -83,7 +83,7 @@ export function getInitialCollectionsFromServer(
       });
     });
 
-    const activeSectionId = null;
+    const activeRowId = null;
 
     const liveDisplayTokenIds = new Set<string>();
     const highDefinitionTokenIds = new Set<string>();
@@ -97,10 +97,10 @@ export function getInitialCollectionsFromServer(
     }
 
     collections.push({
-      activeSectionId,
+      activeRowId,
       liveDisplayTokenIds,
       highDefinitionTokenIds,
-      sections,
+      rows,
       localOnly: false,
       dbid: collection.dbid,
       name: collection.name ?? '',
@@ -113,11 +113,11 @@ export function getInitialCollectionsFromServer(
 }
 
 export function createEmptyCollection(): StagedSection {
-  const generatedCollectionId = generate12DigitId();
   const generatedSectionId = generate12DigitId();
+  const generatedRowId = generate12DigitId();
 
   return {
-    dbid: generatedCollectionId,
+    dbid: generatedSectionId,
     localOnly: true,
 
     liveDisplayTokenIds: new Set(),
@@ -127,7 +127,7 @@ export function createEmptyCollection(): StagedSection {
     collectorsNote: '',
     hidden: false,
 
-    sections: [{ id: generatedSectionId, columns: 3, items: [] }],
-    activeSectionId: generatedSectionId,
+    rows: [{ id: generatedRowId, columns: 3, items: [] }],
+    activeRowId: generatedRowId,
   };
 }

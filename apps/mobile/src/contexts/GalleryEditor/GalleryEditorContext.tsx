@@ -1,5 +1,13 @@
 import { UniqueIdentifier } from '@mgcrea/react-native-dnd';
-import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
@@ -16,7 +24,8 @@ import {
 import { useToastActions } from '../ToastContext';
 import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
-import { StagedCollectionList,StagedRow, StagedRowList, StagedSection } from './types';
+import { StagedRow, StagedRowList, StagedSection, StagedSectionList } from './types';
+import { arrayMove } from './util';
 
 type GalleryEditorActions = {
   galleryName: string;
@@ -25,18 +34,18 @@ type GalleryEditorActions = {
   galleryDescription: string;
   setGalleryDescription: (description: string) => void;
 
-  collections: StagedCollectionList;
+  collections: StagedSectionList;
 
   updateCollectionOrder: (activeCollectionId: string, overCollectionId: string) => void;
 
-  incrementColumns: (sectionId: string) => void;
-  decrementColumns: (sectionId: string) => void;
+  incrementColumns: (rowId: string) => void;
+  decrementColumns: (rowId: string) => void;
 
-  activateCollection: (collectionId: string) => void;
-  collectionIdBeingEdited: string | null;
-
-  activeSectionId: string | null;
   activateSection: (sectionId: string) => void;
+  sectionIdBeingEdited: string | null;
+
+  activeRowId: string | null;
+  activateRow: (sectionId: string, rowId: string) => void;
 
   moveRow: (
     collectionId: string,
@@ -91,20 +100,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
           gallery {
             name
             description
-            # collections {
-            #   # All of these are to ensure relevant components get their data refetched
-            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            #   ...NftGalleryFragment
-            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            #   ...UserGalleryCollectionFragment
-            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            #   ...CollectionGalleryHeaderFragment
-            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            #   ...CollectionLinkFragment
-            #   # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            #   ...FeaturedCollectorCardCollectionFragment
-            # }
-
             ...getInitialCollectionsFromServerFragment
           }
         }
@@ -124,7 +119,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   const [galleryName, setGalleryName] = useState(gallery.name ?? '');
   const [galleryDescription, setGalleryDescription] = useState(gallery.description ?? '');
 
-  const [collections, setCollections] = useState<StagedCollectionList>(() =>
+  const [collections, setCollections] = useState<StagedSectionList>(() =>
     getInitialCollectionsFromServer(gallery)
   );
 
@@ -132,17 +127,17 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     new Set(collections.map((collection) => collection.dbid)) || new Set<string>()
   );
 
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(null);
+  const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(null);
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
   });
 
-  const activateCollection = useCallback((collectionId: string) => {
-    setCollectionIdBeingEdited(collectionId);
+  const activateSection = useCallback((sectionId: string) => {
+    setSectionIdBeingEdited(sectionId);
   }, []);
 
-  const updateCollection = useCallback(
+  const updateSection = useCallback(
     (collectionId: string, value: SetStateAction<StagedSection>) => {
       setCollections((previousCollections) => {
         return previousCollections.map((previousCollection) => {
@@ -159,6 +154,32 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       });
     },
     [setCollections]
+  );
+
+  const updateRow = useCallback(
+    (sectionId: string, value: SetStateAction<StagedRow>) => {
+      if (!sectionIdBeingEdited) {
+        return;
+      }
+
+      updateSection(sectionIdBeingEdited, (previousCollection) => {
+        return {
+          ...previousCollection,
+          rows: previousCollection.rows.map((previousSection) => {
+            if (previousSection.id === sectionId) {
+              if (typeof value === 'function') {
+                return value(previousSection);
+              } else {
+                return value;
+              }
+            }
+
+            return previousSection;
+          }),
+        };
+      });
+    },
+    [sectionIdBeingEdited, updateSection]
   );
 
   const handleUpdateCollectionOrder = useCallback(
@@ -180,117 +201,102 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [collections, setCollections]
   );
 
-  const collectionBeingEdited = useMemo(() => {
-    return collectionIdBeingEdited
-      ? collections.find((collection) => collection.dbid === collectionIdBeingEdited)
+  const sectionBeingEdited = useMemo(() => {
+    return sectionIdBeingEdited
+      ? collections.find((collection) => collection.dbid === sectionIdBeingEdited)
       : null;
-  }, [collectionIdBeingEdited, collections]);
+  }, [sectionIdBeingEdited, collections]);
 
-  const setSections: (collectionId: string, value: SetStateAction<StagedRowList>) => void =
-    useCallback(
-      (collectionId: string, value) => {
-        if (!collectionId) {
-          return;
+  // const setRows: (sectionId: string, value: SetStateAction<StagedRowList>) => void =
+  const setRows: Dispatch<SetStateAction<StagedRowList>> = useCallback(
+    (value) => {
+      // if (!sectionId) {
+      //   return;
+      // }
+
+      if (!sectionIdBeingEdited) {
+        return;
+      }
+
+      // updateSection(sectionId, (previousCollection) => {
+      updateSection(sectionIdBeingEdited, (previousCollection) => {
+        let nextSections;
+        if (typeof value === 'function') {
+          nextSections = value(previousCollection.rows);
+        } else {
+          nextSections = value;
         }
 
-        updateCollection(collectionId, (previousCollection) => {
-          let nextSections;
-          if (typeof value === 'function') {
-            nextSections = value(previousCollection.sections);
-          } else {
-            nextSections = value;
-          }
-
-          return {
-            ...previousCollection,
-            sections: nextSections,
-          };
-        });
-      },
-      [updateCollection]
-    );
-
-  const setActiveSectionId = useCallback(
-    (sectionId: string) => {
-      if (!collectionIdBeingEdited) {
-        return;
-      }
-
-      updateCollection(collectionIdBeingEdited, (previousColleciton) => {
-        return { ...previousColleciton, activeSectionId: sectionId };
-      });
-    },
-    [collectionIdBeingEdited, updateCollection]
-  );
-
-  const activateSection = useCallback(
-    (sectionId: string) => {
-      setActiveSectionId(sectionId);
-    },
-    [setActiveSectionId]
-  );
-
-  const activeSectionId: string | null = useMemo(() => {
-    if (!collectionIdBeingEdited) {
-      return null;
-    }
-
-    return collectionBeingEdited?.activeSectionId ?? null;
-  }, [collectionBeingEdited?.activeSectionId, collectionIdBeingEdited]);
-
-  const updateSection = useCallback(
-    (sectionId: string, value: SetStateAction<StagedRow>) => {
-      if (!collectionIdBeingEdited) {
-        return;
-      }
-      updateCollection(collectionIdBeingEdited, (previousCollection) => {
         return {
           ...previousCollection,
-          sections: previousCollection.sections.map((previousRow) => {
-            if (previousRow.id === sectionId) {
-              if (typeof value === 'function') {
-                return value(previousRow);
-              } else {
-                return value;
-              }
-            }
-
-            return previousRow;
-          }),
+          sections: nextSections,
         };
       });
     },
-    [collectionIdBeingEdited, updateCollection]
+    [sectionIdBeingEdited, updateSection]
   );
 
-  const incrementColumns = useCallback(
-    (sectionId: string) => {
-      updateSection(sectionId, (previousSection) => {
-        return { ...previousSection, columns: previousSection.columns + 1 };
+  const setActiveRowId = useCallback(
+    (rowId: string) => {
+      if (!sectionIdBeingEdited) {
+        return;
+      }
+
+      updateSection(sectionIdBeingEdited, (previousSection) => {
+        return { ...previousSection, activeRowId: rowId };
       });
     },
-    [updateSection]
+    [sectionIdBeingEdited, updateSection]
+  );
+
+  const activateRow = useCallback(
+    (sectionId: string, rowId: string) => {
+      activateSection(sectionId);
+      setActiveRowId(rowId);
+    },
+    [activateSection, setActiveRowId]
+  );
+
+  const activeRowId = useMemo(() => {
+    if (!sectionIdBeingEdited) {
+      return null;
+    }
+
+    return sectionBeingEdited?.activeRowId ?? null;
+  }, [sectionBeingEdited?.activeRowId, sectionIdBeingEdited]);
+
+  const incrementColumns = useCallback(
+    (rowId: string) => {
+      updateRow(rowId, (previousRow) => {
+        return { ...previousRow, columns: previousRow.columns + 1 };
+      });
+    },
+    [updateRow]
   );
 
   const decrementColumns = useCallback(
-    (sectionId: string) => {
-      updateSection(sectionId, (previousSection) => {
+    (rowId: string) => {
+      updateRow(rowId, (previousSection) => {
         return { ...previousSection, columns: previousSection.columns - 1 };
       });
     },
-    [updateSection]
+    [updateRow]
   );
 
   // TODO: Add support for moving rows between sections
   const moveRow = useCallback(
-    (collectionId: string, activeRowId: string, overRowId: string) => {
-      setSections(collectionId, (previousSections) => {
-        const activeRowIndex = previousSections.findIndex((section) => section.id === activeRowId);
-        const overRowIndex = previousSections.findIndex((section) => section.id === overRowId);
-        return arrayMove(previousSections, activeRowIndex, overRowIndex);
+    (sectionId: string, activeRowId: string, overRowId: string) => {
+      updateSection(sectionId, (previousSection) => {
+        const activeRowIndex = previousSection.rows.findIndex((row) => row.id === activeRowId);
+        const overRowIndex = previousSection.rows.findIndex((row) => row.id === overRowId);
+
+        return {
+          ...previousSection,
+          rows: arrayMove(previousSection.rows, activeRowIndex, overRowIndex),
+        };
       });
     },
-    [setSections]
+    [updateSection]
   );
 
   const reportError = useReportError();
@@ -305,11 +311,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     const localCollectionToUpdatedCollection = (
       collection: StagedSection
     ): UpdateCollectionInput => {
-      const tokens = Object.values(collection.sections).flatMap((row) =>
+      const tokens = Object.values(collection.rows).flatMap((row) =>
         row.items.filter((item) => item.kind === 'token')
       );
 
-      const layout = generateLayoutFromCollection(collection.sections);
+      const layout = generateLayoutFromCollection(collection.rows);
 
       return {
         collectorsNote: collection.collectorsNote,
@@ -331,11 +337,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     const localCollectionToCreatedCollection = (
       collection: StagedSection
     ): CreateCollectionInGalleryInput => {
-      const tokens = Object.values(collection.sections).flatMap((row) =>
+      const tokens = Object.values(collection.rows).flatMap((row) =>
         row.items.filter((item) => item.kind === 'token')
       );
 
-      const layout = generateLayoutFromCollection(collection.sections);
+      const layout = generateLayoutFromCollection(collection.rows);
 
       return {
         givenID: collection.dbid,
@@ -413,12 +419,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       setDeletedCollectionIds(new Set());
 
       const indexOfCollectionBeingEdited = collections.findIndex(
-        (collection) => collection.dbid === collectionIdBeingEdited
+        (collection) => collection.dbid === sectionIdBeingEdited
       );
-      const newCollectionIdBeingEdited =
-        serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
+      const newSectionIdBeingEdited = serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
 
-      setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
+      setSectionIdBeingEdited(newSectionIdBeingEdited ?? null);
     } catch (error) {
       pushToast({
         autoClose: false,
@@ -436,7 +441,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       }
     }
   }, [
-    collectionIdBeingEdited,
+    sectionIdBeingEdited,
     collections,
     deletedCollectionIds,
     gallery.dbid,
@@ -468,11 +473,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       incrementColumns,
       decrementColumns,
 
-      activateCollection,
-      collectionIdBeingEdited,
-
-      activeSectionId,
       activateSection,
+      sectionIdBeingEdited,
+
+      activeRowId,
+      activateRow,
 
       moveRow,
 
@@ -492,11 +497,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       incrementColumns,
       decrementColumns,
 
-      activateCollection,
-      collectionIdBeingEdited,
-
-      activeSectionId,
       activateSection,
+      sectionIdBeingEdited,
+
+      activeRowId,
+      activateRow,
 
       moveRow,
 
@@ -516,19 +521,3 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 GalleryEditorProvider.displayName = 'GalleryEditorProvider';
 
 export default GalleryEditorProvider;
-
-// https://github.com/clauderic/dnd-kit/blob/694dcc2f62e5269541fc941fa6c9af46ccd682ad/packages/sortable/src/utilities/arrayMove.ts
-/**
- * Move an array item to a different position. Returns a new array with the item moved to the new position.
- */
-export function arrayMove<T>(array: T[], from: number, to: number): T[] {
-  const newArray = array.slice();
-  const element = newArray.splice(from, 1)[0];
-
-  if (element === undefined) {
-    throw new Error(`No element found at index ${from}`);
-  }
-
-  newArray.splice(to < 0 ? newArray.length + to : to, 0, element);
-  return newArray;
-}
