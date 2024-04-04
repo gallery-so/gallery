@@ -22,21 +22,19 @@ import { arrayMove } from './util';
 type GalleryEditorActions = {
   galleryName: string;
   setGalleryName: (name: string) => void;
-
   galleryDescription: string;
   setGalleryDescription: (description: string) => void;
 
   sections: StagedSectionList;
-
-  incrementColumns: (rowId: string) => void;
-  decrementColumns: (rowId: string) => void;
-
   activateSection: (sectionId: string) => void;
   sectionIdBeingEdited: string | null;
 
   activeRowId: string | null;
   activateRow: (sectionId: string, rowId: string) => void;
+  clearActiveRow: () => void;
 
+  incrementColumns: (rowId: string) => void;
+  decrementColumns: (rowId: string) => void;
   moveRow: (
     sectionId: string,
 
@@ -45,7 +43,6 @@ type GalleryEditorActions = {
     overRowId: string
     // overCollectionId: string
   ) => void;
-
   updateSectionOrder: (sectionIds: UniqueIdentifier[]) => void;
 
   saveGallery: () => void;
@@ -229,6 +226,16 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
     return sectionBeingEdited?.activeRowId ?? null;
   }, [sectionBeingEdited?.activeRowId, sectionIdBeingEdited]);
+
+  const clearActiveRow = useCallback(() => {
+    if (!sectionIdBeingEdited) {
+      return;
+    }
+
+    updateSection(sectionIdBeingEdited, (previousSection) => {
+      return { ...previousSection, activeRowId: null };
+    });
+  }, [sectionIdBeingEdited, updateSection]);
 
   const incrementColumns = useCallback(
     (rowId: string) => {
@@ -441,6 +448,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activeRowId,
       activateRow,
+      clearActiveRow,
 
       moveRow,
 
@@ -464,6 +472,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activeRowId,
       activateRow,
+      clearActiveRow,
 
       moveRow,
 

@@ -16,7 +16,8 @@ type Props = {
 };
 
 export function GalleryEditorSection({ section }: Props) {
-  const { sectionIdBeingEdited, activeRowId, activateSection } = useGalleryEditorActions();
+  const { sectionIdBeingEdited, activeRowId, activateSection, clearActiveRow } =
+    useGalleryEditorActions();
 
   const highlightedSection = useMemo(() => {
     return sectionIdBeingEdited === section.dbid && !activeRowId;
@@ -24,7 +25,8 @@ export function GalleryEditorSection({ section }: Props) {
 
   const handleSelectSection = useCallback(() => {
     activateSection(section.dbid);
-  }, [activateSection, section.dbid]);
+    clearActiveRow();
+  }, [clearActiveRow, activateSection, section.dbid]);
 
   return (
     <GalleryTouchableOpacity
