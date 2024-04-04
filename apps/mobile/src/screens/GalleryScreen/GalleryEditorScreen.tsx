@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { DraggableCollectionStack } from '~/components/GalleryEditor/DraggableCollectionStack';
+import { DraggableSectionStack } from '~/components/GalleryEditor/DraggableSectionStack';
 import { GalleryEditorHeader } from '~/components/GalleryEditor/GalleryEditorHeader';
 import { GalleryEditorNavbar } from '~/components/GalleryEditor/GalleryEditorNavbar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
@@ -50,7 +50,7 @@ function InnerGalleryEditorScreen() {
         <GalleryEditorNavbar />
         <ScrollView className="flex-1">
           <GalleryEditorHeader galleryRef={gallery} />
-          <DraggableCollectionStack />
+          <DraggableSectionStack />
         </ScrollView>
       </View>
     </GalleryEditorProvider>
