@@ -1,13 +1,5 @@
 import { UniqueIdentifier } from '@mgcrea/react-native-dnd';
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
@@ -24,7 +16,7 @@ import {
 import { useToastActions } from '../ToastContext';
 import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
-import { StagedRow, StagedRowList, StagedSection, StagedSectionList } from './types';
+import { StagedRow, StagedSection, StagedSectionList } from './types';
 import { arrayMove } from './util';
 
 type GalleryEditorActions = {
@@ -35,8 +27,6 @@ type GalleryEditorActions = {
   setGalleryDescription: (description: string) => void;
 
   collections: StagedSectionList;
-
-  updateCollectionOrder: (activeCollectionId: string, overCollectionId: string) => void;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
@@ -182,59 +172,34 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [sectionIdBeingEdited, updateSection]
   );
 
-  const handleUpdateCollectionOrder = useCallback(
-    (activeCollectionId: string, overCollectionId: string) => {
-      const activeCollectionIndex = collections.findIndex(
-        (collection) => collection.dbid === activeCollectionId
-      );
-      const overCollectionIndex = collections.findIndex(
-        (collection) => collection.dbid === overCollectionId
-      );
-
-      const newCollections = [...collections];
-      const [removed] = newCollections.splice(activeCollectionIndex, 1);
-      if (removed) {
-        newCollections.splice(overCollectionIndex, 0, removed);
-      }
-      setCollections(newCollections);
-    },
-    [collections, setCollections]
-  );
-
   const sectionBeingEdited = useMemo(() => {
     return sectionIdBeingEdited
       ? collections.find((collection) => collection.dbid === sectionIdBeingEdited)
       : null;
   }, [sectionIdBeingEdited, collections]);
 
-  // const setRows: (sectionId: string, value: SetStateAction<StagedRowList>) => void =
-  const setRows: Dispatch<SetStateAction<StagedRowList>> = useCallback(
-    (value) => {
-      // if (!sectionId) {
-      //   return;
-      // }
+  // const setRows: Dispatch<SetStateAction<StagedRowList>> = useCallback(
+  //   (value) => {
+  //     if (!sectionIdBeingEdited) {
+  //       return;
+  //     }
 
-      if (!sectionIdBeingEdited) {
-        return;
-      }
+  //     updateSection(sectionIdBeingEdited, (previousCollection) => {
+  //       let nextSections;
+  //       if (typeof value === 'function') {
+  //         nextSections = value(previousCollection.rows);
+  //       } else {
+  //         nextSections = value;
+  //       }
 
-      // updateSection(sectionId, (previousCollection) => {
-      updateSection(sectionIdBeingEdited, (previousCollection) => {
-        let nextSections;
-        if (typeof value === 'function') {
-          nextSections = value(previousCollection.rows);
-        } else {
-          nextSections = value;
-        }
-
-        return {
-          ...previousCollection,
-          sections: nextSections,
-        };
-      });
-    },
-    [sectionIdBeingEdited, updateSection]
-  );
+  //       return {
+  //         ...previousCollection,
+  //         sections: nextSections,
+  //       };
+  //     });
+  //   },
+  //   [sectionIdBeingEdited, updateSection]
+  // );
 
   const setActiveRowId = useCallback(
     (rowId: string) => {
@@ -468,8 +433,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       collections,
 
-      updateCollectionOrder: handleUpdateCollectionOrder,
-
       incrementColumns,
       decrementColumns,
 
@@ -488,7 +451,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [
       galleryName,
       galleryDescription,
-      handleUpdateCollectionOrder,
       setGalleryName,
       setGalleryDescription,
 
