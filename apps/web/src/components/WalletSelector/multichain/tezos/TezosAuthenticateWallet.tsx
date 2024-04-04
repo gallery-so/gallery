@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { useCallback, useEffect, useState } from 'react';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import useLoginOrRedirectToOnboarding from '~/components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
@@ -32,6 +33,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const { getActiveAccount, requestSignature } = useBeaconActions();
 
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
 
   const trackSignInAttempt = useTrackSignInAttempt();
@@ -52,9 +54,11 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
       setPendingState(PROMPT_SIGNATURE);
       trackSignInAttempt('Tezos');
 
-      const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
+      const { nonce, message } = await createNonce();
 
-      const payload = generatePayload(nonce, address);
+      const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Tezos' }));
+
+      const payload = generatePayload(message, address);
 
       const signature = await requestSignature(payload);
 
@@ -69,6 +73,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
                 chain: 'Tezos',
               },
               nonce: nonceNumber,
+              message,
               signature,
             },
           },
@@ -82,6 +87,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
     },
     [
       createNonce,
+      getUserByWalletAddress,
       loginOrRedirectToOnboarding,
       requestSignature,
       trackSignInAttempt,
