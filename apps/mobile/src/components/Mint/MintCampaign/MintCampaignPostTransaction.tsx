@@ -138,9 +138,8 @@ export default function MintCampaignPostTransaction({
       <View>
         <View className="mb-1">
           <TitleS>Congratulations!</TitleS>
-          <TitleS>You collected {`${token?.definition.name} by MCHX`}</TitleS>
+          <TitleS>You collected {`${token?.definition.name ?? 'Radiance'} by MCHX`}</TitleS>
         </View>
-        {/* <BaseM>You have collected {`${token?.name} by MCHX`}</BaseM> */}
         <BaseM>
           Thank you for using the Gallery mobile app. Share your new artwork with others below!
         </BaseM>

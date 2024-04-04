@@ -72,7 +72,6 @@ export default function MintCampaignPreTransaction({
         if (claimCode) {
           setClaimCodeLocalStorage(claimCode);
           setClaimCode(claimCode);
-          // TODO: save claim code in local storage to check status later
         }
       } catch (e) {
         if (e === 'ErrHighlightMintUnavailable') {
