@@ -60,6 +60,9 @@ export default function MintCampaignPostTransaction({
                       dbid
                       definition {
                         name
+                        community {
+                          ...useNavigateToCommunityScreenFragment
+                        }
                       }
                       ...NftDetailAssetFragment
                     }
