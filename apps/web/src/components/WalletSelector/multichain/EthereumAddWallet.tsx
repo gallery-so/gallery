@@ -3,6 +3,7 @@ import { signMessage } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';
 
@@ -80,6 +81,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
   const { hideModal } = useModalActions();
 
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
   const trackAddWalletSuccess = useTrackAddWalletSuccess();
   const trackAddWalletError = useTrackAddWalletError();
@@ -98,19 +100,23 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
         setPendingState(PROMPT_SIGNATURE);
 
         trackAddWalletAttempt('Ethereum');
-        const { nonce, user_exists: userExists } = await createNonce(address, 'Ethereum');
+
+        const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Ethereum' }));
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
         }
 
-        const signature = await signMessage({ message: nonce });
+        const { nonce, message } = await createNonce();
+
+        const signature = await signMessage({ message });
 
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {
-              signature,
               nonce,
+              message,
+              signature,
               chainPubKey: {
                 pubKey: address,
                 chain: 'Ethereum',
@@ -149,12 +155,13 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
     },
     [
       trackAddWalletAttempt,
+      getUserByWalletAddress,
       createNonce,
       addWallet,
-      hideModal,
       trackAddWalletSuccess,
-      trackAddWalletError,
+      hideModal,
       onSuccess,
+      trackAddWalletError,
     ]
   );
 

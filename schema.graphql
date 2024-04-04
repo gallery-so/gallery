@@ -116,7 +116,7 @@ input AuthMechanism {
 
 type AuthNonce {
   nonce: String
-  userExists: Boolean
+  message: String
 }
 
 union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrSessionInvalidated | ErrDoesNotOwnRequiredToken
@@ -494,6 +494,7 @@ input CreateUserInput {
   galleryName: String
   galleryDescription: String
   galleryPosition: String
+  importWallets: [ImportWalletSource!]
 }
 
 type CreateUserPayload {
@@ -588,7 +589,12 @@ type EnsProfileImage {
 input EoaAuth {
   chainPubKey: ChainPubKeyInput!
   nonce: String!
+  message: String!
   signature: String!
+}
+
+type ErrAddressNotOwnedByUser implements Error {
+  message: String!
 }
 
 type ErrAddressOwnedByUser implements Error {
@@ -636,6 +642,18 @@ type ErrFeedEventNotFound implements Error {
 }
 
 type ErrGalleryNotFound implements Error {
+  message: String!
+}
+
+type ErrHighlightChainNotSupported implements Error {
+  message: String!
+}
+
+type ErrHighlightMintUnavailable implements Error {
+  message: String!
+}
+
+type ErrHighlightTxnFailed implements Error {
   message: String!
 }
 
@@ -907,7 +925,7 @@ type GenerateQRCodeLoginTokenPayload {
 
 union GenerateQRCodeLoginTokenPayloadOrError = GenerateQRCodeLoginTokenPayload | ErrNotAuthorized
 
-union GetAuthNoncePayloadOrError = AuthNonce | ErrDoesNotOwnRequiredToken
+union GetAuthNoncePayloadOrError = AuthNonce
 
 type GIFMedia implements Media {
   previewURLs: PreviewURLSet
@@ -931,6 +949,7 @@ type GltfMedia implements Media {
 input GnosisSafeAuth {
   address: Address!
   nonce: String!
+  message: String!
 }
 
 interface GroupedNotification {
@@ -949,6 +968,30 @@ type GroupNotificationUserEdge {
 type GroupNotificationUsersConnection {
   edges: [GroupNotificationUserEdge]
   pageInfo: PageInfo
+}
+
+input HighlightClaimMintInput {
+  collectionId: String!
+  recipientWalletId: DBID!
+}
+
+type HighlightClaimMintPayload {
+  claimId: DBID!
+}
+
+union HighlightClaimMintPayloadOrError = HighlightClaimMintPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrHighlightChainNotSupported | ErrAddressNotOwnedByUser | ErrNotAuthorized
+
+type HighlightMintClaimStatusPayload {
+  status: HighlightTxStatus!
+  token: Token
+}
+
+union HighlightMintClaimStatusPayloadOrError = HighlightMintClaimStatusPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrNotAuthorized
+
+enum HighlightTxStatus {
+  TX_PENDING
+  TX_COMPLETE
+  TOKEN_SYNCED
 }
 
 type HtmlMedia implements Media {
@@ -971,6 +1014,10 @@ type ImageMedia implements Media {
   contentRenderURL: String
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
+}
+
+enum ImportWalletSource {
+  Farcaster
 }
 
 union Interaction = Admire | Comment
@@ -1166,7 +1213,7 @@ type Mutation {
   refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
   refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
   refreshContract(contractId: DBID!): RefreshContractPayloadOrError
-  getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
+  getAuthNonce: GetAuthNoncePayloadOrError
   createUser(authMechanism: AuthMechanism!, input: CreateUserInput!): CreateUserPayloadOrError
   updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError
   resendVerificationEmail: ResendVerificationEmailPayloadOrError
@@ -1199,6 +1246,7 @@ type Mutation {
   referralPostToken(input: ReferralPostTokenInput!): ReferralPostTokenPayloadOrError
   referralPostPreflight(input: ReferralPostPreflightInput!): ReferralPostPreflightPayloadOrError
   deletePost(postId: DBID!): DeletePostPayloadOrError
+  highlightClaimMint(input: HighlightClaimMintInput!): HighlightClaimMintPayloadOrError
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
   viewToken(tokenID: DBID!, collectionID: DBID!): ViewTokenPayloadOrError
   updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
@@ -1462,6 +1510,7 @@ type Query {
   userByUsername(username: String!): UserByUsernameOrError
   userById(id: DBID!): UserByIdOrError
   userByAddress(chainAddress: ChainAddressInput!): UserByAddressOrError
+  usersByAddresses(chainAddresses: [ChainAddressInput!]!): UsersByAddressesPayloadOrError
   usersWithTrait(trait: String!): [GalleryUser]
   membershipTiers(forceRefresh: Boolean): [MembershipTier]
   collectionById(id: DBID!): CollectionByIdOrError
@@ -1516,6 +1565,7 @@ type Query {
   postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
   contractCommunityByKey(key: ContractCommunityKeyInput!): CommunityByKeyOrError
   artBlocksCommunityByKey(key: ArtBlocksCommunityKeyInput!): CommunityByKeyOrError
+  highlightMintClaimStatus(claimId: DBID!): HighlightMintClaimStatusPayloadOrError
 }
 
 input RedeemMerchInput {
@@ -2412,6 +2462,12 @@ type UserFollowedUsersFeedEventData implements FeedEventData {
   action: Action
   followed: [FollowInfo]
 }
+
+type UsersByAddressesPayload {
+  users: [GalleryUser!]
+}
+
+union UsersByAddressesPayloadOrError = UsersByAddressesPayload | ErrInvalidInput
 
 type UsersConnection {
   edges: [UserEdge]
