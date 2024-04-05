@@ -22,6 +22,15 @@ export function useHighlightClaimMint() {
         ... on ErrHighlightChainNotSupported {
           __typename
         }
+        ... on ErrAddressNotOwnedByUser {
+          __typename
+        }
+        ... on ErrHighlightClaimAlreadyMinted {
+          __typename
+        }
+        ... on ErrHighlightClaimInProgress {
+          __typename
+        }
       }
     }
   `);

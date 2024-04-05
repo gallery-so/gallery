@@ -655,6 +655,14 @@ type ErrHighlightTxnFailed implements Error {
   message: String!
 }
 
+type ErrHighlightClaimInProgress implements Error {
+  message: String!
+}
+
+type ErrHighlightClaimAlreadyMinted implements Error {
+  message: String!
+}
+
 type ErrInvalidInput implements Error {
   message: String!
   parameters: [String!]!
@@ -976,7 +984,7 @@ type HighlightClaimMintPayload {
   claimId: DBID!
 }
 
-union HighlightClaimMintPayloadOrError = HighlightClaimMintPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrHighlightChainNotSupported | ErrAddressNotOwnedByUser | ErrNotAuthorized
+union HighlightClaimMintPayloadOrError = HighlightClaimMintPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrHighlightChainNotSupported | ErrAddressNotOwnedByUser | ErrHighlightClaimInProgress | ErrHighlightClaimAlreadyMinted | ErrNotAuthorized
 
 type HighlightMintClaimStatusPayload {
   status: HighlightTxStatus!

@@ -72,9 +72,13 @@ export default function MintCampaignPreTransaction({
           setClaimCodeLocalStorage(claimCode);
           setClaimCode(claimCode);
         }
-      } catch (e) {
-        if (e === 'ErrHighlightMintUnavailable') {
+      } catch (e: unknown) {
+        if (e instanceof Error && e.message === 'ErrHighlightMintUnavailable') {
           setError('Minting is currently unavailable.');
+          return;
+        }
+        if (e instanceof Error && e.message === 'ErrHighlightClaimAlreadyMinted') {
+          setError('You have already minted Resonance.');
           return;
         }
         setError('Something went wrong while minting. Please try again.');

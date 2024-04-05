@@ -204,7 +204,7 @@ const COPY = [
 ];
 
 const FADE_DURATION = 250;
-const TEXT_DURATION = 3750;
+const TEXT_DURATION = 5000;
 
 function LoadingStateMessage() {
   const [index, setIndex] = useState(0);
