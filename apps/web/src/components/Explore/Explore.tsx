@@ -1,14 +1,20 @@
 import { Suspense } from 'react';
 import styled from 'styled-components';
 
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
+
 import { VStack } from '../core/Spacer/Stack';
 import FeaturedUsers, { FeaturedUsersLoadingSkeleton } from './FeaturedUsers';
 import GallerySelects from './GallerySelects';
 
-export default function Explore() {
+type Props = {
+  gallerySelectsContent: CmsTypes.ExplorePageGallerySelectsList;
+};
+
+export default function Explore({ gallerySelectsContent }: Props) {
   return (
     <StyledExplorePage gap={48}>
-      <GallerySelects />
+      <GallerySelects gallerySelectsContent={gallerySelectsContent} />
       <Suspense fallback={<FeaturedUsersLoadingSkeleton />}>
         <FeaturedUsers />
       </Suspense>
