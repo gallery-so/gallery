@@ -8,7 +8,7 @@ import { VStack } from '../core/Spacer/Stack';
 import { SearchFilterType } from './Search';
 import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCuratorsSection';
 import SearchDefaultTrendingUsersSection from './SearchDefaultTrendingUsersSection';
-import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
+import SearchDefaultSuggestedUsersSection from './SearchDefaultSuggestedUsersSection';
 import { SearchItemType } from './types';
 
 type Props = {
@@ -39,7 +39,11 @@ export default function SearchDefault({
     <SectionWrapper gap={18}>
       {!selectedFilter && (
         <VStack gap={16}>
-          <SearchSuggestedUsersSection queryRef={query} variant={variant} onSelect={onSelect} />
+          <SearchDefaultSuggestedUsersSection
+            queryRef={query}
+            variant={variant}
+            onSelect={onSelect}
+          />
           <SearchDefaultTrendingUsersSection
             queryRef={query}
             variant={variant}

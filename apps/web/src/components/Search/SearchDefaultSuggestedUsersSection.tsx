@@ -16,7 +16,7 @@ type Props = {
   onSelect: (item: SearchItemType) => void;
 };
 
-export default function SearchSuggestedUsersSection({ queryRef, variant, onSelect }: Props) {
+export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, onSelect }: Props) {
   const query = useFragment(
     graphql`
       fragment SearchSuggestedUsersSectionFragment on Query {
