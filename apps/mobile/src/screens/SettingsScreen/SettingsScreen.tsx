@@ -10,6 +10,7 @@ import { Button } from '~/components/Button';
 import FeedbackBottomSheetModal from '~/components/FeedbackBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
 import { Typography } from '~/components/Typography';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
@@ -23,7 +24,6 @@ import { DiscordIcon } from '../../icons/DiscordIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import DebugBottomSheetModal from './DebugBottomSheetModal';
-import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
 
 const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
