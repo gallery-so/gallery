@@ -18,7 +18,7 @@ import {
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
-const SNAP_POINTS = ['50%']; // Example snap points, adjust based on your needs
+const SNAP_POINTS = ['CONTENT_HEIGHT']; // Example snap points, adjust based on your needs
 
 type BottomSheetModalState = {
   isBottomSheetModalVisible: boolean;

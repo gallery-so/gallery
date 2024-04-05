@@ -34,6 +34,7 @@ export const contexts = {
   Reply: 'Reply',
   Badge: 'Badge',
   Bookmarks: 'Bookmarks',
+  'Mint Campaign': 'Mint Campaign',
 } as const;
 
 export type AnalyticsEventContextType = keyof typeof contexts;

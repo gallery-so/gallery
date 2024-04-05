@@ -1,8 +1,12 @@
 directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
-"""Exposes a URL that specifies the behavior of this scalar."""
+"""
+Exposes a URL that specifies the behavior of this scalar.
+"""
 directive @specifiedBy(
-  """The URL that specifies the behavior of this scalar."""
+  """
+  The URL that specifies the behavior of this scalar.
+  """
   url: String!
 ) on SCALAR
 
@@ -23,7 +27,12 @@ type AddUserWalletPayload {
   viewer: Viewer
 }
 
-union AddUserWalletPayloadOrError = AddUserWalletPayload | ErrAuthenticationFailed | ErrNotAuthorized | ErrInvalidInput | ErrAddressOwnedByUser
+union AddUserWalletPayloadOrError =
+    AddUserWalletPayload
+  | ErrAuthenticationFailed
+  | ErrNotAuthorized
+  | ErrInvalidInput
+  | ErrAddressOwnedByUser
 
 input AdminAddWalletInput {
   username: String!
@@ -35,7 +44,11 @@ type AdminAddWalletPayload {
   user: GalleryUser
 }
 
-union AdminAddWalletPayloadOrError = AdminAddWalletPayload | ErrUserNotFound | ErrAddressOwnedByUser | ErrNotAuthorized
+union AdminAddWalletPayloadOrError =
+    AdminAddWalletPayload
+  | ErrUserNotFound
+  | ErrAddressOwnedByUser
+  | ErrNotAuthorized
 
 type Admire implements Node {
   id: ID!
@@ -52,7 +65,11 @@ type AdmireCommentPayload {
   admire: Admire
 }
 
-union AdmireCommentPayloadOrError = AdmireCommentPayload | ErrCommentNotFound | ErrInvalidInput | ErrNotAuthorized
+union AdmireCommentPayloadOrError =
+    AdmireCommentPayload
+  | ErrCommentNotFound
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type AdmireFeedEventPayload {
   viewer: Viewer
@@ -60,7 +77,12 @@ type AdmireFeedEventPayload {
   feedEvent: FeedEvent
 }
 
-union AdmireFeedEventPayloadOrError = AdmireFeedEventPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrAdmireAlreadyExists
+union AdmireFeedEventPayloadOrError =
+    AdmireFeedEventPayload
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrAdmireAlreadyExists
 
 type AdmirePostPayload {
   viewer: Viewer
@@ -68,7 +90,11 @@ type AdmirePostPayload {
   admire: Admire
 }
 
-union AdmirePostPayloadOrError = AdmirePostPayload | ErrInvalidInput | ErrNotAuthorized | ErrPostNotFound
+union AdmirePostPayloadOrError =
+    AdmirePostPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrPostNotFound
 
 union AdmireSource = Post | FeedEvent | Comment
 
@@ -78,7 +104,11 @@ type AdmireTokenPayload {
   admire: Admire
 }
 
-union AdmireTokenPayloadOrError = AdmireTokenPayload | ErrTokenNotFound | ErrInvalidInput | ErrNotAuthorized
+union AdmireTokenPayloadOrError =
+    AdmireTokenPayload
+  | ErrTokenNotFound
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type ArtBlocksCommunity {
   communityKey: ArtBlocksCommunityKey
@@ -119,7 +149,11 @@ type AuthNonce {
   message: String
 }
 
-union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrSessionInvalidated | ErrDoesNotOwnRequiredToken
+union AuthorizationError =
+    ErrNoCookie
+  | ErrInvalidToken
+  | ErrSessionInvalidated
+  | ErrDoesNotOwnRequiredToken
 
 type Badge {
   name: String
@@ -142,7 +176,11 @@ type BlockUserPayload {
   userId: DBID!
 }
 
-union BlockUserPayloadOrError = BlockUserPayload | ErrUserNotFound | ErrNotAuthorized | ErrInvalidInput
+union BlockUserPayloadOrError =
+    BlockUserPayload
+  | ErrUserNotFound
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 enum Chain {
   Ethereum
@@ -329,7 +367,11 @@ type CommentOnFeedEventPayload {
   feedEvent: FeedEvent
 }
 
-union CommentOnFeedEventPayloadOrError = CommentOnFeedEventPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput
+union CommentOnFeedEventPayloadOrError =
+    CommentOnFeedEventPayload
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
 
 type CommentOnPostPayload {
   viewer: Viewer
@@ -367,14 +409,34 @@ type Community implements Node {
   tokens(before: String, after: String, first: Int, last: Int): TokensConnection
   posts(before: String, after: String, first: Int, last: Int): PostsConnection
   tokensForFrame(limit: Int!): [Token]
-  contract: Contract @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
-  contractAddress: ChainAddress @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
+  contract: Contract
+    @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
+  contractAddress: ChainAddress
+    @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   chain: Chain @deprecated(reason: "Use Community.subtype. Not all communities have contracts.")
   creatorAddress: ChainAddress @deprecated(reason: "Use Community.creators to get an address")
   creator: GalleryUserOrAddress
-  tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @deprecated(reason: "Use Community.tokens")
-  owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
-  galleries(maxPreviews: Int!, before: String, after: String, first: Int, last: Int): CommunityGalleriesConnection
+  tokensInCommunity(
+    before: String
+    after: String
+    first: Int
+    last: Int
+    onlyGalleryUsers: Boolean
+  ): TokensConnection @deprecated(reason: "Use Community.tokens")
+  owners(
+    before: String
+    after: String
+    first: Int
+    last: Int
+    onlyGalleryUsers: Boolean
+  ): TokenHoldersConnection @deprecated(reason: "Use Community.holders")
+  galleries(
+    maxPreviews: Int!
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): CommunityGalleriesConnection
   viewerIsMember: Boolean
 }
 
@@ -414,7 +476,10 @@ type ConnectSocialAccountPayload {
   viewer: Viewer
 }
 
-union ConnectSocialAccountPayloadOrError = ConnectSocialAccountPayload | ErrInvalidInput | ErrNotAuthorized
+union ConnectSocialAccountPayloadOrError =
+    ConnectSocialAccountPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type Contract implements Node {
   id: ID!
@@ -503,7 +568,14 @@ type CreateUserPayload {
   viewer: Viewer
 }
 
-union CreateUserPayloadOrError = CreateUserPayload | ErrAuthenticationFailed | ErrDoesNotOwnRequiredToken | ErrUserAlreadyExists | ErrUsernameNotAvailable | ErrInvalidInput | ErrEmailAlreadyUsed
+union CreateUserPayloadOrError =
+    CreateUserPayload
+  | ErrAuthenticationFailed
+  | ErrDoesNotOwnRequiredToken
+  | ErrUserAlreadyExists
+  | ErrUsernameNotAvailable
+  | ErrInvalidInput
+  | ErrEmailAlreadyUsed
 
 enum DarkMode {
   Disabled
@@ -530,7 +602,11 @@ type DeleteCollectionPayload {
   gallery: Gallery
 }
 
-union DeleteCollectionPayloadOrError = DeleteCollectionPayload | ErrNotAuthorized | ErrInvalidInput | ErrCollectionNotFound
+union DeleteCollectionPayloadOrError =
+    DeleteCollectionPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
+  | ErrCollectionNotFound
 
 type DeletedNode implements Node {
   id: ID!
@@ -553,7 +629,11 @@ type DisconnectSocialAccountPayload {
   viewer: Viewer
 }
 
-union DisconnectSocialAccountPayloadOrError = DisconnectSocialAccountPayload | ErrInvalidInput | ErrNotAuthorized | ErrNeedsToReconnectSocial
+union DisconnectSocialAccountPayloadOrError =
+    DisconnectSocialAccountPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrNeedsToReconnectSocial
 
 scalar Email
 
@@ -654,6 +734,14 @@ type ErrHighlightMintUnavailable implements Error {
 }
 
 type ErrHighlightTxnFailed implements Error {
+  message: String!
+}
+
+type ErrHighlightClaimInProgress implements Error {
+  message: String!
+}
+
+type ErrHighlightClaimAlreadyMinted implements Error {
   message: String!
 }
 
@@ -804,20 +892,34 @@ interface FeedEventData {
   action: Action
 }
 
-"""Can return posts as well"""
-union FeedEventOrError = FeedEvent | Post | ErrPostNotFound | ErrFeedEventNotFound | ErrUnknownAction
+"""
+Can return posts as well
+"""
+union FeedEventOrError =
+    FeedEvent
+  | Post
+  | ErrPostNotFound
+  | ErrFeedEventNotFound
+  | ErrUnknownAction
 
 type FollowAllOnboardingRecommendationsPayload {
   viewer: Viewer
 }
 
-union FollowAllOnboardingRecommendationsPayloadOrError = FollowAllOnboardingRecommendationsPayload | ErrInvalidInput | ErrNotAuthorized
+union FollowAllOnboardingRecommendationsPayloadOrError =
+    FollowAllOnboardingRecommendationsPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type FollowAllSocialConnectionsPayload {
   viewer: Viewer
 }
 
-union FollowAllSocialConnectionsPayloadOrError = FollowAllSocialConnectionsPayload | ErrInvalidInput | ErrNotAuthorized | ErrNeedsToReconnectSocial
+union FollowAllSocialConnectionsPayloadOrError =
+    FollowAllSocialConnectionsPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrNeedsToReconnectSocial
 
 type FollowInfo {
   user: GalleryUser
@@ -829,7 +931,11 @@ type FollowUserPayload {
   user: GalleryUser
 }
 
-union FollowUserPayloadOrError = FollowUserPayload | ErrAuthenticationFailed | ErrUserNotFound | ErrInvalidInput
+union FollowUserPayloadOrError =
+    FollowUserPayload
+  | ErrAuthenticationFailed
+  | ErrUserNotFound
+  | ErrInvalidInput
 
 type Gallery implements Node {
   id: ID!
@@ -911,7 +1017,13 @@ type GalleryUser implements Node {
   feed(before: String, after: String, first: Int, last: Int): FeedConnection
   sharedFollowers(before: String, after: String, first: Int, last: Int): UsersConnection
   sharedCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
-  createdCommunities(input: CreatedCommunitiesInput!, before: String, after: String, first: Int, last: Int): CommunitiesConnection
+  createdCommunities(
+    input: CreatedCommunitiesInput!
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): CommunitiesConnection
   isMemberOfCommunity(communityID: DBID!): Boolean!
 }
 
@@ -979,14 +1091,26 @@ type HighlightClaimMintPayload {
   claimId: DBID!
 }
 
-union HighlightClaimMintPayloadOrError = HighlightClaimMintPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrHighlightChainNotSupported | ErrAddressNotOwnedByUser | ErrNotAuthorized
+union HighlightClaimMintPayloadOrError =
+    HighlightClaimMintPayload
+  | ErrHighlightTxnFailed
+  | ErrHighlightMintUnavailable
+  | ErrHighlightChainNotSupported
+  | ErrAddressNotOwnedByUser
+  | ErrHighlightClaimInProgress
+  | ErrHighlightClaimAlreadyMinted
+  | ErrNotAuthorized
 
 type HighlightMintClaimStatusPayload {
   status: HighlightTxStatus!
   token: Token
 }
 
-union HighlightMintClaimStatusPayloadOrError = HighlightMintClaimStatusPayload | ErrHighlightTxnFailed | ErrHighlightMintUnavailable | ErrNotAuthorized
+union HighlightMintClaimStatusPayloadOrError =
+    HighlightMintClaimStatusPayload
+  | ErrHighlightTxnFailed
+  | ErrHighlightMintUnavailable
+  | ErrNotAuthorized
 
 enum HighlightTxStatus {
   TX_PENDING
@@ -1090,7 +1214,12 @@ type LoginPayload {
   viewer: Viewer
 }
 
-union LoginPayloadOrError = LoginPayload | ErrUserNotFound | ErrAuthenticationFailed | ErrEmailUnverified | ErrDoesNotOwnRequiredToken
+union LoginPayloadOrError =
+    LoginPayload
+  | ErrUserNotFound
+  | ErrAuthenticationFailed
+  | ErrEmailUnverified
+  | ErrDoesNotOwnRequiredToken
 
 type LogoutPayload {
   viewer: Viewer
@@ -1114,7 +1243,19 @@ type MediaDimensions {
   aspectRatio: Float
 }
 
-union MediaSubtype = ImageMedia | GIFMedia | VideoMedia | AudioMedia | TextMedia | PdfMedia | HtmlMedia | JsonMedia | GltfMedia | UnknownMedia | SyncingMedia | InvalidMedia
+union MediaSubtype =
+    ImageMedia
+  | GIFMedia
+  | VideoMedia
+  | AudioMedia
+  | TextMedia
+  | PdfMedia
+  | HtmlMedia
+  | JsonMedia
+  | GltfMedia
+  | UnknownMedia
+  | SyncingMedia
+  | InvalidMedia
 
 type MembershipTier implements Node {
   id: ID!
@@ -1174,7 +1315,11 @@ type MintPremiumCardToWalletPayload {
   tx: String!
 }
 
-union MintPremiumCardToWalletPayloadOrError = MintPremiumCardToWalletPayload | ErrInvalidInput | ErrNotAuthorized | ErrNeedsToReconnectSocial
+union MintPremiumCardToWalletPayloadOrError =
+    MintPremiumCardToWalletPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrNeedsToReconnectSocial
 
 input MoveCollectionToGalleryInput {
   sourceCollectionId: DBID!
@@ -1186,10 +1331,16 @@ type MoveCollectionToGalleryPayload {
   newGallery: Gallery
 }
 
-union MoveCollectionToGalleryPayloadOrError = MoveCollectionToGalleryPayload | ErrInvalidInput | ErrNotAuthorized
+union MoveCollectionToGalleryPayloadOrError =
+    MoveCollectionToGalleryPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type Mutation {
-  addUserWallet(chainAddress: ChainAddressInput!, authMechanism: AuthMechanism!): AddUserWalletPayloadOrError
+  addUserWallet(
+    chainAddress: ChainAddressInput!
+    authMechanism: AuthMechanism!
+  ): AddUserWalletPayloadOrError
   removeUserWallets(walletIds: [DBID!]!): RemoveUserWalletsPayloadOrError
   updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError
   registerUserPushToken(pushToken: String!): RegisterUserPushTokenPayloadOrError
@@ -1199,7 +1350,9 @@ type Mutation {
   reportPost(postId: DBID!, reason: ReportReason!): ReportPostPayloadOrError
   blockUser(userId: DBID!): BlockUserPayloadOrError
   unblockUser(userId: DBID!): UnblockUserPayloadOrError
-  updateGalleryCollections(input: UpdateGalleryCollectionsInput!): UpdateGalleryCollectionsPayloadOrError
+  updateGalleryCollections(
+    input: UpdateGalleryCollectionsInput!
+  ): UpdateGalleryCollectionsPayloadOrError
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
   updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayloadOrError
@@ -1208,8 +1361,12 @@ type Mutation {
   updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError
   setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError
   syncTokens(chains: [Chain!], incrementally: Boolean): SyncTokensPayloadOrError
-  syncCreatedTokensForNewContracts(input: SyncCreatedTokensForNewContractsInput!): SyncCreatedTokensForNewContractsPayloadOrError
-  syncCreatedTokensForExistingContract(input: SyncCreatedTokensForExistingContractInput!): SyncCreatedTokensForExistingContractPayloadOrError
+  syncCreatedTokensForNewContracts(
+    input: SyncCreatedTokensForNewContractsInput!
+  ): SyncCreatedTokensForNewContractsPayloadOrError
+  syncCreatedTokensForExistingContract(
+    input: SyncCreatedTokensForExistingContractInput!
+  ): SyncCreatedTokensForExistingContractPayloadOrError
   refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
   refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
   refreshContract(contractId: DBID!): RefreshContractPayloadOrError
@@ -1217,15 +1374,26 @@ type Mutation {
   createUser(authMechanism: AuthMechanism!, input: CreateUserInput!): CreateUserPayloadOrError
   updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError
   resendVerificationEmail: ResendVerificationEmailPayloadOrError
-  updateEmailNotificationSettings(input: UpdateEmailNotificationSettingsInput!): UpdateEmailNotificationSettingsPayloadOrError
-  unsubscribeFromEmailType(input: UnsubscribeFromEmailTypeInput!): UnsubscribeFromEmailTypePayloadOrError
+  updateEmailNotificationSettings(
+    input: UpdateEmailNotificationSettingsInput!
+  ): UpdateEmailNotificationSettingsPayloadOrError
+  unsubscribeFromEmailType(
+    input: UnsubscribeFromEmailTypeInput!
+  ): UnsubscribeFromEmailTypePayloadOrError
   login(authMechanism: AuthMechanism!): LoginPayloadOrError
   logout(pushTokenToUnregister: String): LogoutPayload
-  connectSocialAccount(input: SocialAuthMechanism!, display: Boolean! = true): ConnectSocialAccountPayloadOrError
+  connectSocialAccount(
+    input: SocialAuthMechanism!
+    display: Boolean! = true
+  ): ConnectSocialAccountPayloadOrError
   disconnectSocialAccount(accountType: SocialAccountType!): DisconnectSocialAccountPayloadOrError
-  updateSocialAccountDisplayed(input: UpdateSocialAccountDisplayedInput!): UpdateSocialAccountDisplayedPayloadOrError
+  updateSocialAccountDisplayed(
+    input: UpdateSocialAccountDisplayedInput!
+  ): UpdateSocialAccountDisplayedPayloadOrError
   followUser(userId: DBID!): FollowUserPayloadOrError
-  followAllSocialConnections(accountType: SocialAccountType!): FollowAllSocialConnectionsPayloadOrError
+  followAllSocialConnections(
+    accountType: SocialAccountType!
+  ): FollowAllSocialConnectionsPayloadOrError
   followAllOnboardingRecommendations(
     """
     A cursor returned from `Viewer.suggestedUsers` can be provided to follow all users from when the
@@ -1239,9 +1407,19 @@ type Mutation {
   admireToken(tokenId: DBID!): AdmireTokenPayloadOrError
   admireComment(commentId: DBID!): AdmireCommentPayloadOrError
   removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError
-  commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!, mentions: [MentionInput!]): CommentOnFeedEventPayloadOrError
+  commentOnFeedEvent(
+    feedEventId: DBID!
+    replyToID: DBID
+    comment: String!
+    mentions: [MentionInput!]
+  ): CommentOnFeedEventPayloadOrError
   removeComment(commentId: DBID!): RemoveCommentPayloadOrError
-  commentOnPost(postId: DBID!, replyToID: DBID, comment: String!, mentions: [MentionInput!]): CommentOnPostPayloadOrError
+  commentOnPost(
+    postId: DBID!
+    replyToID: DBID
+    comment: String!
+    mentions: [MentionInput!]
+  ): CommentOnPostPayloadOrError
   postTokens(input: PostTokensInput!): PostTokensPayloadOrError
   referralPostToken(input: ReferralPostTokenInput!): ReferralPostTokenPayloadOrError
   referralPostPreflight(input: ReferralPostPreflightInput!): ReferralPostPreflightPayloadOrError
@@ -1270,16 +1448,29 @@ type Mutation {
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
   revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
-  syncCreatedTokensForUsername(username: String!, chains: [Chain!]!): SyncCreatedTokensForUsernamePayloadOrError
-  syncCreatedTokensForUsernameAndExistingContract(username: String!, chainAddress: ChainAddressInput!): SyncCreatedTokensForUsernameAndExistingContractPayloadOrError
+  syncCreatedTokensForUsername(
+    username: String!
+    chains: [Chain!]!
+  ): SyncCreatedTokensForUsernamePayloadOrError
+  syncCreatedTokensForUsernameAndExistingContract(
+    username: String!
+    chainAddress: ChainAddressInput!
+  ): SyncCreatedTokensForUsernameAndExistingContractPayloadOrError
   banUserFromFeed(username: String!, reason: ReportReason!): BanUserFromFeedPayloadOrError
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
-  mintPremiumCardToWallet(input: MintPremiumCardToWalletInput!): MintPremiumCardToWalletPayloadOrError
-  setCommunityOverrideCreator(communityID: DBID!, creatorUserID: DBID): SetCommunityOverrideCreatorPayloadOrError
+  mintPremiumCardToWallet(
+    input: MintPremiumCardToWalletInput!
+  ): MintPremiumCardToWalletPayloadOrError
+  setCommunityOverrideCreator(
+    communityID: DBID!
+    creatorUserID: DBID
+  ): SetCommunityOverrideCreatorPayloadOrError
   uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError
   updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError
   updateUserExperience(input: UpdateUserExperienceInput!): UpdateUserExperiencePayloadOrError
-  moveCollectionToGallery(input: MoveCollectionToGalleryInput): MoveCollectionToGalleryPayloadOrError
+  moveCollectionToGallery(
+    input: MoveCollectionToGalleryInput
+  ): MoveCollectionToGalleryPayloadOrError
   generateQRCodeLoginToken: GenerateQRCodeLoginTokenPayloadOrError
 }
 
@@ -1429,7 +1620,10 @@ type PostComposerDraftDetailsPayload {
   tokenDescription: String
 }
 
-union PostComposerDraftDetailsPayloadOrError = PostComposerDraftDetailsPayload | ErrInvalidInput | ErrCommunityNotFound
+union PostComposerDraftDetailsPayloadOrError =
+    PostComposerDraftDetailsPayload
+  | ErrInvalidInput
+  | ErrCommunityNotFound
 
 type PostEdge {
   node: PostOrError
@@ -1517,7 +1711,10 @@ type Query {
   collectionsByIds(ids: [DBID!]!): [CollectionByIdOrError]
   tokenById(id: DBID!): TokenByIdOrError
   collectionTokenById(tokenId: DBID!, collectionId: DBID!): CollectionTokenByIdOrError
-  communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
+  communityByAddress(
+    communityAddress: ChainAddressInput!
+    forceRefresh: Boolean
+  ): CommunityByAddressOrError
   communityById(id: DBID!): CommunityByIdOrError
   generalAllowlist: [ChainAddress!]
   galleryOfTheWeekWinners: [GalleryUser!]
@@ -1537,7 +1734,12 @@ type Query {
   bioWeight defaults to 0.2, meaning that a search result matching a username is considered
   twice as relevant as a search result matching a bio.
   """
-  searchUsers(query: String!, limit: Int, usernameWeight: Float, bioWeight: Float): SearchUsersPayloadOrError
+  searchUsers(
+    query: String!
+    limit: Int
+    usernameWeight: Float
+    bioWeight: Float
+  ): SearchUsersPayloadOrError
 
   """
   Search for galleries with optional weighting. Weights are floats in the [0.0. 1.0] range
@@ -1545,7 +1747,12 @@ type Query {
   descriptionWeight defaults to 0.2, meaning that a search result matching a gallery name is
   considered twice as relevant as a search result matching a gallery description.
   """
-  searchGalleries(query: String!, limit: Int, nameWeight: Float, descriptionWeight: Float): SearchGalleriesPayloadOrError
+  searchGalleries(
+    query: String!
+    limit: Int
+    nameWeight: Float
+    descriptionWeight: Float
+  ): SearchGalleriesPayloadOrError
 
   """
   Search for communities with optional weighting. Weights are floats in the [0.0. 1.0] range
@@ -1556,13 +1763,35 @@ type Query {
   matching a POAP address string. providerNameWeight is used to return communities provided by
   a provider (e.g. Art Blocks) when searching for that provider's name (e.g. "art blocks").
   """
-  searchCommunities(query: String!, limit: Int, nameWeight: Float, descriptionWeight: Float, poapAddressWeight: Float, providerNameWeight: Float): SearchCommunitiesPayloadOrError
+  searchCommunities(
+    query: String!
+    limit: Int
+    nameWeight: Float
+    descriptionWeight: Float
+    poapAddressWeight: Float
+    providerNameWeight: Float
+  ): SearchCommunitiesPayloadOrError
   isEmailAddressAvailable(emailAddress: Email!): Boolean
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
-  socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
+  socialConnections(
+    socialAccountType: SocialAccountType!
+    excludeAlreadyFollowing: Boolean
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
-  topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
-  postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
+  topCollectionsForCommunity(
+    input: topCollectionsForCommunityInput!
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): CollectionsConnection
+  postComposerDraftDetails(
+    input: PostComposerDraftDetailsInput!
+  ): PostComposerDraftDetailsPayloadOrError
   contractCommunityByKey(key: ContractCommunityKeyInput!): CommunityByKeyOrError
   artBlocksCommunityByKey(key: ArtBlocksCommunityKeyInput!): CommunityByKeyOrError
   highlightMintClaimStatus(claimId: DBID!): HighlightMintClaimStatusPayloadOrError
@@ -1601,7 +1830,11 @@ type ReferralPostTokenPayload {
   post: Post!
 }
 
-union ReferralPostTokenPayloadOrError = ReferralPostTokenPayload | ErrInvalidInput | ErrNotAuthorized | ErrTokenNotFound
+union ReferralPostTokenPayloadOrError =
+    ReferralPostTokenPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrTokenNotFound
 
 type RefreshCollectionPayload {
   collection: Collection
@@ -1619,13 +1852,21 @@ type RefreshTokenPayload {
   token: Token
 }
 
-union RefreshTokenPayloadOrError = RefreshTokenPayload | ErrInvalidInput | ErrSyncFailed | ErrTokenNotFound
+union RefreshTokenPayloadOrError =
+    RefreshTokenPayload
+  | ErrInvalidInput
+  | ErrSyncFailed
+  | ErrTokenNotFound
 
 type RegisterUserPushTokenPayload {
   viewer: Viewer
 }
 
-union RegisterUserPushTokenPayloadOrError = RegisterUserPushTokenPayload | ErrNotAuthorized | ErrInvalidInput | ErrPushTokenBelongsToAnotherUser
+union RegisterUserPushTokenPayloadOrError =
+    RegisterUserPushTokenPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
+  | ErrPushTokenBelongsToAnotherUser
 
 type RemoveAdmirePayload {
   viewer: Viewer
@@ -1634,7 +1875,12 @@ type RemoveAdmirePayload {
   post: Post
 }
 
-union RemoveAdmirePayloadOrError = RemoveAdmirePayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrAdmireNotFound
+union RemoveAdmirePayloadOrError =
+    RemoveAdmirePayload
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrAdmireNotFound
 
 type RemoveCommentPayload {
   viewer: Viewer
@@ -1642,19 +1888,30 @@ type RemoveCommentPayload {
   post: Post
 }
 
-union RemoveCommentPayloadOrError = RemoveCommentPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrCommentNotFound
+union RemoveCommentPayloadOrError =
+    RemoveCommentPayload
+  | ErrAuthenticationFailed
+  | ErrFeedEventNotFound
+  | ErrInvalidInput
+  | ErrCommentNotFound
 
 type RemoveProfileImagePayload {
   viewer: Viewer
 }
 
-union RemoveProfileImagePayloadOrError = RemoveProfileImagePayload | ErrAuthenticationFailed | ErrUserNotFound
+union RemoveProfileImagePayloadOrError =
+    RemoveProfileImagePayload
+  | ErrAuthenticationFailed
+  | ErrUserNotFound
 
 type RemoveUserWalletsPayload {
   viewer: Viewer
 }
 
-union RemoveUserWalletsPayloadOrError = RemoveUserWalletsPayload | ErrNotAuthorized | ErrInvalidInput
+union RemoveUserWalletsPayloadOrError =
+    RemoveUserWalletsPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 type ReportPostPayload {
   postId: DBID!
@@ -1711,7 +1968,9 @@ type SetCommunityOverrideCreatorPayload {
   user: GalleryUser
 }
 
-union SetCommunityOverrideCreatorPayloadOrError = SetCommunityOverrideCreatorPayload | ErrNotAuthorized
+union SetCommunityOverrideCreatorPayloadOrError =
+    SetCommunityOverrideCreatorPayload
+  | ErrNotAuthorized
 
 type SetPersonaPayload {
   viewer: Viewer
@@ -1728,7 +1987,14 @@ type SetProfileImagePayload {
   viewer: Viewer
 }
 
-union SetProfileImagePayloadOrError = SetProfileImagePayload | ErrAuthenticationFailed | ErrUserNotFound | ErrInvalidInput | ErrTokenNotFound | ErrNotAuthorized | ErrNoAvatarRecordSet
+union SetProfileImagePayloadOrError =
+    SetProfileImagePayload
+  | ErrAuthenticationFailed
+  | ErrUserNotFound
+  | ErrInvalidInput
+  | ErrTokenNotFound
+  | ErrNotAuthorized
+  | ErrNoAvatarRecordSet
 
 input SetSpamPreferenceInput {
   tokens: [DBID!]!
@@ -1790,7 +2056,14 @@ type SocialConnectionsEdge {
 union SocialConnectionsOrError = SocialConnection | ErrInvalidInput
 
 type SocialQueries {
-  socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
+  socialConnections(
+    socialAccountType: SocialAccountType!
+    excludeAlreadyFollowing: Boolean
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): SocialConnectionsConnection
 }
 
 union SocialQueriesOrError = SocialQueries | ErrNotAuthorized | ErrNeedsToReconnectSocial
@@ -1925,7 +2198,12 @@ type SomeoneViewedYourGalleryNotification implements Notification & Node & Group
   creationTime: Time
   updatedTime: Time
   count: Int
-  userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+  userViewers(
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): GroupNotificationUsersConnection
   nonUserViewerCount: Int
   gallery: Gallery
 }
@@ -1961,7 +2239,10 @@ type SyncCreatedTokensForExistingContractPayload {
   viewer: Viewer
 }
 
-union SyncCreatedTokensForExistingContractPayloadOrError = SyncCreatedTokensForExistingContractPayload | ErrNotAuthorized | ErrSyncFailed
+union SyncCreatedTokensForExistingContractPayloadOrError =
+    SyncCreatedTokensForExistingContractPayload
+  | ErrNotAuthorized
+  | ErrSyncFailed
 
 input SyncCreatedTokensForNewContractsInput {
   includeChains: [Chain!]
@@ -1972,19 +2253,30 @@ type SyncCreatedTokensForNewContractsPayload {
   viewer: Viewer
 }
 
-union SyncCreatedTokensForNewContractsPayloadOrError = SyncCreatedTokensForNewContractsPayload | ErrNotAuthorized | ErrSyncFailed
+union SyncCreatedTokensForNewContractsPayloadOrError =
+    SyncCreatedTokensForNewContractsPayload
+  | ErrNotAuthorized
+  | ErrSyncFailed
 
 type SyncCreatedTokensForUsernameAndExistingContractPayload {
   message: String!
 }
 
-union SyncCreatedTokensForUsernameAndExistingContractPayloadOrError = SyncCreatedTokensForUsernameAndExistingContractPayload | ErrInvalidInput | ErrNotAuthorized | ErrSyncFailed | ErrCommunityNotFound
+union SyncCreatedTokensForUsernameAndExistingContractPayloadOrError =
+    SyncCreatedTokensForUsernameAndExistingContractPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrSyncFailed
+  | ErrCommunityNotFound
 
 type SyncCreatedTokensForUsernamePayload {
   message: String!
 }
 
-union SyncCreatedTokensForUsernamePayloadOrError = SyncCreatedTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
+union SyncCreatedTokensForUsernamePayloadOrError =
+    SyncCreatedTokensForUsernamePayload
+  | ErrNotAuthorized
+  | ErrSyncFailed
 
 type SyncingMedia implements Media {
   previewURLs: PreviewURLSet
@@ -1999,7 +2291,10 @@ type SyncTokensForUsernamePayload {
   message: String!
 }
 
-union SyncTokensForUsernamePayloadOrError = SyncTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
+union SyncTokensForUsernamePayloadOrError =
+    SyncTokensForUsernamePayload
+  | ErrNotAuthorized
+  | ErrSyncFailed
 
 type SyncTokensPayload {
   viewer: Viewer
@@ -2032,7 +2327,13 @@ type Token implements Node {
   ownerIsCreator: Boolean
   definition: TokenDefinition!
   isSpamByUser: Boolean
-  admires(before: String, after: String, first: Int, last: Int, userID: DBID): TokenAdmiresConnection
+  admires(
+    before: String
+    after: String
+    first: Int
+    last: Int
+    userID: DBID
+  ): TokenAdmiresConnection
   viewerAdmire: Admire
   media(darkMode: DarkMode): MediaSubtype @deprecated(reason: "Use definition.media instead")
   tokenType: TokenType @deprecated(reason: "Use definition.tokenType instead")
@@ -2045,7 +2346,8 @@ type Token implements Node {
   community: Community @deprecated(reason: "Use definition.community instead")
   externalUrl: String @deprecated(reason: "Use definition.externalUrl instead")
   isSpamByProvider: Boolean @deprecated(reason: "Use definition.community.contract.isSpam instead")
-  creatorAddress: ChainAddress @deprecated(reason: "Use definition.community.creatorAddress instead")
+  creatorAddress: ChainAddress
+    @deprecated(reason: "Use definition.community.creatorAddress instead")
   openseaCollectionName: String @deprecated
   blockNumber: String @deprecated
   openseaId: Int @deprecated
@@ -2174,14 +2476,22 @@ type UnblockUserPayload {
   userId: DBID!
 }
 
-union UnblockUserPayloadOrError = UnblockUserPayload | ErrUserNotFound | ErrNotAuthorized | ErrInvalidInput
+union UnblockUserPayloadOrError =
+    UnblockUserPayload
+  | ErrUserNotFound
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 type UnfollowUserPayload {
   viewer: Viewer
   user: GalleryUser
 }
 
-union UnfollowUserPayloadOrError = UnfollowUserPayload | ErrAuthenticationFailed | ErrUserNotFound | ErrInvalidInput
+union UnfollowUserPayloadOrError =
+    UnfollowUserPayload
+  | ErrAuthenticationFailed
+  | ErrUserNotFound
+  | ErrInvalidInput
 
 type UnknownMedia implements Media {
   previewURLs: PreviewURLSet
@@ -2196,7 +2506,11 @@ type UnregisterUserPushTokenPayload {
   viewer: Viewer
 }
 
-union UnregisterUserPushTokenPayloadOrError = UnregisterUserPushTokenPayload | ErrNotAuthorized | ErrInvalidInput | ErrPushTokenBelongsToAnotherUser
+union UnregisterUserPushTokenPayloadOrError =
+    UnregisterUserPushTokenPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
+  | ErrPushTokenBelongsToAnotherUser
 
 input UnsubscribeFromEmailTypeInput {
   type: EmailUnsubscriptionType!
@@ -2218,7 +2532,10 @@ type UpdateCollectionHiddenPayload {
   collection: Collection
 }
 
-union UpdateCollectionHiddenPayloadOrError = UpdateCollectionHiddenPayload | ErrNotAuthorized | ErrInvalidInput
+union UpdateCollectionHiddenPayloadOrError =
+    UpdateCollectionHiddenPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 input UpdateCollectionInfoInput {
   collectionId: DBID!
@@ -2230,7 +2547,10 @@ type UpdateCollectionInfoPayload {
   collection: Collection
 }
 
-union UpdateCollectionInfoPayloadOrError = UpdateCollectionInfoPayload | ErrNotAuthorized | ErrInvalidInput
+union UpdateCollectionInfoPayloadOrError =
+    UpdateCollectionInfoPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 input UpdateCollectionInput {
   dbid: DBID!
@@ -2255,7 +2575,10 @@ type UpdateCollectionTokensPayload {
   feedEvent: FeedEvent
 }
 
-union UpdateCollectionTokensPayloadOrError = UpdateCollectionTokensPayload | ErrNotAuthorized | ErrInvalidInput
+union UpdateCollectionTokensPayloadOrError =
+    UpdateCollectionTokensPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 input UpdateEmailInput {
   email: Email!
@@ -2273,7 +2596,9 @@ type UpdateEmailNotificationSettingsPayload {
   viewer: Viewer
 }
 
-union UpdateEmailNotificationSettingsPayloadOrError = UpdateEmailNotificationSettingsPayload | ErrInvalidInput
+union UpdateEmailNotificationSettingsPayloadOrError =
+    UpdateEmailNotificationSettingsPayload
+  | ErrInvalidInput
 
 type UpdateEmailPayload {
   viewer: Viewer
@@ -2285,7 +2610,10 @@ type UpdateFeaturedGalleryPayload {
   viewer: Viewer
 }
 
-union UpdateFeaturedGalleryPayloadOrError = UpdateFeaturedGalleryPayload | ErrInvalidInput | ErrNotAuthorized
+union UpdateFeaturedGalleryPayloadOrError =
+    UpdateFeaturedGalleryPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 input UpdateGalleryCollectionsInput {
   galleryId: DBID!
@@ -2296,7 +2624,10 @@ type UpdateGalleryCollectionsPayload {
   gallery: Gallery
 }
 
-union UpdateGalleryCollectionsPayloadOrError = UpdateGalleryCollectionsPayload | ErrNotAuthorized | ErrInvalidInput
+union UpdateGalleryCollectionsPayloadOrError =
+    UpdateGalleryCollectionsPayload
+  | ErrNotAuthorized
+  | ErrInvalidInput
 
 input UpdateGalleryHiddenInput {
   id: DBID!
@@ -2307,7 +2638,10 @@ type UpdateGalleryHiddenPayload {
   gallery: Gallery
 }
 
-union UpdateGalleryHiddenPayloadOrError = UpdateGalleryHiddenPayload | ErrInvalidInput | ErrNotAuthorized
+union UpdateGalleryHiddenPayloadOrError =
+    UpdateGalleryHiddenPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 input UpdateGalleryInfoInput {
   id: DBID!
@@ -2319,7 +2653,10 @@ type UpdateGalleryInfoPayload {
   gallery: Gallery
 }
 
-union UpdateGalleryInfoPayloadOrError = UpdateGalleryInfoPayload | ErrInvalidInput | ErrNotAuthorized
+union UpdateGalleryInfoPayloadOrError =
+    UpdateGalleryInfoPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 input UpdateGalleryInput {
   galleryId: DBID!
@@ -2341,7 +2678,10 @@ type UpdateGalleryOrderPayload {
   viewer: Viewer
 }
 
-union UpdateGalleryOrderPayloadOrError = UpdateGalleryOrderPayload | ErrInvalidInput | ErrNotAuthorized
+union UpdateGalleryOrderPayloadOrError =
+    UpdateGalleryOrderPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 type UpdateGalleryPayload {
   gallery: Gallery
@@ -2353,7 +2693,10 @@ type UpdatePrimaryWalletPayload {
   viewer: Viewer
 }
 
-union UpdatePrimaryWalletPayloadOrError = UpdatePrimaryWalletPayload | ErrInvalidInput | ErrNotAuthorized
+union UpdatePrimaryWalletPayloadOrError =
+    UpdatePrimaryWalletPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 input UpdateSocialAccountDisplayedInput {
   type: SocialAccountType!
@@ -2364,7 +2707,11 @@ type UpdateSocialAccountDisplayedPayload {
   viewer: Viewer
 }
 
-union UpdateSocialAccountDisplayedPayloadOrError = UpdateSocialAccountDisplayedPayload | ErrInvalidInput | ErrNotAuthorized | ErrNeedsToReconnectSocial
+union UpdateSocialAccountDisplayedPayloadOrError =
+    UpdateSocialAccountDisplayedPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+  | ErrNeedsToReconnectSocial
 
 input UpdateTokenInfoInput {
   tokenId: DBID!
@@ -2387,7 +2734,10 @@ type UpdateUserExperiencePayload {
   viewer: Viewer
 }
 
-union UpdateUserExperiencePayloadOrError = UpdateUserExperiencePayload | ErrInvalidInput | ErrNotAuthorized
+union UpdateUserExperiencePayloadOrError =
+    UpdateUserExperiencePayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
 
 input UpdateUserInfoInput {
   username: String!
@@ -2398,7 +2748,11 @@ type UpdateUserInfoPayload {
   viewer: Viewer
 }
 
-union UpdateUserInfoPayloadOrError = UpdateUserInfoPayload | ErrNotAuthorized | ErrUsernameNotAvailable | ErrInvalidInput
+union UpdateUserInfoPayloadOrError =
+    UpdateUserInfoPayload
+  | ErrNotAuthorized
+  | ErrUsernameNotAvailable
+  | ErrInvalidInput
 
 input UploadPersistedQueriesInput {
   persistedQueries: String
@@ -2552,7 +2906,11 @@ type ViewTokenPayload {
   token: Token
 }
 
-union ViewTokenPayloadOrError = ViewTokenPayload | ErrAuthenticationFailed | ErrTokenNotFound | ErrCollectionNotFound
+union ViewTokenPayloadOrError =
+    ViewTokenPayload
+  | ErrAuthenticationFailed
+  | ErrTokenNotFound
+  | ErrCollectionNotFound
 
 type Wallet implements Node {
   id: ID!
@@ -2576,4 +2934,3 @@ type YouReceivedTopActivityBadgeNotification implements Notification & Node {
   updatedTime: Time
   threshold: Int!
 }
-
