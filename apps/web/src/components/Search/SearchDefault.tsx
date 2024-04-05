@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import styled from 'styled-components';
 
 import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
@@ -7,7 +7,7 @@ import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import { VStack } from '../core/Spacer/Stack';
 import { SearchFilterType } from './Search';
 import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCuratorsSection';
-import SearchFeaturedCollectionSection from './SearchFeaturedCollectionSection';
+import SearchDefaultTrendingUsersSection from './SearchDefaultTrendingUsersSection';
 import SearchSuggestedUsersSection from './SearchSuggestedUsersSection';
 import { SearchItemType } from './types';
 
@@ -30,29 +30,23 @@ export default function SearchDefault({
     graphql`
       query SearchDefaultQuery {
         ...SearchSuggestedUsersSectionFragment
+        ...SearchDefaultTrendingUsersSectionFragment
         ...SearchDefaultTrendingCuratorsSectionFragment
       }
     `,
     {}
   );
 
-  const featuredProfiles = useMemo(() => {
-    if (pageContent) {
-      return pageContent.featuredProfiles?.slice(0, 2);
-    }
-    return [];
-  }, [pageContent]);
-
   return (
-    <VStack gap={18}>
+    <SectionWrapper gap={18}>
       {!selectedFilter && (
-        <VStack gap={12}>
-          <SearchFeaturedCollectionSection
-            profiles={featuredProfiles}
+        <VStack gap={16}>
+          <SearchSuggestedUsersSection queryRef={query} variant={variant} onSelect={onSelect} />
+          <SearchDefaultTrendingUsersSection
+            queryRef={query}
             variant={variant}
             onSelect={onSelect}
           />
-          <SearchSuggestedUsersSection queryRef={query} variant={variant} onSelect={onSelect} />
         </VStack>
       )}
       <SearchDefaultTrendingCuratorsSection
@@ -63,6 +57,10 @@ export default function SearchDefault({
         onChangeFilter={onChangeFilter}
         showAllButton={true}
       />
-    </VStack>
+    </SectionWrapper>
   );
 }
+
+const SectionWrapper = styled(VStack)`
+  padding: 12px;
+`;

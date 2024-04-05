@@ -168,7 +168,7 @@ const StyledSuggestedProfileCard = styled(HStack)`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    min-width: 170px;
+    width: 230px;
   }
 `;
 
