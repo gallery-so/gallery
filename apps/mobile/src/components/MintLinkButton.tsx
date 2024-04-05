@@ -6,7 +6,6 @@ import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { HighlightIcon } from 'src/icons/HighlightIcon';
-import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
@@ -92,11 +91,6 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on zora',
         icon: <ZoraIcon />,
-      };
-    } else if (mintProviderType === 'MintFun') {
-      return {
-        buttonText: 'mint on mint.fun',
-        icon: <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else if (mintProviderType === 'FxHash') {
       return {
