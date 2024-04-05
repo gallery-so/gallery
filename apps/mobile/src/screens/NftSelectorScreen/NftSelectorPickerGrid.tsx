@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -27,12 +27,7 @@ import {
   NftSelectorPickerGridTokensFragment$data,
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
-import {
-  LoginStackNavigatorProp,
-  MainTabStackNavigatorParamList,
-  MainTabStackNavigatorProp,
-  ScreenWithNftSelector,
-} from '~/navigation/types';
+import { LoginStackNavigatorProp } from '~/navigation/types';
 import {
   NetworkChoice,
   NftSelectorSortView,
@@ -52,15 +47,18 @@ type NftSelectorPickerGridProps = {
     networkFilter: NetworkChoice;
     sortView: NftSelectorSortView;
   };
-  screen: ScreenWithNftSelector;
   onRefresh: () => void;
+
+  onSelect: (tokenId: string) => void;
+  onSelectNftGroup: (contractAddress: string) => void;
 };
 
 export function NftSelectorPickerGrid({
   searchCriteria,
-  screen,
   style,
   onRefresh,
+  onSelect,
+  onSelectNftGroup,
 }: NftSelectorPickerGridProps) {
   const query = useLazyLoadQuery<NftSelectorPickerGridQuery>(
     graphql`
@@ -269,7 +267,8 @@ export function NftSelectorPickerGrid({
                 tokenRefs={group.tokens}
                 contractAddress={group.address}
                 ownerFilter={searchCriteria.ownerFilter}
-                screen={screen}
+                onSelectNft={onSelect}
+                onSelectGroup={onSelectNftGroup}
               />
             );
           })}
@@ -281,7 +280,7 @@ export function NftSelectorPickerGrid({
         </View>
       );
     },
-    [screen, searchCriteria.ownerFilter]
+    [onSelect, onSelectNftGroup, searchCriteria.ownerFilter]
   );
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
@@ -389,10 +388,10 @@ type TokenGridProps = {
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
   ownerFilter: 'Created' | 'Collected';
   contractAddress: string;
-  screen: ScreenWithNftSelector;
+  onPress: (contractAddress: string) => void;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, style, onPress }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -404,11 +403,6 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
     tokenRefs
   );
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
-
-  const isFullscreen = route.params.fullScreen;
-
   type Row = { tokens: NftSelectorPickerGridTokenGridFragment$data[number][] };
 
   const rows: Row[] = useMemo(() => {
@@ -418,26 +412,8 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
   }, [tokens]);
 
   const handlePress = useCallback(() => {
-    if (screen === 'Onboarding') {
-      navigation.navigate('Login', {
-        screen: 'OnboardingNftSelectorContract',
-        params: {
-          contractAddress: contractAddress,
-          page: screen,
-          ownerFilter: ownerFilter,
-          fullScreen: isFullscreen,
-        },
-      });
-      return;
-    }
-
-    navigation.navigate('NftSelectorContractScreen', {
-      contractAddress: contractAddress,
-      page: screen,
-      ownerFilter: ownerFilter,
-      fullScreen: isFullscreen,
-    });
-  }, [contractAddress, isFullscreen, navigation, ownerFilter, screen]);
+    onPress(contractAddress);
+  }, [contractAddress, onPress]);
 
   return (
     <GalleryTouchableOpacity
@@ -475,10 +451,18 @@ type TokenGroupProps = {
   ownerFilter: 'Collected' | 'Created';
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
-  screen: ScreenWithNftSelector;
+  onSelectNft: (tokenId: string) => void;
+  onSelectGroup: (contractAddress: string) => void;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: TokenGroupProps) {
+function TokenGroup({
+  tokenRefs,
+  contractAddress,
+  style,
+  ownerFilter,
+  onSelectNft,
+  onSelectGroup,
+}: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
@@ -489,18 +473,6 @@ function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: 
     tokenRefs
   );
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const handleSelectNft = useCallback(() => {
-    if (screen === 'Onboarding') {
-      navigation.navigate('Login', {
-        screen: 'OnboardingProfileBio',
-      });
-      return;
-    }
-    navigation.pop();
-  }, [navigation, screen]);
-
   const [firstToken] = tokens;
   if (!firstToken) {
     return null;
@@ -509,13 +481,13 @@ function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: 
   return (
     <View style={style} className="flex-1 aspect-square bg-offWhite dark:bg-black-800">
       {tokens.length === 1 ? (
-        <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={firstToken} />
+        <NftSelectorPickerSingularAsset onPress={onSelectNft} tokenRef={firstToken} />
       ) : (
         <TokenGrid
           ownerFilter={ownerFilter}
           contractAddress={contractAddress}
           tokenRefs={tokens}
-          screen={screen}
+          onPress={onSelectGroup}
         />
       )}
     </View>

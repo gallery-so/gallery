@@ -108,7 +108,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
 
     if (!contractAddress) return;
-    navigation.navigate('NftSelectorContractScreen', {
+    navigation.navigate('CommunityNftSelectorScreen', {
       contractAddress,
       page: 'Community',
     });

@@ -1,13 +1,15 @@
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import { noop } from 'shared/utils/noop';
 
 type Props = {
   onIsSigningIn: (isSigningIn: boolean) => void;
   onConnect?: () => void;
-  onSignedIn: (address: string, nonce: string, signature: string, userExist: boolean) => void;
+  onSignedIn: (p: SignerVariables & { userExists: boolean }) => void;
 };
 
 export function useWalletConnect({ onConnect = noop, onSignedIn, onIsSigningIn }: Props) {
@@ -18,9 +20,10 @@ export function useWalletConnect({ onConnect = noop, onSignedIn, onIsSigningIn }
 
   const { address, open, isConnected, provider } = useWalletConnectModal();
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
 
   const web3Provider = useMemo(
-    () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
+    () => (provider ? new ethers.BrowserProvider(provider) : undefined),
     [provider]
   );
 
@@ -42,21 +45,36 @@ export function useWalletConnect({ onConnect = noop, onSignedIn, onIsSigningIn }
 
     isSigningIn.current = true;
 
-    const signer = web3Provider.getSigner();
-    const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
+    const signer = await web3Provider.getSigner();
+    const { nonce, message } = await createNonce();
+    const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Ethereum' }));
 
     try {
       onIsSigningIn(true);
-      const signature = await signer.signMessage(nonce);
+      const signature = await signer.signMessage(message);
       hasSigned.current = true;
-      onSignedIn(address, nonce, signature, userExist);
+      onSignedIn({
+        address,
+        nonce,
+        message,
+        signature,
+        userExists,
+      });
     } catch (error) {
       clearState();
     } finally {
       isSigningIn.current = false;
       clearState();
     }
-  }, [address, clearState, createNonce, onIsSigningIn, onSignedIn, web3Provider]);
+  }, [
+    address,
+    clearState,
+    createNonce,
+    getUserByWalletAddress,
+    onIsSigningIn,
+    onSignedIn,
+    web3Provider,
+  ]);
 
   // To check if the user has connected the wallet
   useEffect(() => {

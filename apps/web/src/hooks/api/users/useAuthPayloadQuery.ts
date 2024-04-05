@@ -1,22 +1,5 @@
 import { useRouter } from 'next/router';
-
-type EoaPayloadVariables = {
-  authMechanismType: 'eoa' | 'gnosisSafe';
-  chain: 'Ethereum' | 'Tezos';
-  address: string;
-  nonce: string;
-  signature: string;
-  userFriendlyWalletName: string;
-  email?: string;
-};
-
-type GnosisPayloadVariables = {
-  authMechanismType: 'eoa' | 'gnosisSafe';
-  address: string;
-  nonce: string;
-  userFriendlyWalletName: string;
-  email?: string;
-};
+import { EoaPayloadVariables, GnosisPayloadVariables } from 'shared/hooks/useAuthPayloadQuery';
 
 type MagicLinkPayloadVariables = {
   authMechanismType: 'magicLink';
@@ -50,6 +33,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
     typeof query.authMechanismType !== 'string' ||
     typeof query.address !== 'string' ||
     typeof query.nonce !== 'string' ||
+    typeof query.message !== 'string' ||
     Array.isArray(query.userFriendlyWalletName)
   ) {
     return null;
@@ -65,6 +49,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
       chain: query.chain as EoaPayloadVariables['chain'],
       address: query.address,
       nonce: query.nonce,
+      message: query.message,
       signature: query.signature,
       userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
       email: (query.email as string) || undefined,
@@ -75,6 +60,8 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
     authMechanismType: 'gnosisSafe',
     address: query.address,
     nonce: query.nonce,
+    message: query.message,
+    signature: query.signature,
     userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
   };
 }

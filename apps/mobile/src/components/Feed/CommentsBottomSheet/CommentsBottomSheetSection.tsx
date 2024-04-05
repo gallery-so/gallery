@@ -105,10 +105,13 @@ export function CommentsBottomSheetSection({
     return null;
   }
 
+  const hasReplies = replies.length > 0;
+
   return (
     <View className="flex space-x-2">
       <View className="space-y-1">
         <CommentsBottomSheetLine
+          hasReplies={hasReplies}
           activeCommentId={activeCommentId}
           commentRef={comment}
           queryRef={query}
@@ -121,6 +124,7 @@ export function CommentsBottomSheetSection({
 
       {replies.map((reply) => (
         <CommentsBottomSheetLine
+          hasReplies={hasReplies}
           key={reply.dbid}
           activeCommentId={activeCommentId}
           commentRef={reply}

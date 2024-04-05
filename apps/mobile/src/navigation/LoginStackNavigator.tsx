@@ -3,8 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
 import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
-import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
-import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
+import { OnboardingNftSelectorContractScreen } from '~/screens/Onboarding/OnboardingNftSelectorContractScreen';
+import { OnboardingNftSelectorScreen } from '~/screens/Onboarding/OnboardingNftSelectorScreeen';
 import { OnboardingPersonaScreen } from '~/screens/Onboarding/OnboardingPersonaScreen';
 import { OnboardingProfileBioScreen } from '~/screens/Onboarding/OnboardingProfileBioScreen';
 import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecommendedUsers';
@@ -37,8 +37,11 @@ export function LoginStackNavigator() {
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
       <Stack.Screen name="OnboardingRecommendedUsers" component={OnboardingRecommendedUsers} />
-      <Stack.Screen name="OnboardingNftSelector" component={NftSelectorPickerScreen} />
-      <Stack.Screen name="OnboardingNftSelectorContract" component={NftSelectorContractScreen} />
+      <Stack.Screen name="OnboardingNftSelector" component={OnboardingNftSelectorScreen} />
+      <Stack.Screen
+        name="OnboardingNftSelectorContract"
+        component={OnboardingNftSelectorContractScreen}
+      />
       <Stack.Screen name="OnboardingPersona" component={OnboardingPersonaScreen} />
     </Stack.Navigator>
   );

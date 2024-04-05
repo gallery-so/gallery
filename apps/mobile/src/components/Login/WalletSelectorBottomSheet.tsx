@@ -2,6 +2,7 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
+import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import { CoinbaseWalletIcon } from 'src/icons/CoinbaseWalletIcon';
 import { MetamaskIcon } from 'src/icons/MetamaskIcon';
 import { RainbowIcon } from 'src/icons/RainbowIcon';
@@ -17,16 +18,16 @@ import {
 } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
-import { useCoinbaseWallet } from './WalletProvider/CoinbaseWallet/useCoinbaseWallet';
-import { useWalletConnect } from './WalletProvider/WalletConnect/useWallectConnect';
-import { WalletConnectProvider } from './WalletProvider/WalletConnect/WalletConnectProvider';
+import { useCoinbaseWallet } from './AuthProvider/CoinbaseWallet/useCoinbaseWallet';
+import { useWalletConnect } from './AuthProvider/WalletConnect/useWallectConnect';
+import { WalletConnectProvider } from './AuthProvider/WalletConnect/WalletConnectProvider';
 
 const SNAP_POINTS = [300, 'CONTENT_HEIGHT'];
 
 type Props = {
   title?: string;
   onDismiss: () => void;
-  onSignedIn: (address: string, nonce: string, signature: string, userExist: boolean) => void;
+  onSignedIn: (p: SignerVariables & { userExists: boolean }) => void;
   isSigningIn: boolean;
   setIsSigningIn: (isSigningIn: boolean) => void;
 };
@@ -44,9 +45,9 @@ function WalletSelectorBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const handleOnSignedIn = useCallback(
-    (address: string, nonce: string, signature: string, userExist: boolean) => {
-      onSignedIn(address, nonce, signature, userExist);
+  const handleOnSignedIn: Props['onSignedIn'] = useCallback(
+    (props) => {
+      onSignedIn(props);
       onDismiss();
     },
     [onDismiss, onSignedIn]

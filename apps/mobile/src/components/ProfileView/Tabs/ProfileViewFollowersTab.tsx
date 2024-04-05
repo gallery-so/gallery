@@ -52,7 +52,7 @@ export function ProfileViewFollowersTab({ queryRef }: ProfileViewFollowersTabPro
 
   const user = query.userByUsername;
 
-  const [selectedTab, setSelectedTab] = useState<FollowersTabName>('Following');
+  const [selectedTab, setSelectedTab] = useState<FollowersTabName>('Followers');
 
   const items = useMemo((): ListItem[] => {
     const items: ListItem[] = [];

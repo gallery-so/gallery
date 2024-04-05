@@ -76,6 +76,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
         owner {
           username
           dbid
+          primaryWallet {
+            chainAddress {
+              address
+            }
+          }
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
 
@@ -125,6 +130,8 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
 
     return null;
   }, [name]);
+
+  const ownerWalletAddress = token.owner?.primaryWallet?.chainAddress?.address ?? '';
 
   const [admireToken] = useAdmireToken();
   const [removeTokenAdmire] = useRemoveTokenAdmire();
@@ -333,6 +340,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
           ) : (
             <StyledMintLinkButton
               tokenRef={token}
+              referrerAddress={ownerWalletAddress}
               eventElementId="Click Mint Link Button"
               eventName="Click Mint Link"
               eventContext={contexts['NFT Detail']}

@@ -32,6 +32,7 @@ export default function UserSharedFollowers({ userRef }: Props) {
               ... on GalleryUser {
                 __typename
                 username
+                id
                 ...ProfilePictureStackFragment
               }
             }
@@ -83,7 +84,7 @@ export default function UserSharedFollowers({ userRef }: Props) {
           pathname: `/[username]`,
           query: { username: user.username ?? '' },
         }}
-        key={user.username}
+        key={user.id}
         eventElementId="Shared Follower Link"
         eventName="Shared Follower Link Click"
         // TODO analytics - this will be variable

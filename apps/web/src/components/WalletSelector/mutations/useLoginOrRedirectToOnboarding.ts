@@ -86,6 +86,7 @@ export default function useLoginOrRedirectToOnboarding() {
               chain: authMechanism.mechanism.eoa.chainPubKey.chain,
               address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
               nonce: authMechanism.mechanism.eoa.nonce,
+              message: authMechanism.mechanism.eoa.message,
               signature: authMechanism.mechanism.eoa.signature,
               userFriendlyWalletName,
             },
@@ -99,6 +100,7 @@ export default function useLoginOrRedirectToOnboarding() {
               authMechanismType: 'gnosisSafe',
               address: authMechanism.mechanism.gnosisSafe.address,
               nonce: authMechanism.mechanism.gnosisSafe.nonce,
+              message: authMechanism.mechanism.gnosisSafe.message,
               userFriendlyWalletName,
             },
           });

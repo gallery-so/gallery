@@ -50,7 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  version: '1.0.52',
+  version: '1.0.53',
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -113,5 +113,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-barcode-scanner',
     'expo-font',
     'expo-secure-store',
+    [
+      'expo-build-properties',
+      {
+        android: {
+          compileSdkVersion: 34,
+          targetSdkVersion: 34,
+        },
+      },
+    ],
   ],
 });

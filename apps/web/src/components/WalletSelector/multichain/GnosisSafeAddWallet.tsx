@@ -3,6 +3,7 @@ import { captureException } from '@sentry/nextjs';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -56,6 +57,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
   const [nonce, setNonce] = useState('');
+  const [message, setMessage] = useState('');
   const [userExists, setUserExists] = useState(false);
   const [authenticationFlowStarted, setAuthenticationFlowStarted] = useState(false);
   const [error, setError] = useState<Error>();
@@ -127,7 +129,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
   const addWallet = useAddWallet();
   const authenticateWithBackend = useCallback(
-    async (address: string, nonce: string) => {
+    async ({ address, nonce, message }: { address: string; nonce: string; message: string }) => {
       const { signatureValid } = await addWallet({
         chainAddress: {
           address,
@@ -137,6 +139,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
           gnosisSafe: {
             address,
             nonce,
+            message,
           },
         },
       });
@@ -154,7 +157,17 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
   // Initiates the full authentication flow including signing the message, listening for the signature, validating it. then calling the backend
   // This is the default flow
   const attemptAddWallet = useCallback(
-    async (address: string, nonce: string, userExists: boolean) => {
+    async ({
+      address,
+      nonce,
+      message,
+      userExists,
+    }: {
+      address: string;
+      nonce: string;
+      message: string;
+      userExists: boolean;
+    }) => {
       try {
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
@@ -162,13 +175,17 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
         setPendingState(PROMPT_SIGNATURE);
         trackAddWalletAttempt('Gnosis Safe');
-        await signMessageWithContractAccount(address, nonce, walletconnect);
-        window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(nonce));
+        await signMessageWithContractAccount(address, message, walletconnect);
+        window.localStorage.setItem(GNOSIS_NONCE_STORAGE_KEY, JSON.stringify(message));
 
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(address, nonce, walletconnect);
+        await listenForGnosisSignature(address, message, walletconnect);
 
-        await authenticateWithBackend(address, nonce);
+        await authenticateWithBackend({
+          address,
+          nonce,
+          message,
+        });
       } catch (error) {
         handleError(error);
       }
@@ -187,30 +204,36 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
 
     try {
       // Immediately check if the message has already been signed and executed on chain
-      const wasSigned = await validateNonceSignedByGnosis(account, nonce, walletconnect);
+      const wasSigned = await validateNonceSignedByGnosis(account, message, walletconnect);
       if (wasSigned) {
-        await authenticateWithBackend(account, nonce);
+        await authenticateWithBackend({ address: account.toLowerCase(), nonce, message });
       }
 
       // If it hasn't, set up a listener because the transaction may not have been executed yet
       if (pendingState !== LISTENING_ONCHAIN) {
         setPendingState(LISTENING_ONCHAIN);
-        await listenForGnosisSignature(account, nonce, walletconnect);
+        await listenForGnosisSignature(account, message, walletconnect);
         // Once signed, call the backend as usual
-        void authenticateWithBackend(account, nonce);
+        void authenticateWithBackend({ address: account.toLowerCase(), nonce, message });
       }
     } catch (error) {
       handleError(error);
     }
-  }, [account, authenticateWithBackend, handleError, pendingState, nonce]);
+  }, [account, nonce, pendingState, authenticateWithBackend, message, handleError]);
 
   const restartAuthentication = useCallback(async () => {
     if (account) {
-      await attemptAddWallet(account.toLowerCase(), nonce, userExists);
+      await attemptAddWallet({
+        address: account.toLowerCase(),
+        nonce,
+        message,
+        userExists,
+      });
     }
-  }, [account, attemptAddWallet, nonce, userExists]);
+  }, [account, attemptAddWallet, message, nonce, userExists]);
 
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
 
   // This runs once to auto-initiate the authentication flow, when wallet is first connected (ie when 'account' is defined)
   useEffect(() => {
@@ -222,20 +245,32 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
       setAuthenticationFlowStarted(true);
 
       const account = await connectGnosisSafe();
-      if (authenticatedUserAddresses.includes(account.toLowerCase())) {
+      const address = account.toLowerCase();
+      if (authenticatedUserAddresses.includes(address)) {
         setPendingState(ADDRESS_ALREADY_CONNECTED);
         return;
       }
 
-      const { nonce, user_exists: userExists } = await createNonce(account, 'Ethereum');
+      const { nonce, message } = await createNonce();
+
+      const userExistsOnGallery = Boolean(
+        await getUserByWalletAddress({ address, chain: 'Ethereum' })
+      );
+
       setNonce(nonce);
-      setUserExists(userExists);
+      setMessage(message);
+      setUserExists(userExistsOnGallery);
 
       if (nonce === previousAttemptNonce) {
         return;
       }
 
-      await attemptAddWallet(account.toLowerCase(), nonce, userExists);
+      await attemptAddWallet({
+        address,
+        nonce,
+        message,
+        userExists: userExistsOnGallery,
+      });
     }
 
     void initiateAuthentication().catch(handleError);
@@ -247,6 +282,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
     handleError,
     previousAttemptNonce,
     createNonce,
+    getUserByWalletAddress,
   ]);
 
   if (error) {
