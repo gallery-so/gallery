@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
+import { useGetUserByWalletAddressPluralQuery } from '~/generated/useGetUserByWalletAddressPluralQuery.graphql';
 import {
   ChainAddressInput,
   useGetUserByWalletAddressQuery,
@@ -36,6 +37,40 @@ export function useGetUserByWalletAddressImperatively() {
         return query.userByAddress.dbid;
       }
       return null;
+    },
+    [environment]
+  );
+}
+
+export function useGetUsersByWalletAddressesImperatively() {
+  const environment = useRelayEnvironment();
+
+  return useCallback(
+    async (chainAddresses: ChainAddressInput[]): Promise<string[]> => {
+      const query = await fetchQuery<useGetUserByWalletAddressPluralQuery>(
+        environment,
+        graphql`
+          query useGetUserByWalletAddressPluralQuery($chainAddresses: [ChainAddressInput!]!) {
+            usersByAddresses(chainAddresses: $chainAddresses) {
+              __typename
+              ... on UsersByAddressesPayload {
+                users {
+                  ... on GalleryUser {
+                    dbid
+                  }
+                }
+              }
+            }
+          }
+        `,
+        { chainAddresses },
+        { fetchPolicy: 'network-only' }
+      ).toPromise();
+
+      if (query?.usersByAddresses?.__typename === 'UsersByAddressesPayload') {
+        return query?.usersByAddresses.users?.map((user) => user.dbid) ?? [];
+      }
+      return [];
     },
     [environment]
   );

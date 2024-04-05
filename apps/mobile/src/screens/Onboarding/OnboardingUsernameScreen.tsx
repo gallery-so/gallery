@@ -17,7 +17,6 @@ import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
-import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
@@ -69,10 +68,9 @@ function InnerOnboardingUsernameScreen() {
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
-  const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
-  const userEmail = route.params.email;
+  const email = route.params.email;
   const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
 
@@ -110,18 +108,34 @@ function InnerOnboardingUsernameScreen() {
       }
 
       setIsCreatingUser(true);
-      const response = await createUser(authMechanism, username, bio);
+
+      // eslint-disable-next-line no-console
+      console.log('creating user', {
+        authPayloadVariables: authMechanism,
+        username,
+        bio,
+        email,
+      });
+
+      const response = await createUser({
+        authPayloadVariables: authMechanism,
+        username,
+        bio,
+        email,
+      });
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
         // If the user is signing up with email, redirect to the bio screen
-        if (authMethod === 'Email') {
+        if (authMethod === 'Privy') {
           navigation.navigate('OnboardingProfileBio');
           return;
         }
 
-        // If the user is signing up with a wallet, attached the email to the user
-        if (authMethod === 'Wallet' && userEmail) {
-          await updateEmail(userEmail);
+        // fire this off async
+        if (!isSyncing) {
+          // TODO: we want to trigger multisync but it's just a bit too slow rn
+          // syncTokens(['Ethereum', 'Zora', 'Base']);
+          syncTokens('Ethereum');
         }
 
         const user = response.createUser.viewer?.user;
@@ -134,15 +148,8 @@ function InnerOnboardingUsernameScreen() {
             address: ensAddress.address,
             chain: ensAddress.chain,
           });
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
           navigation.navigate('OnboardingProfileBio');
         } else {
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
-
           navigation.navigate('OnboardingNftSelector', {
             page: 'Onboarding',
             fullScreen: true,
@@ -166,8 +173,7 @@ function InnerOnboardingUsernameScreen() {
     navigation,
     syncTokens,
     username,
-    userEmail,
-    updateEmail,
+    email,
     updateUser,
     user,
   ]);
@@ -294,7 +300,7 @@ function InnerOnboardingUsernameScreen() {
             eventContext={contexts.Onboarding}
             text="NEXT"
             variant={!isUsernameValid ? 'disabled' : 'primary'}
-            disabled={!isUsernameValid}
+            disabled={!isUsernameValid || isLoading}
             loading={isLoading}
           />
           <Typography

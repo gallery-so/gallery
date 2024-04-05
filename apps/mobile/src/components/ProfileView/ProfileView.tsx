@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
@@ -138,26 +138,6 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           )}
         </View>
       </View>
-
-      <GalleryTouchableOpacity
-        onPress={() =>
-          navigation.navigate({
-            name: 'MainTabs',
-            params: {
-              screen: 'HomeTab',
-              params: {
-                screen: 'Home',
-                params: { screen: 'For You', params: { isNewUser: true } },
-              },
-            },
-          })
-        }
-        eventElementId={null}
-        eventName={null}
-        eventContext={null}
-      >
-        <Text>Here</Text>
-      </GalleryTouchableOpacity>
 
       <View className="flex-grow">
         <GalleryTabsContainer

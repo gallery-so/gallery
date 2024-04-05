@@ -4,7 +4,7 @@ import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import formatError from '~/shared/errors/formatError';
-import useCreateUser from '~/shared/hooks/useCreateUser';
+import { useDeprecatedCreateUser } from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
@@ -44,7 +44,8 @@ export default function useUserInfoForm({
   const [generalError, setGeneralError] = useState('');
 
   const updateUser = useUpdateUser();
-  const createUser = useCreateUser();
+  // TODO: use `useCreateUser` instead after web is migrated from magic link -> privy
+  const createUserDeprecated = useDeprecatedCreateUser();
   const reportError = useReportError();
   const authPayloadQuery = useAuthPayloadQuery();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
@@ -74,7 +75,7 @@ export default function useUserInfoForm({
           throw new Error('Auth signature for creating user not found');
         }
 
-        await createUser(authPayloadQuery, username, bio);
+        await createUserDeprecated(authPayloadQuery, username, bio);
         trackCreateUserSuccess();
       }
 
@@ -99,7 +100,7 @@ export default function useUserInfoForm({
     username,
     updateUser,
     authPayloadQuery,
-    createUser,
+    createUserDeprecated,
     trackCreateUserSuccess,
   ]);
 

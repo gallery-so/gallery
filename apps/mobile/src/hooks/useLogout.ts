@@ -19,7 +19,7 @@ export function useLogout(): [() => void, boolean] {
   const { provider } = useWalletConnectModal();
 
   const [mutate, isLoggingOut] = usePromisifiedMutation<useLogoutMutation>(graphql`
-    mutation useLogoutMutation($token: String!) {
+    mutation useLogoutMutation($token: String) {
       logout(pushTokenToUnregister: $token) {
         ... on LogoutPayload {
           __typename
@@ -42,6 +42,7 @@ export function useLogout(): [() => void, boolean] {
       provider?.disconnect();
 
       if (Constants.executionEnvironment === 'bare') {
+        await mutate({ variables: {} });
         pushToLandingScreen();
         return;
       }

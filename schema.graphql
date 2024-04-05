@@ -142,6 +142,7 @@ input AuthMechanism {
   magicLink: MagicLinkAuth
   oneTimeLoginToken: OneTimeLoginTokenAuth
   privy: PrivyAuth
+  neynar: NeynarAuth
 }
 
 type AuthNonce {
@@ -726,6 +727,14 @@ type ErrGalleryNotFound implements Error {
 }
 
 type ErrHighlightChainNotSupported implements Error {
+  message: String!
+}
+
+type ErrHighlightClaimAlreadyMinted implements Error {
+  message: String!
+}
+
+type ErrHighlightClaimInProgress implements Error {
   message: String!
 }
 
@@ -1482,6 +1491,19 @@ type NewTokensNotification implements Notification & GroupedNotification & Node 
   updatedTime: Time
   count: Int
   token: Token
+}
+
+input NeynarAuth {
+  custodyPubKey: ChainPubKeyInput!
+  nonce: String!
+  message: String!
+  signature: String!
+
+  """
+  primaryPubKey is an optional parameter that lets callers specify a different wallet to use with Gallery, provided
+  that both primaryPubKey and the required custodyPubKey are owned by the same Neynar user
+  """
+  primaryPubKey: ChainPubKeyInput
 }
 
 interface Node {
