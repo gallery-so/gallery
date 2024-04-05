@@ -145,6 +145,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ... on GalleryAnnouncementNotification {
           __typename
           platform
+          internalId
           ...GalleryAnnouncementFragment
         }
         ... on SomeoneYouFollowOnFarcasterJoinedNotification {
@@ -198,6 +199,10 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     } else if (notification.__typename === 'SomeoneAdmiredYourCommentNotification') {
       return <SomeoneAdmiredYourComment queryRef={query} notificationRef={notification} />;
     } else if (notification.__typename === 'GalleryAnnouncementNotification') {
+      // make exception for apr-2024-mchx-collab so that only updated clients see the announcement
+      if (notification.internalId === 'apr-2024-mchx-collab') {
+        return <GalleryAnnouncement notificationRef={notification} queryRef={query} />;
+      }
       return notification.platform === 'Web' ? null : (
         <GalleryAnnouncement notificationRef={notification} queryRef={query} />
       );
