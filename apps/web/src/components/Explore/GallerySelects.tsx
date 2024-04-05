@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
 import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
@@ -110,14 +111,31 @@ export default function GallerySelects({ gallerySelectsContent }: Props) {
   const articlesToShow = useMemo(() => {
     return gallerySelectsContent.articleList.slice(0, 2);
   }, [gallerySelectsContent.articleList]);
+  const isMobile = useIsMobileWindowWidth();
   return (
     <StyledTrendingSection gap={12}>
-      <VStack gap={4}>
-        <Title>Gallery Selects</Title>
-        <TitleDiatypeL color={colors.metal}>
-          Conversations with artists and collectors
-        </TitleDiatypeL>
-      </VStack>
+      <HStack justify="space-between" align="flex-end">
+        <VStack gap={4}>
+          <Title>Gallery Selects</Title>
+          <TitleDiatypeL color={colors.metal}>
+            Conversations with artists and collectors
+          </TitleDiatypeL>
+        </VStack>
+        {!isMobile && (
+          <GalleryLink
+            href="https://gallery.mirror.xyz"
+            eventElementId="Explore Page Gallery Selects See All Button"
+            eventName="Clicked Explore Page Gallery Selects See All Button"
+          >
+            <HStack gap={4} align="center">
+              <BaseM color={colors.shadow}>
+                <strong>See all</strong>
+              </BaseM>
+              <ArrowUpRightIcon color={colors.shadow} />
+            </HStack>
+          </GalleryLink>
+        )}
+      </HStack>
       <ArticleContainer>
         {articlesToShow.map((article) => (
           <Article key={article.title} article={article} />
