@@ -17,7 +17,7 @@ import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { BaseM } from '../Text';
 
 export function GalleryEditorActions() {
-  const { activeRowId, sectionIdBeingEdited } = useGalleryEditorActions();
+  const { activeRowId, galleryId, sectionIdBeingEdited } = useGalleryEditorActions();
 
   const { pushToast } = useToastActions();
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
@@ -26,9 +26,11 @@ export function GalleryEditorActions() {
 
   const handleAddItem = useCallback(() => {
     showBottomSheetModal({
-      content: <GalleryEditorActionsBottomSheet onClose={hideBottomSheetModal} />,
+      content: (
+        <GalleryEditorActionsBottomSheet galleryId={galleryId} onClose={hideBottomSheetModal} />
+      ),
     });
-  }, [hideBottomSheetModal, showBottomSheetModal]);
+  }, [galleryId, hideBottomSheetModal, showBottomSheetModal]);
 
   const handleDeleteItem = useCallback(() => {
     pushToast({
@@ -72,17 +74,23 @@ export function GalleryEditorActions() {
 }
 
 type GalleryEditorActionsBottomSheetProps = {
+  galleryId: string;
   onClose: () => void;
 };
 
-function GalleryEditorActionsBottomSheet({ onClose }: GalleryEditorActionsBottomSheetProps) {
+function GalleryEditorActionsBottomSheet({
+  galleryId,
+  onClose,
+}: GalleryEditorActionsBottomSheetProps) {
   const { bottom } = useSafeAreaPadding();
   const navigation = useNavigation<RootStackNavigatorProp>();
 
   const handleAddNft = useCallback(() => {
     onClose();
-    navigation.navigate('NftSelectorGalleryEditor');
-  }, [navigation, onClose]);
+    navigation.navigate('NftSelectorGalleryEditor', {
+      galleryId,
+    });
+  }, [galleryId, navigation, onClose]);
 
   return (
     <View style={{ paddingBottom: bottom }} className=" flex flex-col space-y-4">

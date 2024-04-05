@@ -24,8 +24,11 @@ export type RootStackNavigatorParamList = {
   };
   GalleryEditor: {
     galleryId: string;
+    stagedTokens: string[];
   };
-  NftSelectorGalleryEditor: undefined;
+  NftSelectorGalleryEditor: {
+    galleryId: string;
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';

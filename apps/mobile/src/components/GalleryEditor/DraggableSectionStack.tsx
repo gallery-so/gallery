@@ -5,13 +5,15 @@ import {
   DraggableStack,
   DraggableStackProps,
 } from '@mgcrea/react-native-dnd';
-import { useMemo } from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { DraggableSectionStackFragment$key } from '~/generated/DraggableSectionStackFragment.graphql';
+import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 
 import { GalleryEditorSection } from './GalleryEditorSection';
 
@@ -28,8 +30,23 @@ export function DraggableSectionStack({ queryRef }: Props) {
     `,
     queryRef
   );
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const { activeRowId, sections, moveRow, updateSectionOrder } = useGalleryEditorActions();
+  const { activeRowId, sections, moveRow, updateSectionOrder, toggleTokensStaged } =
+    useGalleryEditorActions();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
+
+  useEffect(() => {
+    if (route.params.stagedTokens) {
+      toggleTokensStaged(route.params.stagedTokens);
+
+      // remove the staged tokens from the route params
+      // to prevent them from being used again
+      navigation.setParams({
+        stagedTokens: null,
+      });
+    }
+  }, [navigation, route.params.stagedTokens, toggleTokensStaged]);
 
   const onStackOrderChange: DraggableStackProps['onOrderChange'] = (value) => {
     updateSectionOrder(value);

@@ -180,6 +180,7 @@ function GalleryPreviewCardBottomSheet({ galleryId, onClose }: GalleryPreviewCar
   const handleEditGallery = useCallback(() => {
     navigation.navigate('GalleryEditor', {
       galleryId,
+      stagedTokens: [],
     });
     onClose();
   }, [galleryId, navigation, onClose]);

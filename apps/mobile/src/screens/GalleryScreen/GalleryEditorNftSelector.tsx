@@ -1,3 +1,4 @@
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback } from 'react';
 import { View } from 'react-native';
 
@@ -5,7 +6,7 @@ import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
 import { NftSelectorToolbar } from '~/components/NftSelector/NftSelectorToolbar';
 import { NftSelectorWrapper } from '~/components/NftSelector/NftSelectorWrapper';
 import { useNftSelector } from '~/components/NftSelector/useNftSelector';
-import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
+import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorLoadingSkeleton } from '~/screens/NftSelectorScreen/NftSelectorLoadingSkeleton';
 import { NftSelectorPickerGrid } from '~/screens/NftSelectorScreen/NftSelectorPickerGrid';
 
@@ -23,14 +24,22 @@ export function GalleryEditorNftSelector() {
     isSyncing,
     isSyncingCreatedTokens,
   } = useNftSelector();
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const { toggleTokenStaged } = useGalleryEditorActions();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'NftSelectorGalleryEditor'>>();
 
   const handleSelectNft = useCallback(
     (tokenId: string) => {
-      toggleTokenStaged(tokenId);
+      navigation.navigate({
+        name: 'GalleryEditor',
+        params: {
+          galleryId: route.params.galleryId,
+          stagedTokens: [tokenId],
+        },
+        merge: true,
+      });
     },
-    [toggleTokenStaged]
+    [navigation, route.params.galleryId]
   );
 
   return (

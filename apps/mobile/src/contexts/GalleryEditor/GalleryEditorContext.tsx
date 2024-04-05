@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from 'shared/errors/ErrorWithSentryMetadata';
+import { removeNullValues } from 'shared/relay/removeNullValues';
 import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
 
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
@@ -16,10 +17,11 @@ import {
 import { useToastActions } from '../ToastContext';
 import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
-import { StagedRow, StagedSection, StagedSectionList } from './types';
+import { StagedItem, StagedRow, StagedSection, StagedSectionList } from './types';
 import { arrayMove } from './util';
 
 type GalleryEditorActions = {
+  galleryId: string;
   galleryName: string;
   setGalleryName: (name: string) => void;
   galleryDescription: string;
@@ -44,6 +46,8 @@ type GalleryEditorActions = {
     // overCollectionId: string
   ) => void;
   updateSectionOrder: (sectionIds: UniqueIdentifier[]) => void;
+
+  toggleTokensStaged: (tokenIds: string[]) => void;
 
   saveGallery: () => void;
 };
@@ -72,6 +76,18 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
             name
             description
             ...getInitialCollectionsFromServerFragment
+          }
+        }
+        viewer {
+          ... on Viewer {
+            user {
+              tokens(ownershipFilter: [Creator, Holder]) {
+                __typename
+                dbid
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...GalleryEditorTokenPreviewFragment
+              }
+            }
           }
         }
       }
@@ -103,8 +119,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   const track = useTrack();
   const { pushToast } = useToastActions();
 
+  const galleryId = gallery.dbid;
   const [galleryName, setGalleryName] = useState(gallery.name ?? '');
   const [galleryDescription, setGalleryDescription] = useState(gallery.description ?? '');
+
+  const nonNullAllTokens = useMemo(() => {
+    return removeNullValues(query.viewer?.user?.tokens) ?? [];
+  }, [query.viewer?.user?.tokens]);
 
   const [sections, setSections] = useState<StagedSectionList>(() =>
     getInitialCollectionsFromServer(gallery)
@@ -271,6 +292,36 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateSection]
   );
 
+  const toggleTokensStaged = useCallback(
+    (tokenIds: string[]) => {
+      if (!activeRowId) {
+        // Make a new row for the user
+        return;
+      }
+
+      const tokensToAdd: StagedItem[] = [];
+      tokenIds.forEach((tokenId) => {
+        const tokenRef = nonNullAllTokens.find((token) => token.dbid === tokenId);
+
+        if (!tokenRef) {
+          return;
+        }
+
+        tokensToAdd.push({
+          id: tokenId,
+          kind: 'token',
+          tokenRef,
+        });
+      });
+
+      updateRow(activeRowId, (previousRow) => {
+        const newItems = [...previousRow.items, ...tokensToAdd];
+        return { ...previousRow, items: newItems };
+      });
+    },
+    [activeRowId, nonNullAllTokens, updateRow]
+  );
+
   const reportError = useReportError();
   const saveGallery = useCallback(async () => {
     const galleryId = gallery.dbid;
@@ -432,6 +483,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   const value = useMemo(
     () => ({
+      galleryId,
       galleryName,
       setGalleryName,
 
@@ -452,11 +504,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       moveRow,
 
+      toggleTokensStaged,
       saveGallery,
 
       updateSectionOrder: handleUpdateSectionOrder,
     }),
     [
+      galleryId,
       galleryName,
       galleryDescription,
       setGalleryName,
@@ -475,7 +529,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       clearActiveRow,
 
       moveRow,
-
+      toggleTokensStaged,
       saveGallery,
 
       handleUpdateSectionOrder,
