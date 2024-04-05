@@ -23,7 +23,6 @@ import HomeIcon from '~/icons/HomeIcon';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import SearchIcon from '~/icons/SearchIcon';
-import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import { contexts, flows } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
@@ -35,10 +34,9 @@ import SidebarPfp from './SidebarPfp';
 
 type Props = {
   queryRef: StandardSidebarFragment$key;
-  pageContent?: CmsTypes.LandingPage;
 };
 
-export function StandardSidebar({ queryRef, pageContent }: Props) {
+export function StandardSidebar({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment StandardSidebarFragment on Query {
@@ -180,13 +178,13 @@ export function StandardSidebar({ queryRef, pageContent }: Props) {
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
     showDrawer({
-      content: <Search pageContent={pageContent} />,
+      content: <Search />,
     });
-  }, [showDrawer, pageContent, track]);
+  }, [showDrawer, track]);
 
   useSearchHotkey(() => {
     showDrawer({
-      content: <Search pageContent={pageContent} />,
+      content: <Search />,
     });
   });
 

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
-import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -21,11 +20,7 @@ import { SearchItemType } from './types';
 
 export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'collection' | null;
 
-type Props = {
-  pageContent?: CmsTypes.LandingPage;
-};
-
-export default function Search({ pageContent }: Props) {
+export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
   const { hideDrawer } = useDrawerActions();
@@ -137,7 +132,6 @@ export default function Search({ pageContent }: Props) {
           ) : (
             <SearchDefault
               onSelect={handleSelect}
-              pageContent={pageContent}
               selectedFilter={selectedFilter}
               onChangeFilter={setSelectedFilter}
             />
