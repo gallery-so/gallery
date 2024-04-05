@@ -131,6 +131,13 @@ function InnerOnboardingUsernameScreen() {
           return;
         }
 
+        // fire this off async
+        if (!isSyncing) {
+          // TODO: we want to trigger multisync but it's just a bit too slow rn
+          // syncTokens(['Ethereum', 'Zora', 'Base']);
+          syncTokens('Ethereum');
+        }
+
         const user = response.createUser.viewer?.user;
         const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
@@ -141,15 +148,8 @@ function InnerOnboardingUsernameScreen() {
             address: ensAddress.address,
             chain: ensAddress.chain,
           });
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
           navigation.navigate('OnboardingProfileBio');
         } else {
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
-
           navigation.navigate('OnboardingNftSelector', {
             page: 'Onboarding',
             fullScreen: true,

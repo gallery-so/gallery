@@ -59,7 +59,6 @@ const SyncTokensProvider = memo(({ children }: Props) => {
                   tokens {
                     id
                     dbid
-                    creationTime
                     definition {
                       chain
                       contract {
@@ -122,9 +121,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
           );
           clearTokenFailureState(tokenIds);
         }
+        setIsSyncing(false);
       } catch (error) {
         showFailure();
-      } finally {
         setIsSyncing(false);
       }
     },
@@ -213,9 +212,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
           );
           clearTokenFailureState(tokenIds);
         }
+        setIsSyncingCreatedTokens(false);
       } catch (error) {
         showFailure();
-      } finally {
         setIsSyncingCreatedTokens(false);
       }
     },
@@ -302,9 +301,9 @@ const SyncTokensProvider = memo(({ children }: Props) => {
 
           clearTokenFailureState(tokenIds);
         }
+        setIsSyncingCreatedTokensForContract(false);
       } catch (error) {
         showFailure();
-      } finally {
         setIsSyncingCreatedTokensForContract(false);
       }
     },
