@@ -197,14 +197,14 @@ const COPY = [
   'Anton uses color as a universal channel of emotional connection and self-exploration.',
   'For this project, MCHX created over 60 unique color modes and used a circle as the central object due to its universal symbolism of unity and integrity.',
   'This work leverages Javascript, GLSL, and Display P3 wide-gamut to explore emotional connection through color.',
-  "Anton's artistic inspiration comes from diverse sources including 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
+  "Anton's diverse inspiration comes from 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
   'In his free time, Anton enjoys taking walks, reading, and watching Japanese anime and dramas.',
   'Anton has been creating art since 2016, but entered the NFT and Web3 space in 2020.',
   'Anton believes in the exchange of energy inherent in blockchain interactions and his work carries imprints of his emotional states or needs at the time of creation.',
 ];
 
 const FADE_DURATION = 250;
-const TEXT_DURATION = 5000;
+const TEXT_DURATION = 8000;
 
 function LoadingStateMessage() {
   const [index, setIndex] = useState(0);

@@ -104,7 +104,7 @@ export default function MintCampaignPreTransaction({
         <View>
           <BaseM>Open edition</BaseM>
           <BaseM>{timeLeft}</BaseM>
-          <BaseM>Limit 1 per Gallery user</BaseM>
+          <BaseM>Limit 1 per user</BaseM>
         </View>
         <View>
           <TitleLItalic>Gallery x MCHX</TitleLItalic>
