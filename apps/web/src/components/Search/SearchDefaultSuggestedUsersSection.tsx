@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { SearchSuggestedUsersSectionFragment$key } from '~/generated/SearchSuggestedUsersSectionFragment.graphql';
+import { SearchDefaultSuggestedUsersSectionFragment$key } from '~/generated/SearchDefaultSuggestedUsersSectionFragment.graphql';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
@@ -11,7 +11,7 @@ import SearchResultsHeader from './SearchResultsHeader';
 import { SearchItemType } from './types';
 
 type Props = {
-  queryRef: SearchSuggestedUsersSectionFragment$key;
+  queryRef: SearchDefaultSuggestedUsersSectionFragment$key;
   variant?: 'default' | 'compact';
   onSelect: (item: SearchItemType) => void;
 };
@@ -19,7 +19,7 @@ type Props = {
 export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, onSelect }: Props) {
   const query = useFragment(
     graphql`
-      fragment SearchSuggestedUsersSectionFragment on Query {
+      fragment SearchDefaultSuggestedUsersSectionFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             suggestedUsers(first: 2) @required(action: THROW) {

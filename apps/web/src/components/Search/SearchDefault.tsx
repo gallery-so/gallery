@@ -27,7 +27,7 @@ export default function SearchDefault({
   const query = useLazyLoadQuery<SearchDefaultQuery>(
     graphql`
       query SearchDefaultQuery {
-        ...SearchSuggestedUsersSectionFragment
+        ...SearchDefaultSuggestedUsersSectionFragment
         ...SearchDefaultTrendingUsersSectionFragment
         ...SearchDefaultTrendingCuratorsSectionFragment
       }
