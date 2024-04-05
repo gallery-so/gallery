@@ -83,6 +83,13 @@ function SignInBottomSheet(
 
         <View className="flex flex-col space-y-2">
           <BottomSheetRow
+            icon={<EmailIcon />}
+            text="Email"
+            onPress={handleEmailPress}
+            eventContext={contexts.Authentication}
+            fontWeight="Bold"
+          />
+          <BottomSheetRow
             icon={<WalletIcon />}
             text="Wallet"
             onPress={handleConnectWallet}
@@ -93,13 +100,6 @@ function SignInBottomSheet(
             icon={<FarcasterOutlineIcon />}
             text="Farcaster"
             onPress={handleConnectFarcaster}
-            eventContext={contexts.Authentication}
-            fontWeight="Bold"
-          />
-          <BottomSheetRow
-            icon={<EmailIcon />}
-            text="Email"
-            onPress={handleEmailPress}
             eventContext={contexts.Authentication}
             fontWeight="Bold"
           />
