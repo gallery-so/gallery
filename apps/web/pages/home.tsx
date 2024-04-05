@@ -34,6 +34,7 @@ type Props = {
 
 export default function Home({ preloadedQuery }: Props) {
   const query = usePreloadedQuery(homePageCuratedQueryNode, preloadedQuery);
+
   // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
   // useOpenTwitterFollowingModal(query);
 
