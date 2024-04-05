@@ -10,6 +10,7 @@ import { SomeoneYouFollowOnFarcasterJoinedQueryFragment$key } from '~/generated/
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { NotificationSkeleton } from '../NotificationSkeleton';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
 
 type SomeoneYouFollowOnFarcasterJoinedProps = {
   queryRef: SomeoneYouFollowOnFarcasterJoinedQueryFragment$key;
@@ -43,6 +44,7 @@ export default function SomeoneYouFollowOnFarcasterJoined({
   );
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const reportError = useReportError();
   const handlePress = useCallback(() => {
     if (!notification.user?.username) {
       return;
