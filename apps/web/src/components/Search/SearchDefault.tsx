@@ -1,6 +1,7 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
@@ -59,5 +60,9 @@ export default function SearchDefault({
 }
 
 const SectionWrapper = styled(VStack)`
-  padding: 12px;
+  padding: 4px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 12px;
+  }
 `;

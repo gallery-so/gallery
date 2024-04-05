@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { SuggestedProfileCardFollowFragment$key } from '~/generated/SuggestedProfileCardFollowFragment.graphql';
 import { SuggestedProfileCardFragment$key } from '~/generated/SuggestedProfileCardFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -70,7 +69,7 @@ export default function SuggestedProfileCard({
   const isOwnProfile = loggedInUserId && loggedInUserId === user?.id;
 
   if (!user) {
-    throw new Error('No user available to showcase ExploreUserCard');
+    throw new Error('No user available to showcase SuggestedProfileCard');
   }
 
   const { bio } = user;
@@ -107,8 +106,10 @@ export default function SuggestedProfileCard({
     return badges;
   }, [user.badges]);
 
-  const isMobile = useIsMobileWindowWidth();
-  const shouldShowFollowButton = showFollowButton && !isMobile && !isOwnProfile;
+  const shouldShowFollowButton = useMemo(
+    () => showFollowButton && !isOwnProfile,
+    [showFollowButton, isOwnProfile]
+  );
 
   return (
     <StyledSuggestedProfileCard onClick={onClick}>
@@ -128,26 +129,23 @@ export default function SuggestedProfileCard({
                 </Username>
                 <HStack align="center" gap={0}>
                   {userBadges.map((badge) => (
-                    <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Explore']} />
+                    <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Search']} />
                   ))}
                 </HStack>
               </HStack>
-              {isMobile && !isOwnProfile && (
-                <StyledFollowButton
-                  userRef={user}
-                  queryRef={query}
-                  source="Explore Page user card"
-                />
-              )}
             </HStack>
-            <StyledUserDetailsContainer gap={8}>
+            <VStack gap={8}>
               <StyledUserBio>
                 <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
               </StyledUserBio>
               {shouldShowFollowButton && (
-                <WideFollowButton userRef={user} queryRef={query} source="Curated Feed user card" />
+                <WideFollowButton
+                  userRef={user}
+                  queryRef={query}
+                  source="Search Default profile card"
+                />
               )}
-            </StyledUserDetailsContainer>
+            </VStack>
           </ProfileDetailsText>
         </ProfileDetailsContainer>
       </StyledContent>
@@ -195,8 +193,6 @@ const ProfileDetailsText = styled(VStack)`
   width: 100%;
 `;
 
-const StyledUserDetailsContainer = styled(VStack)``;
-
 const StyledUserBio = styled(BaseM)`
   height: 20px; // ensure consistent height even if bio is not present
 
@@ -241,14 +237,5 @@ const WideFollowButton = styled(FollowButton)`
   @media only screen and ${breakpoints.desktop} {
     width: 100%;
     height: 24px;
-  }
-`;
-
-const StyledFollowButton = styled(FollowButton)`
-  padding: 2px 8px;
-  width: 100%;
-
-  @media only screen and ${breakpoints.desktop} {
-    width: initial;
   }
 `;
