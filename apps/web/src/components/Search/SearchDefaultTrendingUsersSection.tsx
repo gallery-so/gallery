@@ -1,9 +1,10 @@
 import { graphql, useFragment } from 'react-relay';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { SearchDefaultTrendingUsersSectionFragment$key } from '~/generated/SearchDefaultTrendingUsersSectionFragment.graphql';
 
+import { fadeIn } from '../core/keyframes';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import SuggestedProfileCard from '../Feed/SuggestedProfileCard';
 import SearchResultsHeader from './SearchResultsHeader';
@@ -77,11 +78,6 @@ const HeaderWrapper = styled(HStack)`
     padding-right: 12px;
     padding-left: 8px;
   }
-`;
-
-const fadeIn = keyframes`
-    from { opacity: 0 };
-    to { opacity: 0.96 };
 `;
 
 const StyledWrapper = styled(VStack)`

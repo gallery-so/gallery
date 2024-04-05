@@ -36,7 +36,7 @@ export default function SearchDefault({
   );
 
   return (
-    <SectionWrapper gap={18}>
+    <SectionWrapper gap={20}>
       {!selectedFilter && (
         <VStack gap={16}>
           <SearchDefaultSuggestedUsersSection
