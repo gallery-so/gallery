@@ -6,7 +6,6 @@ import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
 import { HighlightIcon } from 'src/icons/HighlightIcon';
-import { MintFunIcon } from 'src/icons/MintFunIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';

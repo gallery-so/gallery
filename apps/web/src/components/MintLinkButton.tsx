@@ -7,7 +7,6 @@ import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FoundationLogoIcon } from '~/icons/FoundationLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { HighlightLogoIcon } from '~/icons/HighlightLogoIcon';
-import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
 import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
