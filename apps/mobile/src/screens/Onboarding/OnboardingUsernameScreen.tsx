@@ -17,7 +17,6 @@ import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
-import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
@@ -69,7 +68,6 @@ function InnerOnboardingUsernameScreen() {
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
-  const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
   const email = route.params.email;
@@ -111,6 +109,7 @@ function InnerOnboardingUsernameScreen() {
 
       setIsCreatingUser(true);
 
+      /* eslint-disable-next-line no-console */
       console.log('creating user', {
         authPayloadVariables: authMechanism,
         username,

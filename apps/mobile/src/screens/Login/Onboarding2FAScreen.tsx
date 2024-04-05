@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
