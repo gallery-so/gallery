@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { getTimeSince } from 'shared/utils/time';
 
 import { BaseM, BaseS } from '~/components/Text';
@@ -10,7 +11,6 @@ import { SomeoneYouFollowOnFarcasterJoinedQueryFragment$key } from '~/generated/
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { NotificationSkeleton } from '../NotificationSkeleton';
-import { useReportError } from 'shared/contexts/ErrorReportingContext';
 
 type SomeoneYouFollowOnFarcasterJoinedProps = {
   queryRef: SomeoneYouFollowOnFarcasterJoinedQueryFragment$key;
