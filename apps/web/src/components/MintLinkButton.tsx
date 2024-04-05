@@ -71,11 +71,6 @@ export function MintLinkButton({
         buttonText: 'mint on zora',
         icon: <ZoraLogoIcon />,
       };
-    } else if (mintProviderType === 'MintFun') {
-      return {
-        buttonText: 'mint on mint.fun',
-        icon: <MintFunLogoIcon />,
-      };
     } else if (mintProviderType === 'FxHash') {
       return {
         buttonText: 'mint on fxhash',

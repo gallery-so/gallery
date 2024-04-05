@@ -93,11 +93,6 @@ export function MintLinkButton({
         buttonText: 'mint on zora',
         icon: <ZoraIcon />,
       };
-    } else if (mintProviderType === 'MintFun') {
-      return {
-        buttonText: 'mint on mint.fun',
-        icon: <MintFunIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
-      };
     } else if (mintProviderType === 'FxHash') {
       return {
         buttonText: 'mint on fxhash',
