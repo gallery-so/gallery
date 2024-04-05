@@ -78,7 +78,7 @@ export default function MintCampaignPreTransaction({
           return;
         }
         if (e instanceof Error && e.message === 'ErrHighlightClaimAlreadyMinted') {
-          setError('You have already minted Resonance.');
+          setError('You have already minted Radiance.');
           return;
         }
         setError('Something went wrong while minting. Please try again.');
@@ -92,7 +92,7 @@ export default function MintCampaignPreTransaction({
       <TitleS>Exclusive free mint</TitleS>
       <BaseM classNameOverride="mt-1">
         Thank you for downloading the Gallery app. As a token of our gratitude, we invite you to
-        mint Radiance by MCHX, on us.
+        mint Radiance by MCHX - on us ❤️
       </BaseM>
       <Image
         className="w-full aspect-square my-4"
@@ -104,7 +104,7 @@ export default function MintCampaignPreTransaction({
         <View>
           <BaseM>Open edition</BaseM>
           <BaseM>{timeLeft}</BaseM>
-          <BaseM>Limit 1 per Gallery user</BaseM>
+          <BaseM>Limit 1 per user</BaseM>
         </View>
         <View>
           <TitleLItalic>Gallery x MCHX</TitleLItalic>

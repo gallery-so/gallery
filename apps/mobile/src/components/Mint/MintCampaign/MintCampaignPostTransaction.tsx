@@ -140,7 +140,7 @@ export default function MintCampaignPostTransaction({
           <TitleS>You collected {`${token?.definition?.name ?? 'Radiance'} by MCHX`}</TitleS>
         </View>
         <BaseM>
-          Thank you for using the Gallery mobile app. Share your new artwork with others below!
+          Thank you for using the Gallery mobile app. Share your unique piece with others below!
         </BaseM>
         <View className="my-4">
           <NftDetailAsset tokenRef={token} />
@@ -168,12 +168,12 @@ export default function MintCampaignPostTransaction({
   return (
     <View>
       <View className="mb-1">
-        <TitleS>{state === 'TX_PENDING' ? 'Minting' : 'Succesfully Minted'}</TitleS>
+        <TitleS>{state === 'TX_PENDING' ? 'Minting' : 'Mint Success'}</TitleS>
       </View>
       <BaseM>
         {state === 'TX_PENDING'
           ? 'Your new artwork is being minted onchain. This should take less than a minute.'
-          : 'Revealing your unique artwork. It will be ready to view in a moment.'}
+          : 'Revealing your unique artwork. It will be ready to view in a moment!'}
       </BaseM>
 
       <View className="my-4 flex justify-center items-center bg-faint dark:bg-black-700 w-full aspect-square ">
@@ -197,14 +197,14 @@ const COPY = [
   'Anton uses color as a universal channel of emotional connection and self-exploration.',
   'For this project, MCHX created over 60 unique color modes and used a circle as the central object due to its universal symbolism of unity and integrity.',
   'This work leverages Javascript, GLSL, and Display P3 wide-gamut to explore emotional connection through color.',
-  "Anton's artistic inspiration comes from diverse sources including 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
+  "Anton's diverse inspiration comes from 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
   'In his free time, Anton enjoys taking walks, reading, and watching Japanese anime and dramas.',
   'Anton has been creating art since 2016, but entered the NFT and Web3 space in 2020.',
   'Anton believes in the exchange of energy inherent in blockchain interactions and his work carries imprints of his emotional states or needs at the time of creation.',
 ];
 
 const FADE_DURATION = 250;
-const TEXT_DURATION = 5000;
+const TEXT_DURATION = 8000;
 
 function LoadingStateMessage() {
   const [index, setIndex] = useState(0);
@@ -244,7 +244,7 @@ function LoadingStateMessage() {
     return () => clearInterval(interval);
   }, [fadeIn, fadeOut]);
   return (
-    <View className="text-center h-24">
+    <View className="text-center h-32">
       <Animated.View style={[animatedStyle]}>
         <BaseM classNameOverride="text-shadow text-center ">{COPY[index]}</BaseM>
       </Animated.View>
