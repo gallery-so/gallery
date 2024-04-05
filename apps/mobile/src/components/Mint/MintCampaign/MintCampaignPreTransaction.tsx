@@ -78,7 +78,7 @@ export default function MintCampaignPreTransaction({
           return;
         }
         if (e instanceof Error && e.message === 'ErrHighlightClaimAlreadyMinted') {
-          setError('You have already minted Resonance.');
+          setError('You have already minted Radiance.');
           return;
         }
         setError('Something went wrong while minting. Please try again.');
