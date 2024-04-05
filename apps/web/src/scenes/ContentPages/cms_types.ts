@@ -93,4 +93,19 @@ export namespace CmsTypes {
     featuredProfiles: FeaturedProfile[];
     testimonials: Testimonial[];
   }
+
+  export interface ExplorePageGallerySelectsArticle {
+    _id: string;
+    _type: 'explorePageGallerySelectsArticle';
+    coverImage: Image;
+    title: string;
+    previewText: string;
+    articleUrl: string;
+  }
+
+  export interface ExplorePageGallerySelectsList {
+    _id: string;
+    _type: 'explorePageGallerySelectsList';
+    articleList: ExplorePageGallerySelectsArticle[];
+  }
 }

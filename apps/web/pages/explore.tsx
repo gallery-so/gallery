@@ -4,9 +4,15 @@ import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/Home
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
+import { fetchSanityContent } from '~/utils/sanity';
 
-export default function Explore() {
+type Props = {
+  gallerySelectsContent: CmsTypes.ExplorePageGallerySelectsList;
+};
+
+export default function Explore({ gallerySelectsContent }: Props) {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
       query exploreQuery {
@@ -21,7 +27,7 @@ export default function Explore() {
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
       sidebar={<StandardSidebar queryRef={query} />}
-      element={<ExplorePage />}
+      element={<ExplorePage gallerySelectsContent={gallerySelectsContent} />}
     />
   );
 }
@@ -57,7 +63,23 @@ export default function Explore() {
  *   7) transition ends
  */
 export const getServerSideProps = async () => {
+  const content = await fetchSanityContent(`*[_type == "explorePageGallerySelectsList"]{
+    "articleList": articleList[]->{
+      coverImage{
+        asset->{
+          url
+        },
+        alt
+      },
+      title,
+      previewText,
+      articleUrl
+    }
+  }`);
+
   return {
-    props: {},
+    props: {
+      gallerySelectsContent: content[0],
+    },
   };
 };
