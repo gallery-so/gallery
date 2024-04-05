@@ -2,6 +2,34 @@ import { Typography } from './Typography';
 
 type Weight = 'Regular' | 'Bold';
 
+export const TitleLItalic = ({
+  children,
+  classNameOverride,
+}: {
+  children: React.ReactNode;
+  classNameOverride?: string;
+}) => {
+  return (
+    <Typography
+      className={`text-black-900 dark:text-white text-2xl leading-7 tracking-tighter ${classNameOverride}`}
+      font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
+    >
+      {children}
+    </Typography>
+  );
+};
+
+export const TitleS = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Typography
+      className="text-black-900 dark:text-white text-base leading-5"
+      font={{ family: 'ABCDiatype', weight: 'Bold' }}
+    >
+      {children}
+    </Typography>
+  );
+};
+
 export const TitleXS = ({ children }: { children: React.ReactNode }) => {
   return (
     <Typography

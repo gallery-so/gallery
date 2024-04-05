@@ -4,13 +4,18 @@ import { Animated, Easing } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
+type ColorOverride = {
+  lightMode: string;
+  darkMode: string;
+};
 
 type Props = {
   spin?: boolean;
   size?: 's' | 'm';
+  colorOverride?: ColorOverride;
 } & SvgProps;
 
-export function SpinnerIcon({ spin, size = 'm', ...props }: Props) {
+export function SpinnerIcon({ spin, size = 'm', colorOverride, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   const spinValue = useRef(new Animated.Value(0)).current;
@@ -36,14 +41,14 @@ export function SpinnerIcon({ spin, size = 'm', ...props }: Props) {
   const styles = useMemo(() => {
     if (colorScheme === 'dark') {
       return {
-        spinner: colors.white,
+        spinner: colorOverride?.darkMode || colors.white,
       };
     }
 
     return {
-      spinner: colors.black[900],
+      spinner: colorOverride?.lightMode || colors.black[900],
     };
-  }, [colorScheme]);
+  }, [colorOverride?.darkMode, colorOverride?.lightMode, colorScheme]);
 
   return (
     <Animated.View
