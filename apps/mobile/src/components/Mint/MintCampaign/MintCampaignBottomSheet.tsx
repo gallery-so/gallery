@@ -1,9 +1,8 @@
+import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
 import usePersistedState from 'src/hooks/usePersistedState';
 
 import MintCampaignPostTransaction from './MintCampaignPostTransaction';
 import MintCampaignPreTransaction from './MintCampaignPreTransaction';
-
-export const MCHX_CLAIM_CODE_KEY = 'MCHX_CLAIM_CODE';
 
 export default function MintCampaignBottomSheet({ onClose }: { onClose: () => void }) {
   // claimCode is the identifer used to poll for the status of the mint

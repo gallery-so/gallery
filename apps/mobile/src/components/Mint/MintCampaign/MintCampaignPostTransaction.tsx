@@ -18,13 +18,10 @@ import { BaseM, TitleS } from '~/components/Text';
 import {
   HighlightTxStatus,
   MintCampaignPostTransactionMintStatusQuery,
-  MintCampaignPostTransactionMintStatusQuery$data,
 } from '~/generated/MintCampaignPostTransactionMintStatusQuery.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { NftDetailAsset } from '../../../screens/NftDetailScreen/NftDetailAsset/NftDetailAsset';
-
-type Token = MintCampaignPostTransactionMintStatusQuery$data['highlightMintClaimStatus']['token'];
 
 export default function MintCampaignPostTransaction({
   claimCode,
@@ -34,7 +31,9 @@ export default function MintCampaignPostTransaction({
   onClose: () => void;
 }) {
   const [state, setState] = useState<HighlightTxStatus>('TX_PENDING');
-  const [token, setToken] = useState<Token | null>(null);
+  // TODO: Fix any - prioritizing merging atm
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [token, setToken] = useState<any>(null);
   const [error, setError] = useState('');
   const relayEnvironment = useRelayEnvironment();
 
@@ -85,7 +84,7 @@ export default function MintCampaignPostTransaction({
           const { status } = data.highlightMintClaimStatus;
           setState(status);
           // If status is TOKEN_SYNCED, stop polling
-          if (status === 'TOKEN_SYNCED') {
+          if (status === 'TOKEN_SYNCED' && data.highlightMintClaimStatus.token) {
             setToken(data.highlightMintClaimStatus.token);
             isSubscribed = false; // Prevent further state updates
           }
@@ -138,7 +137,7 @@ export default function MintCampaignPostTransaction({
       <View>
         <View className="mb-1">
           <TitleS>Congratulations!</TitleS>
-          <TitleS>You collected {`${token?.definition.name ?? 'Radiance'} by MCHX`}</TitleS>
+          <TitleS>You collected {`${token?.definition?.name ?? 'Radiance'} by MCHX`}</TitleS>
         </View>
         <BaseM>
           Thank you for using the Gallery mobile app. Share your new artwork with others below!

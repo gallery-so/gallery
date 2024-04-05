@@ -2,6 +2,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
+import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
 import { useHighlightClaimMint } from 'src/hooks/useHighlightClaimMint';
 import usePersistedState from 'src/hooks/usePersistedState';
 
@@ -9,11 +10,9 @@ import { Button } from '~/components/Button';
 import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
 import { MintCampaignPreTransactionQuery } from '~/generated/MintCampaignPreTransactionQuery.graphql';
 
-import { MCHX_CLAIM_CODE_KEY } from './MintCampaignBottomSheet';
-
 export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-05-05T10:00:00-04:00';
 
-const MCHX_COLLECTION_ID = '660d4342c6bc04d5dc5598e7'
+const MCHX_COLLECTION_ID = '660d4342c6bc04d5dc5598e7';
 
 export default function MintCampaignPreTransaction({
   setClaimCode,
