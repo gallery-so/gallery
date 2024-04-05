@@ -107,8 +107,6 @@ type Props = {
 };
 
 export default function GallerySelects({ gallerySelectsContent }: Props) {
-  console.log({ gallerySelectsContent });
-
   const articlesToShow = useMemo(() => {
     return gallerySelectsContent.articleList.slice(0, 2);
   }, [gallerySelectsContent.articleList]);
