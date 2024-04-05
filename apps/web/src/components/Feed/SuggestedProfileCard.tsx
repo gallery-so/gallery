@@ -136,7 +136,7 @@ export default function SuggestedProfileCard({
             </HStack>
             <VStack gap={8}>
               <StyledUserBio>
-                <Markdown text={bioFirstLine} eventContext={contexts.Explore} />
+                <Markdown text={bioFirstLine} eventContext={contexts.Search} />
               </StyledUserBio>
               {shouldShowFollowButton && (
                 <WideFollowButton

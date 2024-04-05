@@ -6,9 +6,9 @@ import { SearchDefaultQuery } from '~/generated/SearchDefaultQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
 import { SearchFilterType } from './Search';
+import SearchDefaultSuggestedUsersSection from './SearchDefaultSuggestedUsersSection';
 import SearchDefaultTrendingCuratorsSection from './SearchDefaultTrendingCuratorsSection';
 import SearchDefaultTrendingUsersSection from './SearchDefaultTrendingUsersSection';
-import SearchDefaultSuggestedUsersSection from './SearchDefaultSuggestedUsersSection';
 import { SearchItemType } from './types';
 
 type Props = {
