@@ -140,7 +140,7 @@ export default function MintCampaignPostTransaction({
           <TitleS>You collected {`${token?.definition?.name ?? 'Radiance'} by MCHX`}</TitleS>
         </View>
         <BaseM>
-          Thank you for using the Gallery mobile app. Share your new artwork with others below!
+          Thank you for using the Gallery mobile app. Share your unique piece with others below!
         </BaseM>
         <View className="my-4">
           <NftDetailAsset tokenRef={token} />
@@ -168,12 +168,12 @@ export default function MintCampaignPostTransaction({
   return (
     <View>
       <View className="mb-1">
-        <TitleS>{state === 'TX_PENDING' ? 'Minting' : 'Succesfully Minted'}</TitleS>
+        <TitleS>{state === 'TX_PENDING' ? 'Minting' : 'Mint Success'}</TitleS>
       </View>
       <BaseM>
         {state === 'TX_PENDING'
           ? 'Your new artwork is being minted onchain. This should take less than a minute.'
-          : 'Revealing your unique artwork. It will be ready to view in a moment.'}
+          : 'Revealing your unique artwork. It will be ready to view in a moment!'}
       </BaseM>
 
       <View className="my-4 flex justify-center items-center bg-faint dark:bg-black-700 w-full aspect-square ">
@@ -244,7 +244,7 @@ function LoadingStateMessage() {
     return () => clearInterval(interval);
   }, [fadeIn, fadeOut]);
   return (
-    <View className="text-center h-24">
+    <View className="text-center h-32">
       <Animated.View style={[animatedStyle]}>
         <BaseM classNameOverride="text-shadow text-center ">{COPY[index]}</BaseM>
       </Animated.View>

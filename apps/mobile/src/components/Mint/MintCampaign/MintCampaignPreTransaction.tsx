@@ -92,7 +92,7 @@ export default function MintCampaignPreTransaction({
       <TitleS>Exclusive free mint</TitleS>
       <BaseM classNameOverride="mt-1">
         Thank you for downloading the Gallery app. As a token of our gratitude, we invite you to
-        mint Radiance by MCHX, on us.
+        mint Radiance by MCHX - on us ❤️
       </BaseM>
       <Image
         className="w-full aspect-square my-4"
