@@ -4,6 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { DraggableSectionStack } from '~/components/GalleryEditor/DraggableSectionStack';
+import { GalleryEditorActions } from '~/components/GalleryEditor/GalleryEditorActions';
 import { GalleryEditorHeader } from '~/components/GalleryEditor/GalleryEditorHeader';
 import { GalleryEditorNavbar } from '~/components/GalleryEditor/GalleryEditorNavbar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
@@ -54,6 +55,7 @@ function InnerGalleryEditorScreen() {
           <DraggableSectionStack queryRef={query} />
         </ScrollView>
       </View>
+      <GalleryEditorActions />
     </GalleryEditorProvider>
   );
 }

@@ -25,6 +25,7 @@ export type RootStackNavigatorParamList = {
   GalleryEditor: {
     galleryId: string;
   };
+  NftSelectorGalleryEditor: undefined;
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';

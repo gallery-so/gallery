@@ -14,6 +14,7 @@ import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { Debugger } from '~/screens/Debugger';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
+import { GalleryEditorNftSelector } from '~/screens/GalleryScreen/GalleryEditorNftSelector';
 import { GalleryEditorScreen } from '~/screens/GalleryScreen/GalleryEditorScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
@@ -101,6 +102,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         <Stack.Screen name="Debugger" component={Debugger} />
 
         <Stack.Screen name="GalleryEditor" component={GalleryEditorScreen} />
+        <Stack.Screen name="NftSelectorGalleryEditor" component={GalleryEditorNftSelector} />
       </Stack.Navigator>
     </>
   );
