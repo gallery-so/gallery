@@ -23,6 +23,11 @@ export type EmailPayloadVariables = {
   token?: string;
 };
 
+type DeprecatedWebEmailPayloadVariables = {
+  authMechanismType: 'magicLink';
+  token: string;
+};
+
 export type NeynarPayloadVariables = {
   authMechanismType: 'neynar';
   primaryAddress?: string;
@@ -32,6 +37,7 @@ export type AuthPayloadVariables =
   | EoaPayloadVariables
   | GnosisPayloadVariables
   | EmailPayloadVariables
+  | DeprecatedWebEmailPayloadVariables
   | NeynarPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {

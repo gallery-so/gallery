@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
-import useCreateUser from 'shared/hooks/useCreateUser';
+import { useDeprecatedCreateUser } from 'shared/hooks/useCreateUser';
 import useDebounce from 'shared/hooks/useDebounce';
 import useUpdateEmail from 'shared/hooks/useUpdateEmail';
 import useUpdateUser from 'shared/hooks/useUpdateUser';
@@ -60,7 +60,8 @@ export function OnboardingAddUsernamePage() {
 
   const [usernameError, setUsernameError] = useState('');
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
-  const createUser = useCreateUser();
+  // TODO: use `useCreateUser` instead after web is migrated from magic link -> privy
+  const createUserDeprecated = useDeprecatedCreateUser();
   const updateUser = useUpdateUser();
   const authPayloadQuery = useAuthPayloadQuery();
   const trackCreateUserSuccess = useTrackCreateUserSuccess(
@@ -129,7 +130,7 @@ export function OnboardingAddUsernamePage() {
       if (!authPayloadQuery) {
         throw new Error('Auth signature for creating user not found');
       }
-      const response = await createUser(authPayloadQuery, username, '');
+      const response = await createUserDeprecated(authPayloadQuery, username, '');
       trackCreateUserSuccess();
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
@@ -179,7 +180,7 @@ export function OnboardingAddUsernamePage() {
     }
   }, [
     authPayloadQuery,
-    createUser,
+    createUserDeprecated,
     debouncedUsername,
     isLocked,
     isUsernameAvailableFetcher,
@@ -190,7 +191,10 @@ export function OnboardingAddUsernamePage() {
     trackCreateUserSuccess,
     updateEmail,
     updateUser,
-    user,
+    user?.bio,
+    user?.dbid,
+    user?.profileImage?.__typename,
+    user?.username,
     username,
   ]);
 
