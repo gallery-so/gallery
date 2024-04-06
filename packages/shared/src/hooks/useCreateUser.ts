@@ -114,8 +114,6 @@ export default function useCreateUser() {
         throw new Error('Username or bio is invalid');
       }
 
-      console.log(1);
-
       // Update the cache with a fresh user.
       // This is to ensure the entire app knows we're logged in now
       await fetchQuery<useCreateUserRefreshViewerQuery>(
@@ -143,8 +141,6 @@ export default function useCreateUser() {
         `,
         {}
       ).toPromise();
-
-      console.log(2);
 
       return response;
     },
