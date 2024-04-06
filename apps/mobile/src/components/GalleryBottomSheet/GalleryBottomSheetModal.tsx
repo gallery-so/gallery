@@ -14,9 +14,9 @@ export type GalleryBottomSheetModalType = BottomSheetModal;
 type GalleryBottomSheetModalProps = {
   children: React.ReactNode;
   snapPoints:
-  | Readonly<{ value: (string | number)[] }>
-  | (string | number)[]
-  | SharedValue<(string | number)[]>;
+    | Readonly<{ value: (string | number)[] }>
+    | (string | number)[]
+    | SharedValue<(string | number)[]>;
 } & Omit<BottomSheetModalProps, 'snapPoints'>;
 
 function GalleryBottomSheetModal(
