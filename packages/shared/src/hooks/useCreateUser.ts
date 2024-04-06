@@ -166,10 +166,10 @@ export function getAuthMechanismFromAuthPayload(authPayloadVariables: AuthPayloa
       },
     };
   } else if (isEmailPayload(authPayloadVariables)) {
-    const { token } = authPayloadVariables;
+    const { privyToken } = authPayloadVariables;
     authMechanism = {
       privy: {
-        token: token!,
+        token: privyToken!,
       },
     };
   } else if (authPayloadVariables.authMechanismType === 'gnosisSafe') {

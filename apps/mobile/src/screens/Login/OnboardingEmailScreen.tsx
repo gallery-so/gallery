@@ -191,6 +191,11 @@ function InnerOnboardingEmailScreen() {
           onChange={(e) => handleEmailChange(e.nativeEvent.text)}
         />
         <View className="space-y-4 w-full">
+          {/* This suspense boundary is needed as the SubmitEmailButton makes
+              a lazy request to the server upon each character input to
+              check whether the email address is available. We leave the
+              variant `disabled` to prevent it from flashing to primary
+              when the fallback is revealed. */}
           <Suspense
             fallback={
               <Button
@@ -199,6 +204,7 @@ function InnerOnboardingEmailScreen() {
                 eventContext={contexts.Onboarding}
                 className="w-full"
                 text="Next"
+                variant="disabled"
               />
             }
           >
