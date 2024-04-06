@@ -76,58 +76,8 @@ export default function useCreateUser() {
       bio: string;
       email?: string;
     }) => {
-      let authMechanism: useCreateUserMutation['variables']['authMechanism'];
-
-      if (isEoaPayload(authPayloadVariables)) {
-        const { chain, address, nonce, message, signature } = authPayloadVariables;
-
-        authMechanism = {
-          eoa: {
-            chainPubKey: {
-              chain,
-              pubKey: address,
-            },
-            nonce,
-            message,
-            signature,
-          },
-        };
-      } else if (isEmailPayload(authPayloadVariables)) {
-        const { token } = authPayloadVariables;
-        authMechanism = {
-          privy: {
-            token: token!,
-          },
-        };
-      } else if (authPayloadVariables.authMechanismType === 'gnosisSafe') {
-        const { address, nonce, message } = authPayloadVariables;
-        authMechanism = {
-          gnosisSafe: {
-            address,
-            nonce,
-            message,
-          },
-        };
-      } else if (authPayloadVariables.authMechanismType === 'neynar') {
-        const { address, nonce, message, signature, primaryAddress } = authPayloadVariables;
-        authMechanism = {
-          neynar: {
-            nonce,
-            message,
-            signature,
-            custodyPubKey: {
-              pubKey: address,
-              chain: 'Ethereum',
-            },
-          },
-        };
-        if (primaryAddress) {
-          authMechanism.neynar!.primaryPubKey = {
-            pubKey: primaryAddress,
-            chain: 'Ethereum',
-          };
-        }
-      }
+      const authMechanism: useCreateUserMutation['variables']['authMechanism'] =
+        getAuthMechanismFromAuthPayload(authPayloadVariables);
 
       const createUserInput: CreateUserInput = {
         username,
@@ -140,7 +90,6 @@ export default function useCreateUser() {
 
       const response = await createUser({
         variables: {
-          // @ts-expect-error: ts doesn't think authMechanism is defined when it clearly is
           authMechanism,
           input: createUserInput,
         },
@@ -197,6 +146,64 @@ export default function useCreateUser() {
     },
     [createUser, environment]
   );
+}
+
+export function getAuthMechanismFromAuthPayload(authPayloadVariables: AuthPayloadVariables) {
+  let authMechanism: useCreateUserMutation['variables']['authMechanism'];
+
+  if (isEoaPayload(authPayloadVariables)) {
+    const { chain, address, nonce, message, signature } = authPayloadVariables;
+
+    authMechanism = {
+      eoa: {
+        chainPubKey: {
+          chain,
+          pubKey: address,
+        },
+        nonce,
+        message,
+        signature,
+      },
+    };
+  } else if (isEmailPayload(authPayloadVariables)) {
+    const { token } = authPayloadVariables;
+    authMechanism = {
+      privy: {
+        token: token!,
+      },
+    };
+  } else if (authPayloadVariables.authMechanismType === 'gnosisSafe') {
+    const { address, nonce, message } = authPayloadVariables;
+    authMechanism = {
+      gnosisSafe: {
+        address,
+        nonce,
+        message,
+      },
+    };
+  } else if (authPayloadVariables.authMechanismType === 'neynar') {
+    const { address, nonce, message, signature, primaryAddress } = authPayloadVariables;
+    authMechanism = {
+      neynar: {
+        nonce,
+        message,
+        signature,
+        custodyPubKey: {
+          pubKey: address,
+          chain: 'Ethereum',
+        },
+      },
+    };
+    if (primaryAddress) {
+      authMechanism.neynar!.primaryPubKey = {
+        pubKey: primaryAddress,
+        chain: 'Ethereum',
+      };
+    }
+  }
+
+  // @ts-expect-error: ts doesn't think authMechanism is defined when it clearly is
+  return authMechanism;
 }
 
 // TODO: use `useCreateUser` instead after web is migrated from magic link -> privy

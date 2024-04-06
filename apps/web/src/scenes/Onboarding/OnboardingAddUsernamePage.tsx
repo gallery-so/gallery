@@ -144,7 +144,7 @@ export function OnboardingAddUsernamePage() {
 
         if (authPayloadQuery.authMechanismType === 'eoa' && authPayloadQuery.email) {
           // Attach the email to the user
-          updateEmail(authPayloadQuery.email);
+          updateEmail({ email: authPayloadQuery.email });
         }
 
         if (!isLocked) {

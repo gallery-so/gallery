@@ -15,8 +15,9 @@ import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScr
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import useCreateUser from '~/shared/hooks/useCreateUser';
+import useCreateUser, { getAuthMechanismFromAuthPayload } from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
@@ -65,6 +66,7 @@ function InnerOnboardingUsernameScreen() {
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
+  const updateEmail = useUpdateEmail();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
@@ -121,10 +123,27 @@ function InnerOnboardingUsernameScreen() {
         authPayloadVariables: authMechanism,
         username,
         bio,
-        email,
       });
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
+        if (!email) {
+          throw new Error('No email found for user creation on mobile');
+        }
+        if (!authMechanism) {
+          throw new Error('No authmechanism found for user creation on mobile');
+        }
+
+        const result = await updateEmail({
+          email,
+          authMechanism: getAuthMechanismFromAuthPayload(authMechanism),
+        });
+
+        if (result.updateEmail?.__typename !== 'UpdateEmailPayload') {
+          throw new Error(
+            `Update email after create user failed on mobile due to ${result.updateEmail?.__typename}`
+          );
+        }
+
         // If the user is signing up with email, redirect to the bio screen
         if (authMethod === 'Privy') {
           navigation.navigate('OnboardingProfileBio');
@@ -164,18 +183,21 @@ function InnerOnboardingUsernameScreen() {
       setIsCreatingUser(false);
     }
   }, [
+    user?.username,
+    user?.dbid,
+    user?.bio,
     authMechanism,
-    authMethod,
-    bio,
-    createUser,
-    setEnsProfileImage,
-    isSyncing,
-    navigation,
-    syncTokens,
     username,
+    bio,
     email,
+    createUser,
     updateUser,
-    user,
+    navigation,
+    updateEmail,
+    authMethod,
+    isSyncing,
+    syncTokens,
+    setEnsProfileImage,
   ]);
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);

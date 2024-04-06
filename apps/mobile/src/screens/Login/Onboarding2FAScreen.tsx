@@ -85,6 +85,7 @@ function InnerOnboardingEmailScreen() {
               authMechanismType: 'privy',
               token,
             },
+            email,
           });
         }
         if (authMethod === 'Wallet' || authMethod === 'Farcaster') {
