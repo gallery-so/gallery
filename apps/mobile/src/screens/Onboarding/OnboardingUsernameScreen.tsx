@@ -15,7 +15,7 @@ import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScr
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import useCreateUser, { getAuthMechanismFromAuthPayload } from '~/shared/hooks/useCreateUser';
+import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
 import useUpdateEmail from '~/shared/hooks/useUpdateEmail';
 import useUpdateUser from '~/shared/hooks/useUpdateUser';
