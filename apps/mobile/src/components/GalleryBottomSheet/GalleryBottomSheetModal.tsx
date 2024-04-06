@@ -2,7 +2,7 @@
 import { ANIMATION_CONFIGS, BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
 import { NavigationContext, useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useEffect, useRef } from 'react';
-import { Keyboard } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 import { ReduceMotion, SharedValue } from 'react-native-reanimated';
 
 import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackdrop';
@@ -41,9 +41,14 @@ function GalleryBottomSheetModal(
     [navigation]
   );
 
+  const androidAnimationConfigs = {
+    ...ANIMATION_CONFIGS,
+    reduceMotion: ReduceMotion.Never,
+  };
+
   return (
     <BottomSheetModal
-      animationConfigs={{ ...ANIMATION_CONFIGS, reduceMotion: ReduceMotion.Never }}
+      animationConfigs={Platform.OS === 'android' ? androidAnimationConfigs : undefined}
       ref={(element) => {
         bottomSheetRef.current = element;
         if (typeof ref === 'function') {
