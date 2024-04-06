@@ -83,7 +83,7 @@ function InnerOnboardingEmailScreen() {
             authMethod: 'Privy',
             authMechanism: {
               authMechanismType: 'privy',
-              token,
+              privyToken: token,
             },
             email,
           });
@@ -91,7 +91,10 @@ function InnerOnboardingEmailScreen() {
         if (authMethod === 'Wallet' || authMethod === 'Farcaster') {
           navigation.navigate('OnboardingUsername', {
             authMethod,
-            authMechanism,
+            authMechanism: {
+              ...authMechanism,
+              privyToken: token,
+            },
             email,
           });
         }

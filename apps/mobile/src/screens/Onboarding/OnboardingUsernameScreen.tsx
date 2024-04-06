@@ -135,8 +135,15 @@ function InnerOnboardingUsernameScreen() {
 
         const result = await updateEmail({
           email,
-          authMechanism: getAuthMechanismFromAuthPayload(authMechanism),
+          authMechanism: {
+            privy: {
+              token: authMechanism.privyToken!,
+            },
+          },
         });
+
+        // eslint-disable-next-line no-console
+        console.log('updateEmailResult', result);
 
         if (result.updateEmail?.__typename !== 'UpdateEmailPayload') {
           throw new Error(
