@@ -1,12 +1,6 @@
-import {
-  DndProvider,
-  DndProviderProps,
-  Draggable,
-  DraggableStack,
-  DraggableStackProps,
-} from '@mgcrea/react-native-dnd';
+import { DndProvider, DndProviderProps } from '@mgcrea/react-native-dnd';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
@@ -15,6 +9,7 @@ import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorC
 import { DraggableSectionStackFragment$key } from '~/generated/DraggableSectionStackFragment.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 
+import { Draggable } from './Draggable';
 import { GalleryEditorSection } from './GalleryEditorSection';
 
 type Props = {
@@ -32,8 +27,7 @@ export function DraggableSectionStack({ queryRef }: Props) {
   );
   const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const { activeRowId, sections, moveRow, updateSectionOrder, toggleTokensStaged } =
-    useGalleryEditorActions();
+  const { sections, moveRow, toggleTokensStaged } = useGalleryEditorActions();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
 
   useEffect(() => {
@@ -48,10 +42,6 @@ export function DraggableSectionStack({ queryRef }: Props) {
     }
   }, [navigation, route.params.stagedTokens, toggleTokensStaged]);
 
-  const onStackOrderChange: DraggableStackProps['onOrderChange'] = (value) => {
-    updateSectionOrder(value);
-  };
-
   const handleDragEnd: DndProviderProps['onDragEnd'] = ({ active, over }) => {
     'worklet';
     if (over) {
@@ -59,24 +49,14 @@ export function DraggableSectionStack({ queryRef }: Props) {
     }
   };
 
-  const disabledSectionDrag = useMemo(() => {
-    return Boolean(activeRowId);
-  }, [activeRowId]);
-
   return (
     <View className="px-2">
       <DndProvider onDragEnd={handleDragEnd} activationDelay={300}>
-        <DraggableStack direction="column" gap={16} onOrderChange={onStackOrderChange}>
-          {sections.map((section, index) => (
-            <Draggable
-              key={`${section.dbid}-${index}`}
-              id={section.dbid}
-              disabled={disabledSectionDrag}
-            >
-              <GalleryEditorSection section={section} queryRef={query} />
-            </Draggable>
-          ))}
-        </DraggableStack>
+        {sections.map((section, index) => (
+          <Draggable key={`${section.dbid}-${index}`} value={{ id: section.dbid, type: 'section' }}>
+            <GalleryEditorSection section={section} queryRef={query} />
+          </Draggable>
+        ))}
       </DndProvider>
     </View>
   );

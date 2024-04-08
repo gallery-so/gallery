@@ -3,6 +3,10 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
+import {
+  ItemCoordinates,
+  useGalleryDraggableActions,
+} from '~/contexts/GalleryEditor/GalleryDraggableContext';
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSectionList } from '~/contexts/GalleryEditor/types';
 
@@ -13,6 +17,8 @@ import { BaseM } from '../Text';
 export function GalleryEditorNavbar() {
   const { activeRowId, sections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
 
+  const { coordinates } = useGalleryDraggableActions();
+
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleDebugger = useCallback(() => {
@@ -22,10 +28,11 @@ export function GalleryEditorNavbar() {
           activeSectionId={sectionIdBeingEdited}
           activeRowId={activeRowId}
           sections={sections}
+          coordinates={coordinates}
         />
       ),
     });
-  }, [activeRowId, sections, sectionIdBeingEdited, showBottomSheetModal]);
+  }, [activeRowId, coordinates, sections, sectionIdBeingEdited, showBottomSheetModal]);
 
   return (
     <View className="p-4 flex-row items-center justify-between">
@@ -60,9 +67,15 @@ type DebuggerBottomSheetProps = {
   activeSectionId: string | null;
   activeRowId: string | null;
   sections: StagedSectionList;
+  coordinates: ItemCoordinates[];
 };
 
-function DebuggerBottomSheet({ activeRowId, activeSectionId, sections }: DebuggerBottomSheetProps) {
+function DebuggerBottomSheet({
+  activeRowId,
+  activeSectionId,
+  sections,
+  coordinates,
+}: DebuggerBottomSheetProps) {
   // console.log(collections);
   return (
     <View className="gap-2">
@@ -92,6 +105,8 @@ function DebuggerBottomSheet({ activeRowId, activeSectionId, sections }: Debugge
             </View>
           );
         })}
+
+        <BaseM>{JSON.stringify(coordinates)}</BaseM>
       </View>
     </View>
   );

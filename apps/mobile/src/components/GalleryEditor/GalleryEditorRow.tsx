@@ -1,8 +1,7 @@
-import { useDraggable, useDroppable } from '@mgcrea/react-native-dnd';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
 import { GestureResponderEvent, useWindowDimensions, View, ViewProps } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
@@ -35,26 +34,6 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
 
   const { activateRow, activeRowId } = useGalleryEditorActions();
 
-  const { offset, setNodeRef, activeId, setNodeLayout } = useDraggable({
-    id: row.id,
-    data: {
-      id: row.id,
-      sectionId,
-      type: 'row',
-    },
-    disabled: false,
-  });
-
-  const { setNodeRef: setDropRef, setNodeLayout: setDropLayout } = useDroppable({
-    id: row.id,
-    data: {
-      id: row.id,
-      sectionId,
-      type: 'row',
-    },
-    disabled: false,
-  });
-
   const screenDimensions = useWindowDimensions();
 
   const column = row.columns;
@@ -71,36 +50,8 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
     [activateRow, sectionId, row.id]
   );
 
-  const animatedStyle = useAnimatedStyle(() => {
-    const isActive = activeId.value === row.id;
-    const style = {
-      opacity: isActive ? 0.5 : 1,
-      zIndex: isActive ? 999 : 1,
-      transform: [
-        {
-          translateX: offset.x.value,
-        },
-        {
-          translateY: offset.y.value,
-        },
-      ],
-    };
-    return style;
-  }, [row.id]);
-
   return (
-    <Animated.View
-      className={clsx('border border-transparent gap-4')}
-      ref={(ref) => {
-        setNodeRef(ref);
-        setDropRef(ref);
-      }}
-      onLayout={(event) => {
-        setNodeLayout(event);
-        setDropLayout(event);
-      }}
-      style={animatedStyle}
-    >
+    <Animated.View className={clsx('border border-transparent gap-4')}>
       <GalleryTouchableOpacity
         eventElementId={null}
         eventName={null}

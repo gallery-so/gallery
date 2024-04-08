@@ -1,4 +1,3 @@
-import { UniqueIdentifier } from '@mgcrea/react-native-dnd';
 import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
@@ -31,21 +30,15 @@ type GalleryEditorActions = {
   activateSection: (sectionId: string) => void;
   sectionIdBeingEdited: string | null;
 
+  moveSection: (activeSectionId: string, overSectionId: string) => void;
+
   activeRowId: string | null;
   activateRow: (sectionId: string, rowId: string) => void;
   clearActiveRow: () => void;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
-  moveRow: (
-    sectionId: string,
-
-    activeRowId: string,
-    // activeCollectionId: string,
-    overRowId: string
-    // overCollectionId: string
-  ) => void;
-  updateSectionOrder: (sectionIds: UniqueIdentifier[]) => void;
+  moveRow: (sectionId: string, activeRowId: string, overRowId: string) => void;
 
   toggleTokensStaged: (tokenIds: string[]) => void;
 
@@ -131,10 +124,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     getInitialCollectionsFromServer(gallery)
   );
 
-  const [sectionIdsOrder, setSectionIdsOrder] = useState<Set<string>>(
-    new Set(sections.map((section) => section.dbid)) || new Set<string>()
-  );
-
   const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(null);
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
@@ -159,6 +148,22 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
           return previousSection;
         });
+      });
+    },
+    [setSections]
+  );
+
+  const moveSection = useCallback(
+    (activeSectionId: string, overSectionId: string) => {
+      setSections((previousSections) => {
+        const activeSectionIndex = previousSections.findIndex(
+          (section) => section.dbid === activeSectionId
+        );
+        const overSectionIndex = previousSections.findIndex(
+          (section) => section.dbid === overSectionId
+        );
+
+        return arrayMove(previousSections, activeSectionIndex, overSectionIndex);
       });
     },
     [setSections]
@@ -393,8 +398,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
     const deletedCollections = [...deletedCollectionIds];
 
-    // Sort the updated collections based on the order of the sectionIdsOrder
-    const order = Array.from(sectionIdsOrder);
+    const order = sections.map((section) => section.dbid);
 
     const payload = {
       galleryId,
@@ -473,13 +477,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     pushToast,
     reportError,
     save,
-    sectionIdsOrder,
     track,
   ]);
-
-  const handleUpdateSectionOrder = useCallback((sectionIds: UniqueIdentifier[]) => {
-    setSectionIdsOrder(new Set(sectionIds.map(String)));
-  }, []);
 
   const value = useMemo(
     () => ({
@@ -497,6 +496,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activateSection,
       sectionIdBeingEdited,
+      moveSection,
 
       activeRowId,
       activateRow,
@@ -506,8 +506,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       toggleTokensStaged,
       saveGallery,
-
-      updateSectionOrder: handleUpdateSectionOrder,
     }),
     [
       galleryId,
@@ -523,6 +521,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activateSection,
       sectionIdBeingEdited,
+      moveSection,
 
       activeRowId,
       activateRow,
@@ -531,8 +530,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       moveRow,
       toggleTokensStaged,
       saveGallery,
-
-      handleUpdateSectionOrder,
     ]
   );
 

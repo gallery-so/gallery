@@ -8,6 +8,7 @@ import { GalleryEditorActions } from '~/components/GalleryEditor/GalleryEditorAc
 import { GalleryEditorHeader } from '~/components/GalleryEditor/GalleryEditorHeader';
 import { GalleryEditorNavbar } from '~/components/GalleryEditor/GalleryEditorNavbar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import GalleryDraggableProvider from '~/contexts/GalleryEditor/GalleryDraggableContext';
 import GalleryEditorProvider from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { GalleryEditorScreenQuery } from '~/generated/GalleryEditorScreenQuery.graphql';
 import { RootStackNavigatorParamList } from '~/navigation/types';
@@ -43,19 +44,21 @@ function InnerGalleryEditorScreen() {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <View
-        className="flex flex-col flex-1 bg-white dark:bg-black-900"
-        style={{
-          paddingTop: top,
-        }}
-      >
-        <GalleryEditorNavbar />
-        <ScrollView className="flex-1">
-          <GalleryEditorHeader galleryRef={gallery} />
-          <DraggableSectionStack queryRef={query} />
-        </ScrollView>
-      </View>
-      <GalleryEditorActions />
+      <GalleryDraggableProvider>
+        <View
+          className="flex flex-col flex-1 bg-white dark:bg-black-900"
+          style={{
+            paddingTop: top,
+          }}
+        >
+          <GalleryEditorNavbar />
+          <ScrollView className="flex-1">
+            <GalleryEditorHeader galleryRef={gallery} />
+            <DraggableSectionStack queryRef={query} />
+          </ScrollView>
+        </View>
+        <GalleryEditorActions />
+      </GalleryDraggableProvider>
     </GalleryEditorProvider>
   );
 }
