@@ -1,8 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useMemo } from 'react';
-import React, { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import React from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextLayoutEventData, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useGradientColorScheme } from 'src/hooks/useGradientColorScheme';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
@@ -17,6 +18,7 @@ type Props = {
 export function PostListCaption({ feedPostRef }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
+  const gradientColors = useGradientColorScheme();
 
   const toggleExpanded = useCallback(() => {
     setIsExpanded((prev) => !prev);
@@ -55,9 +57,9 @@ export function PostListCaption({ feedPostRef }: Props) {
     <GalleryTouchableOpacity
       onPress={toggleExpanded}
       activeOpacity={0.7}
-      eventElementId="sa"
-      eventName="saaa"
-      eventContext="Feed"
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
     >
       <View key={isExpanded ? 'expanded' : 'collapsed'} className="px-4 pb-4">
         <ProcessedText
@@ -68,7 +70,7 @@ export function PostListCaption({ feedPostRef }: Props) {
         />
         {shouldShowGradient ? (
           <LinearGradient
-            colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']}
+            colors={gradientColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             locations={[0.4, 1]}
