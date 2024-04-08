@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { getTimeSince } from 'shared/utils/time';
 
 import { BaseM, BaseS } from '~/components/Text';
@@ -41,7 +42,7 @@ export default function SomeoneYouFollowOnFarcasterJoined({
     `,
     notificationRef
   );
-
+  const reportError = useReportError();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     if (!notification.user?.username) {
