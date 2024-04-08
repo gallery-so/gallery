@@ -1,16 +1,15 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useState } from 'react';
 import React from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextLayoutEventData, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useGradientColorScheme } from 'src/hooks/useGradientColorScheme';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
@@ -19,7 +18,7 @@ type Props = {
 export function PostListCaption({ feedPostRef }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
-  const { colorScheme } = useColorScheme();
+  const gradientColors = useGradientColorScheme();
 
   const toggleExpanded = useCallback(() => {
     setIsExpanded((prev) => !prev);
@@ -53,7 +52,6 @@ export function PostListCaption({ feedPostRef }: Props) {
   }, []);
 
   const shouldShowGradient = textHeight > 0 && !isExpanded;
-  const gradientColors = colorScheme === 'dark' ? ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 1)'] : ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'];
 
   return (
     <GalleryTouchableOpacity
