@@ -1,8 +1,6 @@
-import { DndProvider, DndProviderProps } from '@mgcrea/react-native-dnd';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { View } from 'react-native';
-import { runOnJS } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
@@ -27,7 +25,7 @@ export function DraggableSectionStack({ queryRef }: Props) {
   );
   const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const { sections, moveRow, toggleTokensStaged } = useGalleryEditorActions();
+  const { sections, toggleTokensStaged } = useGalleryEditorActions();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
 
   useEffect(() => {
@@ -42,22 +40,20 @@ export function DraggableSectionStack({ queryRef }: Props) {
     }
   }, [navigation, route.params.stagedTokens, toggleTokensStaged]);
 
-  const handleDragEnd: DndProviderProps['onDragEnd'] = ({ active, over }) => {
-    'worklet';
-    if (over) {
-      runOnJS(moveRow)(active.data.value.sectionId, active.id.toString(), over.id.toString());
-    }
-  };
+  // const handleDragEnd: DndProviderProps['onDragEnd'] = ({ active, over }) => {
+  //   'worklet';
+  //   if (over) {
+  //     runOnJS(moveRow)(active.data.value.sectionId, active.id.toString(), over.id.toString());
+  //   }
+  // };
 
   return (
     <View className="px-2">
-      <DndProvider onDragEnd={handleDragEnd} activationDelay={300}>
-        {sections.map((section, index) => (
-          <Draggable key={`${section.dbid}-${index}`} value={{ id: section.dbid, type: 'section' }}>
-            <GalleryEditorSection section={section} queryRef={query} />
-          </Draggable>
-        ))}
-      </DndProvider>
+      {sections.map((section, index) => (
+        <Draggable key={`${section.dbid}-${index}`} value={{ id: section.dbid, type: 'section' }}>
+          <GalleryEditorSection section={section} queryRef={query} />
+        </Draggable>
+      ))}
     </View>
   );
 }
