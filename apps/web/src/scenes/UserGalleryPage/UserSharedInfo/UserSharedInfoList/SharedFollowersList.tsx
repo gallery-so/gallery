@@ -10,7 +10,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { SharedFollowersListRowFragment$key } from '~/generated/SharedFollowersListRowFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import unescape from '~/shared/utils/unescape';
+import { getUnescapedBioFirstLine } from '~/utils/sanity';
 
 import PaginatedListRow from './SharedInfoListRow';
 
@@ -126,8 +126,7 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
     userRef
   );
 
-  const unescapedBio = user.bio ? unescape(user.bio) : '';
-  const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
+  const bioFirstLine = getUnescapedBioFirstLine(user?.bio);
 
   const userUrlPath: Route = {
     pathname: `/[username]`,

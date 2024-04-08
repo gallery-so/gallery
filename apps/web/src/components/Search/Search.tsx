@@ -12,6 +12,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
 import { useSearchContext } from './SearchContext';
+import SearchDefault from './SearchDefault';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -121,12 +122,18 @@ export default function Search() {
             </StyledSpinnerContainer>
           }
         >
-          {keyword && (
+          {keyword ? (
             <SearchResults
               activeFilter={selectedFilter}
               keyword={keyword}
               onChangeFilter={setSelectedFilter}
               onSelect={handleSelect}
+            />
+          ) : (
+            <SearchDefault
+              onSelect={handleSelect}
+              selectedFilter={selectedFilter}
+              onChangeFilter={setSelectedFilter}
             />
           )}
         </Suspense>
