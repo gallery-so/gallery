@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useMemo } from 'react';
-import React, { useState } from 'react';
+import { useColorScheme } from 'nativewind';
+import { useCallback, useMemo, useState } from 'react';
+import React from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextLayoutEventData, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -10,6 +11,7 @@ import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
+
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
 };
@@ -17,6 +19,7 @@ type Props = {
 export function PostListCaption({ feedPostRef }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
+  const { colorScheme } = useColorScheme();
 
   const toggleExpanded = useCallback(() => {
     setIsExpanded((prev) => !prev);
@@ -50,14 +53,15 @@ export function PostListCaption({ feedPostRef }: Props) {
   }, []);
 
   const shouldShowGradient = textHeight > 0 && !isExpanded;
+  const gradientColors = colorScheme === 'dark' ? ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 1)'] : ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'];
 
   return (
     <GalleryTouchableOpacity
       onPress={toggleExpanded}
       activeOpacity={0.7}
-      eventElementId="sa"
-      eventName="saaa"
-      eventContext="Feed"
+      eventElementId={null}
+      eventName={null}
+      eventContext={null}
     >
       <View key={isExpanded ? 'expanded' : 'collapsed'} className="px-4 pb-4">
         <ProcessedText
@@ -68,7 +72,7 @@ export function PostListCaption({ feedPostRef }: Props) {
         />
         {shouldShowGradient ? (
           <LinearGradient
-            colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']}
+            colors={gradientColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             locations={[0.4, 1]}
