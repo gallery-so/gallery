@@ -90,7 +90,7 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
                 family: 'ABCDiatype',
                 weight: 'Medium',
               }}
-              className="text-shadow text-xs uppercase"
+              className="text-metal text-xs uppercase"
             >
               {item.title}
             </Typography>
