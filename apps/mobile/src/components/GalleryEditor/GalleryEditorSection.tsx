@@ -11,6 +11,7 @@ import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSecti
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
 import { BaseM } from '../Text';
+import { Draggable } from './Draggable';
 import { GalleryEditorRow } from './GalleryEditorRow';
 
 type Props = {
@@ -64,15 +65,16 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
         </BaseM>
         <ProcessedText text={section.collectorsNote || ''} />
 
-        <View className="space-y-2">
+        <View className="space-y-2 z-30">
           {section.rows.map((row, index) => {
             return (
-              <GalleryEditorRow
-                key={row.id + index}
-                sectionId={section.dbid}
-                row={row}
-                queryRef={query}
-              />
+              <Draggable
+                key={`${row.id}-${index}`}
+                value={{ id: row.id, type: 'row' }}
+                disabled={row.id !== activeRowId}
+              >
+                <GalleryEditorRow sectionId={section.dbid} row={row} queryRef={query} />
+              </Draggable>
             );
           })}
         </View>

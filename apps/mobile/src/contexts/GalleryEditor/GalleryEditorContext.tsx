@@ -35,10 +35,10 @@ type GalleryEditorActions = {
   activeRowId: string | null;
   activateRow: (sectionId: string, rowId: string) => void;
   clearActiveRow: () => void;
+  moveRow: (activeRowId: string, overRowId: string) => void;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
-  moveRow: (sectionId: string, activeRowId: string, overRowId: string) => void;
 
   toggleTokensStaged: (tokenIds: string[]) => void;
 
@@ -283,8 +283,16 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   // TODO: Add support for moving rows between sections
   const moveRow = useCallback(
-    (sectionId: string, activeRowId: string, overRowId: string) => {
-      updateSection(sectionId, (previousSection) => {
+    (activeRowId: string, overRowId: string) => {
+      const activeSectionId = sections.find((section) =>
+        section.rows.some((row) => row.id === activeRowId)
+      )?.dbid;
+
+      if (!activeSectionId) {
+        return;
+      }
+
+      updateSection(activeSectionId, (previousSection) => {
         const activeRowIndex = previousSection.rows.findIndex((row) => row.id === activeRowId);
         const overRowIndex = previousSection.rows.findIndex((row) => row.id === overRowId);
 
@@ -294,7 +302,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         };
       });
     },
-    [updateSection]
+    [sections, updateSection]
   );
 
   const toggleTokensStaged = useCallback(

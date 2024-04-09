@@ -25,7 +25,8 @@ export function DraggableSectionStack({ queryRef }: Props) {
   );
   const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const { sections, toggleTokensStaged } = useGalleryEditorActions();
+  const { sectionIdBeingEdited, sections, toggleTokensStaged, activeRowId } =
+    useGalleryEditorActions();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
 
   useEffect(() => {
@@ -40,17 +41,14 @@ export function DraggableSectionStack({ queryRef }: Props) {
     }
   }, [navigation, route.params.stagedTokens, toggleTokensStaged]);
 
-  // const handleDragEnd: DndProviderProps['onDragEnd'] = ({ active, over }) => {
-  //   'worklet';
-  //   if (over) {
-  //     runOnJS(moveRow)(active.data.value.sectionId, active.id.toString(), over.id.toString());
-  //   }
-  // };
-
   return (
     <View className="px-2">
       {sections.map((section, index) => (
-        <Draggable key={`${section.dbid}-${index}`} value={{ id: section.dbid, type: 'section' }}>
+        <Draggable
+          key={`${section.dbid}-${index}`}
+          value={{ id: section.dbid, type: 'section' }}
+          disabled={section.dbid !== sectionIdBeingEdited || Boolean(activeRowId)}
+        >
           <GalleryEditorSection section={section} queryRef={query} />
         </Draggable>
       ))}

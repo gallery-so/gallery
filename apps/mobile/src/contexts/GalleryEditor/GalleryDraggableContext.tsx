@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
+import { DragItem } from '~/components/GalleryEditor/Draggable';
+
 import { useGalleryEditorActions } from './GalleryEditorContext';
 
 export type ItemCoordinates = {
@@ -12,9 +14,13 @@ export type ItemCoordinates = {
 };
 
 type GalleryDraggableActions = {
+  isDragging: boolean;
+  setIsDragging: (value: boolean) => void;
   coordinates: ItemCoordinates[];
   onLayoutUpdates: (value: ItemCoordinates) => void;
-  onGestureUpdate: (activeId: string, cursor: { x: number; y: number }) => void;
+  onGestureUpdate: (value: DragItem, cursor: { x: number; y: number }) => void;
+
+  getCoordinates: (id: string) => ItemCoordinates | undefined;
 };
 
 const GalleryDraggableActionsContext = createContext<GalleryDraggableActions | undefined>(
@@ -36,9 +42,14 @@ type Props = {
 };
 
 const GalleryDraggableProvider = ({ children }: Props) => {
-  const { moveSection } = useGalleryEditorActions();
+  const { moveRow, moveSection } = useGalleryEditorActions();
 
+  const [isDragging, setIsDragging] = useState(false);
   const [itemsCoordinates, setItemsCoordinates] = useState<ItemCoordinates[]>([]);
+
+  const handleToggleIsDragging = useCallback((value: boolean) => {
+    setIsDragging(value);
+  }, []);
 
   const handleLayoutUpdates = useCallback(
     (value: ItemCoordinates) => {
@@ -57,35 +68,62 @@ const GalleryDraggableProvider = ({ children }: Props) => {
   );
 
   const handleGestureUpdate = useCallback(
-    (activeId: string, cursor: { x: number; y: number }) => {
+    (value: DragItem, cursor: { x: number; y: number }) => {
       // Find the item that is below the cursor
       const item = itemsCoordinates.find(
         (item) =>
-          item.id !== activeId &&
+          item.id !== value.id &&
           cursor.x >= item.x &&
           cursor.x <= item.x + item.width &&
           cursor.y >= item.y &&
-          cursor.y <= item.y + item.height
+          cursor.y <= item.y + item.height &&
+          item.type === value.type
       );
 
       if (!item) {
         return;
       }
 
-      //   Assume we are moving sections
-      moveSection(activeId, item.id);
+      if (item.type === 'row') {
+        moveRow(value.id, item.id);
+        return;
+      }
+
+      if (item.type === 'section') {
+        moveSection(value.id, item.id);
+        return;
+      }
     },
-    [itemsCoordinates, moveSection]
+    [itemsCoordinates, moveRow, moveSection]
+  );
+
+  const handleGetCoordinates = useCallback(
+    (id: string) => {
+      return itemsCoordinates.find((item) => item.id === id);
+    },
+    [itemsCoordinates]
   );
 
   const value = useMemo(
     () => ({
+      isDragging,
+      setIsDragging: handleToggleIsDragging,
+
       coordinates: itemsCoordinates,
       onLayoutUpdates: handleLayoutUpdates,
 
       onGestureUpdate: handleGestureUpdate,
+
+      getCoordinates: handleGetCoordinates,
     }),
-    [handleGestureUpdate, handleLayoutUpdates, itemsCoordinates]
+    [
+      handleGestureUpdate,
+      handleLayoutUpdates,
+      handleToggleIsDragging,
+      isDragging,
+      itemsCoordinates,
+      handleGetCoordinates,
+    ]
   );
 
   return (
