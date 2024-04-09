@@ -68,8 +68,8 @@ const EnsName = ({ chainAddressRef, eventContext }: EnsNameProps) => {
     return (
       <RawLinkableAddress
         link={link}
-        address={addressData?.address}
-        truncatedAddress={addressData?.name}
+        address={addressData?.address ?? addressData?.name}
+        truncatedAddress={null}
         textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
         eventElementId="ENS Name"
