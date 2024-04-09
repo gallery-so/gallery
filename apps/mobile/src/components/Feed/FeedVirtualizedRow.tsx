@@ -13,6 +13,7 @@ import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
 import { PostListMintButtonSection } from './Posts/PostListMintButtonSection';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
+import { FeedSuggestedProfileRow } from './Posts/FeedSuggestedProfileRow';
 
 type Props = {
   item: FeedListItemType;
@@ -64,6 +65,8 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
         );
       case 'post-item-mint-link':
         return <PostListMintButtonSection postRef={item.post} />;
+      case 'suggested-profile-row':
+        return <FeedSuggestedProfileRow queryRef={item.queryRef} />;
     }
   }, [item]);
 

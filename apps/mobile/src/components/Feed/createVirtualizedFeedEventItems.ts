@@ -19,7 +19,7 @@ import {
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export type FeedItemTypes = 'Post' | 'FeedEvent';
+export type FeedItemTypes = 'Post' | 'FeedEvent' | 'SuggestedProfileRow';
 type itemType = FeedItemTypes | null;
 
 export type FeedListItemType = { key: string } & (
@@ -107,6 +107,13 @@ export type FeedListItemType = { key: string } & (
       postId: string;
       itemType: itemType;
     }
+  | {
+      kind: 'suggested-profile-row';
+      event: null;
+      post: null;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      itemType: itemType;
+    }
 );
 
 export type createVirtualizedItemsFromFeedEventsArgs = {
@@ -149,6 +156,8 @@ export function createVirtualizedFeedEventItems({
         ...FeedPostSocializeSectionQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...PostListItemQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedSuggestedProfileRowFragment
       }
     `,
     queryRef
@@ -361,12 +370,30 @@ export function createVirtualizedFeedEventItems({
     }
   };
 
+  const setVirtualizeItemsForSuggestedProfileRow = (
+    query: createVirtualizedFeedEventItemsQueryFragment$data
+  ) => {
+    const uniqueKey = Math.random().toString();
+
+    items.push({
+      kind: 'suggested-profile-row',
+      post: null,
+      event: null,
+      key: `feed-suggested-profile-row-${uniqueKey}`,
+      queryRef: query,
+      itemType: 'FeedEvent',
+    });
+  };
+
   for (const item of newItems) {
     if (item.__typename === 'FeedEvent') {
       setVirtualizeItemsForEvent(item);
     }
     if (item.__typename === 'Post') {
       setVirtualizeItemsForPost(item);
+    }
+    if (item.__typename === 'SuggestedProfileRow') {
+      setVirtualizeItemsForSuggestedProfileRow(item);
     }
   }
 
