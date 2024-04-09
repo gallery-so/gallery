@@ -1,16 +1,16 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { SearchDefaultFragment$key } from '~/generated/SearchDefaultFragment.graphql';
-import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
+import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { TrendingUserCard } from '../Trending/TrendingUserCard';
 import { Typography } from '../Typography';
 import { UserSearchResult } from './User/UserSearchResult';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { TrendingUserCard } from '../Trending/TrendingUserCard';
 
 type Props = {
   queryRef: SearchDefaultFragment$key;
@@ -21,7 +21,13 @@ type Props = {
 type ListItemType =
   | { kind: 'header'; title: string }
   | { kind: 'user'; user: UserSearchResultFragment$key }
-  | { kind: 'userCardRow'; users: [] };
+  | {
+      kind: 'userCardRow';
+      users: Array<UserSearchResultFragment$key | TrendingUserCardFragment$key>;
+    };
+
+const CARD_HEIGHT = 145;
+const CARD_WIDTH = 185;
 
 export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
   const query = useFragment(
@@ -58,8 +64,8 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
                     }
 
                     ...UserSearchResultFragment
+                    ...TrendingUserCardFragment
                   }
-                  ...TrendingUserCardFragment
                 }
               }
             }
@@ -71,9 +77,6 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
   );
 
   const { width } = useWindowDimensions();
-
-  const CARD_HEIGHT = 145;
-  const CARD_WIDTH = 185;
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
@@ -112,13 +115,13 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
         return <UserSearchResult userRef={item.user} keyword={keyword} />;
       }
     },
-    [keyword]
+    [query, keyword]
   );
 
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];
 
-    let suggestedUsers = [];
+    const suggestedUsers = [];
     if (query.viewer?.suggestedUsers?.__typename === 'UsersConnection') {
       for (const edge of query.viewer?.suggestedUsers?.edges ?? []) {
         if (edge?.node) {
