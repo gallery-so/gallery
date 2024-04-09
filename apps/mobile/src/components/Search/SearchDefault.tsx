@@ -10,8 +10,8 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TrendingUserCard } from '../Trending/TrendingUserCard';
 import { Typography } from '../Typography';
-import { UserSearchResult } from './User/UserSearchResult';
 import { UserFollowListFallback } from '../UserFollowList/UserFollowListFallback';
+import { UserSearchResult } from './User/UserSearchResult';
 
 type Props = {
   queryRef: SearchDefaultFragment$key;
@@ -23,12 +23,8 @@ type ListItemType =
   | { kind: 'header'; title: string }
   | { kind: 'user'; user: UserSearchResultFragment$key }
   | {
-      kind: 'trendingUserCardRow';
-      trendingUsers: Array<TrendingUserCardFragment$key>;
-    }
-  | {
-      kind: 'suggestedUserCardRow';
-      suggestedUsers: Array<TrendingUserCardFragment$key>;
+      kind: 'userCardRow';
+      users: Array<TrendingUserCardFragment$key>;
     };
 
 const CARD_HEIGHT = 145;
@@ -97,27 +93,10 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
             </Typography>
           </View>
         );
-      } else if (item.kind === 'trendingUserCardRow') {
+      } else if (item.kind === 'userCardRow') {
         return (
           <View className="flex flex-row justify-around">
-            {item?.trendingUsers?.map((user, idx) => {
-              return (
-                <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
-                  <TrendingUserCard
-                    key={idx}
-                    userRef={user}
-                    queryRef={query}
-                    showFollowButton={false}
-                  />
-                </View>
-              );
-            })}
-          </View>
-        );
-      } else if (item.kind === 'suggestedUserCardRow') {
-        return (
-          <View className="flex flex-row justify-around">
-            {item?.suggestedUsers?.map((user, idx) => {
+            {item?.users?.map((user, idx) => {
               return (
                 <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
                   <TrendingUserCard
@@ -155,8 +134,8 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
         title: 'Suggested Collectors and Creators',
       });
       items.push({
-        kind: 'suggestedUserCardRow',
-        suggestedUsers: suggestedUsers?.slice(0, 2),
+        kind: 'userCardRow',
+        users: suggestedUsers?.slice(0, 2),
       });
     }
 
@@ -178,8 +157,8 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
           title: 'Trending Collectors and Creators',
         });
         items.push({
-          kind: 'trendingUserCardRow',
-          trendingUsers: usersWithTokenPreviews?.slice(0, 2),
+          kind: 'userCardRow',
+          users: usersWithTokenPreviews?.slice(0, 2),
         });
       }
 
