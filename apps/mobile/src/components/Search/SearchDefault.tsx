@@ -179,11 +179,6 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
 
   return (
     <View className="flex-grow">
-      <View
-        className="flex flex-row flex-wrap justify-between"
-        style={{ width: width - 24 }}
-      ></View>
-
       <FlashList
         keyboardShouldPersistTaps="always"
         data={items}
