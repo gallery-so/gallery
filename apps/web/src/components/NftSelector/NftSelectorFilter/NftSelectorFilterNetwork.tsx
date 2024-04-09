@@ -99,15 +99,16 @@ export function NftSelectorFilterNetwork({
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
           {availableChains.map((chain) => {
-            const isChainDisabled = selectedMode === 'Created' && !chain.hasCreatorSupport;
+            const isChainEnabled =
+              isAdmin || (selectedMode === 'Created' && chain.hasCreatorSupport);
             return (
               <DropdownItem
                 key={chain.name}
                 onClick={() => {
-                  if (isChainDisabled) return;
+                  if (!isChainEnabled) return;
                   onSelectChain(chain);
                 }}
-                disabled={isChainDisabled}
+                disabled={!isChainEnabled}
                 name="NFT Selector Filter Network"
                 eventContext={contexts.Posts}
                 eventSelection={chain.name}
