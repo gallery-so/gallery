@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useSearchContext } from 'src/components/Search/SearchContext';
@@ -9,6 +9,7 @@ import { SearchResults } from 'src/components/Search/SearchResults';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { SearchDefault } from '~/components/Search/SearchDefault';
+import { SearchDefaultFallback } from '~/components/Search/SearchDefaultFallback';
 import { SearchScreenQuery } from '~/generated/SearchScreenQuery.graphql';
 
 export function SearchScreen() {
@@ -58,7 +59,9 @@ export function SearchScreen() {
             />
           </View>
         ) : (
-          <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} keyword={keyword} />
+          <Suspense fallback={<SearchDefaultFallback />}>
+            <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} keyword={keyword} />
+          </Suspense>
         )}
       </GalleryTouchableOpacity>
     </KeyboardAvoidingView>
