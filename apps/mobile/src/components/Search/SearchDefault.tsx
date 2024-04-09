@@ -79,7 +79,7 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
   );
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
-    ({ item }) => {
+    ({ item, index }) => {
       if (item.kind === 'header' || item.kind === 'paddingTopHeader') {
         return (
           <View
@@ -98,23 +98,22 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
         );
       } else if (item.kind === 'userCardRow') {
         return (
-          <View className="flex flex-row pr-4 pl-4 space-x-1.5">
+          <View className="flex flex-row pr-4 pl-4 space-x-1.5" key={index}>
             {item?.users?.map((user, idx) => {
               return (
-                <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
-                  <TrendingUserCard
-                    key={idx}
-                    userRef={user}
-                    queryRef={query}
-                    showFollowButton={false}
-                  />
+                <View
+                  className="mb-1 "
+                  style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}
+                  key={idx}
+                >
+                  <TrendingUserCard userRef={user} queryRef={query} showFollowButton={false} />
                 </View>
               );
             })}
           </View>
         );
       } else {
-        return <UserSearchResult userRef={item.user} keyword={keyword} />;
+        return <UserSearchResult userRef={item.user} keyword={keyword} key={index} />;
       }
     },
     [query, keyword]
