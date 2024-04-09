@@ -1,6 +1,6 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { Suspense, useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { SearchDefaultFragment$key } from '~/generated/SearchDefaultFragment.graphql';
@@ -11,6 +11,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { TrendingUserCard } from '../Trending/TrendingUserCard';
 import { Typography } from '../Typography';
 import { UserSearchResult } from './User/UserSearchResult';
+import { UserFollowListFallback } from '../UserFollowList/UserFollowListFallback';
 
 type Props = {
   queryRef: SearchDefaultFragment$key;
@@ -22,8 +23,12 @@ type ListItemType =
   | { kind: 'header'; title: string }
   | { kind: 'user'; user: UserSearchResultFragment$key }
   | {
-      kind: 'userCardRow';
-      users: Array<UserSearchResultFragment$key | TrendingUserCardFragment$key>;
+      kind: 'trendingUserCardRow';
+      trendingUsers: Array<TrendingUserCardFragment$key>;
+    }
+  | {
+      kind: 'suggestedUserCardRow';
+      suggestedUsers: Array<TrendingUserCardFragment$key>;
     };
 
 const CARD_HEIGHT = 145;
@@ -76,8 +81,6 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
     queryRef
   );
 
-  const { width } = useWindowDimensions();
-
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
       if (item.kind === 'header') {
@@ -94,10 +97,27 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
             </Typography>
           </View>
         );
-      } else if (item.kind === 'userCardRow') {
+      } else if (item.kind === 'trendingUserCardRow') {
         return (
           <View className="flex flex-row justify-around">
-            {item?.users?.map((user, idx) => {
+            {item?.trendingUsers?.map((user, idx) => {
+              return (
+                <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
+                  <TrendingUserCard
+                    key={idx}
+                    userRef={user}
+                    queryRef={query}
+                    showFollowButton={false}
+                  />
+                </View>
+              );
+            })}
+          </View>
+        );
+      } else if (item.kind === 'suggestedUserCardRow') {
+        return (
+          <View className="flex flex-row justify-around">
+            {item?.suggestedUsers?.map((user, idx) => {
               return (
                 <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
                   <TrendingUserCard
@@ -132,11 +152,11 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
     if (suggestedUsers) {
       items.push({
         kind: 'header',
-        title: 'Trending Collectors and Creators',
+        title: 'Suggested Collectors and Creators',
       });
       items.push({
-        kind: 'userCardRow',
-        users: suggestedUsers?.slice(0, 2),
+        kind: 'suggestedUserCardRow',
+        suggestedUsers: suggestedUsers?.slice(0, 2),
       });
     }
 
@@ -155,11 +175,11 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
       if (usersWithTokenPreviews) {
         items.push({
           kind: 'header',
-          title: 'Suggested Collectors and Creators',
+          title: 'Trending Collectors and Creators',
         });
         items.push({
-          kind: 'userCardRow',
-          users: usersWithTokenPreviews?.slice(0, 2),
+          kind: 'trendingUserCardRow',
+          trendingUsers: usersWithTokenPreviews?.slice(0, 2),
         });
       }
 
@@ -179,13 +199,15 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
 
   return (
     <View className="flex-grow">
-      <FlashList
-        keyboardShouldPersistTaps="always"
-        data={items}
-        estimatedItemSize={25}
-        renderItem={renderItem}
-        onTouchStart={blurInputFocus}
-      />
+      <Suspense fallback={<UserFollowListFallback />}>
+        <FlashList
+          keyboardShouldPersistTaps="always"
+          data={items}
+          estimatedItemSize={25}
+          renderItem={renderItem}
+          onTouchStart={blurInputFocus}
+        />
+      </Suspense>
     </View>
   );
 }
