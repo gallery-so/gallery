@@ -23,6 +23,7 @@ import { Typography } from '../Typography';
 type Props = {
   userRef: TrendingUserCardFragment$key;
   queryRef: TrendingUserCardQueryFragment$key;
+  showFollowButton?: boolean;
   style?: ViewProps['style'];
 };
 
@@ -32,7 +33,7 @@ const markdownStyle = {
   },
 };
 
-export function TrendingUserCard({ style, userRef, queryRef }: Props) {
+export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = true }: Props) {
   const user = useFragment(
     graphql`
       fragment TrendingUserCardFragment on GalleryUser {
@@ -159,8 +160,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
           </Markdown>
         </View>
       </View>
-
-      <FollowButton queryRef={query} userRef={user} width="grow" />
+      {showFollowButton && <FollowButton queryRef={query} userRef={user} width="grow" />}
     </GalleryTouchableOpacity>
   );
 }
