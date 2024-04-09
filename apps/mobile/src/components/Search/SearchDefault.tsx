@@ -1,5 +1,6 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { Suspense, useCallback, useMemo } from 'react';
+import clsx from 'clsx';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -10,7 +11,6 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TrendingUserCard } from '../Trending/TrendingUserCard';
 import { Typography } from '../Typography';
-import { UserFollowListFallback } from '../UserFollowList/UserFollowListFallback';
 import { UserSearchResult } from './User/UserSearchResult';
 
 type Props = {
@@ -21,6 +21,7 @@ type Props = {
 
 type ListItemType =
   | { kind: 'header'; title: string }
+  | { kind: 'paddingTopHeader'; title: string }
   | { kind: 'user'; user: UserSearchResultFragment$key }
   | {
       kind: 'userCardRow';
@@ -28,7 +29,7 @@ type ListItemType =
     };
 
 const CARD_HEIGHT = 145;
-const CARD_WIDTH = 185;
+const CARD_WIDTH = 180;
 
 export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
   const query = useFragment(
@@ -79,15 +80,17 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
-      if (item.kind === 'header') {
+      if (item.kind === 'header' || item.kind === 'paddingTopHeader') {
         return (
-          <View className="p-4">
+          <View
+            className={clsx('pr-4 pl-4 pb-2', item.kind === 'paddingTopHeader' ? 'pt-4' : 'pt-2')}
+          >
             <Typography
               font={{
                 family: 'ABCDiatype',
                 weight: 'Medium',
               }}
-              className="text-metal text-xs uppercase"
+              className="text-shadow text-xs uppercase"
             >
               {item.title}
             </Typography>
@@ -95,7 +98,7 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
         );
       } else if (item.kind === 'userCardRow') {
         return (
-          <View className="flex flex-row justify-around">
+          <View className="flex flex-row pr-4 pl-4 space-x-1.5">
             {item?.users?.map((user, idx) => {
               return (
                 <View className="mb-1 " style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}>
@@ -163,7 +166,7 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
       }
 
       items.push({
-        kind: 'header',
+        kind: 'paddingTopHeader',
         title: 'Trending Curators',
       });
       for (const user of users) {
@@ -178,15 +181,13 @@ export function SearchDefault({ queryRef, blurInputFocus, keyword }: Props) {
 
   return (
     <View className="flex-grow">
-      <Suspense fallback={<UserFollowListFallback />}>
-        <FlashList
-          keyboardShouldPersistTaps="always"
-          data={items}
-          estimatedItemSize={25}
-          renderItem={renderItem}
-          onTouchStart={blurInputFocus}
-        />
-      </Suspense>
+      <FlashList
+        keyboardShouldPersistTaps="always"
+        data={items}
+        estimatedItemSize={25}
+        renderItem={renderItem}
+        onTouchStart={blurInputFocus}
+      />
     </View>
   );
 }

@@ -111,7 +111,7 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
   return (
     <GalleryTouchableOpacity
       onPress={handlePress}
-      className="bg-offWhite dark:bg-black-800 flex-1 rounded-md p-2"
+      className="bg-offWhite dark:bg-black-800 flex-1 rounded p-2"
       style={[style]}
       eventElementId="Trending User Card"
       eventName="Trending User Card Clicked"
