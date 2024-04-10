@@ -152,6 +152,11 @@ function MintButton({
             user {
               primaryWallet {
                 dbid
+                chain
+              }
+              wallets {
+                dbid
+                chain
               }
             }
           }
@@ -161,17 +166,35 @@ function MintButton({
     {}
   );
 
-  const recipientWalletId = query.viewer?.user?.primaryWallet?.dbid;
+  // Since the mint is only available for Ethereum addresses, look for the first connected Eth wallet starting with the primary wallet
+  const recipientWalletId = useMemo(() => {
+    const user = query.viewer?.user;
+    if (!user) {
+      return;
+    }
+    if (user.primaryWallet?.chain === 'Ethereum') {
+      return user.primaryWallet?.dbid;
+    }
+
+    return user.wallets?.find((wallet) => wallet?.chain === 'Ethereum')?.dbid;
+  }, [query.viewer?.user]);
 
   return (
-    <Button
-      text={isClamingMint ? 'Minting...' : 'Mint'}
-      eventElementId="Mint Campaign Mint Button"
-      eventName="Pressed Mint Campaign Mint Button"
-      eventContext={contexts['Mint Campaign']}
-      className="my-2"
-      onPress={() => onPress(recipientWalletId ?? '')}
-      disabled={isClamingMint || !recipientWalletId || isMintOver}
-    />
+    <>
+      <Button
+        text={isClamingMint ? 'Minting...' : 'Mint'}
+        eventElementId="Mint Campaign Mint Button"
+        eventName="Pressed Mint Campaign Mint Button"
+        eventContext={contexts['Mint Campaign']}
+        className="my-2"
+        onPress={() => onPress(recipientWalletId ?? '')}
+        disabled={isClamingMint || !recipientWalletId || isMintOver}
+      />
+      {!recipientWalletId && (
+        <BaseM classNameOverride="text-red">
+          Please connect an Ethereum address to your account to mint.
+        </BaseM>
+      )}
+    </>
   );
 }
