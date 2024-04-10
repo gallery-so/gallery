@@ -83,7 +83,7 @@ export default function SidebarChainDropdown({
         <DropdownSection>
           {availableChains.map((chain) => {
             const isChainEnabled =
-              isAdmin || (selectedView === 'Created' && chain.hasCreatorSupport);
+              selectedView === 'Created' ? isAdmin || chain.hasCreatorSupport : true;
             return (
               <DropdownItem
                 key={chain.name}
