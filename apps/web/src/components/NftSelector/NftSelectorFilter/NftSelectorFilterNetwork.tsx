@@ -100,7 +100,7 @@ export function NftSelectorFilterNetwork({
         <DropdownSection>
           {availableChains.map((chain) => {
             const isChainEnabled =
-              isAdmin || (selectedMode === 'Created' && chain.hasCreatorSupport);
+              selectedMode === 'Created' ? isAdmin || chain.hasCreatorSupport : true;
             return (
               <DropdownItem
                 key={chain.name}
