@@ -86,7 +86,6 @@ export function MintLinkButton({
     return contractAddress === '0x78b92e9afd56b033ead2103f07aced5fac8c0854';
   }, [contractAddress]);
 
-
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
     overrideMintUrl || mintUrl,
     referrerAddress ?? ''
@@ -142,7 +141,6 @@ export function MintLinkButton({
         buttonText: 'mint on foundation',
         icon: <FoundationIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
-
     } else {
       return null;
     }

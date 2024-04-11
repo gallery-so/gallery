@@ -259,12 +259,12 @@ export function NotificationSkeleton({
   );
 
   // TODO Get data from backend
-  const isPinned = true
+  const isPinned = true;
 
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
-      className={`flex flex-row justify-between p-4 ${isPinned && "m-4 border border-blue-700"}`}
+      className={`flex flex-row justify-between p-4 ${isPinned && 'm-4 border border-blue-700'}`}
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
       eventContext={contexts.Notifications}
