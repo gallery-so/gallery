@@ -2,6 +2,8 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
+import usePersistedState from 'src/hooks/usePersistedState';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
@@ -11,6 +13,7 @@ import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
@@ -23,6 +26,7 @@ import {
 } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './Button';
+import MintCampaignBottomSheet from './Mint/MintCampaign/MintCampaignBottomSheet';
 
 type Props = {
   // in order to generate the mint URL with the correct params, we either grab it
@@ -78,10 +82,19 @@ export function MintLinkButton({
     };
   }, [overrideMetadata, token]);
 
+  const isRadiance = useMemo(() => {
+    return contractAddress === '0x78b92e9afd56b033ead2103f07aced5fac8c0854';
+  }, [contractAddress]);
+
+
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
     overrideMintUrl || mintUrl,
     referrerAddress ?? ''
   );
+
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
+  const [claimCode] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
 
   const mintProvider: {
     buttonText: string;
@@ -113,23 +126,35 @@ export function MintLinkButton({
         icon: <SuperRareIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else if (mintProviderType === 'Highlight') {
-      return {
-        buttonText: 'mint on highlight',
-        icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
-      };
+      if (isRadiance && !claimCode) {
+        return {
+          buttonText: 'mint on gallery',
+          icon: <FoundationIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+        };
+      } else {
+        return {
+          buttonText: 'mint on highlight',
+          icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+        };
+      }
     } else if (mintProviderType === 'Foundation') {
       return {
         buttonText: 'mint on foundation',
         icon: <FoundationIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
+
     } else {
       return null;
     }
-  }, [mintProviderType, size]);
+  }, [claimCode, isRadiance, mintProviderType, size]);
 
   const handlePress = useCallback(() => {
-    Linking.openURL(mintURL);
-  }, [mintURL]);
+    if (isRadiance) {
+      showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+    } else {
+      Linking.openURL(mintURL);
+    }
+  }, [hideBottomSheetModal, isRadiance, mintURL, showBottomSheetModal]);
 
   const arrowColor = useMemo(() => {
     const colorMap = {

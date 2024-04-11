@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext';
 
+import { ClaimMintUpsellBanner } from '~/components/ClaimMintUpsellBanner';
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
@@ -116,6 +117,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
     graphql`
       fragment RootStackNavigatorFragment on Query {
         ...ConnectWalletUpsellBannerFragment
+        ...ClaimMintUpsellBannerFragment
       }
     `,
     queryRef
@@ -125,6 +127,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
     <View className="flex-1">
       <Suspense fallback={<View />}>
         <ConnectWalletUpsellBanner queryRef={query} />
+        <ClaimMintUpsellBanner queryRef={query} />
       </Suspense>
       <MainTabNavigator />
     </View>
