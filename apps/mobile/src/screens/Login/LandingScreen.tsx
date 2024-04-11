@@ -11,6 +11,8 @@ import {
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { OrderedListItem, Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
@@ -56,9 +58,21 @@ export function LandingScreen() {
     });
   }, [navigation]);
 
-  const toggleOption = useCallback(() => {
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
+  const { openManageWallet } = useManageWalletActions();
+  const showSignInBottomSheet = useCallback(() => {
     bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: (
+        <SignInBottomSheet
+          onClose={hideBottomSheetModal}
+          onQrCodePress={handleQrCodePress}
+          openManageWallet={openManageWallet}
+        />
+      ),
+    });
+  }, [handleQrCodePress, hideBottomSheetModal, openManageWallet, showBottomSheetModal]);
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
@@ -124,7 +138,7 @@ export function LandingScreen() {
         <View className="flex flex-col space-y-4 w-8/12">
           <View className="w-[200px] space-y-2 self-center">
             <Button
-              onPress={toggleOption}
+              onPress={showSignInBottomSheet}
               variant="primary"
               text="get started"
               eventElementId="Get Started Button"
@@ -132,7 +146,7 @@ export function LandingScreen() {
               eventContext={contexts.Authentication}
             />
 
-            <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} />
+            {/* <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} /> */}
           </View>
           {error && (
             <Typography

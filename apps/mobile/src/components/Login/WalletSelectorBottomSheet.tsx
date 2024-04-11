@@ -1,6 +1,5 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import clsx from 'clsx';
-import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { View, ViewProps } from 'react-native';
 import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import { CoinbaseWalletIcon } from 'src/icons/CoinbaseWalletIcon';
@@ -12,17 +11,11 @@ import { WalletConnectIcon } from 'src/icons/WalletConnectIcon';
 import { contexts } from '~/shared/analytics/constants';
 
 import { BottomSheetRow } from '../BottomSheetRow';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
 import { useCoinbaseWallet } from './AuthProvider/CoinbaseWallet/useCoinbaseWallet';
 import { useWalletConnect } from './AuthProvider/WalletConnect/useWallectConnect';
 import { WalletConnectProvider } from './AuthProvider/WalletConnect/WalletConnectProvider';
-
-const SNAP_POINTS = [300, 'CONTENT_HEIGHT'];
 
 type Props = {
   title?: string;
@@ -34,16 +27,14 @@ type Props = {
 
 type WalletSupport = 'WalletConnect' | 'CoinbaseWallet';
 
-function WalletSelectorBottomSheet(
-  { onDismiss, title = 'Network', onSignedIn, isSigningIn, setIsSigningIn }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+export default function WalletSelectorBottomSheet({
+  onDismiss,
+  title = 'Network',
+  onSignedIn,
+  isSigningIn,
+  setIsSigningIn,
+}: Props) {
   const { bottom } = useSafeAreaPadding();
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const handleOnSignedIn: Props['onSignedIn'] = useCallback(
     (props) => {
@@ -76,40 +67,17 @@ function WalletSelectorBottomSheet(
 
   return (
     <>
-      <GalleryBottomSheetModal
-        ref={(value) => {
-          bottomSheetRef.current = value;
-          if (typeof ref === 'function') {
-            ref(value);
-          } else if (ref) {
-            ref.current = value;
-          }
-        }}
-        snapPoints={animatedSnapPoints}
-        handleHeight={animatedHandleHeight}
-        contentHeight={animatedContentHeight}
-        onDismiss={onDismiss}
-      >
-        <View
-          onLayout={handleContentLayout}
-          style={{ paddingBottom: bottom }}
-          className="p-4 flex flex-col space-y-6"
-        >
-          {isSigningIn ? (
-            <SignedInWalletMessage />
-          ) : (
-            <WalletOptions title={title} onSelect={handleSelectWallet} />
-          )}
-        </View>
-      </GalleryBottomSheetModal>
+      <View style={{ paddingBottom: bottom }} className="p-4 flex flex-col space-y-6">
+        {isSigningIn ? (
+          <SignedInWalletMessage />
+        ) : (
+          <WalletOptions title={title} onSelect={handleSelectWallet} />
+        )}
+      </View>
       <WalletConnectProvider />
     </>
   );
 }
-
-const ForwardedWalletSelectorBottomSheet = forwardRef(WalletSelectorBottomSheet);
-
-export { ForwardedWalletSelectorBottomSheet as WalletSelectorBottomSheet };
 
 function IconWrapper({
   children,

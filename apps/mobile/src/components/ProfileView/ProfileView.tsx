@@ -16,6 +16,7 @@ import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileVie
 import { ProfileViewFollowersTab } from '~/components/ProfileView/Tabs/ProfileViewFollowersTab';
 import { ProfileViewGalleriesTab } from '~/components/ProfileView/Tabs/ProfileViewGalleriesTab';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/ProfileViewConnectedProfilePictureFragment.graphql';
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
@@ -33,9 +34,9 @@ import { FollowButton } from '../FollowButton';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
+import PfpBottomSheet from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { BadgeProfileBottomSheet } from './BadgeProfileBottomSheet';
+import BadgeProfileBottomSheet from './BadgeProfileBottomSheet';
 import { ProfileViewBookmarksTab } from './Tabs/ProfileViewBookmarksTab';
 
 type ProfileViewProps = {
@@ -244,8 +245,6 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
     queryRef
   );
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
   const filteredBadges = useMemo(() => {
     const badges = query.userByUsername?.badges ?? [];
     return badges.filter((badge) => {
@@ -264,13 +263,27 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
     description: string;
   } | null>(null);
 
-  const handlePress = useCallback((badgeName: string) => {
-    setSelectedBadge({
-      name: badgeName,
-      description: BADGE_DESCRIPTIONS[badgeName] ?? '',
-    });
-    bottomSheetRef.current?.present();
-  }, []);
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
+  const handlePress = useCallback(
+    (badgeName: string) => {
+      setSelectedBadge({
+        name: badgeName,
+        description: BADGE_DESCRIPTIONS[badgeName] ?? '',
+      });
+
+      showBottomSheetModal({
+        content: (
+          <BadgeProfileBottomSheet
+            onClose={hideBottomSheetModal}
+            title={selectedBadge?.name ?? ''}
+            description={selectedBadge?.description ?? ''}
+          />
+        ),
+      });
+    },
+    [hideBottomSheetModal, selectedBadge?.description, selectedBadge?.name, showBottomSheetModal]
+  );
 
   return (
     <View style={style} className="flex-row gap-1">
@@ -303,12 +316,6 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
           </GalleryTouchableOpacity>
         ))}
       </View>
-
-      <BadgeProfileBottomSheet
-        ref={bottomSheetRef}
-        title={selectedBadge?.name ?? ''}
-        description={selectedBadge?.description ?? ''}
-      />
     </View>
   );
 }
@@ -357,7 +364,7 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const { openManageWallet } = useManageWalletActions();
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
-
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
     if (!isLoggedInUser) {
       return;
@@ -366,14 +373,25 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
     if (!userHasWallet) {
       openManageWallet({
         onSuccess: () => {
-          bottomSheetRef.current?.present();
+          showBottomSheetModal({
+            content: <PfpBottomSheet onClose={hideBottomSheetModal} queryRef={query} />,
+          });
         },
       });
       return;
     }
 
-    bottomSheetRef.current?.present();
-  }, [isLoggedInUser, openManageWallet, userHasWallet]);
+    showBottomSheetModal({
+      content: <PfpBottomSheet onClose={hideBottomSheetModal} queryRef={query} />,
+    });
+  }, [
+    hideBottomSheetModal,
+    isLoggedInUser,
+    openManageWallet,
+    query,
+    showBottomSheetModal,
+    userHasWallet,
+  ]);
 
   return (
     <View className="mr-2">
@@ -383,8 +401,6 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
         isEditable={isLoggedInUser}
         userRef={query.userByUsername?.__typename === 'GalleryUser' ? query.userByUsername : null}
       />
-
-      <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
     </View>
   );
 }

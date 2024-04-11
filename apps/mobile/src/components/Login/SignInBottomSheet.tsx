@@ -7,7 +7,7 @@ import { FarcasterOutlineIcon } from 'src/icons/FarcasterOutlineIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
 import { WalletIcon } from 'src/icons/WalletIcon';
 
-import { useManageWalletActions } from '~/contexts/ManageWalletContext';
+import { OpenManageWalletProps, useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
@@ -24,14 +24,13 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   onQrCodePress: () => void;
+  onClose: () => void;
+  openManageWallet: (o: OpenManageWalletProps) => void;
 };
 
-function SignInBottomSheet(
-  { onQrCodePress }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+function SignInBottomSheet({ onClose, onQrCodePress, openManageWallet }: Props) {
   const { bottom } = useSafeAreaPadding();
-  const { openManageWallet } = useManageWalletActions();
+  // const { openManageWallet } = useManageWalletActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -46,73 +45,73 @@ function SignInBottomSheet(
   }, [navigation]);
 
   const handleConnectWallet = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
+    // bottomSheetRef.current?.dismiss();
+    onClose();
     openManageWallet({ method: 'auth' });
-  }, [openManageWallet]);
+  }, [onClose, openManageWallet]);
 
   const { open: handleConnectFarcaster } = useLoginWithFarcaster();
 
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
+    // <GalleryBottomSheetModal
+    //   ref={(value) => {
+    //     bottomSheetRef.current = value;
 
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
-      snapPoints={animatedSnapPoints}
-      handleHeight={animatedHandleHeight}
-      contentHeight={animatedContentHeight}
+    //     if (typeof ref === 'function') {
+    //       ref(value);
+    //     } else if (ref) {
+    //       ref.current = value;
+    //     }
+    //   }}
+    //   snapPoints={animatedSnapPoints}
+    //   handleHeight={animatedHandleHeight}
+    //   contentHeight={animatedContentHeight}
+    // >
+    <View
+      onLayout={handleContentLayout}
+      style={{ paddingBottom: bottom }}
+      className="p-4 flex flex-col space-y-6"
     >
-      <View
-        onLayout={handleContentLayout}
-        style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-6"
-      >
-        <View className="flex flex-col space-y-4">
-          <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          >
-            Sign in or sign up
-          </Typography>
-        </View>
-
-        <View className="flex flex-col space-y-2">
-          <BottomSheetRow
-            icon={<EmailIcon />}
-            text="Email"
-            onPress={handleEmailPress}
-            eventContext={contexts.Authentication}
-            fontWeight="Bold"
-          />
-          <BottomSheetRow
-            icon={<WalletIcon />}
-            text="Wallet"
-            onPress={handleConnectWallet}
-            eventContext={contexts.Authentication}
-            fontWeight="Bold"
-          />
-          <BottomSheetRow
-            icon={<FarcasterOutlineIcon />}
-            text="Farcaster"
-            onPress={handleConnectFarcaster}
-            eventContext={contexts.Authentication}
-            fontWeight="Bold"
-          />
-          <BottomSheetRow
-            icon={<QRCodeIcon width={24} height={24} />}
-            text="Sign in via Desktop"
-            onPress={onQrCodePress}
-            eventContext={contexts.Authentication}
-            fontWeight="Bold"
-          />
-        </View>
+      <View className="flex flex-col space-y-4">
+        <Typography
+          className="text-lg text-black-900 dark:text-offWhite"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
+          Sign in or sign up
+        </Typography>
       </View>
-    </GalleryBottomSheetModal>
+
+      <View className="flex flex-col space-y-2">
+        <BottomSheetRow
+          icon={<EmailIcon />}
+          text="Email"
+          onPress={handleEmailPress}
+          eventContext={contexts.Authentication}
+          fontWeight="Bold"
+        />
+        <BottomSheetRow
+          icon={<WalletIcon />}
+          text="Wallet"
+          onPress={handleConnectWallet}
+          eventContext={contexts.Authentication}
+          fontWeight="Bold"
+        />
+        <BottomSheetRow
+          icon={<FarcasterOutlineIcon />}
+          text="Farcaster"
+          onPress={handleConnectFarcaster}
+          eventContext={contexts.Authentication}
+          fontWeight="Bold"
+        />
+        <BottomSheetRow
+          icon={<QRCodeIcon width={24} height={24} />}
+          text="Sign in via Desktop"
+          onPress={onQrCodePress}
+          eventContext={contexts.Authentication}
+          fontWeight="Bold"
+        />
+      </View>
+    </View>
   );
 }
 

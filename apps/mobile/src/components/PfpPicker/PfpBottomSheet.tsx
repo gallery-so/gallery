@@ -1,8 +1,7 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useAssets } from 'expo-asset';
-import { ForwardedRef, forwardRef, ReactNode, useCallback, useRef } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { ActivityIndicator, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -21,25 +20,16 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
-import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { Typography } from '../Typography';
-
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type PfpBottomSheetProps = {
   queryRef: PfpBottomSheetFragment$key;
+  onClose: () => void;
 };
 
-function PfpBottomSheet(
-  { queryRef }: PfpBottomSheetProps,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+export default function PfpBottomSheet({ queryRef, onClose }: PfpBottomSheetProps) {
   const query = useFragment(
     graphql`
       fragment PfpBottomSheetFragment on Query {
@@ -90,16 +80,11 @@ function PfpBottomSheet(
     `);
 
   const reportError = useReportError();
-  const { bottom } = useSafeAreaPadding();
+
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const { setEnsProfileImage, isSettingsEnsProfilePicture } = useProfilePicture();
 
   const user = query?.viewer?.user;
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
@@ -112,9 +97,9 @@ function PfpBottomSheet(
     })
       .catch(reportError)
       .then(() => {
-        bottomSheetRef.current?.close();
+        onClose();
       });
-  }, [ensAddress, reportError, setEnsProfileImage]);
+  }, [ensAddress, onClose, reportError, setEnsProfileImage]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
     navigation.navigate('NftSelector', {
@@ -146,9 +131,9 @@ function PfpBottomSheet(
     })
       .catch(reportError)
       .then(() => {
-        bottomSheetRef.current?.close();
+        onClose();
       });
-  }, [query.viewer?.id, query.viewer?.user?.id, removeProfileImage, reportError]);
+  }, [onClose, query.viewer?.id, query.viewer?.user?.id, removeProfileImage, reportError]);
 
   const hasProfilePictureSet = Boolean(query.viewer?.user?.profileImage?.__typename);
   const potentialEnsProfileImageUrl =
@@ -177,48 +162,29 @@ function PfpBottomSheet(
   );
 
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
+    <View className="flex flex-col space-y-4">
+      <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>Profile picture</Typography>
 
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
-      snapPoints={animatedSnapPoints}
-      handleHeight={animatedHandleHeight}
-      contentHeight={animatedContentHeight}
-    >
-      <View
-        onLayout={handleContentLayout}
-        style={{ paddingBottom: bottom }}
-        className="px-8 flex flex-col space-y-4"
-      >
-        <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>Profile picture</Typography>
+      <View className="flex flex-col space-y-2">
+        {potentialEnsProfileImageUrl && ensSettingsRow}
 
-        <View className="flex flex-col space-y-2">
-          {potentialEnsProfileImageUrl && ensSettingsRow}
-
+        <SettingsRow
+          onPress={handleChooseFromCollectionPress}
+          icon={<CollectionGridIcon />}
+          text="Choose from collection"
+        />
+        {hasProfilePictureSet && (
           <SettingsRow
-            onPress={handleChooseFromCollectionPress}
-            icon={<CollectionGridIcon />}
-            text="Choose from collection"
+            onPress={handleRemovePress}
+            icon={<TrashIcon />}
+            textClassName="text-red"
+            text="Remove current profile picture"
           />
-          {hasProfilePictureSet && (
-            <SettingsRow
-              onPress={handleRemovePress}
-              icon={<TrashIcon />}
-              textClassName="text-red"
-              text="Remove current profile picture"
-            />
-          )}
+        )}
 
-          {!potentialEnsProfileImageUrl && ensSettingsRow}
-        </View>
+        {!potentialEnsProfileImageUrl && ensSettingsRow}
       </View>
-    </GalleryBottomSheetModal>
+    </View>
   );
 }
 
@@ -273,7 +239,3 @@ function SettingsRow({
     </GalleryTouchableOpacity>
   );
 }
-
-const ForwardedPfpBottomSheet = forwardRef(PfpBottomSheet);
-
-export { ForwardedPfpBottomSheet as PfpBottomSheet };

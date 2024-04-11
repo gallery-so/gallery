@@ -1,5 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { BottomSheetModalProvider as GorhomBottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import clsx from 'clsx';
 import React, {
   createContext,
   memo,
@@ -11,6 +12,7 @@ import React, {
   useState,
 } from 'react';
 import { View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import {
   GalleryBottomSheetModal,
@@ -56,6 +58,7 @@ type BottomSheetModalProviderProps = {
 
 type BottomSheetModal = {
   content: React.ReactNode;
+  noPadding?: boolean;
   onDismiss?: () => void;
 };
 
@@ -98,6 +101,8 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
     bottomSheetModalRef?.current?.present();
   }, [bottomSheetModal]);
 
+  const reducedMotion = useReducedMotion();
+
   return (
     <GorhomBottomSheetModalProvider>
       <BottomSheetModalActionsContext.Provider value={actions}>
@@ -108,13 +113,19 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
             handleHeight={animatedHandleHeight}
             contentHeight={animatedContentHeight}
             onDismiss={handleDismissBottomSheetModal}
+            animateOnMount={!reducedMotion}
             index={0}
             ref={bottomSheetModalRef}
+            android_keyboardInputMode="adjustResize"
+            keyboardBlurBehavior="restore"
           >
             <View
               onLayout={handleContentLayout}
-              style={{ paddingBottom: bottom }}
-              className="p-4 flex flex-col space-y-6"
+              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0 }}
+              className={clsx(
+                'flex flex-col space-y-6',
+                !bottomSheetModal.noPadding && 'px-4 py-2'
+              )}
             >
               {bottomSheetModal.content}
             </View>
