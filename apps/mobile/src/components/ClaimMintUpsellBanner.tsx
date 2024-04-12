@@ -65,7 +65,7 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
           className="text-offWhite text-sm"
         >
-          Exclusive free mint !
+          Exclusive free mint
         </Typography>
         <Typography
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
