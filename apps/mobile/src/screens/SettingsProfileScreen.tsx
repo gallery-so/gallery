@@ -1,13 +1,13 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Markdown } from '~/components/Markdown';
-import { PfpBottomSheet } from '~/components/PfpPicker/PfpBottomSheet';
+import PfpBottomSheet from '~/components/PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { SettingsProfileScreenQuery } from '~/generated/SettingsProfileScreenQuery.graphql';
 import colors from '~/shared/theme/colors';
@@ -38,22 +38,28 @@ export function SettingsProfileScreen() {
 
   const user = query.viewer?.user;
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const { openManageWallet } = useManageWalletActions();
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+  const openPfpBottomSheet = useCallback(() => {
+    showBottomSheetModal({
+      content: <PfpBottomSheet queryRef={query} />,
+    });
+  }, [query, showBottomSheetModal]);
 
   const handlePress = useCallback(() => {
     if (!userHasWallet) {
       openManageWallet({
         onSuccess: () => {
-          bottomSheetRef.current?.present();
+          openPfpBottomSheet();
         },
       });
       return;
     }
 
-    bottomSheetRef.current?.present();
-  }, [openManageWallet, userHasWallet]);
+    openPfpBottomSheet();
+  }, [openManageWallet, openPfpBottomSheet, userHasWallet]);
 
   if (!user) {
     return null;
@@ -78,8 +84,6 @@ export function SettingsProfileScreen() {
 
         <View className="flex items-center justify-center px-4">
           <ProfilePicture userRef={user} size="xl" isEditable onPress={handlePress} />
-
-          <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
         </View>
 
         <View className="px-3 py-4 bg-offWhite dark:bg-black-800 flex flex-row justify-between mx-4">

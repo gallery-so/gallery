@@ -1,5 +1,7 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { BottomSheetModalProvider as GorhomBottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import clsx from 'clsx';
+import { BlurView } from 'expo-blur';
 import React, {
   createContext,
   memo,
@@ -11,6 +13,7 @@ import React, {
   useState,
 } from 'react';
 import { View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import {
   GalleryBottomSheetModal,
@@ -38,7 +41,7 @@ type BottomSheetModalActions = {
   hideBottomSheetModal: () => void;
 };
 
-const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
+export const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
   undefined
 );
 
@@ -56,7 +59,9 @@ type BottomSheetModalProviderProps = {
 
 type BottomSheetModal = {
   content: React.ReactNode;
+  noPadding?: boolean;
   onDismiss?: () => void;
+  blurBackground?: boolean;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
@@ -98,6 +103,8 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
     bottomSheetModalRef?.current?.present();
   }, [bottomSheetModal]);
 
+  const reducedMotion = useReducedMotion();
+
   return (
     <GorhomBottomSheetModalProvider>
       <BottomSheetModalActionsContext.Provider value={actions}>
@@ -108,15 +115,22 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
             handleHeight={animatedHandleHeight}
             contentHeight={animatedContentHeight}
             onDismiss={handleDismissBottomSheetModal}
+            animateOnMount={!reducedMotion}
             index={0}
             ref={bottomSheetModalRef}
+            android_keyboardInputMode="adjustResize"
+            keyboardBlurBehavior="restore"
+            backdropComponent={bottomSheetModal.blurBackground ? BluredBackdrop : null}
           >
             <View
               onLayout={handleContentLayout}
-              style={{ paddingBottom: bottom }}
-              className="p-4 flex flex-col space-y-6"
+              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0 }}
+              className={clsx(
+                'flex flex-col space-y-6',
+                !bottomSheetModal.noPadding && 'px-4 py-2'
+              )}
             >
-              {bottomSheetModal.content}
+              <BottomSheetWrapper content={bottomSheetModal.content} />
             </View>
           </GalleryBottomSheetModal>
         )}
@@ -126,3 +140,11 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
 }
 
 export default memo(BottomSheetModalProvider);
+
+function BottomSheetWrapper({ content }: { content: React.ReactNode }) {
+  return <View>{content}</View>;
+}
+
+function BluredBackdrop() {
+  return <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 "></BlurView>;
+}

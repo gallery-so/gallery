@@ -1,30 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { Dimensions, View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { ProfileViewSharedFollowersSheetFragment$key } from '~/generated/ProfileViewSharedFollowersSheetFragment.graphql';
 import { ProfileViewSharedFollowersSheetQuery } from '~/generated/ProfileViewSharedFollowersSheetQuery.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
-import { useListContentStyle } from '../Tabs/useListContentStyle';
-
 type Props = {
   userRef: ProfileViewSharedFollowersSheetFragment$key;
 };
 
-const snapPoints = ['50%'];
-
-function ProfileViewSharedFollowersSheet(
-  props: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+export default function ProfileViewSharedFollowersSheet(props: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment ProfileViewSharedFollowersSheetFragment on GalleryUser
@@ -54,6 +43,8 @@ function ProfileViewSharedFollowersSheet(
     {}
   );
 
+  const screenHeight = Dimensions.get('window').height;
+
   const nonNullUsers = useMemo(() => {
     const users = [];
 
@@ -72,8 +63,6 @@ function ProfileViewSharedFollowersSheet(
     }
   }, [hasNext, loadNext]);
 
-  const contentContainerStyle = useListContentStyle();
-
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleUserPress = useCallback(
@@ -82,11 +71,12 @@ function ProfileViewSharedFollowersSheet(
     },
     [navigation]
   );
+
   return (
-    <GalleryBottomSheetModal ref={ref} index={0} snapPoints={snapPoints}>
-      <View style={contentContainerStyle}>
+    <View className="flex bg-white dark:bg-black-900">
+      <View className={`max-h-[${screenHeight * 0.5}px]`}>
         <Typography
-          className="text-sm mb-4 px-4"
+          className="text-sm mb-4"
           font={{
             family: 'ABCDiatype',
             weight: 'Bold',
@@ -95,7 +85,7 @@ function ProfileViewSharedFollowersSheet(
           Followers
         </Typography>
 
-        <View className="flex-grow">
+        <View className="flex-grow h-full">
           <UserFollowList
             onUserPress={handleUserPress}
             onLoadMore={handleLoadMore}
@@ -104,12 +94,6 @@ function ProfileViewSharedFollowersSheet(
           />
         </View>
       </View>
-    </GalleryBottomSheetModal>
+    </View>
   );
 }
-
-const ForwardedProfileViewSharedFollowersSheet = forwardRef<GalleryBottomSheetModalType, Props>(
-  ProfileViewSharedFollowersSheet
-);
-
-export { ForwardedProfileViewSharedFollowersSheet as ProfileViewSharedFollowersSheet };

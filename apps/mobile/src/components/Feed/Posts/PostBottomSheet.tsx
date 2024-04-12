@@ -1,15 +1,10 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { BottomSheetRow } from '~/components/BottomSheetRow';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { PostBottomSheetFragment$key } from '~/generated/PostBottomSheetFragment.graphql';
 import { PostBottomSheetQueryFragment$key } from '~/generated/PostBottomSheetQueryFragment.graphql';
 import { PostBottomSheetUserFragment$key } from '~/generated/PostBottomSheetUserFragment.graphql';
@@ -19,10 +14,8 @@ import useFollowUser from '~/shared/relay/useFollowUser';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
-import { DeletePostBottomSheet } from './DeletePostBottomSheet';
+import DeletePostBottomSheet from './DeletePostBottomSheet';
 import ReportPost from './ReportPost';
-
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   isOwnPost: boolean;
@@ -32,10 +25,7 @@ type Props = {
   onShare: () => void;
 };
 
-function PostBottomSheet(
-  { isOwnPost, postRef, queryRef, userRef, onShare }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+function PostBottomSheet({ isOwnPost, postRef, queryRef, userRef, onShare }: Props) {
   const post = useFragment(
     graphql`
       fragment PostBottomSheetFragment on Post {
@@ -91,20 +81,14 @@ function PostBottomSheet(
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const { bottom } = useSafeAreaPadding();
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const deletePostBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
-
   const username = post?.author?.username;
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleDeletePost = useCallback(() => {
-    deletePostBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <DeletePostBottomSheet postRef={post} />,
+    });
+  }, [post, showBottomSheetModal]);
 
   const followingList = loggedInUserQuery.viewer?.user?.following;
 
@@ -145,10 +129,12 @@ function PostBottomSheet(
     });
   }, [imageUrl, navigation, token.dbid]);
 
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
+
   const handleShare = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
+    hideBottomSheetModal();
     onShare();
-  }, [onShare]);
+  }, [hideBottomSheetModal, onShare]);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 
@@ -158,10 +144,6 @@ function PostBottomSheet(
 
   const handleResetState = useCallback(() => {
     setShowReportPostForm(false);
-  }, []);
-
-  const handleDismissBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
   }, []);
 
   const inner = useMemo(() => {
@@ -240,41 +222,21 @@ function PostBottomSheet(
     username,
   ]);
 
+  useEffect(() => {
+    return () => {
+      handleResetState();
+    };
+  }, [handleResetState]);
+
   return (
     <>
-      <GalleryBottomSheetModal
-        ref={(value) => {
-          bottomSheetRef.current = value;
-
-          if (typeof ref === 'function') {
-            ref(value);
-          } else if (ref) {
-            ref.current = value;
-          }
-        }}
-        snapPoints={animatedSnapPoints}
-        handleHeight={animatedHandleHeight}
-        contentHeight={animatedContentHeight}
-        onDismiss={handleResetState}
-      >
-        <View
-          onLayout={handleContentLayout}
-          style={{ paddingBottom: bottom }}
-          className="p-4 flex flex-col space-y-6"
-        >
-          {showReportPostForm ? (
-            <ReportPost postId={post.dbid} onDismiss={handleDismissBottomSheet} />
-          ) : (
-            <View className="flex flex-col space-y-2">{inner}</View>
-          )}
-        </View>
-      </GalleryBottomSheetModal>
-
-      <DeletePostBottomSheet
-        ref={deletePostBottomSheetRef}
-        postRef={post}
-        onDeleted={handleDismissBottomSheet}
-      />
+      <View className="flex flex-col space-y-6">
+        {showReportPostForm ? (
+          <ReportPost postId={post.dbid} onDismiss={hideBottomSheetModal} />
+        ) : (
+          <View className="flex flex-col space-y-2">{inner}</View>
+        )}
+      </View>
     </>
   );
 }

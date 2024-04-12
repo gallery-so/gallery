@@ -90,7 +90,9 @@ export function ProfileViewFollowersTab({ queryRef }: ProfileViewFollowersTabPro
     ({ item }) => {
       if (item.kind === 'user') {
         return (
-          <UserFollowCard userRef={item.user} queryRef={item.query} onPress={handleUserPress} />
+          <View className="px-4">
+            <UserFollowCard userRef={item.user} queryRef={item.query} onPress={handleUserPress} />
+          </View>
         );
       } else if (item.kind === 'tab-bar') {
         return <FollowersTabBar activeRoute={item.selectedTab} onRouteChange={setSelectedTab} />;

@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { contexts } from 'shared/analytics/constants';
 import { chains } from 'shared/utils/chains';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import {
   NetworkChoice,
@@ -14,7 +15,6 @@ import {
 
 import { AnimatedRefreshIcon } from '../AnimatedRefreshIcon';
 import { FadedInput } from '../FadedInput';
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { IconContainer } from '../IconContainer';
 import { Select } from '../Select';
 
@@ -61,11 +61,20 @@ export function NftSelectorToolbar({
   handleSync,
   style,
 }: Props) {
-  const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleSettingsPress = useCallback(() => {
-    filterBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: (
+        <NftSelectorFilterBottomSheet
+          ownerFilter={ownershipTypeFilter}
+          onOwnerFilterChange={setFilter}
+          sortView={sortView}
+          onSortViewChange={setSortView}
+          selectedNetwork={networkFilter}
+        />
+      ),
+    });
+  }, [networkFilter, ownershipTypeFilter, setFilter, setSortView, showBottomSheetModal, sortView]);
 
   const decoratedNetworks = useMemo(() => {
     return NETWORKS.map((network) => {
@@ -121,15 +130,6 @@ export function NftSelectorToolbar({
             eventElementId="NftSelectorSelectorSettingsButton"
             eventName="NftSelectorSelectorSettingsButton pressed"
             eventContext={contexts.Posts}
-          />
-
-          <NftSelectorFilterBottomSheet
-            ref={filterBottomSheetRef}
-            ownerFilter={ownershipTypeFilter}
-            onOwnerFilterChange={setFilter}
-            sortView={sortView}
-            onSortViewChange={setSortView}
-            selectedNetwork={networkFilter}
           />
         </View>
       </View>

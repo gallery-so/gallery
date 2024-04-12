@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
+import NotificationBottomSheetUserList from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { SomeoneAdmiredYourPostQueryFragment$key } from '~/generated/SomeoneAdmiredYourPostQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -67,7 +67,6 @@ export function SomeoneAdmiredYourPost({
 
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
@@ -76,21 +75,37 @@ export function SomeoneAdmiredYourPost({
     }
   }, [navigation, post?.dbid]);
 
-  const handleAdmirersPress = useCallback(() => {
-    if (count > 1) {
-      bottomSheetRef.current?.present();
-    } else if (firstAdmirer?.username) {
-      navigation.navigate('Profile', { username: firstAdmirer.username });
-    }
-  }, [firstAdmirer?.username, navigation, count]);
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleUserPress = useCallback(
     (username: string) => {
-      bottomSheetRef.current?.dismiss();
+      hideBottomSheetModal();
       navigation.navigate('Profile', { username });
     },
-    [navigation]
+    [hideBottomSheetModal, navigation]
   );
+
+  const handleAdmirersPress = useCallback(() => {
+    if (count > 1) {
+      showBottomSheetModal({
+        content: (
+          <NotificationBottomSheetUserList
+            onUserPress={handleUserPress}
+            notificationId={notification.id}
+          />
+        ),
+      });
+    } else if (firstAdmirer?.username) {
+      navigation.navigate('Profile', { username: firstAdmirer.username });
+    }
+  }, [
+    count,
+    firstAdmirer?.username,
+    showBottomSheetModal,
+    handleUserPress,
+    notification.id,
+    navigation,
+  ]);
 
   return (
     <NotificationSkeleton
@@ -120,11 +135,6 @@ export function SomeoneAdmiredYourPost({
                 ? firstAdmirer?.username
                 : 'Someone'}
             </Typography>
-            <NotificationBottomSheetUserList
-              ref={bottomSheetRef}
-              onUserPress={handleUserPress}
-              notificationId={notification.id}
-            />
           </Text>
         </GalleryTouchableOpacity>
         <Text>

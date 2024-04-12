@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
 import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { AdmiresFragment$key } from '~/generated/AdmiresFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 
@@ -33,9 +33,13 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
     admireRefs
   );
 
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+
   const handleSeeAllAdmires = useCallback(() => {
-    admiresBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <AdmireBottomSheet type={type} feedId={feedId} />,
+    });
+  }, [feedId, showBottomSheetModal, type]);
 
   const admireUsers = useMemo(() => {
     const users = [];
@@ -46,8 +50,6 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
     }
     return users;
   }, [admires]);
-
-  const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   return (
     <View className="flex flex-col space-y-2">
@@ -70,8 +72,6 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
           onAdmirePress={onAdmirePress}
         />
       </View>
-
-      <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }

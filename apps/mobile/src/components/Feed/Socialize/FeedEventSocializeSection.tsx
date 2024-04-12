@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
@@ -107,11 +107,13 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
   const totalAdmires = event.admires?.pageInfo?.total ?? 0;
 
-  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleOpenCommentBottomSheet = useCallback(() => {
-    commentsBottomSheetRef.current?.present();
+    showBottomSheetModal({
+      content: <CommentsBottomSheet type="FeedEvent" feedId={event.dbid} />,
+    });
     onCommentPress();
-  }, [onCommentPress]);
+  }, [event.dbid, onCommentPress, showBottomSheetModal]);
 
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
@@ -143,11 +145,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           onCommentPress={handleOpenCommentBottomSheet}
         />
       </View>
-      <CommentsBottomSheet
-        type="FeedEvent"
-        feedId={event.dbid}
-        bottomSheetRef={commentsBottomSheetRef}
-      />
     </>
   );
 }

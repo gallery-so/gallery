@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contexts } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -24,6 +25,7 @@ type Props = {
 
 export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
   const { colorScheme } = useColorScheme();
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   // Step 1: Welcome message
   // Step 2: Post message
@@ -57,7 +59,11 @@ export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
   }
 
   if (step === 1) {
-    return <WelcomeNewUser username={username} onContinue={nextStep} />;
+    showBottomSheetModal({
+      content: <WelcomeNewUser username={username} onContinue={nextStep} />,
+      blurBackground: true,
+    });
+    return null;
   }
 
   return (

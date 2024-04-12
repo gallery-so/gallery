@@ -1,14 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
@@ -18,45 +13,23 @@ import { AdmireBottomSheetConnectedTokenAdmireListQuery } from '~/generated/Admi
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-const SNAP_POINTS = [350];
-
 type AdmireBottomSheetProps = {
   tokenId: string;
-  bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType | null>;
 };
 
-export function AdmireBottomSheet({ bottomSheetRef, tokenId }: AdmireBottomSheetProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const { bottom } = useSafeAreaPadding();
-
+export function AdmireBottomSheet({ tokenId }: AdmireBottomSheetProps) {
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        internalRef.current = value;
-        if (typeof bottomSheetRef === 'function') {
-          bottomSheetRef(value);
-        } else if (bottomSheetRef) {
-          bottomSheetRef.current = value;
-        }
-      }}
-      snapPoints={SNAP_POINTS}
-      onChange={() => setIsOpen(true)}
-      android_keyboardInputMode="adjustResize"
-      keyboardBlurBehavior="restore"
-    >
-      <View style={{ paddingBottom: bottom }} className="flex flex-1 flex-col space-y-5">
-        <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Admires
-        </Typography>
+    <View className="flex flex-1 flex-col space-y-5">
+      <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        Admires
+      </Typography>
 
-        <View className="flex-grow">
-          <Suspense fallback={<UserFollowListFallback />}>
-            {isOpen && <ConnectedTokenAdmireList tokenId={tokenId} />}
-          </Suspense>
-        </View>
+      <View className="flex-grow">
+        <Suspense fallback={<UserFollowListFallback />}>
+          <ConnectedTokenAdmireList tokenId={tokenId} />
+        </Suspense>
       </View>
-    </GalleryBottomSheetModal>
+    </View>
   );
 }
 

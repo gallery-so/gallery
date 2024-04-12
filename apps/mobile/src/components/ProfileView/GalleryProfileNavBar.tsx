@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { Share, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -9,6 +9,7 @@ import { SettingsIcon } from 'src/icons/SettingsIcon';
 import { BackButton } from '~/components/BackButton';
 import { DarkModeToggle } from '~/components/DarkModeToggle';
 import { IconContainer } from '~/components/IconContainer';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { GalleryProfileNavBarFragment$key } from '~/generated/GalleryProfileNavBarFragment.graphql';
 import { GalleryProfileNavBarQueryFragment$key } from '~/generated/GalleryProfileNavBarQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -17,8 +18,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryProfileMoreOptionsBottomSheet } from './GalleryProfileMoreOptionsBottomSheet';
+import GalleryProfileMoreOptionsBottomSheet from './GalleryProfileMoreOptionsBottomSheet';
 
 type ScreenName = 'Profile' | 'Gallery' | 'Collection';
 type RouteParams = {
@@ -101,11 +101,12 @@ export function GalleryProfileNavBar({
     navigation.navigate('Settings');
   }, [navigation]);
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleMoreOptionsPress = useCallback(async () => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <GalleryProfileMoreOptionsBottomSheet queryRef={query} userRef={user} />,
+    });
+  }, [query, showBottomSheetModal, user]);
 
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
@@ -155,7 +156,6 @@ export function GalleryProfileNavBar({
           </>
         )}
       </View>
-      <GalleryProfileMoreOptionsBottomSheet ref={bottomSheetRef} queryRef={query} userRef={user} />
     </View>
   );
 }
