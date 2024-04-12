@@ -384,10 +384,10 @@ export function createVirtualizedFeedEventItems({
 
   let postCount = 0;
   const itemsWithSuggestedProfileRow = [];
-  let inserted = false; // Tracks if the special row has been inserted
+  let insertedRow = false;
 
   for (const item of items) {
-    if (!inserted && item.kind === 'post-item-mint-link') {
+    if (!insertedRow && item.kind === 'post-item-mint-link') {
       postCount++;
       if (postCount === SUGGESTED_PROFILE_ROW_IDX) {
         itemsWithSuggestedProfileRow.push({
