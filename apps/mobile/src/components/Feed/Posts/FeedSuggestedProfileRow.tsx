@@ -7,7 +7,7 @@ import { TrendingUserCard } from '~/components/Trending/TrendingUserCard';
 import { Typography } from '../../Typography';
 
 const CARD_HEIGHT = 165;
-const CARD_WIDTH = 180;
+const CARD_WIDTH = 186;
 
 type FeedSuggestedProfileRowProps = {
   queryRef: FeedSuggestedProfileRowFragment$key;
@@ -25,11 +25,6 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
                 node {
                   __typename
                   ... on GalleryUser {
-                    galleries {
-                      tokenPreviews {
-                        __typename
-                      }
-                    }
                     ...TrendingUserCardFragment
                   }
                 }
@@ -59,7 +54,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
   }, [query.viewer?.suggestedUsers]);
 
   return (
-    <View className="pl-4 pt-12 pb-12 space-y-3 mb-4 mt-4">
+    <View className="pl-2 pt-12 pb-12 space-y-3 mb-4 mt-4">
       <Typography
         className="text-md text-offWhite dark:text-offBlack"
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
