@@ -6,7 +6,7 @@ import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedPr
 import { TrendingUserCard } from '~/components/Trending/TrendingUserCard';
 import { Typography } from '../../Typography';
 
-const CARD_HEIGHT = 145;
+const CARD_HEIGHT = 165;
 const CARD_WIDTH = 180;
 
 type FeedSuggestedProfileRowProps = {
@@ -56,17 +56,25 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
       return users?.slice(0, 2);
     }
     return users;
-  }, []);
+  }, [query.viewer?.suggestedUsers]);
 
   return (
-    <View className="pl-4 space-x-2 flex flex-row bg-blue">
-      {suggestedUsers?.map((user, idx) => {
-        return (
-          <View className="mb-1" style={{ width: CARD_WIDTH, height: CARD_HEIGHT }} key={idx}>
-            <TrendingUserCard userRef={user} queryRef={query} />
-          </View>
-        );
-      })}
+    <View className="pl-4 pt-12 pb-12 space-y-3 mb-4 mt-4">
+      <Typography
+        className="text-md text-offWhite dark:text-offBlack"
+        font={{ family: 'ABCDiatype', weight: 'Bold' }}
+      >
+        Suggested creators and collectors
+      </Typography>
+      <View className="space-x-1 flex flex-row">
+        {suggestedUsers?.map((user, idx) => {
+          return (
+            <View className="mb-1" style={{ width: CARD_WIDTH, height: CARD_HEIGHT }} key={idx}>
+              <TrendingUserCard userRef={user} queryRef={query} />
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }
