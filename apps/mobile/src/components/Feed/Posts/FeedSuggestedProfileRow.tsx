@@ -1,13 +1,14 @@
-import { graphql, useFragment } from 'react-relay';
-import { View } from 'react-native';
 import { useMemo } from 'react';
-
-import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedProfileRowFragment.graphql';
-import { TrendingUserCard } from '~/components/Trending/TrendingUserCard';
-import { Typography } from '../../Typography';
+import { View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 import { removeNullValues } from 'shared/relay/removeNullValues';
 
-const CARD_HEIGHT = 165;
+import { TrendingUserCard } from '~/components/Trending/TrendingUserCard';
+import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedProfileRowFragment.graphql';
+
+import { Typography } from '../../Typography';
+
+const CARD_HEIGHT = 180;
 const CARD_WIDTH = 186;
 
 type FeedSuggestedProfileRowProps = {

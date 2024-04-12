@@ -398,7 +398,7 @@ export function createVirtualizedFeedEventItems({
           key: 'suggested-profile-row',
           eventId: 'suggested-profile-row',
           itemType: null,
-        });
+        } as FeedListItemType);
         insertedRow = true;
       }
     }

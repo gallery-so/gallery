@@ -7,14 +7,14 @@ import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { SearchDefaultCardRowFallback } from '../Search/SearchDefaultFallback';
 import { FeedFilter } from './FeedFilter';
 import { FeedPostSocializeSection } from './Posts/FeedPostSocializeSection';
+import { FeedSuggestedProfileRow } from './Posts/FeedSuggestedProfileRow';
 import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
 import { PostListMintButtonSection } from './Posts/PostListMintButtonSection';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
-import { FeedSuggestedProfileRow } from './Posts/FeedSuggestedProfileRow';
-import { SearchDefaultCardRowFallback } from '../Search/SearchDefaultFallback';
 
 type Props = {
   item: FeedListItemType;
