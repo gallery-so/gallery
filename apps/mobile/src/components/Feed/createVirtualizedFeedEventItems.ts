@@ -384,10 +384,9 @@ export function createVirtualizedFeedEventItems({
 
   let postCount = 0;
   const itemsWithSuggestedProfileRow = [];
-  let insertedRow = false;
 
   for (const item of items) {
-    if (!insertedRow && item.kind === 'post-item-header') {
+    if (item.kind === 'post-item-header') {
       postCount++;
       if (postCount === SUGGESTED_PROFILE_ROW_IDX) {
         itemsWithSuggestedProfileRow.push({
@@ -399,7 +398,6 @@ export function createVirtualizedFeedEventItems({
           eventId: 'suggested-profile-row',
           itemType: null,
         } as FeedListItemType);
-        insertedRow = true;
       }
     }
     itemsWithSuggestedProfileRow.push(item);
