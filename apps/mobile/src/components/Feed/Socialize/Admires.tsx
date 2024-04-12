@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -33,13 +33,13 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
     admireRefs
   );
 
-  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleSeeAllAdmires = useCallback(() => {
     showBottomSheetModal({
-      content: <AdmireBottomSheet type={type} feedId={feedId} onClose={hideBottomSheetModal} />,
+      content: <AdmireBottomSheet type={type} feedId={feedId} />,
     });
-  }, [feedId, hideBottomSheetModal, showBottomSheetModal, type]);
+  }, [feedId, showBottomSheetModal, type]);
 
   const admireUsers = useMemo(() => {
     const users = [];

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment, useRefetchableFragment } from 'react-relay';
 import { ArbitrumIcon } from 'src/icons/ArbitrumIcon';
@@ -12,6 +12,7 @@ import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
@@ -24,11 +25,10 @@ import { Chain } from '~/shared/utils/chains';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 
 import { Button } from '../Button';
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { MintLinkButton } from '../MintLinkButton';
 import { CreatorProfilePictureAndUsernameOrAddress } from '../ProfilePicture/ProfilePictureAndUserOrAddress';
 import { Typography } from '../Typography';
-import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
+import CommunityPostBottomSheet from './CommunityPostBottomSheet';
 
 type Props = {
   communityRef: CommunityMetaFragment$key;
@@ -93,7 +93,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   const { openManageWallet } = useManageWalletActions();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleUsernamePress = useCallback(() => {
     if (community.creator?.__typename === 'GalleryUser') {
@@ -101,9 +100,22 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
   }, [community.creator, navigation]);
 
+  const handleRefresh = useCallback(() => {
+    refetch(
+      {
+        communityID: community.dbid,
+      },
+      { fetchPolicy: 'network-only' }
+    );
+  }, [community.dbid, refetch]);
+
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleCreatePost = useCallback(() => {
     if (!isMemberOfCommunity) {
-      bottomSheetRef.current?.present();
+      showBottomSheetModal({
+        content: <CommunityPostBottomSheet communityRef={community} onRefresh={handleRefresh} />,
+      });
+
       return;
     }
 
@@ -112,7 +124,14 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
       contractAddress,
       page: 'Community',
     });
-  }, [contractAddress, isMemberOfCommunity, navigation]);
+  }, [
+    community,
+    contractAddress,
+    handleRefresh,
+    isMemberOfCommunity,
+    navigation,
+    showBottomSheetModal,
+  ]);
 
   const handlePress = useCallback(() => {
     if (!userHasWallet) {
@@ -143,15 +162,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
       }
     }
   }, [isMemberOfCommunity, colorScheme]);
-
-  const handleRefresh = useCallback(() => {
-    refetch(
-      {
-        communityID: community.dbid,
-      },
-      { fetchPolicy: 'network-only' }
-    );
-  }, [community.dbid, refetch]);
 
   return (
     <View className="flex flex-row justify-between">
@@ -220,12 +230,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           referrerAddress={creatorWalletAddress}
         />
       )}
-
-      <CommunityPostBottomSheet
-        ref={bottomSheetRef}
-        communityRef={community}
-        onRefresh={handleRefresh}
-      />
     </View>
   );
 }

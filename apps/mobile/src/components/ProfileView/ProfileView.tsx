@@ -31,7 +31,6 @@ import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/shared/utils/communities';
 
 import { FollowButton } from '../FollowButton';
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import PfpBottomSheet from '../PfpPicker/PfpBottomSheet';
@@ -361,10 +360,9 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
       query.viewer?.user?.dbid === query.userByUsername?.dbid
   );
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const { openManageWallet } = useManageWalletActions();
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
-  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
     if (!isLoggedInUser) {
       return;
@@ -374,7 +372,7 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
       openManageWallet({
         onSuccess: () => {
           showBottomSheetModal({
-            content: <PfpBottomSheet onClose={hideBottomSheetModal} queryRef={query} />,
+            content: <PfpBottomSheet queryRef={query} />,
           });
         },
       });
@@ -382,16 +380,9 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
     }
 
     showBottomSheetModal({
-      content: <PfpBottomSheet onClose={hideBottomSheetModal} queryRef={query} />,
+      content: <PfpBottomSheet queryRef={query} />,
     });
-  }, [
-    hideBottomSheetModal,
-    isLoggedInUser,
-    openManageWallet,
-    query,
-    showBottomSheetModal,
-    userHasWallet,
-  ]);
+  }, [isLoggedInUser, openManageWallet, query, showBottomSheetModal, userHasWallet]);
 
   return (
     <View className="mr-2">

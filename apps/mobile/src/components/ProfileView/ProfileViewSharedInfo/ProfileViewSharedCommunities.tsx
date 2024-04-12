@@ -1,15 +1,15 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
@@ -18,7 +18,7 @@ import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext'
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
-import { ProfileViewSharedCommunitiesSheet } from './ProfileViewSharedCommunitiesSheet';
+import ProfileViewSharedCommunitiesSheet from './ProfileViewSharedCommunitiesSheet';
 
 type Props = {
   userRef: ProfileViewSharedCommunitiesFragment$key;
@@ -58,10 +58,13 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
 
   const totalSharedCommunities = user.sharedCommunities?.pageInfo?.total ?? 0;
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+
   const handleSeeAllPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <ProfileViewSharedCommunitiesSheet userRef={user} />,
+    });
+  }, [showBottomSheetModal, user]);
 
   if (totalSharedCommunities === 0) {
     return null;
@@ -83,8 +86,6 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         communityRefs={sharedCommunities}
         totalCount={totalSharedCommunities}
       />
-
-      <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
     </View>
   );
 }

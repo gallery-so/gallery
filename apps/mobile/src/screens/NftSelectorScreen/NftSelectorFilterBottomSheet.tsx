@@ -1,17 +1,10 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Options, Section } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { ChainMetadata, isSupportedChainForCreators } from '~/shared/utils/chains';
-
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 const OWNER_OPTIONS: { label: string; id: 'Collected' | 'Created' }[] = [
   { id: 'Collected', label: 'Collected' },
@@ -37,20 +30,17 @@ type Props = {
 export type NetworkChoice = ChainMetadata['name'];
 export type NftSelectorSortView = 'Recently added' | 'Oldest' | 'Alphabetical';
 
-function NftSelectorFilterBottomSheet(
-  { ownerFilter, onOwnerFilterChange, sortView, onSortViewChange, selectedNetwork }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
-  const { bottom } = useSafeAreaPadding();
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
-
+function NftSelectorFilterBottomSheet({
+  ownerFilter,
+  onOwnerFilterChange,
+  sortView,
+  onSortViewChange,
+  selectedNetwork,
+}: Props) {
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
   const handleClose = useCallback(() => {
-    bottomSheetRef.current?.close();
-  }, []);
+    hideBottomSheetModal();
+  }, [hideBottomSheetModal]);
 
   const handleOwnerFilterChange = useCallback(
     (filter: 'Created' | 'Collected') => {
@@ -81,52 +71,33 @@ function NftSelectorFilterBottomSheet(
   }, [selectedNetwork]);
 
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
-
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
-      snapPoints={animatedSnapPoints}
-      handleHeight={animatedHandleHeight}
-      contentHeight={animatedContentHeight}
-    >
-      <View
-        onLayout={handleContentLayout}
-        style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-6"
-      >
-        <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-lg">
-          Filters
-        </Typography>
-        <View className="flex flex-col space-y-4">
-          <FilterSection title="Type">
-            <Section>
-              <Options
-                onChange={handleOwnerFilterChange}
-                selected={ownerFilter}
-                options={decoratedOwnerOptions}
-                eventElementId="Owner filter"
-              />
-            </Section>
-          </FilterSection>
-          <FilterSection title="Sort by">
-            <Section>
-              <Options
-                onChange={handleSortViewChange}
-                selected={sortView}
-                options={SORT_VIEWS}
-                eventElementId="Sort by filter"
-              />
-            </Section>
-          </FilterSection>
-        </View>
+    <View className="flex flex-col space-y-6">
+      <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-lg">
+        Filters
+      </Typography>
+      <View className="flex flex-col space-y-4">
+        <FilterSection title="Type">
+          <Section>
+            <Options
+              onChange={handleOwnerFilterChange}
+              selected={ownerFilter}
+              options={decoratedOwnerOptions}
+              eventElementId="Owner filter"
+            />
+          </Section>
+        </FilterSection>
+        <FilterSection title="Sort by">
+          <Section>
+            <Options
+              onChange={handleSortViewChange}
+              selected={sortView}
+              options={SORT_VIEWS}
+              eventElementId="Sort by filter"
+            />
+          </Section>
+        </FilterSection>
       </View>
-    </GalleryBottomSheetModal>
+    </View>
   );
 }
 

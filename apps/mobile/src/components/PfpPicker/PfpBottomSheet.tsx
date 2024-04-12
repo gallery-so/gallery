@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { CollectionGridIcon } from 'src/icons/CollectionGridIcon';
 import { TrashIcon } from 'src/icons/TrashIcon';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { PfpBottomSheetFragment$key } from '~/generated/PfpBottomSheetFragment.graphql';
 import {
   PfpBottomSheetRemoveProfileImageMutation,
@@ -26,10 +27,9 @@ import { Typography } from '../Typography';
 
 type PfpBottomSheetProps = {
   queryRef: PfpBottomSheetFragment$key;
-  onClose: () => void;
 };
 
-export default function PfpBottomSheet({ queryRef, onClose }: PfpBottomSheetProps) {
+export default function PfpBottomSheet({ queryRef }: PfpBottomSheetProps) {
   const query = useFragment(
     graphql`
       fragment PfpBottomSheetFragment on Query {
@@ -88,6 +88,7 @@ export default function PfpBottomSheet({ queryRef, onClose }: PfpBottomSheetProp
 
   const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
 
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
   const handleEnsPress = useCallback(() => {
     if (!ensAddress) return;
 
@@ -97,15 +98,16 @@ export default function PfpBottomSheet({ queryRef, onClose }: PfpBottomSheetProp
     })
       .catch(reportError)
       .then(() => {
-        onClose();
+        hideBottomSheetModal();
       });
-  }, [ensAddress, onClose, reportError, setEnsProfileImage]);
+  }, [ensAddress, hideBottomSheetModal, reportError, setEnsProfileImage]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
+    hideBottomSheetModal();
     navigation.navigate('NftSelector', {
       page: 'ProfilePicture',
     });
-  }, [navigation]);
+  }, [hideBottomSheetModal, navigation]);
 
   const handleRemovePress = useCallback(() => {
     let optimisticResponse: PfpBottomSheetRemoveProfileImageMutation$rawResponse | undefined =
@@ -131,9 +133,15 @@ export default function PfpBottomSheet({ queryRef, onClose }: PfpBottomSheetProp
     })
       .catch(reportError)
       .then(() => {
-        onClose();
+        hideBottomSheetModal();
       });
-  }, [onClose, query.viewer?.id, query.viewer?.user?.id, removeProfileImage, reportError]);
+  }, [
+    hideBottomSheetModal,
+    query.viewer?.id,
+    query.viewer?.user?.id,
+    removeProfileImage,
+    reportError,
+  ]);
 
   const hasProfilePictureSet = Boolean(query.viewer?.user?.profileImage?.__typename);
   const potentialEnsProfileImageUrl =

@@ -1,5 +1,4 @@
 import {
-  ForwardedRef,
   Suspense,
   useCallback,
   useEffect,
@@ -17,10 +16,6 @@ import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';

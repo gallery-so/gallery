@@ -1,16 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/ProfileViewSharedFollowersBubblesFragment.graphql';
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
 import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewSharedFollowersFragment.graphql';
@@ -20,7 +20,7 @@ import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext'
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
-import { ProfileViewSharedFollowersSheet } from './ProfileViewSharedFollowersSheet';
+import ProfileViewSharedFollowersSheet from './ProfileViewSharedFollowersSheet';
 export const SHARED_FOLLOWERS_PER_PAGE = 20;
 
 type Props = {
@@ -60,11 +60,14 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
   }, [user.sharedFollowers?.edges]);
 
   const totalSharedFollowers = user.sharedFollowers?.pageInfo?.total ?? 0;
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleSeeAllPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <ProfileViewSharedFollowersSheet userRef={user} />,
+    });
+  }, [showBottomSheetModal, user]);
 
   if (totalSharedFollowers === 0) {
     return null;
@@ -86,8 +89,6 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         userRefs={sharedFollowers}
         totalCount={totalSharedFollowers}
       />
-
-      <ProfileViewSharedFollowersSheet ref={bottomSheetRef} userRef={user} />
     </View>
   );
 }

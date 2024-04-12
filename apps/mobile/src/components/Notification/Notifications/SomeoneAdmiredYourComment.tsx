@@ -146,11 +146,6 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
                   ? firstAdmirer?.username
                   : 'Someone'}
               </Typography>
-              {/* <NotificationBottomSheetUserList
-                ref={bottomSheetRef}
-                onUserPress={handleUserPress}
-                notificationId={notification.id}
-              /> */}
             </Text>
           </GalleryTouchableOpacity>
           <Text>

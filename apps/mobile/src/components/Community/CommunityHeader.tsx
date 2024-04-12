@@ -1,21 +1,21 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { CommunityHeaderFragment$key } from '~/generated/CommunityHeaderFragment.graphql';
 import { CommunityHeaderQueryFragment$key } from '~/generated/CommunityHeaderQueryFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { truncateAddress } from '~/shared/utils/wallet';
 
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
 import { CommunityProfilePicture } from '../ProfilePicture/CommunityProfilePicture';
 import { Typography } from '../Typography';
 import { CommunityBottomSheet } from './CommunityBottomSheet';
-import { CommunityMetadataFormBottomSheet } from './CommunityMetadataFormBottomSheet';
+import CommunityMetadataFormBottomSheet from './CommunityMetadataFormBottomSheet';
 
 type Props = {
   communityRef: CommunityHeaderFragment$key;
@@ -46,11 +46,15 @@ export function CommunityHeader({ communityRef, queryRef }: Props) {
   );
 
   const hasCommunityDescription = Boolean(community.description);
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
     if (!hasCommunityDescription) return;
-    bottomSheetRef.current?.present();
-  }, [hasCommunityDescription]);
+
+    showBottomSheetModal({
+      content: <CommunityBottomSheet communityRef={community} />,
+    });
+  }, [community, hasCommunityDescription, showBottomSheetModal]);
 
   // combines description into a single paragraph by removing extra whitespace,
   //  then splitting the cleaned text into sentences using a regular expression
@@ -62,10 +66,11 @@ export function CommunityHeader({ communityRef, queryRef }: Props) {
 
   const displayName = community.name || truncateAddress(contractAddress);
 
-  const formBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleEditPress = useCallback(() => {
-    formBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <CommunityMetadataFormBottomSheet communityRef={community} queryRef={query} />,
+    });
+  }, [community, query, showBottomSheetModal]);
 
   return (
     <View className="mb-2">
@@ -98,12 +103,6 @@ export function CommunityHeader({ communityRef, queryRef }: Props) {
           </View>
         </GalleryTouchableOpacity>
       </View>
-      <CommunityBottomSheet ref={bottomSheetRef} communityRef={community} />
-      <CommunityMetadataFormBottomSheet
-        ref={formBottomSheetRef}
-        communityRef={community}
-        queryRef={query}
-      />
     </View>
   );
 }

@@ -18,8 +18,6 @@ import { CommunityScreenRefetchableFragment$key } from '~/generated/CommunityScr
 import { CommunityScreenRefetchableFragmentQuery } from '~/generated/CommunityScreenRefetchableFragmentQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
-import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
-
 /**
  * How this screen works:
  * 1) using params, decide whether we're going to render a ContractCommunity vs ArtBlocksCommunity
@@ -29,7 +27,7 @@ import { SharePostBottomSheet } from '../PostScreen/SharePostBottomSheet';
  */
 export function CommunityScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Community'>>();
-  const { subtype, chain, contractAddress, projectId, postId, creatorName } = route.params;
+  const { subtype, chain, contractAddress, projectId } = route.params;
 
   const inner = useMemo(() => {
     if (subtype === 'ContractCommunity') {
@@ -50,11 +48,6 @@ export function CommunityScreen() {
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
       <Suspense fallback={<CommunityViewFallback />}>{inner}</Suspense>
-      {postId && (
-        <Suspense fallback={null}>
-          <SharePostBottomSheet postId={postId} creatorName={creatorName} />
-        </Suspense>
-      )}
     </View>
   );
 }

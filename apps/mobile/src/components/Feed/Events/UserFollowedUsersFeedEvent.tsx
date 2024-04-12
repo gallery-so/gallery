@@ -1,16 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { UserFollowedUsersFeedEventFollowersFragment$key } from '~/generated/UserFollowedUsersFeedEventFollowersFragment.graphql';
 import { UserFollowedUsersFeedEventFollowListQuery } from '~/generated/UserFollowedUsersFeedEventFollowListQuery.graphql';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
@@ -70,22 +67,20 @@ export function UserFollowedUsersFeedEvent({
     }
   }, [followeeUsername, navigation]);
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
-  const [opened, setOpened] = useState(false);
   const handleOthersPress = useCallback(() => {
-    setOpened(true);
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: (
+        <Suspense fallback={<UserFollowListFallback />}>
+          <FollowList userRefs={followedUsers} />
+        </Suspense>
+      ),
+    });
+  }, [followedUsers, showBottomSheetModal]);
 
   return (
     <View className="flex flex-row justify-between items-center px-3">
-      <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[320]}>
-        <Suspense fallback={<UserFollowListFallback />}>
-          {opened && <FollowList userRefs={followedUsers} />}
-        </Suspense>
-      </GalleryBottomSheetModal>
-
       <View className="flex flex-row space-x-1">
         <GalleryTouchableOpacity
           onPress={handleFollowerPress}

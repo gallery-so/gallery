@@ -1,15 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { FollowButton } from '~/components/FollowButton';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
 import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
@@ -178,8 +175,6 @@ export function NotificationSkeleton({
   );
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
   const handleNavigateToProfile = useCallback(
     (username: string) => {
       navigation.navigate('Profile', { username });
@@ -187,13 +182,24 @@ export function NotificationSkeleton({
     [navigation]
   );
 
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+
   const handleBubblesPress = useCallback(() => {
     if (responsibleUsers.length === 0) {
       return;
     }
 
     if (responsibleUsers.length > 1) {
-      bottomSheetRef.current?.present();
+      showBottomSheetModal({
+        content: (
+          <UserFollowList
+            userRefs={responsibleUsers}
+            queryRef={query}
+            onUserPress={handleNavigateToProfile}
+          />
+        ),
+      });
+
       return;
     }
 
@@ -202,7 +208,7 @@ export function NotificationSkeleton({
     if (firstUser) {
       handleNavigateToProfile(firstUser.username);
     }
-  }, [handleNavigateToProfile, responsibleUsers]);
+  }, [handleNavigateToProfile, query, responsibleUsers, showBottomSheetModal]);
 
   const postToken = useMemo(() => {
     if (
@@ -316,13 +322,6 @@ export function NotificationSkeleton({
           <View />
         )}
       </View>
-      <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
-        <UserFollowList
-          userRefs={responsibleUsers}
-          queryRef={query}
-          onUserPress={handleNavigateToProfile}
-        />
-      </GalleryBottomSheetModal>
     </GalleryTouchableOpacity>
   );
 }

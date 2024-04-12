@@ -1,32 +1,20 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { DeletePostBottomSheetFragment$key } from '~/generated/DeletePostBottomSheetFragment.graphql';
 import { usePost } from '~/screens/PostScreen/usePost';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
-
 type Props = {
   postRef: DeletePostBottomSheetFragment$key;
-  onDeleted: () => void;
 };
 
-function DeletePostBottomSheet(
-  { postRef, onDeleted }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+function DeletePostBottomSheet({ postRef }: Props) {
   const post = useFragment(
     graphql`
       fragment DeletePostBottomSheetFragment on Post {
@@ -38,8 +26,6 @@ function DeletePostBottomSheet(
     `,
     postRef
   );
-
-  const navigation = useNavigation();
 
   const token = useMemo(() => {
     const tokens = post?.tokens;
@@ -56,78 +42,57 @@ function DeletePostBottomSheet(
   const { deletePost } = usePost({
     tokenRef: token,
   });
-  const { bottom } = useSafeAreaPadding();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleBack = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
-    navigation.goBack();
-  }, [navigation]);
+    hideBottomSheetModal();
+  }, [hideBottomSheetModal]);
 
   const handleDelete = useCallback(() => {
     deletePost(post.dbid);
-    bottomSheetRef.current?.dismiss();
-    onDeleted();
-  }, [deletePost, onDeleted, post.dbid]);
+    hideBottomSheetModal();
+  }, [deletePost, hideBottomSheetModal, post.dbid]);
 
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
+    <View
+      // onLayout={handleContentLayout}
 
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
-      snapPoints={animatedSnapPoints}
-      handleHeight={animatedHandleHeight}
-      contentHeight={animatedContentHeight}
+      className="flex flex-col space-y-6"
     >
-      <View
-        onLayout={handleContentLayout}
-        style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-6"
-      >
-        <View className="flex flex-col space-y-4">
-          <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          >
-            Delete post
-          </Typography>
-          <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            Are you sure you want to delete this post?
-          </Typography>
-        </View>
-
-        <View className="space-y-2">
-          <Button
-            onPress={handleDelete}
-            text="DELETE"
-            eventElementId="Delete Post Button"
-            eventName="Delete Post"
-            eventContext={contexts.Posts}
-          />
-          <Button
-            onPress={handleBack}
-            variant="secondary"
-            text="CANCEL"
-            eventElementId="Cancel Delete Post Button"
-            eventName="Cancel Delete Post"
-            eventContext={contexts.Posts}
-          />
-        </View>
+      <View className="flex flex-col space-y-4">
+        <Typography
+          className="text-lg text-black-900 dark:text-offWhite"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
+          Delete post
+        </Typography>
+        <Typography
+          className="text-lg text-black-900 dark:text-offWhite"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          Are you sure you want to delete this post?
+        </Typography>
       </View>
-    </GalleryBottomSheetModal>
+
+      <View className="space-y-2">
+        <Button
+          onPress={handleDelete}
+          text="DELETE"
+          eventElementId="Delete Post Button"
+          eventName="Delete Post"
+          eventContext={contexts.Posts}
+        />
+        <Button
+          onPress={handleBack}
+          variant="secondary"
+          text="CANCEL"
+          eventElementId="Cancel Delete Post Button"
+          eventName="Cancel Delete Post"
+          eventContext={contexts.Posts}
+        />
+      </View>
+    </View>
   );
 }
 

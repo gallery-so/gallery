@@ -1,6 +1,6 @@
 import 'expo-dev-client';
 
-import { PortalHost, PortalProvider } from '@gorhom/portal';
+import { PortalProvider } from '@gorhom/portal';
 import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';

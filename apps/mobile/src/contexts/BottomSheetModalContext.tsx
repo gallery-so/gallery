@@ -1,6 +1,7 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { BottomSheetModalProvider as GorhomBottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import clsx from 'clsx';
+import { BlurView } from 'expo-blur';
 import React, {
   createContext,
   memo,
@@ -40,7 +41,7 @@ type BottomSheetModalActions = {
   hideBottomSheetModal: () => void;
 };
 
-const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
+export const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
   undefined
 );
 
@@ -60,6 +61,7 @@ type BottomSheetModal = {
   content: React.ReactNode;
   noPadding?: boolean;
   onDismiss?: () => void;
+  blurBackground?: boolean;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
@@ -118,6 +120,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
             ref={bottomSheetModalRef}
             android_keyboardInputMode="adjustResize"
             keyboardBlurBehavior="restore"
+            backdropComponent={bottomSheetModal.blurBackground ? BluredBackdrop : null}
           >
             <View
               onLayout={handleContentLayout}
@@ -127,7 +130,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
                 !bottomSheetModal.noPadding && 'px-4 py-2'
               )}
             >
-              {bottomSheetModal.content}
+              <BottomSheetWrapper content={bottomSheetModal.content} />
             </View>
           </GalleryBottomSheetModal>
         )}
@@ -137,3 +140,11 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
 }
 
 export default memo(BottomSheetModalProvider);
+
+function BottomSheetWrapper({ content }: { content: React.ReactNode }) {
+  return <View>{content}</View>;
+}
+
+function BluredBackdrop() {
+  return <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 "></BlurView>;
+}
