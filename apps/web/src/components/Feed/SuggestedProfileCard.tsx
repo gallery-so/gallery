@@ -147,14 +147,14 @@ export default function SuggestedProfileCard({
 
 const StyledSuggestedProfileCard = styled(HStack)`
   border-radius: 4px;
-  background-color: ${colors.offWhite};
+  background-color: ${colors.faint};
   padding: 8px;
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
 
   &:hover {
-    background-color: ${colors.faint};
+    background-color: ${colors.porcelain};
   }
 
   @media only screen and ${breakpoints.desktop} {

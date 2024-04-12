@@ -8,6 +8,7 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
@@ -144,6 +145,7 @@ export default function Search() {
 
 const StyledSearchContent = styled(VStack)`
   padding: 0 16px;
+  background-color: ${colors.offWhite};
 
   height: 100%;
   width: 100%;
