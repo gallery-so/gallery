@@ -2,15 +2,20 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { Linking, ViewStyle } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
+import usePersistedState from 'src/hooks/usePersistedState';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
+import { GLogoIcon } from 'src/icons/GLogoIcon';
 import { HighlightIcon } from 'src/icons/HighlightIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
+import { isRadianceContractAddress } from 'src/utils/isRadianceContractAddress';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
@@ -23,6 +28,7 @@ import {
 } from '~/shared/utils/getMintUrlWithReferrer';
 
 import { Button, ButtonProps } from './Button';
+import MintCampaignBottomSheet from './Mint/MintCampaign/MintCampaignBottomSheet';
 
 type Props = {
   // in order to generate the mint URL with the correct params, we either grab it
@@ -78,10 +84,16 @@ export function MintLinkButton({
     };
   }, [overrideMetadata, token]);
 
+  const isRadiance = isRadianceContractAddress(contractAddress);
+
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
     overrideMintUrl || mintUrl,
     referrerAddress ?? ''
   );
+
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
+  const [claimCode] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
 
   const mintProvider: {
     buttonText: string;
@@ -113,10 +125,17 @@ export function MintLinkButton({
         icon: <SuperRareIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
       };
     } else if (mintProviderType === 'Highlight') {
-      return {
-        buttonText: 'mint on highlight',
-        icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
-      };
+      if (isRadiance && !claimCode) {
+        return {
+          buttonText: 'mint on gallery',
+          icon: <GLogoIcon width={16} height={16} invertColor={variant === 'primary'} />,
+        };
+      } else {
+        return {
+          buttonText: 'mint on highlight',
+          icon: <HighlightIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+        };
+      }
     } else if (mintProviderType === 'Foundation') {
       return {
         buttonText: 'mint on foundation',
@@ -125,11 +144,15 @@ export function MintLinkButton({
     } else {
       return null;
     }
-  }, [mintProviderType, size]);
+  }, [claimCode, isRadiance, mintProviderType, size, variant]);
 
   const handlePress = useCallback(() => {
-    Linking.openURL(mintURL);
-  }, [mintURL]);
+    if (isRadiance) {
+      showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+    } else {
+      Linking.openURL(mintURL);
+    }
+  }, [hideBottomSheetModal, isRadiance, mintURL, showBottomSheetModal]);
 
   const arrowColor = useMemo(() => {
     const colorMap = {
@@ -164,7 +187,7 @@ export function MintLinkButton({
       variant={variant}
       onPress={handlePress}
       headerElement={mintProvider.icon}
-      footerElement={<TopRightArrowIcon color={arrowColor} />}
+      footerElement={isRadiance && !claimCode ? null : <TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
       eventElementId="Mint Link Button"

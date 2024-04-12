@@ -258,10 +258,13 @@ export function NotificationSkeleton({
     [notification.followers?.edges, notification.user]
   );
 
+  // TODO Get data from sanity
+  const isPinned = false;
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
-      className="flex flex-row justify-between p-4"
+      className={`flex flex-row justify-between p-4 ${isPinned && 'm-4 border border-blue-700'}`}
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
       eventContext={contexts.Notifications}
