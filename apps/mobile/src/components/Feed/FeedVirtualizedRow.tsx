@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 
 import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
@@ -14,6 +14,7 @@ import { PostListItem } from './Posts/PostListItem';
 import { PostListMintButtonSection } from './Posts/PostListMintButtonSection';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
 import { FeedSuggestedProfileRow } from './Posts/FeedSuggestedProfileRow';
+import { SearchDefaultCardRowFallback } from '../Search/SearchDefaultFallback';
 
 type Props = {
   item: FeedListItemType;
@@ -66,7 +67,11 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
       case 'post-item-mint-link':
         return <PostListMintButtonSection postRef={item.post} />;
       case 'suggested-profile-row':
-        return <FeedSuggestedProfileRow queryRef={item.queryRef} />;
+        return (
+          <Suspense fallback={<SearchDefaultCardRowFallback />}>
+            <FeedSuggestedProfileRow queryRef={item.queryRef} />
+          </Suspense>
+        );
     }
   }, [item]);
 

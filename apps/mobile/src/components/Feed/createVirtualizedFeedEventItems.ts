@@ -232,8 +232,6 @@ export function createVirtualizedFeedEventItems({
     })
   );
 
-  const newerItems = [...newItems];
-
   const items: FeedListItemType[] = [];
 
   if (feedFilter) {
@@ -248,16 +246,6 @@ export function createVirtualizedFeedEventItems({
       itemType: null,
     });
   }
-
-  items.push({
-    kind: 'suggested-profile-row',
-    event: null,
-    post: null,
-    queryRef: query,
-    key: 'suggested-profile-row',
-    eventId: 'suggested-profile-row',
-    itemType: null,
-  });
 
   const setVirtualizeItemsForPost = (post: createVirtualizedFeedEventItemsPostFragment$data) => {
     const uniqueKey = Math.random().toString();
@@ -383,28 +371,7 @@ export function createVirtualizedFeedEventItems({
     }
   };
 
-  const setVirtualizeItemsForSuggestedProfileRow = (
-    query: createVirtualizedFeedEventItemsQueryFragment$data
-  ) => {
-    const uniqueKey = Math.random().toString();
-
-    items.push({
-      kind: 'suggested-profile-row',
-      post: null,
-      eventId: 'suggested-profile-row',
-      event: null,
-      key: `suggested-profile-row-${uniqueKey}`,
-      queryRef: query,
-      itemType: 'SuggestedProfileRow',
-    });
-  };
-
-  console.log('111111');
-
-  for (const [index, item] of newerItems.entries()) {
-    if (index === 7) {
-      setVirtualizeItemsForSuggestedProfileRow(item);
-    }
+  for (const item of newItems) {
     if (item.__typename === 'FeedEvent') {
       setVirtualizeItemsForEvent(item);
     }
@@ -413,5 +380,28 @@ export function createVirtualizedFeedEventItems({
     }
   }
 
-  return { items };
+  let retItems = [];
+  let addedRow = false;
+  let postCount = 0;
+  for (const item of items) {
+    if (!addedRow && item.kind === 'post-item-mint-link') {
+      postCount = postCount + 1;
+      if (postCount > 2) {
+        retItems.push({
+          kind: 'suggested-profile-row',
+          event: null,
+          post: null,
+          queryRef: query,
+          key: 'suggested-profile-row',
+          eventId: 'suggested-profile-row',
+          itemType: null,
+        });
+        addedRow = true;
+      }
+    } else {
+      retItems.push(item);
+    }
+  }
+
+  return { items: retItems };
 }
