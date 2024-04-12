@@ -19,8 +19,10 @@ import {
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export type FeedItemTypes = 'Post' | 'FeedEvent' | 'SuggestedProfileRow';
+export type FeedItemTypes = 'Post' | 'FeedEvent';
 type itemType = FeedItemTypes | null;
+
+const SUGGESTED_PROFILE_ROW_IDX = 4;
 
 export type FeedListItemType = { key: string } & (
   | {
@@ -380,14 +382,15 @@ export function createVirtualizedFeedEventItems({
     }
   }
 
-  let retItems = [];
-  let addedRow = false;
   let postCount = 0;
+  const itemsWithSuggestedProfileRow = [];
+  let inserted = false; // Tracks if the special row has been inserted
+
   for (const item of items) {
-    if (!addedRow && item.kind === 'post-item-mint-link') {
-      postCount = postCount + 1;
-      if (postCount > 2) {
-        retItems.push({
+    if (!inserted && item.kind === 'post-item-mint-link') {
+      postCount++;
+      if (postCount === SUGGESTED_PROFILE_ROW_IDX) {
+        itemsWithSuggestedProfileRow.push({
           kind: 'suggested-profile-row',
           event: null,
           post: null,
@@ -396,12 +399,11 @@ export function createVirtualizedFeedEventItems({
           eventId: 'suggested-profile-row',
           itemType: null,
         });
-        addedRow = true;
+        inserted = true;
       }
-    } else {
-      retItems.push(item);
     }
+    itemsWithSuggestedProfileRow.push(item);
   }
 
-  return { items: retItems };
+  return { items: itemsWithSuggestedProfileRow };
 }
