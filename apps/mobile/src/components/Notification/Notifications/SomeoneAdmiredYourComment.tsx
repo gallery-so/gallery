@@ -1,19 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SomeoneAdmiredYourCommentFragment$key } from '~/generated/SomeoneAdmiredYourCommentFragment.graphql';
 import { SomeoneAdmiredYourCommentQueryFragment$key } from '~/generated/SomeoneAdmiredYourCommentQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+
+import NotificationBottomSheetUserList from '../NotificationBottomSheetUserList';
 
 type SomeoneFollowedYouProps = {
   queryRef: SomeoneAdmiredYourCommentQueryFragment$key;
@@ -73,7 +74,6 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
 
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -86,21 +86,36 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
     }
   }, [navigation, notification.comment?.dbid, notification.comment?.source?.dbid]);
 
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
+
   const handleUserPress = useCallback(
     (username: string) => {
-      bottomSheetRef.current?.dismiss();
+      hideBottomSheetModal();
       navigation.navigate('Profile', { username });
     },
-    [navigation]
+    [hideBottomSheetModal, navigation]
   );
-
   const handleAdmirersPress = useCallback(() => {
     if (count > 1) {
-      bottomSheetRef.current?.present();
+      showBottomSheetModal({
+        content: (
+          <NotificationBottomSheetUserList
+            onUserPress={handleUserPress}
+            notificationId={notification.id}
+          />
+        ),
+      });
     } else if (firstAdmirer?.username) {
       navigation.navigate('Profile', { username: firstAdmirer.username });
     }
-  }, [firstAdmirer?.username, navigation, count]);
+  }, [
+    count,
+    firstAdmirer?.username,
+    showBottomSheetModal,
+    handleUserPress,
+    notification.id,
+    navigation,
+  ]);
 
   return (
     <NotificationSkeleton
@@ -131,11 +146,11 @@ export function SomeoneAdmiredYourComment({ notificationRef, queryRef }: Someone
                   ? firstAdmirer?.username
                   : 'Someone'}
               </Typography>
-              <NotificationBottomSheetUserList
+              {/* <NotificationBottomSheetUserList
                 ref={bottomSheetRef}
                 onUserPress={handleUserPress}
                 notificationId={notification.id}
-              />
+              /> */}
             </Text>
           </GalleryTouchableOpacity>
           <Text>

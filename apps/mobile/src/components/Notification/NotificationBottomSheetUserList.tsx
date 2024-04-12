@@ -1,20 +1,16 @@
 import { BottomSheetModalProps } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, Suspense, useCallback, useState } from 'react';
+import { Suspense } from 'react';
 import { View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 import { NotificationBottomSheetUserListQuery } from '~/generated/NotificationBottomSheetUserListQuery.graphql';
 import { UserFollowListFragment$key } from '~/generated/UserFollowListFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export const NotificationBottomSheetUserListQueryNode = graphql`
+const NotificationBottomSheetUserListQueryNode = graphql`
   query NotificationBottomSheetUserListQuery($notificationId: ID!) {
     node(id: $notificationId) {
       ... on SomeoneViewedYourGalleryNotification {
@@ -107,7 +103,7 @@ function NotificationBottomSheetUserListInner({
   }
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900">
+    <View className="flex-1 bg-white dark:bg-black-900 min-h-[180px]">
       <UserFollowList userRefs={users} queryRef={query} onUserPress={onUserPress} />
     </View>
   );
@@ -116,43 +112,16 @@ function NotificationBottomSheetUserListInner({
 type NotificationBottomSheetUserListProps = NotificationBottomSheetUserListInnerProps &
   Omit<BottomSheetModalProps, 'children' | 'snapPoints'>;
 
-function NotificationBottomSheetUserList(
-  { onUserPress, notificationId, ...rest }: NotificationBottomSheetUserListProps,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
-  const [showing, setShowing] = useState(false);
-
-  // This is to ensure the lazy query doesn't start until the modal is presented
-  const handleAnimate = useCallback(
-    (fromIndex: number, toIndex: number) => {
-      if (fromIndex === -1) {
-        setShowing(true);
-      }
-
-      rest?.onAnimate?.(fromIndex, toIndex);
-    },
-    [rest]
-  );
-
+export default function NotificationBottomSheetUserList({
+  onUserPress,
+  notificationId,
+}: NotificationBottomSheetUserListProps) {
   return (
-    <GalleryBottomSheetModal snapPoints={[320]} {...rest} onAnimate={handleAnimate} ref={ref}>
-      <Suspense fallback={<UserFollowListFallback />}>
-        {showing ? (
-          <NotificationBottomSheetUserListInner
-            onUserPress={onUserPress}
-            notificationId={notificationId}
-          />
-        ) : (
-          <UserFollowListFallback />
-        )}
-      </Suspense>
-    </GalleryBottomSheetModal>
+    <Suspense fallback={<UserFollowListFallback />}>
+      <NotificationBottomSheetUserListInner
+        onUserPress={onUserPress}
+        notificationId={notificationId}
+      />
+    </Suspense>
   );
 }
-
-const ForwardedNotificationBottomSheetUserList = forwardRef<
-  GalleryBottomSheetModalType,
-  NotificationBottomSheetUserListProps
->(NotificationBottomSheetUserList);
-
-export { ForwardedNotificationBottomSheetUserList as NotificationBottomSheetUserList };

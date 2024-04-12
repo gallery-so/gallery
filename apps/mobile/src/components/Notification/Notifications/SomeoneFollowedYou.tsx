@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
+import NotificationBottomSheetUserList from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
 import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -72,22 +72,37 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const handlePress = useCallback(() => {
-    if (count > 1) {
-      bottomSheetRef.current?.present();
-    } else if (lastFollower?.username) {
-      navigation.navigate('Profile', { username: lastFollower.username });
-    }
-  }, [count, lastFollower?.username, navigation]);
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleUserPress = useCallback(
     (username: string) => {
-      bottomSheetRef.current?.dismiss();
+      hideBottomSheetModal();
       navigation.navigate('Profile', { username });
     },
-    [navigation]
+    [hideBottomSheetModal, navigation]
   );
+
+  const handlePress = useCallback(() => {
+    if (count > 1) {
+      showBottomSheetModal({
+        content: (
+          <NotificationBottomSheetUserList
+            onUserPress={handleUserPress}
+            notificationId={notification.id}
+          />
+        ),
+      });
+    } else if (lastFollower?.username) {
+      navigation.navigate('Profile', { username: lastFollower.username });
+    }
+  }, [
+    count,
+    handleUserPress,
+    lastFollower?.username,
+    navigation,
+    notification.id,
+    showBottomSheetModal,
+  ]);
 
   const isFollowingBack = useMemo(() => {
     const followingList = new Set(
@@ -139,11 +154,6 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
           </Text>
         </View>
       </View>
-      <NotificationBottomSheetUserList
-        ref={bottomSheetRef}
-        onUserPress={handleUserPress}
-        notificationId={notification.id}
-      />
     </NotificationSkeleton>
   );
 }
