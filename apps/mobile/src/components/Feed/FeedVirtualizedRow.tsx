@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 
 import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
@@ -7,8 +7,10 @@ import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { SearchDefaultCardRowFallback } from '../Search/SearchDefaultFallback';
 import { FeedFilter } from './FeedFilter';
 import { FeedPostSocializeSection } from './Posts/FeedPostSocializeSection';
+import { FeedSuggestedProfileRow } from './Posts/FeedSuggestedProfileRow';
 import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
 import { PostListMintButtonSection } from './Posts/PostListMintButtonSection';
@@ -64,6 +66,12 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
         );
       case 'post-item-mint-link':
         return <PostListMintButtonSection postRef={item.post} />;
+      case 'suggested-profile-row':
+        return (
+          <Suspense fallback={<SearchDefaultCardRowFallback />}>
+            <FeedSuggestedProfileRow queryRef={item.queryRef} />
+          </Suspense>
+        );
     }
   }, [item]);
 
