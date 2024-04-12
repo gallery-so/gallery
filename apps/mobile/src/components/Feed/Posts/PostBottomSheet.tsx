@@ -14,7 +14,7 @@ import useFollowUser from '~/shared/relay/useFollowUser';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
-import { DeletePostBottomSheet } from './DeletePostBottomSheet';
+import DeletePostBottomSheet from './DeletePostBottomSheet';
 import ReportPost from './ReportPost';
 
 type Props = {

@@ -14,7 +14,7 @@ type Props = {
   postRef: DeletePostBottomSheetFragment$key;
 };
 
-function DeletePostBottomSheet({ postRef }: Props) {
+export default function DeletePostBottomSheet({ postRef }: Props) {
   const post = useFragment(
     graphql`
       fragment DeletePostBottomSheetFragment on Post {
@@ -55,11 +55,7 @@ function DeletePostBottomSheet({ postRef }: Props) {
   }, [deletePost, hideBottomSheetModal, post.dbid]);
 
   return (
-    <View
-      // onLayout={handleContentLayout}
-
-      className="flex flex-col space-y-6"
-    >
+    <View className="flex flex-col space-y-6">
       <View className="flex flex-col space-y-4">
         <Typography
           className="text-lg text-black-900 dark:text-offWhite"
@@ -95,7 +91,3 @@ function DeletePostBottomSheet({ postRef }: Props) {
     </View>
   );
 }
-
-const ForwardedDeletePostBottomSheet = forwardRef(DeletePostBottomSheet);
-
-export { ForwardedDeletePostBottomSheet as DeletePostBottomSheet };
