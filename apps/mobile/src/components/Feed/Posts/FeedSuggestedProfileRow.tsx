@@ -20,7 +20,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
       fragment FeedSuggestedProfileRowFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            suggestedUsers(first: 2) @required(action: THROW) {
+            suggestedUsers(first: 4) @required(action: THROW) {
               __typename
               edges {
                 node {
