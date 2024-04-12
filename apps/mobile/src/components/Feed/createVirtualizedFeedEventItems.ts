@@ -382,9 +382,15 @@ export function createVirtualizedFeedEventItems({
     }
   }
 
+  /**
+   * insert suggested profiles in between posts.
+   *
+   * we need to do it this way as opposed to a simple splice based on
+   * array length given there are different elements of a post component
+   * that count towards array item length
+   */
   let postCount = 0;
   const itemsWithSuggestedProfileRow = [];
-
   for (const item of items) {
     if (item.kind === 'post-item-header') {
       postCount++;
