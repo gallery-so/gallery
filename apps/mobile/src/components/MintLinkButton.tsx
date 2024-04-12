@@ -128,7 +128,7 @@ export function MintLinkButton({
       if (isRadiance && !claimCode) {
         return {
           buttonText: 'mint on gallery',
-          icon: <GLogoIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+          icon: <GLogoIcon width={16} height={16} invertColor={variant === 'primary'} />,
         };
       } else {
         return {
@@ -144,7 +144,7 @@ export function MintLinkButton({
     } else {
       return null;
     }
-  }, [claimCode, isRadiance, mintProviderType, size]);
+  }, [claimCode, isRadiance, mintProviderType, size, variant]);
 
   const handlePress = useCallback(() => {
     if (isRadiance) {

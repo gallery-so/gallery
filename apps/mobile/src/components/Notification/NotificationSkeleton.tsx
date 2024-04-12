@@ -258,8 +258,8 @@ export function NotificationSkeleton({
     [notification.followers?.edges, notification.user]
   );
 
-  // TODO Get data from backend
-  const isPinned = true;
+  // TODO Get data from sanity
+  const isPinned = false;
 
   return (
     <GalleryTouchableOpacity
