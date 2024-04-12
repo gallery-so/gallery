@@ -187,7 +187,7 @@ export function MintLinkButton({
       variant={variant}
       onPress={handlePress}
       headerElement={mintProvider.icon}
-      footerElement={(isRadiance && !claimCode) ? null : <TopRightArrowIcon color={arrowColor} />}
+      footerElement={isRadiance && !claimCode ? null : <TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
       eventElementId="Mint Link Button"

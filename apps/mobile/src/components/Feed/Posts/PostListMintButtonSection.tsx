@@ -35,7 +35,7 @@ export function PostListMintButtonSection({ postRef }: Props) {
   const token = post?.tokens?.[0];
 
   if (!token) {
-    throw new Error('no token exists for thist post')
+    throw new Error('no token exists for thist post');
   }
 
   const ownerWalletAddress = post?.author?.primaryWallet?.chainAddress?.address ?? '';

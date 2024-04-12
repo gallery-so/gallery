@@ -39,7 +39,10 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
 
   const [claimCode] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
 
-const [isUpsellMintBannerDismissed, setIsUpsellMintBannerDismissed] = usePersistedState('isUpsellMintBannerDismissed', false);
+  const [isUpsellMintBannerDismissed, setIsUpsellMintBannerDismissed] = usePersistedState(
+    'isUpsellMintBannerDismissed',
+    false
+  );
 
   const handleDismissUpsellBanner = useCallback(() => {
     setIsUpsellMintBannerDismissed(true);
