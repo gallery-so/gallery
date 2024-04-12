@@ -9,7 +9,7 @@ import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedPr
 import { Typography } from '../../Typography';
 
 const CARD_HEIGHT = 180;
-const CARD_WIDTH = 186;
+const CARD_WIDTH = 180;
 
 type FeedSuggestedProfileRowProps = {
   queryRef: FeedSuggestedProfileRowFragment$key;
@@ -66,9 +66,9 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
   }, [query.viewer?.suggestedUsers]);
 
   return (
-    <View className="pl-2 mt-12 mb-12 space-y-3">
+    <View className="pl-4 mt-2 mb-12 space-y-3">
       <Typography
-        className="text-sm text-offWhite dark:text-offBlack"
+        className="text-sm text-offBlack dark:text-offBlack"
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >
         Suggested creators and collectors
