@@ -3,6 +3,7 @@ import { Route, route } from 'nextjs-routes';
 import { Suspense, useCallback, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
+import colors from '~/shared/theme/colors';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
@@ -144,6 +145,7 @@ export default function Search() {
 
 const StyledSearchContent = styled(VStack)`
   padding: 0 16px;
+  background-color: ${colors.offWhite};
 
   height: 100%;
   width: 100%;

@@ -80,7 +80,7 @@ const StyledMotion = styled(motion.div)`
 `;
 
 const StyledDrawer = styled(VStack)`
-  background-color: ${colors.white};
+  background-color: ${colors.offWhite};
   width: 100%;
   position: relative;
   min-height: 0;
