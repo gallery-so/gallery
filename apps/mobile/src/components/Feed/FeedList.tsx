@@ -58,9 +58,16 @@ export function FeedList({
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
 
+  const postsWithProfileItemRef = useMemo(() => {
+    const newPosts = [...posts];
+    return newPosts?.splice(7, 0, {
+      __typename: 'SuggestedProfileRow',
+    });
+  }, [posts]);
+
   const { items } = useMemo(() => {
     return createVirtualizedFeedEventItems({
-      itemRefs: posts,
+      itemRefs: postsWithProfileItemRef,
       failedEvents,
       queryRef: query,
       feedFilter,

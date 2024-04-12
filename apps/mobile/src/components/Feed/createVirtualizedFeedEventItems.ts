@@ -111,6 +111,7 @@ export type FeedListItemType = { key: string } & (
       kind: 'suggested-profile-row';
       event: null;
       post: null;
+      eventId: string;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       itemType: itemType;
     }
@@ -231,6 +232,8 @@ export function createVirtualizedFeedEventItems({
     })
   );
 
+  const newerItems = [...newItems];
+
   const items: FeedListItemType[] = [];
 
   if (feedFilter) {
@@ -245,6 +248,16 @@ export function createVirtualizedFeedEventItems({
       itemType: null,
     });
   }
+
+  items.push({
+    kind: 'suggested-profile-row',
+    event: null,
+    post: null,
+    queryRef: query,
+    key: 'suggested-profile-row',
+    eventId: 'suggested-profile-row',
+    itemType: null,
+  });
 
   const setVirtualizeItemsForPost = (post: createVirtualizedFeedEventItemsPostFragment$data) => {
     const uniqueKey = Math.random().toString();
@@ -378,22 +391,25 @@ export function createVirtualizedFeedEventItems({
     items.push({
       kind: 'suggested-profile-row',
       post: null,
+      eventId: 'suggested-profile-row',
       event: null,
-      key: `feed-suggested-profile-row-${uniqueKey}`,
+      key: `suggested-profile-row-${uniqueKey}`,
       queryRef: query,
-      itemType: 'FeedEvent',
+      itemType: 'SuggestedProfileRow',
     });
   };
 
-  for (const item of newItems) {
+  console.log('111111');
+
+  for (const [index, item] of newerItems.entries()) {
+    if (index === 7) {
+      setVirtualizeItemsForSuggestedProfileRow(item);
+    }
     if (item.__typename === 'FeedEvent') {
       setVirtualizeItemsForEvent(item);
     }
     if (item.__typename === 'Post') {
       setVirtualizeItemsForPost(item);
-    }
-    if (item.__typename === 'SuggestedProfileRow') {
-      setVirtualizeItemsForSuggestedProfileRow(item);
     }
   }
 

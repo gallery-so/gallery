@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { useMemo } from 'react';
 
 import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedProfileRowFragment.graphql';
+import { TrendingUserCard } from '~/components/Trending/TrendingUserCard';
+import { Typography } from '../../Typography';
 
 const CARD_HEIGHT = 145;
 const CARD_WIDTH = 180;
@@ -28,7 +30,6 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
                         __typename
                       }
                     }
-                    ...UserSearchResultFragment
                     ...TrendingUserCardFragment
                   }
                 }
@@ -36,6 +37,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
             }
           }
         }
+        ...TrendingUserCardQueryFragment
       }
     `,
     queryRef
@@ -57,7 +59,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
   }, []);
 
   return (
-    <View>
+    <View className="pl-4 space-x-2 flex flex-row bg-blue">
       {suggestedUsers?.map((user, idx) => {
         return (
           <View className="mb-1" style={{ width: CARD_WIDTH, height: CARD_HEIGHT }} key={idx}>
