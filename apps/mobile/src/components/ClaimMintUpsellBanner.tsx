@@ -1,5 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
@@ -40,20 +39,11 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
 
   const [claimCode] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
 
-  const [isUpsellMintBannerDismissed, setIsUpsellMintBannerDismissed] = useState(false);
-
-  useEffect(() => {
-    AsyncStorage.getItem('isUpsellMintBannerDismissed').then((value) => {
-      if (value === 'true') {
-        setIsUpsellMintBannerDismissed(true);
-      }
-    });
-  }, []);
+const [isUpsellMintBannerDismissed, setIsUpsellMintBannerDismissed] = usePersistedState('isUpsellMintBannerDismissed', false);
 
   const handleDismissUpsellBanner = useCallback(() => {
     setIsUpsellMintBannerDismissed(true);
-    AsyncStorage.setItem('isUpsellMintBannerDismissed', 'true');
-  }, []);
+  }, [setIsUpsellMintBannerDismissed]);
 
   const handleClaimPress = useCallback(() => {
     showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });

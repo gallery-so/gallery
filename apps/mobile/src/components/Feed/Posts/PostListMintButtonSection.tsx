@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { extractRelevantMetadataFromToken } from 'shared/utils/extractRelevantMetadataFromToken';
+import { isRadianceContractAddress } from 'src/utils/isRadianceContractAddress';
 
 import { MintLinkButton } from '~/components/MintLinkButton';
 import { PostListMintButtonSectionFragment$key } from '~/generated/PostListMintButtonSectionFragment.graphql';
@@ -34,24 +34,17 @@ export function PostListMintButtonSection({ postRef }: Props) {
 
   const token = post?.tokens?.[0];
 
+  if (!token) {
+    throw new Error('no token exists for thist post')
+  }
+
   const ownerWalletAddress = post?.author?.primaryWallet?.chainAddress?.address ?? '';
 
   const userAddedMintURL = post?.userAddedMintURL ?? '';
 
-  const { contractAddress } = useMemo(() => {
-    if (token) {
-      return extractRelevantMetadataFromToken(token);
-    }
-    return {
-      contractAddress: '',
-      chain: '',
-      mintUrl: '',
-    };
-  }, [token]);
+  const { contractAddress } = extractRelevantMetadataFromToken(token);
 
-  const isRadiance = useMemo(() => {
-    return contractAddress === '0x78b92e9afd56b033ead2103f07aced5fac8c0854';
-  }, [contractAddress]);
+  const isRadiance = isRadianceContractAddress(contractAddress);
 
   return (
     <View className="px-3 pb-8 pt-2">

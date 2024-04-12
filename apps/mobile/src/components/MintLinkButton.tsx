@@ -7,11 +7,13 @@ import usePersistedState from 'src/hooks/usePersistedState';
 import { EnsembleIcon } from 'src/icons/EnsembleIcon';
 import { FoundationIcon } from 'src/icons/FoundationIcon';
 import { FxHashIcon } from 'src/icons/FxHashIcon';
+import { GLogoIcon } from 'src/icons/GLogoIcon';
 import { HighlightIcon } from 'src/icons/HighlightIcon';
 import { ProhibitionIcon } from 'src/icons/ProhibitionIcon';
 import { SuperRareIcon } from 'src/icons/SuperRareIcon';
 import { TopRightArrowIcon } from 'src/icons/TopRightArrowIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
+import { isRadianceContractAddress } from 'src/utils/isRadianceContractAddress';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { MintLinkButtonFragment$key } from '~/generated/MintLinkButtonFragment.graphql';
@@ -82,9 +84,7 @@ export function MintLinkButton({
     };
   }, [overrideMetadata, token]);
 
-  const isRadiance = useMemo(() => {
-    return contractAddress === '0x78b92e9afd56b033ead2103f07aced5fac8c0854';
-  }, [contractAddress]);
+  const isRadiance = isRadianceContractAddress(contractAddress);
 
   const { url: mintURL, provider: mintProviderType } = getMintUrlWithReferrer(
     overrideMintUrl || mintUrl,
@@ -128,7 +128,7 @@ export function MintLinkButton({
       if (isRadiance && !claimCode) {
         return {
           buttonText: 'mint on gallery',
-          icon: <FoundationIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
+          icon: <GLogoIcon width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} />,
         };
       } else {
         return {
@@ -187,7 +187,7 @@ export function MintLinkButton({
       variant={variant}
       onPress={handlePress}
       headerElement={mintProvider.icon}
-      footerElement={<TopRightArrowIcon color={arrowColor} />}
+      footerElement={(isRadiance && !claimCode) ? null : <TopRightArrowIcon color={arrowColor} />}
       style={style}
       size={size}
       eventElementId="Mint Link Button"
