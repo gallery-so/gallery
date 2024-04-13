@@ -32,6 +32,7 @@ export default function MagicLinkLogin() {
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target?.value);
   }, []);
+
   const handleSendClick = useCallback(async () => {
     setErrorMessage('');
     setClickedSendLink(true);

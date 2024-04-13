@@ -227,14 +227,6 @@ export default function MultichainWalletSelector({
           />
         </VStack>
       </VStack>
-      <StyledWalletHelperText>
-        You can always add more wallets across networks later when setting up your Gallery.
-      </StyledWalletHelperText>
     </WalletSelectorWrapper>
   );
 }
-
-const StyledWalletHelperText = styled(BaseM)`
-  max-width: 400px;
-  color: ${colors.shadow};
-`;

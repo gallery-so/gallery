@@ -8,6 +8,7 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
+import { ConnectedFarcasterLoginView } from '~/components/WalletSelector/multichain/FarcasterLoginView';
 import MagicLinkLogin from '~/components/WalletSelector/multichain/MagicLinkLogin';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
@@ -16,9 +17,10 @@ import { useUniversalAuthModalQuery } from '~/generated/useUniversalAuthModalQue
 import { useUniversalAuthModalQueryFragment$key } from '~/generated/useUniversalAuthModalQueryFragment.graphql';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { EmailIcon } from '~/icons/EmailIcon';
+import { FarcasterOutlineIcon } from '~/icons/FarcasterOutlineIcon';
 import { WalletIcon } from '~/icons/WalletIcon';
 
-type authMethod = 'Wallet' | 'Email' | 'Sign in via mobile';
+type authMethod = 'Wallet' | 'Email' | 'Farcaster' | 'Sign in via mobile';
 
 export default function useUniversalAuthModal() {
   const query = useLazyLoadQuery<useUniversalAuthModalQuery>(
@@ -61,29 +63,49 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
       return 'Continue with wallet';
     }
 
+    if (selectedAuthMethod === 'Farcaster') {
+      return 'Sign in with Farcaster';
+    }
+
     return 'Sign in or create an account';
   }, [selectedAuthMethod]);
 
+  const headerElement = useMemo(() => {
+    return (
+      <HeaderMarginAdjuster>
+        <HStack align="center" gap={8}>
+          {selectedAuthMethod && (
+            <IconMarginAdjuster>
+              <IconContainer
+                onClick={() => setSelectedAuthMethod(null)}
+                variant="default"
+                size="sm"
+                icon={<ChevronLeftIcon />}
+              />
+            </IconMarginAdjuster>
+          )}
+          <VStack>
+            <TitleS color={colors.black['800']}>{modalTitle}</TitleS>
+          </VStack>
+        </HStack>
+      </HeaderMarginAdjuster>
+    );
+  }, [modalTitle, selectedAuthMethod]);
+
   return (
     <VStack>
-      <HStack align="center" gap={8}>
-        {selectedAuthMethod && (
-          <IconContainer
-            onClick={() => setSelectedAuthMethod(null)}
-            variant="default"
-            size="sm"
-            icon={<ChevronLeftIcon />}
-          />
-        )}
-        <VStack>
-          <TitleS color={colors.black['800']}>{modalTitle}</TitleS>
-        </VStack>
-      </HStack>
+      {headerElement}
       <Container>
         {selectedAuthMethod === 'Wallet' && (
           <WalletContainer gap={12}>
             <WalletSelector queryRef={query} showEmail={false} />
           </WalletContainer>
+        )}
+
+        {selectedAuthMethod === 'Farcaster' && (
+          <WalletSelectorWrapper>
+            <ConnectedFarcasterLoginView />
+          </WalletSelectorWrapper>
         )}
 
         {selectedAuthMethod === 'Email' && (
@@ -99,6 +121,12 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
               disabled={false}
               onClick={() => setSelectedAuthMethod('Wallet')}
               icon={<WalletIcon />}
+            />
+            <Row
+              label="Farcaster"
+              disabled={false}
+              onClick={() => setSelectedAuthMethod('Farcaster')}
+              icon={<FarcasterOutlineIcon />}
             />
             <Row
               label="Email"
@@ -117,11 +145,19 @@ const Container = styled(VStack)`
   display: flex;
   justify-content: center;
 
-  padding: 24px 0px 20px;
+  padding: 24px 0px 8px;
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
   /* min-height: 320px; */
   height: 100%;
+`;
+
+const HeaderMarginAdjuster = styled.div`
+  margin-top: -6px;
+`;
+
+const IconMarginAdjuster = styled.div`
+  margin-left: -8px;
 `;
 
 const WalletContainer = styled(VStack)`
