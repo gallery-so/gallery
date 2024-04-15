@@ -23,10 +23,6 @@ export function GalleryEditorTokenPreview({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment GalleryEditorTokenPreviewFragment on Token {
-        dbid
-        definition {
-          name
-        }
         ...TokenFailureBoundaryFragment
         ...NftPreviewAssetToWrapInBoundaryFragment
       }

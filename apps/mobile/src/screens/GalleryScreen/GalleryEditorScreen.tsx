@@ -1,13 +1,10 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { DraggableSectionStack } from '~/components/GalleryEditor/DraggableSectionStack';
 import { GalleryEditorActions } from '~/components/GalleryEditor/GalleryEditorActions';
-import { GalleryEditorHeader } from '~/components/GalleryEditor/GalleryEditorHeader';
-import { GalleryEditorNavbar } from '~/components/GalleryEditor/GalleryEditorNavbar';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { GalleryEditorRender } from '~/components/GalleryEditor/GalleryEditorRender';
 import GalleryDraggableProvider from '~/contexts/GalleryEditor/GalleryDraggableContext';
 import GalleryEditorProvider from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { GalleryEditorScreenQuery } from '~/generated/GalleryEditorScreenQuery.graphql';
@@ -26,17 +23,16 @@ function InnerGalleryEditorScreen() {
         }
         galleryById(id: $galleryId) {
           __typename
-          ...GalleryEditorHeaderFragment
+          ...GalleryEditorRenderFragment
         }
         ...GalleryEditorContextFragment
-        ...DraggableSectionStackFragment
+        ...GalleryEditorRenderQueryFragment
       }
     `,
     { galleryId: route.params.galleryId }
   );
 
   const gallery = query.galleryById;
-  const { top } = useSafeAreaPadding();
 
   if (!gallery) {
     throw new Error('GalleryEditor rendered without a Gallery');
@@ -45,18 +41,7 @@ function InnerGalleryEditorScreen() {
   return (
     <GalleryEditorProvider queryRef={query}>
       <GalleryDraggableProvider>
-        <View
-          className="flex flex-col flex-1 bg-white dark:bg-black-900"
-          style={{
-            paddingTop: top,
-          }}
-        >
-          <GalleryEditorNavbar />
-          <ScrollView className="flex-1">
-            <GalleryEditorHeader galleryRef={gallery} />
-            <DraggableSectionStack queryRef={query} />
-          </ScrollView>
-        </View>
+        <GalleryEditorRender galleryRef={gallery} queryRef={query} />
         <GalleryEditorActions />
       </GalleryDraggableProvider>
     </GalleryEditorProvider>

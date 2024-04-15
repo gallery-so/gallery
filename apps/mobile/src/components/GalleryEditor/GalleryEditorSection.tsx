@@ -47,6 +47,7 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
       eventElementId={null}
       eventName={null}
       eventContext={null}
+      className="px-2"
     >
       <View
         className={clsx('border border-transparent space-y-4 p-2 relative', {
