@@ -81,9 +81,6 @@ export default function WalletSelector({
           />
         </EthereumProviders>
       </BeaconProvider>
-      <StyledWalletHelperText>
-        You can always add more wallets across networks later when setting up your Gallery.
-      </StyledWalletHelperText>
     </Suspense>
   );
 }

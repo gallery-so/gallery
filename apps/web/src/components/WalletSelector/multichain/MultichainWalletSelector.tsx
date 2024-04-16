@@ -159,17 +159,13 @@ export default function MultichainWalletSelector({
             label={supportedAuthMethods.ethereum.name}
             icon="ethereum"
             additionalChains={additionalEthereumChains}
-            onClick={() => {
+            onClick={async () => {
               console.log('connecting to ethereum');
-              connectEthereum().then(
-                (address) => {
-                  console.log('connected to ethereum with', address);
-                  setSelectedAuthMethod(supportedAuthMethods.ethereum);
-                },
-                (error) => {
-                  console.log('failed to connect to ethereum', error);
-                }
-              );
+              const address = await connectEthereum();
+              if (address) {
+                console.log('connected to ethereum with', address);
+                setSelectedAuthMethod(supportedAuthMethods.ethereum);
+              }
             }}
           />
           <WalletButton
@@ -226,7 +222,16 @@ export default function MultichainWalletSelector({
             }}
           />
         </VStack>
+        <StyledWalletHelperText>
+          You can always add more wallets across networks later when setting up your Gallery.
+        </StyledWalletHelperText>
       </VStack>
     </WalletSelectorWrapper>
   );
 }
+
+const StyledWalletHelperText = styled(BaseM)`
+  max-width: 400px;
+  color: ${colors.shadow};
+  text-align: center;
+`;

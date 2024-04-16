@@ -12,7 +12,7 @@ type Props = {
 
 export function EmptyState({ title, description, children }: Props) {
   return (
-    <VStack align="center" gap={12}>
+    <EmptyStateContainer align="center" justify="center" gap={12}>
       {title || description ? (
         <VStack align="center" gap={8}>
           <StyledTitle>{title}</StyledTitle>
@@ -24,9 +24,13 @@ export function EmptyState({ title, description, children }: Props) {
         </VStack>
       ) : null}
       {children}
-    </VStack>
+    </EmptyStateContainer>
   );
 }
+
+const EmptyStateContainer = styled(VStack)`
+  min-height: 340px;
+`;
 
 const StyledTitle = styled(BaseXL)`
   font-weight: 700;
