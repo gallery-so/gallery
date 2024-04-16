@@ -31,6 +31,8 @@ type GalleryEditorActions = {
   sectionIdBeingEdited: string | null;
 
   moveSection: (activeSectionId: string, overSectionId: string) => void;
+  moveSectionUp: () => void;
+  moveSectionDown: () => void;
 
   activeRowId: string | null;
   activateRow: (sectionId: string, rowId: string) => void;
@@ -169,6 +171,42 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [setSections]
   );
 
+  const moveSectionUp = useCallback(() => {
+    if (!sectionIdBeingEdited) {
+      return;
+    }
+
+    setSections((previousSections) => {
+      const sectionIndex = previousSections.findIndex(
+        (section) => section.dbid === sectionIdBeingEdited
+      );
+
+      if (sectionIndex === 0) {
+        return previousSections;
+      }
+
+      return arrayMove(previousSections, sectionIndex, sectionIndex - 1);
+    });
+  }, [sectionIdBeingEdited, setSections]);
+
+  const moveSectionDown = useCallback(() => {
+    if (!sectionIdBeingEdited) {
+      return;
+    }
+
+    setSections((previousSections) => {
+      const sectionIndex = previousSections.findIndex(
+        (section) => section.dbid === sectionIdBeingEdited
+      );
+
+      if (sectionIndex === previousSections.length - 1) {
+        return previousSections;
+      }
+
+      return arrayMove(previousSections, sectionIndex, sectionIndex + 1);
+    });
+  }, [sectionIdBeingEdited, setSections]);
+
   const updateRow = useCallback(
     (sectionId: string, value: SetStateAction<StagedRow>) => {
       if (!sectionIdBeingEdited) {
@@ -254,14 +292,16 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
   }, [sectionBeingEdited?.activeRowId, sectionIdBeingEdited]);
 
   const clearActiveRow = useCallback(() => {
-    if (!sectionIdBeingEdited) {
-      return;
-    }
+    setSections((previousSections) => {
+      return previousSections.map((previousSection) => {
+        if (previousSection.dbid === sectionIdBeingEdited) {
+          return { ...previousSection, activeRowId: null };
+        }
 
-    updateSection(sectionIdBeingEdited, (previousSection) => {
-      return { ...previousSection, activeRowId: null };
+        return previousSection;
+      });
     });
-  }, [sectionIdBeingEdited, updateSection]);
+  }, [sectionIdBeingEdited]);
 
   const incrementColumns = useCallback(
     (rowId: string) => {
@@ -504,7 +544,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activateSection,
       sectionIdBeingEdited,
+
       moveSection,
+      moveSectionUp,
+      moveSectionDown,
 
       activeRowId,
       activateRow,
@@ -529,7 +572,10 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
       activateSection,
       sectionIdBeingEdited,
+
       moveSection,
+      moveSectionUp,
+      moveSectionDown,
 
       activeRowId,
       activateRow,
