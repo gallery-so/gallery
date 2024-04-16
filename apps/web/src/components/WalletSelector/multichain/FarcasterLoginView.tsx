@@ -8,7 +8,6 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
-import { NeynarPayloadVariables } from 'shared/hooks/useAuthPayloadQuery';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
 import { useGetUsersByWalletAddressesImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import { removeNullValues } from 'shared/relay/removeNullValues';
@@ -99,36 +98,12 @@ export function FarcasterLoginView() {
           }))
         );
 
-        if (!userIds.length) {
-          // push to create user
-          const primaryFarcasterAddress = req.verifications?.[0] ?? req.custody;
-          if (!primaryFarcasterAddress) {
-            throw new Error('no connected wallets for farcaster user');
-          }
-
-          const createUserAuthMechanism: NeynarPayloadVariables = {
-            authMechanismType: 'neynar',
-            address: req.custody,
-            nonce: req.nonce,
-            message: req.message,
-            signature: req.signature,
-          };
-
-          if (req.verifications?.[0]) {
-            createUserAuthMechanism.primaryAddress = req.verifications[0];
-          }
-
-          // TODO: send to email step of modal
-          console.log('no user ID exists, lets begin onboarding through email step');
-
-          // navigation.navigate('OnboardingEmail', {
-          //   authMethod: 'Farcaster',
-          //   authMechanism: createUserAuthMechanism,
-          // });
-          return;
+        const primaryFarcasterAddress = req.verifications?.[0] ?? req.custody;
+        if (!primaryFarcasterAddress) {
+          throw new Error('no connected wallets for farcaster user');
         }
-        // push to login
-        const loginAuthPayload: AuthMechanism = {
+
+        const loginOrCreateUserAuthPayload: AuthMechanism = {
           neynar: {
             nonce: req.nonce,
             message: req.message,
@@ -137,19 +112,30 @@ export function FarcasterLoginView() {
               pubKey: req.custody,
               chain: 'Ethereum' as Chain,
             },
+            primaryPubKey: {
+              pubKey: primaryFarcasterAddress,
+              chain: 'Ethereum' as Chain,
+            },
           },
         };
 
-        if (req.verifications?.[0]) {
-          loginAuthPayload.neynar!.primaryPubKey = {
-            pubKey: req.verifications[0],
-            chain: 'Ethereum',
-          };
+        if (!userIds.length) {
+          // push to create user
+          track('Redirect to create user onboarding', { 'Sign in method': 'Farcaster' });
+          await loginOrRedirectToOnboarding({
+            authMechanism: {
+              mechanism: loginOrCreateUserAuthPayload,
+            },
+            userExists: false,
+            userFriendlyWalletName: 'Farcaster',
+          });
+          return;
         }
 
+        // push to login
         const userId = await loginOrRedirectToOnboarding({
           authMechanism: {
-            mechanism: loginAuthPayload,
+            mechanism: loginOrCreateUserAuthPayload,
           },
           userExists: true,
           userFriendlyWalletName: 'Farcaster',

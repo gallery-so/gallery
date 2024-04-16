@@ -24,24 +24,23 @@ export function OnboardingAddEmailPage() {
   const debouncedEmail = useDebounce(email, 500);
 
   const { push, query: queryRouter } = useRouter();
-  const { query: routerQuery } = useRouter();
-  const authMechanismType = routerQuery.authMechanismType;
 
   const isInvalidEmail = useMemo(() => {
     return !EMAIL_FORMAT.test(email);
   }, [email]);
 
   const handleContinue = useCallback(async () => {
-    if (authMechanismType === 'eoa') {
-      push({
+    push(
+      {
         pathname: '/onboarding/add-username',
         query: {
           ...queryRouter,
           email,
         },
-      });
-    }
-  }, [authMechanismType, email, push, queryRouter]);
+      },
+      '/onboarding/add-username'
+    );
+  }, [email, push, queryRouter]);
 
   const handlePrevious = useCallback(() => {
     push('/');
