@@ -23,6 +23,8 @@ export type GnosisPayloadVariables = {
 export type PrivyPayloadVariables = {
   authMechanismType: 'privy';
   privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
 };
 
 type DeprecatedWebEmailPayloadVariables = {
@@ -35,6 +37,8 @@ export type NeynarPayloadVariables = {
   authMechanismType: 'neynar';
   primaryAddress?: string;
   privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
 } & SignerVariables;
 
 export type AuthPayloadVariables =

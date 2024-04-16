@@ -111,14 +111,6 @@ function InnerOnboardingUsernameScreen() {
 
       setIsCreatingUser(true);
 
-      // eslint-disable-next-line no-console
-      console.log('creating user', {
-        authPayloadVariables: authMechanism,
-        username,
-        bio,
-        email,
-      });
-
       const response = await createUser({
         authPayloadVariables: authMechanism,
         username,
@@ -141,9 +133,6 @@ function InnerOnboardingUsernameScreen() {
             },
           },
         });
-
-        // eslint-disable-next-line no-console
-        console.log('updateEmailResult', result);
 
         if (result.updateEmail?.__typename !== 'UpdateEmailPayload') {
           throw new Error(
