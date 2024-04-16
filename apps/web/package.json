@@ -65,6 +65,7 @@
     "@floating-ui/react": "^0.14.0",
     "@graphql-codegen/cli": "^2.16.5",
     "@portabletext/react": "^3.0.11",
+    "@privy-io/react-auth": "latest",
     "@rainbow-me/rainbowkit": "^1.0.5",
     "@sentry/nextjs": "^7.77.0",
     "@taquito/taquito": "17.5.0",
