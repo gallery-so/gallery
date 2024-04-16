@@ -113,7 +113,6 @@ export type AuthMethodTitle = 'Privy' | 'Wallet' | 'Farcaster';
 
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
-  EnterEmail: undefined;
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: {
