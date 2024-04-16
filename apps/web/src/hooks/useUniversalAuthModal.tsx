@@ -1,5 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useLogin, useLogout, useToken } from '@privy-io/react-auth';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
+import { LoginError } from 'shared/errors/LoginError';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
@@ -9,8 +12,8 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { ConnectedFarcasterLoginView } from '~/components/WalletSelector/multichain/FarcasterLoginView';
-import MagicLinkLogin from '~/components/WalletSelector/multichain/MagicLinkLogin';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
+import useLoginOrRedirectToOnboarding from '~/components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useUniversalAuthModalQuery } from '~/generated/useUniversalAuthModalQuery.graphql';
@@ -58,6 +61,11 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
 
   const [selectedAuthMethod, setSelectedAuthMethod] = useState<authMethod | null>(null);
 
+  const isPrivySelectedAuthMethod = selectedAuthMethod === 'Email';
+  const handleClearSelectedAuthMethod = useCallback(() => {
+    setSelectedAuthMethod(null);
+  }, []);
+
   const modalTitle = useMemo(() => {
     if (selectedAuthMethod === 'Wallet') {
       return 'Continue with wallet';
@@ -74,10 +82,10 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
     return (
       <HeaderMarginAdjuster>
         <HStack align="center" gap={8}>
-          {selectedAuthMethod && (
+          {selectedAuthMethod && !isPrivySelectedAuthMethod && (
             <IconMarginAdjuster>
               <IconContainer
-                onClick={() => setSelectedAuthMethod(null)}
+                onClick={handleClearSelectedAuthMethod}
                 variant="default"
                 size="sm"
                 icon={<ChevronLeftIcon />}
@@ -90,7 +98,13 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
         </HStack>
       </HeaderMarginAdjuster>
     );
-  }, [modalTitle, selectedAuthMethod]);
+  }, [handleClearSelectedAuthMethod, isPrivySelectedAuthMethod, modalTitle, selectedAuthMethod]);
+
+  // privy auth modal handler. see hook for more details
+  usePrivyGalleryLogin({
+    selectedAuthMethod,
+    onExitPrivyModal: handleClearSelectedAuthMethod,
+  });
 
   return (
     <VStack>
@@ -98,7 +112,7 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
       <Container>
         {selectedAuthMethod === 'Wallet' && (
           <WalletContainer gap={12}>
-            <WalletSelector queryRef={query} showEmail={false} />
+            <WalletSelector queryRef={query} />
           </WalletContainer>
         )}
 
@@ -108,34 +122,32 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
           </WalletSelectorWrapper>
         )}
 
-        {selectedAuthMethod === 'Email' && (
-          <WalletSelectorWrapper>
-            <MagicLinkLogin />
-          </WalletSelectorWrapper>
-        )}
-
-        {!selectedAuthMethod && (
-          <WalletSelectorWrapper gap={12}>
-            <Row
-              label="Wallet"
-              disabled={false}
-              onClick={() => setSelectedAuthMethod('Wallet')}
-              icon={<WalletIcon />}
-            />
-            <Row
-              label="Farcaster"
-              disabled={false}
-              onClick={() => setSelectedAuthMethod('Farcaster')}
-              icon={<FarcasterOutlineIcon />}
-            />
-            <Row
-              label="Email"
-              disabled={false}
-              onClick={() => setSelectedAuthMethod('Email')}
-              icon={<EmailIcon />}
-            />
-          </WalletSelectorWrapper>
-        )}
+        {
+          // if the user selects the `Email` auth method, we want to keep
+          // the current view open, and open the privy modal on top
+          !selectedAuthMethod || isPrivySelectedAuthMethod ? (
+            <WalletSelectorWrapper gap={12}>
+              <Row
+                label="Wallet"
+                disabled={false}
+                onClick={() => setSelectedAuthMethod('Wallet')}
+                icon={<WalletIcon />}
+              />
+              <Row
+                label="Farcaster"
+                disabled={false}
+                onClick={() => setSelectedAuthMethod('Farcaster')}
+                icon={<FarcasterOutlineIcon />}
+              />
+              <Row
+                label="Email"
+                disabled={false}
+                onClick={() => setSelectedAuthMethod('Email')}
+                icon={<EmailIcon />}
+              />
+            </WalletSelectorWrapper>
+          ) : null
+        }
       </Container>
     </VStack>
   );
@@ -221,3 +233,92 @@ const StyledButtonIcon = styled.span`
   align-items: center;
   justify-content: center;
 `;
+
+type usePrivyGalleryLoginProps = {
+  selectedAuthMethod: authMethod | null;
+  onExitPrivyModal: () => void;
+};
+
+function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivyGalleryLoginProps) {
+  const reportError = useReportError();
+  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
+  const { getAccessToken } = useToken();
+
+  const { logout } = useLogout();
+  const { login: openLoginWithPrivyModal } = useLogin({
+    onComplete: async (user) => {
+      const privyAccessToken = await getAccessToken();
+      if (!privyAccessToken) {
+        throw new Error('Privy access token not found after user login');
+      }
+
+      const authMechanism = {
+        mechanism: {
+          privy: {
+            token: privyAccessToken,
+          },
+        },
+      };
+
+      try {
+        // attempt to initially log in
+        await loginOrRedirectToOnboarding({
+          authMechanism: authMechanism,
+          userExists: true,
+        });
+      } catch (error) {
+        console.log('the error onComplete', error);
+        if (error instanceof LoginError) {
+          if (!user.email?.address) {
+            reportError('Privy email not found after user login');
+            return;
+          }
+          console.log('pushing forward with user email', user.email.address);
+          // proceed to onboarding as it means the privy user was not found
+          await loginOrRedirectToOnboarding({
+            authMechanism,
+            email: user.email.address,
+            userExists: false,
+          });
+          return;
+        }
+        if (error instanceof Error) {
+          reportError('Privy critical error after gallery login attempt', {
+            tags: { detail: error.message },
+          });
+        }
+      }
+    },
+    onError: (error) => {
+      if (error === 'exited_auth_flow') {
+        onExitPrivyModal();
+        return;
+      }
+      reportError('Privy auth modal error', { tags: { detail: error } });
+    },
+  });
+
+  useEffect(
+    function handleOpenPrivyModalOnEmailOptionSelect() {
+      if (selectedAuthMethod === 'Email') {
+        console.log('opening modal');
+        openLoginWithPrivyModal();
+      }
+    },
+    // exclude `openLoginWithPrivyModal` from deps as it can trigger login cycles
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedAuthMethod]
+  );
+
+  useEffect(
+    function handleResetPrivy() {
+      if (selectedAuthMethod === null) {
+        console.log('logging out');
+        logout();
+      }
+    },
+    // exclude `logout` from deps as it can trigger logout cycles
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedAuthMethod]
+  );
+}

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
-import { useDeprecatedCreateUser } from 'shared/hooks/useCreateUser';
+import useCreateUser from 'shared/hooks/useCreateUser';
 import useDebounce from 'shared/hooks/useDebounce';
 import useUpdateEmail from 'shared/hooks/useUpdateEmail';
 import useUpdateUser from 'shared/hooks/useUpdateUser';
@@ -60,8 +60,7 @@ export function OnboardingAddUsernamePage() {
 
   const [usernameError, setUsernameError] = useState('');
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
-  // TODO: use `useCreateUser` instead after web is migrated from magic link -> privy
-  const createUserDeprecated = useDeprecatedCreateUser();
+  const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const authPayloadQuery = useAuthPayloadQuery();
   const trackCreateUserSuccess = useTrackCreateUserSuccess(
@@ -130,27 +129,52 @@ export function OnboardingAddUsernamePage() {
       if (!authPayloadQuery) {
         throw new Error('Auth signature for creating user not found');
       }
-      const response = await createUserDeprecated(authPayloadQuery, username, '');
+
+      console.log('creating user', authPayloadQuery);
+
+      const response = await createUser({
+        authPayloadVariables: authPayloadQuery,
+        username,
+        bio: '',
+      });
+
       trackCreateUserSuccess();
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
         const user = response.createUser.viewer?.user;
 
+        // if we don't have an email address by this point, something went wrong
+        if (!authPayloadQuery.email) {
+          throw new Error('Email not provided before user is created');
+        }
+
+        // if the user is being created via privy, the email address was already verified via
+        // 2FA at a previous step and we can attach the appropriate AuthMechanism that will
+        // prove ownership via Privy Token. otherwise, if the account is being created via
+        // EOA or Farcaster, no AuthMechanism will be provided, and the user will receive
+        // a verification link on SendGrid.
+        await updateEmail({
+          email: authPayloadQuery.email,
+          authMechanism:
+            authPayloadQuery.authMechanismType === 'privy'
+              ? {
+                  privy: {
+                    token: authPayloadQuery.privyToken!,
+                  },
+                }
+              : undefined,
+        });
+
         // If it's a magic link, skip the profile picture step
-        if (authPayloadQuery.authMechanismType === 'magicLink') {
+        if (authPayloadQuery.authMechanismType === 'privy') {
           push('/onboarding/add-user-info');
           return;
         }
 
-        if (authPayloadQuery.authMechanismType === 'eoa' && authPayloadQuery.email) {
-          // Attach the email to the user
-          updateEmail({ email: authPayloadQuery.email });
-        }
-
         if (!isLocked) {
-          // Start the sync tokens mutation so the user
-          // sees their NFTs loaded ASAP.
-          syncTokens({ type: 'Collected', chain: ['Ethereum', 'Zora', 'Base'], silent: true });
+          // Start the sync tokens mutation so the user sees their NFTs loaded ASAP.
+          // TODO: in the future, we want to sync across more chains
+          syncTokens({ type: 'Collected', chain: ['Ethereum'], silent: true });
         }
 
         const ensAddress = user?.potentialEnsProfileImage?.wallet?.chainAddress;
@@ -180,7 +204,7 @@ export function OnboardingAddUsernamePage() {
     }
   }, [
     authPayloadQuery,
-    createUserDeprecated,
+    createUser,
     debouncedUsername,
     isLocked,
     isUsernameAvailableFetcher,
@@ -191,10 +215,7 @@ export function OnboardingAddUsernamePage() {
     trackCreateUserSuccess,
     updateEmail,
     updateUser,
-    user?.bio,
-    user?.dbid,
-    user?.profileImage?.__typename,
-    user?.username,
+    user,
     username,
   ]);
 
