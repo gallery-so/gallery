@@ -1,4 +1,4 @@
-import { useLogin, useLogout, useToken } from '@privy-io/react-auth';
+import { useCreateWallet, useLogin, useLogout, useToken } from '@privy-io/react-auth';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
@@ -241,10 +241,15 @@ type usePrivyGalleryLoginProps = {
 
 function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivyGalleryLoginProps) {
   const reportError = useReportError();
-  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
+
   const { getAccessToken } = useToken();
 
+  const { createWallet: generatePrivyEmbeddedWallet } = useCreateWallet();
+
   const { logout } = useLogout();
+
+  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
+
   const { login: openLoginWithPrivyModal } = useLogin({
     onComplete: async (user) => {
       const privyAccessToken = await getAccessToken();
@@ -273,7 +278,9 @@ function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivy
             reportError('Privy email not found after user login');
             return;
           }
-          console.log('pushing forward with user email', user.email.address);
+
+          await generatePrivyEmbeddedWallet();
+
           // proceed to onboarding as it means the privy user was not found
           await loginOrRedirectToOnboarding({
             authMechanism,
