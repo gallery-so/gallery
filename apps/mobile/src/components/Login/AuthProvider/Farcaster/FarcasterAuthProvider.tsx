@@ -106,14 +106,12 @@ export function useLoginWithFarcaster() {
           const createUserAuthMechanism: NeynarPayloadVariables = {
             authMechanismType: 'neynar',
             address: req.custody,
+            // try the primary verified address and fall back to default custody address
+            primaryAddress: primaryFarcasterAddress,
             nonce: req.nonce,
             message: req.message,
             signature: req.signature,
           };
-
-          if (req.verifications?.[0]) {
-            createUserAuthMechanism.primaryAddress = req.verifications[0];
-          }
 
           navigation.navigate('OnboardingEmail', {
             authMethod: 'Farcaster',
