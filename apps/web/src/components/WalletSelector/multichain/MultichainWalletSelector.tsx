@@ -20,7 +20,6 @@ import { EthereumAddWallet } from './EthereumAddWallet';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
-import MagicLinkLogin from './MagicLinkLogin';
 import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
@@ -34,7 +33,6 @@ export type OnConnectWalletSuccessFn = () => void;
 export type MultichainWalletSelectorProps = {
   connectionMode?: ConnectionMode;
   onConnectWalletSuccess?: OnConnectWalletSuccessFn;
-  showEmail?: boolean;
 };
 
 type Props = {
@@ -45,7 +43,6 @@ export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   onConnectWalletSuccess,
-  showEmail = true,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -141,14 +138,6 @@ export default function MultichainWalletSelector({
     );
   }
 
-  if (selectedAuthMethod === supportedAuthMethods.magicLink) {
-    return (
-      <WalletSelectorWrapper>
-        <MagicLinkLogin />
-      </WalletSelectorWrapper>
-    );
-  }
-
   console.log({ selectedAuthMethod });
 
   return (
@@ -168,6 +157,7 @@ export default function MultichainWalletSelector({
               }
             }}
           />
+
           <WalletButton
             label="Tezos"
             icon="tezos"
@@ -194,6 +184,7 @@ export default function MultichainWalletSelector({
               }}
             />
           ) : null}
+
           <WalletButton
             label={supportedAuthMethods.delegateCash.name}
             icon="delegate_cash"
@@ -201,14 +192,7 @@ export default function MultichainWalletSelector({
               setSelectedAuthMethod(supportedAuthMethods.delegateCash);
             }}
           />
-          {connectionMode === AUTH && showEmail ? (
-            <WalletButton
-              label={supportedAuthMethods.magicLink.name}
-              onClick={() => {
-                setSelectedAuthMethod(supportedAuthMethods.magicLink);
-              }}
-            ></WalletButton>
-          ) : null}
+
           <WalletButton
             label="Solana"
             icon="solana"

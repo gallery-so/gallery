@@ -36,7 +36,6 @@ export default function WalletSelector({
   queryRef,
   connectionMode = AUTH,
   onConnectWalletSuccess,
-  showEmail = true,
 }: Props) {
   // Usually we'd want to pass in a query variable and use @skip to conditionally
   // return certain data fragments, but in this case, we have lots of queries that
@@ -77,7 +76,6 @@ export default function WalletSelector({
             queryRef={query}
             connectionMode={connectionMode}
             onConnectWalletSuccess={onConnectWalletSuccess}
-            showEmail={showEmail}
           />
         </EthereumProviders>
       </BeaconProvider>
