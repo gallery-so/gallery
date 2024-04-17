@@ -25,16 +25,14 @@ type AdmireBottomSheetProps = {
 
 export function AdmireBottomSheet({ feedId, type }: AdmireBottomSheetProps) {
   return (
-    <View className="flex flex-1 flex-col space-y-5">
+    <View className="flex h-full">
       <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Admires
       </Typography>
 
-      <View className="flex-grow">
-        <Suspense fallback={<UserFollowListFallback />}>
-          <ConnectedAdmireList type={type} feedId={feedId} />
-        </Suspense>
-      </View>
+      <Suspense fallback={<UserFollowListFallback />}>
+        <ConnectedAdmireList type={type} feedId={feedId} />
+      </Suspense>
     </View>
   );
 }

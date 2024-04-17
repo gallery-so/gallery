@@ -20,6 +20,7 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT']; // Example snap points, adjust based on your needs
 
@@ -62,6 +63,8 @@ type BottomSheetModal = {
   noPadding?: boolean;
   onDismiss?: () => void;
   blurBackground?: boolean;
+  // If we want to use navigation in the bottom sheet, we need to pass in the navigation context from where the bottom sheet is being opened from.
+  navigationContext?: MainTabStackNavigatorProp;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
@@ -82,8 +85,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
     if (bottomSheetModal?.onDismiss) {
       bottomSheetModal.onDismiss();
     }
-    hideBottomSheetModal();
-  }, [bottomSheetModal, hideBottomSheetModal]);
+  }, [bottomSheetModal]);
 
   const { bottom } = useSafeAreaPadding(); // Use this for handling safe area, if necessary
 
@@ -100,15 +102,17 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
 
   // immediately present the modal when content is set
   useEffect(() => {
-    bottomSheetModalRef?.current?.present();
+    if (bottomSheetModal) {
+      bottomSheetModalRef?.current?.present();
+    }
   }, [bottomSheetModal]);
 
   const reducedMotion = useReducedMotion();
 
   return (
-    <GorhomBottomSheetModalProvider>
-      <BottomSheetModalActionsContext.Provider value={actions}>
-        {children}
+    <BottomSheetModalActionsContext.Provider value={actions}>
+      {children}
+      <GorhomBottomSheetModalProvider>
         {bottomSheetModal && (
           <GalleryBottomSheetModal
             snapPoints={animatedSnapPoints}
@@ -120,30 +124,24 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
             ref={bottomSheetModalRef}
             android_keyboardInputMode="adjustResize"
             keyboardBlurBehavior="restore"
-            backdropComponent={bottomSheetModal.blurBackground ? BluredBackdrop : null}
+            backdropComponent={bottomSheetModal?.blurBackground ? BluredBackdrop : null}
+            navigationContext={bottomSheetModal?.navigationContext}
           >
             <View
               onLayout={handleContentLayout}
-              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0 }}
-              className={clsx(
-                'flex flex-col space-y-6',
-                !bottomSheetModal.noPadding && 'px-4 py-2'
-              )}
+              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0, maxHeight: 700 }}
+              className={clsx('flex ', !bottomSheetModal.noPadding && 'px-4 py-2')}
             >
-              <BottomSheetWrapper content={bottomSheetModal.content} />
+              {bottomSheetModal.content}
             </View>
           </GalleryBottomSheetModal>
         )}
-      </BottomSheetModalActionsContext.Provider>
-    </GorhomBottomSheetModalProvider>
+      </GorhomBottomSheetModalProvider>
+    </BottomSheetModalActionsContext.Provider>
   );
 }
 
 export default memo(BottomSheetModalProvider);
-
-function BottomSheetWrapper({ content }: { content: React.ReactNode }) {
-  return <View>{content}</View>;
-}
 
 function BluredBackdrop() {
   return <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 "></BlurView>;

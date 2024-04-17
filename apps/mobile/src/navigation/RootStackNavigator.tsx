@@ -1,3 +1,4 @@
+import { PortalHost } from '@gorhom/portal';
 import { NavigationContainerRefWithCurrent } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Suspense, useEffect } from 'react';
@@ -100,6 +101,9 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
         <Stack.Screen name="Debugger" component={Debugger} />
       </Stack.Navigator>
+      <View className="flex">
+        <PortalHost name="bottomSheetPortal" />
+      </View>
     </>
   );
 }

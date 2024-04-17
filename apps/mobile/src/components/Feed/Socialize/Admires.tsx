@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -7,6 +8,7 @@ import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { AdmiresFragment$key } from '~/generated/AdmiresFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
@@ -35,11 +37,13 @@ export function Admires({ type, feedId, admireRefs, totalAdmires, onAdmirePress 
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleSeeAllAdmires = useCallback(() => {
     showBottomSheetModal({
       content: <AdmireBottomSheet type={type} feedId={feedId} />,
+      navigationContext: navigation,
     });
-  }, [feedId, showBottomSheetModal, type]);
+  }, [feedId, navigation, showBottomSheetModal, type]);
 
   const admireUsers = useMemo(() => {
     const users = [];
