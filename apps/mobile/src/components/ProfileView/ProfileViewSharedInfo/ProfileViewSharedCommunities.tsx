@@ -14,6 +14,7 @@ import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -60,7 +61,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   const totalSharedCommunities = user.sharedCommunities?.pageInfo?.total ?? 0;
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
-  const navigation = useNavigation();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleSeeAllPress = useCallback(() => {
     showBottomSheetModal({

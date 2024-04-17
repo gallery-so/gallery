@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { ANIMATION_CONFIGS, BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
-import { NavigationContext, useNavigation } from '@react-navigation/native';
+import { NavigationContext } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useEffect, useRef } from 'react';
 import { Keyboard, Platform } from 'react-native';
 import { ReduceMotion, SharedValue } from 'react-native-reanimated';
@@ -8,16 +8,13 @@ import { ReduceMotion, SharedValue } from 'react-native-reanimated';
 import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackdrop';
 import { GalleryBottomSheetBackground } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackground';
 import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/GalleryBottomSheetHandle';
-import {
-  BottomSheetModalActionsContext,
-  useBottomSheetModalActions,
-} from '~/contexts/BottomSheetModalContext';
 import SyncTokensProvider from '~/contexts/SyncTokensContext';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
 type GalleryBottomSheetModalProps = {
-  navigationContext?: any;
+  navigationContext?: MainTabStackNavigatorProp;
   children: React.ReactNode;
   snapPoints:
     | Readonly<{ value: (string | number)[] }>
@@ -31,30 +28,28 @@ function GalleryBottomSheetModal(
 ) {
   const { snapPoints, backdropComponent, ...rest } = props;
 
-  // const navigation = useNavigation();
-
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
-  // useEffect(
-  //   function closeBottomSheetWhenNavigating() {
-  //     const removeListener = navigation.addListener('blur', () => {
-  //       Keyboard.dismiss();
-  //       bottomSheetRef.current?.dismiss();
-  //     });
+  useEffect(
+    function closeBottomSheetWhenNavigating() {
+      if (!navigationContext) {
+        return;
+      }
 
-  //     return removeListener;
-  //   },
-  //   [navigation]
-  // );
+      const removeListener = navigationContext.addListener('blur', () => {
+        Keyboard.dismiss();
+        bottomSheetRef.current?.dismiss();
+      });
 
-  console.log({ navigationContext });
+      return removeListener;
+    },
+    [navigationContext]
+  );
 
   const androidAnimationConfigs = {
     ...ANIMATION_CONFIGS,
     reduceMotion: ReduceMotion.Never,
   };
-
-  const bottomSheetModalActions = useBottomSheetModalActions();
 
   return (
     <BottomSheetModal
@@ -80,12 +75,10 @@ function GalleryBottomSheetModal(
       {/* all of the context that its parent did. We may need to do more of this in the future */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <NavigationContext.Provider value={navigationContext as any}>
-        <BottomSheetModalActionsContext.Provider value={bottomSheetModalActions}>
-          <SyncTokensProvider>
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {children as any}
-          </SyncTokensProvider>
-        </BottomSheetModalActionsContext.Provider>
+        <SyncTokensProvider>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {children as any}
+        </SyncTokensProvider>
       </NavigationContext.Provider>
     </BottomSheetModal>
   );

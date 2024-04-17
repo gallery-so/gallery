@@ -1,6 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { BottomSheetModalProvider as GorhomBottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { Portal } from '@gorhom/portal';
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import React, {
@@ -21,6 +20,7 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT']; // Example snap points, adjust based on your needs
 
@@ -63,7 +63,7 @@ type BottomSheetModal = {
   noPadding?: boolean;
   onDismiss?: () => void;
   blurBackground?: boolean;
-  navigationContext?: any;
+  navigationContext?: MainTabStackNavigatorProp;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
@@ -84,8 +84,7 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
     if (bottomSheetModal?.onDismiss) {
       bottomSheetModal.onDismiss();
     }
-    hideBottomSheetModal();
-  }, [bottomSheetModal, hideBottomSheetModal]);
+  }, [bottomSheetModal]);
 
   const { bottom } = useSafeAreaPadding(); // Use this for handling safe area, if necessary
 
@@ -111,9 +110,9 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
 
   return (
     <BottomSheetModalActionsContext.Provider value={actions}>
+      {children}
       <GorhomBottomSheetModalProvider>
-        {children}
-        <Portal hostName="bottomSheetPortal">
+        {bottomSheetModal && (
           <GalleryBottomSheetModal
             snapPoints={animatedSnapPoints}
             handleHeight={animatedHandleHeight}
@@ -127,20 +126,15 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
             backdropComponent={bottomSheetModal?.blurBackground ? BluredBackdrop : null}
             navigationContext={bottomSheetModal?.navigationContext}
           >
-            {bottomSheetModal && (
-              <View
-                onLayout={handleContentLayout}
-                style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0 }}
-                className={clsx(
-                  'flex flex-col space-y-6',
-                  !bottomSheetModal.noPadding && 'px-4 py-2'
-                )}
-              >
-                {bottomSheetModal.content}
-              </View>
-            )}
+            <View
+              onLayout={handleContentLayout}
+              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0, maxHeight: 700 }}
+              className={clsx('flex ', !bottomSheetModal.noPadding && 'px-4 py-2')}
+            >
+              {bottomSheetModal.content}
+            </View>
           </GalleryBottomSheetModal>
-        </Portal>
+        )}
       </GorhomBottomSheetModalProvider>
     </BottomSheetModalActionsContext.Provider>
   );

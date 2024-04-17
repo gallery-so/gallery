@@ -19,16 +19,14 @@ type AdmireBottomSheetProps = {
 
 export function AdmireBottomSheet({ tokenId }: AdmireBottomSheetProps) {
   return (
-    <View className="flex flex-1 flex-col space-y-5">
+    <View className="flex h-full">
       <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Admires
       </Typography>
 
-      <View className="flex-grow">
-        <Suspense fallback={<UserFollowListFallback />}>
-          <ConnectedTokenAdmireList tokenId={tokenId} />
-        </Suspense>
-      </View>
+      <Suspense fallback={<UserFollowListFallback />}>
+        <ConnectedTokenAdmireList tokenId={tokenId} />
+      </Suspense>
     </View>
   );
 }
@@ -98,11 +96,13 @@ export function ConnectedTokenAdmireList({ tokenId }: { tokenId: string }) {
   );
 
   return (
+    // <View className="flex-grow h-full">
     <UserFollowList
       onLoadMore={handleLoadMore}
       userRefs={admirers}
       queryRef={query}
       onUserPress={handleUserPress}
     />
+    // </View>
   );
 }

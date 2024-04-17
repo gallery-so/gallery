@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
 import { CommunityList } from '~/components/CommunitiesList/CommunityList';
@@ -56,24 +56,20 @@ export default function ProfileViewSharedCommunitiesSheet(props: Props) {
     }
   }, [hasNext, loadNext]);
 
-  const screenHeight = Dimensions.get('window').height;
-
   return (
-    <View className="flex bg-white dark:bg-black-900">
-      <View className={`max-h-[${screenHeight * 0.5}px]`}>
-        <Typography
-          className="text-sm mb-4  flex flex-row items-center "
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-        >
-          Items you both own
-        </Typography>
+    <View className="flex pb-8">
+      <Typography
+        className="text-sm mb-4 flex flex-row items-center "
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+      >
+        Items you both own
+      </Typography>
 
-        <View className="flex-grow h-full">
-          <CommunityList onLoadMore={loadMore} communityRefs={nonNullCommunities} />
-        </View>
+      <View className="flex-grow h-full">
+        <CommunityList onLoadMore={loadMore} communityRefs={nonNullCommunities} />
       </View>
     </View>
   );

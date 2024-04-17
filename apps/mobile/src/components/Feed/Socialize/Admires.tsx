@@ -10,7 +10,6 @@ import { AdmiresFragment$key } from '~/generated/AdmiresFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
-import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   type: FeedItemTypes;

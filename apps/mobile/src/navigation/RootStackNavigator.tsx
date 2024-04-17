@@ -9,7 +9,6 @@ import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext'
 import { ClaimMintUpsellBanner } from '~/components/ClaimMintUpsellBanner';
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
-import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
@@ -61,8 +60,6 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
     return unsubscribe;
   }, [navigationContainerRef, track]);
 
-  const { hideBottomSheetModal } = useBottomSheetModalActions();
-
   return (
     <>
       {upcomingMaintenanceNoticeContent?.isActive && (
@@ -71,15 +68,6 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
       <Stack.Navigator
         screenOptions={{ header: Empty }}
         initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
-        screenListeners={{
-          state: (e) => {
-            // Do something with the state
-            // if (isBottomSheetModalVisible) {
-            hideBottomSheetModal();
-            // }
-            console.log('state changed', e.data);
-          },
-        }}
       >
         <Stack.Screen name="Login" component={LoginStackNavigator} />
 
@@ -113,7 +101,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
         <Stack.Screen name="Debugger" component={Debugger} />
       </Stack.Navigator>
-      <View className="flex border border-red">
+      <View className="flex">
         <PortalHost name="bottomSheetPortal" />
       </View>
     </>

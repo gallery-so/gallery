@@ -257,31 +257,21 @@ export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProp
     });
   }, [query.userByUsername?.badges]);
 
-  const [selectedBadge, setSelectedBadge] = useState<{
-    name: string;
-    description: string;
-  } | null>(null);
-
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handlePress = useCallback(
     (badgeName: string) => {
-      setSelectedBadge({
-        name: badgeName,
-        description: BADGE_DESCRIPTIONS[badgeName] ?? '',
-      });
-
       showBottomSheetModal({
         content: (
           <BadgeProfileBottomSheet
             onClose={hideBottomSheetModal}
-            title={selectedBadge?.name ?? ''}
-            description={selectedBadge?.description ?? ''}
+            title={badgeName}
+            description={BADGE_DESCRIPTIONS[badgeName] ?? ''}
           />
         ),
       });
     },
-    [hideBottomSheetModal, selectedBadge?.description, selectedBadge?.name, showBottomSheetModal]
+    [hideBottomSheetModal, showBottomSheetModal]
   );
 
   return (
