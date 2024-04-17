@@ -9,6 +9,7 @@ import {
   WindowScroller,
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
+import { FragmentRefs } from 'relay-runtime';
 
 import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileSection';
 import { FeedMode } from '~/components/Feed/types';
@@ -174,7 +175,7 @@ export default function FeedList({
                 <PostItem
                   onPotentialLayoutShift={handlePotentialLayoutShift}
                   index={index}
-                  eventRef={content}
+                  eventRef={content as FeedContentType}
                   key={content.dbid}
                   queryRef={query}
                   measure={measure}
@@ -206,7 +207,7 @@ export default function FeedList({
                   // to re-evaluate the height of the item to keep the virtualization good.
                   onPotentialLayoutShift={handlePotentialLayoutShift}
                   index={index}
-                  eventRef={content}
+                  eventRef={content as FeedContentType}
                   key={content.dbid}
                   queryRef={query}
                   feedMode={feedMode}
@@ -327,3 +328,12 @@ export default function FeedList({
 }
 
 const DEFAULT_ROW_HEIGHT = 100;
+
+type FeedContentType = {
+  readonly __typename: string;
+  readonly dbid?: string | undefined;
+  readonly ' $fragmentSpreads': FragmentRefs<
+    'FeedEventItemWithErrorBoundaryFragment' | 'PostItemWithErrorBoundaryFragment'
+  >;
+  readonly ' $fragmentType': 'FeedListEventDataFragment';
+};
