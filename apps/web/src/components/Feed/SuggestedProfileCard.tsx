@@ -160,6 +160,7 @@ const StyledSuggestedProfileCard = styled(HStack)`
 
   &:hover {
     background-color: ${colors.porcelain};
+    cursor: pointer;
   }
 
   @media only screen and ${breakpoints.desktop} {
