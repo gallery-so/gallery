@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { SearchDefaultSuggestedUsersSectionFragment$key } from '~/generated/SearchDefaultSuggestedUsersSectionFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { fadeIn } from '../core/keyframes';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -32,6 +33,11 @@ export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, 
                     username
                     dbid
                     __typename
+                    galleries {
+                      tokenPreviews {
+                        __typename
+                      }
+                    }
                   }
                   ...SuggestedProfileCardFragment
                 }
@@ -47,16 +53,12 @@ export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, 
   );
 
   const nonNullProfiles = useMemo(() => {
-    const users = [];
-
-    for (const edge of query.viewer?.suggestedUsers?.edges ?? []) {
-      if (edge?.node) {
-        users.push(edge.node);
-      }
-    }
-
-    return users;
-  }, [query.viewer?.suggestedUsers?.edges]);
+    return (query.viewer.suggestedUsers?.edges ?? [])
+      .flatMap((edge) => (edge?.node ? [edge.node] : []))
+      .filter((user) =>
+        user?.galleries?.some((gallery) => removeNullValues(gallery?.tokenPreviews).length > 0)
+      );
+  }, [query.viewer.suggestedUsers?.edges]);
 
   if (query.viewer?.suggestedUsers?.__typename !== 'UsersConnection' || !nonNullProfiles) {
     return null;

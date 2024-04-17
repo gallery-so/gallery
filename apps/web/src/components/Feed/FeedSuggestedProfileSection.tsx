@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -15,6 +15,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import SuggestedProfileCard from './SuggestedProfileCard';
 
@@ -28,15 +29,18 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
       fragment FeedSuggestedProfileSectionQueryFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            suggestedUsers(first: 24)
-              @connection(key: "ExploreFragment_suggestedUsers")
-              @required(action: THROW) {
+            suggestedUsers(first: 24) @required(action: THROW) {
               edges {
                 node {
                   __typename
                   ... on GalleryUser {
                     __typename
                     username
+                    galleries {
+                      tokenPreviews {
+                        __typename
+                      }
+                    }
                     ...SuggestedProfileCardFragment
                   }
                 }
@@ -55,15 +59,13 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
   const track = useTrack();
 
   const handleProfileClick = useCallback(
-    (username: string) => {
+    (username: string | null) => {
+      if (!username) return;
+
       const path = {
         pathname: '/[username]',
-        query: { username: username },
+        query: { username },
       } as Route;
-
-      if (!path) {
-        return;
-      }
 
       const fullLink = route(path);
 
@@ -78,25 +80,20 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
   );
 
   const itemsPerSlide = isMobileOrMobileLargeWindow ? 2 : 4;
-  const [profiles, setProfiles] = useState([]);
 
-  useEffect(() => {
-    const users = [];
-
-    for (const edge of query.viewer.suggestedUsers?.edges ?? []) {
-      if (edge?.node) {
-        users.push(edge.node);
-      }
-    }
-
-    setProfiles(users);
+  const nonNullProfiles = useMemo(() => {
+    return (query.viewer.suggestedUsers?.edges ?? [])
+      .flatMap((edge) => (edge?.node ? [edge.node] : []))
+      .filter((user) =>
+        user?.galleries?.some((gallery) => removeNullValues(gallery?.tokenPreviews).length > 0)
+      );
   }, [query.viewer.suggestedUsers?.edges]);
 
   const slideContent = useMemo(() => {
     const rows = [];
 
-    for (let i = 0; i < profiles.length; i += itemsPerSlide) {
-      const row = profiles.slice(i, i + itemsPerSlide);
+    for (let i = 0; i < nonNullProfiles.length; i += itemsPerSlide) {
+      const row = nonNullProfiles.slice(i, i + itemsPerSlide);
       const rowElements = (
         <StyledSuggestedProfileSet gap={isMobileOrMobileLargeWindow ? 4 : 16}>
           {row.map((profile, idx) => (
@@ -116,7 +113,7 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     }
 
     return rows;
-  }, [itemsPerSlide, profiles, isMobileOrMobileLargeWindow, handleProfileClick, query]);
+  }, [itemsPerSlide, nonNullProfiles, isMobileOrMobileLargeWindow, handleProfileClick, query]);
 
   if (!query.viewer?.suggestedUsers) {
     return null;

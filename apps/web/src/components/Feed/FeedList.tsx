@@ -39,6 +39,13 @@ export default function FeedList({
   const query = useFragment(
     graphql`
       fragment FeedListFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
         ...PostItemWithErrorBoundaryQueryFragment
         ...FeedEventItemWithErrorBoundaryQueryFragment
         ...FeedSuggestedProfileSectionWithBoundaryFragment
@@ -64,6 +71,7 @@ export default function FeedList({
     feedEventRefs
   );
 
+  const isLoggedIn = useMemo(() => Boolean(query.viewer?.user?.dbid), [query.viewer?.user?.dbid]);
   const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
   const suggestedProfileSectionHeight = useMemo(
     () => (isMobileOrMobileLargeWindowWidth ? 320 : 360),
@@ -73,7 +81,7 @@ export default function FeedList({
   // insert suggested profiles in between posts if showSuggestedProfiles is true
   const finalFeedData = useMemo(() => {
     const suggestedProfileSectionIdx = 8;
-    if (showSuggestedProfiles && feedData?.length >= suggestedProfileSectionIdx) {
+    if (showSuggestedProfiles && isLoggedIn && feedData?.length >= suggestedProfileSectionIdx) {
       const suggestedProfileSectionData = {
         __typename: 'SuggestedProfileSection',
         dbid: '12345',
@@ -87,7 +95,7 @@ export default function FeedList({
       ];
     }
     return feedData;
-  }, [feedData, showSuggestedProfiles]);
+  }, [feedData, showSuggestedProfiles, isLoggedIn]);
 
   // Keep the current feed data in a ref so we can access it below in the
   // CellMeasurerCache's keyMapper without having to create a new cache
@@ -251,7 +259,7 @@ export default function FeedList({
   const rowCount = hasNext ? finalFeedData.length + 1 : finalFeedData.length;
 
   const rowHeight = useCallback(
-    ({ index }) => {
+    ({ index }: { index: number }) => {
       if (!finalFeedData) {
         return DEFAULT_ROW_HEIGHT;
       }
