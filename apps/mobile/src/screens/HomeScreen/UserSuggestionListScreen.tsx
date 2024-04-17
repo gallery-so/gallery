@@ -65,7 +65,7 @@ export function InnerUserSuggestionListScreen({ queryRef }: Props) {
   );
 
   return (
-    <View className="flex flex-1 flex-col">
+    <View className="flex flex-1 flex-col m-4">
       <Typography
         font={{
           family: 'ABCDiatype',

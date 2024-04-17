@@ -63,6 +63,7 @@ type BottomSheetModal = {
   noPadding?: boolean;
   onDismiss?: () => void;
   blurBackground?: boolean;
+  // If we want to use navigation in the bottom sheet, we need to pass in the navigation context from where the bottom sheet is being opened from.
   navigationContext?: MainTabStackNavigatorProp;
 };
 
