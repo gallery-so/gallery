@@ -62,12 +62,14 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
   const totalSharedFollowers = user.sharedFollowers?.pageInfo?.total ?? 0;
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleSeeAllPress = useCallback(() => {
     showBottomSheetModal({
       content: <ProfileViewSharedFollowersSheet userRef={user} />,
+      navigationContext: navigation,
     });
-  }, [showBottomSheetModal, user]);
+  }, [navigation, showBottomSheetModal, user]);
 
   if (totalSharedFollowers === 0) {
     return null;

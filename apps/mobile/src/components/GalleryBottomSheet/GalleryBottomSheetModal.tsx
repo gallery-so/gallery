@@ -17,6 +17,7 @@ import SyncTokensProvider from '~/contexts/SyncTokensContext';
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
 type GalleryBottomSheetModalProps = {
+  navigationContext?: any;
   children: React.ReactNode;
   snapPoints:
     | Readonly<{ value: (string | number)[] }>
@@ -25,26 +26,28 @@ type GalleryBottomSheetModalProps = {
 } & Omit<BottomSheetModalProps, 'snapPoints'>;
 
 function GalleryBottomSheetModal(
-  { children, ...props }: GalleryBottomSheetModalProps,
+  { navigationContext, children, ...props }: GalleryBottomSheetModalProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { snapPoints, backdropComponent, ...rest } = props;
 
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
-  useEffect(
-    function closeBottomSheetWhenNavigating() {
-      const removeListener = navigation.addListener('blur', () => {
-        Keyboard.dismiss();
-        bottomSheetRef.current?.dismiss();
-      });
+  // useEffect(
+  //   function closeBottomSheetWhenNavigating() {
+  //     const removeListener = navigation.addListener('blur', () => {
+  //       Keyboard.dismiss();
+  //       bottomSheetRef.current?.dismiss();
+  //     });
 
-      return removeListener;
-    },
-    [navigation]
-  );
+  //     return removeListener;
+  //   },
+  //   [navigation]
+  // );
+
+  console.log({ navigationContext });
 
   const androidAnimationConfigs = {
     ...ANIMATION_CONFIGS,
@@ -76,7 +79,7 @@ function GalleryBottomSheetModal(
       {/* Pass the parent's navigation down to this bottom sheet so it has */}
       {/* all of the context that its parent did. We may need to do more of this in the future */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <NavigationContext.Provider value={navigation as any}>
+      <NavigationContext.Provider value={navigationContext as any}>
         <BottomSheetModalActionsContext.Provider value={bottomSheetModalActions}>
           <SyncTokensProvider>
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}

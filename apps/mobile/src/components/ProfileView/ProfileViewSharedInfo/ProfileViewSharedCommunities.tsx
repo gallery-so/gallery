@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
 import React, { useCallback, useMemo } from 'react';
@@ -59,12 +60,14 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   const totalSharedCommunities = user.sharedCommunities?.pageInfo?.total ?? 0;
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
+  const navigation = useNavigation();
 
   const handleSeeAllPress = useCallback(() => {
     showBottomSheetModal({
       content: <ProfileViewSharedCommunitiesSheet userRef={user} />,
+      navigationContext: navigation,
     });
-  }, [showBottomSheetModal, user]);
+  }, [navigation, showBottomSheetModal, user]);
 
   if (totalSharedCommunities === 0) {
     return null;
