@@ -72,7 +72,7 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
       const rowElements = (
         <StyledSuggestedProfileSet gap={16}>
           {row.map((profile) => (
-            <SuggestedProfileCard queryRef={query} userRef={profile} />
+            <SuggestedProfileCard queryRef={query} userRef={profile} variant="compact" />
           ))}
           {row.length < itemsPerSlide && <StyledPlaceholder />}
         </StyledSuggestedProfileSet>
@@ -148,7 +148,7 @@ const FeedSuggestedProfileSectionContainer = styled(VStack)`
   padding: 12px 0px;
   height: min-content;
   @media only screen and ${breakpoints.desktop} {
-    padding: 24px 16px;
+    padding: 24px 60px;
     max-width: initial;
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }

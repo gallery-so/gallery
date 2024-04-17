@@ -24,6 +24,7 @@ type Props = {
   queryRef: FeedListFragment$key;
   feedEventRefs: FeedListEventDataFragment$key;
   feedMode?: FeedMode;
+  showSuggestedProfiles?: boolean;
 };
 
 export default function FeedList({
@@ -32,6 +33,7 @@ export default function FeedList({
   hasNext,
   queryRef,
   feedMode,
+  showSuggestedProfiles = false,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -62,11 +64,21 @@ export default function FeedList({
   );
 
   const finalFeedData = useMemo(() => {
-    return [
-      ...feedData.slice(0, 2),
-      { __typename: 'SuggestedProfileSection', dbid: '12345' },
-      ...feedData.slice(0, 2),
-    ];
+    if (showSuggestedProfiles && feedData?.length >= 8) {
+      const suggestedProfileSectionData = {
+        __typename: 'SuggestedProfileSection',
+        dbid: '12345',
+      };
+
+      const insertAt = feedData.length - 8;
+      // Create a new array with the item inserted
+      return [
+        ...feedData.slice(0, insertAt),
+        suggestedProfileSectionData,
+        ...feedData.slice(insertAt),
+      ];
+    }
+    return feedData;
   }, [feedData]);
 
   // Keep the current feed data in a ref so we can access it below in the
@@ -230,6 +242,34 @@ export default function FeedList({
 
   const rowCount = hasNext ? finalFeedData.length + 1 : finalFeedData.length;
 
+  // Modify the rowHeight property for the List component
+  const SUGGESTED_PROFILE_SECTION_HEIGHT = 360;
+  const DEFAULT_ROW_HEIGHT = 100; // Default height for rows if data is undefined or null
+
+  // Memoize the rowHeight function with useCallback
+  const rowHeight = useCallback(
+    ({ index }) => {
+      // Handle undefined or null finalFeedData state
+      if (!finalFeedData) {
+        return DEFAULT_ROW_HEIGHT;
+      }
+
+      // Determine the actual data index based on reverse order logic used in rowRenderer
+      const dataIndex = finalFeedData.length - index - 1;
+      const item = finalFeedData[dataIndex];
+
+      // Check the type of content
+      if (item && item.__typename === 'SuggestedProfileSection') {
+        // Return static height for SuggestedProfileSection
+        return SUGGESTED_PROFILE_SECTION_HEIGHT;
+      } else {
+        // Return dynamic height for other types of content
+        return measurerCache.rowHeight({ index });
+      }
+    },
+    [finalFeedData, measurerCache]
+  );
+
   return (
     <WindowScroller>
       {({ height, scrollTop, registerChild }) => (
@@ -254,7 +294,7 @@ export default function FeedList({
                       height={height}
                       rowRenderer={rowRenderer}
                       rowCount={finalFeedData.length}
-                      rowHeight={measurerCache.rowHeight}
+                      rowHeight={rowHeight}
                       scrollTop={scrollTop}
                       overscanRowCount={2}
                       onRowsRendered={onRowsRendered}

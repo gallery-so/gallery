@@ -1,7 +1,6 @@
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { Size } from 'react-virtualized';
 import styled from 'styled-components';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
@@ -17,7 +16,7 @@ import { getUrlForCommunityDangerously } from '~/utils/getCommunityUrl';
 type Props = {
   badgeRef: BadgeFragment$key;
   eventContext: GalleryElementTrackingProps['eventContext'];
-  size: IconSize;
+  size?: IconSize;
 };
 
 export default function Badge({ badgeRef, eventContext, size = 'md' as IconSize }: Props) {
