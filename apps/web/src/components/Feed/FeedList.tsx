@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { v4 as uuid } from 'uuid';
 import {
   AutoSizer,
   CellMeasurer,
@@ -11,6 +10,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import { FragmentRefs } from 'relay-runtime';
+import { v4 as uuid } from 'uuid';
 
 import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileSection';
 import { FeedMode } from '~/components/Feed/types';
