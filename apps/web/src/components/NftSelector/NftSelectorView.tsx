@@ -63,7 +63,6 @@ export function NftSelectorView({
   useEffect(() => {
     let intervalId: number | undefined;
 
-
     if (isSyncing) {
       const fetchTokens = async () => {
         const tokensQuery = graphql`
