@@ -12,7 +12,6 @@ import { getUnescapedBioFirstLine } from '~/utils/sanity';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
-import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
@@ -157,6 +156,7 @@ const StyledSuggestedProfileCard = styled(HStack)`
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
+  width: 230px;
 
   &:hover {
     background-color: ${colors.porcelain};

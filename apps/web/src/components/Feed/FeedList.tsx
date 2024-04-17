@@ -17,6 +17,7 @@ import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 
 import FeedEventItem from './FeedEventItem';
 import { PostItemWithBoundary as PostItem } from './PostItem';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   loadNextPage: () => void;
@@ -63,6 +64,13 @@ export default function FeedList({
     feedEventRefs
   );
 
+  const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
+  const SUGGESTED_PROFILE_SECTION_HEIGHT = useMemo(
+    () => (isMobileOrMobileLargeWindowWidth ? 320 : 360),
+    [isMobileOrMobileLargeWindowWidth]
+  );
+
+  // insert suggested profiles in between posts if showSuggestedProfiles is true
   const finalFeedData = useMemo(() => {
     if (showSuggestedProfiles && feedData?.length >= 8) {
       const suggestedProfileSectionData = {
@@ -71,7 +79,6 @@ export default function FeedList({
       };
 
       const insertAt = feedData.length - 8;
-      // Create a new array with the item inserted
       return [
         ...feedData.slice(0, insertAt),
         suggestedProfileSectionData,
@@ -242,14 +249,8 @@ export default function FeedList({
 
   const rowCount = hasNext ? finalFeedData.length + 1 : finalFeedData.length;
 
-  // Modify the rowHeight property for the List component
-  const SUGGESTED_PROFILE_SECTION_HEIGHT = 360;
-  const DEFAULT_ROW_HEIGHT = 100; // Default height for rows if data is undefined or null
-
-  // Memoize the rowHeight function with useCallback
   const rowHeight = useCallback(
     ({ index }) => {
-      // Handle undefined or null finalFeedData state
       if (!finalFeedData) {
         return DEFAULT_ROW_HEIGHT;
       }
@@ -258,14 +259,13 @@ export default function FeedList({
       const dataIndex = finalFeedData.length - index - 1;
       const item = finalFeedData[dataIndex];
 
-      // Check the type of content
-      if (item && item.__typename === 'SuggestedProfileSection') {
-        // Return static height for SuggestedProfileSection
+      // Return static height for SuggestedProfileSection
+      if (item?.__typename === 'SuggestedProfileSection') {
         return SUGGESTED_PROFILE_SECTION_HEIGHT;
-      } else {
-        // Return dynamic height for other types of content
-        return measurerCache.rowHeight({ index });
       }
+
+      // Return dynamic height for other types of content
+      return measurerCache.rowHeight({ index });
     },
     [finalFeedData, measurerCache]
   );
@@ -316,3 +316,5 @@ export default function FeedList({
     </WindowScroller>
   );
 }
+
+const DEFAULT_ROW_HEIGHT = 100; // Default height for rows if data is undefined or null
