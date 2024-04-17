@@ -4,8 +4,8 @@ import { ResizeMode } from 'expo-av';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { useFragment, useLazyLoadQuery, useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
@@ -27,6 +27,7 @@ import {
   NftSelectorPickerGridTokensFragment$data,
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
+import { NftSelectorPickerGridTokensQuery } from '~/generated/NftSelectorPickerGridTokensQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import {
   NetworkChoice,
@@ -36,8 +37,6 @@ import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftS
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
-
-import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
 
 type NftSelectorPickerGridProps = {
   style?: ViewProps['style'];
@@ -89,7 +88,7 @@ export function NftSelectorPickerGrid({
   );
   const tokenRefs = removeNullValues(query.viewer?.user?.tokens);
 
-  const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
+  const tokensData = useFragment<NftSelectorPickerGridTokensFragment$key>(
     graphql`
       fragment NftSelectorPickerGridTokensFragment on Token @relay(plural: true) {
         dbid
@@ -120,12 +119,55 @@ export function NftSelectorPickerGrid({
     tokenRefs
   );
 
+  const { isSyncing, isSyncingCreatedTokens } = useSyncTokensActions();
+
+  const relayEnvironment = useRelayEnvironment();
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+    if (isSyncing) {
+      const fetchTokens = async () => {
+        const tokensQuery = graphql`
+          query NftSelectorPickerGridTokensQuery {
+            viewer {
+              ... on Viewer {
+                user {
+                  tokens {
+                    dbid
+                    creationTime
+                    ...NftSelectorPickerGridTokensFragment
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        await fetchQuery<NftSelectorPickerGridTokensQuery>(
+          relayEnvironment,
+          tokensQuery,
+          {}
+        ).toPromise();
+      };
+
+      fetchTokens();
+      intervalId = window.setInterval(fetchTokens, 5000);
+    }
+
+    return () => {
+      if (intervalId !== undefined) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isSyncing, relayEnvironment]);
+
   const { openManageWallet } = useManageWalletActions();
 
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
-    return tokens
+    return tokensData
       .filter((token) => {
         const isSpam = token.definition?.contract?.isSpam || token.isSpamByUser;
 
@@ -154,7 +196,7 @@ export function NftSelectorPickerGrid({
     searchCriteria.networkFilter,
     searchCriteria.ownerFilter,
     searchCriteria.searchQuery,
-    tokens,
+    tokensData,
   ]);
 
   const sortedTokens = useMemo(() => {
@@ -220,8 +262,6 @@ export function NftSelectorPickerGrid({
     return groups;
   }, [sortedTokens]);
 
-  const { isSyncing, isSyncingCreatedTokens } = useSyncTokensActions();
-
   // TODO: this logic is messy and shared with web; should be refactored
   const handleRefresh = useCallback(() => {
     if (!ownsWalletFromSelectedChainFamily) {
@@ -245,12 +285,16 @@ export function NftSelectorPickerGrid({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchCriteria.networkFilter, searchCriteria.ownerFilter]);
 
-  type Row = { groups: Group[] };
+  type Row = { groups: Group[]; id: string };
   const rows = useMemo(() => {
     const rows: Row[] = [];
 
     for (let i = 0; i < Object.keys(groups).length; i += 3) {
-      rows.push({ groups: Object.values(groups).slice(i, i + 3) });
+      const groupSlice = Object.values(groups).slice(i, i + 3);
+      const sliceKey = groupSlice.map((group) => group.address).join('-');
+      const id = `row-${sliceKey}`;
+
+      rows.push({ groups: groupSlice, id });
     }
 
     return rows;
@@ -298,9 +342,6 @@ export function NftSelectorPickerGrid({
 
   const isRefreshing = isSyncing || isSyncingCreatedTokens;
 
-  if (isRefreshing) {
-    return <NftSelectorLoadingSkeleton />;
-  }
   const user = query?.viewer?.user;
   if (!user?.primaryWallet) {
     return (
@@ -333,6 +374,7 @@ export function NftSelectorPickerGrid({
   return (
     <View className="flex flex-col flex-1" style={style}>
       <FlashList
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
         data={rows}
         estimatedItemSize={200}

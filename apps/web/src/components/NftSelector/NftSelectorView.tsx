@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { fetchQuery, graphql, useFragment, useRelayEnvironment } from 'react-relay';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
+import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
@@ -53,6 +55,55 @@ export function NftSelectorView({
     `,
     tokenRefs
   );
+
+  const { isSyncing } = useSyncTokens();
+
+  const relayEnvironment = useRelayEnvironment();
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+
+    if (isSyncing) {
+      const fetchTokens = async () => {
+        const tokensQuery = graphql`
+          query NftSelectorViewQuery {
+            viewer {
+              ... on Viewer {
+                user {
+                  dbid
+
+                  tokens(ownershipFilter: [Creator, Holder]) {
+                    __typename
+
+                    dbid
+
+                    ...NftSelectorTokensFragment
+
+                    # Needed for when we select a token, we want to have this already in the cache
+                    # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                    ...PostComposerTokenFragment
+                  }
+                }
+              }
+            }
+            ...NftSelectorTokensQueryFragment
+          }
+        `;
+
+        await fetchQuery<NftSelectorQuery>(relayEnvironment, tokensQuery, {}).toPromise();
+      };
+
+      fetchTokens();
+      intervalId = window.setInterval(fetchTokens, 5000);
+    }
+
+    return () => {
+      if (intervalId !== undefined) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isSyncing, relayEnvironment]);
 
   const groupedTokens = groupNftSelectorCollectionsByAddress({
     ignoreSpam: false,
