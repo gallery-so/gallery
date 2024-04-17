@@ -1,20 +1,22 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import { graphql, useFragment } from 'react-relay';
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { contexts } from '~/shared/analytics/constants';
 import { Carousel } from '~/components/core/Carousel/Carousel';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedSuggestedProfileSectionQueryFragment$key } from '~/generated/FeedSuggestedProfileSectionQueryFragment.graphql';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import SuggestedProfileCard from './SuggestedProfileCard';
+import { FeedSuggestedProfileSectionWithBoundaryFragment$key } from '~/generated/FeedSuggestedProfileSectionWithBoundaryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { contexts } from '~/shared/analytics/constants';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+
+import SuggestedProfileCard from './SuggestedProfileCard';
 
 type FeedSuggestedProfileSectionProps = {
   queryRef: FeedSuggestedProfileSectionQueryFragment$key;
@@ -36,8 +38,6 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
                     __typename
                     username
                     ...SuggestedProfileCardFragment
-                    ...ExploreListFragment
-                    ...ExplorePopoverListFragment
                   }
                 }
               }
@@ -74,14 +74,13 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
 
       router.push(path);
     },
-    [router]
+    [router, track]
   );
 
   const itemsPerSlide = isMobileOrMobileLargeWindow ? 2 : 4;
   const [profiles, setProfiles] = useState([]);
 
-  // map edge nodes to an array of GalleryUsers
-  const nonNullUsers = useMemo(() => {
+  useEffect(() => {
     const users = [];
 
     for (const edge of query.viewer.suggestedUsers?.edges ?? []) {
@@ -90,12 +89,8 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
       }
     }
 
-    return users;
+    setProfiles(users);
   }, [query.viewer.suggestedUsers?.edges]);
-
-  useEffect(() => {
-    setProfiles(nonNullUsers);
-  }, [nonNullUsers]);
 
   const slideContent = useMemo(() => {
     const rows = [];
@@ -104,8 +99,9 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
       const row = profiles.slice(i, i + itemsPerSlide);
       const rowElements = (
         <StyledSuggestedProfileSet gap={isMobileOrMobileLargeWindow ? 4 : 16}>
-          {row.map((profile) => (
+          {row.map((profile, idx) => (
             <SuggestedProfileCard
+              key={idx}
               queryRef={query}
               userRef={profile}
               variant="compact"
@@ -120,7 +116,7 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     }
 
     return rows;
-  }, [itemsPerSlide, profiles]);
+  }, [itemsPerSlide, profiles, isMobileOrMobileLargeWindow, handleProfileClick, query]);
 
   if (!query.viewer?.suggestedUsers) {
     return null;
@@ -175,7 +171,14 @@ const StyledSuggestedProfileSet = styled(HStack)`
 const StyledPlaceholder = styled.div`
   width: 100%;
 `;
-export default function FeedSuggestedProfileSectionWithBoundary({ queryRef }) {
+
+type FeedSuggestedProfileSectionWithBoundaryProps = {
+  queryRef: FeedSuggestedProfileSectionWithBoundaryFragment$key;
+};
+
+export default function FeedSuggestedProfileSectionWithBoundary({
+  queryRef,
+}: FeedSuggestedProfileSectionWithBoundaryProps) {
   const query = useFragment(
     graphql`
       fragment FeedSuggestedProfileSectionWithBoundaryFragment on Query {

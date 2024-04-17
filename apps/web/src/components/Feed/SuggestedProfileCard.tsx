@@ -15,8 +15,8 @@ import breakpoints from '../core/breakpoints';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import ProcessedText from '../ProcessedText/ProcessedText';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type variantType = 'default' | 'compact';
 

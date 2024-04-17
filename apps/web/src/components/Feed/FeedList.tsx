@@ -14,10 +14,10 @@ import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileS
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import FeedEventItem from './FeedEventItem';
 import { PostItemWithBoundary as PostItem } from './PostItem';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   loadNextPage: () => void;
@@ -65,20 +65,21 @@ export default function FeedList({
   );
 
   const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
-  const SUGGESTED_PROFILE_SECTION_HEIGHT = useMemo(
+  const suggestedProfileSectionHeight = useMemo(
     () => (isMobileOrMobileLargeWindowWidth ? 320 : 360),
     [isMobileOrMobileLargeWindowWidth]
   );
 
   // insert suggested profiles in between posts if showSuggestedProfiles is true
   const finalFeedData = useMemo(() => {
-    if (showSuggestedProfiles && feedData?.length >= 8) {
+    const suggestedProfileSectionIdx = 8;
+    if (showSuggestedProfiles && feedData?.length >= suggestedProfileSectionIdx) {
       const suggestedProfileSectionData = {
         __typename: 'SuggestedProfileSection',
         dbid: '12345',
       };
 
-      const insertAt = feedData.length - 8;
+      const insertAt = feedData.length - suggestedProfileSectionIdx;
       return [
         ...feedData.slice(0, insertAt),
         suggestedProfileSectionData,
@@ -86,7 +87,7 @@ export default function FeedList({
       ];
     }
     return feedData;
-  }, [feedData]);
+  }, [feedData, showSuggestedProfiles]);
 
   // Keep the current feed data in a ref so we can access it below in the
   // CellMeasurerCache's keyMapper without having to create a new cache
@@ -261,13 +262,13 @@ export default function FeedList({
 
       // Return static height for SuggestedProfileSection
       if (item?.__typename === 'SuggestedProfileSection') {
-        return SUGGESTED_PROFILE_SECTION_HEIGHT;
+        return suggestedProfileSectionHeight;
       }
 
       // Return dynamic height for other types of content
       return measurerCache.rowHeight({ index });
     },
-    [finalFeedData, measurerCache]
+    [finalFeedData, suggestedProfileSectionHeight, measurerCache]
   );
 
   return (
@@ -317,4 +318,4 @@ export default function FeedList({
   );
 }
 
-const DEFAULT_ROW_HEIGHT = 100; // Default height for rows if data is undefined or null
+const DEFAULT_ROW_HEIGHT = 100;
