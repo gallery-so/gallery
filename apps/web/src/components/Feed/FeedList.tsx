@@ -10,6 +10,7 @@ import {
 } from 'react-virtualized';
 import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 
+import FeedSuggestedProfileSection from '~/components/Feed/FeedSuggestedProfileSection';
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
@@ -37,6 +38,7 @@ export default function FeedList({
       fragment FeedListFragment on Query {
         ...PostItemWithErrorBoundaryQueryFragment
         ...FeedEventItemWithErrorBoundaryQueryFragment
+        ...FeedSuggestedProfileSectionWithBoundaryFragment
       }
     `,
     queryRef
@@ -59,11 +61,19 @@ export default function FeedList({
     feedEventRefs
   );
 
+  const finalFeedData = useMemo(() => {
+    return [
+      ...feedData.slice(0, 2),
+      { __typename: 'SuggestedProfileSection', dbid: '12345' },
+      ...feedData.slice(0, 2),
+    ];
+  }, [feedData]);
+
   // Keep the current feed data in a ref so we can access it below in the
   // CellMeasurerCache's keyMapper without having to create a new cache
   // every time the feed data changes.
-  const feedDataRef = useRef(feedData);
-  feedDataRef.current = feedData;
+  const feedDataRef = useRef(finalFeedData);
+  feedDataRef.current = finalFeedData;
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
@@ -83,8 +93,8 @@ export default function FeedList({
 
   // Function responsible for tracking the loaded state of each row.
   const isRowLoaded = useCallback(
-    ({ index }: { index: number }) => !hasNext || Boolean(feedData[index]),
-    [feedData, hasNext]
+    ({ index }: { index: number }) => !hasNext || Boolean(finalFeedData[index]),
+    [finalFeedData, hasNext]
   );
 
   const virtualizedListRef = useRef<List | null>(null);
@@ -114,7 +124,7 @@ export default function FeedList({
         return <div />;
       }
       // graphql returns the oldest event at the top of the list, so display in opposite order
-      const content = feedData[feedData.length - index - 1];
+      const content = finalFeedData[finalFeedData.length - index - 1];
 
       // Better safe than sorry :)
       if (!content) {
@@ -179,9 +189,28 @@ export default function FeedList({
         );
       }
 
+      if (content.__typename === 'SuggestedProfileSection') {
+        return (
+          <CellMeasurer
+            cache={measurerCache}
+            columnIndex={0}
+            rowIndex={index}
+            key={key}
+            parent={parent}
+          >
+            {({ registerChild }) => (
+              // @ts-expect-error: this is the suggested usage of registerChild
+              <div ref={registerChild} style={style} key={key}>
+                <FeedSuggestedProfileSection queryRef={query} />
+              </div>
+            )}
+          </CellMeasurer>
+        );
+      }
+
       return null;
     },
-    [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
+    [finalFeedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );
 
   const [, setIsLoading] = useState(false);
@@ -196,10 +225,10 @@ export default function FeedList({
     function recalculateHeightsWhenEventsChange() {
       virtualizedListRef.current?.recomputeRowHeights();
     },
-    [feedData, measurerCache]
+    [finalFeedData, measurerCache]
   );
 
-  const rowCount = hasNext ? feedData.length + 1 : feedData.length;
+  const rowCount = hasNext ? finalFeedData.length + 1 : finalFeedData.length;
 
   return (
     <WindowScroller>
@@ -224,7 +253,7 @@ export default function FeedList({
                       width={width}
                       height={height}
                       rowRenderer={rowRenderer}
-                      rowCount={feedData.length}
+                      rowCount={finalFeedData.length}
                       rowHeight={measurerCache.rowHeight}
                       scrollTop={scrollTop}
                       overscanRowCount={2}
