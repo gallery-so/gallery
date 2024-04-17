@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { v4 as uuid } from 'uuid';
 import {
   AutoSizer,
   CellMeasurer,
@@ -74,10 +75,7 @@ export default function FeedList({
 
   const isLoggedIn = useMemo(() => Boolean(query.viewer?.user?.dbid), [query.viewer?.user?.dbid]);
   const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
-  const suggestedProfileSectionHeight = useMemo(
-    () => (isMobileOrMobileLargeWindowWidth ? 320 : 360),
-    [isMobileOrMobileLargeWindowWidth]
-  );
+  const suggestedProfileSectionHeight = isMobileOrMobileLargeWindowWidth ? 320 : 360;
 
   // insert suggested profiles in between posts if showSuggestedProfiles is true
   const finalFeedData = useMemo(() => {
@@ -85,7 +83,7 @@ export default function FeedList({
     if (showSuggestedProfiles && isLoggedIn && feedData?.length >= suggestedProfileSectionIdx) {
       const suggestedProfileSectionData = {
         __typename: 'SuggestedProfileSection',
-        dbid: '12345',
+        dbid: uuid(),
       };
 
       const insertAt = feedData.length - suggestedProfileSectionIdx;

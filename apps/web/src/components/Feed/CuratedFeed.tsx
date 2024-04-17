@@ -89,7 +89,7 @@ export default function CuratedFeed({ queryRef }: Props) {
       loadNextPage={loadNextPage}
       hasNext={hasPrevious}
       feedMode={'WORLDWIDE'}
-      showSuggestedProfiles={true}
+      showSuggestedProfiles
     />
   );
 }
