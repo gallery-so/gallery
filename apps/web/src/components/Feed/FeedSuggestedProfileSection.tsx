@@ -11,7 +11,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedSuggestedProfileSectionQueryFragment$key } from '~/generated/FeedSuggestedProfileSectionQueryFragment.graphql';
 import { FeedSuggestedProfileSectionWithBoundaryFragment$key } from '~/generated/FeedSuggestedProfileSectionWithBoundaryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useIsMobileWindowWidth, useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -29,7 +29,7 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
       fragment FeedSuggestedProfileSectionQueryFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            suggestedUsers(first: 24) @required(action: THROW) {
+            suggestedUsers(first: 32) @required(action: THROW) {
               edges {
                 node {
                   __typename
@@ -54,7 +54,8 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     queryRef
   );
 
-  const isMobileOrMobileLargeWindow = useIsMobileOrMobileLargeWindowWidth();
+  const isMobile = useIsMobileWindowWidth();
+  const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
   const router = useRouter();
   const track = useTrack();
 
@@ -79,14 +80,16 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     [router, track]
   );
 
-  const itemsPerSlide = isMobileOrMobileLargeWindow ? 2 : 4;
+  const itemsPerSlide = isMobile ? 2 : isMobileOrMobileLargeWindowWidth ? 3 : 4;
 
+  // get first 24 suggested users with gallery previews available
   const nonNullProfiles = useMemo(() => {
     return (query.viewer.suggestedUsers?.edges ?? [])
       .flatMap((edge) => (edge?.node ? [edge.node] : []))
       .filter((user) =>
         user?.galleries?.some((gallery) => removeNullValues(gallery?.tokenPreviews).length > 0)
-      );
+      )
+      ?.slice(0, 24);
   }, [query.viewer.suggestedUsers?.edges]);
 
   const slideContent = useMemo(() => {
@@ -95,7 +98,7 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     for (let i = 0; i < nonNullProfiles.length; i += itemsPerSlide) {
       const row = nonNullProfiles.slice(i, i + itemsPerSlide);
       const rowElements = (
-        <StyledSuggestedProfileSet gap={isMobileOrMobileLargeWindow ? 4 : 16}>
+        <StyledSuggestedProfileSet gap={isMobileOrMobileLargeWindowWidth ? 4 : 16}>
           {row.map((profile, idx) => (
             <SuggestedProfileCard
               key={idx}
@@ -113,22 +116,22 @@ function FeedSuggestedProfileSection({ queryRef }: FeedSuggestedProfileSectionPr
     }
 
     return rows;
-  }, [itemsPerSlide, nonNullProfiles, isMobileOrMobileLargeWindow, handleProfileClick, query]);
+  }, [itemsPerSlide, nonNullProfiles, isMobileOrMobileLargeWindowWidth, handleProfileClick, query]);
 
   if (!query.viewer?.suggestedUsers) {
     return null;
   }
 
   return (
-    <FeedSuggestedProfileSectionContainer gap={isMobileOrMobileLargeWindow ? 12 : 16}>
+    <FeedSuggestedProfileSectionContainer gap={isMobile ? 12 : 16}>
       <StyledTitleContainer>
         <StyledTitle>Suggested creators and collectors</StyledTitle>
       </StyledTitleContainer>
       <StyledContainer gap={16}>
         <Carousel
           slideContent={slideContent}
-          loop={isMobileOrMobileLargeWindow ? false : true}
-          variant={isMobileOrMobileLargeWindow ? 'compact' : 'default'}
+          loop={isMobile ? false : true}
+          variant={isMobile ? 'compact' : 'default'}
         />
       </StyledContainer>
     </FeedSuggestedProfileSectionContainer>
@@ -163,6 +166,11 @@ const StyledTitle = styled(BaseM)`
 
 const StyledSuggestedProfileSet = styled(HStack)`
   width: 100%;
+  max-height: 183px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding-left: 12px;
+  }
 `;
 
 const StyledPlaceholder = styled.div`

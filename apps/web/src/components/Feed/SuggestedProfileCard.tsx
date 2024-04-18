@@ -125,7 +125,12 @@ export default function SuggestedProfileCard({
                 </Username>
                 <HStack align="center" gap={0}>
                   {userBadges.map((badge) => (
-                    <Badge key={badge.name} badgeRef={badge} eventContext={contexts['Search']} />
+                    <Badge
+                      size="sm"
+                      key={badge.name}
+                      badgeRef={badge}
+                      eventContext={contexts.Feed}
+                    />
                   ))}
                 </HStack>
               </HStack>
