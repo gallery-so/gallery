@@ -49,10 +49,6 @@ module.exports = async () => {
   return {
     ...nextJestConfig,
 
-    transformIgnorePatterns: [
-      `node_modules/(?!(${modulesToTranspile.join('|')})/)`,
-      // '/node_modules/(?!ofetch)',
-      // '/node_modules/(?!nextjs-routes)',
-    ],
+    transformIgnorePatterns: [`node_modules/(?!(${modulesToTranspile.join('|')})/)`],
   };
 };

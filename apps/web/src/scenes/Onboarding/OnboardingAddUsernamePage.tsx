@@ -130,8 +130,6 @@ export function OnboardingAddUsernamePage() {
         throw new Error('Auth signature for creating user not found');
       }
 
-      console.log('creating user', authPayloadQuery);
-
       const response = await createUser({
         authPayloadVariables: authPayloadQuery,
         username,

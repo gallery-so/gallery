@@ -7058,7 +7058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/react-auth@npm:latest":
+"@privy-io/react-auth@npm:^1.60.5":
   version: 1.60.5
   resolution: "@privy-io/react-auth@npm:1.60.5"
   dependencies:
@@ -34610,7 +34610,7 @@ __metadata:
     "@moonrepo/cli": ^1.21.2
     "@next/bundle-analyzer": ^13.0.4
     "@portabletext/react": ^3.0.11
-    "@privy-io/react-auth": latest
+    "@privy-io/react-auth": ^1.60.5
     "@rainbow-me/rainbowkit": ^1.0.5
     "@sentry/nextjs": ^7.77.0
     "@svgr/webpack": ^5.5.0

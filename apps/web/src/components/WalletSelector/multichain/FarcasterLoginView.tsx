@@ -50,7 +50,6 @@ export function FarcasterLoginView() {
   const handleFarcasterLoginError = useCallback(
     (error?: AuthClientError | Error) => {
       const errorMessage = error?.message ?? 'unknown error';
-      console.log('the error', error);
       if (errorMessage !== 'Polling') {
         pushToast({
           message: `There was an error signing in with Farcaster: ${errorMessage}`,

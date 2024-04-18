@@ -316,7 +316,6 @@ function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivy
   useEffect(
     function handleOpenPrivyModalOnEmailOptionSelect() {
       if (selectedAuthMethod === 'Email') {
-        console.log('opening modal');
         openLoginWithPrivyModal();
       }
     },
@@ -328,7 +327,6 @@ function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivy
   useEffect(
     function handleResetPrivy() {
       if (selectedAuthMethod === null) {
-        console.log('logging out');
         logout();
       }
     },

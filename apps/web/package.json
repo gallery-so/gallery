@@ -6,7 +6,6 @@
     "build": "bash -c \"yarn relay-compiler --repersist --project web ../../relay.config.js && yarn graphql-codegen && node ./scripts/upload-persisted-queries.mjs && yarn next build\""
   },
   "devDependencies": {
-    "@farcaster/auth-kit": "^0.2.1",
     "@gallery-so/typescript-operations": "^0.0.7",
     "@gallery-so/visitor-plugin-common": "^0.0.2",
     "@graphql-codegen/cli": "^2.11.6",
@@ -63,10 +62,11 @@
     "@dnd-kit/utilities": "^3.2.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.0.24",
+    "@farcaster/auth-kit": "^0.2.1",
     "@floating-ui/react": "^0.14.0",
     "@graphql-codegen/cli": "^2.16.5",
     "@portabletext/react": "^3.0.11",
-    "@privy-io/react-auth": "latest",
+    "@privy-io/react-auth": "^1.60.5",
     "@rainbow-me/rainbowkit": "^1.0.5",
     "@sentry/nextjs": "^7.77.0",
     "@taquito/taquito": "17.5.0",
