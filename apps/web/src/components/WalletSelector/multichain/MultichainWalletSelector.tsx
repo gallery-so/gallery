@@ -18,8 +18,7 @@ import { ConnectionMode } from '../WalletSelector';
 import DelegateCashMessage from './DelegateCashMessage';
 import { EthereumAddWallet } from './EthereumAddWallet';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
-import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
-import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
+import { GnosisSafeMessage } from './GnosisSafeMessage';
 import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
@@ -96,7 +95,10 @@ export default function MultichainWalletSelector({
       return (
         <WalletSelectorWrapper>
           <Web3WalletProvider>
-            <GnosisSafeAddWallet queryRef={query} reset={reset} />
+            <GnosisSafeMessage />
+            {/*
+            Gnosis flow currently broken; we should fix eventually
+            <GnosisSafeAddWallet queryRef={query} reset={reset} /> */}
           </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
@@ -106,7 +108,10 @@ export default function MultichainWalletSelector({
       return (
         <WalletSelectorWrapper>
           <Web3WalletProvider>
-            <GnosisSafeAuthenticateWallet reset={reset} />
+            <GnosisSafeMessage />
+            {/*
+            Gnosis flow currently broken; we should fix eventually
+            <GnosisSafeAuthenticateWallet reset={reset} /> */}
           </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
