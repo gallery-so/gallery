@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import { useColorScheme } from 'nativewind';
@@ -13,6 +14,7 @@ import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIc
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LazyAccountTabItem } from '~/navigation/MainTabNavigator/TabBar';
+import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
@@ -54,6 +56,8 @@ export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
     setStep((prevStep) => prevStep + 1);
   }, [onComplete, step]);
 
+  const navigation = useNavigation<LoginStackNavigatorProp>();
+
   if (step > 3 || step === 0) {
     return null;
   }
@@ -61,6 +65,7 @@ export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
   if (step === 1) {
     showBottomSheetModal({
       content: <WelcomeNewUser username={username} onContinue={nextStep} />,
+      navigationContext: navigation,
       blurBackground: true,
     });
     return null;

@@ -20,7 +20,7 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorProp, MainTabStackNavigatorProp } from '~/navigation/types';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT']; // Example snap points, adjust based on your needs
 
@@ -64,7 +64,7 @@ type BottomSheetModal = {
   onDismiss?: () => void;
   blurBackground?: boolean;
   // If we want to use navigation in the bottom sheet, we need to pass in the navigation context from where the bottom sheet is being opened from.
-  navigationContext?: MainTabStackNavigatorProp;
+  navigationContext?: MainTabStackNavigatorProp | LoginStackNavigatorProp;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
