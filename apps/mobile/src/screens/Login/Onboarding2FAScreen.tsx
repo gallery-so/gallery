@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
@@ -58,15 +57,12 @@ function InnerOnboardingEmailScreen() {
   const handleLoginOrCreateUser = useCallback(async () => {
     try {
       setIsLoggingIn(true);
-      console.log('logging in with code, email', { code, email });
       const privyUser = await loginWithCode({ code, email });
-      console.log({ privyUser });
       if (!privyUser) {
         throw new Error('No email found; code may be invalid. Restart and try again.');
       }
 
       const token = await getAccessToken();
-      console.log({ token });
       if (!token) {
         throw new Error('no access token for privy user');
       }
@@ -76,8 +72,7 @@ function InnerOnboardingEmailScreen() {
       if (result.kind !== 'success') {
         if (authMethod === 'Privy') {
           // create an embedded wallet for users signing up through privy
-          const embeddedWalletResult = await embeddedWallet?.create?.({ recoveryMethod: 'privy' });
-          console.log({ embeddedWalletResult });
+          await embeddedWallet?.create?.({ recoveryMethod: 'privy' });
 
           navigation.navigate('OnboardingUsername', {
             authMethod: 'Privy',

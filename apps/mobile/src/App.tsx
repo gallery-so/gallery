@@ -144,7 +144,12 @@ export default function App() {
           <RelayEnvironmentProvider environment={relayEnvironment}>
             <SWRConfig>
               <Suspense fallback={<LoadingView />}>
-                <PrivyProvider appId={'clsdmobu302tl3zebv3sh3xaz'}>
+                <PrivyProvider
+                  appId={
+                    // TODO: rotate this with secrets in the future. eas secrets busted rn
+                    env.EXPO_PUBLIC_ENV === 'prod' ? 'clsdmobu302tl3zebv3sh3xaz' : env.PRIVY_APP_ID
+                  }
+                >
                   <MobileAnalyticsProvider>
                     <MobileErrorReportingProvider>
                       <GestureHandlerRootView style={{ flex: 1 }}>

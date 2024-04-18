@@ -100,7 +100,7 @@ export default function LandingCoverAnimation() {
         </VStack>
       </animated.div>
       {animatedImages.map((animatedImage) => (
-        <AnimatedImage
+        <AnimatedImageComponent
           animatedImage={animatedImage}
           key={animatedImage.src}
           aspectRatio={aspectRatio}
@@ -111,7 +111,7 @@ export default function LandingCoverAnimation() {
   );
 }
 
-function AnimatedImage({
+function AnimatedImageComponent({
   animatedImage,
   aspectRatio,
   xy,

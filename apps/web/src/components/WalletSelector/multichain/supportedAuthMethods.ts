@@ -4,7 +4,7 @@ export type SupportedAuthMethodKey =
   | 'tezos'
   | 'solana'
   | 'delegateCash'
-  | 'magicLink';
+  | 'privy';
 
 export type SupportedAuthMethod = {
   name: string;
@@ -29,7 +29,7 @@ export const supportedAuthMethods: Readonly<
   delegateCash: {
     name: 'Delegate Cash',
   },
-  magicLink: {
+  privy: {
     name: 'Email',
   },
 };

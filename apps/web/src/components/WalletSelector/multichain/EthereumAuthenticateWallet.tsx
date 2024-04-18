@@ -51,6 +51,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
       const { nonce, message } = await createNonce();
       const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Ethereum' }));
 
+      // the app will hang until a signature is provided
       const signature = await signMessage({ message });
 
       const userId = await loginOrRedirectToOnboarding({

@@ -6,3 +6,4 @@ export const GALLERY_TWITTER = 'https://twitter.com/gallery';
 export const GALLERY_DISCORD = 'https://discord.gg/MREFJFvBTe';
 export const GALLERY_MEMBERSHIP_OPENSEA = 'https://opensea.io/collection/gallery-membership-cards';
 export const GALLERY_BLOG = 'https://gallery.mirror.xyz';
+export const GALLERY_WARPCAST_CHANNEL = 'https://warpcast.com/~/channel/gallery';
