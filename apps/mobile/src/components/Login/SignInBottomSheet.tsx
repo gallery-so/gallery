@@ -13,7 +13,10 @@ import { contexts } from '~/shared/analytics/constants';
 
 import { BottomSheetRow } from '../BottomSheetRow';
 import { Typography } from '../Typography';
-import { useLoginWithFarcaster } from './AuthProvider/Farcaster/FarcasterAuthProvider';
+import {
+  FarcasterAuthProvider,
+  useLoginWithFarcaster,
+} from './AuthProvider/Farcaster/FarcasterAuthProvider';
 
 type Props = {
   onQrCodePress: () => void;
@@ -36,8 +39,6 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
     openManageWallet({ method: 'auth' });
   }, [hideBottomSheetModal, openManageWallet]);
 
-  const { open: handleConnectFarcaster } = useLoginWithFarcaster();
-
   return (
     <View className="flex flex-col space-y-6">
       <View className="flex flex-col space-y-4">
@@ -57,6 +58,7 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
           eventContext={contexts.Authentication}
           fontWeight="Bold"
         />
+
         <BottomSheetRow
           icon={<WalletIcon />}
           text="Wallet"
@@ -64,13 +66,14 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
           eventContext={contexts.Authentication}
           fontWeight="Bold"
         />
-        <BottomSheetRow
-          icon={<FarcasterOutlineIcon />}
-          text="Farcaster"
-          onPress={handleConnectFarcaster}
-          eventContext={contexts.Authentication}
-          fontWeight="Bold"
-        />
+
+        {/* wrapping necessary as bottom sheet doesn't inherit farcaster auth context from main App Providers */}
+        <View>
+          <FarcasterAuthProvider>
+            <FarcasterBottomSheetRow />
+          </FarcasterAuthProvider>
+        </View>
+
         <BottomSheetRow
           icon={<QRCodeIcon width={24} height={24} />}
           text="Sign in via Desktop"
@@ -80,6 +83,20 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
         />
       </View>
     </View>
+  );
+}
+
+function FarcasterBottomSheetRow() {
+  const { open: handleConnectFarcaster } = useLoginWithFarcaster();
+
+  return (
+    <BottomSheetRow
+      icon={<FarcasterOutlineIcon />}
+      text="Farcaster"
+      onPress={handleConnectFarcaster}
+      eventContext={contexts.Authentication}
+      fontWeight="Bold"
+    />
   );
 }
 

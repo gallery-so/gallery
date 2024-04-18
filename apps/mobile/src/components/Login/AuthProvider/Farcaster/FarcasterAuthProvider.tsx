@@ -16,6 +16,7 @@ import { removeNullValues } from 'shared/relay/removeNullValues';
 import { Chain } from 'shared/utils/chains';
 import { useLogin } from 'src/hooks/useLogin';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { AuthMechanism } from '~/generated/useLoginMutationMutation.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
@@ -34,6 +35,8 @@ export function FarcasterAuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLoginWithFarcaster() {
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
+
   const getUsersByWalletAddresses = useGetUsersByWalletAddressesImperatively();
 
   // `setNonce` needs to be called prior to `signIn`.
@@ -108,6 +111,7 @@ export function useLoginWithFarcaster() {
             signature: req.signature,
           };
 
+          hideBottomSheetModal();
           navigation.navigate('OnboardingEmail', {
             authMethod: 'Farcaster',
             authMechanism: createUserAuthMechanism,
@@ -145,6 +149,7 @@ export function useLoginWithFarcaster() {
 
         // success case
         track('Sign In Success', { 'Sign in method': 'Farcaster' });
+        hideBottomSheetModal();
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } catch (e) {
         if (e instanceof Error) {
@@ -152,7 +157,14 @@ export function useLoginWithFarcaster() {
         }
       }
     },
-    [getUsersByWalletAddresses, handleFarcasterLoginError, login, navigation, track]
+    [
+      getUsersByWalletAddresses,
+      handleFarcasterLoginError,
+      hideBottomSheetModal,
+      login,
+      navigation,
+      track,
+    ]
   );
 
   const {
@@ -179,6 +191,7 @@ export function useLoginWithFarcaster() {
         reconnect();
         return;
       }
+
       await connect();
     }
   }, [connect, createNonce, isConnectError, isConnected, reconnect]);
