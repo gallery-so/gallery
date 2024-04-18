@@ -47,7 +47,6 @@ export default function MultichainWalletSelector({
     graphql`
       fragment MultichainWalletSelectorFragment on Query {
         ...EthereumAddWalletFragment
-        ...GnosisSafeAddWalletFragment
         ...TezosAddWalletFragment
       }
     `,
@@ -138,12 +137,10 @@ export default function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.delegateCash) {
     return (
       <WalletSelectorWrapper>
-        <DelegateCashMessage reset={reset} />
+        <DelegateCashMessage />
       </WalletSelectorWrapper>
     );
   }
-
-  console.log({ selectedAuthMethod });
 
   return (
     <WalletSelectorWrapper gap={24}>

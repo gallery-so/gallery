@@ -39,6 +39,12 @@ const isProd = isProduction();
 
 const privyConfig: PrivyClientConfig = {
   loginMethods: ['email'],
+  embeddedWallets: {
+    // automatically generate embedded wallets for new users signing up with privy emails.
+    // this will not apply to users signing up with farcaster or wallet extensions, since
+    // those methods already come with a wallet.
+    createOnLogin: 'users-without-wallets',
+  },
 };
 
 export default function AppProvider({

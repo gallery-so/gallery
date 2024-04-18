@@ -1,4 +1,4 @@
-import { useCreateWallet, useLogin, useLogout, useToken } from '@privy-io/react-auth';
+import { useLogin, useLogout, useToken } from '@privy-io/react-auth';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import IconContainer from '~/components/core/IconContainer';
+import Loader from '~/components/core/Loader/Loader';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
@@ -122,32 +123,38 @@ function UniversalAuthModal({ queryRef }: UniversalAuthModalProps) {
           </WalletSelectorWrapper>
         )}
 
-        {
-          // if the user selects the `Email` auth method, we want to keep
-          // the current view open, and open the privy modal on top
-          !selectedAuthMethod || isPrivySelectedAuthMethod ? (
-            <WalletSelectorWrapper gap={12}>
-              <Row
-                label="Wallet"
-                disabled={false}
-                onClick={() => setSelectedAuthMethod('Wallet')}
-                icon={<WalletIcon />}
-              />
-              <Row
-                label="Farcaster"
-                disabled={false}
-                onClick={() => setSelectedAuthMethod('Farcaster')}
-                icon={<FarcasterOutlineIcon />}
-              />
-              <Row
-                label="Email"
-                disabled={false}
-                onClick={() => setSelectedAuthMethod('Email')}
-                icon={<EmailIcon />}
-              />
-            </WalletSelectorWrapper>
-          ) : null
-        }
+        {selectedAuthMethod === 'Email' && (
+          // the Privy modal will be displayed over this loader
+          <WalletSelectorWrapper>
+            <LoaderContainer align="center" justify="center" gap={12}>
+              <BaseM>Creating your account</BaseM>
+              <Loader size="small" />
+            </LoaderContainer>
+          </WalletSelectorWrapper>
+        )}
+
+        {selectedAuthMethod ? null : (
+          <WalletSelectorWrapper gap={12}>
+            <Row
+              label="Wallet"
+              disabled={false}
+              onClick={() => setSelectedAuthMethod('Wallet')}
+              icon={<WalletIcon />}
+            />
+            <Row
+              label="Farcaster"
+              disabled={false}
+              onClick={() => setSelectedAuthMethod('Farcaster')}
+              icon={<FarcasterOutlineIcon />}
+            />
+            <Row
+              label="Email"
+              disabled={false}
+              onClick={() => setSelectedAuthMethod('Email')}
+              icon={<EmailIcon />}
+            />
+          </WalletSelectorWrapper>
+        )}
       </Container>
     </VStack>
   );
@@ -178,6 +185,10 @@ const WalletContainer = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     min-width: 400px;
   }
+`;
+
+const LoaderContainer = styled(VStack)`
+  min-height: 200px;
 `;
 
 type RowProps = {
@@ -244,8 +255,6 @@ function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivy
 
   const { getAccessToken } = useToken();
 
-  const { createWallet: generatePrivyEmbeddedWallet } = useCreateWallet();
-
   const { logout } = useLogout();
 
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
@@ -272,16 +281,15 @@ function usePrivyGalleryLogin({ selectedAuthMethod, onExitPrivyModal }: usePrivy
           userExists: true,
         });
       } catch (error) {
-        console.log('the error onComplete', error);
         if (error instanceof LoginError) {
+          // proceed to onboarding as it means the privy user was not found.
+          // at this point the user should have an embedded wallet created
+          // automatically via `users-without-wallets` config in PrivyProvider
           if (!user.email?.address) {
             reportError('Privy email not found after user login');
             return;
           }
 
-          await generatePrivyEmbeddedWallet();
-
-          // proceed to onboarding as it means the privy user was not found
           await loginOrRedirectToOnboarding({
             authMechanism,
             email: user.email.address,
