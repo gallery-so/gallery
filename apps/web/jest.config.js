@@ -34,11 +34,25 @@ module.exports = async () => {
 
   // Rainbow kit and nextjs-routes ship code which is not transpiled. We have to tell Jest to transpile it
   // https://stackoverflow.com/questions/55794280/jest-fails-with-unexpected-token-on-import-statement
-  const modulesToTranspile = ['nextjs-routes', '@rainbow-me/rainbowkit'];
+  const modulesToTranspile = [
+    'nextjs-routes',
+    '@rainbow-me/rainbowkit',
+    'ofetch',
+    'jose',
+    '@privy-io/react-auth',
+    '@coinbase/wallet-sdk',
+    'preact',
+    'uint8arrays',
+    'multiformats',
+  ];
 
   return {
     ...nextJestConfig,
 
-    transformIgnorePatterns: [`node_modules/(?!(${modulesToTranspile.join('|')})/)`],
+    transformIgnorePatterns: [
+      `node_modules/(?!(${modulesToTranspile.join('|')})/)`,
+      // '/node_modules/(?!ofetch)',
+      // '/node_modules/(?!nextjs-routes)',
+    ],
   };
 };
