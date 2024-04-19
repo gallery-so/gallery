@@ -116,16 +116,12 @@ export function SortableRow({
 
       for (let i = 0; i < Object.keys(positions.value).length; i++) {
         // Check if the translateY is in range of another item
-        const position = positions.value[i];
-        const height = itemHeights.value[i];
+        const position = positions.value[i] ?? 0;
+        const height = itemHeights.value[i] ?? 0;
 
         if (index === i) continue;
 
-        const buffer = 0;
-
-        if (!position || !height) continue;
-
-        if (translateY < position + height + buffer) {
+        if (translateY < position + height) {
           // Assign the new position to the active index
           positions.value[index] = translateY;
           break;
