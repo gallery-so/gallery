@@ -8,12 +8,7 @@ import { SortableRowListFragment$key } from '~/generated/SortableRowListFragment
 
 import { GalleryEditorRow } from './GalleryEditorRow';
 import { SortableRow } from './SortableRow';
-import {
-  calculateItemHeights,
-  calculateOffsetsRow,
-  calculatePositions,
-  getRowHeight,
-} from './utils';
+import { calculateItemHeights, calculateOffsetsRow, calculatePositions } from './utils';
 
 type Props = {
   sectionId: string;
@@ -65,17 +60,6 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
     return rowOffsets.reduce((totalHeight, row) => totalHeight + row.height, 0);
   }, [rowOffsets]);
 
-  const formattedRow = useMemo(() => {
-    return rows.map((row) => {
-      const rowHeight = getRowHeight(row, screenDimensions.width);
-
-      return {
-        ...row,
-        height: rowHeight,
-      };
-    });
-  }, [rows, screenDimensions.width]);
-
   return (
     <>
       <View
@@ -86,17 +70,15 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
             top: 0,
             left: 0,
             right: 0,
-            backgroundColor: 'blue',
           },
         ]}
       >
-        {formattedRow.map((row, index) => {
+        {rows.map((row, index) => {
           return (
             <SortableRow
-              key={`${row.id}-${index}`}
+              key={`${row.id}`}
               index={index}
               positions={positions}
-              // itemHeight={row.height}
               animatedIndex={animatedIndex}
               itemHeights={itemHeights}
               onDragEnd={onDragEnd}
