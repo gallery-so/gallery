@@ -6273,19 +6273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mgcrea/react-native-dnd@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@mgcrea/react-native-dnd@npm:2.2.0"
-  peerDependencies:
-    react: ">=17"
-    react-native: ">=0.70"
-    react-native-gesture-handler: ">=2"
-    react-native-haptic-feedback: ">=2"
-    react-native-reanimated: ">=3"
-  checksum: c1b12ac78209df3569c43fb4329a0e5f571b42a4cc5e3757edfd1d1d9589fff594e1e0c46f1fd62858d6b06a8b88ab963ea3a631f0a8fd16197049a6172c49b4
-  languageName: node
-  linkType: hard
-
 "@moonrepo/cli@npm:^1.21.2":
   version: 1.21.2
   resolution: "@moonrepo/cli@npm:1.21.2"
@@ -26166,7 +26153,6 @@ __metadata:
     "@gorhom/bottom-sheet": 4.4.7
     "@gorhom/portal": ^1.0.14
     "@magic-sdk/react-native-expo": ^16.0.0
-    "@mgcrea/react-native-dnd": ^2.2.0
     "@moonrepo/cli": ^1.21.2
     "@privy-io/expo": ^0.11.2
     "@react-native-async-storage/async-storage": 1.21.0
@@ -26218,7 +26204,6 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.4
     react-native-collapsible-tab-view: ^6.1.4
-    react-native-draggable-grid: ^2.1.8
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ^2.15.0
@@ -29191,16 +29176,6 @@ __metadata:
     "@shopify/flash-list":
       optional: true
   checksum: b59a6ef6b220ce1505719c76788d904c4a0de351ff45a502c1914dc58f690ae9830a9adcd237ad04a32db5f7d2455121e566181eef3b461d6125a8c1f8d40cf2
-  languageName: node
-  linkType: hard
-
-"react-native-draggable-grid@npm:^2.1.8":
-  version: 2.2.1
-  resolution: "react-native-draggable-grid@npm:2.2.1"
-  peerDependencies:
-    react: ^16 || ^17 || ^18
-    react-native: "*"
-  checksum: ce2d0cb79868167d148a6a1dbdba851adfef4042295f52159eff5cded3208d0f60a27cd43992e2270afc69c0aae8c0aed3d0a38e26f282de47dd01605039159a
   languageName: node
   linkType: hard
 
