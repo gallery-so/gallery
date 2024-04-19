@@ -1,3 +1,4 @@
+import { Portal } from '@gorhom/portal';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -118,7 +119,12 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         queryRef={query.data}
       />
       {showWelcome && (
-        <WelcomeNewUserOnboarding username={username} onComplete={handleWelcomeTooltipCompleted} />
+        <Portal hostName="app-context">
+          <WelcomeNewUserOnboarding
+            username={username}
+            onComplete={handleWelcomeTooltipCompleted}
+          />
+        </Portal>
       )}
       {/* Keeping for next time we run a similar campaign */}
       {/* {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />} */}
