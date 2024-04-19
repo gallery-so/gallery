@@ -37,7 +37,7 @@ type GalleryEditorActions = {
   activeRowId: string | null;
   activateRow: (sectionId: string, rowId: string) => void;
   clearActiveRow: () => void;
-  moveRow: (activeRowId: string, overRowId: string) => void;
+  moveRow: (sectionId: string, newOrderByIndex: string[]) => void;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
@@ -239,29 +239,6 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       : null;
   }, [sectionIdBeingEdited, sections]);
 
-  // const setRows: Dispatch<SetStateAction<StagedRowList>> = useCallback(
-  //   (value) => {
-  //     if (!sectionIdBeingEdited) {
-  //       return;
-  //     }
-
-  //     updateSection(sectionIdBeingEdited, (previousCollection) => {
-  //       let nextSections;
-  //       if (typeof value === 'function') {
-  //         nextSections = value(previousCollection.rows);
-  //       } else {
-  //         nextSections = value;
-  //       }
-
-  //       return {
-  //         ...previousCollection,
-  //         sections: nextSections,
-  //       };
-  //     });
-  //   },
-  //   [sectionIdBeingEdited, updateSection]
-  // );
-
   const setActiveRowId = useCallback(
     (rowId: string) => {
       if (!sectionIdBeingEdited) {
@@ -323,26 +300,17 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   // TODO: Add support for moving rows between sections
   const moveRow = useCallback(
-    (activeRowId: string, overRowId: string) => {
-      const activeSectionId = sections.find((section) =>
-        section.rows.some((row) => row.id === activeRowId)
-      )?.dbid;
-
-      if (!activeSectionId) {
-        return;
-      }
-
-      updateSection(activeSectionId, (previousSection) => {
-        const activeRowIndex = previousSection.rows.findIndex((row) => row.id === activeRowId);
-        const overRowIndex = previousSection.rows.findIndex((row) => row.id === overRowId);
-
-        return {
-          ...previousSection,
-          rows: arrayMove(previousSection.rows, activeRowIndex, overRowIndex),
-        };
+    (sectionId: string, newOrderByIndex: string[]) => {
+      updateSection(sectionId, (previousSection) => {
+        const newRows = newOrderByIndex
+          .map((index) => {
+            return previousSection.rows[Number(index)];
+          })
+          .filter((row): row is StagedRow => row !== undefined);
+        return { ...previousSection, rows: newRows };
       });
     },
-    [sections, updateSection]
+    [updateSection]
   );
 
   const toggleTokensStaged = useCallback(

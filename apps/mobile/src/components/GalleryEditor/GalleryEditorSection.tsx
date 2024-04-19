@@ -28,7 +28,7 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
     queryRef
   );
 
-  const { sectionIdBeingEdited, activeRowId, activateSection, clearActiveRow } =
+  const { sectionIdBeingEdited, activeRowId, activateSection, clearActiveRow, moveRow } =
     useGalleryEditorActions();
 
   const highlightedSection = useMemo(() => {
@@ -40,9 +40,12 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
     clearActiveRow();
   }, [clearActiveRow, activateSection, section.dbid]);
 
-  const handleDragEnd = useCallback((positions: string[]) => {
-    console.log({ positions });
-  }, []);
+  const handleDragEnd = useCallback(
+    (newPositions: string[]) => {
+      moveRow(section.dbid, newPositions);
+    },
+    [moveRow, section.dbid]
+  );
 
   return (
     <GalleryTouchableOpacity
