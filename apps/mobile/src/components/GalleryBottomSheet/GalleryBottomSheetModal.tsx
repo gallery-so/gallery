@@ -9,12 +9,12 @@ import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/Gall
 import { GalleryBottomSheetBackground } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackground';
 import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/GalleryBottomSheetHandle';
 import SyncTokensProvider from '~/contexts/SyncTokensContext';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorProp, MainTabStackNavigatorProp } from '~/navigation/types';
 
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
 type GalleryBottomSheetModalProps = {
-  navigationContext?: MainTabStackNavigatorProp;
+  navigationContext?: MainTabStackNavigatorProp | LoginStackNavigatorProp;
   children: React.ReactNode;
   snapPoints:
     | Readonly<{ value: (string | number)[] }>

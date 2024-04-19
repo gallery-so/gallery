@@ -1,6 +1,6 @@
 import 'expo-dev-client';
 
-import { PortalProvider } from '@gorhom/portal';
+import { PortalHost, PortalProvider } from '@gorhom/portal';
 import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
@@ -171,6 +171,7 @@ export default function App() {
                                           />
                                         </ManageWalletProvider>
                                       </SyncTokensProvider>
+                                      <PortalHost name="app-context" />
                                     </BottomSheetModalProvider>
                                   </PortalProvider>
                                 </TokenStateManagerProvider>
