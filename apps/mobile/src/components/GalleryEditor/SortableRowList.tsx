@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
@@ -52,6 +52,15 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
 
   const animatedIndex = useSharedValue<number | null>(null);
 
+  // Update positions and item heights whenever rows or screen dimensions change
+  useEffect(() => {
+    const newPositions = calculatePositions(rows, screenDimensions.width);
+    positions.value = newPositions;
+
+    const newItemHeights = calculateItemHeights(rows, screenDimensions.width);
+    itemHeights.value = newItemHeights;
+  }, [itemHeights, positions, rows, screenDimensions.width]);
+
   const containerHeight = useMemo(() => {
     return rowOffsets.reduce((totalHeight, row) => totalHeight + row.height, 0);
   }, [rowOffsets]);
@@ -87,7 +96,7 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
               key={`${row.id}-${index}`}
               index={index}
               positions={positions}
-              itemHeight={row.height}
+              // itemHeight={row.height}
               animatedIndex={animatedIndex}
               itemHeights={itemHeights}
               onDragEnd={onDragEnd}

@@ -17,7 +17,6 @@ type Props = {
   children: React.ReactNode;
   index: number;
   positions: SharedValue<Positions>;
-  itemHeight: number;
   animatedIndex: SharedValue<number | null>;
   itemHeights: SharedValue<ItemHeights>;
 
@@ -28,11 +27,11 @@ export function SortableRow({
   children,
   index,
   positions,
-  itemHeight,
   animatedIndex,
   itemHeights,
   onDragEnd,
 }: Props) {
+  const itemHeight = itemHeights.value[index] ?? 0;
   // Shared values for gesture handling
   const contextY = useSharedValue(0);
   const translateX = useSharedValue(0);
