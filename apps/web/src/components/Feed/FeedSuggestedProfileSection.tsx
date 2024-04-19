@@ -11,7 +11,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedSuggestedProfileSectionQueryFragment$key } from '~/generated/FeedSuggestedProfileSectionQueryFragment.graphql';
 import { FeedSuggestedProfileSectionWithBoundaryFragment$key } from '~/generated/FeedSuggestedProfileSectionWithBoundaryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth,useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
