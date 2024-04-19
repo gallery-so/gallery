@@ -1,4 +1,4 @@
-import Svg, { Path,SvgProps } from 'react-native-svg';
+import Svg, { Path, SvgProps } from 'react-native-svg';
 export function PlusIcon(props: SvgProps) {
   return (
     <Svg width={24} height={24} fill="none" {...props}>
