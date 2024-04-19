@@ -119,12 +119,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         queryRef={query.data}
       />
       {showWelcome && (
-        <Portal>
-          <WelcomeNewUserOnboarding
-            username={username}
-            onComplete={handleWelcomeTooltipCompleted}
-          />
-        </Portal>
+        <WelcomeNewUserOnboarding username={username} onComplete={handleWelcomeTooltipCompleted} />
       )}
       {/* Keeping for next time we run a similar campaign */}
       {/* {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />} */}
