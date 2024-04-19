@@ -281,7 +281,7 @@ function InnerOnboardingUsernameScreen() {
 
           <View />
         </View>
-        <OnboardingProgressBar from={20} to={40} />
+        <OnboardingProgressBar from={30} to={40} />
       </View>
       <View
         className="flex-1  justify-center space-y-12 px-8"
