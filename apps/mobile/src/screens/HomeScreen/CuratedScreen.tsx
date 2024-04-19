@@ -70,10 +70,8 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     setShowWelcome(false);
   }, []);
 
-  console.log({ isNewUser });
-
   useEffect(() => {
-    if (true) {
+    if (isNewUser) {
       setShowWelcome(true);
     }
   }, [isNewUser, setShowWelcome]);
