@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { trigger } from 'react-native-haptic-feedback';
 import Animated, {
   runOnJS,
   SharedValue,
@@ -107,6 +108,8 @@ export function SortableRow({
       contextY.value = positions.value[index] ?? 0;
 
       translateX.value = event.translationX;
+
+      runOnJS(trigger)('impactLight');
     })
     .onUpdate((event) => {
       const { translationY } = event;
