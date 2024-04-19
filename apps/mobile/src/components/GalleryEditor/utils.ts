@@ -1,4 +1,4 @@
-import { StagedRow, StagedRowList, StagedSectionList } from '~/contexts/GalleryEditor/types';
+import { StagedRow, StagedRowList } from '~/contexts/GalleryEditor/types';
 
 import { ItemHeights, Positions } from './SortableRowList';
 
@@ -17,7 +17,7 @@ export function getRowHeight(row: StagedRow, screenDimensionsWidth: number) {
 
   const heightPerToken = totalSpaceForTokens / column;
 
-  const linePerRow = Math.round(row.items.length / column);
+  const linePerRow = Math.ceil(row.items.length / column);
 
   return heightPerToken * linePerRow;
 }
@@ -48,25 +48,23 @@ export function calculateItemHeights(
   return itemHeights;
 }
 
-export function calculateOffsetsRow(sections: StagedSectionList, screenDimensionsWidth: number) {
+export function calculateOffsetsRow(rows: StagedRowList, screenDimensionsWidth: number) {
   const rowOffsets: Offset[] = [];
 
-  sections.forEach((section) => {
-    let cumulativeHeight = 0;
+  let cumulativeHeight = 0;
 
-    section.rows.forEach((row) => {
-      const height = getRowHeight(row, screenDimensionsWidth);
+  rows.forEach((row) => {
+    const height = getRowHeight(row, screenDimensionsWidth);
 
-      const offset = {
-        ...row,
-        y: cumulativeHeight,
-        height,
-      };
+    const offset = {
+      ...row,
+      y: cumulativeHeight,
+      height,
+    };
 
-      cumulativeHeight += height;
+    cumulativeHeight += height;
 
-      rowOffsets.push(offset);
-    });
+    rowOffsets.push(offset);
   });
 
   return rowOffsets;

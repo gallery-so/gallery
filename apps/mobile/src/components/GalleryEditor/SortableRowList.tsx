@@ -3,7 +3,6 @@ import { useWindowDimensions, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
-import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedRowList } from '~/contexts/GalleryEditor/types';
 import { SortableRowListFragment$key } from '~/generated/SortableRowListFragment.graphql';
 
@@ -42,9 +41,8 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
     queryRef
   );
   const screenDimensions = useWindowDimensions();
-  const { sections } = useGalleryEditorActions();
 
-  const rowOffsets = calculateOffsetsRow(sections, screenDimensions.width);
+  const rowOffsets = calculateOffsetsRow(rows, screenDimensions.width);
 
   const initialPositions = calculatePositions(rows, screenDimensions.width);
   const positions = useSharedValue<Positions>(initialPositions);
