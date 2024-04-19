@@ -1,4 +1,3 @@
-import { Portal } from '@gorhom/portal';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
