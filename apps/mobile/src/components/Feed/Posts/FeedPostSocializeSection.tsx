@@ -1,13 +1,13 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useCallback, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';
@@ -106,11 +106,28 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
   }, [post.admires?.edges]);
 
   const totalAdmires = post.admires?.pageInfo?.total ?? 0;
-
-  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleOpenCommentBottomSheet = useCallback(() => {
-    commentsBottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: (
+        <CommentsBottomSheet
+          type="Post"
+          feedId={post.dbid}
+          activeCommentId={route.params?.commentId}
+          replyToComment={route.params?.replyToComment}
+        />
+      ),
+      noPadding: true,
+      navigationContext: navigation,
+    });
+  }, [
+    navigation,
+    post.dbid,
+    route.params?.commentId,
+    route.params?.replyToComment,
+    showBottomSheetModal,
+  ]);
 
   useEffect(() => {
     if (route.params?.commentId) {
@@ -144,13 +161,6 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           onCommentPress={handleOpenCommentBottomSheet}
         />
       </View>
-      <CommentsBottomSheet
-        type="Post"
-        feedId={post.dbid}
-        bottomSheetRef={commentsBottomSheetRef}
-        activeCommentId={route.params?.commentId}
-        replyToComment={route.params?.replyToComment}
-      />
     </>
   );
 }

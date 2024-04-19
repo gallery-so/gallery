@@ -76,7 +76,7 @@ type FeaturedProfileProps = {
   profile: CmsTypes.FeaturedProfile;
 };
 
-function FeaturedProfile({ profile }: FeaturedProfileProps) {
+export function FeaturedProfile({ profile }: FeaturedProfileProps) {
   return (
     <StyledLinkWrapper
       href={`/${profile.username}`}

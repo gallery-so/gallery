@@ -60,6 +60,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       const payload = generatePayload(message, address);
 
+      // the app will hang until a signature is provided
       const signature = await requestSignature(payload);
 
       const nonceNumber = getNonceNumber(nonce);

@@ -1,8 +1,8 @@
-import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Share, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { GalleryProfileMoreOptionsBottomSheetFragment$key } from '~/generated/GalleryProfileMoreOptionsBottomSheetFragment.graphql';
 import { GalleryProfileMoreOptionsBottomSheetQueryFragment$key } from '~/generated/GalleryProfileMoreOptionsBottomSheetQueryFragment.graphql';
@@ -12,11 +12,6 @@ import useFollowUser from '~/shared/relay/useFollowUser';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import { BottomSheetRow } from '../BottomSheetRow';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '../GalleryBottomSheet/GalleryBottomSheetModal';
-import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
 import { BlockUserConfirmationForm } from './BlockUserConfirmationForm';
 
 type Props = {
@@ -24,12 +19,7 @@ type Props = {
   userRef: GalleryProfileMoreOptionsBottomSheetFragment$key;
 };
 
-const SNAP_POINTS = ['CONTENT_HEIGHT'];
-
-function GalleryProfileMoreOptionsBottomSheet(
-  { queryRef, userRef }: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+export default function GalleryProfileMoreOptionsBottomSheet({ queryRef, userRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryProfileMoreOptionsBottomSheetQueryFragment on Query {
@@ -61,10 +51,6 @@ function GalleryProfileMoreOptionsBottomSheet(
     userRef
   );
 
-  const { bottom } = useSafeAreaPadding();
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
   const { pushToast } = useToastActions();
   const blockUser = useBlockUser();
   const handleBlockUser = useCallback(async () => {
@@ -75,13 +61,6 @@ function GalleryProfileMoreOptionsBottomSheet(
       return;
     }
   }, [blockUser, pushToast, user.dbid]);
-
-  const handleDismissBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
-  }, []);
-
-  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
-    useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
   const followUser = useFollowUser({ queryRef: query });
   const unfollowUser = useUnfollowUser({ queryRef: query });
@@ -107,6 +86,8 @@ function GalleryProfileMoreOptionsBottomSheet(
   }, [followingList, user.id]);
 
   const [showBlockUserForm, setShowBlockUserForm] = useState(false);
+
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleDisplayBlockForm = useCallback(async () => {
     await handleBlockUser();
@@ -152,44 +133,24 @@ function GalleryProfileMoreOptionsBottomSheet(
     setShowBlockUserForm(false);
   }, []);
 
-  return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        bottomSheetRef.current = value;
+  useEffect(() => {
+    return () => {
+      handleResetState();
+    };
+  }, [handleResetState]);
 
-        if (typeof ref === 'function') {
-          ref(value);
-        } else if (ref) {
-          ref.current = value;
-        }
-      }}
-      snapPoints={animatedSnapPoints}
-      handleHeight={animatedHandleHeight}
-      contentHeight={animatedContentHeight}
-      onDismiss={handleResetState}
-    >
-      <View
-        onLayout={handleContentLayout}
-        style={{ paddingBottom: bottom }}
-        className="p-4 flex flex-col space-y-6"
-      >
-        {showBlockUserForm ? (
-          <BlockUserConfirmationForm
-            userId={user.dbid}
-            username={user.username ?? ''}
-            onBlockUser={handleBlockUser}
-            onDismiss={handleDismissBottomSheet}
-          />
-        ) : (
-          <View className="flex flex-col space-y-2">{options}</View>
-        )}
-      </View>
-    </GalleryBottomSheetModal>
+  return (
+    <View className="flex flex-col space-y-6">
+      {showBlockUserForm ? (
+        <BlockUserConfirmationForm
+          userId={user.dbid}
+          username={user.username ?? ''}
+          onBlockUser={handleBlockUser}
+          onDismiss={hideBottomSheetModal}
+        />
+      ) : (
+        <View className="flex flex-col space-y-2">{options}</View>
+      )}
+    </View>
   );
 }
-
-const ForwardedGalleryProfileMoreOptionsBottomSheet = forwardRef(
-  GalleryProfileMoreOptionsBottomSheet
-);
-
-export { ForwardedGalleryProfileMoreOptionsBottomSheet as GalleryProfileMoreOptionsBottomSheet };

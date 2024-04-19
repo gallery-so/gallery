@@ -144,6 +144,7 @@ export const StyledPostPreview = styled.img<{ stacked?: boolean; count: number }
   height: 56px;
   width: 56px;
   background: ${colors.offWhite};
+  object-fit: cover;
 
   ${({ count }) =>
     count > 1 &&

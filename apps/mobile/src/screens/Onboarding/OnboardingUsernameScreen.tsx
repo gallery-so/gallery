@@ -66,13 +66,13 @@ function InnerOnboardingUsernameScreen() {
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
+  const updateEmail = useUpdateEmail();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokensActions();
-  const updateEmail = useUpdateEmail();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
-  const userEmail = route.params.email;
+  const email = route.params.email;
   const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
 
@@ -110,18 +110,47 @@ function InnerOnboardingUsernameScreen() {
       }
 
       setIsCreatingUser(true);
-      const response = await createUser(authMechanism, username, bio);
+
+      const response = await createUser({
+        authPayloadVariables: authMechanism,
+        username,
+        bio,
+      });
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
+        if (!email) {
+          throw new Error('No email found for user creation on mobile');
+        }
+        if (!authMechanism) {
+          throw new Error('No authmechanism found for user creation on mobile');
+        }
+
+        const result = await updateEmail({
+          email,
+          authMechanism: {
+            privy: {
+              token: authMechanism.privyToken!,
+            },
+          },
+        });
+
+        if (result.updateEmail?.__typename !== 'UpdateEmailPayload') {
+          throw new Error(
+            `Update email after create user failed on mobile due to ${result.updateEmail?.__typename}`
+          );
+        }
+
         // If the user is signing up with email, redirect to the bio screen
-        if (authMethod === 'Email') {
+        if (authMethod === 'Privy') {
           navigation.navigate('OnboardingProfileBio');
           return;
         }
 
-        // If the user is signing up with a wallet, attached the email to the user
-        if (authMethod === 'Wallet' && userEmail) {
-          await updateEmail(userEmail);
+        // fire this off async
+        if (!isSyncing) {
+          // TODO: we want to trigger multisync but it's just a bit too slow rn
+          // syncTokens(['Ethereum', 'Zora', 'Base']);
+          syncTokens('Ethereum');
         }
 
         const user = response.createUser.viewer?.user;
@@ -134,15 +163,8 @@ function InnerOnboardingUsernameScreen() {
             address: ensAddress.address,
             chain: ensAddress.chain,
           });
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
           navigation.navigate('OnboardingProfileBio');
         } else {
-          if (!isSyncing) {
-            await syncTokens(['Ethereum', 'Zora', 'Base']);
-          }
-
           navigation.navigate('OnboardingNftSelector', {
             page: 'Onboarding',
             fullScreen: true,
@@ -157,19 +179,21 @@ function InnerOnboardingUsernameScreen() {
       setIsCreatingUser(false);
     }
   }, [
+    user?.username,
+    user?.dbid,
+    user?.bio,
     authMechanism,
-    authMethod,
-    bio,
-    createUser,
-    setEnsProfileImage,
-    isSyncing,
-    navigation,
-    syncTokens,
     username,
-    userEmail,
-    updateEmail,
+    bio,
+    email,
+    createUser,
     updateUser,
-    user,
+    navigation,
+    updateEmail,
+    authMethod,
+    isSyncing,
+    syncTokens,
+    setEnsProfileImage,
   ]);
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -294,7 +318,7 @@ function InnerOnboardingUsernameScreen() {
             eventContext={contexts.Onboarding}
             text="NEXT"
             variant={!isUsernameValid ? 'disabled' : 'primary'}
-            disabled={!isUsernameValid}
+            disabled={!isUsernameValid || isLoading}
             loading={isLoading}
           />
           <Typography

@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
-import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import formatError from '~/shared/errors/formatError';
-import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
@@ -21,7 +18,7 @@ type Props = {
   onSuccess: (username: string) => void;
   existingUsername?: string;
   existingBio?: string;
-  userId?: string;
+  userId: string;
 };
 
 export default function useUserInfoForm({
@@ -44,13 +41,8 @@ export default function useUserInfoForm({
   const [generalError, setGeneralError] = useState('');
 
   const updateUser = useUpdateUser();
-  const createUser = useCreateUser();
   const reportError = useReportError();
-  const authPayloadQuery = useAuthPayloadQuery();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
-  const trackCreateUserSuccess = useTrackCreateUserSuccess(
-    authPayloadQuery?.userFriendlyWalletName
-  );
 
   const debouncedUsername = useDebounce(username, 500);
 
@@ -67,17 +59,7 @@ export default function useUserInfoForm({
     }
 
     try {
-      if (userId) {
-        await updateUser(userId, username, bio);
-      } else {
-        if (!authPayloadQuery) {
-          throw new Error('Auth signature for creating user not found');
-        }
-
-        await createUser(authPayloadQuery, username, bio);
-        trackCreateUserSuccess();
-      }
-
+      await updateUser(userId, username, bio);
       onSuccess(username);
 
       return { success: true };
@@ -91,17 +73,7 @@ export default function useUserInfoForm({
 
       return { success: false };
     }
-  }, [
-    usernameError,
-    bio,
-    userId,
-    onSuccess,
-    username,
-    updateUser,
-    authPayloadQuery,
-    createUser,
-    trackCreateUserSuccess,
-  ]);
+  }, [usernameError, bio, userId, onSuccess, username, updateUser]);
 
   const handleUsernameChange = useCallback((username: string) => {
     setUsername(username);

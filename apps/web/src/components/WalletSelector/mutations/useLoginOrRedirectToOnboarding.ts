@@ -8,6 +8,7 @@ import {
   useLoginOrRedirectToOnboardingMutation,
   useLoginOrRedirectToOnboardingMutation$variables,
 } from '~/generated/useLoginOrRedirectToOnboardingMutation.graphql';
+import { LoginError } from '~/shared/errors/LoginError';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useLoginOrRedirectToOnboarding() {
@@ -38,6 +39,7 @@ export default function useLoginOrRedirectToOnboarding() {
     authMechanism: useLoginOrRedirectToOnboardingMutation$variables;
     userExists: boolean;
     userFriendlyWalletName?: string;
+    email?: string;
   };
 
   const { push } = useRouter();
@@ -49,6 +51,7 @@ export default function useLoginOrRedirectToOnboarding() {
       authMechanism,
       userExists,
       userFriendlyWalletName = 'unknown',
+      email,
     }: Props): Promise<string | undefined> => {
       if (userExists) {
         const { login: result } = await login({
@@ -72,54 +75,86 @@ export default function useLoginOrRedirectToOnboarding() {
         }
 
         if (result && 'message' in result) {
-          throw new Error(result.message);
+          throw new LoginError(result.message);
         }
 
-        throw new Error(`Unexpected type returned from login mutation: ${result?.__typename}`);
+        throw new LoginError(`Unexpected type returned from login mutation: ${result?.__typename}`);
       } else {
         // Redirect user to the onboarding flow with necessary input params to create an account
         if (authMechanism.mechanism.eoa) {
-          push({
-            pathname: '/onboarding/welcome',
-            query: {
-              authMechanismType: 'eoa',
-              chain: authMechanism.mechanism.eoa.chainPubKey.chain,
-              address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
-              nonce: authMechanism.mechanism.eoa.nonce,
-              message: authMechanism.mechanism.eoa.message,
-              signature: authMechanism.mechanism.eoa.signature,
-              userFriendlyWalletName,
+          push(
+            {
+              pathname: '/onboarding/add-email',
+              query: {
+                authMechanismType: 'eoa',
+                chain: authMechanism.mechanism.eoa.chainPubKey.chain,
+                address: authMechanism.mechanism.eoa.chainPubKey.pubKey,
+                nonce: authMechanism.mechanism.eoa.nonce,
+                message: authMechanism.mechanism.eoa.message,
+                signature: authMechanism.mechanism.eoa.signature,
+                userFriendlyWalletName,
+              },
             },
-          });
+            '/onboarding/add-email'
+          );
         }
 
-        if (authMechanism.mechanism.gnosisSafe) {
-          push({
-            pathname: '/onboarding/welcome',
-            query: {
-              authMechanismType: 'gnosisSafe',
-              address: authMechanism.mechanism.gnosisSafe.address,
-              nonce: authMechanism.mechanism.gnosisSafe.nonce,
-              message: authMechanism.mechanism.gnosisSafe.message,
-              userFriendlyWalletName,
+        if (authMechanism.mechanism.neynar) {
+          push(
+            {
+              pathname: '/onboarding/add-email',
+              query: {
+                authMechanismType: 'neynar',
+                address: authMechanism.mechanism.neynar.custodyPubKey.pubKey,
+                primaryAddress: authMechanism.mechanism.neynar.primaryPubKey?.pubKey,
+                nonce: authMechanism.mechanism.neynar.nonce,
+                message: authMechanism.mechanism.neynar.message,
+                signature: authMechanism.mechanism.neynar.signature,
+                userFriendlyWalletName,
+              },
             },
-          });
+            '/onboarding/add-email'
+          );
         }
 
-        if (authMechanism.mechanism.magicLink) {
-          push({
-            pathname: '/onboarding/welcome',
-            query: {
-              authMechanismType: 'magicLink',
-              token: authMechanism.mechanism.magicLink.token,
-              userFriendlyWalletName,
+        // TODO: this should be privy
+        if (authMechanism.mechanism.privy) {
+          push(
+            {
+              pathname: '/onboarding/add-username',
+              query: {
+                authMechanismType: 'privy',
+                token: authMechanism.mechanism.privy.token,
+                email,
+                userFriendlyWalletName,
+              },
             },
-          });
+            '/onboarding/add-username'
+          );
         }
+
+        // De-prioritizing gnosis safe logins for now
+        //
+        // if (authMechanism.mechanism.gnosisSafe) {
+        //   push(
+        //     {
+        //       pathname: '/onboarding/add-email',
+        //       query: {
+        //         authMechanismType: 'gnosisSafe',
+        //         address: authMechanism.mechanism.gnosisSafe.address,
+        //         nonce: authMechanism.mechanism.gnosisSafe.nonce,
+        //         message: authMechanism.mechanism.gnosisSafe.message,
+        //         userFriendlyWalletName,
+        //       },
+        //     },
+        //     '/onboarding/add-email'
+        //   );
+        // }
 
         return;
       }
     },
+
     // remove `push` from dependency array as it'll trigger this callback to change on route change
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [login]

@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
+import NotificationBottomSheetUserList from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
 import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -66,23 +66,37 @@ export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const handlePress = useCallback(() => {
-    if (userViewerCount > 1) {
-      bottomSheetRef.current?.present();
-    } else if (lastViewer?.username) {
-      navigation.navigate('Profile', { username: lastViewer.username });
-    }
-  }, [lastViewer?.username, navigation, userViewerCount]);
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleUserPress = useCallback(
     (username: string) => {
-      bottomSheetRef.current?.dismiss();
+      hideBottomSheetModal();
       navigation.navigate('Profile', { username });
     },
-    [navigation]
+    [hideBottomSheetModal, navigation]
   );
+
+  const handlePress = useCallback(() => {
+    if (userViewerCount > 1) {
+      showBottomSheetModal({
+        content: (
+          <NotificationBottomSheetUserList
+            onUserPress={handleUserPress}
+            notificationId={notification.id}
+          />
+        ),
+      });
+    } else if (lastViewer?.username) {
+      navigation.navigate('Profile', { username: lastViewer.username });
+    }
+  }, [
+    handleUserPress,
+    lastViewer?.username,
+    navigation,
+    notification.id,
+    showBottomSheetModal,
+    userViewerCount,
+  ]);
 
   const inner = useMemo(() => {
     if (userViewerCount > 0) {
@@ -136,12 +150,6 @@ export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
       notificationRef={notification}
     >
       {inner}
-
-      <NotificationBottomSheetUserList
-        ref={bottomSheetRef}
-        onUserPress={handleUserPress}
-        notificationId={notification.id}
-      />
     </NotificationSkeleton>
   );
 }

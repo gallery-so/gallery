@@ -1,9 +1,15 @@
 import { useCallback } from 'react';
 import { graphql, SelectorStoreUpdater } from 'relay-runtime';
 
-import { useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
+import { AuthMechanism, useUpdateEmailMutation } from '~/generated/useUpdateEmailMutation.graphql';
 
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
+
+type UpdateEmailProps = {
+  email: string;
+  authMechanism?: AuthMechanism;
+  updater?: SelectorStoreUpdater<useUpdateEmailMutation['response']>;
+};
 
 export default function useUpdateEmail() {
   const [updateEmail] = usePromisifiedMutation<useUpdateEmailMutation>(graphql`
@@ -27,11 +33,12 @@ export default function useUpdateEmail() {
   `);
 
   return useCallback(
-    (email: string, updater?: SelectorStoreUpdater<useUpdateEmailMutation['response']>) => {
+    ({ email, authMechanism, updater }: UpdateEmailProps) => {
       return updateEmail({
         variables: {
           input: {
             email,
+            authMechanism,
           },
         },
         updater,

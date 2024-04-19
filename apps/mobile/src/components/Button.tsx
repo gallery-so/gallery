@@ -209,7 +209,7 @@ export function Button({
       {/* Setting a height explicitly here to ensure icons / text gets the same treatment */}
       <View
         className={clsx(
-          'relative flex h-[36] items-center justify-center px-6 rounded-sm',
+          'relative flex h-[36] items-center justify-center px-6',
           variantClassNames.containerClassName,
           !active ? containerClassName : null,
           sizeVariants[size]

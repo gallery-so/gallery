@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
+import { Onboarding2FAScreen } from '~/screens/Login/Onboarding2FAScreen';
 import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { OnboardingNftSelectorContractScreen } from '~/screens/Onboarding/OnboardingNftSelectorContractScreen';
 import { OnboardingNftSelectorScreen } from '~/screens/Onboarding/OnboardingNftSelectorScreeen';
@@ -11,7 +12,6 @@ import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecom
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
 import { OnboardingVideoScreen } from '~/screens/Onboarding/OnboardingVideoScreen';
 
-import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
 import { QRCodeScreen } from '../screens/Login/QRCodeScreen';
 import { WaitingForConfirmationScreen } from '../screens/Login/WaitingForConfirmationScreen';
@@ -26,7 +26,6 @@ export function LoginStackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="Landing">
       <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
       <Stack.Screen name="WaitingForConfirmation" component={WaitingForConfirmationScreen} />
       <Stack.Screen name="NotificationUpsell" component={NotificationUpsellScreen} />
 
@@ -34,6 +33,7 @@ export function LoginStackNavigator() {
 
       <Stack.Screen name="OnboardingVideo" component={OnboardingVideoScreen} />
       <Stack.Screen name="OnboardingEmail" component={OnboardingEmailScreen} />
+      <Stack.Screen name="Onboarding2FA" component={Onboarding2FAScreen} />
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
       <Stack.Screen name="OnboardingRecommendedUsers" component={OnboardingRecommendedUsers} />

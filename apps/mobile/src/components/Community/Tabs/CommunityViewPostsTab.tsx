@@ -13,9 +13,9 @@ import {
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -23,7 +23,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { extractRelevantMetadataFromCommunity } from '~/shared/utils/extractRelevantMetadataFromCommunity';
 import { noop } from '~/shared/utils/noop';
 
-import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
+import CommunityPostBottomSheet from '../CommunityPostBottomSheet';
 
 type Props = {
   communityRef: CommunityViewPostsTabFragment$key;
@@ -127,10 +127,12 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
 
   const { contractAddress } = extractRelevantMetadataFromCommunity(community);
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleCreatePost = useCallback(() => {
     if (!isMemberOfCommunity) {
-      bottomSheetRef.current?.present();
+      showBottomSheetModal({
+        content: <CommunityPostBottomSheet communityRef={community} onRefresh={noop} />,
+      });
       return;
     }
 
@@ -139,7 +141,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
       contractAddress,
       page: 'Community',
     });
-  }, [isMemberOfCommunity, contractAddress, navigation]);
+  }, [isMemberOfCommunity, contractAddress, navigation, showBottomSheetModal, community]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {
@@ -171,12 +173,6 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
             eventElementId="Empty View Create Post Button"
             eventName="Empty View Create Post Button Press"
             eventContext={contexts.Posts}
-          />
-
-          <CommunityPostBottomSheet
-            ref={bottomSheetRef}
-            communityRef={community}
-            onRefresh={noop}
           />
         </View>
       </View>

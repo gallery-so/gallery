@@ -82,15 +82,16 @@ export default function SidebarChainDropdown({
       >
         <DropdownSection>
           {availableChains.map((chain) => {
-            const isChainDisabled = selectedView === 'Created' && !chain.hasCreatorSupport;
+            const isChainEnabled =
+              selectedView === 'Created' ? isAdmin || chain.hasCreatorSupport : true;
             return (
               <DropdownItem
                 key={chain.name}
                 onClick={() => {
-                  if (isChainDisabled) return;
+                  if (!isChainEnabled) return;
                   handleSelectChain(chain);
                 }}
-                disabled={isChainDisabled}
+                disabled={!isChainEnabled}
                 name="Sidebar Chain"
                 eventContext={contexts.Editor}
                 eventSelection={chain.name}

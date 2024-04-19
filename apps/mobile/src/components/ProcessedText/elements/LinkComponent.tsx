@@ -1,8 +1,8 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { Text } from 'react-native';
 
-import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import WarningLinkBottomSheet from '~/components/Feed/Posts/WarningLinkBottomSheet';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 
 type Props = {
   value?: string;
@@ -10,17 +10,16 @@ type Props = {
 };
 
 export function LinkComponent({ url, value }: Props) {
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleLinkPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <WarningLinkBottomSheet redirectUrl={url} />,
+    });
+  }, [showBottomSheetModal, url]);
 
   return (
-    <>
-      <Text className="text-shadow" onPress={handleLinkPress}>
-        {value ?? url}
-      </Text>
-      <WarningLinkBottomSheet redirectUrl={url} ref={bottomSheetRef} />
-    </>
+    <Text className="text-shadow" onPress={handleLinkPress}>
+      {value ?? url}
+    </Text>
   );
 }

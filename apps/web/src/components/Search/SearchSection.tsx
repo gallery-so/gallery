@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { contexts } from '~/shared/analytics/constants';
-import colors from '~/shared/theme/colors';
 
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
+import { TitleDiatypeL } from '../core/Text/Text';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
+import SearchResultsHeader from './SearchResultsHeader';
 import { SearchResultVariant } from './types';
 
 type Props = {
@@ -46,7 +46,7 @@ export default function SearchSection({
   return (
     <VStack gap={variant === 'compact' ? 0 : 10}>
       <StyledResultHeader align="center" justify="space-between">
-        <StyledTitle variant={variant}>{title}</StyledTitle>
+        <SearchResultsHeader variant={variant}>{title}</SearchResultsHeader>
 
         {showAllButton && (
           <StyledGalleryLink
@@ -63,13 +63,6 @@ export default function SearchSection({
     </VStack>
   );
 }
-
-const StyledTitle = styled(TitleXS)<{ variant?: SearchResultVariant }>`
-  text-transform: uppercase;
-  color: ${colors.metal};
-
-  ${({ variant }) => variant === 'compact' && 'padding: 4px 0;'}
-`;
 
 const StyledResultHeader = styled(HStack)`
   padding: 0 12px;

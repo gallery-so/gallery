@@ -1,7 +1,7 @@
 import {
-  ForwardedRef,
   Suspense,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -16,10 +16,6 @@ import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
@@ -44,21 +40,16 @@ type CommentsBottomSheetProps = {
   activeCommentId?: string;
   replyToComment?: OnReplyPressParams;
   feedId: string;
-  bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
   type: FeedItemTypes;
 };
 
 export function CommentsBottomSheet({
   activeCommentId,
-  bottomSheetRef,
   feedId,
   replyToComment,
   type,
 }: CommentsBottomSheetProps) {
-  const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
   const commentBoxRef = useRef<TextInput>(null);
-
-  const [isOpen, setIsOpen] = useState(false);
 
   const { bottom } = useSafeAreaPadding();
   const isKeyboardActive = useKeyboardStatus();
@@ -77,8 +68,6 @@ export function CommentsBottomSheet({
   const { submitComment, isSubmittingComment } = useEventComment();
   const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
     usePostComment();
-
-  const snapPoints = [600];
 
   const {
     aliasKeyword,
@@ -162,91 +151,75 @@ export function CommentsBottomSheet({
     }
   }, [bottom, isKeyboardActive, paddingBottomValue]);
 
-  const handleDismiss = useCallback(() => {
-    resetMentions();
-    setSelectedComment(null);
-    topCommentId.current = null;
+  useEffect(() => {
+    return () => {
+      resetMentions();
+      setSelectedComment(null);
+      topCommentId.current = null;
+    };
   }, [resetMentions]);
 
   return (
-    <GalleryBottomSheetModal
-      ref={(value) => {
-        internalRef.current = value;
-        if (typeof bottomSheetRef === 'function') {
-          bottomSheetRef(value);
-        } else if (bottomSheetRef) {
-          bottomSheetRef.current = value;
-        }
-      }}
-      snapPoints={snapPoints}
-      onChange={() => setIsOpen(true)}
-      android_keyboardInputMode="adjustResize"
-      keyboardBlurBehavior="restore"
-      onDismiss={handleDismiss}
-    >
-      <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5">
-        <View className="flex-grow">
-          {isSelectingMentions ? (
-            <View className="flex-1 overflow-hidden">
-              {aliasKeyword ? (
-                <Suspense fallback={<SearchResultsFallback />}>
-                  <SearchResults
-                    keyword={aliasKeyword}
-                    activeFilter="top"
-                    onChangeFilter={noop}
-                    blurInputFocus={noop}
-                    onSelect={selectMention}
-                    onlyShowTopResults
-                    isMentionSearch
-                  />
-                </Suspense>
-              ) : (
-                <SearchResultsFallback />
-              )}
+    <Animated.View style={paddingStyle} className="flex flex-grow flex-col space-y-5 min-h-[400px]">
+      <View className="flex-grow">
+        {isSelectingMentions ? (
+          <View className="flex-1 overflow-hidden">
+            {aliasKeyword ? (
+              <Suspense fallback={<SearchResultsFallback />}>
+                <SearchResults
+                  keyword={aliasKeyword}
+                  activeFilter="top"
+                  onChangeFilter={noop}
+                  blurInputFocus={noop}
+                  onSelect={selectMention}
+                  onlyShowTopResults
+                  isMentionSearch
+                />
+              </Suspense>
+            ) : (
+              <SearchResultsFallback />
+            )}
+          </View>
+        ) : (
+          <View className="flex-1 space-y-2">
+            <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              Comments
+            </Typography>
+            <View className="flex-grow">
+              <Suspense fallback={<CommentListFallback />}>
+                <ConnectedCommentsList
+                  type={type}
+                  feedId={feedId}
+                  activeCommentId={highlightCommentId}
+                  onReplyPress={handleReplyPress}
+                />
+              </Suspense>
             </View>
-          ) : (
-            <View className="flex-1 space-y-2">
-              <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                Comments
-              </Typography>
-              <View className="flex-grow">
-                <Suspense fallback={<CommentListFallback />}>
-                  {isOpen && (
-                    <ConnectedCommentsList
-                      type={type}
-                      feedId={feedId}
-                      activeCommentId={highlightCommentId}
-                      onReplyPress={handleReplyPress}
-                    />
-                  )}
-                </Suspense>
-              </View>
-            </View>
-          )}
-        </View>
+          </View>
+        )}
+      </View>
 
-        <CommentsRepliedBanner
-          username={selectedComment?.username ?? ''}
-          comment={selectedComment?.comment ?? ''}
-          onClose={() => {
-            setSelectedComment(null);
-            topCommentId.current = null;
-          }}
-        />
+      <CommentsRepliedBanner
+        username={selectedComment?.username ?? ''}
+        comment={selectedComment?.comment ?? ''}
+        onClose={() => {
+          setSelectedComment(null);
+          topCommentId.current = null;
+        }}
+      />
 
-        <CommentBox
-          value={message}
-          onChangeText={setMessage}
-          onSelectionChange={handleSelectionChange}
-          onSubmit={handleSubmit}
-          isSubmittingComment={isSubmitting}
-          onClose={noop}
-          ref={commentBoxRef}
-          mentions={mentions}
-          autoFocus={Boolean(selectedComment?.commentId)}
-        />
-      </Animated.View>
-    </GalleryBottomSheetModal>
+      <CommentBox
+        value={message}
+        onChangeText={setMessage}
+        onSelectionChange={handleSelectionChange}
+        onSubmit={handleSubmit}
+        isSubmittingComment={isSubmitting}
+        onClose={noop}
+        ref={commentBoxRef}
+        mentions={mentions}
+        autoFocus={Boolean(selectedComment?.commentId)}
+      />
+    </Animated.View>
   );
 }
 

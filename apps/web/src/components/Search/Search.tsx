@@ -8,10 +8,12 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
 import { useSearchContext } from './SearchContext';
+import SearchDefault from './SearchDefault';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -121,12 +123,18 @@ export default function Search() {
             </StyledSpinnerContainer>
           }
         >
-          {keyword && (
+          {keyword ? (
             <SearchResults
               activeFilter={selectedFilter}
               keyword={keyword}
               onChangeFilter={setSelectedFilter}
               onSelect={handleSelect}
+            />
+          ) : (
+            <SearchDefault
+              onSelect={handleSelect}
+              selectedFilter={selectedFilter}
+              onChangeFilter={setSelectedFilter}
             />
           )}
         </Suspense>
@@ -137,6 +145,7 @@ export default function Search() {
 
 const StyledSearchContent = styled(VStack)`
   padding: 0 16px;
+  background-color: ${colors.offWhite};
 
   height: 100%;
   width: 100%;

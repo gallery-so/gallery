@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
@@ -43,5 +44,9 @@ export function CommunityCollectorsListItem({ userRef, queryRef }: Props) {
     }
   }, [navigation, user.username]);
 
-  return <UserFollowCard userRef={user} queryRef={query} onPress={handlePress} />;
+  return (
+    <View className="px-4">
+      <UserFollowCard userRef={user} queryRef={query} onPress={handlePress} />
+    </View>
+  );
 }

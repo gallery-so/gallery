@@ -1,3 +1,4 @@
+import { PortalHost } from '@gorhom/portal';
 import { NavigationContainerRefWithCurrent } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Suspense, useEffect } from 'react';
@@ -5,6 +6,7 @@ import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext';
 
+import { ClaimMintUpsellBanner } from '~/components/ClaimMintUpsellBanner';
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
@@ -104,6 +106,9 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         <Stack.Screen name="GalleryEditor" component={GalleryEditorScreen} />
         <Stack.Screen name="NftSelectorGalleryEditor" component={GalleryEditorNftSelector} />
       </Stack.Navigator>
+      <View className="flex">
+        <PortalHost name="bottomSheetPortal" />
+      </View>
     </>
   );
 }
@@ -121,6 +126,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
     graphql`
       fragment RootStackNavigatorFragment on Query {
         ...ConnectWalletUpsellBannerFragment
+        ...ClaimMintUpsellBannerFragment
       }
     `,
     queryRef
@@ -130,6 +136,7 @@ function MainScreen({ queryRef }: MainScreenProps) {
     <View className="flex-1">
       <Suspense fallback={<View />}>
         <ConnectWalletUpsellBanner queryRef={query} />
+        <ClaimMintUpsellBanner queryRef={query} />
       </Suspense>
       <MainTabNavigator />
     </View>

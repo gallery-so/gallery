@@ -11,15 +11,16 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { PostListSectionHeaderFragment$key } from '~/generated/PostListSectionHeaderFragment.graphql';
 import { PostListSectionHeaderQueryFragment$key } from '~/generated/PostListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { SharePostBottomSheet } from '~/screens/PostScreen/SharePostBottomSheet';
+import SharePostBottomSheet from '~/screens/PostScreen/SharePostBottomSheet';
 import { contexts } from '~/shared/analytics/constants';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
-import { FirstTimePosterBottomSheet } from './FirstTimePosterBottomSheet';
+import FirstTimePosterBottomSheet from './FirstTimePosterBottomSheet';
 import { PostBottomSheet } from './PostBottomSheet';
 
 type PostListSectionHeaderProps = {
@@ -77,8 +78,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const sharePostBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const firstTimePosterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const token = feedPost?.tokens?.[0];
   const loggedInUserId = useLoggedInUserId(query);
@@ -88,15 +87,50 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     return feedPost.author?.badges?.find((badge) => badge?.name === 'Top Member');
   }, [feedPost.author?.badges]);
 
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+
+  const handleSharePost = useCallback(() => {
+    showBottomSheetModal({
+      content: (
+        // TODO add fallback loading state for Share Bottom Sheet
+        <Suspense fallback={null}>
+          <SharePostBottomSheet
+            title="Share Post"
+            postId={feedPost.dbid}
+            creatorName={token?.definition?.community?.creator?.username ?? ''}
+          />
+        </Suspense>
+      ),
+    });
+  }, [feedPost.dbid, showBottomSheetModal, token?.definition?.community?.creator?.username]);
+
   const handleMenuPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: (
+        <PostBottomSheet
+          ref={bottomSheetRef}
+          isOwnPost={isOwnPost}
+          postRef={feedPost}
+          queryRef={query}
+          userRef={feedPost.author}
+          onShare={handleSharePost}
+        />
+      ),
+      navigationContext: navigation,
+    });
+  }, [feedPost, handleSharePost, isOwnPost, navigation, query, showBottomSheetModal]);
 
   const handleUsernamePress = useCallback(() => {
     if (feedPost.author?.username) {
       navigation.push('Profile', { username: feedPost.author?.username });
     }
   }, [feedPost.author?.username, navigation]);
+
+  const handleLeafIconPress = useCallback(() => {
+    showBottomSheetModal({
+      content: <FirstTimePosterBottomSheet />,
+    });
+  }, [showBottomSheetModal]);
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900  px-4">
@@ -128,7 +162,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
               {feedPost.isFirstPost && (
                 <GalleryTouchableOpacity
                   className="flex"
-                  onPress={() => firstTimePosterBottomSheetRef.current?.present()}
+                  onPress={handleLeafIconPress}
                   eventElementId="First Time Poster Leaf Icon Button"
                   eventName="First Time Poster Leaf Icon Button Clicked"
                   eventContext={contexts.Posts}
@@ -157,24 +191,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           </GalleryTouchableOpacity>
         </View>
       </View>
-      <FirstTimePosterBottomSheet ref={firstTimePosterBottomSheetRef} />
-      <PostBottomSheet
-        ref={bottomSheetRef}
-        isOwnPost={isOwnPost}
-        postRef={feedPost}
-        queryRef={query}
-        userRef={feedPost.author}
-        onShare={() => sharePostBottomSheetRef.current?.present()}
-      />
-
-      <Suspense fallback={null}>
-        <SharePostBottomSheet
-          ref={sharePostBottomSheetRef}
-          title="Share Post"
-          postId={feedPost.dbid}
-          creatorName={token?.definition?.community?.creator?.username ?? ''}
-        />
-      </Suspense>
     </View>
   );
 }

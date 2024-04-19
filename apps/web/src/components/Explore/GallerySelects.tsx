@@ -1,46 +1,41 @@
+import { useMemo } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
+import { CmsTypes } from '~/scenes/ContentPages/cms_types';
 
 import breakpoints from '../core/breakpoints';
 import GalleryLink from '../core/GalleryLink/GalleryLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleM } from '../core/Text/Text';
 
-const ELLE_ARTICLE_URL = 'https://gallery.mirror.xyz/bcWLpLKxVVJCOvzRHY7F-XAD5PO-3T-Ahc9pZzAhX6k';
-function Article() {
+function Article({ article }: { article: CmsTypes.ExplorePageGallerySelectsArticle }) {
   return (
     <StyledArticle
       eventElementId="Explore Page Article"
       eventName="Clicked Explore Page Article"
-      href={ELLE_ARTICLE_URL}
+      properties={{ articleTitle: article.title, articleUrl: article.articleUrl }}
+      href={article.articleUrl}
       target="_blank"
       rel="noreferrer"
     >
       <StyledArticleContent>
-        <StyledArticleImage src="https://images.mirror-media.xyz/publication-images/BIYb97ZD_2ZiEm5UcQUJn.png?height=2284&width=4568" />
+        <StyledArticleImage src={article.coverImage.asset.url} />
         <StyledArticleText justify="space-between" gap={24}>
           <VStack gap={12}>
             <TitleM>
-              <strong>Elle's Ode to Internet Subcultures </strong>
+              <strong>{article.title}</strong>
             </TitleM>
-            <StyledArticleDescription>
-              Elle’s on-chain creative journey began in 2021 when she started minting NFTs on the
-              Fantom network. She combines her interest in alternative/niche, net-native currency
-              and cypherpunk principles with her multiple creative skills. Her work, characterized
-              by pixel art and a very specific color palette, reflects her thoughtful engagement
-              with many of the web subcultures facets. In this chat, she shares about her
-              background, her experiences on Gallery, and how such a move can emphasize the value of
-              on-chain art. ⌒ ﾟ( -⩊- )ﾟ⌒
-            </StyledArticleDescription>
+            <StyledArticleDescription>{article.previewText}</StyledArticleDescription>
+            <ArticleLinkButton>
+              <HStack gap={4} align="center" justify="center">
+                <BaseM color={colors.white}>View Article</BaseM>
+                <ArrowUpRightIcon />
+              </HStack>
+            </ArticleLinkButton>
           </VStack>
-          <ArticleLinkButton>
-            <HStack gap={4} align="center" justify="center">
-              <BaseM color={colors.white}>View Article</BaseM>
-              <ArrowUpRightIcon />
-            </HStack>
-          </ArticleLinkButton>
         </StyledArticleText>
       </StyledArticleContent>
     </StyledArticle>
@@ -50,11 +45,17 @@ function Article() {
 const StyledArticle = styled(GalleryLink)`
   width: 100%;
   text-decoration: none;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-height: 302px;
+  }
 `;
 
 const StyledArticleContent = styled(VStack)`
   border-radius: 8px;
   gap: 24px 16px;
+  height: 100%;
+  box-sizing: content-box;
 
   @media only screen and ${breakpoints.tablet} {
     background-color: ${colors.offWhite};
@@ -72,10 +73,22 @@ const StyledArticleImage = styled.img`
   @media only screen and ${breakpoints.tablet} {
     width: 50%;
   }
+  ratio: 1;
 `;
 
 const StyledArticleDescription = styled(BaseM)`
   color: ${colors.shadow};
+
+  @media only screen and ${breakpoints.tablet} {
+    max-height: 180px;
+    display: -webkit-box;
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    line-clamp: 9;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 9;
+  }
 `;
 
 const ArticleLinkButton = styled.div`
@@ -90,16 +103,44 @@ const ArticleLinkButton = styled.div`
   }
 `;
 
-export default function GallerySelects() {
+type Props = {
+  gallerySelectsContent: CmsTypes.ExplorePageGallerySelectsList;
+};
+
+export default function GallerySelects({ gallerySelectsContent }: Props) {
+  const articlesToShow = useMemo(() => {
+    return gallerySelectsContent.articleList.slice(0, 2);
+  }, [gallerySelectsContent.articleList]);
+  const isMobile = useIsMobileWindowWidth();
   return (
     <StyledTrendingSection gap={12}>
-      <VStack gap={4}>
-        <Title>Gallery Selects</Title>
-        <TitleDiatypeL color={colors.metal}>
-          Conversations with artists and collectors
-        </TitleDiatypeL>
-      </VStack>
-      <Article />
+      <HStack justify="space-between" align="flex-end">
+        <VStack gap={4}>
+          <Title>Gallery Selects</Title>
+          <TitleDiatypeL color={colors.metal}>
+            Conversations with artists and collectors
+          </TitleDiatypeL>
+        </VStack>
+        {!isMobile && (
+          <GalleryLink
+            href="https://gallery.mirror.xyz"
+            eventElementId="Explore Page Gallery Selects See All Button"
+            eventName="Clicked Explore Page Gallery Selects See All Button"
+          >
+            <HStack gap={4} align="center">
+              <BaseM color={colors.shadow}>
+                <strong>See all</strong>
+              </BaseM>
+              <ArrowUpRightIcon color={colors.shadow} />
+            </HStack>
+          </GalleryLink>
+        )}
+      </HStack>
+      <ArticleContainer>
+        {articlesToShow.map((article) => (
+          <Article key={article.title} article={article} />
+        ))}
+      </ArticleContainer>
     </StyledTrendingSection>
   );
 }
@@ -110,4 +151,13 @@ const StyledTrendingSection = styled(VStack)`
 
 const Title = styled(TitleDiatypeL)`
   font-size: 24px;
+`;
+
+const ArticleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  @media only screen and ${breakpoints.desktop} {
+    flex-direction: row;
+  }
 `;

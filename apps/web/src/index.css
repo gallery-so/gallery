@@ -97,6 +97,14 @@
 
 html {
   -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape while allowing user zoom */
+
+  /* Privy Modal Styling Overrides */
+  --privy-border-radius-sm: 0px !important;
+  --privy-border-radius-md: 0px !important;
+  --privy-border-radius-mdlg: 0px !important;
+  --privy-border-radius-lg: 0px !important;
+  --privy-border-radius-full: 0px !important;
+  --privy-color-background-2: none !important;
 }
 
 body {

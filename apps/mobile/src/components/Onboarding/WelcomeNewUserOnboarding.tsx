@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { BlurView } from 'expo-blur';
 import { useColorScheme } from 'nativewind';
@@ -7,26 +8,31 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contexts } from 'shared/analytics/constants';
 import colors from 'shared/theme/colors';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { LazyAccountTabItem } from '~/navigation/MainTabNavigator/TabBar';
+import { LoginStackNavigatorProp } from '~/navigation/types';
 
-import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
-import { Typography } from './Typography';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 import { WelcomeNewUser } from './WelcomeNewUser';
 
 type Props = {
   username: string;
+  onComplete: () => void;
 };
 
-export function WelcomeNewUserOnboarding({ username }: Props) {
+export function WelcomeNewUserOnboarding({ username, onComplete }: Props) {
   const { colorScheme } = useColorScheme();
+  const { showBottomSheetModal } = useBottomSheetModalActions();
 
   // Step 1: Welcome message
   // Step 2: Post message
   // Step 3: Profile message
+
   const [step, setStep] = useState(1);
 
   const { bottom } = useSafeAreaInsets();
@@ -35,6 +41,7 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
   const nextStep = useCallback(() => {
     if (step === 3) {
       setStep(0);
+      onComplete();
       return;
     }
 
@@ -47,14 +54,21 @@ export function WelcomeNewUserOnboarding({ username }: Props) {
     }
 
     setStep((prevStep) => prevStep + 1);
-  }, [step]);
+  }, [onComplete, step]);
+
+  const navigation = useNavigation<LoginStackNavigatorProp>();
 
   if (step > 3 || step === 0) {
     return null;
   }
 
   if (step === 1) {
-    return <WelcomeNewUser username={username} onContinue={nextStep} />;
+    showBottomSheetModal({
+      content: <WelcomeNewUser username={username} onContinue={nextStep} />,
+      navigationContext: navigation,
+      blurBackground: true,
+    });
+    return null;
   }
 
   return (

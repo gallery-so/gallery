@@ -63,10 +63,11 @@ export default function SidebarIcon({
 
   if (href || to) {
     return (
-      <IconWrapper onClick={handleClick}>
+      <IconWrapper>
         <GalleryLink
           to={to}
           href={href}
+          onClick={handleClick}
           // TODO analytics - move tracking here as opposed to manually doing it on parent StandardSidebar.tsx
         >
           {content}

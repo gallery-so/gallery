@@ -9,7 +9,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import unescape from '~/shared/utils/unescape';
+import { getUnescapedBioFirstLine } from '~/utils/sanity';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
@@ -66,8 +66,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   }
 
   const { bio } = user;
-
-  const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
+  const bioFirstLine = useMemo(() => getUnescapedBioFirstLine(bio), [bio]);
 
   const userGalleries = useMemo(() => {
     return user.galleries ?? [];
@@ -94,13 +93,6 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   }, [user.badges]);
 
   const isMobile = useIsMobileWindowWidth();
-
-  const bioFirstLine = useMemo(() => {
-    if (!unescapedBio) {
-      return '';
-    }
-    return unescapedBio.split('\n')[0] ?? '';
-  }, [unescapedBio]);
 
   return (
     <StyledExploreUserCard
