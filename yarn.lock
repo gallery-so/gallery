@@ -27525,12 +27525,12 @@ __metadata:
   linkType: hard
 
 "react-native-draggable-grid@npm:^2.1.8":
-  version: 2.1.8
-  resolution: "react-native-draggable-grid@npm:2.1.8"
+  version: 2.2.1
+  resolution: "react-native-draggable-grid@npm:2.2.1"
   peerDependencies:
     react: ^16 || ^17 || ^18
     react-native: "*"
-  checksum: 53075afff7c63f6dad3ff0bcf9b5d107ed1cd9a74cfe5e8c3f10e4e6edc25c2daaa50610f04a0d76601cf724c3bfb1af9221c247a768d5a535026ca27fa51c9e
+  checksum: ce2d0cb79868167d148a6a1dbdba851adfef4042295f52159eff5cded3208d0f60a27cd43992e2270afc69c0aae8c0aed3d0a38e26f282de47dd01605039159a
   languageName: node
   linkType: hard
 

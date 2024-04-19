@@ -11,8 +11,7 @@ import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSecti
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
 import { BaseM } from '../Text';
-import { Draggable } from './Draggable';
-import { GalleryEditorRow } from './GalleryEditorRow';
+import { SortableRowList } from './SortableRowList';
 
 type Props = {
   section: StagedSection;
@@ -23,7 +22,7 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorSectionFragment on Query {
-        ...GalleryEditorRowFragment
+        ...SortableRowListFragment
       }
     `,
     queryRef
@@ -40,6 +39,10 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
     activateSection(section.dbid);
     clearActiveRow();
   }, [clearActiveRow, activateSection, section.dbid]);
+
+  const handleDragEnd = useCallback((positions: string[]) => {
+    console.log({ positions });
+  }, []);
 
   return (
     <GalleryTouchableOpacity
@@ -65,20 +68,12 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
           {section.name}
         </BaseM>
         <ProcessedText text={section.collectorsNote || ''} />
-
-        <View className="space-y-2 z-30">
-          {section.rows.map((row, index) => {
-            return (
-              <Draggable
-                key={`${row.id}-${index}`}
-                value={{ id: row.id, type: 'row' }}
-                disabled={row.id !== activeRowId}
-              >
-                <GalleryEditorRow sectionId={section.dbid} row={row} queryRef={query} />
-              </Draggable>
-            );
-          })}
-        </View>
+        <SortableRowList
+          rows={section.rows}
+          sectionId={section.dbid}
+          queryRef={query}
+          onDragEnd={handleDragEnd}
+        />
       </View>
     </GalleryTouchableOpacity>
   );

@@ -13,7 +13,6 @@ import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSecti
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 
 import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
-import { Draggable } from './Draggable';
 import { GalleryEditorHeader } from './GalleryEditorHeader';
 import { GalleryEditorNavbar } from './GalleryEditorNavbar';
 import { GalleryEditorSection } from './GalleryEditorSection';
@@ -87,21 +86,13 @@ export function GalleryEditorRender({ galleryRef, queryRef }: Props) {
     return items;
   }, [gallery, sections, query]);
 
-  const renderItem = useCallback<ListRenderItem<ListItemType>>(({ item, index }) => {
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(({ item }) => {
     if (item.kind === 'header') {
       return <GalleryEditorHeader galleryRef={item.galleryRef} />;
     } else if (item.kind === 'navigation') {
       return <GalleryEditorNavbar />;
     } else if (item.kind === 'section') {
-      return (
-        <Draggable
-          key={`${item.section.dbid}-${index}`}
-          value={{ id: item.section.dbid, type: 'section' }}
-          // disabled={item.section.dbid !== sectionIdBeingEdited || Boolean(activeRowId)}
-        >
-          <GalleryEditorSection section={item.section} queryRef={item.queryRef} />
-        </Draggable>
-      );
+      return <GalleryEditorSection section={item.section} queryRef={item.queryRef} />;
     } else {
       return null;
     }

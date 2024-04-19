@@ -3,10 +3,6 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
-import {
-  ItemCoordinates,
-  useGalleryDraggableActions,
-} from '~/contexts/GalleryEditor/GalleryDraggableContext';
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSectionList } from '~/contexts/GalleryEditor/types';
 
@@ -17,8 +13,6 @@ import { BaseM } from '../Text';
 export function GalleryEditorNavbar() {
   const { activeRowId, sections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
 
-  const { coordinates } = useGalleryDraggableActions();
-
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
   const handleDebugger = useCallback(() => {
@@ -28,11 +22,10 @@ export function GalleryEditorNavbar() {
           activeSectionId={sectionIdBeingEdited}
           activeRowId={activeRowId}
           sections={sections}
-          coordinates={coordinates}
         />
       ),
     });
-  }, [activeRowId, coordinates, sections, sectionIdBeingEdited, showBottomSheetModal]);
+  }, [activeRowId, sections, sectionIdBeingEdited, showBottomSheetModal]);
 
   return (
     <View className="p-4 flex-row items-center justify-between">
@@ -67,16 +60,9 @@ type DebuggerBottomSheetProps = {
   activeSectionId: string | null;
   activeRowId: string | null;
   sections: StagedSectionList;
-  coordinates: ItemCoordinates[];
 };
 
-function DebuggerBottomSheet({
-  activeRowId,
-  activeSectionId,
-  sections,
-  coordinates,
-}: DebuggerBottomSheetProps) {
-  // console.log(collections);
+function DebuggerBottomSheet({ activeRowId, activeSectionId, sections }: DebuggerBottomSheetProps) {
   return (
     <View className="gap-2">
       <View className="gap-2">
@@ -105,8 +91,6 @@ function DebuggerBottomSheet({
             </View>
           );
         })}
-
-        <BaseM>{JSON.stringify(coordinates)}</BaseM>
       </View>
     </View>
   );

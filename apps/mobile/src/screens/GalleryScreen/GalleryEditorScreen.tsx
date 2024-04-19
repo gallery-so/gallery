@@ -5,7 +5,6 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { GalleryEditorActions } from '~/components/GalleryEditor/GalleryEditorActions';
 import { GalleryEditorRender } from '~/components/GalleryEditor/GalleryEditorRender';
-import GalleryDraggableProvider from '~/contexts/GalleryEditor/GalleryDraggableContext';
 import GalleryEditorProvider from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { GalleryEditorScreenQuery } from '~/generated/GalleryEditorScreenQuery.graphql';
 import { RootStackNavigatorParamList } from '~/navigation/types';
@@ -40,10 +39,8 @@ function InnerGalleryEditorScreen() {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <GalleryDraggableProvider>
-        <GalleryEditorRender galleryRef={gallery} queryRef={query} />
-        <GalleryEditorActions />
-      </GalleryDraggableProvider>
+      <GalleryEditorRender galleryRef={gallery} queryRef={query} />
+      <GalleryEditorActions />
     </GalleryEditorProvider>
   );
 }
