@@ -20,13 +20,13 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     GALLERY_EDITOR: true,
   },
   BETA_TESTER: {
-    GALLERY_EDITOR: false,
+    GALLERY_EDITOR: true,
   },
   EARLY_ACCESS: {
-    GALLERY_EDITOR: false,
+    GALLERY_EDITOR: true,
   },
   EMAIL_TESTER: {
-    GALLERY_EDITOR: false,
+    GALLERY_EDITOR: true,
   },
 };
 

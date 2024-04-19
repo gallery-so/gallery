@@ -3,10 +3,10 @@ import { readInlineData } from 'relay-runtime';
 
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { parseCollectionLayoutGraphql } from '~/shared/utils/collectionLayout';
+import { generate12DigitId } from '~/shared/utils/generate12DigitId';
 
-import { parseCollectionLayoutGraphql } from './collectionLayout';
 import { StagedRowList, StagedSection, StagedSectionList } from './types';
-import { generate12DigitId } from './util';
 
 export function getInitialCollectionsFromServer(
   galleryRef: getInitialCollectionsFromServerFragment$key
