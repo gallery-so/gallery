@@ -7,8 +7,8 @@ type Offset = {
   height: number;
 };
 
-const horizontalRowPadding = 16;
-const inBetweenColumnPadding = 0;
+export const horizontalRowPadding = 16;
+export const inBetweenColumnPadding = 0;
 
 export function getRowHeight(row: StagedRow, screenDimensionsWidth: number) {
   const column = row.columns;

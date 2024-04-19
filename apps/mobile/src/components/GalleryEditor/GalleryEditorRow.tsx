@@ -11,9 +11,7 @@ import { GalleryEditorRowFragment$key } from '~/generated/GalleryEditorRowFragme
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { GalleryEditorActiveActions } from './GalleryEditorActiveActions';
 import { GalleryEditorTokenPreview } from './GalleryEditorTokenPreview';
-
-const horizontalRowPadding = 16;
-const inBetweenColumnPadding = 0;
+import { horizontalRowPadding, inBetweenColumnPadding } from './utils';
 
 type Props = {
   sectionId: string;

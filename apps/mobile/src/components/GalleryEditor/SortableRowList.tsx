@@ -61,33 +61,31 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
   }, [rowOffsets]);
 
   return (
-    <>
-      <View
-        className="relative"
-        style={[
-          {
-            height: containerHeight,
-            top: 0,
-            left: 0,
-            right: 0,
-          },
-        ]}
-      >
-        {rows.map((row, index) => {
-          return (
-            <SortableRow
-              key={`${row.id}`}
-              index={index}
-              positions={positions}
-              animatedIndex={animatedIndex}
-              itemHeights={itemHeights}
-              onDragEnd={onDragEnd}
-            >
-              <GalleryEditorRow sectionId={sectionId} row={row} queryRef={query} />
-            </SortableRow>
-          );
-        })}
-      </View>
-    </>
+    <View
+      className="relative"
+      style={[
+        {
+          height: containerHeight,
+          top: 0,
+          left: 0,
+          right: 0,
+        },
+      ]}
+    >
+      {rows.map((row, index) => {
+        return (
+          <SortableRow
+            key={`${row.id}`}
+            index={index}
+            positions={positions}
+            animatedIndex={animatedIndex}
+            itemHeights={itemHeights}
+            onDragEnd={onDragEnd}
+          >
+            <GalleryEditorRow sectionId={sectionId} row={row} queryRef={query} />
+          </SortableRow>
+        );
+      })}
+    </View>
   );
 }
