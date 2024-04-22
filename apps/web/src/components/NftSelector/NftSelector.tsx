@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
@@ -25,6 +25,7 @@ import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddre
 import { NftSelectorFilterNetwork } from './NftSelectorFilter/NftSelectorFilterNetwork';
 import { NftSelectorFilterSort } from './NftSelectorFilter/NftSelectorFilterSort';
 import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSelector';
+import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import NftSelectorTokens from './NftSelectorTokens';
 
@@ -38,7 +39,11 @@ type Props = {
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
 export function NftSelector(props: Props) {
-  return <NftSelectorInner {...props} />;
+  return (
+    <Suspense fallback={<NftSelectorLoadingView />}>
+      <NftSelectorInner {...props} />
+    </Suspense>
+  );
 }
 
 function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, eventFlow }: Props) {
