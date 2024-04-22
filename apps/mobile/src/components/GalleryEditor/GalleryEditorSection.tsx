@@ -1,6 +1,8 @@
+import { FlashList } from '@shopify/flash-list';
 import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { AnimatedRef, SharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 import { DragIcon } from 'src/icons/DragIcon';
 
@@ -11,14 +13,23 @@ import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSecti
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
 import { BaseM } from '../Text';
+import { ListItemType } from './GalleryEditorRender';
 import { SortableRowList } from './SortableRowList';
 
 type Props = {
   section: StagedSection;
   queryRef: GalleryEditorSectionFragment$key;
+
+  scrollContentOffsetY: SharedValue<number>;
+  scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 };
 
-export function GalleryEditorSection({ section, queryRef }: Props) {
+export function GalleryEditorSection({
+  section,
+  queryRef,
+  scrollContentOffsetY,
+  scrollViewRef,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorSectionFragment on Query {
@@ -76,6 +87,8 @@ export function GalleryEditorSection({ section, queryRef }: Props) {
           sectionId={section.dbid}
           queryRef={query}
           onDragEnd={handleDragEnd}
+          scrollContentOffsetY={scrollContentOffsetY}
+          scrollViewRef={scrollViewRef}
         />
       </View>
     </GalleryTouchableOpacity>

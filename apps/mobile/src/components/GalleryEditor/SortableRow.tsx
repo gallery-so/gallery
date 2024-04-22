@@ -1,8 +1,12 @@
+import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
+import { useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { trigger } from 'react-native-haptic-feedback';
 import Animated, {
+  AnimatedRef,
   runOnJS,
+  scrollTo,
   SharedValue,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -11,7 +15,9 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ListItemType } from './GalleryEditorRender';
 import { ItemHeights, Positions } from './SortableRowList';
 
 type Props = {
@@ -20,6 +26,8 @@ type Props = {
   positions: SharedValue<Positions>;
   animatedIndex: SharedValue<number | null>;
   itemHeights: SharedValue<ItemHeights>;
+  scrollContentOffsetY: SharedValue<number>;
+  scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 
   onDragEnd: (data: string[]) => void;
 };
@@ -30,6 +38,8 @@ export function SortableRow({
   positions,
   animatedIndex,
   itemHeights,
+  scrollContentOffsetY,
+  scrollViewRef,
   onDragEnd,
 }: Props) {
   const itemHeight = itemHeights.value[index] ?? 0;
@@ -93,6 +103,36 @@ export function SortableRow({
     [positions, itemHeights]
   );
 
+  // Get safe area insets and window dimensions
+  const inset = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
+  const containerHeight = windowHeight - inset.top;
+
+  // Callback to handle edge cases while scrolling
+  // (when the user drags the item to the top or bottom of the list)
+  // Since we need to update the scroll position of the scroll view (scrollTo)
+  const scrollLogic = useCallback(
+    ({ absoluteY }: { absoluteY: number }) => {
+      'worklet';
+      const lowerBound = 1.5 * itemHeight;
+      const upperBound = scrollContentOffsetY.value + containerHeight;
+
+      // scroll speed is proportional to the item height (the bigger the item, the faster it scrolls)
+      const scrollSpeed = itemHeight * 0.1;
+
+      if (absoluteY <= lowerBound) {
+        // while scrolling to the top of the list
+        const nextPosition = scrollContentOffsetY.value - scrollSpeed;
+        scrollTo(scrollViewRef, 0, Math.max(nextPosition, 0), false);
+      } else if (absoluteY + scrollContentOffsetY.value >= upperBound) {
+        // while scrolling to the bottom of the list
+        const nextPosition = scrollContentOffsetY.value + scrollSpeed;
+        scrollTo(scrollViewRef, 0, Math.max(nextPosition, 0), false);
+      }
+    },
+    [containerHeight, itemHeight, scrollContentOffsetY.value, scrollViewRef]
+  );
+
   // Need to keep track of the previous positions to check if the positions have changed
   // This is needed to trigger the onDragEnd callback
   const prevPositions = useSharedValue({});
@@ -104,17 +144,25 @@ export function SortableRow({
       prevPositions.value = Object.assign({}, positions.value);
 
       animatedIndex.value = index;
-
-      contextY.value = positions.value[index] ?? 0;
+      // Keep the reference of the initialContentOffset
+      // But that's extremely important to handle the edge cases while scrolling
+      // Notice:
+      // 1. In the context we subtract the scrollContentOffsetY.value
+      // 2. In the onUpdate we add the scrollContentOffsetY.value
+      // In the common case the contribution of the scrollContentOffsetY.value will be 0
+      // But in the edge cases the scrollContentOffsetY.value will be updated during the onUpdate
+      contextY.value = (positions.value[index] ?? 0) - scrollContentOffsetY.value;
 
       translateX.value = event.translationX;
 
       runOnJS(trigger)('impactLight');
     })
     .onUpdate((event) => {
-      const { translationY } = event;
+      const { absoluteY, translationY } = event;
 
-      const translateY = contextY.value + translationY;
+      const translateY = contextY.value + translationY + scrollContentOffsetY.value;
+
+      scrollLogic({ absoluteY });
 
       for (let i = 0; i < Object.keys(positions.value).length; i++) {
         // Check if the translateY is in range of another item

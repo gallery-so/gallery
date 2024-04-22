@@ -1,7 +1,8 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useEffect, useMemo } from 'react';
-import { View } from 'react-native';
+import { NativeScrollEvent, NativeSyntheticEvent, View } from 'react-native';
+import { useAnimatedRef, useSharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
@@ -17,7 +18,7 @@ import { GalleryEditorHeader } from './GalleryEditorHeader';
 import { GalleryEditorNavbar } from './GalleryEditorNavbar';
 import { GalleryEditorSection } from './GalleryEditorSection';
 
-type ListItemType =
+export type ListItemType =
   | { kind: 'navigation'; title: string }
   | { kind: 'header'; galleryRef: GalleryEditorHeaderFragment$key }
   | { kind: 'section'; section: StagedSection; queryRef: GalleryEditorSectionFragment$key };
@@ -86,17 +87,37 @@ export function GalleryEditorRender({ galleryRef, queryRef }: Props) {
     return items;
   }, [gallery, sections, query]);
 
-  const renderItem = useCallback<ListRenderItem<ListItemType>>(({ item }) => {
-    if (item.kind === 'header') {
-      return <GalleryEditorHeader galleryRef={item.galleryRef} />;
-    } else if (item.kind === 'navigation') {
-      return <GalleryEditorNavbar />;
-    } else if (item.kind === 'section') {
-      return <GalleryEditorSection section={item.section} queryRef={item.queryRef} />;
-    } else {
-      return null;
-    }
-  }, []);
+  const scrollContentOffsetY = useSharedValue(0);
+  const ref = useAnimatedRef<FlashList<ListItemType>>();
+
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(
+    ({ item }) => {
+      if (item.kind === 'header') {
+        return <GalleryEditorHeader galleryRef={item.galleryRef} />;
+      } else if (item.kind === 'navigation') {
+        return <GalleryEditorNavbar />;
+      } else if (item.kind === 'section') {
+        return (
+          <GalleryEditorSection
+            section={item.section}
+            queryRef={item.queryRef}
+            scrollContentOffsetY={scrollContentOffsetY}
+            scrollViewRef={ref}
+          />
+        );
+      } else {
+        return null;
+      }
+    },
+    [ref, scrollContentOffsetY]
+  );
+
+  const handleScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollContentOffsetY.value = e.nativeEvent.contentOffset.y;
+    },
+    [scrollContentOffsetY]
+  );
 
   return (
     <View
@@ -105,7 +126,13 @@ export function GalleryEditorRender({ galleryRef, queryRef }: Props) {
         paddingTop: top,
       }}
     >
-      <FlashList data={items} renderItem={renderItem} estimatedItemSize={93} />
+      <FlashList
+        ref={ref}
+        data={items}
+        renderItem={renderItem}
+        estimatedItemSize={93}
+        onScroll={handleScroll}
+      />
     </View>
   );
 }

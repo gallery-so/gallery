@@ -1,11 +1,13 @@
+import { FlashList } from '@shopify/flash-list';
 import { useEffect, useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { useSharedValue } from 'react-native-reanimated';
+import { AnimatedRef, SharedValue, useSharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { StagedRowList } from '~/contexts/GalleryEditor/types';
 import { SortableRowListFragment$key } from '~/generated/SortableRowListFragment.graphql';
 
+import { ListItemType } from './GalleryEditorRender';
 import { GalleryEditorRow } from './GalleryEditorRow';
 import { SortableRow } from './SortableRow';
 import { calculateItemHeights, calculateOffsetsRow, calculatePositions } from './utils';
@@ -17,6 +19,9 @@ type Props = {
   queryRef: SortableRowListFragment$key;
 
   onDragEnd: (data: string[]) => void;
+
+  scrollContentOffsetY: SharedValue<number>;
+  scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 };
 
 type Index = number;
@@ -26,7 +31,14 @@ type HeightValue = number;
 export type Positions = Record<Index, PositionValue>;
 export type ItemHeights = Record<Index, HeightValue>;
 
-export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props) {
+export function SortableRowList({
+  rows,
+  sectionId,
+  queryRef,
+  onDragEnd,
+  scrollContentOffsetY,
+  scrollViewRef,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment SortableRowListFragment on Query {
@@ -80,6 +92,8 @@ export function SortableRowList({ rows, sectionId, queryRef, onDragEnd }: Props)
             positions={positions}
             animatedIndex={animatedIndex}
             itemHeights={itemHeights}
+            scrollContentOffsetY={scrollContentOffsetY}
+            scrollViewRef={scrollViewRef}
             onDragEnd={onDragEnd}
           >
             <GalleryEditorRow sectionId={sectionId} row={row} queryRef={query} />
