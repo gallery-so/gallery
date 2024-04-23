@@ -1,11 +1,9 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
-import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
 import { GalleryPageSpacing } from '~/pages/[username]';
 
-import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 
 const GallerySkeletonWrapper = styled.div`
@@ -15,6 +13,7 @@ const GallerySkeletonWrapper = styled.div`
 
 const Wrapper = styled.div`
   padding-left: 20px;
+  margin-bottom: 60px;
 `;
 
 const TitleSkeleton = styled(Skeleton)`
@@ -52,18 +51,6 @@ const ArtworkGridItemSkeleton = styled(Skeleton)`
   height: 300px;
 `;
 
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${colors.porcelain};
-  display: none;
-  margin-top: 60px;
-
-  @media only screen and ${breakpoints.desktop} {
-    display: block;
-  }
-`;
-
 const UserGallerySkeleton = () => {
   return (
     <GalleryPageSpacing>
@@ -74,7 +61,6 @@ const UserGallerySkeleton = () => {
             <UsernameFollowsSkeleton />
             <UsernameSocialsSkeleton />
           </Wrapper>
-          <Divider />
         </GallerySkeletonWrapper>
       </VStack>
       <Wrapper>
