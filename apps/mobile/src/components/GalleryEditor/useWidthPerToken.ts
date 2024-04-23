@@ -1,4 +1,5 @@
 import { useWindowDimensions } from 'react-native';
+
 import { horizontalRowPadding, inBetweenColumnPadding } from './utils';
 
 export function useWidthPerToken(columns: number) {
