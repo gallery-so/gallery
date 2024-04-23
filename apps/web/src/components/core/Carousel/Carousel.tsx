@@ -1,7 +1,7 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import React, { useCallback } from 'react';
 import colors from 'shared/theme/colors';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
@@ -12,13 +12,15 @@ import { HStack } from '../Spacer/Stack';
 
 type Props = {
   slideContent: React.ReactNode[];
+  loop?: boolean;
+  variant?: 'default' | 'compact';
 };
 
-export const Carousel = ({ slideContent }: Props) => {
+export const Carousel = ({ slideContent, loop = true, variant = 'default' }: Props) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
     containScroll: false,
-    loop: true,
+    loop: loop,
   });
 
   const scrollPrev = useCallback(() => {
@@ -42,7 +44,9 @@ export const Carousel = ({ slideContent }: Props) => {
         <div ref={emblaRef}>
           <StyledSlidesContainer>
             {slideContent.map((slide, index) => (
-              <StyledSlides key={index}>{slide}</StyledSlides>
+              <StyledSlides variant={variant} key={index}>
+                {slide}
+              </StyledSlides>
             ))}
           </StyledSlidesContainer>
         </div>
@@ -70,10 +74,16 @@ const StyledSlidesContainer = styled.div`
   display: flex;
 `;
 
-const StyledSlides = styled.div`
+const StyledSlides = styled.div<{ variant: string }>`
   flex: 0 0 75%;
   min-width: 0;
   margin: 0 8px;
+  ${({ variant }) =>
+    variant === 'compact' &&
+    css`
+      font-size: 14px;
+      margin: 0 2px;
+    `}
 
   @media only screen and ${breakpoints.desktop} {
     flex: 0 0 100%;

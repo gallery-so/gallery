@@ -116,8 +116,9 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           onShare={handleSharePost}
         />
       ),
+      navigationContext: navigation,
     });
-  }, [feedPost, handleSharePost, isOwnPost, query, showBottomSheetModal]);
+  }, [feedPost, handleSharePost, isOwnPost, navigation, query, showBottomSheetModal]);
 
   const handleUsernamePress = useCallback(() => {
     if (feedPost.author?.username) {

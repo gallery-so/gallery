@@ -1,6 +1,6 @@
 import 'expo-dev-client';
 
-import { PortalProvider } from '@gorhom/portal';
+import { PortalHost, PortalProvider } from '@gorhom/portal';
 import { PrivyProvider } from '@privy-io/expo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
@@ -27,7 +27,6 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
-import { FarcasterAuthProvider } from './components/Login/AuthProvider/Farcaster/FarcasterAuthProvider';
 import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
@@ -144,7 +143,12 @@ export default function App() {
           <RelayEnvironmentProvider environment={relayEnvironment}>
             <SWRConfig>
               <Suspense fallback={<LoadingView />}>
-                <PrivyProvider appId={'clsdmobu302tl3zebv3sh3xaz'}>
+                <PrivyProvider
+                  appId={
+                    // TODO: rotate this with secrets in the future. eas secrets busted rn
+                    env.EXPO_PUBLIC_ENV === 'prod' ? 'clsdmobu302tl3zebv3sh3xaz' : env.PRIVY_APP_ID
+                  }
+                >
                   <MobileAnalyticsProvider>
                     <MobileErrorReportingProvider>
                       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -157,18 +161,17 @@ export default function App() {
                                   <PortalProvider>
                                     <BottomSheetModalProvider>
                                       <SyncTokensProvider>
-                                        <FarcasterAuthProvider>
-                                          <ManageWalletProvider>
-                                            {/* Register the user's push token if one exists (does not prompt the user) */}
-                                            <NotificationRegistrar />
-                                            <DevMenuItems />
-                                            <DeepLinkRegistrar />
-                                            <RootStackNavigator
-                                              navigationContainerRef={navigationRef}
-                                            />
-                                          </ManageWalletProvider>
-                                        </FarcasterAuthProvider>
+                                        <ManageWalletProvider>
+                                          {/* Register the user's push token if one exists (does not prompt the user) */}
+                                          <NotificationRegistrar />
+                                          <DevMenuItems />
+                                          <DeepLinkRegistrar />
+                                          <RootStackNavigator
+                                            navigationContainerRef={navigationRef}
+                                          />
+                                        </ManageWalletProvider>
                                       </SyncTokensProvider>
+                                      <PortalHost name="app-context" />
                                     </BottomSheetModalProvider>
                                   </PortalProvider>
                                 </TokenStateManagerProvider>

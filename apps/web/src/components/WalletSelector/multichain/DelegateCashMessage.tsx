@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
@@ -11,11 +10,7 @@ import { contexts } from '~/shared/analytics/constants';
 
 import { walletIconMap } from './WalletButton';
 
-type Props = {
-  reset: () => void;
-};
-
-export default function DelegateCashMessage({ reset }: Props) {
+export default function DelegateCashMessage() {
   return (
     <EmptyState title="">
       <VStack gap={24}>
@@ -88,15 +83,6 @@ export default function DelegateCashMessage({ reset }: Props) {
             .
           </StyledText>
         </VStack>
-        <Button
-          // no need to track backing out of informational dialog
-          eventElementId={null}
-          eventName={null}
-          eventContext={null}
-          onClick={reset}
-        >
-          Back
-        </Button>
       </VStack>
     </EmptyState>
   );

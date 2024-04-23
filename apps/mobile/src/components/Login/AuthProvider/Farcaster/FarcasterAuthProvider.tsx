@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   AuthClientError,
   AuthKitProvider,
@@ -17,6 +16,7 @@ import { removeNullValues } from 'shared/relay/removeNullValues';
 import { Chain } from 'shared/utils/chains';
 import { useLogin } from 'src/hooks/useLogin';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { AuthMechanism } from '~/generated/useLoginMutationMutation.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
@@ -35,6 +35,8 @@ export function FarcasterAuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLoginWithFarcaster() {
+  const { hideBottomSheetModal } = useBottomSheetModalActions();
+
   const getUsersByWalletAddresses = useGetUsersByWalletAddressesImperatively();
 
   // `setNonce` needs to be called prior to `signIn`.
@@ -68,8 +70,6 @@ export function useLoginWithFarcaster() {
   const handleSuccess = useCallback(
     async (req: StatusAPIResponse) => {
       try {
-        console.log('success', { req });
-
         if (!req.custody) {
           throw new Error('no custody address produced from farcaster');
         }
@@ -81,7 +81,6 @@ export function useLoginWithFarcaster() {
         }
 
         const userWallets = removeNullValues([req.custody ?? null, ...(req.verifications ?? [])]);
-        console.log('FC connected user wallets', userWallets);
 
         if (!userWallets.length) {
           throw new Error('no connected wallets for farcaster user');
@@ -94,7 +93,6 @@ export function useLoginWithFarcaster() {
             address,
           }))
         );
-        console.log('user IDs', userIds);
 
         if (!userIds.length) {
           // push to create user
@@ -106,23 +104,22 @@ export function useLoginWithFarcaster() {
           const createUserAuthMechanism: NeynarPayloadVariables = {
             authMechanismType: 'neynar',
             address: req.custody,
+            // try the primary verified address and fall back to default custody address
+            primaryAddress: primaryFarcasterAddress,
             nonce: req.nonce,
             message: req.message,
             signature: req.signature,
           };
 
-          if (req.verifications?.[0]) {
-            createUserAuthMechanism.primaryAddress = req.verifications[0];
-          }
-
+          hideBottomSheetModal();
           navigation.navigate('OnboardingEmail', {
             authMethod: 'Farcaster',
             authMechanism: createUserAuthMechanism,
           });
           return;
         }
+
         // push to login
-        console.log('--- attempting login!');
         const loginAuthPayload: AuthMechanism = {
           neynar: {
             nonce: req.nonce,
@@ -141,7 +138,7 @@ export function useLoginWithFarcaster() {
           };
         }
         const result = await login(loginAuthPayload);
-        console.log('--- login result', { result });
+
         if (result.kind !== 'success') {
           // it is *extremely unlikely* to end up in this situation bc
           // we determined above through `getUsersByWalletAddresses` that
@@ -152,6 +149,7 @@ export function useLoginWithFarcaster() {
 
         // success case
         track('Sign In Success', { 'Sign in method': 'Farcaster' });
+        hideBottomSheetModal();
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } catch (e) {
         if (e instanceof Error) {
@@ -159,7 +157,14 @@ export function useLoginWithFarcaster() {
         }
       }
     },
-    [getUsersByWalletAddresses, handleFarcasterLoginError, login, navigation, track]
+    [
+      getUsersByWalletAddresses,
+      handleFarcasterLoginError,
+      hideBottomSheetModal,
+      login,
+      navigation,
+      track,
+    ]
   );
 
   const {
@@ -171,26 +176,10 @@ export function useLoginWithFarcaster() {
     isConnected,
     isSuccess,
     isPolling,
-    data,
-    validSignature,
-    error,
-    channelToken,
   } = useSignIn({
     onSuccess: handleSuccess,
     onError: handleFarcasterLoginError,
     nonce,
-  });
-
-  console.log({
-    isConnected,
-    isConnectError,
-    isSuccess,
-    isPolling,
-    data,
-    validSignature,
-    url,
-    error,
-    channelToken,
   });
 
   const initiateConnection = useCallback(async () => {
@@ -202,15 +191,14 @@ export function useLoginWithFarcaster() {
         reconnect();
         return;
       }
+
       await connect();
-      console.log('--- connected!');
     }
   }, [connect, createNonce, isConnectError, isConnected, reconnect]);
 
   useEffect(() => {
     if (url && nonce.length && !isPolling && !isSuccess && !hasRedirectedToWarpcast.current) {
       hasRedirectedToWarpcast.current = true;
-      console.log('--- url retrieved, redirecting to warpcast!');
       // at this point, the app will start polling for a signature response,
       // and automatically time out after 5 minutes: https://github.com/farcasterxyz/auth-monorepo/tree/main/packages/auth-kit#parameters
       signIn();

@@ -15,7 +15,7 @@ export default function FeedbackBottomSheetModal() {
   }, []);
 
   return (
-    <View className="flex flex-column space-y-2 mx-4">
+    <View className="flex flex-column space-y-2">
       <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Got Feedback?
       </Typography>

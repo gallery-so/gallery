@@ -12,7 +12,6 @@ import { OnboardingRecommendedUsers } from '~/screens/Onboarding/OnboardingRecom
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
 import { OnboardingVideoScreen } from '~/screens/Onboarding/OnboardingVideoScreen';
 
-import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
 import { QRCodeScreen } from '../screens/Login/QRCodeScreen';
 import { WaitingForConfirmationScreen } from '../screens/Login/WaitingForConfirmationScreen';
@@ -27,7 +26,6 @@ export function LoginStackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="Landing">
       <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
       <Stack.Screen name="WaitingForConfirmation" component={WaitingForConfirmationScreen} />
       <Stack.Screen name="NotificationUpsell" component={NotificationUpsellScreen} />
 

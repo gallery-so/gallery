@@ -8,8 +8,8 @@ import {
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
-import { generate12DigitId } from '~/utils/generate12DigitId';
+import { parseCollectionLayoutGraphql } from '~/shared/utils/collectionLayout';
+import { generate12DigitId } from '~/shared/utils/generate12DigitId';
 
 export function getInitialCollectionsFromServer(
   galleryRef: getInitialCollectionsFromServerFragment$key

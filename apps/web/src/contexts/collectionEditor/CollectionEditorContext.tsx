@@ -18,7 +18,7 @@ import {
   StagedSectionList,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
-import { generate12DigitId } from '~/utils/generate12DigitId';
+import { generate12DigitId } from '~/shared/utils/generate12DigitId';
 
 const deepClone = rfdc();
 

@@ -160,7 +160,7 @@ export function CommentsBottomSheet({
   }, [resetMentions]);
 
   return (
-    <Animated.View style={paddingStyle} className="flex flex-1 flex-col space-y-5 min-h-[400px]">
+    <Animated.View style={paddingStyle} className="flex flex-grow flex-col space-y-5 min-h-[400px]">
       <View className="flex-grow">
         {isSelectingMentions ? (
           <View className="flex-1 overflow-hidden">

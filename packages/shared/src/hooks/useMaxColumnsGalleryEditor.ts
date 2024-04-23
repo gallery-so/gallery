@@ -1,17 +1,19 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useMaxColumnsFragment$key } from '~/generated/useMaxColumnsFragment.graphql';
+import { useMaxColumnsGalleryEditorFragment$key } from '~/generated/useMaxColumnsGalleryEditorFragment.graphql';
 
 const USER_IDS_WITH_10_COLUMNS_ENABLED = [
   '2BzTRFDU9wuQCYW6E62cY6J6XvU', // figure31
   'a3ff91986625382ff776067619200efe', // robin
 ];
 
-export default function useMaxColumns(viewerRef: useMaxColumnsFragment$key) {
+export default function useMaxColumnsGalleryEditor(
+  viewerRef: useMaxColumnsGalleryEditorFragment$key
+) {
   const viewer = useFragment(
     graphql`
-      fragment useMaxColumnsFragment on Viewer {
+      fragment useMaxColumnsGalleryEditorFragment on Viewer {
         user {
           dbid
         }

@@ -132,9 +132,8 @@ function PostBottomSheet({ isOwnPost, postRef, queryRef, userRef, onShare }: Pro
   const { hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleShare = useCallback(() => {
-    hideBottomSheetModal();
     onShare();
-  }, [hideBottomSheetModal, onShare]);
+  }, [onShare]);
 
   const [showReportPostForm, setShowReportPostForm] = useState(false);
 

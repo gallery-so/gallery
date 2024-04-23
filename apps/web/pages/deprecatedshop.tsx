@@ -1,14 +1,14 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
-import { shopQuery } from '~/generated/shopQuery.graphql';
+import { deprecatedshopQuery } from '~/generated/deprecatedshopQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import MerchStorePage from '~/scenes/MerchStorePage/MerchStorePage';
 
 export default function Shop() {
-  const query = useLazyLoadQuery<shopQuery>(
+  const query = useLazyLoadQuery<deprecatedshopQuery>(
     graphql`
-      query shopQuery {
+      query deprecatedshopQuery {
         ...MerchStorePageQueryFragment
       }
     `,

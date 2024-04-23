@@ -117,7 +117,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         queryRef={query.data}
       />
       {showWelcome && (
-        <Portal>
+        <Portal hostName="app-context">
           <WelcomeNewUserOnboarding
             username={username}
             onComplete={handleWelcomeTooltipCompleted}

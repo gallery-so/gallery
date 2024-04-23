@@ -25,6 +25,7 @@ export function useGetUserByWalletAddressImperatively() {
               __typename
               ... on GalleryUser {
                 dbid
+                universal
               }
             }
           }
@@ -33,7 +34,7 @@ export function useGetUserByWalletAddressImperatively() {
         { fetchPolicy: 'network-only' }
       ).toPromise();
 
-      if (query?.userByAddress?.__typename === 'GalleryUser') {
+      if (query?.userByAddress?.__typename === 'GalleryUser' && !query.userByAddress.universal) {
         return query.userByAddress.dbid;
       }
       return null;
@@ -57,6 +58,7 @@ export function useGetUsersByWalletAddressesImperatively() {
                 users {
                   ... on GalleryUser {
                     dbid
+                    universal
                   }
                 }
               }
@@ -68,7 +70,11 @@ export function useGetUsersByWalletAddressesImperatively() {
       ).toPromise();
 
       if (query?.usersByAddresses?.__typename === 'UsersByAddressesPayload') {
-        return query?.usersByAddresses.users?.map((user) => user.dbid) ?? [];
+        return (
+          query?.usersByAddresses.users
+            ?.filter((user) => !user.universal)
+            .map((user) => user.dbid) ?? []
+        );
       }
       return [];
     },

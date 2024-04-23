@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
-import { Dimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { Typography } from '~/components/Typography';
@@ -43,8 +43,6 @@ export default function ProfileViewSharedFollowersSheet(props: Props) {
     {}
   );
 
-  const screenHeight = Dimensions.get('window').height;
-
   const nonNullUsers = useMemo(() => {
     const users = [];
 
@@ -73,26 +71,24 @@ export default function ProfileViewSharedFollowersSheet(props: Props) {
   );
 
   return (
-    <View className="flex bg-white dark:bg-black-900">
-      <View className={`max-h-[${screenHeight * 0.5}px]`}>
-        <Typography
-          className="text-sm mb-4"
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-        >
-          Followers
-        </Typography>
+    <View className="flex pb-8">
+      <Typography
+        className="text-sm mb-4"
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+      >
+        Followers
+      </Typography>
 
-        <View className="flex-grow h-full">
-          <UserFollowList
-            onUserPress={handleUserPress}
-            onLoadMore={handleLoadMore}
-            userRefs={nonNullUsers}
-            queryRef={query}
-          />
-        </View>
+      <View className="flex-grow h-full">
+        <UserFollowList
+          onUserPress={handleUserPress}
+          onLoadMore={handleLoadMore}
+          userRefs={nonNullUsers}
+          queryRef={query}
+        />
       </View>
     </View>
   );

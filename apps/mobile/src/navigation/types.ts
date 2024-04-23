@@ -23,6 +23,13 @@ export type RootStackNavigatorParamList = {
     tokenId: string;
     redirectTo?: PostRedirect;
   };
+  GalleryEditor: {
+    galleryId: string;
+    stagedTokens: string[];
+  };
+  NftSelectorGalleryEditor: {
+    galleryId: string;
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
@@ -113,7 +120,6 @@ export type AuthMethodTitle = 'Privy' | 'Wallet' | 'Farcaster';
 
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
-  EnterEmail: undefined;
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: {

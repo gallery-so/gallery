@@ -23,25 +23,22 @@ export type GnosisPayloadVariables = {
 export type PrivyPayloadVariables = {
   authMechanismType: 'privy';
   privyToken?: string;
-};
-
-type DeprecatedWebEmailPayloadVariables = {
-  authMechanismType: 'magicLink';
-  token: string;
-  privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
 };
 
 export type NeynarPayloadVariables = {
   authMechanismType: 'neynar';
   primaryAddress?: string;
   privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
 } & SignerVariables;
 
 export type AuthPayloadVariables =
   | EoaPayloadVariables
   | GnosisPayloadVariables
   | PrivyPayloadVariables
-  | DeprecatedWebEmailPayloadVariables
   | NeynarPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {

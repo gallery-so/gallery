@@ -11,10 +11,9 @@ import { useAuthModalQuery } from '~/generated/useAuthModalQuery.graphql';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
-  variant?: WalletSelectorVariant;
 };
 
-export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
+export const AuthModal = ({ queryRef }: ModalProps) => {
   const query = useFragment(
     graphql`
       fragment useAuthModalFragment on Query {
@@ -26,7 +25,7 @@ export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
 
   return (
     <Container>
-      <WalletSelector queryRef={query} showEmail={variant !== 'sign-up'} />
+      <WalletSelector queryRef={query} />
     </Container>
   );
 };
@@ -56,7 +55,7 @@ export default function useAuthModal(variant: WalletSelectorVariant) {
   return useCallback(() => {
     showModal({
       id: 'auth',
-      content: <AuthModal queryRef={query} variant={variant} />,
+      content: <AuthModal queryRef={query} />,
       headerText: variant === 'sign-up' ? 'Sign Up' : 'Sign In',
     });
   }, [query, variant, showModal]);

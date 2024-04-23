@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -6,6 +7,7 @@ import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from './AdmireButton';
@@ -106,14 +108,15 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   }, [event.admires?.edges]);
 
   const totalAdmires = event.admires?.pageInfo?.total ?? 0;
-
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleOpenCommentBottomSheet = useCallback(() => {
     showBottomSheetModal({
       content: <CommentsBottomSheet type="FeedEvent" feedId={event.dbid} />,
+      navigationContext: navigation,
     });
     onCommentPress();
-  }, [event.dbid, onCommentPress, showBottomSheetModal]);
+  }, [event.dbid, navigation, onCommentPress, showBottomSheetModal]);
 
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;

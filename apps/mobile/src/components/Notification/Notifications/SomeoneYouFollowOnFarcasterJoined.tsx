@@ -42,7 +42,6 @@ export default function SomeoneYouFollowOnFarcasterJoined({
     `,
     notificationRef
   );
-
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const reportError = useReportError();
   const handlePress = useCallback(() => {

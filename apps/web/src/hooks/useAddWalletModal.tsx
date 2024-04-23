@@ -39,7 +39,6 @@ const AddWalletModal = ({
         connectionMode={ADD_WALLET_TO_USER}
         queryRef={query}
         onConnectWalletSuccess={onConnectWalletSuccess}
-        showEmail={false}
       />
       {displayUpsellText ? (
         <StyledWalletText>
