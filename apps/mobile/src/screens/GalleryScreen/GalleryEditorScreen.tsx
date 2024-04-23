@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { GalleryEditorActions } from '~/components/GalleryEditor/GalleryEditorActions';
-import { GalleryEditorRender } from '~/components/GalleryEditor/GalleryEditorRender';
+import { GalleryEditorRenderer } from '~/components/GalleryEditor/GalleryEditorRenderer';
 import GalleryEditorProvider from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { GalleryEditorScreenQuery } from '~/generated/GalleryEditorScreenQuery.graphql';
 import { RootStackNavigatorParamList } from '~/navigation/types';
@@ -22,10 +22,10 @@ function InnerGalleryEditorScreen() {
         }
         galleryById(id: $galleryId) {
           __typename
-          ...GalleryEditorRenderFragment
+          ...GalleryEditorRendererFragment
         }
         ...GalleryEditorContextFragment
-        ...GalleryEditorRenderQueryFragment
+        ...GalleryEditorRendererQueryFragment
       }
     `,
     { galleryId: route.params.galleryId }
@@ -39,7 +39,7 @@ function InnerGalleryEditorScreen() {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <GalleryEditorRender galleryRef={gallery} queryRef={query} />
+      <GalleryEditorRenderer galleryRef={gallery} queryRef={query} />
       <GalleryEditorActions />
     </GalleryEditorProvider>
   );

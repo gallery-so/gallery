@@ -8,8 +8,8 @@ import { graphql, useFragment } from 'react-relay';
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSection } from '~/contexts/GalleryEditor/types';
 import { GalleryEditorHeaderFragment$key } from '~/generated/GalleryEditorHeaderFragment.graphql';
-import { GalleryEditorRenderFragment$key } from '~/generated/GalleryEditorRenderFragment.graphql';
-import { GalleryEditorRenderQueryFragment$key } from '~/generated/GalleryEditorRenderQueryFragment.graphql';
+import { GalleryEditorRendererFragment$key } from '~/generated/GalleryEditorRendererFragment.graphql';
+import { GalleryEditorRendererQueryFragment$key } from '~/generated/GalleryEditorRendererQueryFragment.graphql';
 import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSectionFragment.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 
@@ -24,14 +24,14 @@ export type ListItemType =
   | { kind: 'section'; section: StagedSection; queryRef: GalleryEditorSectionFragment$key };
 
 type Props = {
-  galleryRef: GalleryEditorRenderFragment$key;
-  queryRef: GalleryEditorRenderQueryFragment$key;
+  galleryRef: GalleryEditorRendererFragment$key;
+  queryRef: GalleryEditorRendererQueryFragment$key;
 };
 
-export function GalleryEditorRender({ galleryRef, queryRef }: Props) {
+export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
   const gallery = useFragment(
     graphql`
-      fragment GalleryEditorRenderFragment on Gallery {
+      fragment GalleryEditorRendererFragment on Gallery {
         ...GalleryEditorHeaderFragment
       }
     `,
@@ -40,7 +40,7 @@ export function GalleryEditorRender({ galleryRef, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment GalleryEditorRenderQueryFragment on Query {
+      fragment GalleryEditorRendererQueryFragment on Query {
         ...GalleryEditorSectionFragment
       }
     `,

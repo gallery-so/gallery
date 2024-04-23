@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 import { StagedRowList } from '~/contexts/GalleryEditor/types';
 import { SortableRowListFragment$key } from '~/generated/SortableRowListFragment.graphql';
 
-import { ListItemType } from './GalleryEditorRender';
+import { ListItemType } from './GalleryEditorRenderer';
 import { GalleryEditorRow } from './GalleryEditorRow';
 import { SortableRow } from './SortableRow';
 import { calculateItemHeights, calculateOffsetsRow, calculatePositions } from './utils';

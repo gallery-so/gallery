@@ -17,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ListItemType } from './GalleryEditorRender';
+import { ListItemType } from './GalleryEditorRenderer';
 import { ItemHeights, Positions } from './SortableRowList';
 
 type Props = {
