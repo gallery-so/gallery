@@ -1,4 +1,4 @@
-import { StagedItem, StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedItem, StagedRowList } from './types';
 
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
@@ -28,7 +28,7 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[])
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(sections: StagedSectionList) {
+export function generateLayoutFromCollection(sections: StagedRowList) {
   let sectionStartIndex = 0;
   let filteredSections = [...sections];
   sections.forEach((section) => {

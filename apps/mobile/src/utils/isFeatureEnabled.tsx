@@ -6,7 +6,9 @@ import {
 } from '~/generated/isFeatureEnabledFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export enum FeatureFlag {}
+export enum FeatureFlag {
+  'GALLERY_EDITOR' = 'GALLERY_EDITOR',
+}
 
 // We need to ignore this fake value from Relay here since we're expecting
 // a caller to pass in a valid value. We are taking extra steps to ensure we're type safe.
@@ -14,10 +16,18 @@ export enum FeatureFlag {}
 type Role = Exclude<RelayRole, '%future added value'>;
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
-  ADMIN: {},
-  BETA_TESTER: {},
-  EARLY_ACCESS: {},
-  EMAIL_TESTER: {},
+  ADMIN: {
+    GALLERY_EDITOR: true,
+  },
+  BETA_TESTER: {
+    GALLERY_EDITOR: false,
+  },
+  EARLY_ACCESS: {
+    GALLERY_EDITOR: false,
+  },
+  EMAIL_TESTER: {
+    GALLERY_EDITOR: false,
+  },
 };
 
 /**

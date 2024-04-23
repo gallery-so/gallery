@@ -1,10 +1,9 @@
 import { StagedItem } from '~/components/GalleryEditor/GalleryEditorContext';
+import { insertWhitespaceBlocks, parseCollectionLayout } from '~/shared/utils/collectionLayout';
 
 import {
   generateLayoutFromCollection,
   getWhitespacePositionsFromStagedItems,
-  insertWhitespaceBlocks,
-  parseCollectionLayout,
 } from './collectionLayout';
 
 function generateTestNft(): StagedItem {

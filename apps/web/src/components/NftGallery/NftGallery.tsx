@@ -9,7 +9,7 @@ import NftPreviewWrapper from '~/components/NftPreview/GalleryNftPreviewWrapper'
 import { NftGalleryFragment$key } from '~/generated/NftGalleryFragment.graphql';
 import { NftGalleryQueryFragment$key } from '~/generated/NftGalleryQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
+import { parseCollectionLayoutGraphql } from '~/shared/utils/collectionLayout';
 
 type Props = {
   queryRef: NftGalleryQueryFragment$key;

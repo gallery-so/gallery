@@ -15,6 +15,7 @@ type ListItem = {
   kind: 'gallery';
   isFeatured: boolean;
   gallery: GalleryPreviewCardFragment$key;
+  galleryId: string;
 };
 
 type ProfileViewGalleriesTabProps = {
@@ -38,6 +39,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
             }
           }
         }
+        ...GalleryPreviewCardQueryFragment
       }
     `,
     queryRef
@@ -51,18 +53,26 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
         kind: 'gallery',
 
         gallery,
+        galleryId: gallery.dbid,
         isFeatured: user?.featuredGallery?.dbid === gallery.dbid,
       };
     });
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
-  const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
-    return (
-      <View className="px-4 pb-8">
-        <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
-      </View>
-    );
-  }, []);
+  const renderItem = useCallback<ListRenderItem<ListItem>>(
+    ({ item }) => {
+      return (
+        <View className="px-4 pb-8">
+          <GalleryPreviewCard
+            isFeatured={item.isFeatured}
+            galleryRef={item.gallery}
+            queryRef={query}
+          />
+        </View>
+      );
+    },
+    [query]
+  );
 
   const contentContainerStyle = useListContentStyle();
 

@@ -1,19 +1,16 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import {
-  StagedCollection,
-  StagedCollectionList,
-  StagedSectionList,
-} from '~/components/GalleryEditor/GalleryEditorContext';
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { parseCollectionLayoutGraphql } from '~/shared/utils/collectionLayout';
 import { generate12DigitId } from '~/shared/utils/generate12DigitId';
 
+import { StagedRowList, StagedSection, StagedSectionList } from './types';
+
 export function getInitialCollectionsFromServer(
   galleryRef: getInitialCollectionsFromServerFragment$key
-): StagedCollectionList {
+): StagedSectionList {
   const gallery = readInlineData(
     graphql`
       fragment getInitialCollectionsFromServerFragment on Gallery @inline {
@@ -24,6 +21,7 @@ export function getInitialCollectionsFromServer(
           collectorsNote
           hidden
           layout {
+            __typename
             ...collectionLayoutParseFragment
           }
           tokens {
@@ -31,8 +29,11 @@ export function getInitialCollectionsFromServer(
               renderLive
               highDefinition
             }
+
             token {
               dbid
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...GalleryEditorTokenPreviewFragment
             }
           }
         }
@@ -41,7 +42,7 @@ export function getInitialCollectionsFromServer(
     galleryRef
   );
 
-  const collections: StagedCollectionList = [];
+  const collections: StagedSectionList = [];
 
   const queryCollections = removeNullValues(gallery?.collections);
 
@@ -53,7 +54,7 @@ export function getInitialCollectionsFromServer(
   }
 
   for (const collection of queryCollections) {
-    const sections: StagedSectionList = [];
+    const rows: StagedRowList = [];
     const nonNullTokens = removeNullValues(collection.tokens);
 
     if (!collection.layout) {
@@ -61,8 +62,9 @@ export function getInitialCollectionsFromServer(
     }
 
     const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
+
     parsed.forEach((parsedSection) => {
-      sections.push({
+      rows.push({
         id: parsedSection.id,
         columns: parsedSection.columns,
         items: parsedSection.items.map((item) => {
@@ -75,18 +77,13 @@ export function getInitialCollectionsFromServer(
               );
             }
 
-            return { kind: 'token', id: item.token.dbid };
+            return { kind: 'token', id: item.token.dbid, tokenRef: item.token };
           }
         }),
       });
     });
 
-    let activeSectionId = sections[0]?.id;
-
-    if (!activeSectionId) {
-      activeSectionId = generate12DigitId();
-      sections.push({ id: activeSectionId, items: [], columns: 3 });
-    }
+    const activeRowId = null;
 
     const liveDisplayTokenIds = new Set<string>();
     const highDefinitionTokenIds = new Set<string>();
@@ -100,10 +97,10 @@ export function getInitialCollectionsFromServer(
     }
 
     collections.push({
-      activeSectionId,
+      activeRowId,
       liveDisplayTokenIds,
       highDefinitionTokenIds,
-      sections,
+      rows,
       localOnly: false,
       dbid: collection.dbid,
       name: collection.name ?? '',
@@ -115,12 +112,12 @@ export function getInitialCollectionsFromServer(
   return collections;
 }
 
-export function createEmptyCollection(): StagedCollection {
-  const generatedCollectionId = generate12DigitId();
+export function createEmptyCollection(): StagedSection {
   const generatedSectionId = generate12DigitId();
+  const generatedRowId = generate12DigitId();
 
   return {
-    dbid: generatedCollectionId,
+    dbid: generatedSectionId,
     localOnly: true,
 
     liveDisplayTokenIds: new Set(),
@@ -130,7 +127,7 @@ export function createEmptyCollection(): StagedCollection {
     collectorsNote: '',
     hidden: false,
 
-    sections: [{ id: generatedSectionId, columns: 3, items: [] }],
-    activeSectionId: generatedSectionId,
+    rows: [{ id: generatedRowId, columns: 3, items: [] }],
+    activeRowId: generatedRowId,
   };
 }
