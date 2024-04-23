@@ -72,18 +72,17 @@ export function SortableRowList({
     return rowOffsets.reduce((totalHeight, row) => totalHeight + row.height, 0);
   }, [rowOffsets]);
 
+  const style = useMemo(() => {
+    return {
+      top: 0,
+      left: 0,
+      right: 0,
+      height: containerHeight,
+    };
+  }, [containerHeight]);
+
   return (
-    <View
-      className="relative"
-      style={[
-        {
-          height: containerHeight,
-          top: 0,
-          left: 0,
-          right: 0,
-        },
-      ]}
-    >
+    <View className="relative" style={style}>
       {rows.map((row, index) => {
         return (
           <SortableRow
