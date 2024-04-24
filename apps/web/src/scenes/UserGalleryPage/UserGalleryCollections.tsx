@@ -205,14 +205,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 }
 
 const StyledUserGalleryCollections = styled.div`
-      width: 100%;
+  width: 100%;
 
-      padding-top: 16px;
+  padding-top: 16px;
 
-      @media only screen and ${breakpoints.tablet} {
-        padding-top: 24px;
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 24px;
   }
-      `;
+`;
 
 const StyledUserGalleryCollectionContainer = styled.div`
   padding-bottom: 48px;
