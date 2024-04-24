@@ -48,7 +48,6 @@ export default function GalleriesPage({ queryRef }: Props) {
             galleries {
               dbid
               id
-              position @required(action: NONE)
               ...GalleryFragment
             }
           }
