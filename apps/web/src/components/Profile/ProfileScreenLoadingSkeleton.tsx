@@ -42,7 +42,7 @@ const UsernameSocialsSkeleton = styled(Skeleton)`
 
 const ArtworksGridSkeleton = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 16px;
   margin-top: 16px;
 `;
@@ -66,7 +66,7 @@ const UserGallerySkeleton = () => {
       <Wrapper>
         <TitleSkeleton />
         <ArtworksGridSkeleton>
-          {[...Array(6)].map((_, index) => (
+          {[...Array(12)].map((_, index) => (
             <ArtworkGridItemSkeleton key={index} />
           ))}
         </ArtworksGridSkeleton>

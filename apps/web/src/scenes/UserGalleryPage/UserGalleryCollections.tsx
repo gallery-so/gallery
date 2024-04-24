@@ -13,6 +13,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
+import { MultiShimmerProvider } from '~/contexts/shimmer/ShimmerContext';
 import { UserGalleryCollectionsFragment$key } from '~/generated/UserGalleryCollectionsFragment.graphql';
 import { UserGalleryCollectionsQueryFragment$key } from '~/generated/UserGalleryCollectionsQueryFragment.graphql';
 import useWindowSize from '~/hooks/useWindowSize';
@@ -58,6 +59,9 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
           tokens {
             __typename
             id
+            token {
+              dbid
+            }
           }
           layout {
             sectionLayout {
@@ -70,6 +74,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     `,
     galleryRef
   );
+
+  const tokenIds = collections?.reduce((acc, collection) => {
+    const ids =
+      collection?.tokens
+        ?.map((token) => token?.token?.dbid)
+        .filter((id): id is string => id !== undefined) || [];
+    return acc.concat(ids);
+  }, [] as string[]);
 
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 
@@ -147,58 +159,60 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <StyledUserGalleryCollections>
-      <WindowScroller>
-        {({ height, registerChild, scrollTop, onChildScroll }) => (
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              // @ts-expect-error shitty react-virtualized types
-              <div ref={registerChild}>
-                <List
-                  ref={listRef}
-                  autoHeight
-                  width={width}
-                  height={height}
-                  onScroll={onChildScroll}
-                  rowHeight={cache.rowHeight}
-                  rowCount={numCollectionsToDisplay}
-                  scrollTop={scrollTop}
-                  deferredMeasurementCache={cache}
-                  rowRenderer={rowRenderer}
-                  style={{
-                    outline: 'none',
-                    overflowX: 'visible',
-                    overflowY: 'visible',
-                  }}
-                  containerStyle={{ overflow: 'visible' }}
-                  overscanIndicesGetter={({
-                    cellCount,
-                    overscanCellsCount,
-                    startIndex,
-                    stopIndex,
-                  }) => ({
-                    overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
-                    overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
-                  })}
-                />
-              </div>
-            )}
-          </AutoSizer>
-        )}
-      </WindowScroller>
-    </StyledUserGalleryCollections>
+    <MultiShimmerProvider tokenIdsToLoad={tokenIds ? tokenIds?.slice(0, 12) : []}>
+      <StyledUserGalleryCollections>
+        <WindowScroller>
+          {({ height, registerChild, scrollTop, onChildScroll }) => (
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                // @ts-expect-error shitty react-virtualized types
+                <div ref={registerChild}>
+                  <List
+                    ref={listRef}
+                    autoHeight
+                    width={width}
+                    height={height}
+                    onScroll={onChildScroll}
+                    rowHeight={cache.rowHeight}
+                    rowCount={numCollectionsToDisplay}
+                    scrollTop={scrollTop}
+                    deferredMeasurementCache={cache}
+                    rowRenderer={rowRenderer}
+                    style={{
+                      outline: 'none',
+                      overflowX: 'visible',
+                      overflowY: 'visible',
+                    }}
+                    containerStyle={{ overflow: 'visible' }}
+                    overscanIndicesGetter={({
+                      cellCount,
+                      overscanCellsCount,
+                      startIndex,
+                      stopIndex,
+                    }) => ({
+                      overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+                      overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
+                    })}
+                  />
+                </div>
+              )}
+            </AutoSizer>
+          )}
+        </WindowScroller>
+      </StyledUserGalleryCollections>
+    </MultiShimmerProvider>
   );
 }
 
 const StyledUserGalleryCollections = styled.div`
-  width: 100%;
+      width: 100%;
 
-  padding-top: 16px;
+      padding-top: 16px;
 
-  @media only screen and ${breakpoints.tablet} {
-    padding-top: 24px;
+      @media only screen and ${breakpoints.tablet} {
+        padding-top: 24px;
   }
-`;
+      `;
 
 const StyledUserGalleryCollectionContainer = styled.div`
   padding-bottom: 48px;
