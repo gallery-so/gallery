@@ -202,7 +202,6 @@ function OnboardingRecommendedUsersInner() {
         style={{
           height: heightOfUserList,
         }}
-        className="-mx-4"
       >
         <Suspense fallback={<UserFollowListFallback />}>
           <UserFollowList
