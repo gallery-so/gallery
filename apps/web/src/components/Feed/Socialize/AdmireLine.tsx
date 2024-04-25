@@ -6,10 +6,9 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -82,7 +81,6 @@ export function AdmireLine({ eventRef, queryRef, onAdmire }: CommentLineProps) {
           }
         }
         ...useAdmireModalQueryFragment
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -126,22 +124,18 @@ export function AdmireLine({ eventRef, queryRef, onAdmire }: CommentLineProps) {
 
   const totalAdmires = event.previewAdmires?.pageInfo.total ?? 0;
 
-  const { showModal } = useModalActions();
+  const showAuthModal = useUniversalAuthModal();
   const track = useTrack();
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
     track('Admire Click');
     onAdmire();
-  }, [onAdmire, query, showModal, track]);
+  }, [onAdmire, query.viewer?.__typename, showAuthModal, track]);
 
   if (totalAdmires === 0) {
     return (
