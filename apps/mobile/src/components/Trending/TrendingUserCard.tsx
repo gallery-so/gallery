@@ -118,11 +118,9 @@ export function TrendingUserCard({
           <View className="flex flex-row">
             <ProfilePicture userRef={user} size="xs" />
           </View>
-          <View className="flex flex-row items-center">
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              {user.username}
-            </Typography>
-          </View>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {user.username}
+          </Typography>
         </View>
       );
     }
