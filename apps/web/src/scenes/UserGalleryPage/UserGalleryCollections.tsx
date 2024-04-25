@@ -75,13 +75,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     galleryRef
   );
 
-  const tokenIds = collections?.reduce((acc, collection) => {
-    const ids =
-      collection?.tokens
-        ?.map((token) => token?.token?.dbid)
-        .filter((id): id is string => id !== undefined) || [];
-    return acc.concat(ids);
-  }, [] as string[]);
+  const tokenIds = useMemo(() => {
+    return collections?.reduce<string[]>((acc, collection) => {
+      const ids = collection?.tokens?.map((token) => token?.token?.dbid) || [];
+      const nonNullIds = removeNullValues(ids);
+
+      return [...acc, ...nonNullIds];
+    }, []);
+  }, [collections]);
 
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 

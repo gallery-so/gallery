@@ -1,4 +1,13 @@
-import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  memo,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 
 import { MultiShimmer } from '~/components/MultiShimmer/MultiShimmer';
@@ -53,13 +62,17 @@ export const useMultiShimmerProvider = () => {
   return context;
 };
 
-export const MultiShimmerProvider = ({
-  children,
-  tokenIdsToLoad,
-}: {
-  children: ReactNode;
+/*
+    MultiShimmerProvider is used to show a skeleton loader for group of tokens and stop showing it
+    when X tokens were done loaded. For example, in profile screen we'll show it while the first 12
+    tokens are loading, after they're finished loading we'll show the actual tokens.
+*/
+
+type MultiShimmerProviderProps = PropsWithChildren<{
   tokenIdsToLoad: string[];
-}) => {
+}>;
+
+export const MultiShimmerProvider = ({ children, tokenIdsToLoad }: MultiShimmerProviderProps) => {
   const [waitingForTokenIds, setWaitingForTokenIds] = useState(tokenIdsToLoad);
 
   const markTokenAsLoaded = useCallback((tokenId: string) => {
@@ -72,19 +85,6 @@ export const MultiShimmerProvider = ({
     }),
     [markTokenAsLoaded]
   );
-
-  type VisibleDivProps = {
-    isVisible: boolean;
-  };
-
-  const VisibleDiv = styled.div<VisibleDivProps>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
-  `;
 
   const isLoading = Boolean(waitingForTokenIds.length);
 
@@ -210,6 +210,19 @@ const StyledChildren = styled.div<VisibleProps>`
   justify-content: center;
   align-items: center;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
+`;
+
+type VisibleDivProps = {
+  isVisible: boolean;
+};
+
+const VisibleDiv = styled.div<VisibleDivProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 `;
 
 export default ShimmerProvider;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { GalleryPageSpacing } from '~/pages/[username]';
 
+import { size } from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 
 const GallerySkeletonWrapper = styled.div`
@@ -13,6 +14,7 @@ const GallerySkeletonWrapper = styled.div`
 
 const Wrapper = styled.div`
   padding-left: 20px;
+  padding-right: 20px;
   margin-bottom: 60px;
 `;
 
@@ -42,9 +44,14 @@ const UsernameSocialsSkeleton = styled(Skeleton)`
 
 const ArtworksGridSkeleton = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); // default to 4 items per row
   grid-gap: 16px;
   margin-top: 16px;
+
+  @media (max-width: ${size.tablet}px) {
+    // Adjusts to a mobile viewport
+    grid-template-columns: repeat(1, 1fr); // 1 item per row on mobile
+  }
 `;
 
 const ArtworkGridItemSkeleton = styled(Skeleton)`
