@@ -1,7 +1,8 @@
+import { FlashList } from '@shopify/flash-list';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
 import { GestureResponderEvent, View, ViewProps } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { AnimatedRef, SharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
@@ -10,7 +11,8 @@ import { GalleryEditorRowFragment$key } from '~/generated/GalleryEditorRowFragme
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { GalleryEditorActiveActions } from './GalleryEditorActiveActions';
-import { GalleryEditorTokenPreview } from './GalleryEditorTokenPreview';
+import { ListItemType } from './GalleryEditorRenderer';
+import { SortableTokenGrid } from './SortableTokenGrid/SortableTokenGrid';
 import { useWidthPerToken } from './useWidthPerToken';
 
 type Props = {
@@ -18,9 +20,19 @@ type Props = {
   row: StagedRow;
   style?: ViewProps['style'];
   queryRef: GalleryEditorRowFragment$key;
+
+  scrollContentOffsetY: SharedValue<number>;
+  scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 };
 
-export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
+export function GalleryEditorRow({
+  sectionId,
+  row,
+  style,
+  queryRef,
+  scrollContentOffsetY,
+  scrollViewRef,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorRowFragment on Query {
@@ -30,7 +42,7 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
     queryRef
   );
 
-  const { activateRow, activeRowId } = useGalleryEditorActions();
+  const { activateRow, activeRowId, moveItem } = useGalleryEditorActions();
 
   const widthPerToken = useWidthPerToken(row.columns);
 
@@ -40,6 +52,13 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
       activateRow(sectionId, row.id);
     },
     [activateRow, sectionId, row.id]
+  );
+
+  const handleDragEnd = useCallback(
+    (newPositions: string[]) => {
+      moveItem(row.id, newPositions);
+    },
+    [moveItem, row.id]
   );
 
   return (
@@ -56,36 +75,18 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
       >
         <View>
           <View className="flex-row flex-wrap gap-2">
-            {row.items.map((item) => {
-              if (item.kind === 'whitespace') {
-                return <WhiteSpace key={item.id} size={widthPerToken - 8} />;
-              } else {
-                return (
-                  <View
-                    key={item.id}
-                    className="aspect-square"
-                    style={{
-                      width: widthPerToken - 8,
-                    }}
-                  >
-                    <GalleryEditorTokenPreview tokenRef={item.tokenRef} />
-                  </View>
-                );
-              }
-            })}
+            <SortableTokenGrid
+              columns={row.columns}
+              items={row.items}
+              size={widthPerToken}
+              scrollContentOffsetY={scrollContentOffsetY}
+              scrollViewRef={scrollViewRef}
+              onDragEnd={handleDragEnd}
+            />
           </View>
           {activeRowId === row.id && <GalleryEditorActiveActions row={row} queryRef={query} />}
         </View>
       </GalleryTouchableOpacity>
     </Animated.View>
   );
-}
-
-type WhiteSpaceProps = {
-  size: number;
-  style?: ViewProps['style'];
-};
-
-function WhiteSpace({ size, style }: WhiteSpaceProps) {
-  return <View style={[{ width: size, height: size }, style]} />;
 }

@@ -39,6 +39,8 @@ type GalleryEditorActions = {
   clearActiveRow: () => void;
   moveRow: (sectionId: string, newOrderByIndex: string[]) => void;
 
+  moveItem: (rowId: string, newOrderByIndex: string[]) => void;
+
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
 
@@ -313,6 +315,21 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateSection]
   );
 
+  // TODO: Add support for moving items between rows
+  const moveItem = useCallback(
+    (rowId: string, newOrderByIndex: string[]) => {
+      updateRow(rowId, (previousRow) => {
+        const newItems = newOrderByIndex
+          .map((index) => {
+            return previousRow.items[Number(index)];
+          })
+          .filter((item): item is StagedItem => item !== undefined);
+        return { ...previousRow, items: newItems };
+      });
+    },
+    [updateRow]
+  );
+
   const toggleTokensStaged = useCallback(
     (tokenIds: string[]) => {
       if (!activeRowId) {
@@ -522,6 +539,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       clearActiveRow,
 
       moveRow,
+      moveItem,
 
       toggleTokensStaged,
       saveGallery,
@@ -550,6 +568,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       clearActiveRow,
 
       moveRow,
+      moveItem,
+
       toggleTokensStaged,
       saveGallery,
     ]
