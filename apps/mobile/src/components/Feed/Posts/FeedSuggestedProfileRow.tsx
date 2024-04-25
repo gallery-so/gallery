@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View } from 'react-native';
+import { Dimensions, FlatList, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { removeNullValues } from 'shared/relay/removeNullValues';
 
@@ -8,8 +8,8 @@ import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedPr
 
 import { Typography } from '../../Typography';
 
-const CARD_HEIGHT = 180;
-const CARD_WIDTH = 180;
+const CARD_HEIGHT = 183;
+const CARD_ROW_HORIZONTAL_PADDING = 42;
 
 type FeedSuggestedProfileRowProps = {
   queryRef: FeedSuggestedProfileRowFragment$key;
@@ -21,7 +21,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
       fragment FeedSuggestedProfileRowFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            suggestedUsers(first: 4) @required(action: THROW) {
+            suggestedUsers(first: 24) @required(action: THROW) {
               __typename
               edges {
                 node {
@@ -60,10 +60,13 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
           (gallery) => removeNullValues(gallery?.tokenPreviews).length > 0
         );
       });
-      return usersWithTokenPreviews?.slice(0, 2);
+      return usersWithTokenPreviews;
     }
     return users;
   }, [query.viewer?.suggestedUsers]);
+
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
+  const cardWidth = (SCREEN_WIDTH - CARD_ROW_HORIZONTAL_PADDING) / 2;
 
   return (
     <View className="pl-4 mt-2 mb-12 space-y-3">
@@ -73,15 +76,17 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
       >
         Suggested creators and collectors
       </Typography>
-      <View className="space-x-1 flex flex-row">
-        {suggestedUsers?.map((user, idx) => {
-          return (
-            <View className="mb-1" style={{ width: CARD_WIDTH, height: CARD_HEIGHT }} key={idx}>
-              <TrendingUserCard userRef={user} queryRef={query} />
-            </View>
-          );
-        })}
-      </View>
+      <FlatList
+        data={suggestedUsers}
+        horizontal={true}
+        renderItem={({ item, index }) => (
+          <View style={{ width: cardWidth, height: CARD_HEIGHT, marginLeft: index === 0 ? 0 : 4 }}>
+            <TrendingUserCard userRef={item} queryRef={query} variant="detailed" />
+          </View>
+        )}
+        keyExtractor={(_, index) => index.toString()}
+        showsHorizontalScrollIndicator={false}
+      />
     </View>
   );
 }
