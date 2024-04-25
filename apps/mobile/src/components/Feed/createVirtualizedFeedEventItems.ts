@@ -22,7 +22,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 export type FeedItemTypes = 'Post' | 'FeedEvent';
 type itemType = FeedItemTypes | null;
 
-const SUGGESTED_PROFILE_ROW_IDX = 5;
+const SUGGESTED_PROFILE_ROW_IDX = 8;
 
 export type FeedListItemType = { key: string } & (
   | {
