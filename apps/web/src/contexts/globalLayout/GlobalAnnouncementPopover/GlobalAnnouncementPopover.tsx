@@ -11,7 +11,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
@@ -59,7 +59,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             ...FeaturedCollectorCardCollectionFragment
           }
         }
-        ...useAuthModalFragment
         ...FeaturedCollectorCardFragment
       }
     `,
@@ -70,7 +69,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
   }
 
-  const { showModal, hideModal } = useModalActions();
+  const { hideModal } = useModalActions();
+  const showAuthModal = useUniversalAuthModal();
 
   const isMobile = !useIsDesktopWindowWidth();
 
@@ -86,11 +86,8 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
       return;
     }
 
-    showModal({
-      content: <AuthModal queryRef={query} />,
-      headerText: 'Create account',
-    });
-  }, [hideModal, isAuthenticated, push, query, showModal]);
+    showAuthModal();
+  }, [hideModal, isAuthenticated, push, showAuthModal]);
 
   const handleSecondaryButtonClick = useCallback(() => {
     document.getElementById('beautiful-home')?.scrollIntoView({ behavior: 'smooth' });

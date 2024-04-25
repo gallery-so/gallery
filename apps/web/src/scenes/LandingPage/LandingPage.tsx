@@ -8,7 +8,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL, TitleDiatypeL, TitleXS } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import {
   useIsDesktopWindowWidth,
   useIsMobileOrMobileLargeWindowWidth,
@@ -33,7 +33,7 @@ type Props = {
 export default function LandingPage({ pageContent }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const isDesktop = useIsDesktopWindowWidth();
-  const showAuthModal = useAuthModal('sign-up');
+  const showAuthModal = useUniversalAuthModal();
   const { showModal } = useModalActions();
 
   const handleDownloadAppClick = useCallback(() => {

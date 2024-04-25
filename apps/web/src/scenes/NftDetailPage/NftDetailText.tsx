@@ -24,7 +24,7 @@ import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.gra
 import { NftDetailTextQueryFragment$key } from '~/generated/NftDetailTextQueryFragment.graphql';
 import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BookmarkIcon from '~/icons/BookmarkIcon';
 import ExpandIcon from '~/icons/ExpandIcon';
@@ -108,7 +108,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
           }
         }
         ...useOptimisticUserInfoFragment
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -136,19 +135,26 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
   const [admireToken] = useAdmireToken();
   const [removeTokenAdmire] = useRemoveTokenAdmire();
 
+  const showAuthModal = useUniversalAuthModal();
+
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
     track('Admire Token Click');
     admireToken(token.id, token.dbid, info, decodedTokenName);
-  }, [query, track, admireToken, token.id, token.dbid, info, decodedTokenName, showModal]);
+  }, [
+    query.viewer?.__typename,
+    track,
+    admireToken,
+    token.id,
+    token.dbid,
+    info,
+    decodedTokenName,
+    showAuthModal,
+  ]);
 
   const handleRemoveAdmire = useCallback(async () => {
     if (
