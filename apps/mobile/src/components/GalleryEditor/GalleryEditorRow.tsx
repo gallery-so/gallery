@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
-import { GestureResponderEvent, useWindowDimensions, View, ViewProps } from 'react-native';
+import { GestureResponderEvent, View, ViewProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
@@ -11,7 +11,7 @@ import { GalleryEditorRowFragment$key } from '~/generated/GalleryEditorRowFragme
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { GalleryEditorActiveActions } from './GalleryEditorActiveActions';
 import { GalleryEditorTokenPreview } from './GalleryEditorTokenPreview';
-import { horizontalRowPadding, inBetweenColumnPadding } from './utils';
+import { useWidthPerToken } from './useWidthPerToken';
 
 type Props = {
   sectionId: string;
@@ -32,13 +32,7 @@ export function GalleryEditorRow({ sectionId, row, style, queryRef }: Props) {
 
   const { activateRow, activeRowId } = useGalleryEditorActions();
 
-  const screenDimensions = useWindowDimensions();
-
-  const column = row.columns;
-  const totalSpaceForTokens =
-    screenDimensions.width - horizontalRowPadding * 2 - inBetweenColumnPadding * (column - 1);
-
-  const widthPerToken = totalSpaceForTokens / column;
+  const widthPerToken = useWidthPerToken(row.columns);
 
   const handleSectionPress = useCallback(
     (e: GestureResponderEvent) => {

@@ -7,7 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 import { StagedRowList } from '~/contexts/GalleryEditor/types';
 import { SortableRowListFragment$key } from '~/generated/SortableRowListFragment.graphql';
 
-import { ListItemType } from './GalleryEditorRender';
+import { ListItemType } from './GalleryEditorRenderer';
 import { GalleryEditorRow } from './GalleryEditorRow';
 import { SortableRow } from './SortableRow';
 import { calculateItemHeights, calculateOffsetsRow, calculatePositions } from './utils';
@@ -72,18 +72,17 @@ export function SortableRowList({
     return rowOffsets.reduce((totalHeight, row) => totalHeight + row.height, 0);
   }, [rowOffsets]);
 
+  const style = useMemo(() => {
+    return {
+      top: 0,
+      left: 0,
+      right: 0,
+      height: containerHeight,
+    };
+  }, [containerHeight]);
+
   return (
-    <View
-      className="relative"
-      style={[
-        {
-          height: containerHeight,
-          top: 0,
-          left: 0,
-          right: 0,
-        },
-      ]}
-    >
+    <View className="relative" style={style}>
       {rows.map((row, index) => {
         return (
           <SortableRow

@@ -1,6 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { noop } from 'shared/utils/noop';
 
 import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
 import { NftSelectorToolbar } from '~/components/NftSelector/NftSelectorToolbar';
@@ -42,6 +43,16 @@ export function GalleryEditorNftSelector() {
     [navigation, route.params.galleryId]
   );
 
+  const searchCriteria = useMemo(
+    () => ({
+      searchQuery,
+      ownerFilter: ownershipTypeFilter,
+      networkFilter: networkFilter,
+      sortView,
+    }),
+    [searchQuery, ownershipTypeFilter, networkFilter, sortView]
+  );
+
   return (
     <NftSelectorWrapper ownershipTypeFilter={ownershipTypeFilter} isFullscreen>
       <View className="gap-8">
@@ -63,15 +74,10 @@ export function GalleryEditorNftSelector() {
       <View className="flex-grow flex-1 w-full">
         <Suspense fallback={<NftSelectorLoadingSkeleton />}>
           <NftSelectorPickerGrid
-            searchCriteria={{
-              searchQuery,
-              ownerFilter: ownershipTypeFilter,
-              networkFilter: networkFilter,
-              sortView,
-            }}
+            searchCriteria={searchCriteria}
             onRefresh={sync}
             onSelect={handleSelectNft}
-            onSelectNftGroup={() => {}}
+            onSelectNftGroup={noop}
           />
         </Suspense>
       </View>

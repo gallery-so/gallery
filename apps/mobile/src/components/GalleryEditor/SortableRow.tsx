@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { trigger } from 'react-native-haptic-feedback';
@@ -17,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ListItemType } from './GalleryEditorRender';
+import { ListItemType } from './GalleryEditorRenderer';
 import { ItemHeights, Positions } from './SortableRowList';
 
 type Props = {
@@ -256,18 +256,18 @@ export function SortableRow({
     };
   }, []);
 
+  const animatedViewStyle = useMemo(() => {
+    return [
+      rStyle,
+      {
+        height: itemHeight,
+      },
+    ];
+  }, [itemHeight, rStyle]);
+
   return (
     <GestureDetector gesture={panGesture}>
-      <Animated.View
-        style={[
-          rStyle,
-          {
-            height: itemHeight,
-          },
-        ]}
-      >
-        {children}
-      </Animated.View>
+      <Animated.View style={animatedViewStyle}>{children}</Animated.View>
     </GestureDetector>
   );
 }

@@ -13,7 +13,7 @@ import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSecti
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProcessedText from '../ProcessedText/ProcessedText';
 import { BaseM } from '../Text';
-import { ListItemType } from './GalleryEditorRender';
+import { ListItemType } from './GalleryEditorRenderer';
 import { SortableRowList } from './SortableRowList';
 
 type Props = {
