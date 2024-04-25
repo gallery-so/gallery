@@ -243,7 +243,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       profileImage: {
         __typename: 'EnsProfileImage',
       },
-      wallets: [],
     },
   },
 };
