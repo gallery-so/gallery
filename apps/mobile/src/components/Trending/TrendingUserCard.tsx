@@ -7,6 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { FollowButton } from '~/components/FollowButton';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -23,17 +24,18 @@ import { Typography } from '../Typography';
 type Props = {
   userRef: TrendingUserCardFragment$key;
   queryRef: TrendingUserCardQueryFragment$key;
+  variant?: CardVariant;
   showFollowButton?: boolean;
   style?: ViewProps['style'];
 };
 
-const markdownStyle = {
-  paragraph: {
-    marginBottom: 0,
-  },
-};
-
-export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = true }: Props) {
+export function TrendingUserCard({
+  style,
+  userRef,
+  queryRef,
+  variant,
+  showFollowButton = true,
+}: Props) {
   const user = useFragment(
     graphql`
       fragment TrendingUserCardFragment on GalleryUser {
@@ -53,6 +55,7 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
           }
           hidden
         }
+        ...ProfilePictureFragment
         ...FollowButtonUserFragment
       }
     `,
@@ -108,6 +111,33 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
     }
   }, [navigation, user.username]);
 
+  const usernameRow = useMemo(() => {
+    if (variant === 'detailed') {
+      return (
+        <View className="flex flex-row items-center space-x-1">
+          <View className="flex flex-row">
+            <ProfilePicture userRef={user} size="xs" />
+          </View>
+          <View className="flex flex-row items-center">
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              {user.username}
+            </Typography>
+          </View>
+        </View>
+      );
+    }
+    return (
+      <Typography
+        font={{
+          family: 'GTAlpina',
+          weight: 'StandardLight',
+        }}
+      >
+        {user.username}
+      </Typography>
+    );
+  }, [variant, user]);
+
   return (
     <GalleryTouchableOpacity
       onPress={handlePress}
@@ -117,7 +147,7 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
       eventName="Trending User Card Clicked"
       eventContext={contexts.Explore}
     >
-      <View className="mb-2 flex h-20 flex-row space-x-[2]">
+      <View className="mb-2 flex max-h-20 flex-row space-x-[2]">
         {tokenPreviews.map((tokenPreview, index) => {
           return (
             <View key={index} className="h-full w-1/2">
@@ -133,15 +163,8 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
       </View>
 
       <View className="mb-2">
-        <View className="flex flex-row items-center space-x-1">
-          <Typography
-            font={{
-              family: 'GTAlpina',
-              weight: 'StandardLight',
-            }}
-          >
-            {user.username}
-          </Typography>
+        <View className="flex flex-row items-center space-x-1 mb-1">
+          {usernameRow}
           {filteredBadges.map((badge, index) => {
             return (
               <FastImage
@@ -164,3 +187,11 @@ export function TrendingUserCard({ style, userRef, queryRef, showFollowButton = 
     </GalleryTouchableOpacity>
   );
 }
+
+type CardVariant = 'detailed' | 'default';
+
+const markdownStyle = {
+  paragraph: {
+    marginBottom: 0,
+  },
+};

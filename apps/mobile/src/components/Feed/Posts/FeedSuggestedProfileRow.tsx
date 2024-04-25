@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Dimensions, FlatList,View } from 'react-native';
+import { Dimensions, FlatList, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { removeNullValues } from 'shared/relay/removeNullValues';
 
@@ -8,7 +8,7 @@ import { FeedSuggestedProfileRowFragment$key } from '~/generated/FeedSuggestedPr
 
 import { Typography } from '../../Typography';
 
-const CARD_HEIGHT = 180;
+const CARD_HEIGHT = 183;
 const CARD_ROW_HORIZONTAL_PADDING = 42;
 
 type FeedSuggestedProfileRowProps = {
@@ -81,7 +81,7 @@ export function FeedSuggestedProfileRow({ queryRef }: FeedSuggestedProfileRowPro
         horizontal={true}
         renderItem={({ item, index }) => (
           <View style={{ width: cardWidth, height: CARD_HEIGHT, marginLeft: index === 0 ? 0 : 4 }}>
-            <TrendingUserCard userRef={item} queryRef={query} />
+            <TrendingUserCard userRef={item} queryRef={query} variant="detailed" />
           </View>
         )}
         keyExtractor={(_, index) => index.toString()}
