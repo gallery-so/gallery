@@ -22,6 +22,7 @@ import {
   NftSelectorCollectionGroup,
 } from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorContractType } from './NftSelector';
+import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
@@ -108,6 +109,8 @@ export function NftSelectorView({
     ignoreSpam: false,
     tokenRefs: tokens,
   });
+
+  const { isLocked } = useSyncTokens();
 
   const virtualizedListRef = useRef<List | null>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -221,6 +224,10 @@ export function NftSelectorView({
     },
     [columnCount, onSelectContract, onSelectToken, rows, selectedContractAddress]
   );
+
+  if (isLocked) {
+    return <NftSelectorLoadingView />;
+  }
 
   if (!rows.length && !hasSearchKeyword) {
     return (
