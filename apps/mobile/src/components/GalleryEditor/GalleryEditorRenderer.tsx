@@ -91,19 +91,23 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
   const ref = useAnimatedRef<FlashList<ListItemType>>();
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
-    ({ item }) => {
+    ({ item, index }) => {
+      const isLastItem = index === items.length - 1;
+
       if (item.kind === 'header') {
         return <GalleryEditorHeader galleryRef={item.galleryRef} />;
       } else if (item.kind === 'navigation') {
         return <GalleryEditorNavbar />;
       } else if (item.kind === 'section') {
         return (
-          <GalleryEditorSection
-            section={item.section}
-            queryRef={item.queryRef}
-            scrollContentOffsetY={scrollContentOffsetY}
-            scrollViewRef={ref}
-          />
+          <View className={isLastItem ? 'pb-32' : ''}>
+            <GalleryEditorSection
+              section={item.section}
+              queryRef={item.queryRef}
+              scrollContentOffsetY={scrollContentOffsetY}
+              scrollViewRef={ref}
+            />
+          </View>
         );
       } else {
         return null;
