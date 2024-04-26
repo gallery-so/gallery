@@ -68,10 +68,6 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];
     items.push({
-      kind: 'navigation',
-      title: 'Navigation',
-    });
-    items.push({
       kind: 'header',
       galleryRef: gallery,
     });
@@ -96,8 +92,6 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
 
       if (item.kind === 'header') {
         return <GalleryEditorHeader galleryRef={item.galleryRef} />;
-      } else if (item.kind === 'navigation') {
-        return <GalleryEditorNavbar />;
       } else if (item.kind === 'section') {
         return (
           <View className={isLastItem ? 'pb-32' : ''}>
@@ -113,7 +107,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
         return null;
       }
     },
-    [ref, scrollContentOffsetY]
+    [items.length, ref, scrollContentOffsetY]
   );
 
   const handleScroll = useCallback(
@@ -130,6 +124,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
         paddingTop: top,
       }}
     >
+      <GalleryEditorNavbar />
       <FlashList
         ref={ref}
         data={items}
