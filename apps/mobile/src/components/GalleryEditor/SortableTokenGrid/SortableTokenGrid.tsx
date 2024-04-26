@@ -21,6 +21,8 @@ type Props = {
   onDragEnd: (data: string[]) => void;
 };
 
+const GAP = 8;
+
 export function SortableTokenGrid({
   columns,
   items,
@@ -38,14 +40,14 @@ export function SortableTokenGrid({
   }, [items, positions]);
 
   const containerHeight = useMemo(() => {
-    return Math.ceil(items.length / columns) * size;
+    const rows = Math.ceil(items.length / columns);
+    return rows * (size + GAP) - GAP - rows * GAP; // Subtract GAP to remove the extra gap after the first and last row
   }, [items.length, columns, size]);
 
   return (
     <View
       style={{
         height: containerHeight,
-        width: '100%',
       }}
     >
       {items.map((item) => (
@@ -61,12 +63,12 @@ export function SortableTokenGrid({
         >
           <View>
             {item.kind === 'whitespace' ? (
-              <WhiteSpace size={size - 8} />
+              <WhiteSpace size={size - GAP} />
             ) : (
               <View
-                className="aspect-square"
+                className="aspect-square flex"
                 style={{
-                  width: size - 8,
+                  width: size - GAP,
                 }}
               >
                 <GalleryEditorTokenPreview tokenRef={item.tokenRef} />
