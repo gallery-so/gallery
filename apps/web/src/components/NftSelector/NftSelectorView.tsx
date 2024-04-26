@@ -225,7 +225,7 @@ export function NftSelectorView({
     [columnCount, onSelectContract, onSelectToken, rows, selectedContractAddress]
   );
 
-  if (isLocked) {
+  if (isLocked && !rows.length) {
     return <NftSelectorLoadingView />;
   }
 
