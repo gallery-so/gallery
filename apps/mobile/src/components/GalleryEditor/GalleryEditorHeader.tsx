@@ -21,15 +21,18 @@ export function GalleryEditorHeader() {
             family: 'GTAlpina',
             weight: 'Light',
           }}
-          className="text-[32px] leading-[36px] 
-        text-black-900
-         dark:text-white"
+          className="text-[32px] leading-[36px]text-black-900 dark:text-white"
         >
           {galleryName}
         </Typography>
       </TextInput>
-      <TextInput onChangeText={setGalleryDescription} placeholder="Add an optional description....">
-        <BaseM classNameOverride="text-metal">{galleryDescription}</BaseM>
+      <TextInput
+        onChangeText={setGalleryDescription}
+        placeholder="Add an optional description...."
+        className="text-metal"
+        multiline
+      >
+        <BaseM classNameOverride="text-metal leading-1">{galleryDescription}</BaseM>
       </TextInput>
     </View>
   );
