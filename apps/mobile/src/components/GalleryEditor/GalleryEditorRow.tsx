@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
-import { GestureResponderEvent, View, ViewProps } from 'react-native';
+import { GestureResponderEvent, View } from 'react-native';
 import Animated, { AnimatedRef, SharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
@@ -18,7 +18,6 @@ import { useWidthPerToken } from './useWidthPerToken';
 type Props = {
   sectionId: string;
   row: StagedRow;
-  style?: ViewProps['style'];
   queryRef: GalleryEditorRowFragment$key;
 
   scrollContentOffsetY: SharedValue<number>;
@@ -28,7 +27,6 @@ type Props = {
 export function GalleryEditorRow({
   sectionId,
   row,
-  style,
   queryRef,
   scrollContentOffsetY,
   scrollViewRef,
@@ -72,13 +70,13 @@ export function GalleryEditorRow({
         eventName={null}
         eventContext={null}
         onPress={handleSectionPress}
-        className={clsx('border border-transparent relative', {
-          'border-activeBlue': activeRowId === row.id,
-        })}
-        style={style}
         withoutFeedback
       >
-        <View>
+        <View
+          className={clsx('border border-transparent relative', {
+            'border-activeBlue': activeRowId === row.id,
+          })}
+        >
           <View className="relative">
             <SortableTokenGrid
               columns={row.columns}
