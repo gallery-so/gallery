@@ -82,7 +82,6 @@ export function SortableToken({
   useAnimatedReaction(
     () => positions.value[id],
     (newOrder) => {
-      // if (!newOrder) return;
       const newPosition = getPosition(newOrder || 0, columns, size);
       translateX.value = withTiming(newPosition.x, {
         duration: 350,
