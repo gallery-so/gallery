@@ -7,8 +7,6 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSection } from '~/contexts/GalleryEditor/types';
-import { GalleryEditorHeaderFragment$key } from '~/generated/GalleryEditorHeaderFragment.graphql';
-import { GalleryEditorRendererFragment$key } from '~/generated/GalleryEditorRendererFragment.graphql';
 import { GalleryEditorRendererQueryFragment$key } from '~/generated/GalleryEditorRendererQueryFragment.graphql';
 import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSectionFragment.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
@@ -20,24 +18,14 @@ import { GalleryEditorSection } from './GalleryEditorSection';
 
 export type ListItemType =
   | { kind: 'navigation'; title: string }
-  | { kind: 'header'; galleryRef: GalleryEditorHeaderFragment$key }
+  | { kind: 'header' }
   | { kind: 'section'; section: StagedSection; queryRef: GalleryEditorSectionFragment$key };
 
 type Props = {
-  galleryRef: GalleryEditorRendererFragment$key;
   queryRef: GalleryEditorRendererQueryFragment$key;
 };
 
-export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
-  const gallery = useFragment(
-    graphql`
-      fragment GalleryEditorRendererFragment on Gallery {
-        ...GalleryEditorHeaderFragment
-      }
-    `,
-    galleryRef
-  );
-
+export function GalleryEditorRenderer({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorRendererQueryFragment on Query {
@@ -69,7 +57,6 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
     const items: ListItemType[] = [];
     items.push({
       kind: 'header',
-      galleryRef: gallery,
     });
 
     sections.forEach((section) => {
@@ -81,7 +68,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
     });
 
     return items;
-  }, [gallery, sections, query]);
+  }, [sections, query]);
 
   const scrollContentOffsetY = useSharedValue(0);
   const ref = useAnimatedRef<FlashList<ListItemType>>();
@@ -91,7 +78,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
       const isLastItem = index === items.length - 1;
 
       if (item.kind === 'header') {
-        return <GalleryEditorHeader galleryRef={item.galleryRef} />;
+        return <GalleryEditorHeader />;
       } else if (item.kind === 'section') {
         return (
           <View className={isLastItem ? 'pb-32' : ''}>
