@@ -7,8 +7,6 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSection } from '~/contexts/GalleryEditor/types';
-import { GalleryEditorHeaderFragment$key } from '~/generated/GalleryEditorHeaderFragment.graphql';
-import { GalleryEditorRendererFragment$key } from '~/generated/GalleryEditorRendererFragment.graphql';
 import { GalleryEditorRendererQueryFragment$key } from '~/generated/GalleryEditorRendererQueryFragment.graphql';
 import { GalleryEditorSectionFragment$key } from '~/generated/GalleryEditorSectionFragment.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
@@ -20,24 +18,14 @@ import { GalleryEditorSection } from './GalleryEditorSection';
 
 export type ListItemType =
   | { kind: 'navigation'; title: string }
-  | { kind: 'header'; galleryRef: GalleryEditorHeaderFragment$key }
+  | { kind: 'header' }
   | { kind: 'section'; section: StagedSection; queryRef: GalleryEditorSectionFragment$key };
 
 type Props = {
-  galleryRef: GalleryEditorRendererFragment$key;
   queryRef: GalleryEditorRendererQueryFragment$key;
 };
 
-export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
-  const gallery = useFragment(
-    graphql`
-      fragment GalleryEditorRendererFragment on Gallery {
-        ...GalleryEditorHeaderFragment
-      }
-    `,
-    galleryRef
-  );
-
+export function GalleryEditorRenderer({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorRendererQueryFragment on Query {
@@ -68,12 +56,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];
     items.push({
-      kind: 'navigation',
-      title: 'Navigation',
-    });
-    items.push({
       kind: 'header',
-      galleryRef: gallery,
     });
 
     sections.forEach((section) => {
@@ -85,31 +68,33 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
     });
 
     return items;
-  }, [gallery, sections, query]);
+  }, [sections, query]);
 
   const scrollContentOffsetY = useSharedValue(0);
   const ref = useAnimatedRef<FlashList<ListItemType>>();
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
-    ({ item }) => {
+    ({ item, index }) => {
+      const isLastItem = index === items.length - 1;
+
       if (item.kind === 'header') {
-        return <GalleryEditorHeader galleryRef={item.galleryRef} />;
-      } else if (item.kind === 'navigation') {
-        return <GalleryEditorNavbar />;
+        return <GalleryEditorHeader />;
       } else if (item.kind === 'section') {
         return (
-          <GalleryEditorSection
-            section={item.section}
-            queryRef={item.queryRef}
-            scrollContentOffsetY={scrollContentOffsetY}
-            scrollViewRef={ref}
-          />
+          <View className={isLastItem ? 'pb-32' : ''}>
+            <GalleryEditorSection
+              section={item.section}
+              queryRef={item.queryRef}
+              scrollContentOffsetY={scrollContentOffsetY}
+              scrollViewRef={ref}
+            />
+          </View>
         );
       } else {
         return null;
       }
     },
-    [ref, scrollContentOffsetY]
+    [items.length, ref, scrollContentOffsetY]
   );
 
   const handleScroll = useCallback(
@@ -126,6 +111,7 @@ export function GalleryEditorRenderer({ galleryRef, queryRef }: Props) {
         paddingTop: top,
       }}
     >
+      <GalleryEditorNavbar />
       <FlashList
         ref={ref}
         data={items}

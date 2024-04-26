@@ -1,40 +1,39 @@
-import { View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { TextInput, View } from 'react-native';
 
-import { GalleryEditorHeaderFragment$key } from '~/generated/GalleryEditorHeaderFragment.graphql';
+import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 
 import { BaseM } from '../Text';
 import { Typography } from '../Typography';
 
-type Props = {
-  galleryRef: GalleryEditorHeaderFragment$key;
-};
-
-export function GalleryEditorHeader({ galleryRef }: Props) {
-  const gallery = useFragment(
-    graphql`
-      fragment GalleryEditorHeaderFragment on Gallery {
-        name
-        description
-      }
-    `,
-    galleryRef
-  );
+export function GalleryEditorHeader() {
+  const { galleryName, setGalleryName, galleryDescription, setGalleryDescription } =
+    useGalleryEditorActions();
 
   return (
     <View className="p-4 flex flex-col gap-4">
-      <Typography
-        font={{
-          family: 'GTAlpina',
-          weight: 'Light',
-        }}
-        className="text-[32px] leading-[36px] text-black-900 dark:text-white"
+      <TextInput
+        className="text-[32px] leading-[36px] text-metal dark:text-white"
+        onChangeText={setGalleryName}
+        placeholder="My Gallery"
       >
-        {gallery.name ?? 'My Gallery'}
-      </Typography>
-      <BaseM classNameOverride="text-metal">
-        {gallery.description || 'Add an optional description....'}
-      </BaseM>
+        <Typography
+          font={{
+            family: 'GTAlpina',
+            weight: 'Light',
+          }}
+          className="text-[32px] leading-[36px]text-black-900 dark:text-white"
+        >
+          {galleryName}
+        </Typography>
+      </TextInput>
+      <TextInput
+        onChangeText={setGalleryDescription}
+        placeholder="Add an optional description...."
+        className="text-metal"
+        multiline
+      >
+        <BaseM classNameOverride="text-metal leading-1">{galleryDescription}</BaseM>
+      </TextInput>
     </View>
   );
 }
