@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { AnimatedRef, SharedValue, useSharedValue } from 'react-native-reanimated';
 
@@ -32,6 +32,10 @@ export function SortableTokenGrid({
   const positions = useSharedValue<Positions>(
     Object.assign({}, ...items.map((item, index) => ({ [item.id]: index })))
   );
+
+  useEffect(() => {
+    positions.value = Object.assign({}, ...items.map((item, index) => ({ [item.id]: index })));
+  }, [items, positions]);
 
   const containerHeight = useMemo(() => {
     return Math.ceil(items.length / columns) * size;
