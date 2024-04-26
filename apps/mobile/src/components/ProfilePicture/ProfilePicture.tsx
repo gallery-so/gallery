@@ -85,11 +85,12 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
     return (
       <ReportingErrorBoundary fallback={fallbackProfilePicture}>
         <ValidProfilePicture
-          style={style}
-          tokenRef={token}
-          eventElementId={null}
-          eventName={null}
+          eventElementId="ProfilePicture"
+          eventName="ProfilePicture pressed"
+          // TODO analytics prop drill
           eventContext={null}
+          tokenRef={token}
+          style={style}
           {...rest}
         />
       </ReportingErrorBoundary>
@@ -116,12 +117,5 @@ function ValidProfilePicture({ tokenRef, style, ...rest }: ValidProfilePicturePr
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
-  return (
-    <RawProfilePicture
-      // TODO analytics prop drill
-      imageUrl={imageUrl}
-      style={style}
-      {...rest}
-    />
-  );
+  return <RawProfilePicture imageUrl={imageUrl} style={style} {...rest} />;
 }
