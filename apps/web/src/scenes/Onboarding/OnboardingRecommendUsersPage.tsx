@@ -42,7 +42,7 @@ export function OnboardingRecommendUsersPage() {
                 }
               }
             }
-            suggestedUsersFarcaster(first: 24) @required(action: THROW) {
+            suggestedUsersFarcaster(first: 24) {
               edges {
                 node {
                   __typename
