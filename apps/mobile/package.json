@@ -24,7 +24,7 @@
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "ethers": "6.11.1",
-    "expo": "^50.0.0",
+    "expo": "^50.0.17",
     "expo-application": "~5.8.3",
     "expo-asset": "~9.0.2",
     "expo-av": "~13.10.5",
