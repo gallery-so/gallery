@@ -18,6 +18,7 @@ type Props = {
   scrollContentOffsetY: SharedValue<number>;
   scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 
+  onDragStart: () => void;
   onDragEnd: (data: string[]) => void;
 };
 
@@ -29,11 +30,14 @@ export function SortableTokenGrid({
   size,
   scrollContentOffsetY,
   scrollViewRef,
+  onDragStart,
   onDragEnd,
 }: Props) {
   const positions = useSharedValue<Positions>(
     Object.assign({}, ...items.map((item, index) => ({ [item.id]: index })))
   );
+
+  const animatedId = useSharedValue<string | null>(null);
 
   useEffect(() => {
     positions.value = Object.assign({}, ...items.map((item, index) => ({ [item.id]: index })));
@@ -55,10 +59,12 @@ export function SortableTokenGrid({
           key={item.id}
           id={item.id}
           positions={positions}
+          animatedId={animatedId}
           size={size}
           columns={columns}
           scrollContentOffsetY={scrollContentOffsetY}
           scrollViewRef={scrollViewRef}
+          onDragStart={onDragStart}
           onDragEnd={onDragEnd}
         >
           <View>

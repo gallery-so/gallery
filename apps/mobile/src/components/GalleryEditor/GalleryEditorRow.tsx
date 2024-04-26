@@ -54,15 +54,19 @@ export function GalleryEditorRow({
     [activateRow, sectionId, row.id]
   );
 
+  const handleDragStart = useCallback(() => {
+    activateRow(sectionId, row.id);
+  }, [activateRow, sectionId, row.id]);
+
   const handleDragEnd = useCallback(
-    (newPositions: string[]) => {
-      moveItem(row.id, newPositions);
+    (newPositionsById: string[]) => {
+      moveItem(row.id, newPositionsById);
     },
     [moveItem, row.id]
   );
 
   return (
-    <Animated.View className={clsx('border border-transparent gap-4')}>
+    <Animated.View className={clsx('border border-transparent')}>
       <GalleryTouchableOpacity
         eventElementId={null}
         eventName={null}
@@ -72,15 +76,17 @@ export function GalleryEditorRow({
           'border-activeBlue': activeRowId === row.id,
         })}
         style={style}
+        withoutFeedback
       >
         <View>
-          <View className="flex-row flex-wrap gap-2">
+          <View className="relative">
             <SortableTokenGrid
               columns={row.columns}
               items={row.items}
               size={widthPerToken}
               scrollContentOffsetY={scrollContentOffsetY}
               scrollViewRef={scrollViewRef}
+              onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             />
           </View>

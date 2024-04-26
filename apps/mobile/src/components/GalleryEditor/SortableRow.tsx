@@ -12,7 +12,6 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -247,12 +246,7 @@ export function SortableRow({
       left: 0,
       right: 0,
       zIndex: zIndex,
-      transform: [
-        { translateY: translateY.value ?? 0 },
-        {
-          scale: withSpring(isGestureActive.value ? 1.05 : 1),
-        },
-      ],
+      transform: [{ translateY: translateY.value ?? 0 }],
     };
   }, []);
 

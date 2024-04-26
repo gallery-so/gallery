@@ -11,6 +11,7 @@ import Animated, {
   SharedValue,
   useAnimatedReaction,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -23,12 +24,14 @@ type Props = {
   children: React.ReactNode;
   id: string;
   positions: SharedValue<Positions>;
+  animatedId: SharedValue<string | null>;
   size: number;
   columns: number;
 
   scrollContentOffsetY: SharedValue<number>;
   scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
 
+  onDragStart: () => void;
   onDragEnd: (data: string[]) => void;
 };
 
@@ -36,11 +39,12 @@ export function SortableToken({
   children,
   columns,
   positions,
+  animatedId,
   size,
   id,
-
   scrollContentOffsetY,
   scrollViewRef,
+  onDragStart,
   onDragEnd,
 }: Props) {
   const position = getPosition(positions.value[id] || 0, columns, size);
@@ -52,7 +56,23 @@ export function SortableToken({
   const translateX = useSharedValue(position.x);
   const translateY = useSharedValue(position.y);
 
-  const isGestureActive = useSharedValue(false);
+  // Shared values for tracking gesture and animation state
+  const wasLastActiveId = useSharedValue(false);
+
+  // Animated reaction to update last active index
+  useAnimatedReaction(
+    () => animatedId.value,
+    (currentActiveId) => {
+      if (currentActiveId) {
+        wasLastActiveId.value = currentActiveId === id;
+      }
+    }
+  );
+
+  // Derived value to check if the gesture is active
+  const isGestureActive = useDerivedValue(() => {
+    return animatedId.value === id;
+  }, [id]);
 
   // Get safe area insets and window dimensions
   const inset = useSafeAreaInsets();
@@ -99,14 +119,25 @@ export function SortableToken({
     [containerHeight, scrollContentOffsetY, scrollViewRef, size]
   );
 
+  // Need to keep track of the previous positions to check if the positions have changed
+  // This is needed to trigger the onDragEnd callback
+  // const prevPositions = useSharedValue({});
+  const prevPositions = useSharedValue({} as Record<string, number>);
+
   const panGesture = Gesture.Pan()
     .activateAfterLongPress(300)
     .onStart(() => {
-      isGestureActive.value = true;
-      contextX.value = position.x;
-      contextY.value = position.y - scrollContentOffsetY.value;
+      // Store the previous positions (before the gesture starts)
+      prevPositions.value = Object.assign({}, positions.value);
+
+      animatedId.value = id;
+
+      contextX.value = translateX.value;
+      contextY.value = translateY.value - scrollContentOffsetY.value;
 
       runOnJS(trigger)('impactLight');
+
+      runOnJS(onDragStart)();
     })
     .onUpdate((event) => {
       const { translationX, translationY, absoluteY } = event;
@@ -133,32 +164,45 @@ export function SortableToken({
       scrollLogic({ absoluteY });
     })
     .onFinalize(() => {
-      const destination = getPosition(positions.value[id] || 0, columns, size);
+      const newPosition = getPosition(positions.value[id]! || 0, columns, size);
 
-      translateX.value = withTiming(
-        destination.x,
+      translateX.value = withTiming(newPosition.x, {
+        easing: Easing.inOut(Easing.ease),
+        duration: 350,
+      });
+
+      translateY.value = withTiming(
+        newPosition.y,
         {
           easing: Easing.inOut(Easing.ease),
           duration: 350,
         },
-        () => {
-          isGestureActive.value = false;
+        (isFinished) => {
+          // Check if the positions have changed to trigger the onDragEnd callback
+          const positionsHaveChanged = Object.keys(prevPositions.value).some((key) => {
+            return positions.value[key] !== prevPositions.value[key];
+          });
 
-          const newPositions = Object.keys(positions.value).map((key) => positions.value[key]);
+          if (isFinished && onDragEnd && positionsHaveChanged) {
+            const sortedIds = Object.keys(positions.value).sort((a, b) => {
+              const prev = positions.value[a] || 0;
+              const next = positions.value[b] || 0;
 
-          runOnJS(onDragEnd)(newPositions.map(String));
+              return prev - next;
+            });
+
+            runOnJS(onDragEnd)(sortedIds);
+          }
+
+          // Reset the animated id
+          animatedId.value = null;
         }
       );
-
-      translateY.value = withTiming(destination.y, {
-        easing: Easing.inOut(Easing.ease),
-        duration: 350,
-      });
     });
 
   const style = useAnimatedStyle(() => {
     const zIndex = isGestureActive.value ? 100 : 0;
-    const scale = isGestureActive.value ? 1.1 : 1;
+    const scale = isGestureActive.value ? 1.05 : 1;
 
     return {
       position: 'absolute',
