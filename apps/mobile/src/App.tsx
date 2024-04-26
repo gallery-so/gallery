@@ -29,6 +29,7 @@ import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
+import { AnnouncementProvider } from './contexts/AnnouncementContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
@@ -162,13 +163,15 @@ export default function App() {
                                     <BottomSheetModalProvider>
                                       <SyncTokensProvider>
                                         <ManageWalletProvider>
-                                          {/* Register the user's push token if one exists (does not prompt the user) */}
-                                          <NotificationRegistrar />
-                                          <DevMenuItems />
-                                          <DeepLinkRegistrar />
-                                          <RootStackNavigator
-                                            navigationContainerRef={navigationRef}
-                                          />
+                                          <AnnouncementProvider>
+                                            {/* Register the user's push token if one exists (does not prompt the user) */}
+                                            <NotificationRegistrar />
+                                            <DevMenuItems />
+                                            <DeepLinkRegistrar />
+                                            <RootStackNavigator
+                                              navigationContainerRef={navigationRef}
+                                            />
+                                          </AnnouncementProvider>
                                         </ManageWalletProvider>
                                       </SyncTokensProvider>
                                       <PortalHost name="app-context" />

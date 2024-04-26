@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
+import { useAnnouncementContext } from '~/contexts/AnnouncementContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
@@ -14,6 +15,7 @@ import { useRefreshHandle } from '../../hooks/useRefreshHandle';
 import { Typography } from '../Typography';
 import { NOTIFICATIONS_PER_PAGE } from './constants';
 import { Notification } from './Notification';
+import AnnouncementNotification from './Notifications/AnnouncementNotification';
 
 type Props = {
   queryRef: NotificationListFragment$key;
@@ -23,7 +25,15 @@ type NotificationType = {
   id: string;
   notification: NotificationFragment$key;
   query: NotificationQueryFragment$key;
+  kind: 'notification';
 };
+
+type AnnouncementType = {
+  id: string;
+  kind: 'announcement';
+};
+
+type NotificationListItem = NotificationType | AnnouncementType;
 
 export function NotificationList({ queryRef }: Props) {
   const {
@@ -59,22 +69,28 @@ export function NotificationList({ queryRef }: Props) {
     queryRef
   );
 
+  const { announcement, fetchAnnouncement } = useAnnouncementContext();
+
   const clearNotifications = useMobileClearNotifications();
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
   const nonNullNotifications = useMemo(() => {
-    const notifications: NotificationType[] = [];
+    const notifications: NotificationListItem[] = [];
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
-        notifications.push({ ...edge.node, notification: edge.node, query });
+        notifications.push({ ...edge.node, notification: edge.node, query, kind: 'notification' });
       }
+    }
+
+    if (announcement && announcement.active) {
+      notifications.push({ id: 'announcement', kind: 'announcement' });
     }
 
     notifications.reverse();
 
     return notifications;
-  }, [query]);
+  }, [announcement, query]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {
@@ -82,9 +98,17 @@ export function NotificationList({ queryRef }: Props) {
     }
   }, [hasPrevious, loadPrevious]);
 
-  const renderItem = useCallback<ListRenderItem<NotificationType>>(({ item }) => {
+  const renderItem = useCallback<ListRenderItem<NotificationListItem>>(({ item }) => {
+    if (item.kind === 'announcement') {
+      return <AnnouncementNotification></AnnouncementNotification>;
+    }
     return <Notification key={item.id} queryRef={item.query} notificationRef={item.notification} />;
   }, []);
+
+  const handleRefreshAndFetchAnnouncement = useCallback(async () => {
+    fetchAnnouncement();
+    handleRefresh();
+  }, [fetchAnnouncement, handleRefresh]);
 
   // if user go outside of notifications screen, clear notifications
   useFocusEffect(
@@ -119,7 +143,12 @@ export function NotificationList({ queryRef }: Props) {
       onEndReached={loadMore}
       refreshing={isLoadingPrevious}
       onEndReachedThreshold={0.8}
-      refreshControl={<GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+      refreshControl={
+        <GalleryRefreshControl
+          refreshing={isRefreshing}
+          onRefresh={handleRefreshAndFetchAnnouncement}
+        />
+      }
     />
   );
 }
