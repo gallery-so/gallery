@@ -78,6 +78,7 @@ export function GalleryEditorRow({
           })}
         >
           <View className="relative">
+            {/* this component is responsible for rendering the grid of tokens. */}
             <SortableTokenGrid
               columns={row.columns}
               items={row.items}
