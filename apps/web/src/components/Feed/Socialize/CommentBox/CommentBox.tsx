@@ -17,11 +17,10 @@ import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { FloatingCard } from '~/components/Mention/FloatingCard';
 import { MentionModal } from '~/components/Mention/MentionModal';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { MentionInput } from '~/generated/useCommentOnPostMutation.graphql';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { MentionType, useMentionableMessage } from '~/shared/hooks/useMentionableMessage';
@@ -45,7 +44,6 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
         viewer {
           __typename
         }
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -80,7 +78,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
   const { pushToast } = useToastActions();
 
   const track = useTrack();
-  const { showModal } = useModalActions();
+  const showAuthModal = useUniversalAuthModal();
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -105,11 +103,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
 
   const handleSubmit = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
@@ -131,16 +125,16 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment, rep
     }
     resetInputState();
   }, [
-    query,
+    query.viewer?.__typename,
     isSubmittingComment,
-    mentions,
     message,
     track,
     resetInputState,
-    showModal,
+    showAuthModal,
     onSubmitComment,
-    pushErrorToast,
+    mentions,
     replyToId,
+    pushErrorToast,
   ]);
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(

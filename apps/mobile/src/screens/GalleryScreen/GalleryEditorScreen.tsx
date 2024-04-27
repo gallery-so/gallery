@@ -22,7 +22,6 @@ function InnerGalleryEditorScreen() {
         }
         galleryById(id: $galleryId) {
           __typename
-          ...GalleryEditorRendererFragment
         }
         ...GalleryEditorContextFragment
         ...GalleryEditorRendererQueryFragment
@@ -39,7 +38,7 @@ function InnerGalleryEditorScreen() {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <GalleryEditorRenderer galleryRef={gallery} queryRef={query} />
+      <GalleryEditorRenderer queryRef={query} />
       <GalleryEditorActions />
     </GalleryEditorProvider>
   );

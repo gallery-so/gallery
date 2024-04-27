@@ -44,6 +44,7 @@ module.exports = async () => {
     'preact',
     'uint8arrays',
     'multiformats',
+    '@farcaster/auth-kit',
   ];
 
   return {

@@ -12,12 +12,10 @@ import { Chain } from '~/shared/utils/chains';
 import CreatorSupportAnnouncement from '../Announcement/CreatorSupportAnnouncement';
 import { VStack } from '../core/Spacer/Stack';
 import { NftSelectorContractType } from './NftSelector';
-import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorView } from './NftSelectorView';
 
 type Props = {
   selectedFilter: string;
-  isLocked: boolean;
   tokenRefs: NftSelectorTokensFragment$key;
   selectedContractAddress: string | null;
   onSelectContract: (contract: NftSelectorContractType) => void;
@@ -31,7 +29,6 @@ type Props = {
 
 export default function NftSelectorTokens({
   selectedFilter,
-  isLocked,
   selectedContractAddress,
   onSelectContract,
   onSelectToken,
@@ -83,10 +80,6 @@ export default function NftSelectorTokens({
         />
       </StyledWrapper>
     );
-  }
-
-  if (isLocked) {
-    return <NftSelectorLoadingView />;
   }
 
   return (

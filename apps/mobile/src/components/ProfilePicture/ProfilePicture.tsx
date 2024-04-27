@@ -3,7 +3,9 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
+import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
@@ -21,6 +23,7 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
         profileImage {
           ... on TokenProfileImage {
             token {
+              ...ProfilePictureValidFragment
               definition {
                 media {
                   ... on Media {
@@ -48,7 +51,7 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
   );
 
   const { token, profileImage: ensImage } = user?.profileImage ?? {};
-  const imageUrl = token?.definition?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
+  const ensImageUrl = ensImage?.previewURLs?.small;
 
   const letter = user?.username?.[0]?.toUpperCase();
 
@@ -64,7 +67,7 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
     />
   );
 
-  if (imageUrl) {
+  if (ensImageUrl) {
     return (
       <ReportingErrorBoundary fallback={fallbackProfilePicture}>
         <RawProfilePicture
@@ -72,7 +75,21 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
           eventName="ProfilePicture pressed"
           // TODO analytics prop drill
           eventContext={null}
-          imageUrl={imageUrl}
+          imageUrl={ensImageUrl}
+          style={style}
+          {...rest}
+        />
+      </ReportingErrorBoundary>
+    );
+  } else if (token) {
+    return (
+      <ReportingErrorBoundary fallback={fallbackProfilePicture}>
+        <ValidProfilePicture
+          eventElementId="ProfilePicture"
+          eventName="ProfilePicture pressed"
+          // TODO analytics prop drill
+          eventContext={null}
+          tokenRef={token}
           style={style}
           {...rest}
         />
@@ -81,4 +98,24 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
   } else {
     return fallbackProfilePicture;
   }
+}
+
+type ValidProfilePictureProps = {
+  style?: ViewProps['style'];
+  tokenRef: ProfilePictureValidFragment$key;
+} & Omit<RawProfilePictureProps, 'imageUrl'>;
+
+function ValidProfilePicture({ tokenRef, style, ...rest }: ValidProfilePictureProps) {
+  const token = useFragment(
+    graphql`
+      fragment ProfilePictureValidFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
+
+  return <RawProfilePicture imageUrl={imageUrl} style={style} {...rest} />;
 }

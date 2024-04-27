@@ -1,6 +1,16 @@
-import { createContext, memo, ReactNode, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  memo,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 
+import { MultiShimmer } from '~/components/MultiShimmer/MultiShimmer';
 import Shimmer from '~/components/Shimmer/Shimmer';
 
 type AspectRatio = 'wide' | 'square' | 'tall' | 'unknown';
@@ -23,7 +33,7 @@ export const useContentState = (): ShimmerState => {
 
 // TODO(Terence): Fix this later
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ContentIsLoadedEvent = (event?: any) => void;
+export type ContentIsLoadedEvent = (event?: any, tokenId?: string) => void;
 
 type ShimmerAction = {
   setContentIsLoaded: ContentIsLoadedEvent;
@@ -40,12 +50,66 @@ export const useSetContentIsLoaded = (): ShimmerAction['setContentIsLoaded'] => 
   return context.setContentIsLoaded;
 };
 
+const MultiShimmerContext = createContext<
+  { markTokenAsLoaded: (tokenId: string) => void } | undefined
+>(undefined);
+
+export const useMultiShimmerProvider = () => {
+  const context = useContext(MultiShimmerContext);
+  if (!context) {
+    return null;
+  }
+  return context;
+};
+
+/*
+    MultiShimmerProvider is used to show a skeleton loader for group of tokens and stop showing it
+    when X tokens were done loaded. For example, in profile screen we'll show it while the first 12
+    tokens are loading, after they're finished loading we'll show the actual tokens.
+*/
+
+type MultiShimmerProviderProps = PropsWithChildren<{
+  tokenIdsToLoad: string[];
+}>;
+
+export const MultiShimmerProvider = ({ children, tokenIdsToLoad }: MultiShimmerProviderProps) => {
+  const [waitingForTokenIds, setWaitingForTokenIds] = useState(tokenIdsToLoad);
+
+  const markTokenAsLoaded = useCallback((tokenId: string) => {
+    setWaitingForTokenIds((prev) => prev.filter((id) => id !== tokenId));
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      markTokenAsLoaded,
+    }),
+    [markTokenAsLoaded]
+  );
+
+  const isLoading = Boolean(waitingForTokenIds.length);
+
+  return (
+    <MultiShimmerContext.Provider value={value}>
+      {isLoading && (
+        <Container overflowHidden={isLoading}>
+          <VisibleDiv isVisible={isLoading}>
+            <MultiShimmer />
+          </VisibleDiv>
+        </Container>
+      )}
+      {children}
+    </MultiShimmerContext.Provider>
+  );
+};
+
 type Props = { children: ReactNode | ReactNode[] };
 
 const ShimmerProvider = memo(({ children }: Props) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<null | number>(null);
   const [aspectRatioType, setAspectRatioType] = useState<null | AspectRatio>(null);
+
+  const multiShimmerContext = useMultiShimmerProvider();
 
   const state = useMemo(
     () => ({
@@ -61,7 +125,7 @@ const ShimmerProvider = memo(({ children }: Props) => {
       // such as images, videos, and iframes, each of which come with different properties.
       // This is getting fixed in a followup PR
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setContentIsLoaded: (event?: any) => {
+      setContentIsLoaded: (event?: any, tokenId?: string) => {
         if (event) {
           // default aspect ratio to 1; if we can't determine an asset's dimensions, we'll show it in a square viewport
           let aspectRatio = 1;
@@ -89,11 +153,13 @@ const ShimmerProvider = memo(({ children }: Props) => {
             setAspectRatioType('unknown');
           }
         }
-
+        if (tokenId) {
+          multiShimmerContext?.markTokenAsLoaded(tokenId);
+        }
         setIsLoaded(true);
       },
     }),
-    []
+    [multiShimmerContext]
   );
 
   return (
@@ -144,6 +210,19 @@ const StyledChildren = styled.div<VisibleProps>`
   justify-content: center;
   align-items: center;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
+`;
+
+type VisibleDivProps = {
+  isVisible: boolean;
+};
+
+const VisibleDiv = styled.div<VisibleDivProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 `;
 
 export default ShimmerProvider;

@@ -70,10 +70,12 @@ export function GalleryEditorSection({
           'border-activeBlue': highlightedSection,
         })}
       >
-        <BaseM classNameOverride="text-base" weight="Bold">
-          {section.name}
-        </BaseM>
-        <ProcessedText text={section.collectorsNote || ''} />
+        <View className="space-y-1">
+          <BaseM classNameOverride="text-base" weight="Bold">
+            {section.name}
+          </BaseM>
+          <ProcessedText text={section.collectorsNote || ''} />
+        </View>
         <SortableRowList
           rows={section.rows}
           sectionId={section.dbid}

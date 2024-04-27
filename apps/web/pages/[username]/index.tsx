@@ -1,12 +1,13 @@
 import { GetServerSideProps } from 'next';
 import { route } from 'nextjs-routes';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import { loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
+import { ProfileScreenLoadingSkeleton } from '~/components/Profile/ProfileScreenLoadingSkeleton';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -85,6 +86,14 @@ type UserGalleryProps = MetaTagProps & {
 };
 
 export default function UserGallery({ username, preloadedQuery }: UserGalleryProps) {
+  return (
+    <Suspense key={username} fallback={<ProfileScreenLoadingSkeleton />}>
+      <UserGalleryInner username={username} preloadedQuery={preloadedQuery} />
+    </Suspense>
+  );
+}
+
+function UserGalleryInner({ username, preloadedQuery }: UserGalleryProps) {
   const query = usePreloadedQuery<UsernameQuery>(UsernameQueryNode, preloadedQuery);
 
   useVerifyEmailOnPage(query);

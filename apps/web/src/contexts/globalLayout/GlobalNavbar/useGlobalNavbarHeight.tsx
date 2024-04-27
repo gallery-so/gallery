@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const INITIAL_HEIGHT = 64;
+const INITIAL_HEIGHT = 56;
 
 export function useGlobalNavbarHeight() {
   const [height, setHeight] = useState(INITIAL_HEIGHT);

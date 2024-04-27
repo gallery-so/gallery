@@ -127,15 +127,14 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
   const environment = useRelayEnvironment();
   const FragmentResource = getFragmentResourceForEnvironment(environment);
   const incrementTokenRetryKey = useCallback(
-    (tokenId: string) => {
+    (tokenIdentifiers: string | string[]) => {
       addBreadcrumb({
         message: 'Trying to clear the Relay FragmentResource cache',
         level: 'info',
       });
 
-      // Wrapping this in a try catch since we have no idea
-      // if Relay wil introduce a breaking change here.
-      // This was copy-pasted from the web `NftErrorContext.tsx`
+      const tokenIdsArray = Array.isArray(tokenIdentifiers) ? tokenIdentifiers : [tokenIdentifiers];
+
       try {
         FragmentResource._cache._map.clear();
       } catch (e) {
@@ -146,13 +145,16 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
 
       setTokens((previous) => {
         const next = { ...previous };
-        const token = { ...(next[tokenId] ?? defaultTokenState()) };
-        token.isFailed = false;
-        token.isLoading = false;
-        token.isPolling = false;
-        token.refreshingMetadata = false;
-        token.retryKey++;
-        next[tokenId] = token;
+        tokenIdsArray.forEach((tokenId) => {
+          const token = { ...(next[tokenId] ?? defaultTokenState()) };
+          token.isFailed = false;
+          token.isLoading = false;
+          token.isPolling = false;
+          token.refreshingMetadata = false;
+          token.retryKey++;
+          next[tokenId] = token;
+        });
+
         return next;
       });
     },
@@ -217,9 +219,7 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
     TokenStateManagerContextType['clearTokenFailureState']
   >(
     (tokenIds: string[]) => {
-      for (const tokenId of tokenIds) {
-        incrementTokenRetryKey(tokenId);
-      }
+      incrementTokenRetryKey(tokenIds);
     },
     [incrementTokenRetryKey]
   );

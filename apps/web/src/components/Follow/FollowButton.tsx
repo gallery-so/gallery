@@ -6,7 +6,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useFollowUser from '~/shared/relay/useFollowUser';
@@ -118,7 +118,7 @@ export default function FollowButton({
   const followUser = useFollowUser({ queryRef: loggedInUserQuery });
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
   const { pushToast } = useToastActions();
-  const showAuthModal = useAuthModal('sign-in');
+  const showAuthModal = useUniversalAuthModal();
   const track = useTrack();
   const [hasClickedFollowAndIsHovering, setHasClickedFollowAndIsHovering] = useState(false);
 

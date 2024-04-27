@@ -1,6 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import { useEffect, useMemo } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { useWindowDimensions, View, ViewProps } from 'react-native';
 import { AnimatedRef, SharedValue, useSharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
 
@@ -22,6 +22,8 @@ type Props = {
 
   scrollContentOffsetY: SharedValue<number>;
   scrollViewRef: AnimatedRef<FlashList<ListItemType>>;
+
+  style?: ViewProps['style'];
 };
 
 type Index = number;
@@ -38,6 +40,7 @@ export function SortableRowList({
   onDragEnd,
   scrollContentOffsetY,
   scrollViewRef,
+  style,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -72,7 +75,7 @@ export function SortableRowList({
     return rowOffsets.reduce((totalHeight, row) => totalHeight + row.height, 0);
   }, [rowOffsets]);
 
-  const style = useMemo(() => {
+  const rStyle = useMemo(() => {
     return {
       top: 0,
       left: 0,
@@ -82,7 +85,7 @@ export function SortableRowList({
   }, [containerHeight]);
 
   return (
-    <View className="relative" style={style}>
+    <View className="relative" style={[rStyle, style]}>
       {rows.map((row, index) => {
         return (
           <SortableRow

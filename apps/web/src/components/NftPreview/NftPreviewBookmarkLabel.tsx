@@ -5,12 +5,11 @@ import { useTrack } from 'shared/contexts/AnalyticsContext';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftPreviewBookmarkLabelFragment$key } from '~/generated/NftPreviewBookmarkLabelFragment.graphql';
 import { NftPreviewBookmarkLabelQueryFragment$key } from '~/generated/NftPreviewBookmarkLabelQueryFragment.graphql';
 import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import BookmarkIcon from '~/icons/BookmarkIcon';
 import unescape from '~/shared/utils/unescape';
 import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
@@ -52,7 +51,6 @@ export default function NftPreviewBookmarkLabel({ tokenRef, queryRef }: Props) {
           }
         }
         ...useOptimisticUserInfoFragment
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -73,20 +71,16 @@ export default function NftPreviewBookmarkLabel({ tokenRef, queryRef }: Props) {
     return null;
   }, [token.definition.name]);
 
-  const { showModal } = useModalActions();
-
   const [admireToken] = useAdmireToken();
   const [removeTokenAdmire] = useRemoveTokenAdmire();
   const track = useTrack();
   const { route } = useRouter();
 
+  const showAuthModal = useUniversalAuthModal();
+
   const handleAddBookmark = useCallback(() => {
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
@@ -97,7 +91,17 @@ export default function NftPreviewBookmarkLabel({ tokenRef, queryRef }: Props) {
     });
 
     admireToken(token.id, token.dbid, info, decodedTokenName);
-  }, [admireToken, decodedTokenName, info, query, route, showModal, token.dbid, token.id, track]);
+  }, [
+    admireToken,
+    decodedTokenName,
+    info,
+    query.viewer?.__typename,
+    route,
+    showAuthModal,
+    token.dbid,
+    token.id,
+    track,
+  ]);
 
   const handleRemoveBookmark = useCallback(() => {
     if (

@@ -30,7 +30,7 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
 
   const handleNftLoaded = useCallback<ContentIsLoadedEvent>(
     (event) => {
-      shimmerContext?.setContentIsLoaded(event);
+      shimmerContext?.setContentIsLoaded(event, tokenId);
 
       markTokenAsLoaded(tokenId);
     },

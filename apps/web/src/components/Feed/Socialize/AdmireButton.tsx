@@ -2,10 +2,9 @@ import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graphql';
 import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { AdmireIcon } from '~/icons/SocializeIcons';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -53,13 +52,11 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
         viewer {
           __typename
         }
-
-        ...useAuthModalFragment
       }
     `,
     queryRef
   );
-  const { showModal } = useModalActions();
+  const showAuthModal = useUniversalAuthModal();
 
   const track = useTrack();
 
@@ -78,16 +75,12 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
     });
 
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
     onAdmire();
-  }, [query, track, onAdmire, showModal]);
+  }, [track, query.viewer?.__typename, onAdmire, showAuthModal]);
 
   const hasViewerAdmiredEvent = Boolean(feedItem.viewerAdmire);
 
