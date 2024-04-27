@@ -77,17 +77,34 @@ function DebuggerBottomSheet({ activeRowId, activeSectionId, sections }: Debugge
                 {section.name || 'Empty'} -
                 <BaseM classNameOverride="text-gray-500">{section.dbid}</BaseM>
               </BaseM>
-              {section.rows.map((row, index) => {
-                return (
-                  <View key={row.id}>
-                    <BaseM
-                      classNameOverride={clsx(row.id === activeRowId ? 'text-activeBlue' : null)}
-                    >
-                      {index + 1}. {row.id} - columns ({row.columns})
-                    </BaseM>
-                  </View>
-                );
-              })}
+              <View className="gap-2">
+                {section.rows.map((row, index) => {
+                  return (
+                    <View key={row.id}>
+                      <BaseM
+                        classNameOverride={clsx(
+                          'mb-1',
+                          row.id === activeRowId ? 'text-activeBlue' : null
+                        )}
+                      >
+                        {index + 1}. {row.id} - columns ({row.columns})
+                      </BaseM>
+                      <View className="gap-1">
+                        {row.items.map((item) => {
+                          return (
+                            <BaseM
+                              key={item.id}
+                              classNameOverride="text-xs font-mono text-gray-600"
+                            >
+                              {item.id}
+                            </BaseM>
+                          );
+                        })}
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
             </View>
           );
         })}

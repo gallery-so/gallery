@@ -98,7 +98,13 @@ export function SortableRowList({
             scrollViewRef={scrollViewRef}
             onDragEnd={onDragEnd}
           >
-            <GalleryEditorRow sectionId={sectionId} row={row} queryRef={query} />
+            <GalleryEditorRow
+              sectionId={sectionId}
+              row={row}
+              queryRef={query}
+              scrollContentOffsetY={scrollContentOffsetY}
+              scrollViewRef={scrollViewRef}
+            />
           </SortableRow>
         );
       })}

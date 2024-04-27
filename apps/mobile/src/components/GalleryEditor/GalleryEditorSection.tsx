@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { AnimatedRef, SharedValue } from 'react-native-reanimated';
 import { graphql, useFragment } from 'react-relay';
-import { DragIcon } from 'src/icons/DragIcon';
 
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSection } from '~/contexts/GalleryEditor/types';
@@ -71,13 +70,6 @@ export function GalleryEditorSection({
           'border-activeBlue': highlightedSection,
         })}
       >
-        {highlightedSection && (
-          <View className="absolute right-2 top-2 flex-row gap-1 z-10">
-            <View className="h-6 w-7 rounded-sm bg-activeBlue px-1 py-0.5">
-              <DragIcon />
-            </View>
-          </View>
-        )}
         <View className="space-y-1">
           <BaseM classNameOverride="text-base" weight="Bold">
             {section.name}

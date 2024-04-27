@@ -1,5 +1,6 @@
 import { createContext, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import rfdc from 'rfdc';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from 'shared/errors/ErrorWithSentryMetadata';
@@ -18,6 +19,8 @@ import { generateLayoutFromCollection } from './collectionLayout';
 import { getInitialCollectionsFromServer } from './getInitialCollectionsFromServer';
 import { StagedItem, StagedRow, StagedSection, StagedSectionList } from './types';
 import { arrayMove } from './util';
+
+const deepClone = rfdc();
 
 type GalleryEditorActions = {
   galleryId: string;
@@ -38,6 +41,8 @@ type GalleryEditorActions = {
   activateRow: (sectionId: string, rowId: string) => void;
   clearActiveRow: () => void;
   moveRow: (sectionId: string, newOrderByIndex: string[]) => void;
+
+  moveItem: (rowId: string, newOrderByIds: string[]) => void;
 
   incrementColumns: (rowId: string) => void;
   decrementColumns: (rowId: string) => void;
@@ -313,6 +318,22 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateSection]
   );
 
+  // TODO: Add support for moving items between rows
+  const moveItem = useCallback(
+    (rowId: string, newOrderByIds: string[]) => {
+      updateRow(rowId, (previousRow) => {
+        const clonedItems = deepClone(previousRow.items);
+
+        const newItems = newOrderByIds
+          .map((id) => clonedItems.find((item) => item.id === id))
+          .filter((item): item is StagedItem => item !== undefined);
+
+        return { ...previousRow, items: newItems };
+      });
+    },
+    [updateRow]
+  );
+
   const toggleTokensStaged = useCallback(
     (tokenIds: string[]) => {
       if (!activeRowId) {
@@ -522,6 +543,7 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       clearActiveRow,
 
       moveRow,
+      moveItem,
 
       toggleTokensStaged,
       saveGallery,
@@ -550,6 +572,8 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
       clearActiveRow,
 
       moveRow,
+      moveItem,
+
       toggleTokensStaged,
       saveGallery,
     ]
