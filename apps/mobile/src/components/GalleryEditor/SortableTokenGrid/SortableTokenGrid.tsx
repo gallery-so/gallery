@@ -48,12 +48,14 @@ export function SortableTokenGrid({
     return rows * (size + GAP) - GAP - rows * GAP; // Subtract GAP to remove the extra gap after the first and last row
   }, [items.length, columns, size]);
 
+  const style = useMemo<ViewProps['style']>(() => {
+    return {
+      height: containerHeight,
+    };
+  }, [containerHeight]);
+
   return (
-    <View
-      style={{
-        height: containerHeight,
-      }}
-    >
+    <View style={style}>
       {items.map((item) => (
         <SortableToken
           key={item.id}
