@@ -13,7 +13,7 @@ import { Chain } from '~/shared/utils/chains';
 
 export function getChainIconComponent(chain: Chain) {
   switch (chain) {
-    case 'All Networks' as Chain:
+    case 'All Networks':
       return <WorldIcon />;
 
     case 'Ethereum':
