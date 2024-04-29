@@ -7,7 +7,6 @@ import { EnsembleLogoIcon } from '~/icons/EnsembleLogoIcon';
 import { FoundationLogoIcon } from '~/icons/FoundationLogoIcon';
 import { FxHashLogoIcon } from '~/icons/FxHashLogoIcon';
 import { HighlightLogoIcon } from '~/icons/HighlightLogoIcon';
-import { MintFunLogoIcon } from '~/icons/MintFunLogoIcon';
 import { ProhibitionLogoIcon } from '~/icons/ProhibitionLogoIcon';
 import { SuperRareLogoIcon } from '~/icons/SuperRareLogoIcon';
 import { ZoraLogoIcon } from '~/icons/ZoraLogoIcon';
@@ -70,11 +69,6 @@ export function MintLinkButton({
       return {
         buttonText: 'mint on zora',
         icon: <ZoraLogoIcon />,
-      };
-    } else if (mintProviderType === 'MintFun') {
-      return {
-        buttonText: 'mint on mint.fun',
-        icon: <MintFunLogoIcon />,
       };
     } else if (mintProviderType === 'FxHash') {
       return {
@@ -161,8 +155,8 @@ export function MintLinkButton({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} stroke-miterlimit="10" />
-          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} stroke-miterlimit="10" />
+          <path d="M3 1.33301H9.66667V7.99967" stroke={arrowColor} strokeMiterlimit="10" />
+          <path d="M9.66667 1.33301L1 9.99967" stroke={arrowColor} strokeMiterlimit="10" />
         </svg>
       </HStack>
     </Button>

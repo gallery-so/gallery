@@ -53,6 +53,10 @@ tasks:
     command: expo prebuild -p android
     local: true
 
+  android-physical-device:
+    command: expo start --localhost --android
+    local: true
+
   android-raw:
     command: expo run:android
     local: true

@@ -42,9 +42,6 @@ function GlobalFooter({ theme = 'light' }: Props) {
           </VStack>
           <VStack gap={8}>
             <StyledFooterLink href={GALLERY_JOBS}>Jobs</StyledFooterLink>
-            <StyledFooterLink href={route({ pathname: '/shop' })}>
-              <HStack gap={4}>Shop</HStack>
-            </StyledFooterLink>
           </VStack>
         </HStack>
         <HStack gap={8}>

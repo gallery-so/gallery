@@ -145,7 +145,7 @@ export function SomeoneRepliedToYourComment({
         </Text>
 
         <View className="space-y-1">
-          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+          <View className="border-l-2 border-[#d9d9d9] pl-2 px-2 w-64">
             <Text className="dark:text-white" numberOfLines={3}>
               {notification.comment?.comment ?? ''}
             </Text>

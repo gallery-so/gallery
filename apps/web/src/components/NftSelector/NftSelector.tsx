@@ -1,11 +1,10 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useSyncCreatedTokensForExistingContract } from 'src/hooks/api/tokens/useSyncCreatedTokensForExistingContract';
 import styled from 'styled-components';
 
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
-import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
@@ -57,7 +56,37 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
         viewer {
           ... on Viewer {
-            ...NftSelectorViewerFragment
+            user {
+              dbid
+
+              tokens(ownershipFilter: [Creator, Holder]) {
+                __typename
+
+                dbid
+                creationTime
+                definition {
+                  name
+                  chain
+                  contract {
+                    dbid
+                    name
+                    isSpam
+                  }
+                }
+
+                isSpamByUser
+
+                ownerIsHolder
+                ownerIsCreator
+
+                ...useTokenSearchResultsFragment
+                ...NftSelectorTokensFragment
+
+                # Needed for when we select a token, we want to have this already in the cache
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...PostComposerTokenFragment
+              }
+            }
           }
         }
         ...NftSelectorTokensQueryFragment
@@ -66,46 +95,10 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     {}
   );
 
-  const viewer = useFragment<NftSelectorViewerFragment$key>(
-    graphql`
-      fragment NftSelectorViewerFragment on Viewer {
-        user {
-          dbid
-
-          tokens(ownershipFilter: [Creator, Holder]) {
-            __typename
-
-            dbid
-            creationTime
-            definition {
-              name
-              chain
-              contract {
-                dbid
-                name
-                isSpam
-              }
-            }
-
-            isSpamByUser
-
-            ownerIsHolder
-            ownerIsCreator
-
-            ...useTokenSearchResultsFragment
-            ...NftSelectorTokensFragment
-
-            # Needed for when we select a token, we want to have this already in the cache
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...PostComposerTokenFragment
-          }
-        }
-      }
-    `,
-    query.viewer
+  const tokens = useMemo(
+    () => removeNullValues(query.viewer?.user?.tokens),
+    [query.viewer?.user?.tokens]
   );
-
-  const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
   >({
@@ -224,7 +217,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(network, query);
 
-  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query?.viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 
@@ -371,7 +364,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
 
       <NftSelectorTokens
         selectedFilter={filterType}
-        isLocked={isLocked}
         tokenRefs={tokensToDisplay}
         selectedContractAddress={selectedContract?.address ?? null}
         onSelectContract={handleSelectContract}

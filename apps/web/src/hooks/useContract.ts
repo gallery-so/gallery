@@ -37,7 +37,11 @@ function validateEthereumAddressFormat(input: string): EthereumAddress {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WagmiContract = GetContractReturnType<Abi> & { write?: any; read?: any };
 
-function useContractWithAbi(
+/**
+ * This function is heavily outdated and needs to be updated; `getContract` API has been updated.
+ * We haven't prioritized fixing this since we don't really do anything with contracts anymore
+ */
+function useContractWithAbi_WARNING_THIS_FUNCTION_DOESNT_WORK(
   contractAddress: string,
   contractAbi: Abi,
   chainId?: number
@@ -52,28 +56,33 @@ function useContractWithAbi(
   const publicClient = usePublicClient();
 
   const contract = getContract({
+    // @ts-expect-error: not fixing this until we need to
     address: validatedAddress,
     abi,
     // @ts-expect-error typescript
     walletClient: walletClient ?? publicClient,
   });
 
+  // @ts-expect-error: not fixing this until we need to
   return contract;
 }
 
 export function useMintMerchContract() {
-  return useContractWithAbi(GALLERY_MERCH_CONTRACT_ADDRESS, GALLERY_MERCH_CONTRACT_ABI as Abi);
+  return useContractWithAbi_WARNING_THIS_FUNCTION_DOESNT_WORK(
+    GALLERY_MERCH_CONTRACT_ADDRESS,
+    GALLERY_MERCH_CONTRACT_ABI as Abi
+  );
 }
 
 export function usePremiumMembershipCardContract() {
-  return useContractWithAbi(
+  return useContractWithAbi_WARNING_THIS_FUNCTION_DOESNT_WORK(
     PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS,
     PREMIUM_MEMBERSHIP_CONTRACT_ABI as Abi
   );
 }
 
 export function useGeneralMembershipCardContract() {
-  return useContractWithAbi(
+  return useContractWithAbi_WARNING_THIS_FUNCTION_DOESNT_WORK(
     GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
     GENERAL_MEMBERSHIP_CONTRACT_ABI as Abi
   );
@@ -82,7 +91,7 @@ export function useGeneralMembershipCardContract() {
 export const BASE_MAINNET_CHAIN_ID = 8453;
 
 export function useMintMementosContract() {
-  return useContractWithAbi(
+  return useContractWithAbi_WARNING_THIS_FUNCTION_DOESNT_WORK(
     GALLERY_MEMENTOS_CONTRACT_ADDRESS,
     GALLERY_MEMENTOS_CONTRACT_ABI as Abi,
     BASE_MAINNET_CHAIN_ID

@@ -6,7 +6,6 @@ import { contexts } from '~/shared/analytics/constants';
 
 type AnimatedRefreshIconProps = {
   onSync: () => void;
-  onRefresh: () => void;
   isSyncing: boolean;
   eventElementId: string;
   eventName: string;
@@ -14,7 +13,6 @@ type AnimatedRefreshIconProps = {
 
 export function AnimatedRefreshIcon({
   onSync,
-  onRefresh,
   isSyncing,
   eventElementId,
   eventName,
@@ -22,8 +20,7 @@ export function AnimatedRefreshIcon({
   const handleSync = useCallback(async () => {
     if (isSyncing) return;
     await onSync();
-    onRefresh();
-  }, [isSyncing, onRefresh, onSync]);
+  }, [isSyncing, onSync]);
 
   return (
     <IconContainer

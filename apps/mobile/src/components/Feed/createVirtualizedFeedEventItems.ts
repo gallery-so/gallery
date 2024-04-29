@@ -22,6 +22,8 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 export type FeedItemTypes = 'Post' | 'FeedEvent';
 type itemType = FeedItemTypes | null;
 
+const SUGGESTED_PROFILE_ROW_IDX = 8;
+
 export type FeedListItemType = { key: string } & (
   | {
       kind: 'feed-item-navigation';
@@ -107,6 +109,14 @@ export type FeedListItemType = { key: string } & (
       postId: string;
       itemType: itemType;
     }
+  | {
+      kind: 'suggested-profile-row';
+      event: null;
+      post: null;
+      eventId: string;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      itemType: itemType;
+    }
 );
 
 export type createVirtualizedItemsFromFeedEventsArgs = {
@@ -149,6 +159,8 @@ export function createVirtualizedFeedEventItems({
         ...FeedPostSocializeSectionQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...PostListItemQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedSuggestedProfileRowFragment
       }
     `,
     queryRef
@@ -370,5 +382,32 @@ export function createVirtualizedFeedEventItems({
     }
   }
 
-  return { items };
+  /**
+   * insert suggested profiles in between posts.
+   *
+   * we need to do it this way as opposed to a simple splice based on
+   * array length given there are different elements of a post component
+   * that count towards array item length
+   */
+  let postCount = 0;
+  const itemsWithSuggestedProfileRow = [];
+  for (const item of items) {
+    if (item.kind === 'post-item-header') {
+      postCount++;
+      if (postCount === SUGGESTED_PROFILE_ROW_IDX) {
+        itemsWithSuggestedProfileRow.push({
+          kind: 'suggested-profile-row',
+          event: null,
+          post: null,
+          queryRef: query,
+          key: 'suggested-profile-row',
+          eventId: 'suggested-profile-row',
+          itemType: null,
+        } as FeedListItemType);
+      }
+    }
+    itemsWithSuggestedProfileRow.push(item);
+  }
+
+  return { items: itemsWithSuggestedProfileRow };
 }

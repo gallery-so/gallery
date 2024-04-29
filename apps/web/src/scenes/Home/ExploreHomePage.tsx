@@ -5,7 +5,13 @@ import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import Explore from '~/components/Explore/Explore';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 
-export default function ExploreHomePage() {
+import { CmsTypes } from '../ContentPages/cms_types';
+
+type Props = {
+  gallerySelectsContent: CmsTypes.ExplorePageGallerySelectsList;
+};
+
+export default function ExploreHomePage({ gallerySelectsContent }: Props) {
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
@@ -14,7 +20,7 @@ export default function ExploreHomePage() {
         <title>Gallery | Explore</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        <Explore />
+        <Explore gallerySelectsContent={gallerySelectsContent} />
       </StyledPage>
     </>
   );

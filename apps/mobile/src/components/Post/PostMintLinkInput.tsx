@@ -1,19 +1,19 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { TextInput, View, ViewProps } from 'react-native';
 import { AlertIcon } from 'src/icons/AlertIcon';
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
 import { checkValidMintUrl } from '~/shared/utils/getMintUrlWithReferrer';
 
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Toggle } from '../Toggle';
 import { Typography } from '../Typography';
-import { SupportedMintLinkBottomSheet } from './SupportedMintLinkBottomSheet';
+import SupportedMintLinkBottomSheet from './SupportedMintLinkBottomSheet';
 
 type Props = {
   value: string;
@@ -42,8 +42,6 @@ export function PostMintLinkInput({
   const { colorScheme } = useColorScheme();
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
   const handleTextChange = useCallback(
     (text: string) => {
       setValue(text);
@@ -65,9 +63,13 @@ export function PostMintLinkInput({
     setIncludeMintLink(newValue);
   }, [defaultValue, handleTextChange, includeMintLink, setIncludeMintLink]);
 
+  const { showBottomSheetModal } = useBottomSheetModalActions();
+
   const handleOpenBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    showBottomSheetModal({
+      content: <SupportedMintLinkBottomSheet />,
+    });
+  }, [showBottomSheetModal]);
 
   return (
     <View className="space-y-2" style={style}>
@@ -157,8 +159,6 @@ export function PostMintLinkInput({
           )}
         </View>
       )}
-
-      <SupportedMintLinkBottomSheet ref={bottomSheetRef} />
     </View>
   );
 }

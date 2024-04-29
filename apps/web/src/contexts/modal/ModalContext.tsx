@@ -39,7 +39,7 @@ export const useModalState = (): ModalState => {
 type ShowModalFnProps = {
   id?: string;
   content: ReactElement;
-  headerActions?: JSX.Element | false;
+  headerElement?: JSX.Element | false;
   headerText?: string;
   headerVariant?: ModalPaddingVariant;
   isFullPage?: boolean;
@@ -58,6 +58,7 @@ type ModalActions = {
   showModal: (s: ShowModalFnProps) => void;
   hideModal: (h?: HideModalFnProps) => void;
   clearAllModals: () => void;
+  setHeaderElement: (id: string, s: ShowModalFnProps['headerElement']) => void;
 };
 
 const ModalActionsContext = createContext<ModalActions | undefined>(undefined);
@@ -94,7 +95,7 @@ function ModalProvider({ children }: Props) {
     ({
       id = uuid(),
       content,
-      headerActions,
+      headerElement,
       headerText = '',
       hideClose = false,
       headerVariant = 'standard',
@@ -109,7 +110,7 @@ function ModalProvider({ children }: Props) {
           id,
           isActive: true,
           content,
-          headerActions,
+          headerElement,
           hideClose,
           headerText,
           headerVariant,
@@ -156,6 +157,20 @@ function ModalProvider({ children }: Props) {
     });
   }, []);
 
+  const setHeaderElement: ModalActions['setHeaderElement'] = useCallback((modalId, element) => {
+    setModals((prev) => {
+      return prev.map((modal) => {
+        if (modal.id === modalId) {
+          return {
+            ...modal,
+            headerElement: element,
+          };
+        }
+        return modal;
+      });
+    });
+  }, []);
+
   const dismountModal = useCallback((modalId: string) => {
     setModals((prev) => prev.filter(({ id }) => id !== modalId));
   }, []);
@@ -167,8 +182,9 @@ function ModalProvider({ children }: Props) {
       showModal,
       hideModal,
       clearAllModals,
+      setHeaderElement,
     }),
-    [showModal, hideModal, clearAllModals]
+    [showModal, hideModal, clearAllModals, setHeaderElement]
   );
 
   /**
@@ -242,7 +258,7 @@ function ModalProvider({ children }: Props) {
             id,
             isActive,
             content,
-            headerActions,
+            headerElement,
             headerText,
             headerVariant,
             isFullPage,
@@ -267,7 +283,7 @@ function ModalProvider({ children }: Props) {
                 isPaddingDisabled={isPaddingDisabled}
                 hideClose={hideClose}
                 headerVariant={headerVariant}
-                headerActions={headerActions}
+                headerElement={headerElement}
               />
             );
           }

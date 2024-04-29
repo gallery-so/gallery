@@ -2,6 +2,7 @@ import { captureException } from '@sentry/nextjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { useGetUserByWalletAddressImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -82,6 +83,7 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
   const { hideModal } = useModalActions();
 
   const createNonce = useCreateNonce();
+  const getUserByWalletAddress = useGetUserByWalletAddressImperatively();
   const trackAddWalletAttempt = useTrackAddWalletAttempt();
   const trackAddWalletSuccess = useTrackAddWalletSuccess();
   const trackAddWalletError = useTrackAddWalletError();
@@ -99,13 +101,14 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
         setIsConnecting(true);
 
         trackAddWalletAttempt('Tezos');
-        const { nonce, user_exists: userExists } = await createNonce(address, 'Tezos');
+        const { nonce, message } = await createNonce();
+        const userExists = Boolean(await getUserByWalletAddress({ address, chain: 'Tezos' }));
 
         if (userExists) {
           throw { code: 'EXISTING_USER' } as Web3Error;
         }
 
-        const payload = generatePayload(nonce, address);
+        const payload = generatePayload(message, address);
         setPendingState(PROMPT_SIGNATURE);
         const signature = await requestSignature(payload);
 
@@ -114,12 +117,13 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {
-              signature,
-              nonce: nonceNumber,
               chainPubKey: {
                 pubKey: publicKey,
                 chain: 'Tezos',
               },
+              signature,
+              nonce: nonceNumber,
+              message,
             },
           },
           chainAddress: {
@@ -155,6 +159,7 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
     [
       trackAddWalletAttempt,
       createNonce,
+      getUserByWalletAddress,
       requestSignature,
       addWallet,
       trackAddWalletSuccess,

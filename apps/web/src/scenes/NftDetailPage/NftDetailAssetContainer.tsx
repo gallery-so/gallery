@@ -110,6 +110,7 @@ const StyledImage = styled.img`
   border: none;
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
 `;
 
 const ShimmerContainer = styled.div`

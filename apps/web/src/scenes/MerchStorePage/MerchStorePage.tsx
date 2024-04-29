@@ -10,7 +10,7 @@ import { TitleM, TitleMonoM } from '~/components/core/Text/Text';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { MerchStorePageQuery } from '~/generated/MerchStorePageQuery.graphql';
 import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQueryFragment.graphql';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 import { contexts } from '~/shared/analytics/constants';
@@ -100,7 +100,7 @@ export default function MerchStorePage({ queryRef }: Props) {
   );
 
   const { merchTokens } = query;
-  const showAuthModal = useAuthModal('sign-in');
+  const showAuthModal = useUniversalAuthModal();
   const showRedeemModal = useRedeemModal(merchTokens);
 
   const loggedInUserId = useLoggedInUserId(userQuery);

@@ -1,22 +1,14 @@
-import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
 import { CommunityList } from '~/components/CommunitiesList/CommunityList';
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesSheetFragment$key } from '~/generated/ProfileViewSharedCommunitiesSheetFragment.graphql';
-
-import { useListContentStyle } from '../Tabs/useListContentStyle';
 
 type Props = {
   userRef: ProfileViewSharedCommunitiesSheetFragment$key;
 };
-
-const snapPoints = ['50%'];
 
 export const SHARED_COMMUNITIES_PER_PAGE = 20;
 export type ContractAddress = {
@@ -24,10 +16,7 @@ export type ContractAddress = {
   chain: string | null;
 };
 
-function ProfileViewSharedCommunitiesSheet(
-  props: Props,
-  ref: ForwardedRef<GalleryBottomSheetModalType>
-) {
+export default function ProfileViewSharedCommunitiesSheet(props: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment ProfileViewSharedCommunitiesSheetFragment on GalleryUser
@@ -61,8 +50,6 @@ function ProfileViewSharedCommunitiesSheet(
     return communities;
   }, [data.sharedCommunities?.edges]);
 
-  const contentContainerStyle = useListContentStyle();
-
   const loadMore = useCallback(() => {
     if (hasNext) {
       loadNext(SHARED_COMMUNITIES_PER_PAGE);
@@ -70,28 +57,20 @@ function ProfileViewSharedCommunitiesSheet(
   }, [hasNext, loadNext]);
 
   return (
-    <GalleryBottomSheetModal ref={ref} index={0} snapPoints={snapPoints}>
-      <View style={contentContainerStyle}>
-        <Typography
-          className="text-sm mb-4 px-4 flex flex-row items-center "
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-        >
-          Items you both own
-        </Typography>
+    <View className="flex pb-8">
+      <Typography
+        className="text-sm mb-4 flex flex-row items-center "
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+      >
+        Items you both own
+      </Typography>
 
-        <View className="flex-grow">
-          <CommunityList onLoadMore={loadMore} communityRefs={nonNullCommunities} />
-        </View>
+      <View className="flex-grow h-full">
+        <CommunityList onLoadMore={loadMore} communityRefs={nonNullCommunities} />
       </View>
-    </GalleryBottomSheetModal>
+    </View>
   );
 }
-
-const ForwardedProfileViewSharedCommunitiesSheet = forwardRef<GalleryBottomSheetModalType, Props>(
-  ProfileViewSharedCommunitiesSheet
-);
-
-export { ForwardedProfileViewSharedCommunitiesSheet as ProfileViewSharedCommunitiesSheet };

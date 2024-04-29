@@ -18,9 +18,7 @@ import { ConnectionMode } from '../WalletSelector';
 import DelegateCashMessage from './DelegateCashMessage';
 import { EthereumAddWallet } from './EthereumAddWallet';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
-import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
-import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
-import MagicLinkLogin from './MagicLinkLogin';
+import { GnosisSafeMessage } from './GnosisSafeMessage';
 import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
@@ -34,7 +32,6 @@ export type OnConnectWalletSuccessFn = () => void;
 export type MultichainWalletSelectorProps = {
   connectionMode?: ConnectionMode;
   onConnectWalletSuccess?: OnConnectWalletSuccessFn;
-  showEmail?: boolean;
 };
 
 type Props = {
@@ -45,13 +42,11 @@ export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   onConnectWalletSuccess,
-  showEmail = true,
 }: Props) {
   const query = useFragment(
     graphql`
       fragment MultichainWalletSelectorFragment on Query {
         ...EthereumAddWalletFragment
-        ...GnosisSafeAddWalletFragment
         ...TezosAddWalletFragment
       }
     `,
@@ -99,7 +94,10 @@ export default function MultichainWalletSelector({
       return (
         <WalletSelectorWrapper>
           <Web3WalletProvider>
-            <GnosisSafeAddWallet queryRef={query} reset={reset} />
+            <GnosisSafeMessage />
+            {/*
+            Gnosis flow currently broken; we should fix eventually
+            <GnosisSafeAddWallet queryRef={query} reset={reset} /> */}
           </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
@@ -109,7 +107,10 @@ export default function MultichainWalletSelector({
       return (
         <WalletSelectorWrapper>
           <Web3WalletProvider>
-            <GnosisSafeAuthenticateWallet reset={reset} />
+            <GnosisSafeMessage />
+            {/*
+            Gnosis flow currently broken; we should fix eventually
+            <GnosisSafeAuthenticateWallet reset={reset} /> */}
           </Web3WalletProvider>
         </WalletSelectorWrapper>
       );
@@ -136,20 +137,10 @@ export default function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.delegateCash) {
     return (
       <WalletSelectorWrapper>
-        <DelegateCashMessage reset={reset} />
+        <DelegateCashMessage />
       </WalletSelectorWrapper>
     );
   }
-
-  if (selectedAuthMethod === supportedAuthMethods.magicLink) {
-    return (
-      <WalletSelectorWrapper>
-        <MagicLinkLogin />
-      </WalletSelectorWrapper>
-    );
-  }
-
-  console.log({ selectedAuthMethod });
 
   return (
     <WalletSelectorWrapper gap={24}>
@@ -159,19 +150,16 @@ export default function MultichainWalletSelector({
             label={supportedAuthMethods.ethereum.name}
             icon="ethereum"
             additionalChains={additionalEthereumChains}
-            onClick={() => {
+            onClick={async () => {
               console.log('connecting to ethereum');
-              connectEthereum().then(
-                (address) => {
-                  console.log('connected to ethereum with', address);
-                  setSelectedAuthMethod(supportedAuthMethods.ethereum);
-                },
-                (error) => {
-                  console.log('failed to connect to ethereum', error);
-                }
-              );
+              const address = await connectEthereum();
+              if (address) {
+                console.log('connected to ethereum with', address);
+                setSelectedAuthMethod(supportedAuthMethods.ethereum);
+              }
             }}
           />
+
           <WalletButton
             label="Tezos"
             icon="tezos"
@@ -198,6 +186,7 @@ export default function MultichainWalletSelector({
               }}
             />
           ) : null}
+
           <WalletButton
             label={supportedAuthMethods.delegateCash.name}
             icon="delegate_cash"
@@ -205,14 +194,7 @@ export default function MultichainWalletSelector({
               setSelectedAuthMethod(supportedAuthMethods.delegateCash);
             }}
           />
-          {connectionMode === AUTH && showEmail ? (
-            <WalletButton
-              label={supportedAuthMethods.magicLink.name}
-              onClick={() => {
-                setSelectedAuthMethod(supportedAuthMethods.magicLink);
-              }}
-            ></WalletButton>
-          ) : null}
+
           <WalletButton
             label="Solana"
             icon="solana"
@@ -226,10 +208,10 @@ export default function MultichainWalletSelector({
             }}
           />
         </VStack>
+        <StyledWalletHelperText>
+          You can always add more wallets across networks later when setting up your Gallery.
+        </StyledWalletHelperText>
       </VStack>
-      <StyledWalletHelperText>
-        You can always add more wallets across networks later when setting up your Gallery.
-      </StyledWalletHelperText>
     </WalletSelectorWrapper>
   );
 }
@@ -237,4 +219,5 @@ export default function MultichainWalletSelector({
 const StyledWalletHelperText = styled(BaseM)`
   max-width: 400px;
   color: ${colors.shadow};
+  text-align: center;
 `;

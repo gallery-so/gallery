@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
-import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
+import { CreateUserInput, useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
 import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
 
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
@@ -63,46 +63,30 @@ export default function useCreateUser() {
   );
 
   return useCallback(
-    async (authPayloadVariables: AuthPayloadVariables, username: string, bio: string) => {
-      let authMechanism: useCreateUserMutation['variables']['authMechanism'];
+    async ({
+      authPayloadVariables,
+      username,
+      bio,
+      email,
+    }: {
+      authPayloadVariables: AuthPayloadVariables;
+      username: string;
+      bio: string;
+      email?: string;
+    }) => {
+      const authMechanism: useCreateUserMutation['variables']['authMechanism'] =
+        getAuthMechanismFromAuthPayload(authPayloadVariables);
 
-      if (isEoaPayload(authPayloadVariables)) {
-        const { chain, address, nonce, signature } = authPayloadVariables;
-
-        authMechanism = {
-          eoa: {
-            chainPubKey: {
-              chain,
-              pubKey: address,
-            },
-            nonce,
-            signature,
-          },
-        };
-      } else if (isEmailPayload(authPayloadVariables)) {
-        const { token } = authPayloadVariables;
-        authMechanism = {
-          magicLink: {
-            token,
-          },
-        };
-      } else {
-        const { address, nonce } = authPayloadVariables;
-        authMechanism = {
-          gnosisSafe: {
-            address,
-            nonce,
-          },
-        };
-      }
+      const createUserInput: CreateUserInput = {
+        username,
+        bio,
+        email,
+      };
 
       const response = await createUser({
         variables: {
           authMechanism,
-          input: {
-            username,
-            bio,
-          },
+          input: createUserInput,
         },
       });
 
@@ -157,4 +141,64 @@ export default function useCreateUser() {
     },
     [createUser, environment]
   );
+}
+
+export function getAuthMechanismFromAuthPayload(authPayloadVariables: AuthPayloadVariables) {
+  let authMechanism: useCreateUserMutation['variables']['authMechanism'];
+
+  if (isEoaPayload(authPayloadVariables)) {
+    const { chain, address, nonce, message, signature } = authPayloadVariables;
+
+    authMechanism = {
+      eoa: {
+        chainPubKey: {
+          chain,
+          pubKey: address,
+        },
+        nonce,
+        message,
+        signature,
+      },
+    };
+  } else if (isEmailPayload(authPayloadVariables)) {
+    const { privyToken } = authPayloadVariables;
+    authMechanism = {
+      privy: {
+        token: privyToken!,
+      },
+    };
+  } else if (authPayloadVariables.authMechanismType === 'neynar') {
+    const { address, nonce, message, signature, primaryAddress } = authPayloadVariables;
+    authMechanism = {
+      neynar: {
+        nonce,
+        message,
+        signature,
+        custodyPubKey: {
+          pubKey: address,
+          chain: 'Ethereum',
+        },
+      },
+    };
+    if (primaryAddress) {
+      authMechanism.neynar!.primaryPubKey = {
+        pubKey: primaryAddress,
+        chain: 'Ethereum',
+      };
+    }
+  }
+  // De-prioritizing gnosis safe logins for now
+  //
+  // } else if (authPayloadVariables.authMechanismType === 'gnosisSafe') {
+  //   const { address, nonce, message } = authPayloadVariables;
+  //   authMechanism = {
+  //     gnosisSafe: {
+  //       address,
+  //       nonce,
+  //       message,
+  //     },
+  //   };
+
+  // @ts-expect-error: ts doesn't think authMechanism is defined when it clearly is
+  return authMechanism;
 }

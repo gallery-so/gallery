@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import clsx from 'clsx';
-import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -9,16 +9,16 @@ import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunitySc
 import { InfoCircleIcon } from 'src/icons/InfoCircleIcon';
 
 import { BackButton } from '~/components/BackButton';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
 import { PostMintLinkInput } from '~/components/Post/PostMintLinkInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
-import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
+import WarningPostBottomSheet from '~/components/Post/WarningPostBottomSheet';
 import { SearchResultsFallback } from '~/components/Search/SearchResultFallback';
 import { SearchResults } from '~/components/Search/SearchResults';
 import { Typography } from '~/components/Typography';
+import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
 import { PostComposerScreenTokenFragment$key } from '~/generated/PostComposerScreenTokenFragment.graphql';
 import {
@@ -125,7 +125,7 @@ function PostComposerScreenInner() {
     handleSelectionChange,
   } = useMentionableMessage();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { showBottomSheetModal } = useBottomSheetModalActions();
   const handleBackPress = useCallback(() => {
     if (!message) {
       navigation.goBack();
@@ -133,8 +133,10 @@ function PostComposerScreenInner() {
     }
     Keyboard.dismiss();
 
-    bottomSheetRef.current?.present();
-  }, [message, navigation]);
+    showBottomSheetModal({
+      content: <WarningPostBottomSheet />,
+    });
+  }, [message, navigation, showBottomSheetModal]);
 
   const navigateToCommunity = useNavigateToCommunityScreen();
 
@@ -242,7 +244,7 @@ function PostComposerScreenInner() {
         >
           <Typography
             className={clsx('text-sm', {
-              'text-activeBlue': !isPostButtonDisabled,
+              'text-activeBlue dark:text-darkModeBlue': !isPostButtonDisabled,
               'text-metal': isPostButtonDisabled,
             })}
             font={{
@@ -298,7 +300,6 @@ function PostComposerScreenInner() {
           )}
         </View>
       </View>
-      <WarningPostBottomSheet ref={bottomSheetRef} />
     </View>
   );
 }

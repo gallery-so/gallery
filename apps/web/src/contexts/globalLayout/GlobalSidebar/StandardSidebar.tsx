@@ -13,8 +13,8 @@ import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
-import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
@@ -194,7 +194,7 @@ export function StandardSidebar({ queryRef }: Props) {
   const isSettingsOpen = useRef(false);
   const isComposerOpen = useRef(false);
 
-  const showAuthModal = useAuthModal('sign-in');
+  const showAuthModal = useUniversalAuthModal();
 
   useEffect(() => {
     // Only show the modal if the user is logged in and the settings query param is set

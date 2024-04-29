@@ -50,6 +50,7 @@ type CommentLineProps = {
   footerElement?: React.ReactNode;
   isReply?: boolean;
   queryRef: CommentsBottomSheetLineQueryFragment$key;
+  hasReplies?: boolean;
 };
 
 export function CommentsBottomSheetLine({
@@ -59,6 +60,7 @@ export function CommentsBottomSheetLine({
   footerElement,
   isReply,
   queryRef,
+  hasReplies,
 }: CommentLineProps) {
   const query = useFragment(
     graphql`
@@ -188,6 +190,10 @@ export function CommentsBottomSheetLine({
   }, [toggleAdmire]);
 
   if (!comment.comment) {
+    return null;
+  }
+
+  if (comment.deleted && !hasReplies) {
     return null;
   }
 

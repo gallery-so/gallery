@@ -1,33 +1,50 @@
-type EoaPayloadVariables = {
+export type SignerVariables = {
+  address: string;
+  nonce: string;
+  message: string;
+  signature: string;
+};
+
+export type EoaPayloadVariables = {
   authMechanismType: 'eoa' | 'gnosisSafe';
   chain: 'Ethereum' | 'Tezos';
-  address: string;
-  nonce: string;
-  signature: string;
   userFriendlyWalletName: string;
-};
+  email?: string;
+  privyToken?: string;
+} & SignerVariables;
 
-type GnosisPayloadVariables = {
+export type GnosisPayloadVariables = {
   authMechanismType: 'eoa' | 'gnosisSafe';
-  address: string;
-  nonce: string;
   userFriendlyWalletName: string;
+  email?: string;
+  privyToken?: string;
+} & SignerVariables;
+
+export type PrivyPayloadVariables = {
+  authMechanismType: 'privy';
+  privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
 };
 
-type EmailPayloadVariables = {
-  authMechanismType: 'magicLink';
-  token: string;
-};
+export type NeynarPayloadVariables = {
+  authMechanismType: 'neynar';
+  primaryAddress?: string;
+  privyToken?: string;
+  email?: string;
+  userFriendlyWalletName?: string;
+} & SignerVariables;
 
 export type AuthPayloadVariables =
   | EoaPayloadVariables
   | GnosisPayloadVariables
-  | EmailPayloadVariables;
+  | PrivyPayloadVariables
+  | NeynarPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {
   return payload.authMechanismType === 'eoa';
 }
 
-export function isEmailPayload(payload: AuthPayloadVariables): payload is EmailPayloadVariables {
-  return payload.authMechanismType === 'magicLink';
+export function isEmailPayload(payload: AuthPayloadVariables): payload is PrivyPayloadVariables {
+  return payload.authMechanismType === 'privy';
 }

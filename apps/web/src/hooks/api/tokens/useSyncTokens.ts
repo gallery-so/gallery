@@ -20,7 +20,7 @@ type syncTokensProps = {
 
 export default function useSyncTokens() {
   const { clearTokenFailureState } = useNftErrorContext();
-  const { isLocked, lock } = useSyncTokensContext();
+  const { isLocked, lock, startSyncing, stopSyncing, isSyncing } = useSyncTokensContext();
 
   const [syncCollectedTokens] = usePromisifiedMutation<useSyncTokensCollectedMutation>(
     graphql`
@@ -32,8 +32,6 @@ export default function useSyncTokens() {
               # This should be sufficient to capture all the things
               # we want to refresh. Don't @me when this fails.
               ...GalleryEditorViewerFragment
-              # Refresh tokens for post composer
-              ...NftSelectorViewerFragment
 
               ... on Viewer {
                 user {
@@ -65,8 +63,6 @@ export default function useSyncTokens() {
               # This should be sufficient to capture all the things
               # we want to refresh. Don't @me when this fails.
               ...GalleryEditorViewerFragment
-              # Refresh tokens for post composer
-              ...NftSelectorViewerFragment
 
               ... on Viewer {
                 user {
@@ -113,8 +109,11 @@ export default function useSyncTokens() {
           });
         }
       }
-
       try {
+        if (isSyncing) {
+          return;
+        }
+        startSyncing();
         if (type === 'Collected') {
           const response = await syncCollectedTokens({
             variables: {
@@ -158,13 +157,24 @@ export default function useSyncTokens() {
       } catch (error) {
         showFailure();
       } finally {
+        stopSyncing();
         unlock();
       }
     },
-    [clearTokenFailureState, isLocked, lock, pushToast, syncCollectedTokens, syncCreatedTokens]
+    [
+      clearTokenFailureState,
+      isLocked,
+      isSyncing,
+      lock,
+      pushToast,
+      startSyncing,
+      stopSyncing,
+      syncCollectedTokens,
+      syncCreatedTokens,
+    ]
   );
 
   return useMemo(() => {
-    return { isLocked, syncTokens: sync };
-  }, [isLocked, sync]);
+    return { isLocked, syncTokens: sync, isSyncing };
+  }, [isLocked, isSyncing, sync]);
 }

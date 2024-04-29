@@ -4,7 +4,7 @@ import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import { View } from 'react-native';
-import { MARFA_2023_SUBMITTED_FORM_KEY } from 'src/constants/storageKeys';
+import { MARFA_2023_SUBMITTED_FORM_KEY, MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
 
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
@@ -23,7 +23,7 @@ export default function DebugBottomSheetModal() {
   }, []);
 
   const handleClearStorage = useCallback(() => {
-    AsyncStorage.multiRemove([MARFA_2023_SUBMITTED_FORM_KEY]);
+    AsyncStorage.multiRemove([MARFA_2023_SUBMITTED_FORM_KEY, MCHX_CLAIM_CODE_KEY]);
   }, []);
   return (
     <View className="flex flex-column space-y-1 mx-4">

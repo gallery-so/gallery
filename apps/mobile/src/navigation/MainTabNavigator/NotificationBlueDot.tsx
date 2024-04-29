@@ -70,7 +70,9 @@ function BlueDot({ queryRef }: BlueDotProps) {
   }, [query.viewer]);
 
   if (hasUnreadNotifications) {
-    return <View className="bg-activeBlue absolute right-0 top-0 h-2 w-2 rounded-full" />;
+    return (
+      <View className="bg-activeBlue dark:bg-darkModeBlue absolute right-0 top-0 h-2 w-2 rounded-full" />
+    );
   }
 
   return null;

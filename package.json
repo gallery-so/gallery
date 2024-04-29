@@ -18,7 +18,7 @@
     "react-hotkeys-hook": "^4.3.8",
     "react-relay": "^15.0.0",
     "relay-runtime": "^15.0.0",
-    "web3-utils": "^4.1.0"
+    "web3-utils": "^4.2.1"
   },
   "engines": {
     "node": "20.5.0"
@@ -30,8 +30,8 @@
     "relay-runtime": "14.1.0",
     "entities": "3.0.1",
     "typecript": "^5.0.0",
-    "@expo/prebuild-config": "6.2.4",
-    "@expo/config-plugins": "7.2.2",
+    "@expo/prebuild-config": "6.7.0",
+    "@expo/config-plugins": "7.8.0",
     "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch",
     "nativewind@^2.0.11": "patch:nativewind@npm%3A2.0.11#./.yarn/patches/nativewind-npm-2.0.11-dc2ccf9fb5.patch",
     "react-native-fast-image@^8.6.3": "patch:react-native-fast-image@npm%3A8.6.3#./.yarn/patches/react-native-fast-image-npm-8.6.3-03ee2d23c0.patch"

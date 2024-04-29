@@ -1,5 +1,7 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { BottomSheetModalProvider as GorhomBottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import clsx from 'clsx';
+import { BlurView } from 'expo-blur';
 import React, {
   createContext,
   memo,
@@ -11,14 +13,16 @@ import React, {
   useState,
 } from 'react';
 import { View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { LoginStackNavigatorProp, MainTabStackNavigatorProp } from '~/navigation/types';
 
-const SNAP_POINTS = ['50%']; // Example snap points, adjust based on your needs
+const SNAP_POINTS = ['CONTENT_HEIGHT']; // Example snap points, adjust based on your needs
 
 type BottomSheetModalState = {
   isBottomSheetModalVisible: boolean;
@@ -38,7 +42,7 @@ type BottomSheetModalActions = {
   hideBottomSheetModal: () => void;
 };
 
-const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
+export const BottomSheetModalActionsContext = createContext<BottomSheetModalActions | undefined>(
   undefined
 );
 
@@ -56,21 +60,32 @@ type BottomSheetModalProviderProps = {
 
 type BottomSheetModal = {
   content: React.ReactNode;
+  noPadding?: boolean;
+  onDismiss?: () => void;
+  blurBackground?: boolean;
+  // If we want to use navigation in the bottom sheet, we need to pass in the navigation context from where the bottom sheet is being opened from.
+  navigationContext?: MainTabStackNavigatorProp | LoginStackNavigatorProp;
 };
 
 function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
-  const [bottomSheetModalContent, setBottomSheetModalContent] = useState<BottomSheetModal>();
+  const [bottomSheetModal, setBottomSheetModal] = useState<BottomSheetModal>();
   const bottomSheetModalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const showBottomSheetModal = useCallback((modal: BottomSheetModal) => {
-    setBottomSheetModalContent(modal);
+    setBottomSheetModal(modal);
   }, []);
 
   const hideBottomSheetModal = useCallback(() => {
     bottomSheetModalRef.current?.dismiss();
     // delay clearing the content to allow the modal to animate out
-    setTimeout(() => setBottomSheetModalContent(undefined), 300);
+    setTimeout(() => setBottomSheetModal(undefined), 300);
   }, []);
+
+  const handleDismissBottomSheetModal = useCallback(() => {
+    if (bottomSheetModal?.onDismiss) {
+      bottomSheetModal.onDismiss();
+    }
+  }, [bottomSheetModal]);
 
   const { bottom } = useSafeAreaPadding(); // Use this for handling safe area, if necessary
 
@@ -87,34 +102,47 @@ function BottomSheetModalProvider({ children }: BottomSheetModalProviderProps) {
 
   // immediately present the modal when content is set
   useEffect(() => {
-    bottomSheetModalRef?.current?.present();
-  }, [bottomSheetModalContent]);
+    if (bottomSheetModal) {
+      bottomSheetModalRef?.current?.present();
+    }
+  }, [bottomSheetModal]);
+
+  const reducedMotion = useReducedMotion();
 
   return (
-    <GorhomBottomSheetModalProvider>
-      <BottomSheetModalActionsContext.Provider value={actions}>
-        {children}
-        {bottomSheetModalContent && (
+    <BottomSheetModalActionsContext.Provider value={actions}>
+      {children}
+      <GorhomBottomSheetModalProvider>
+        {bottomSheetModal && (
           <GalleryBottomSheetModal
             snapPoints={animatedSnapPoints}
             handleHeight={animatedHandleHeight}
             contentHeight={animatedContentHeight}
-            onDismiss={hideBottomSheetModal}
+            onDismiss={handleDismissBottomSheetModal}
+            animateOnMount={!reducedMotion}
             index={0}
             ref={bottomSheetModalRef}
+            android_keyboardInputMode="adjustResize"
+            keyboardBlurBehavior="restore"
+            backdropComponent={bottomSheetModal?.blurBackground ? BluredBackdrop : null}
+            navigationContext={bottomSheetModal?.navigationContext}
           >
             <View
               onLayout={handleContentLayout}
-              style={{ paddingBottom: bottom }}
-              className="p-4 flex flex-col space-y-6"
+              style={{ paddingBottom: !bottomSheetModal.noPadding ? bottom : 0, maxHeight: 700 }}
+              className={clsx('flex ', !bottomSheetModal.noPadding && 'px-4 py-2')}
             >
-              {bottomSheetModalContent.content}
+              {bottomSheetModal.content}
             </View>
           </GalleryBottomSheetModal>
         )}
-      </BottomSheetModalActionsContext.Provider>
-    </GorhomBottomSheetModalProvider>
+      </GorhomBottomSheetModalProvider>
+    </BottomSheetModalActionsContext.Provider>
   );
 }
 
 export default memo(BottomSheetModalProvider);
+
+function BluredBackdrop() {
+  return <BlurView intensity={4} className="absolute h-full w-full top-0 bg-black/50 "></BlurView>;
+}

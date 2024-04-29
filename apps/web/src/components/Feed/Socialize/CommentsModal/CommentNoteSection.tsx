@@ -109,9 +109,12 @@ export function CommentNoteSection({
     [comment?.dbid, onReplyClick]
   );
 
+  const hasReplies = replies.length > 0;
+
   return (
     <VStack>
       <CommentNote
+        hasReplies={hasReplies}
         commentRef={comment}
         queryRef={query}
         onReplyClick={handleReplyClickWithTopCommentId}
@@ -120,6 +123,7 @@ export function CommentNoteSection({
 
       {replies.map((reply) => (
         <CommentNote
+          hasReplies={hasReplies}
           key={reply.dbid}
           commentRef={reply}
           onReplyClick={handleReplyClickWithTopCommentId}

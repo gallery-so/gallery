@@ -10,3 +10,11 @@ jest.mock('next/dist/shared/lib/router-context.shared-runtime', () => {
   const RouterContext = createContext(router);
   return { RouterContext };
 });
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+global.crypto = require('crypto').webcrypto;
+
+import { TextDecoder, TextEncoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;

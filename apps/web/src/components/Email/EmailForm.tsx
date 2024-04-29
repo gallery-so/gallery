@@ -148,7 +148,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     };
 
     try {
-      const response = await updateEmail(email, updater);
+      const response = await updateEmail({ email, updater });
 
       if (response.updateEmail?.__typename !== 'UpdateEmailPayload') {
         // ERROR

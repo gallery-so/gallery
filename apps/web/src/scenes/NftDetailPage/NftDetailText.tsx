@@ -24,7 +24,7 @@ import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.gra
 import { NftDetailTextQueryFragment$key } from '~/generated/NftDetailTextQueryFragment.graphql';
 import useAdmireToken from '~/hooks/api/posts/useAdmireToken';
 import useRemoveTokenAdmire from '~/hooks/api/posts/useRemoveTokenAdmire';
-import { AuthModal } from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BookmarkIcon from '~/icons/BookmarkIcon';
 import ExpandIcon from '~/icons/ExpandIcon';
@@ -76,6 +76,11 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
         owner {
           username
           dbid
+          primaryWallet {
+            chainAddress {
+              address
+            }
+          }
           ...ProfilePictureAndUserOrAddressOwnerFragment
         }
 
@@ -103,7 +108,6 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
           }
         }
         ...useOptimisticUserInfoFragment
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -126,22 +130,31 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
     return null;
   }, [name]);
 
+  const ownerWalletAddress = token.owner?.primaryWallet?.chainAddress?.address ?? '';
+
   const [admireToken] = useAdmireToken();
   const [removeTokenAdmire] = useRemoveTokenAdmire();
 
+  const showAuthModal = useUniversalAuthModal();
+
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
-      showModal({
-        content: <AuthModal queryRef={query} />,
-        headerText: 'Sign In',
-      });
-
+      showAuthModal();
       return;
     }
 
     track('Admire Token Click');
     admireToken(token.id, token.dbid, info, decodedTokenName);
-  }, [query, track, admireToken, token.id, token.dbid, info, decodedTokenName, showModal]);
+  }, [
+    query.viewer?.__typename,
+    track,
+    admireToken,
+    token.id,
+    token.dbid,
+    info,
+    decodedTokenName,
+    showAuthModal,
+  ]);
 
   const handleRemoveAdmire = useCallback(async () => {
     if (
@@ -333,6 +346,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
           ) : (
             <StyledMintLinkButton
               tokenRef={token}
+              referrerAddress={ownerWalletAddress}
               eventElementId="Click Mint Link Button"
               eventName="Click Mint Link"
               eventContext={contexts['NFT Detail']}

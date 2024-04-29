@@ -6,10 +6,10 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
-import useMaxColumns from '~/contexts/collectionEditor/useMaxColumns';
 import { ColumnAdjusterQuery } from '~/generated/ColumnAdjusterQuery.graphql';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
+import useMaxColumnsGalleryEditor from '~/shared/hooks/useMaxColumnsGalleryEditor';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -23,7 +23,7 @@ function ColumnAdjuster({ sectionId }: Props) {
         viewer {
           ... on Viewer {
             __typename
-            ...useMaxColumnsFragment
+            ...useMaxColumnsGalleryEditorFragment
           }
         }
       }
@@ -35,7 +35,7 @@ function ColumnAdjuster({ sectionId }: Props) {
     throw new Error('Expected viewer to be present');
   }
 
-  const maxColumns = useMaxColumns(query.viewer);
+  const maxColumns = useMaxColumnsGalleryEditor(query.viewer);
 
   const { incrementColumns, decrementColumns, activeSectionId, sections } =
     useCollectionEditorContext();

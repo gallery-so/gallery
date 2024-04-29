@@ -7,7 +7,6 @@ export const MINT_LINK_CHAIN_ENABLED = new Set([
 ]);
 
 const providers = [
-  { regex: '^https://(www\\.)?mint.fun/?', name: 'MintFun', param: 'ref' },
   { regex: '^https://(www\\.)?zora.co/?', name: 'Zora', param: 'referrer' },
   { regex: '^https://(www\\.)?fxhash.xyz/?', name: 'FxHash' },
   {

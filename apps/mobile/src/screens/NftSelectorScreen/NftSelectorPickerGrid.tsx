@@ -1,12 +1,12 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import { AvailableChains, Chain, chains } from 'shared/utils/chains';
+import { useFragment, useLazyLoadQuery, useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
+import { Chain } from 'shared/utils/chains';
 
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
@@ -28,12 +28,8 @@ import {
   NftSelectorPickerGridTokensFragment$data,
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
-import {
-  LoginStackNavigatorProp,
-  MainTabStackNavigatorParamList,
-  MainTabStackNavigatorProp,
-  ScreenWithNftSelector,
-} from '~/navigation/types';
+import { NftSelectorPickerGridTokensQuery } from '~/generated/NftSelectorPickerGridTokensQuery.graphql';
+import { LoginStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorSortView } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { contexts } from '~/shared/analytics/constants';
@@ -50,15 +46,18 @@ type NftSelectorPickerGridProps = {
     networkFilter: Chain;
     sortView: NftSelectorSortView;
   };
-  screen: ScreenWithNftSelector;
   onRefresh: () => void;
+
+  onSelect: (tokenId: string) => void;
+  onSelectNftGroup: (contractAddress: string) => void;
 };
 
 export function NftSelectorPickerGrid({
   searchCriteria,
-  screen,
   style,
   onRefresh,
+  onSelect,
+  onSelectNftGroup,
 }: NftSelectorPickerGridProps) {
   const query = useLazyLoadQuery<NftSelectorPickerGridQuery>(
     graphql`
@@ -67,6 +66,7 @@ export function NftSelectorPickerGrid({
           ... on Viewer {
             user {
               tokens {
+                dbid
                 creationTime
                 ...NftSelectorPickerGridTokensFragment
               }
@@ -88,9 +88,10 @@ export function NftSelectorPickerGrid({
   );
   const tokenRefs = removeNullValues(query.viewer?.user?.tokens);
 
-  const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
+  const tokensData = useFragment<NftSelectorPickerGridTokensFragment$key>(
     graphql`
       fragment NftSelectorPickerGridTokensFragment on Token @relay(plural: true) {
+        dbid
         definition {
           chain
           contract {
@@ -118,12 +119,55 @@ export function NftSelectorPickerGrid({
     tokenRefs
   );
 
+  const { isSyncing, isSyncingCreatedTokens } = useSyncTokensActions();
+
+  const relayEnvironment = useRelayEnvironment();
+
+  useEffect(() => {
+    let intervalId: number | undefined;
+
+    if (isSyncing) {
+      const fetchTokens = async () => {
+        const tokensQuery = graphql`
+          query NftSelectorPickerGridTokensQuery {
+            viewer {
+              ... on Viewer {
+                user {
+                  tokens {
+                    dbid
+                    creationTime
+                    ...NftSelectorPickerGridTokensFragment
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        await fetchQuery<NftSelectorPickerGridTokensQuery>(
+          relayEnvironment,
+          tokensQuery,
+          {}
+        ).toPromise();
+      };
+
+      fetchTokens();
+      intervalId = window.setInterval(fetchTokens, 5000);
+    }
+
+    return () => {
+      if (intervalId !== undefined) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isSyncing, relayEnvironment]);
+
   const { openManageWallet } = useManageWalletActions();
 
   // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
-    let filtered = tokens;
+    let filtered = tokensData;
 
     // Filter out spam tokens
     filtered = filtered.filter((token) => {
@@ -158,7 +202,7 @@ export function NftSelectorPickerGrid({
     searchCriteria.networkFilter,
     searchCriteria.ownerFilter,
     searchCriteria.searchQuery,
-    tokens,
+    tokensData,
   ]);
 
   const sortedTokens = useMemo(() => {
@@ -224,54 +268,14 @@ export function NftSelectorPickerGrid({
     return groups;
   }, [sortedTokens]);
 
-  const { isSyncing, syncTokens, isSyncingCreatedTokens, syncCreatedTokens } =
-    useSyncTokensActions();
-
-  const availableChains = useMemo(() => {
-    return chains
-      .filter((chain) => chain.name !== 'All Networks')
-      .map((chain) => chain.name as AvailableChains);
-  }, []);
-
   // TODO: this logic is messy and shared with web; should be refactored
   const handleRefresh = useCallback(() => {
     if (!ownsWalletFromSelectedChainFamily) {
       return;
     }
 
-    if (searchCriteria.ownerFilter === 'Collected') {
-      if (isSyncing) {
-        return;
-      }
-      syncTokens(
-        searchCriteria.networkFilter === 'All Networks'
-          ? availableChains
-          : searchCriteria.networkFilter
-      );
-      onRefresh();
-    }
-
-    if (
-      searchCriteria.ownerFilter === 'Created' &&
-      searchCriteria.networkFilter !== 'All Networks'
-    ) {
-      if (isSyncingCreatedTokens) {
-        return;
-      }
-      syncCreatedTokens(searchCriteria.networkFilter);
-      onRefresh();
-    }
-  }, [
-    availableChains,
-    isSyncing,
-    isSyncingCreatedTokens,
-    onRefresh,
-    ownsWalletFromSelectedChainFamily,
-    searchCriteria.networkFilter,
-    searchCriteria.ownerFilter,
-    syncCreatedTokens,
-    syncTokens,
-  ]);
+    onRefresh();
+  }, [onRefresh, ownsWalletFromSelectedChainFamily]);
 
   // Auto-sync tokens when the chain or Collected/Created filter changes, and there are 0 tokens to display
   useEffect(() => {
@@ -287,12 +291,16 @@ export function NftSelectorPickerGrid({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchCriteria.networkFilter, searchCriteria.ownerFilter]);
 
-  type Row = { groups: Group[] };
+  type Row = { groups: Group[]; id: string };
   const rows = useMemo(() => {
     const rows: Row[] = [];
 
     for (let i = 0; i < Object.keys(groups).length; i += 3) {
-      rows.push({ groups: Object.values(groups).slice(i, i + 3) });
+      const groupSlice = Object.values(groups).slice(i, i + 3);
+      const sliceKey = groupSlice.map((group) => group.address).join('-');
+      const id = `row-${sliceKey}`;
+
+      rows.push({ groups: groupSlice, id });
     }
 
     return rows;
@@ -309,7 +317,8 @@ export function NftSelectorPickerGrid({
                 tokenRefs={group.tokens}
                 contractAddress={group.address}
                 ownerFilter={searchCriteria.ownerFilter}
-                screen={screen}
+                onSelectNft={onSelect}
+                onSelectGroup={onSelectNftGroup}
               />
             );
           })}
@@ -321,7 +330,7 @@ export function NftSelectorPickerGrid({
         </View>
       );
     },
-    [screen, searchCriteria.ownerFilter]
+    [onSelect, onSelectNftGroup, searchCriteria.ownerFilter]
   );
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
@@ -339,9 +348,6 @@ export function NftSelectorPickerGrid({
 
   const isRefreshing = isSyncing || isSyncingCreatedTokens;
 
-  if (isRefreshing) {
-    return <NftSelectorLoadingSkeleton />;
-  }
   const user = query?.viewer?.user;
   if (!user?.primaryWallet) {
     return (
@@ -361,6 +367,10 @@ export function NftSelectorPickerGrid({
     );
   }
 
+  if (isRefreshing && !rows.length) {
+    return <NftSelectorLoadingSkeleton />;
+  }
+
   if (!rows.length) {
     return (
       <View className="flex flex-col flex-1 pt-16" style={style}>
@@ -374,6 +384,7 @@ export function NftSelectorPickerGrid({
   return (
     <View className="flex flex-col flex-1" style={style}>
       <FlashList
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
         data={rows}
         estimatedItemSize={200}
@@ -429,10 +440,10 @@ type TokenGridProps = {
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
   ownerFilter: 'Created' | 'Collected';
   contractAddress: string;
-  screen: ScreenWithNftSelector;
+  onPress: (contractAddress: string) => void;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, style, onPress }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -444,11 +455,6 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
     tokenRefs
   );
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
-
-  const isFullscreen = route.params.fullScreen;
-
   type Row = { tokens: NftSelectorPickerGridTokenGridFragment$data[number][] };
 
   const rows: Row[] = useMemo(() => {
@@ -458,26 +464,8 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style, ownerFilter }: T
   }, [tokens]);
 
   const handlePress = useCallback(() => {
-    if (screen === 'Onboarding') {
-      navigation.navigate('Login', {
-        screen: 'OnboardingNftSelectorContract',
-        params: {
-          contractAddress: contractAddress,
-          page: screen,
-          ownerFilter: ownerFilter,
-          fullScreen: isFullscreen,
-        },
-      });
-      return;
-    }
-
-    navigation.navigate('NftSelectorContractScreen', {
-      contractAddress: contractAddress,
-      page: screen,
-      ownerFilter: ownerFilter,
-      fullScreen: isFullscreen,
-    });
-  }, [contractAddress, isFullscreen, navigation, ownerFilter, screen]);
+    onPress(contractAddress);
+  }, [contractAddress, onPress]);
 
   return (
     <GalleryTouchableOpacity
@@ -515,10 +503,18 @@ type TokenGroupProps = {
   ownerFilter: 'Collected' | 'Created';
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
-  screen: ScreenWithNftSelector;
+  onSelectNft: (tokenId: string) => void;
+  onSelectGroup: (contractAddress: string) => void;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: TokenGroupProps) {
+function TokenGroup({
+  tokenRefs,
+  contractAddress,
+  style,
+  ownerFilter,
+  onSelectNft,
+  onSelectGroup,
+}: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
@@ -529,18 +525,6 @@ function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: 
     tokenRefs
   );
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const handleSelectNft = useCallback(() => {
-    if (screen === 'Onboarding') {
-      navigation.navigate('Login', {
-        screen: 'OnboardingProfileBio',
-      });
-      return;
-    }
-    navigation.pop();
-  }, [navigation, screen]);
-
   const [firstToken] = tokens;
   if (!firstToken) {
     return null;
@@ -549,13 +533,13 @@ function TokenGroup({ tokenRefs, contractAddress, style, ownerFilter, screen }: 
   return (
     <View style={style} className="flex-1 aspect-square bg-offWhite dark:bg-black-800">
       {tokens.length === 1 ? (
-        <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={firstToken} />
+        <NftSelectorPickerSingularAsset onPress={onSelectNft} tokenRef={firstToken} />
       ) : (
         <TokenGrid
           ownerFilter={ownerFilter}
           contractAddress={contractAddress}
           tokenRefs={tokens}
-          screen={screen}
+          onPress={onSelectGroup}
         />
       )}
     </View>

@@ -76,7 +76,7 @@ export function ConnectWalletUpsellBanner({ queryRef }: Props) {
 
   return (
     <View
-      className="bg-activeBlue w-full px-4 py-2 flex-row items-center justify-between"
+      className="bg-activeBlue dark:bg-darkModeBlue w-full px-4 py-2 flex-row items-center justify-between"
       style={{
         paddingTop: top,
       }}

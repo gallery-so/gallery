@@ -8,7 +8,10 @@ import usePersistedState from '~/hooks/usePersistedState';
 import { useMaintenanceContext } from '~/shared/contexts/MaintenanceStatusContext';
 
 export function useUpcomingMaintenanceBannerWeb() {
-  const { maintenanceId, upcomingMaintenanceNoticeContent } = useMaintenanceContext();
+  const { upcomingMaintenanceNoticeContent } = useMaintenanceContext();
+
+  const maintenanceId = upcomingMaintenanceNoticeContent?.id ?? '';
+
   const [bannerDismissed, setBannerDismissed] = usePersistedState(maintenanceId, false);
 
   const shouldDisplayBanner = useMemo(() => {
@@ -30,8 +33,8 @@ export function useUpcomingMaintenanceBannerWeb() {
   return {
     shouldDisplayBanner,
     handleDismissBanner,
-    maintenanceId,
     message: upcomingMaintenanceNoticeContent?.message ?? '',
+    maintenanceId,
   };
 }
 

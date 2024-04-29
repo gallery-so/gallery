@@ -1,3 +1,4 @@
+import { useColorScheme } from 'nativewind';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions } from 'react-native';
 import colors from 'shared/theme/colors';
@@ -11,6 +12,7 @@ export function OnboardingProgressBar({ from, to }: Props) {
   const initialWidth = Dimensions.get('window').width * (from / 100);
 
   const widthAnim = useRef(new Animated.Value(initialWidth)).current;
+  const { colorScheme } = useColorScheme();
 
   useEffect(() => {
     // Calculate the final width in pixels based on the `to` prop.
@@ -27,7 +29,7 @@ export function OnboardingProgressBar({ from, to }: Props) {
     <Animated.View
       style={{
         height: 4,
-        backgroundColor: colors.activeBlue,
+        backgroundColor: colorScheme === 'dark' ? colors.darkModeBlue : colors.activeBlue,
         width: widthAnim,
         borderTopRightRadius: 4,
         borderBottomRightRadius: 4,

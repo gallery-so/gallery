@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import useAuthModal from '~/hooks/useAuthModal';
+import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
 import { contexts, flows } from '~/shared/analytics/constants';
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function SignUpButton({ className, buttonLocation }: Props) {
-  const showAuthModal = useAuthModal('sign-up');
+  const showAuthModal = useUniversalAuthModal();
 
   return (
     <StyledButton

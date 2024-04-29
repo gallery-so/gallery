@@ -10,6 +10,7 @@ import { Button } from '~/components/Button';
 import FeedbackBottomSheetModal from '~/components/FeedbackBottomSheetModal';
 import { GalleryLink } from '~/components/GalleryLink';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
 import { Typography } from '~/components/Typography';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
@@ -46,7 +47,7 @@ export function SettingsScreen() {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
-  const { showBottomSheetModal } = useBottomSheetModalActions();
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const handleBugReportPress = useCallback(() => {
     showBottomSheetModal({ content: <FeedbackBottomSheetModal /> });
@@ -73,6 +74,10 @@ export function SettingsScreen() {
   const handleNotificationsPress = useCallback(() => {
     navigation.navigate('NotificationSettingsScreen');
   }, [navigation]);
+
+  const handleDebugMintPress = useCallback(() => {
+    showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+  }, [hideBottomSheetModal, showBottomSheetModal]);
 
   const [logout, isLoggingOut] = useLogout();
   const handleSignOut = useCallback(() => {
@@ -183,6 +188,16 @@ export function SettingsScreen() {
               eventContext={null}
             >
               <Text className="text-shadow dark:text-white">DEBUG</Text>
+            </GalleryTouchableOpacity>
+          )}
+          {isAdminUser && (
+            <GalleryTouchableOpacity
+              onPress={handleDebugMintPress}
+              eventElementId={null}
+              eventName={null}
+              eventContext={null}
+            >
+              <Text className="text-shadow dark:text-white">DEBUG MINT</Text>
             </GalleryTouchableOpacity>
           )}
         </View>

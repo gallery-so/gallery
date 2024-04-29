@@ -28,7 +28,7 @@ export type AnimatedModalProps = {
   content: ReactElement;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
-  headerActions?: JSX.Element | false;
+  headerElement?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
   hideClose: boolean;
@@ -42,7 +42,7 @@ function AnimatedModal({
   content,
   isFullPage,
   isPaddingDisabled,
-  headerActions,
+  headerElement,
   headerText,
   headerVariant,
   hideClose,
@@ -100,8 +100,8 @@ function AnimatedModal({
           <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
             <StyledHeader isPaddingDisabled={!headerText && isPaddingDisabled}>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
+              <StyledHeaderElement>{headerElement}</StyledHeaderElement>
               <StyledModalActions align="center">
-                {headerActions}
                 {hideClose ? null : (
                   <DecoratedCloseIcon onClick={handleClick} variant={headerVariant} />
                 )}
@@ -230,6 +230,11 @@ const StyledContent = styled.div<{ padding: string }>`
   flex-direction: column;
   height: 100%;
   padding: ${({ padding }) => padding};
+`;
+
+const StyledHeaderElement = styled.div`
+  position: absolute;
+  top: 12px;
 `;
 
 const StyledModalActions = styled(HStack)`

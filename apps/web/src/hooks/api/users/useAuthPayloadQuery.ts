@@ -1,33 +1,14 @@
 import { useRouter } from 'next/router';
-
-type EoaPayloadVariables = {
-  authMechanismType: 'eoa' | 'gnosisSafe';
-  chain: 'Ethereum' | 'Tezos';
-  address: string;
-  nonce: string;
-  signature: string;
-  userFriendlyWalletName: string;
-  email?: string;
-};
-
-type GnosisPayloadVariables = {
-  authMechanismType: 'eoa' | 'gnosisSafe';
-  address: string;
-  nonce: string;
-  userFriendlyWalletName: string;
-  email?: string;
-};
-
-type MagicLinkPayloadVariables = {
-  authMechanismType: 'magicLink';
-  token: string;
-  userFriendlyWalletName: string;
-};
+import {
+  EoaPayloadVariables,
+  NeynarPayloadVariables,
+  PrivyPayloadVariables,
+} from 'shared/hooks/useAuthPayloadQuery';
 
 export type AuthPayloadVariables =
   | EoaPayloadVariables
-  | GnosisPayloadVariables
-  | MagicLinkPayloadVariables;
+  | NeynarPayloadVariables
+  | PrivyPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {
   return payload.authMechanismType === 'eoa';
@@ -36,11 +17,16 @@ export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPaylo
 export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   const { query } = useRouter();
 
-  if (query.authMechanismType === 'magicLink') {
+  // convert this to privy
+  if (query.authMechanismType === 'privy') {
+    if (typeof query.token !== 'string' || typeof query.email !== 'string') {
+      return null;
+    }
     return {
-      authMechanismType: 'magicLink',
-      token: query.token as string,
-      userFriendlyWalletName: (query.userFriendlyWalletName as string) || 'unknown',
+      authMechanismType: 'privy',
+      privyToken: query.token as string,
+      email: query.email as string,
+      userFriendlyWalletName: 'Privy',
     };
   }
 
@@ -50,6 +36,7 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
     typeof query.authMechanismType !== 'string' ||
     typeof query.address !== 'string' ||
     typeof query.nonce !== 'string' ||
+    typeof query.message !== 'string' ||
     Array.isArray(query.userFriendlyWalletName)
   ) {
     return null;
@@ -65,16 +52,37 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
       chain: query.chain as EoaPayloadVariables['chain'],
       address: query.address,
       nonce: query.nonce,
+      message: query.message,
       signature: query.signature,
       userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
       email: (query.email as string) || undefined,
     };
   }
 
-  return {
-    authMechanismType: 'gnosisSafe',
-    address: query.address,
-    nonce: query.nonce,
-    userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
-  };
+  if (query.authMechanismType === 'neynar') {
+    if (typeof query.primaryAddress !== 'string') {
+      return null;
+    }
+    return {
+      authMechanismType: 'neynar',
+      nonce: query.nonce,
+      message: query.message,
+      signature: query.signature,
+      address: query.address,
+      primaryAddress: query.primaryAddress,
+      email: typeof query.email === 'string' ? query.email : undefined,
+    };
+  }
+
+  return null;
+
+  // gnosis safe killed for now
+  // return {
+  //   authMechanismType: 'gnosisSafe',
+  //   address: query.address,
+  //   nonce: query.nonce,
+  //   message: query.message,
+  //   signature: query.signature,
+  //   userFriendlyWalletName: query.userFriendlyWalletName || 'unknown',
+  // };
 }

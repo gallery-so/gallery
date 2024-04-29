@@ -9,26 +9,27 @@ import {
   useRef,
   useState,
 } from 'react';
+import { SignerVariables } from 'shared/hooks/useAuthPayloadQuery';
 import { useLogin } from 'src/hooks/useLogin';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { WalletSelectorBottomSheet } from '~/components/Login/WalletSelectorBottomSheet';
+import WalletSelectorBottomSheet from '~/components/Login/WalletSelectorBottomSheet';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import { noop } from '~/shared/utils/noop';
 
+import { useBottomSheetModalActions } from './BottomSheetModalContext';
 import { useSyncTokensActions } from './SyncTokensContext';
 
-type openManageWalletProps = {
+export type OpenManageWalletProps = {
   title?: string;
   method?: 'auth' | 'add-wallet';
   onSuccess?: () => void;
 };
 
 type ManageWalletActions = {
-  openManageWallet: ({ title, method, onSuccess }: openManageWalletProps) => void;
+  openManageWallet: (o: OpenManageWalletProps) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
   signature?: string;
@@ -49,7 +50,6 @@ export const useManageWalletActions = (): ManageWalletActions => {
 type Props = { children: ReactNode };
 
 const ManageWalletProvider = memo(({ children }: Props) => {
-  const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
   const addWallet = useAddWallet();
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
@@ -64,30 +64,23 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const onSuccessRef = useRef<(() => void) | null>(null);
   const methodRef = useRef<'auth' | 'add-wallet'>('add-wallet');
 
-  const openManageWallet = useCallback(
-    ({ title, onSuccess = noop, method = 'add-wallet' }: openManageWalletProps) => {
-      if (title) {
-        setTitle(title);
-      }
-
-      if (onSuccess) {
-        onSuccessRef.current = onSuccess;
-      }
-
-      methodRef.current = method;
-
-      bottomSheet.current?.present();
-    },
-    []
-  );
+  const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const dismissManageWallet = useCallback(() => {
-    bottomSheet.current?.dismiss();
-  }, []);
+    hideBottomSheetModal();
+  }, [hideBottomSheetModal]);
 
   const handleOnSignedIn = useCallback(
-    async (address: string, nonce: string, signature: string, userExist: boolean) => {
-      if (!userExist) {
+    async ({
+      address,
+      nonce,
+      message,
+      signature,
+      userExists,
+    }: SignerVariables & {
+      userExists: boolean;
+    }) => {
+      if (!userExists) {
         navigation.navigate('OnboardingEmail', {
           authMethod: 'Wallet',
           authMechanism: {
@@ -95,6 +88,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
             chain: 'Ethereum',
             address,
             nonce,
+            message,
             signature,
             userFriendlyWalletName: 'Unknown',
           },
@@ -105,8 +99,9 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {
-              signature,
               nonce,
+              message,
+              signature,
               chainPubKey: {
                 pubKey: address,
                 chain: 'Ethereum',
@@ -126,11 +121,12 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         if (!isSyncing) {
           syncTokens('Ethereum');
         }
-      } else if (methodRef.current === 'auth' && userExist) {
+      } else if (methodRef.current === 'auth' && userExists) {
         const result = await login({
           eoa: {
-            signature,
             nonce,
+            message,
+            signature,
             chainPubKey: {
               pubKey: address,
               chain: 'Ethereum',
@@ -149,6 +145,33 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     [addWallet, isSyncing, login, navigation, syncTokens, track, methodRef]
   );
 
+  const openManageWallet = useCallback(
+    ({ title, onSuccess = noop, method = 'add-wallet' }: OpenManageWalletProps) => {
+      if (title) {
+        setTitle(title);
+      }
+
+      if (onSuccess) {
+        onSuccessRef.current = onSuccess;
+      }
+
+      methodRef.current = method;
+
+      showBottomSheetModal({
+        content: (
+          <WalletSelectorBottomSheet
+            title={title}
+            onDismiss={dismissManageWallet}
+            onSignedIn={handleOnSignedIn}
+            isSigningIn={isSigningIn}
+            setIsSigningIn={setIsSigningIn}
+          />
+        ),
+      });
+    },
+    [dismissManageWallet, handleOnSignedIn, isSigningIn, showBottomSheetModal]
+  );
+
   const value = useMemo(
     () => ({
       dismissManageWallet,
@@ -161,14 +184,6 @@ const ManageWalletProvider = memo(({ children }: Props) => {
 
   return (
     <ManageWalletActionsContext.Provider value={value}>
-      <WalletSelectorBottomSheet
-        title={value.title}
-        ref={bottomSheet}
-        onDismiss={dismissManageWallet}
-        onSignedIn={handleOnSignedIn}
-        isSigningIn={isSigningIn}
-        setIsSigningIn={setIsSigningIn}
-      />
       {children}
     </ManageWalletActionsContext.Provider>
   );
