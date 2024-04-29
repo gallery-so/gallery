@@ -95,6 +95,19 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
         />
       </ReportingErrorBoundary>
     );
+  } else if (token) {
+    return (
+      <ReportingErrorBoundary fallback={fallbackProfilePicture}>
+        <ValidProfilePicture
+          style={style}
+          tokenRef={token}
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
+          {...rest}
+        />
+      </ReportingErrorBoundary>
+    );
   } else {
     return fallbackProfilePicture;
   }
