@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { fetchSanityContent } from 'src/utils/sanity';
+import { useEffectOnAppForeground } from 'src/utils/useEffectOnAppForeground';
 
 type Announcement = {
   internal_id: string;
@@ -26,7 +27,9 @@ type AnnouncementContextType = {
   announcement: Announcement | null;
   fetchAnnouncement: () => void;
   hasSeenAnnouncement: boolean;
+  hasDismissedAnnouncement: boolean;
   markAnnouncementAsSeen: () => void;
+  dismissAnnouncement: () => void;
 };
 
 const AnnouncementContext = createContext<AnnouncementContextType | undefined>(undefined);
@@ -81,7 +84,6 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
               title,
               description,
               "imageUrl": image.asset->url,
-              ctaText,
               platform,
               min_mobile_version
             } | order(_createdAt desc)[0]`
@@ -99,6 +101,8 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
       }
     }
   }, [checkDismissalStatus, checkSeenStatus, reportError]);
+
+  useEffectOnAppForeground(fetchAnnouncement);
 
   // Function to dismiss an announcement
   const dismissAnnouncement = useCallback(async () => {

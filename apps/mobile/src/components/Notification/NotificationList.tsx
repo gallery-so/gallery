@@ -69,7 +69,7 @@ export function NotificationList({ queryRef }: Props) {
     queryRef
   );
 
-  const { announcement, fetchAnnouncement } = useAnnouncementContext();
+  const { announcement, fetchAnnouncement, hasDismissedAnnouncement } = useAnnouncementContext();
 
   const clearNotifications = useMobileClearNotifications();
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
@@ -83,14 +83,14 @@ export function NotificationList({ queryRef }: Props) {
       }
     }
 
-    if (announcement && announcement.active) {
+    if (announcement && announcement.active && !hasDismissedAnnouncement) {
       notifications.push({ id: 'announcement', kind: 'announcement' });
     }
 
     notifications.reverse();
 
     return notifications;
-  }, [announcement, query]);
+  }, [announcement, hasDismissedAnnouncement, query]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {

@@ -15,6 +15,7 @@ import { SpinnerIcon } from 'src/icons/SpinnerIcon';
 
 import { Button } from '~/components/Button';
 import { BaseM, TitleS } from '~/components/Text';
+import { MintProject } from '~/contexts/SanityDataContext';
 import {
   HighlightTxStatus,
   MintCampaignPostTransactionMintStatusQuery,
@@ -26,9 +27,11 @@ import { NftDetailAsset } from '../../../screens/NftDetailScreen/NftDetailAsset/
 export default function MintCampaignPostTransaction({
   claimCode,
   onClose,
+  projectData,
 }: {
   claimCode: string;
-  onClose: () => void;
+  onClose?: () => void;
+  projectData: MintProject;
 }) {
   const [state, setState] = useState<HighlightTxStatus>('TX_PENDING');
   // TODO: Fix any - prioritizing merging atm
@@ -119,7 +122,9 @@ export default function MintCampaignPostTransaction({
       });
     }
 
-    onClose();
+    if (onClose) {
+      onClose();
+    }
 
     // close bottom sheet
   }, [navigation, onClose, token?.dbid]);
@@ -129,7 +134,9 @@ export default function MintCampaignPostTransaction({
     if (token?.definition?.community) {
       navigateToCommunity(token?.definition?.community);
     }
-    onClose();
+    if (onClose) {
+      onClose();
+    }
   }, [navigateToCommunity, onClose, token?.definition?.community]);
 
   if (state === 'TOKEN_SYNCED' && token) {
@@ -137,7 +144,12 @@ export default function MintCampaignPostTransaction({
       <View>
         <View className="mb-1">
           <TitleS>Congratulations!</TitleS>
-          <TitleS>You collected {`${token?.definition?.name ?? 'Radiance'} by MCHX`}</TitleS>
+          <TitleS>
+            You collected{' '}
+            {`${token?.definition?.name ?? projectData.collectionName} by ${
+              projectData.artistName
+            }`}
+          </TitleS>
         </View>
         <BaseM>
           Thank you for using the Gallery mobile app. Share your unique piece with others below!
@@ -173,7 +185,7 @@ export default function MintCampaignPostTransaction({
       <BaseM>
         {state === 'TX_PENDING'
           ? 'Your new artwork is being minted onchain. This should take less than a minute.'
-          : 'Revealing your unique artwork. It will be ready to view in a moment!'}
+          : 'Revealing your artwork. It will be ready to view in a moment!'}
       </BaseM>
 
       <View className="my-4 flex justify-center items-center bg-faint dark:bg-black-700 w-full aspect-square ">
@@ -183,7 +195,7 @@ export default function MintCampaignPostTransaction({
             size="s"
             colorOverride={{ lightMode: colors.shadow, darkMode: colors.shadow }}
           />
-          <LoadingStateMessage />
+          <LoadingStateMessage funFacts={projectData.funFacts} />
         </View>
       </View>
       {error && <BaseM classNameOverride="text-red">{error}</BaseM>}
@@ -191,22 +203,22 @@ export default function MintCampaignPostTransaction({
   );
 }
 
-const COPY = [
-  'Anton Dubrovin, aka MCHX, was born in Kazakhstan and is currently based in Georgia.',
-  'Anton is a digital artist known for experimenting with colors and form.',
-  'Anton uses color as a universal channel of emotional connection and self-exploration.',
-  'For this project, MCHX created over 60 unique color modes and used a circle as the central object due to its universal symbolism of unity and integrity.',
-  'This work leverages Javascript, GLSL, and Display P3 wide-gamut to explore emotional connection through color.',
-  "Anton's diverse inspiration comes from 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
-  'In his free time, Anton enjoys taking walks, reading, and watching Japanese anime and dramas.',
-  'Anton has been creating art since 2016, but entered the NFT and Web3 space in 2020.',
-  'Anton believes in the exchange of energy inherent in blockchain interactions and his work carries imprints of his emotional states or needs at the time of creation.',
-];
+// const COPY = [
+//   'Anton Dubrovin, aka MCHX, was born in Kazakhstan and is currently based in Georgia.',
+//   'Anton is a digital artist known for experimenting with colors and form.',
+//   'Anton uses color as a universal channel of emotional connection and self-exploration.',
+//   'For this project, MCHX created over 60 unique color modes and used a circle as the central object due to its universal symbolism of unity and integrity.',
+//   'This work leverages Javascript, GLSL, and Display P3 wide-gamut to explore emotional connection through color.',
+//   "Anton's diverse inspiration comes from 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
+//   'In his free time, Anton enjoys taking walks, reading, and watching Japanese anime and dramas.',
+//   'Anton has been creating art since 2016, but entered the NFT and Web3 space in 2020.',
+//   'Anton believes in the exchange of energy inherent in blockchain interactions and his work carries imprints of his emotional states or needs at the time of creation.',
+// ];
 
 const FADE_DURATION = 250;
 const TEXT_DURATION = 8000;
 
-function LoadingStateMessage() {
+function LoadingStateMessage({ funFacts }: { funFacts: string[] }) {
   const [index, setIndex] = useState(0);
 
   const fadeInOpacity = useSharedValue(1);
@@ -235,18 +247,18 @@ function LoadingStateMessage() {
     const updateDisplayedMessage = async () => {
       fadeOut();
       await new Promise((resolve) => setTimeout(resolve, FADE_DURATION));
-      setIndex((index) => (index + 1) % COPY.length);
+      setIndex((index) => (index + 1) % funFacts.length);
       fadeIn();
     };
 
     const interval = setInterval(updateDisplayedMessage, TEXT_DURATION);
 
     return () => clearInterval(interval);
-  }, [fadeIn, fadeOut]);
+  }, [fadeIn, fadeOut, funFacts.length]);
   return (
     <View className="text-center h-32">
       <Animated.View style={[animatedStyle]}>
-        <BaseM classNameOverride="text-shadow text-center ">{COPY[index]}</BaseM>
+        <BaseM classNameOverride="text-shadow text-center ">{funFacts[index]}</BaseM>
       </Animated.View>
     </View>
   );

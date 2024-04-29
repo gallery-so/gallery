@@ -2,25 +2,25 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { contexts } from 'shared/analytics/constants';
-import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
 import { useHighlightClaimMint } from 'src/hooks/useHighlightClaimMint';
 import usePersistedState from 'src/hooks/usePersistedState';
 
 import { Button } from '~/components/Button';
 import { BaseM, BaseS, TitleLItalic, TitleS } from '~/components/Text';
+import { MintProject } from '~/contexts/SanityDataContext';
 import { MintCampaignPreTransactionQuery } from '~/generated/MintCampaignPreTransactionQuery.graphql';
-
-export const MCHX_MINT_CAMPAIGN_END_DATE = '2024-05-05T10:00:00-04:00';
-
-const MCHX_COLLECTION_ID = '660d4342c6bc04d5dc5598e7';
 
 export default function MintCampaignPreTransaction({
   setClaimCode,
+  projectInternalId,
+  projectData,
 }: {
   setClaimCode: (claimCode: string) => void;
+  projectInternalId: string;
+  projectData: MintProject;
 }) {
   const calculateTimeLeftText = useCallback(() => {
-    const endDate = new Date(MCHX_MINT_CAMPAIGN_END_DATE).getTime();
+    const endDate = new Date(projectData.endDate).getTime();
     const now = new Date().getTime();
     const difference = endDate - now;
 
@@ -33,13 +33,13 @@ export default function MintCampaignPreTransaction({
     }
 
     return 'Campaign ended';
-  }, []);
+  }, [projectData.endDate]);
 
   const isMintOver = useMemo(() => {
-    const endDate = new Date(MCHX_MINT_CAMPAIGN_END_DATE).getTime();
+    const endDate = new Date(projectData.endDate).getTime();
     const now = new Date().getTime();
     return now > endDate;
-  }, []);
+  }, [projectData.endDate]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeftText());
   const [error, setError] = useState('');
@@ -54,7 +54,7 @@ export default function MintCampaignPreTransaction({
 
   const { claimMint, isClamingMint } = useHighlightClaimMint();
 
-  const [, setClaimCodeLocalStorage] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
+  const [, setClaimCodeLocalStorage] = usePersistedState(`${projectInternalId}_claim_code`, '');
 
   const handlePress = useCallback(
     async (recipientWalletId: string) => {
@@ -64,7 +64,7 @@ export default function MintCampaignPreTransaction({
 
       try {
         const claimCode = await claimMint({
-          collectionId: MCHX_COLLECTION_ID,
+          collectionId: projectData.highlightProjectId,
           recipientWalletId,
         });
 
@@ -84,20 +84,17 @@ export default function MintCampaignPreTransaction({
         setError('Something went wrong while minting. Please try again.');
       }
     },
-    [claimMint, setClaimCode, setClaimCodeLocalStorage]
+    [claimMint, projectData.highlightProjectId, setClaimCode, setClaimCodeLocalStorage]
   );
 
   return (
     <View>
-      <TitleS>Exclusive free mint</TitleS>
-      <BaseM classNameOverride="mt-1">
-        Thank you for downloading the Gallery app. As a token of our gratitude, we invite you to
-        mint Radiance by MCHX - on us ❤️
-      </BaseM>
+      <TitleS>{projectData.title}</TitleS>
+      <BaseM classNameOverride="mt-1">{projectData.description}</BaseM>
       <Image
         className="w-full aspect-square my-4"
         source={{
-          uri: 'https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fhighlight-creator-assets.highlight.xyz%2Fmain%2Fimage%2Fad73bc52-3e26-45c7-a73c-3666f165e9fa.png%3Fd%3D1000x1000',
+          uri: projectData.previewImageUrl,
         }}
       />
       <View className="flex flex-row space-apart justify-between">
@@ -107,7 +104,7 @@ export default function MintCampaignPreTransaction({
           <BaseM>Limit 1 per user</BaseM>
         </View>
         <View>
-          <TitleLItalic>Gallery x MCHX</TitleLItalic>
+          <TitleLItalic>Gallery x {projectData.artistName}</TitleLItalic>
         </View>
       </View>
       <View className="my-3">
@@ -128,7 +125,7 @@ export default function MintCampaignPreTransaction({
         {error && <BaseM classNameOverride="text-red">{error}</BaseM>}
       </View>
       <BaseS>
-        Note: Image above is an indicative preview only, final artwork will be uniquely generated.
+        Note: Image above is an indicative preview only, final artwork will be randomly generated.
         Powered by highlight.xyz
       </BaseS>
     </View>

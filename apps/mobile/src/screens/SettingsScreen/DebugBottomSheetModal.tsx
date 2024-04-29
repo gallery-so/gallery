@@ -27,6 +27,7 @@ export default function DebugBottomSheetModal() {
       MARFA_2023_SUBMITTED_FORM_KEY,
       MCHX_CLAIM_CODE_KEY,
       `hasSeenAnnouncement-oxen-farcon-2024`,
+      `hasDismissedAnnouncement-oxen-farcon-2024`,
     ]);
   }, []);
   return (
