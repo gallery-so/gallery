@@ -13,6 +13,7 @@ import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
+import { NftSelectorSelectionIndicator } from '~/components/NftSelector/NftSelectorSelectionIndicator';
 import { Typography } from '~/components/Typography';
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
@@ -38,6 +39,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
+import { SelectedItemMultiMode } from '../GalleryScreen/GalleryEditorNftSelector';
 import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
 
 type NftSelectorPickerGridProps = {
@@ -48,15 +50,24 @@ type NftSelectorPickerGridProps = {
     networkFilter: NetworkChoice;
     sortView: NftSelectorSortView;
   };
+
+  isMultiselectMode?: boolean;
+  selectedTokens?: SelectedItemMultiMode[];
+
   onRefresh: () => void;
 
   onSelect: (tokenId: string) => void;
-  onSelectNftGroup: (contractAddress: string) => void;
+  onSelectNftGroup: (
+    contractAddress: string,
+    tokens: NftSelectorPickerGridTokenGridFragment$data[number][]
+  ) => void;
 };
 
 export function NftSelectorPickerGrid({
   searchCriteria,
   style,
+  isMultiselectMode,
+  selectedTokens = [],
   onRefresh,
   onSelect,
   onSelectNftGroup,
@@ -315,6 +326,8 @@ export function NftSelectorPickerGrid({
                 ownerFilter={searchCriteria.ownerFilter}
                 onSelectNft={onSelect}
                 onSelectGroup={onSelectNftGroup}
+                isMultiselectMode={isMultiselectMode}
+                selectedTokens={selectedTokens}
               />
             );
           })}
@@ -326,7 +339,7 @@ export function NftSelectorPickerGrid({
         </View>
       );
     },
-    [onSelect, onSelectNftGroup, searchCriteria.ownerFilter]
+    [isMultiselectMode, onSelect, onSelectNftGroup, searchCriteria.ownerFilter, selectedTokens]
   );
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
@@ -387,6 +400,7 @@ export function NftSelectorPickerGrid({
         refreshControl={
           <GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }
+        extraData={[isMultiselectMode, selectedTokens]}
       />
     </View>
   );
@@ -436,10 +450,22 @@ type TokenGridProps = {
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
   ownerFilter: 'Created' | 'Collected';
   contractAddress: string;
-  onPress: (contractAddress: string) => void;
+  isMultiselectMode?: boolean;
+  isSelected?: boolean;
+  onPress: (
+    contractAddress: string,
+    tokens: NftSelectorPickerGridTokenGridFragment$data[number][]
+  ) => void;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, style, onPress }: TokenGridProps) {
+function TokenGrid({
+  tokenRefs,
+  contractAddress,
+  style,
+  isMultiselectMode,
+  onPress,
+  isSelected = false,
+}: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -460,8 +486,8 @@ function TokenGrid({ tokenRefs, contractAddress, style, onPress }: TokenGridProp
   }, [tokens]);
 
   const handlePress = useCallback(() => {
-    onPress(contractAddress);
-  }, [contractAddress, onPress]);
+    onPress(contractAddress, removeNullValues(tokens));
+  }, [contractAddress, onPress, tokens]);
 
   return (
     <GalleryTouchableOpacity
@@ -490,6 +516,8 @@ function TokenGrid({ tokenRefs, contractAddress, style, onPress }: TokenGridProp
           );
         })}
       </View>
+
+      {isMultiselectMode && <NftSelectorSelectionIndicator selected={isSelected} />}
     </GalleryTouchableOpacity>
   );
 }
@@ -500,7 +528,12 @@ type TokenGroupProps = {
   tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
   onSelectNft: (tokenId: string) => void;
-  onSelectGroup: (contractAddress: string) => void;
+  onSelectGroup: (
+    contractAddress: string,
+    tokens: NftSelectorPickerGridTokenGridFragment$data[number][]
+  ) => void;
+  isMultiselectMode?: boolean;
+  selectedTokens?: SelectedItemMultiMode[];
 };
 
 function TokenGroup({
@@ -510,10 +543,13 @@ function TokenGroup({
   ownerFilter,
   onSelectNft,
   onSelectGroup,
+  isMultiselectMode,
+  selectedTokens = [],
 }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
+        dbid
         ...NftSelectorPickerGridTokenGridFragment
         ...NftSelectorPickerSingularAssetFragment
       }
@@ -522,20 +558,44 @@ function TokenGroup({
   );
 
   const [firstToken] = tokens;
+
+  const isSingleView = useMemo(() => {
+    return tokens.length === 1;
+  }, [tokens]);
+
+  const isSelected = useMemo(() => {
+    if (isSingleView) {
+      return selectedTokens.some((token) => {
+        return token.id === firstToken?.dbid;
+      });
+    } else {
+      return selectedTokens.some((token) => {
+        return token.id === contractAddress;
+      });
+    }
+  }, [selectedTokens, contractAddress, firstToken, isSingleView]);
+
   if (!firstToken) {
     return null;
   }
 
   return (
     <View style={style} className="flex-1 aspect-square bg-offWhite dark:bg-black-800">
-      {tokens.length === 1 ? (
-        <NftSelectorPickerSingularAsset onPress={onSelectNft} tokenRef={firstToken} />
+      {isSingleView ? (
+        <NftSelectorPickerSingularAsset
+          onPress={onSelectNft}
+          tokenRef={firstToken}
+          isMultiselectMode={isMultiselectMode}
+          isSelected={isSelected}
+        />
       ) : (
         <TokenGrid
           ownerFilter={ownerFilter}
           contractAddress={contractAddress}
           tokenRefs={tokens}
           onPress={onSelectGroup}
+          isMultiselectMode={isMultiselectMode}
+          isSelected={isSelected}
         />
       )}
     </View>
