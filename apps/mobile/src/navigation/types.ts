@@ -31,6 +31,7 @@ export type RootStackNavigatorParamList = {
     galleryId: string;
   };
   NftSelectorContractGalleryEditor: {
+    galleryId: string;
     contractAddress: string;
     ownerFilter?: 'Collected' | 'Created';
   };

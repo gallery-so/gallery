@@ -74,6 +74,8 @@ export function NftSelectorPickerSingularAsset({
             resizeMode={ResizeMode.COVER}
             onLoad={handleAssetLoad}
           />
+
+          {isMultiselectMode && <NftSelectorSelectionIndicator selected={isSelected} />}
           {!assetLoaded && (
             <View className="absolute inset-0">
               <GallerySkeleton borderRadius={0}>
@@ -88,8 +90,6 @@ export function NftSelectorPickerSingularAsset({
             </View>
           )}
         </TokenFailureBoundary>
-
-        {isMultiselectMode && <NftSelectorSelectionIndicator selected={isSelected} />}
       </GalleryTouchableOpacity>
     </View>
   );

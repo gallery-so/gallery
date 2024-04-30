@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorContractPickerGridFragment$key } from '~/generated/NftSelectorContractPickerGridFragment.graphql';
+import { SelectedItemMultiMode } from '~/screens/GalleryScreen/GalleryEditorNftSelector';
 import { NftSelectorLoadingSkeleton } from '~/screens/NftSelectorScreen/NftSelectorLoadingSkeleton';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 
@@ -14,9 +15,19 @@ type Props = {
   tokenRefs: NftSelectorContractPickerGridFragment$key;
   onSelect: (tokenId: string) => void;
   style?: ViewProps['style'];
+
+  isMultiselectMode?: boolean;
+  selectedTokens?: SelectedItemMultiMode[];
 };
 
-export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, style }: Props) {
+export function NftSelectorContractPickerGrid({
+  isCreator,
+  isMultiselectMode,
+  tokenRefs,
+  onSelect,
+  selectedTokens,
+  style,
+}: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorContractPickerGridFragment on Token @relay(plural: true) {
@@ -43,6 +54,11 @@ export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, 
     syncCreatedTokensForExistingContract(contractId);
   }, [syncCreatedTokensForExistingContract, contractId]);
 
+  const isSelected = useMemo(() => {
+    const selectedTokenIds = selectedTokens?.map((token) => token.id) ?? [];
+    return (tokenId: string) => selectedTokenIds.includes(tokenId);
+  }, [selectedTokens]);
+
   const renderItem = useCallback<ListRenderItem<typeof tokens>>(
     ({ item: row }) => {
       return (
@@ -53,6 +69,8 @@ export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, 
                 key={token.dbid}
                 onPress={onSelect}
                 tokenRef={token}
+                isMultiselectMode={isMultiselectMode}
+                isSelected={isSelected(token.dbid)}
               />
             );
           })}
@@ -63,7 +81,7 @@ export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, 
         </View>
       );
     },
-    [onSelect]
+    [isMultiselectMode, isSelected, onSelect]
   );
 
   const rows = useMemo(() => {
@@ -83,6 +101,7 @@ export function NftSelectorContractPickerGrid({ isCreator, tokenRefs, onSelect, 
           renderItem={renderItem}
           data={rows}
           estimatedItemSize={100}
+          extraData={[isMultiselectMode, selectedTokens]}
           refreshControl={
             isCreator ? (
               <GalleryRefreshControl

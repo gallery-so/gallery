@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
@@ -105,12 +105,13 @@ export function GalleryEditorNftSelector() {
         navigation.navigate({
           name: 'NftSelectorContractGalleryEditor',
           params: {
+            galleryId: route.params.galleryId,
             contractAddress,
           },
         });
       }
     },
-    [isMultiselectMode, navigation]
+    [isMultiselectMode, navigation, route.params.galleryId]
   );
 
   const handleAddSelectedTokens = useCallback(() => {
@@ -142,17 +143,20 @@ export function GalleryEditorNftSelector() {
         <NftSelectorHeader
           title="Select item to add"
           rightButton={
-            <Button
-              onPress={handleAddSelectedTokens}
-              eventElementId={null}
-              eventName={null}
-              eventContext={null}
-              text="add"
-              size="xs"
-            />
+            isMultiselectMode && selectedTokens.length > 0 ? (
+              <Button
+                onPress={handleAddSelectedTokens}
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                text="add"
+                size="xs"
+                fontWeight="Bold"
+                textTransform="capitalize"
+              />
+            ) : null
           }
         />
-        <Text>{JSON.stringify(selectedTokens)}</Text>
         <NftSelectorToolbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

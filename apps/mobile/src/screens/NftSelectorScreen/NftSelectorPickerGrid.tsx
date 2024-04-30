@@ -564,16 +564,10 @@ function TokenGroup({
   }, [tokens]);
 
   const isSelected = useMemo(() => {
-    if (isSingleView) {
-      return selectedTokens.some((token) => {
-        return token.id === firstToken?.dbid;
-      });
-    } else {
-      return selectedTokens.some((token) => {
-        return token.id === contractAddress;
-      });
-    }
-  }, [selectedTokens, contractAddress, firstToken, isSingleView]);
+    return selectedTokens.some((token) => {
+      return token.id === firstToken?.dbid;
+    });
+  }, [firstToken?.dbid, selectedTokens]);
 
   if (!firstToken) {
     return null;
