@@ -119,8 +119,10 @@ export function GalleryEditorNftSelectorContractScreen() {
   const handleSelectedAllPress = useCallback(() => {
     setSelectedTokens((prevTokens) => {
       if (prevTokens.length > 0) {
+        setIsMultiselectMode(false);
         return [];
       } else {
+        setIsMultiselectMode(true);
         return nonNullableTokens.map((token) => {
           return {
             id: token.dbid,
