@@ -7,25 +7,38 @@ import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { BaseM } from '~/components/Text';
+import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 
 type Props = {
+  contractId: string;
   contractName: string;
   isMultiselectMode: boolean;
   setIsMultiselectMode: (value: boolean) => void;
   onSelectedAllPress: () => void;
   hasSelectedItems: boolean;
+  ownershipTypeFilter: 'Collected' | 'Created';
 };
 
 export function NftSelectorContractToolbar({
+  contractId,
   contractName,
   isMultiselectMode,
   setIsMultiselectMode,
   onSelectedAllPress,
   hasSelectedItems,
+  ownershipTypeFilter,
 }: Props) {
+  const { isSyncing, isSyncingCreatedTokens, syncCreatedTokensForExistingContract } =
+    useSyncTokensActions();
+
   const handleMultiselectPress = useCallback(() => {
     setIsMultiselectMode?.(!isMultiselectMode);
   }, [isMultiselectMode, setIsMultiselectMode]);
+
+  const handleSyncTokensForContract = useCallback(async () => {
+    if (!contractId) return;
+    syncCreatedTokensForExistingContract(contractId);
+  }, [syncCreatedTokensForExistingContract, contractId]);
 
   return (
     <View className="flex-row justify-between px-4 pt-4">
@@ -52,10 +65,8 @@ export function NftSelectorContractToolbar({
           color={isMultiselectMode ? 'active' : 'default'}
         />
         <AnimatedRefreshIcon
-          //   onSync={handleSync}
-          //   isSyncing={ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens}
-          onSync={() => {}}
-          isSyncing={false}
+          onSync={handleSyncTokensForContract}
+          isSyncing={ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens}
           eventElementId="NftSelectorSelectorRefreshButton"
           eventName="NftSelectorSelectorRefreshButton pressed"
         />

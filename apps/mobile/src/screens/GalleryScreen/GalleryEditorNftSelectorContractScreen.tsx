@@ -152,11 +152,13 @@ export function GalleryEditorNftSelectorContractScreen() {
         }
       />
       <NftSelectorContractToolbar
+        contractId={contractId}
         contractName={contractName}
         isMultiselectMode={isMultiselectMode}
         setIsMultiselectMode={setIsMultiselectMode}
         onSelectedAllPress={handleSelectedAllPress}
         hasSelectedItems={selectedTokens.length > 0}
+        ownershipTypeFilter={route.params.ownerFilter || 'Collected'}
       />
       <NftSelectorContractPickerGrid
         isCreator={isCreator}
