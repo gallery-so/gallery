@@ -78,7 +78,7 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
   const fetchAnnouncement = useCallback(async () => {
     try {
       const result = await fetchSanityContent(
-        `*[_type == "announcementNotification" && active == true] {
+        `*[_type == "announcementNotification" && active == true && (platform == "Mobile" || platform == "All")] {
               internal_id,
               active,
               title,

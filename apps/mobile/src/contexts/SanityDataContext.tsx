@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { fetchSanityContent } from 'src/utils/sanity';
 import { useEffectOnAppForeground } from 'src/utils/useEffectOnAppForeground';
 
@@ -45,8 +46,8 @@ export function useSanityDataContext() {
 
 export default function SanityDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<sanityDocumentTypes | null>(null);
+  const reportError = useReportError();
   const fetchData = useCallback(async () => {
-    console.log('fetching');
     try {
       const result = await fetchSanityContent(`
       *[_type == "mintProject"] {
@@ -67,9 +68,12 @@ export default function SanityDataProvider({ children }: { children: ReactNode }
         setData({ mintProjects: result });
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        reportError(error);
+      }
+      reportError('An error occurred while fetching sanity data');
     }
-  }, []);
+  }, [reportError]);
 
   useEffectOnAppForeground(fetchData);
 

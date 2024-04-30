@@ -17,10 +17,11 @@ export default function AnnouncementNotification() {
   const { announcement, markAnnouncementAsSeen, dismissAnnouncement } = useAnnouncementContext();
   const { showBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
+    if (!announcement) return;
     showBottomSheetModal({
-      content: <MintCampaignBottomSheet projectInternalId={announcement?.internal_id} />,
+      content: <MintCampaignBottomSheet projectInternalId={announcement.internal_id} />,
     });
-  }, [announcement?.internal_id, showBottomSheetModal]);
+  }, [announcement, showBottomSheetModal]);
   const handleDismissPress = useCallback(() => {
     dismissAnnouncement();
   }, [dismissAnnouncement]);

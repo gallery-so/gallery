@@ -49,7 +49,14 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
   }, [setIsUpsellMintBannerDismissed]);
 
   const handleClaimPress = useCallback(() => {
-    showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+    showBottomSheetModal({
+      content: (
+        <MintCampaignBottomSheet
+          onClose={hideBottomSheetModal}
+          projectInternalId="mchx-app-store-2024"
+        />
+      ),
+    });
   }, [hideBottomSheetModal, showBottomSheetModal]);
 
   const user = query.viewer?.user;

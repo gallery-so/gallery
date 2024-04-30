@@ -54,7 +54,7 @@ export default function MintCampaignPreTransaction({
 
   const { claimMint, isClamingMint } = useHighlightClaimMint();
 
-  const [, setClaimCodeLocalStorage] = usePersistedState(`${projectInternalId}_claim_code`, '');
+  const [, setClaimCodeLocalStorage] = usePersistedState(`${projectInternalId}-claim-code`, '');
 
   const handlePress = useCallback(
     async (recipientWalletId: string) => {

@@ -8,7 +8,7 @@ import MintCampaignPreTransaction from './MintCampaignPreTransaction';
 
 type Props = {
   onClose?: () => void;
-  projectInternalId?: string;
+  projectInternalId: string;
 };
 
 export default function MintCampaignBottomSheet({ onClose, projectInternalId }: Props) {
@@ -21,7 +21,6 @@ export default function MintCampaignBottomSheet({ onClose, projectInternalId }: 
   const projectData = useMemo(() => {
     return data?.mintProjects.find((document) => document.internalId === projectInternalId);
   }, [data, projectInternalId]);
-  console.log({ projectData });
 
   if (!projectData) {
     // TODO decide best way to handle missing data

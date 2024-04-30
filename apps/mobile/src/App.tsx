@@ -32,12 +32,12 @@ import SearchProvider from './components/Search/SearchContext';
 import { AnnouncementProvider } from './contexts/AnnouncementContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
+import SanityDataProvider from './contexts/SanityDataContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
-import SanityDataProvider from './contexts/SanityDataContext';
 
 SplashScreen.preventAutoHideAsync();
 

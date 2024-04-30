@@ -23,12 +23,7 @@ export default function DebugBottomSheetModal() {
   }, []);
 
   const handleClearStorage = useCallback(() => {
-    AsyncStorage.multiRemove([
-      MARFA_2023_SUBMITTED_FORM_KEY,
-      MCHX_CLAIM_CODE_KEY,
-      `hasSeenAnnouncement-oxen-farcon-2024`,
-      `hasDismissedAnnouncement-oxen-farcon-2024`,
-    ]);
+    AsyncStorage.multiRemove([MARFA_2023_SUBMITTED_FORM_KEY, MCHX_CLAIM_CODE_KEY]);
   }, []);
   return (
     <View className="flex flex-column space-y-1 mx-4">
