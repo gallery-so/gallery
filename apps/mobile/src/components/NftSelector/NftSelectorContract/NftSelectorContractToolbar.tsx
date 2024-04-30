@@ -42,7 +42,9 @@ export function NftSelectorContractToolbar({
 
   return (
     <View className="flex-row justify-between px-4 pt-4">
-      <BaseM weight="Bold">{contractName}</BaseM>
+      <BaseM weight="Bold" style={{ maxWidth: '65%' }}>
+        {contractName}
+      </BaseM>
 
       <View className="flex-row space-x-2 items-center">
         <GalleryTouchableOpacity
