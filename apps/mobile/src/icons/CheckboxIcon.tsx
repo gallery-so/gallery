@@ -10,7 +10,6 @@ export function CheckboxIcon(props: SvgProps) {
   return (
     <Svg width={18} height={18} viewBox="0 0 18 18" fill="none" {...props}>
       <Path d="M5 8.5l3 3 5-5" stroke={stroke} strokeMiterlimit={10} />
-      <Path stroke={stroke} d="M0.5 0.5H17.5V17.5H0.5z" />
     </Svg>
   );
 }

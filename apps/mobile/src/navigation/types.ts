@@ -30,6 +30,11 @@ export type RootStackNavigatorParamList = {
   NftSelectorGalleryEditor: {
     galleryId: string;
   };
+  NftSelectorContractGalleryEditor: {
+    galleryId: string;
+    contractAddress: string;
+    ownerFilter?: 'Collected' | 'Created';
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
