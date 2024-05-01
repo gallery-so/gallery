@@ -54,7 +54,7 @@ export function NftSelectorContractHeader({
           {title}
         </Typography>
       </View>
-      <Animated.View style={animateStyle}>{rightButton && rightButton}</Animated.View>
+      <Animated.View style={animateStyle}>{rightButton}</Animated.View>
       {isCreator && contractId ? (
         <View>
           <AnimatedRefreshIcon
