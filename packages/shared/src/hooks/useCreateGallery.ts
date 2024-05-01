@@ -1,14 +1,11 @@
-import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
+import { ValidationError } from '~/errors/ValidationError';
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
-import { ValidationError } from '~/shared/errors/ValidationError';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/relay/usePromisifiedMutation';
 
 export default function useCreateGallery() {
-  const router = useRouter();
-
   const [createGallery] = usePromisifiedMutation<useCreateGalleryMutation>(graphql`
     mutation useCreateGalleryMutation($input: CreateGalleryInput!) @raw_response_type {
       createGallery(input: $input) {
@@ -27,7 +24,7 @@ export default function useCreateGallery() {
   `);
 
   return useCallback(
-    async (position: string) => {
+    async (position: string, onSuccess: (galleryId: string) => void) => {
       try {
         const response = await createGallery({
           variables: {
@@ -44,17 +41,14 @@ export default function useCreateGallery() {
         }
 
         const galleryId = response?.createGallery?.gallery?.dbid;
-        const route = {
-          pathname: '/gallery/[galleryId]/edit',
-          query: { galleryId },
-        };
+
         if (galleryId) {
-          router.push(route);
+          onSuccess(galleryId);
         }
       } catch (error) {
         throw new Error('Failed to create gallery');
       }
     },
-    [createGallery, router]
+    [createGallery]
   );
 }

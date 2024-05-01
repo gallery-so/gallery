@@ -13,7 +13,6 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import FollowButton from '~/components/Follow/FollowButton';
-import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import Settings from '~/components/Settings/Settings';
 import { AuthButton } from '~/contexts/globalLayout/GlobalNavbar/AuthButton';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -27,6 +26,7 @@ import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 import { contexts } from '~/shared/analytics/constants';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import useCreateGallery from '~/shared/hooks/useCreateGallery';
 
 import QRCodeButton from './QRCodeButton';
 
@@ -90,7 +90,13 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
 
     try {
-      await createGallery(latestPosition);
+      await createGallery(latestPosition, (galleryId) => {
+        const route = {
+          pathname: '/gallery/[galleryId]/edit',
+          query: { galleryId },
+        };
+        router.push(route);
+      });
     } catch (error) {
       if (error instanceof Error) {
         pushToast({
