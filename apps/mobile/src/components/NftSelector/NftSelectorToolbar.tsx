@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
 import { contexts } from 'shared/analytics/constants';
 import { chains } from 'shared/utils/chains';
+import { MultiSelectIcon } from 'src/icons/MultiSelectIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
@@ -41,6 +42,8 @@ type Props = {
   setNetworkFilter: (value: NetworkChoice) => void;
   sortView: NftSelectorSortView;
   setSortView: (value: NftSelectorSortView) => void;
+  isMultiselectMode?: boolean;
+  setIsMultiselectMode?: (value: boolean) => void;
   isSyncing: boolean;
   isSyncingCreatedTokens: boolean;
   handleSync: () => void;
@@ -56,6 +59,8 @@ export function NftSelectorToolbar({
   setNetworkFilter,
   sortView,
   setSortView,
+  isMultiselectMode,
+  setIsMultiselectMode,
   isSyncing,
   isSyncingCreatedTokens,
   handleSync,
@@ -92,6 +97,10 @@ export function NftSelectorToolbar({
     [setNetworkFilter]
   );
 
+  const handleMultiselectPress = useCallback(() => {
+    setIsMultiselectMode?.(!isMultiselectMode);
+  }, [isMultiselectMode, setIsMultiselectMode]);
+
   return (
     <View className="flex flex-col space-y-4" style={style}>
       <View className="px-4">
@@ -116,6 +125,16 @@ export function NftSelectorToolbar({
         />
 
         <View className="flex flex-row space-x-1">
+          <IconContainer
+            size="sm"
+            onPress={handleMultiselectPress}
+            icon={<MultiSelectIcon />}
+            eventElementId="NftSelectorSelectorSettingsButton"
+            eventName="NftSelectorSelectorSettingsButton pressed"
+            eventContext={contexts.Posts}
+            color={isMultiselectMode ? 'active' : 'default'}
+          />
+
           <AnimatedRefreshIcon
             onSync={handleSync}
             isSyncing={ownershipTypeFilter === 'Collected' ? isSyncing : isSyncingCreatedTokens}

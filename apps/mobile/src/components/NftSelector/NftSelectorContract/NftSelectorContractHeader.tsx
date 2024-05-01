@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { View, ViewProps } from 'react-native';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { AnimatedRefreshIcon } from '~/components/AnimatedRefreshIcon';
 import { BackButton } from '~/components/BackButton';
@@ -24,6 +25,12 @@ export function NftSelectorContractHeader({
   const { isSyncingCreatedTokensForContract, syncCreatedTokensForExistingContract } =
     useSyncTokensActions();
 
+  const animateStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(rightButton ? 1 : 0),
+    };
+  });
+
   const handleSyncTokensForContract = useCallback(async () => {
     if (!contractId) return;
     syncCreatedTokensForExistingContract(contractId);
@@ -47,7 +54,7 @@ export function NftSelectorContractHeader({
           {title}
         </Typography>
       </View>
-      {rightButton ? <View>{rightButton}</View> : null}
+      <Animated.View style={animateStyle}>{rightButton}</Animated.View>
       {isCreator && contractId ? (
         <View>
           <AnimatedRefreshIcon

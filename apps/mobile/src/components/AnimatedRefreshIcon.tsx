@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { ViewProps } from 'react-native';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 
 import { IconContainer } from '~/components/IconContainer';
@@ -9,6 +10,7 @@ type AnimatedRefreshIconProps = {
   isSyncing: boolean;
   eventElementId: string;
   eventName: string;
+  style?: ViewProps['style'];
 };
 
 export function AnimatedRefreshIcon({
@@ -16,6 +18,7 @@ export function AnimatedRefreshIcon({
   isSyncing,
   eventElementId,
   eventName,
+  style,
 }: AnimatedRefreshIconProps) {
   const handleSync = useCallback(async () => {
     if (isSyncing) return;
@@ -30,7 +33,7 @@ export function AnimatedRefreshIcon({
       eventElementId={eventElementId}
       eventName={eventName}
       eventContext={contexts.Posts}
-      style={{ opacity: isSyncing ? 0.3 : 1 }}
+      style={[{ opacity: isSyncing ? 0.3 : 1 }, style]}
     />
   );
 }

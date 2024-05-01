@@ -9,6 +9,7 @@ import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBounda
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
+import { NftSelectorSelectionIndicator } from '~/components/NftSelector/NftSelectorSelectionIndicator';
 import { NftSelectorPickerSingularAssetFragment$key } from '~/generated/NftSelectorPickerSingularAssetFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
@@ -18,6 +19,8 @@ type NftSelectorPickerSingularAssetProps = {
   tokenRef: NftSelectorPickerSingularAssetFragment$key;
   onPress: (tokenId: string) => void;
   isLoading?: boolean;
+  isMultiselectMode?: boolean;
+  isSelected?: boolean;
 };
 
 export function NftSelectorPickerSingularAsset({
@@ -25,6 +28,8 @@ export function NftSelectorPickerSingularAsset({
   tokenRef,
   onPress,
   isLoading,
+  isMultiselectMode,
+  isSelected = false,
 }: NftSelectorPickerSingularAssetProps) {
   const token = useFragment(
     graphql`
@@ -69,6 +74,8 @@ export function NftSelectorPickerSingularAsset({
             resizeMode={ResizeMode.COVER}
             onLoad={handleAssetLoad}
           />
+
+          {isMultiselectMode && <NftSelectorSelectionIndicator selected={isSelected} />}
           {!assetLoaded && (
             <View className="absolute inset-0">
               <GallerySkeleton borderRadius={0}>
