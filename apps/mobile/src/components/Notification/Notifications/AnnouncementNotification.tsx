@@ -1,4 +1,5 @@
 import { ResizeMode } from 'expo-av';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -35,6 +36,8 @@ export default function AnnouncementNotification() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { colorScheme } = useColorScheme();
+
   if (!announcement) {
     return null;
   }
@@ -43,7 +46,7 @@ export default function AnnouncementNotification() {
     <View className="flex flex-row m-2">
       <GalleryTouchableOpacity
         onPress={handlePress}
-        className="flex-row flex-1 items-start space-x-2 border border-activeBlue p-3"
+        className="flex-row flex-1 items-start space-x-2 border border-activeBlue dark:border-darkModeBlue p-3"
         eventElementId="Announcement Notification"
         eventName="Announcement Notification Pressed"
         eventContext={contexts.Notifications}
@@ -55,10 +58,12 @@ export default function AnnouncementNotification() {
             source={{ uri: announcement.imageUrl }}
           />
           <View className="flex flex-col flex-1 ">
-            <BaseM weight="Bold" classNameOverride="text-activeBlue">
+            <BaseM weight="Bold" classNameOverride="text-activeBlue dark:text-darkModeBlue">
               {announcement.title}
             </BaseM>
-            <BaseM classNameOverride="text-activeBlue">{announcement.description}</BaseM>
+            <BaseM classNameOverride="text-activeBlue dark:text-darkModeBlue">
+              {announcement.description}
+            </BaseM>
           </View>
         </View>
         <GalleryTouchableOpacity
@@ -67,7 +72,7 @@ export default function AnnouncementNotification() {
           eventName="Pressed Dismiss Announcement Button"
           eventContext={contexts.Notifications}
         >
-          <XMarkIcon color={colors.activeBlue} />
+          <XMarkIcon color={colorScheme === 'dark' ? colors.darkModeBlue : colors.activeBlue} />
         </GalleryTouchableOpacity>
       </GalleryTouchableOpacity>
     </View>
