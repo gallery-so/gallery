@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
