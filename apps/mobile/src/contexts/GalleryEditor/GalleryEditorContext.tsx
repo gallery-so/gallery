@@ -6,6 +6,7 @@ import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from 'shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from 'shared/relay/removeNullValues';
 import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
+import { generate12DigitId } from 'shared/utils/generate12DigitId';
 
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 import {
@@ -131,7 +132,9 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     getInitialCollectionsFromServer(gallery)
   );
 
-  const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(null);
+  const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(() => {
+    return sections[0]?.dbid ?? null;
+  });
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
@@ -336,9 +339,14 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
 
   const toggleTokensStaged = useCallback(
     (tokenIds: string[]) => {
-      if (!activeRowId) {
-        // Make a new row for the user
-        return;
+      let rowId = activeRowId;
+
+      // select the first row if there is no active row
+      if (!rowId) {
+        rowId = generate12DigitId();
+        updateRow(rowId, (previousRow) => {
+          return { ...previousRow, columns: 3 };
+        });
       }
 
       const tokensToAdd: StagedItem[] = [];
@@ -356,7 +364,14 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         });
       });
 
-      updateRow(activeRowId, (previousRow) => {
+      updateRow(rowId, (previousRow) => {
+        if (previousRow.items.length === 0) {
+          //  if the total number of tokens is less than 6, then the number of columns should be equal to the number of tokens
+          //  if the total number of tokens is more than 6, then the number of columns should be equal to 6
+          const columns = tokensToAdd.length < 6 ? tokensToAdd.length : 6;
+          return { ...previousRow, items: tokensToAdd, columns };
+        }
+
         const newItems = [...previousRow.items, ...tokensToAdd];
         return { ...previousRow, items: newItems };
       });

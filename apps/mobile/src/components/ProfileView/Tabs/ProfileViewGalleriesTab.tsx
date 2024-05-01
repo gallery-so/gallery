@@ -64,7 +64,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
 
     try {
       await createGallery(latestPosition, (galleryId) => {
-        navigation.navigate('GalleryEditor', { galleryId, stagedTokens: [] });
+        navigation.navigate('NftSelectorGalleryEditor', { galleryId });
       });
     } catch (error) {
       if (error instanceof Error) {
