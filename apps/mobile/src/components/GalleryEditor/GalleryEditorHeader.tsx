@@ -15,13 +15,18 @@ export function GalleryEditorHeader() {
         className="text-[32px] leading-[36px] text-metal dark:text-white"
         onChangeText={setGalleryName}
         placeholder="My Gallery"
+        style={{
+          fontFamily: 'GTAlpinaLight',
+        }}
+        autoCorrect={false}
+        spellCheck={false}
       >
         <Typography
           font={{
             family: 'GTAlpina',
             weight: 'Light',
           }}
-          className="text-[32px] leading-[36px]text-black-900 dark:text-white"
+          className="text-[32px] leading-[36px] text-black-900 dark:text-white"
         >
           {galleryName}
         </Typography>
