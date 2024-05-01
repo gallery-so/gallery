@@ -9,6 +9,7 @@ import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext'
 import { ClaimMintUpsellBanner } from '~/components/ClaimMintUpsellBanner';
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
@@ -132,11 +133,15 @@ function MainScreen({ queryRef }: MainScreenProps) {
     queryRef
   );
 
+  const { announcement } = useSanityAnnouncementContext();
+
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
         <ConnectWalletUpsellBanner queryRef={query} />
-        <ClaimMintUpsellBanner queryRef={query} />
+        {announcement && (
+          <ClaimMintUpsellBanner queryRef={query} projectInternalId={announcement.internal_id} />
+        )}
       </Suspense>
       <MainTabNavigator />
     </View>

@@ -9,19 +9,22 @@ import { XMarkIcon } from 'src/icons/XMarkIcon';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaignBottomSheet';
 import { BaseM } from '~/components/Text';
-import { useAnnouncementContext } from '~/contexts/AnnouncementContext';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 
 // Displays announcement content from Sanity
 export default function AnnouncementNotification() {
-  const { announcement, markAnnouncementAsSeen, dismissAnnouncement } = useAnnouncementContext();
+  const { announcement, markAnnouncementAsSeen, dismissAnnouncement } =
+    useSanityAnnouncementContext();
   const { showBottomSheetModal } = useBottomSheetModalActions();
+
   const handlePress = useCallback(() => {
     if (!announcement) return;
     showBottomSheetModal({
       content: <MintCampaignBottomSheet projectInternalId={announcement.internal_id} />,
     });
   }, [announcement, showBottomSheetModal]);
+
   const handleDismissPress = useCallback(() => {
     dismissAnnouncement();
   }, [dismissAnnouncement]);
@@ -37,7 +40,7 @@ export default function AnnouncementNotification() {
   }
 
   return (
-    <View className="flex flex-row  m-2">
+    <View className="flex flex-row m-2">
       <GalleryTouchableOpacity
         onPress={handlePress}
         className="flex-row flex-1 items-start space-x-2 border border-activeBlue p-3"
@@ -45,16 +48,18 @@ export default function AnnouncementNotification() {
         eventName="Announcement Notification Pressed"
         eventContext={contexts.Notifications}
       >
-        <FastImage
-          style={{ width: 56, height: 56 }}
-          resizeMode={ResizeMode.COVER}
-          source={{ uri: announcement.imageUrl }}
-        />
-        <View className="flex flex-col flex-1 ">
-          <BaseM weight="Bold" classNameOverride="text-activeBlue">
-            {announcement.title}
-          </BaseM>
-          <BaseM classNameOverride="text-activeBlue">{announcement.description}</BaseM>
+        <View className="flex-row flex-1 items-center space-x-2">
+          <FastImage
+            style={{ width: 56, height: 56 }}
+            resizeMode={ResizeMode.COVER}
+            source={{ uri: announcement.imageUrl }}
+          />
+          <View className="flex flex-col flex-1 ">
+            <BaseM weight="Bold" classNameOverride="text-activeBlue">
+              {announcement.title}
+            </BaseM>
+            <BaseM classNameOverride="text-activeBlue">{announcement.description}</BaseM>
+          </View>
         </View>
         <GalleryTouchableOpacity
           onPress={handleDismissPress}

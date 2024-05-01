@@ -203,18 +203,6 @@ export default function MintCampaignPostTransaction({
   );
 }
 
-// const COPY = [
-//   'Anton Dubrovin, aka MCHX, was born in Kazakhstan and is currently based in Georgia.',
-//   'Anton is a digital artist known for experimenting with colors and form.',
-//   'Anton uses color as a universal channel of emotional connection and self-exploration.',
-//   'For this project, MCHX created over 60 unique color modes and used a circle as the central object due to its universal symbolism of unity and integrity.',
-//   'This work leverages Javascript, GLSL, and Display P3 wide-gamut to explore emotional connection through color.',
-//   "Anton's diverse inspiration comes from 20th-century abstraction, Abstract Expressionism, Color Field artists, nature, music, and the internet.",
-//   'In his free time, Anton enjoys taking walks, reading, and watching Japanese anime and dramas.',
-//   'Anton has been creating art since 2016, but entered the NFT and Web3 space in 2020.',
-//   'Anton believes in the exchange of energy inherent in blockchain interactions and his work carries imprints of his emotional states or needs at the time of creation.',
-// ];
-
 const FADE_DURATION = 250;
 const TEXT_DURATION = 8000;
 

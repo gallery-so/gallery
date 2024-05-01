@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { useIntervalEffectOnAppForeground } from 'src/utils/useIntervalEffectOnAppForeground';
 
-import { useAnnouncementContext } from '~/contexts/AnnouncementContext';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 import { NotificationBlueDotFragment$key } from '~/generated/NotificationBlueDotFragment.graphql';
 import { NotificationBlueDotQuery } from '~/generated/NotificationBlueDotQuery.graphql';
 import { RefetchableNotificationBlueDotFragmentQuery } from '~/generated/RefetchableNotificationBlueDotFragmentQuery.graphql';
@@ -56,7 +56,7 @@ function BlueDot({ queryRef }: BlueDotProps) {
     queryRef
   );
 
-  const { announcement, hasSeenAnnouncement } = useAnnouncementContext();
+  const { announcement, hasSeenAnnouncement } = useSanityAnnouncementContext();
 
   const handleNotificationRefresh = useCallback(() => {
     refetch({}, { fetchPolicy: 'network-only' });
@@ -65,7 +65,7 @@ function BlueDot({ queryRef }: BlueDotProps) {
   useIntervalEffectOnAppForeground(handleNotificationRefresh);
 
   const hasUnreadNotifications = useMemo(() => {
-    if (announcement && announcement.active && !hasSeenAnnouncement) {
+    if (announcement?.active && !hasSeenAnnouncement) {
       return true;
     }
     if (query.viewer && query.viewer.__typename === 'Viewer') {

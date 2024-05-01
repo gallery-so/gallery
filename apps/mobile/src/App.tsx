@@ -29,9 +29,9 @@ import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components/MaintenanceScreen';
 import SearchProvider from './components/Search/SearchContext';
-import { AnnouncementProvider } from './contexts/AnnouncementContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
+import { SanityAnnouncementProvider } from './contexts/SanityAnnouncementContext';
 import SanityDataProvider from './contexts/SanityDataContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
@@ -165,7 +165,7 @@ export default function App() {
                                       <BottomSheetModalProvider>
                                         <SyncTokensProvider>
                                           <ManageWalletProvider>
-                                            <AnnouncementProvider>
+                                            <SanityAnnouncementProvider>
                                               {/* Register the user's push token if one exists (does not prompt the user) */}
                                               <NotificationRegistrar />
                                               <DevMenuItems />
@@ -173,7 +173,7 @@ export default function App() {
                                               <RootStackNavigator
                                                 navigationContainerRef={navigationRef}
                                               />
-                                            </AnnouncementProvider>
+                                            </SanityAnnouncementProvider>
                                           </ManageWalletProvider>
                                         </SyncTokensProvider>
                                         <PortalHost name="app-context" />

@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
-import { useAnnouncementContext } from '~/contexts/AnnouncementContext';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
@@ -69,7 +69,8 @@ export function NotificationList({ queryRef }: Props) {
     queryRef
   );
 
-  const { announcement, fetchAnnouncement, hasDismissedAnnouncement } = useAnnouncementContext();
+  const { announcement, fetchAnnouncement, hasDismissedAnnouncement } =
+    useSanityAnnouncementContext();
 
   const clearNotifications = useMobileClearNotifications();
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
@@ -83,7 +84,7 @@ export function NotificationList({ queryRef }: Props) {
       }
     }
 
-    if (announcement && announcement.active && !hasDismissedAnnouncement) {
+    if (announcement?.active && !hasDismissedAnnouncement) {
       notifications.push({ id: 'announcement', kind: 'announcement' });
     }
 
@@ -100,12 +101,12 @@ export function NotificationList({ queryRef }: Props) {
 
   const renderItem = useCallback<ListRenderItem<NotificationListItem>>(({ item }) => {
     if (item.kind === 'announcement') {
-      return <AnnouncementNotification></AnnouncementNotification>;
+      return <AnnouncementNotification />;
     }
     return <Notification key={item.id} queryRef={item.query} notificationRef={item.notification} />;
   }, []);
 
-  const handleRefreshAndFetchAnnouncement = useCallback(async () => {
+  const handleRefreshAndFetchAnnouncement = useCallback(() => {
     fetchAnnouncement();
     handleRefresh();
   }, [fetchAnnouncement, handleRefresh]);

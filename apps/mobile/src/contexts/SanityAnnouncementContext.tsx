@@ -23,7 +23,7 @@ type Announcement = {
   ctaText?: string;
 };
 
-type AnnouncementContextType = {
+type SanityAnnouncementContextType = {
   announcement: Announcement | null;
   fetchAnnouncement: () => void;
   hasSeenAnnouncement: boolean;
@@ -32,19 +32,21 @@ type AnnouncementContextType = {
   dismissAnnouncement: () => void;
 };
 
-const AnnouncementContext = createContext<AnnouncementContextType | undefined>(undefined);
+const SanityAnnouncementContext = createContext<SanityAnnouncementContextType | undefined>(
+  undefined
+);
 
-export function useAnnouncementContext() {
-  const value = useContext(AnnouncementContext);
+export function useSanityAnnouncementContext() {
+  const value = useContext(SanityAnnouncementContext);
 
   if (!value) {
-    throw new Error('Tried to use AnnouncementContext without a Provider');
+    throw new Error('Tried to use SanityAnnouncementContext without a Provider');
   }
 
   return value;
 }
 
-export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) => {
+export const SanityAnnouncementProvider = ({ children }: { children: ReactNode[] }) => {
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
   const [hasDismissedAnnouncement, setHasDismissedAnnouncement] = useState(false);
   const [hasSeenAnnouncement, setHasSeenAnnouncement] = useState(false);
@@ -54,7 +56,7 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
   const checkDismissalStatus = useCallback(
     async (internalId: string) => {
       try {
-        const dismissed = await AsyncStorage.getItem(`hasDismissedAnnouncement-${internalId}`);
+        const dismissed = await AsyncStorage.getItem(`${internalId}-hasDismissedAnnouncement`);
         setHasDismissedAnnouncement(dismissed === 'true');
       } catch (error) {
         reportError('An error occurred while checking announcement dismissal status');
@@ -66,7 +68,7 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
   const checkSeenStatus = useCallback(
     async (internalId: string) => {
       try {
-        const seen = await AsyncStorage.getItem(`hasSeenAnnouncement-${internalId}`);
+        const seen = await AsyncStorage.getItem(`${internalId}-hasSeenAnnouncement`);
         setHasSeenAnnouncement(seen === 'true');
       } catch (error) {
         reportError('An error occurred while checking announcement seen status');
@@ -88,8 +90,9 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
               min_mobile_version
             } | order(_createdAt desc)[0]`
       );
+
+      setAnnouncement(result);
       if (result) {
-        setAnnouncement(result);
         checkDismissalStatus(result.internal_id);
         checkSeenStatus(result.internal_id);
       }
@@ -143,5 +146,9 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode[] }) =>
     markAnnouncementAsSeen,
   ]);
 
-  return <AnnouncementContext.Provider value={value}>{children}</AnnouncementContext.Provider>;
+  return (
+    <SanityAnnouncementContext.Provider value={value}>
+      {children}
+    </SanityAnnouncementContext.Provider>
+  );
 };
