@@ -31,6 +31,8 @@ import { CheckMaintenanceOnAppForeground, MaintenanceScreen } from './components
 import SearchProvider from './components/Search/SearchContext';
 import BottomSheetModalProvider from './contexts/BottomSheetModalContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
+import { SanityAnnouncementProvider } from './contexts/SanityAnnouncementContext';
+import SanityDataProvider from './contexts/SanityDataContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
@@ -156,26 +158,30 @@ export default function App() {
                           <magic.Relayer />
                           <SearchProvider>
                             <NavigationContainer ref={navigationRef}>
-                              <ToastProvider>
-                                <TokenStateManagerProvider>
-                                  <PortalProvider>
-                                    <BottomSheetModalProvider>
-                                      <SyncTokensProvider>
-                                        <ManageWalletProvider>
-                                          {/* Register the user's push token if one exists (does not prompt the user) */}
-                                          <NotificationRegistrar />
-                                          <DevMenuItems />
-                                          <DeepLinkRegistrar />
-                                          <RootStackNavigator
-                                            navigationContainerRef={navigationRef}
-                                          />
-                                        </ManageWalletProvider>
-                                      </SyncTokensProvider>
-                                      <PortalHost name="app-context" />
-                                    </BottomSheetModalProvider>
-                                  </PortalProvider>
-                                </TokenStateManagerProvider>
-                              </ToastProvider>
+                              <SanityDataProvider>
+                                <ToastProvider>
+                                  <TokenStateManagerProvider>
+                                    <PortalProvider>
+                                      <BottomSheetModalProvider>
+                                        <SyncTokensProvider>
+                                          <ManageWalletProvider>
+                                            <SanityAnnouncementProvider>
+                                              {/* Register the user's push token if one exists (does not prompt the user) */}
+                                              <NotificationRegistrar />
+                                              <DevMenuItems />
+                                              <DeepLinkRegistrar />
+                                              <RootStackNavigator
+                                                navigationContainerRef={navigationRef}
+                                              />
+                                            </SanityAnnouncementProvider>
+                                          </ManageWalletProvider>
+                                        </SyncTokensProvider>
+                                        <PortalHost name="app-context" />
+                                      </BottomSheetModalProvider>
+                                    </PortalProvider>
+                                  </TokenStateManagerProvider>
+                                </ToastProvider>
+                              </SanityDataProvider>
                             </NavigationContainer>
                           </SearchProvider>
                         </SafeAreaProvider>
