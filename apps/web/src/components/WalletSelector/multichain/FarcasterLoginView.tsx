@@ -109,11 +109,11 @@ export function FarcasterLoginView() {
             signature: req.signature,
             custodyPubKey: {
               pubKey: req.custody,
-              chain: 'Ethereum' as Chain,
+              chain: 'Ethereum',
             },
             primaryPubKey: {
               pubKey: primaryFarcasterAddress,
-              chain: 'Ethereum' as Chain,
+              chain: 'Ethereum',
             },
           },
         };
