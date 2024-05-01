@@ -39,7 +39,6 @@ import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
-import { SelectedItemMultiMode } from '../GalleryScreen/GalleryEditorNftSelector';
 import { NftSelectorLoadingSkeleton } from './NftSelectorLoadingSkeleton';
 
 type NftSelectorPickerGridProps = {
@@ -52,7 +51,7 @@ type NftSelectorPickerGridProps = {
   };
 
   isMultiselectMode?: boolean;
-  selectedTokens?: SelectedItemMultiMode[];
+  selectedTokens?: Set<string>;
 
   onRefresh: () => void;
 
@@ -67,7 +66,7 @@ export function NftSelectorPickerGrid({
   searchCriteria,
   style,
   isMultiselectMode,
-  selectedTokens = [],
+  selectedTokens = new Set(),
   onRefresh,
   onSelect,
   onSelectNftGroup,
@@ -533,7 +532,7 @@ type TokenGroupProps = {
     tokens: NftSelectorPickerGridTokenGridFragment$data[number][]
   ) => void;
   isMultiselectMode?: boolean;
-  selectedTokens?: SelectedItemMultiMode[];
+  selectedTokens?: Set<string>;
 };
 
 function TokenGroup({
@@ -544,7 +543,7 @@ function TokenGroup({
   onSelectNft,
   onSelectGroup,
   isMultiselectMode,
-  selectedTokens = [],
+  selectedTokens = new Set(),
 }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
@@ -564,9 +563,7 @@ function TokenGroup({
   }, [tokens]);
 
   const isSelected = useMemo(() => {
-    return selectedTokens.some((token) => {
-      return token.id === firstToken?.dbid;
-    });
+    return selectedTokens.has(firstToken?.dbid ?? '');
   }, [firstToken?.dbid, selectedTokens]);
 
   if (!firstToken) {

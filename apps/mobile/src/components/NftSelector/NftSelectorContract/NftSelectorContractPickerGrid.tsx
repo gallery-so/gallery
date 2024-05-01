@@ -6,7 +6,6 @@ import { graphql, useFragment } from 'react-relay';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { useSyncTokensActions } from '~/contexts/SyncTokensContext';
 import { NftSelectorContractPickerGridFragment$key } from '~/generated/NftSelectorContractPickerGridFragment.graphql';
-import { SelectedItemMultiMode } from '~/screens/GalleryScreen/GalleryEditorNftSelector';
 import { NftSelectorLoadingSkeleton } from '~/screens/NftSelectorScreen/NftSelectorLoadingSkeleton';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 
@@ -17,7 +16,7 @@ type Props = {
   style?: ViewProps['style'];
 
   isMultiselectMode?: boolean;
-  selectedTokens?: SelectedItemMultiMode[];
+  selectedTokens?: Set<string>;
 };
 
 export function NftSelectorContractPickerGrid({
@@ -55,8 +54,7 @@ export function NftSelectorContractPickerGrid({
   }, [syncCreatedTokensForExistingContract, contractId]);
 
   const isSelected = useMemo(() => {
-    const selectedTokenIds = selectedTokens?.map((token) => token.id) ?? [];
-    return (tokenId: string) => selectedTokenIds.includes(tokenId);
+    return (tokenId: string) => selectedTokens?.has(tokenId) ?? false;
   }, [selectedTokens]);
 
   const renderItem = useCallback<ListRenderItem<typeof tokens>>(

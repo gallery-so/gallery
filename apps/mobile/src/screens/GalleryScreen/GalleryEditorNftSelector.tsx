@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
@@ -11,11 +11,6 @@ import { NftSelectorPickerGridTokenGridFragment$data } from '~/generated/NftSele
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorLoadingSkeleton } from '~/screens/NftSelectorScreen/NftSelectorLoadingSkeleton';
 import { NftSelectorPickerGrid } from '~/screens/NftSelectorScreen/NftSelectorPickerGrid';
-
-export type SelectedItemMultiMode = {
-  id: string;
-  contractAddress?: string;
-};
 
 export function GalleryEditorNftSelector() {
   const {
@@ -37,30 +32,20 @@ export function GalleryEditorNftSelector() {
 
   const [isMultiselectMode, setIsMultiselectMode] = useState(false);
 
-  const [selectedTokens, setSelectedTokens] = useState<SelectedItemMultiMode[]>([]);
+  const [selectedTokens, setSelectedTokens] = useState<Set<string>>(new Set());
 
   const handleSelectNft = useCallback(
     (tokenId: string) => {
       if (isMultiselectMode) {
         setSelectedTokens((prevTokens) => {
-          if (
-            prevTokens.some((token) => {
-              return token.id === tokenId;
-            })
-          ) {
-            return [
-              ...prevTokens.filter((token) => {
-                return token.id !== tokenId;
-              }),
-            ];
+          const newTokens = new Set(prevTokens);
+
+          if (newTokens.has(tokenId)) {
+            newTokens.delete(tokenId);
           } else {
-            return [
-              ...prevTokens,
-              {
-                id: tokenId,
-              },
-            ];
+            newTokens.add(tokenId);
           }
+          return newTokens;
         });
       } else {
         navigation.navigate({
@@ -79,27 +64,17 @@ export function GalleryEditorNftSelector() {
   const handleSelectNftGroup = useCallback(
     (contractAddress: string, tokens: NftSelectorPickerGridTokenGridFragment$data[number][]) => {
       if (isMultiselectMode) {
-        const formattedTokens = tokens.map((token) => {
-          return {
-            id: token.dbid,
-            contractAddress,
-          };
-        });
-
         setSelectedTokens((prevTokens) => {
-          if (
-            prevTokens.some((token) => {
-              return token.contractAddress === contractAddress;
-            })
-          ) {
-            return [
-              ...prevTokens.filter((token) => {
-                return token.contractAddress !== contractAddress;
-              }),
-            ];
-          } else {
-            return [...prevTokens, ...formattedTokens];
-          }
+          const newTokens = new Set(prevTokens);
+
+          tokens.forEach((token) => {
+            if (newTokens.has(token.dbid)) {
+              newTokens.delete(token.dbid);
+            } else {
+              newTokens.add(token.dbid);
+            }
+          });
+          return newTokens;
         });
       } else {
         navigation.navigate({
@@ -115,7 +90,7 @@ export function GalleryEditorNftSelector() {
   );
 
   const handleAddSelectedTokens = useCallback(() => {
-    const formattedTokens = selectedTokens.map((token) => token.id);
+    const formattedTokens = Array.from(selectedTokens);
 
     navigation.navigate({
       name: 'GalleryEditor',
@@ -143,7 +118,7 @@ export function GalleryEditorNftSelector() {
         <NftSelectorHeader
           title="Select item to add"
           rightButton={
-            isMultiselectMode && selectedTokens.length > 0 ? (
+            isMultiselectMode && selectedTokens.size > 0 ? (
               <Button
                 onPress={handleAddSelectedTokens}
                 eventElementId={null}

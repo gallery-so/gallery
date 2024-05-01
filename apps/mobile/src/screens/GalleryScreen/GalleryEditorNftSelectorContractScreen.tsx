@@ -10,8 +10,6 @@ import { NftSelectorContractWrapper } from '~/components/NftSelector/NftSelector
 import { GalleryEditorNftSelectorContractScreenQuery } from '~/generated/GalleryEditorNftSelectorContractScreenQuery.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 
-import { SelectedItemMultiMode } from './GalleryEditorNftSelector';
-
 export function GalleryEditorNftSelectorContractScreen() {
   const query = useLazyLoadQuery<GalleryEditorNftSelectorContractScreenQuery>(
     graphql`
@@ -46,7 +44,7 @@ export function GalleryEditorNftSelectorContractScreen() {
     useRoute<RouteProp<RootStackNavigatorParamList, 'NftSelectorContractGalleryEditor'>>();
 
   const [isMultiselectMode, setIsMultiselectMode] = useState(false);
-  const [selectedTokens, setSelectedTokens] = useState<SelectedItemMultiMode[]>([]);
+  const [selectedTokens, setSelectedTokens] = useState<Set<string>>(new Set());
 
   const contractAddress = route.params.contractAddress;
   const isCreator = route.params.ownerFilter === 'Created';
@@ -70,24 +68,14 @@ export function GalleryEditorNftSelectorContractScreen() {
     (tokenId: string) => {
       if (isMultiselectMode) {
         setSelectedTokens((prevTokens) => {
-          if (
-            prevTokens.some((token) => {
-              return token.id === tokenId;
-            })
-          ) {
-            return [
-              ...prevTokens.filter((token) => {
-                return token.id !== tokenId;
-              }),
-            ];
+          const newTokens = new Set(prevTokens);
+
+          if (newTokens.has(tokenId)) {
+            newTokens.delete(tokenId);
           } else {
-            return [
-              ...prevTokens,
-              {
-                id: tokenId,
-              },
-            ];
+            newTokens.add(tokenId);
           }
+          return newTokens;
         });
       } else {
         navigation.navigate({
@@ -104,7 +92,7 @@ export function GalleryEditorNftSelectorContractScreen() {
   );
 
   const handleAddSelectedTokens = useCallback(() => {
-    const formattedTokens = selectedTokens.map((token) => token.id);
+    const formattedTokens = Array.from(selectedTokens);
 
     navigation.navigate({
       name: 'GalleryEditor',
@@ -118,16 +106,14 @@ export function GalleryEditorNftSelectorContractScreen() {
 
   const handleSelectedAllPress = useCallback(() => {
     setSelectedTokens((prevTokens) => {
-      if (prevTokens.length > 0) {
+      const newTokens = new Set(prevTokens);
+
+      if (newTokens.size > 0) {
         setIsMultiselectMode(false);
-        return [];
+        return new Set();
       } else {
         setIsMultiselectMode(true);
-        return nonNullableTokens.map((token) => {
-          return {
-            id: token.dbid,
-          };
-        });
+        return new Set(nonNullableTokens.map((token) => token.dbid));
       }
     });
   }, [nonNullableTokens]);
@@ -139,7 +125,7 @@ export function GalleryEditorNftSelectorContractScreen() {
         isCreator={isCreator}
         contractId={contractId}
         rightButton={
-          selectedTokens.length > 0 ? (
+          selectedTokens.size > 0 ? (
             <Button
               onPress={handleAddSelectedTokens}
               eventElementId={null}
@@ -159,7 +145,7 @@ export function GalleryEditorNftSelectorContractScreen() {
         isMultiselectMode={isMultiselectMode}
         setIsMultiselectMode={setIsMultiselectMode}
         onSelectedAllPress={handleSelectedAllPress}
-        hasSelectedItems={selectedTokens.length > 0}
+        hasSelectedItems={selectedTokens.size > 0}
         ownershipTypeFilter={route.params.ownerFilter || 'Collected'}
       />
       <NftSelectorContractPickerGrid
