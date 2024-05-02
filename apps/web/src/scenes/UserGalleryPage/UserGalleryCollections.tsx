@@ -159,8 +159,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     );
   }
 
+  // TODO: Change length to properly reflect virtualizedList onLoad. Some profile's onLoad function not triggering
+  const filteredTokenIds = tokenIds ? tokenIds.slice(0, 1) : [];
+
   return (
-    <MultiShimmerProvider tokenIdsToLoad={tokenIds ? tokenIds?.slice(0, 12) : []}>
+    <MultiShimmerProvider tokenIdsToLoad={filteredTokenIds}>
       <StyledUserGalleryCollections>
         <WindowScroller>
           {({ height, registerChild, scrollTop, onChildScroll }) => (
