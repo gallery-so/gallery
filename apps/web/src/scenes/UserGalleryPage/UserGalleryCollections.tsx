@@ -84,6 +84,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     }, []);
   }, [collections]);
 
+  // TODO: Change length to properly reflect virtualizedList onLoad. Some profile's onLoad function not triggering
+  const filteredTokenIds = useMemo(() => {
+    return tokenIds ? tokenIds.slice(0, 1) : [];
+  }, [tokenIds]);
+
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 
   const nonNullCollections = removeNullValues(collections);
@@ -158,9 +163,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
       <EmptyGallery message="Curation in progress." />
     );
   }
-
-  // TODO: Change length to properly reflect virtualizedList onLoad. Some profile's onLoad function not triggering
-  const filteredTokenIds = tokenIds ? tokenIds.slice(0, 1) : [];
 
   return (
     <MultiShimmerProvider tokenIdsToLoad={filteredTokenIds}>
