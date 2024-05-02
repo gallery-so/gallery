@@ -6,7 +6,6 @@ import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from 'shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from 'shared/relay/removeNullValues';
 import { usePromisifiedMutation } from 'shared/relay/usePromisifiedMutation';
-import { generate12DigitId } from 'shared/utils/generate12DigitId';
 
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 import {
@@ -87,6 +86,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
                 dbid
                 # eslint-disable-next-line relay/must-colocate-fragment-spreads
                 ...GalleryEditorTokenPreviewFragment
+                definition {
+                  community {
+                    dbid
+                    name
+                    description
+                  }
+                }
               }
             }
           }
@@ -337,19 +343,24 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateRow]
   );
 
+  type StagedToken = {
+    communityName: string;
+    communityDescription: string;
+    communityId: string;
+  } & StagedItem;
+
   const toggleTokensStaged = useCallback(
     (tokenIds: string[]) => {
-      let rowId = activeRowId;
+      const rowId = activeRowId;
 
-      // select the first row if there is no active row
+      let sectionName = '';
+      let sectionCollectorsNote = '';
+
       if (!rowId) {
-        rowId = generate12DigitId();
-        updateRow(rowId, (previousRow) => {
-          return { ...previousRow, columns: 3 };
-        });
+        return;
       }
 
-      const tokensToAdd: StagedItem[] = [];
+      const tokensToAdd: StagedToken[] = [];
       tokenIds.forEach((tokenId) => {
         const tokenRef = nonNullAllTokens.find((token) => token.dbid === tokenId);
 
@@ -361,13 +372,25 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
           id: tokenId,
           kind: 'token',
           tokenRef,
+          communityName: tokenRef.definition.community?.name ?? '',
+          communityDescription: tokenRef.definition.community?.description ?? '',
+          communityId: tokenRef.definition.community?.dbid ?? '',
         });
       });
+
+      // Check if all the tokensToAdd have the same community
+      const communityIds = new Set(tokensToAdd.map((token) => token.communityId));
+
+      // if there are only tokens from the same community, then the section name should be the community name
+      if (communityIds.size === 1 && tokensToAdd[0]) {
+        sectionName = tokensToAdd[0].communityName;
+        sectionCollectorsNote = tokensToAdd[0].communityDescription;
+      }
 
       updateRow(rowId, (previousRow) => {
         if (previousRow.items.length === 0) {
           //  if the total number of tokens is less than 6, then the number of columns should be equal to the number of tokens
-          //  if the total number of tokens is more than 6, then the number of columns should be equal to 6
+          //  if more than 6, then the number of columns should be equal to 6
           const columns = tokensToAdd.length < 6 ? tokensToAdd.length : 6;
           return { ...previousRow, items: tokensToAdd, columns };
         }
@@ -375,8 +398,17 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         const newItems = [...previousRow.items, ...tokensToAdd];
         return { ...previousRow, items: newItems };
       });
+
+      if (!sectionIdBeingEdited) {
+        return;
+      }
+
+      // Update the section with the new name and collectors note
+      updateSection(sectionIdBeingEdited, (previousSection) => {
+        return { ...previousSection, name: sectionName, collectorsNote: sectionCollectorsNote };
+      });
     },
-    [activeRowId, nonNullAllTokens, updateRow]
+    [activeRowId, nonNullAllTokens, sectionIdBeingEdited, updateRow, updateSection]
   );
 
   const reportError = useReportError();
