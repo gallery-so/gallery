@@ -8,7 +8,7 @@ import { contexts } from '~/shared/analytics/constants';
 import { Button } from '../core/Button/Button';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import useDeleteGallery from './useDeleteGallery';
+import useDeleteGallery from '~/shared/hooks/useDeleteGallery';
 
 type Props = {
   galleryId: string;

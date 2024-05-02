@@ -11,17 +11,15 @@ import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
-import { useToastActions } from '~/contexts/ToastContext';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { GalleryPreviewCardQueryFragment$key } from '~/generated/GalleryPreviewCardQueryFragment.graphql';
-import { MainTabStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import unescape from '~/shared/utils/unescape';
 
-import { BottomSheetRow } from '../BottomSheetRow';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { useSafeAreaPadding } from '../SafeAreaViewWithPadding';
+import { GalleryPreviewCardBottomSheet } from './GalleryPreviewCardBottomSheet';
 
 type GalleryPreviewCardProps = {
   isFeatured: boolean;
@@ -41,6 +39,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
         tokenPreviews {
           medium
         }
+        ...GalleryPreviewCardBottomSheetFragment
       }
     `,
     galleryRef
@@ -69,10 +68,10 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
   const handleOptionPress = useCallback(() => {
     showBottomSheetModal({
       content: (
-        <GalleryPreviewCardBottomSheet galleryId={gallery.dbid} onClose={hideBottomSheetModal} />
+        <GalleryPreviewCardBottomSheet galleryRef={gallery} onClose={hideBottomSheetModal} />
       ),
     });
-  }, [gallery.dbid, hideBottomSheetModal, showBottomSheetModal]);
+  }, [gallery, hideBottomSheetModal, showBottomSheetModal]);
 
   return (
     <GalleryTouchableOpacity
@@ -118,6 +117,8 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
               eventElementId={null}
               eventName={null}
               eventContext={null}
+              className="rounded-full p-1"
+              activeOpacity={0.5}
             >
               <OptionIcon />
             </GalleryTouchableOpacity>
@@ -156,64 +157,6 @@ function TokenCell({
         ) : (
           <View />
         )}
-      </View>
-    </View>
-  );
-}
-
-type GalleryPreviewCardBottomSheetProps = {
-  galleryId: string;
-  onClose: () => void;
-};
-
-function GalleryPreviewCardBottomSheet({ galleryId, onClose }: GalleryPreviewCardBottomSheetProps) {
-  const { bottom } = useSafeAreaPadding();
-  const { pushToast } = useToastActions();
-  const navigation = useNavigation<RootStackNavigatorProp>();
-
-  const handleInProgress = useCallback(() => {
-    pushToast({
-      message: 'Feature in progress',
-    });
-  }, [pushToast]);
-
-  const handleEditGallery = useCallback(() => {
-    navigation.navigate('GalleryEditor', {
-      galleryId,
-      stagedTokens: [],
-    });
-    onClose();
-  }, [galleryId, navigation, onClose]);
-
-  return (
-    <View style={{ paddingBottom: bottom }} className=" flex flex-col space-y-6">
-      <View className="flex flex-col space-y-2">
-        <BottomSheetRow
-          text="Edit Gallery"
-          onPress={handleEditGallery}
-          eventContext={contexts.UserGallery}
-        />
-        <BottomSheetRow
-          text="Feature on Profile"
-          onPress={handleInProgress}
-          eventContext={contexts.UserGallery}
-        />
-        <BottomSheetRow
-          text="Hide Gallery"
-          onPress={handleInProgress}
-          eventContext={contexts.UserGallery}
-        />
-        <BottomSheetRow
-          text="Share Gallery"
-          onPress={handleInProgress}
-          eventContext={contexts.UserGallery}
-        />
-        <BottomSheetRow
-          text="Delete Gallery"
-          onPress={handleInProgress}
-          isConfirmationRow
-          eventContext={contexts.UserGallery}
-        />
       </View>
     </View>
   );
