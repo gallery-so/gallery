@@ -94,6 +94,6 @@ type WhiteSpaceProps = {
   style?: ViewProps['style'];
 };
 
-function WhiteSpace({ size, style }: WhiteSpaceProps) {
+export function WhiteSpace({ size, style }: WhiteSpaceProps) {
   return <View style={[{ width: size, height: size }, style]} />;
 }

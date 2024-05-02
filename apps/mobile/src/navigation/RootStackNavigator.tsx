@@ -19,6 +19,7 @@ import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
 import { GalleryEditorNftSelector } from '~/screens/GalleryScreen/GalleryEditorNftSelector';
 import { GalleryEditorNftSelectorContractScreen } from '~/screens/GalleryScreen/GalleryEditorNftSelectorContractScreen';
 import { GalleryEditorScreen } from '~/screens/GalleryScreen/GalleryEditorScreen';
+import { PublishGalleryScreen } from '~/screens/GalleryScreen/PublishGallery/PublishGalleryScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
 import { PostComposerScreen } from '~/screens/PostScreen/PostComposerScreen';
@@ -106,6 +107,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
 
         <Stack.Screen name="GalleryEditor" component={GalleryEditorScreen} />
         <Stack.Screen name="NftSelectorGalleryEditor" component={GalleryEditorNftSelector} />
+        <Stack.Screen name="PublishGallery" component={PublishGalleryScreen} />
         <Stack.Screen
           name="NftSelectorContractGalleryEditor"
           component={GalleryEditorNftSelectorContractScreen}

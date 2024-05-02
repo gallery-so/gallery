@@ -35,6 +35,9 @@ export type RootStackNavigatorParamList = {
     contractAddress: string;
     ownerFilter?: 'Collected' | 'Created';
   };
+  PublishGallery: {
+    galleryId: string;
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community' | 'Onboarding';
