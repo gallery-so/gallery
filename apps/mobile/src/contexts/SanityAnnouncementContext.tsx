@@ -110,14 +110,14 @@ export const SanityAnnouncementProvider = ({ children }: { children: ReactNode[]
   // Function to dismiss an announcement
   const dismissAnnouncement = useCallback(async () => {
     if (announcement && announcement.internal_id) {
-      await AsyncStorage.setItem(`hasDismissedAnnouncement-${announcement.internal_id}`, 'true');
+      await AsyncStorage.setItem(`${announcement.internal_id}-hasDismissedAnnouncement`, 'true');
       setHasDismissedAnnouncement(true);
     }
   }, [announcement]);
 
   const markAnnouncementAsSeen = useCallback(async () => {
     if (announcement && announcement.internal_id) {
-      await AsyncStorage.setItem(`hasSeenAnnouncement-${announcement.internal_id}`, 'true');
+      await AsyncStorage.setItem(`${announcement.internal_id}-hasSeenAnnouncement`, 'true');
       setHasSeenAnnouncement(true);
     }
   }, [announcement]);
