@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql, SelectorStoreUpdater } from 'relay-runtime';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Button } from '~/components/Button';
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
@@ -46,6 +47,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
           }
         }
         ...GalleryPreviewCardQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -55,6 +57,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
   const user = query.userByUsername;
   const createGallery = useCreateGallery();
   const navigation = useNavigation<RootStackNavigatorProp>();
+  const isGalleryEditorEnabled = isFeatureEnabled(FeatureFlag.GALLERY_EDITOR, query);
 
   const handleCreateGallery = useCallback(async () => {
     const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
@@ -111,15 +114,17 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
   return (
     <View style={contentContainerStyle}>
       <Tabs.FlashList data={items} estimatedItemSize={300} renderItem={renderItem} />
-      <View className="px-4 py-5">
-        <Button
-          onPress={handleCreateGallery}
-          eventElementId={null}
-          eventName={null}
-          eventContext={null}
-          text="Add New Gallery"
-        />
-      </View>
+      {isGalleryEditorEnabled && (
+        <View className="px-4 py-5">
+          <Button
+            onPress={handleCreateGallery}
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            text="Add New Gallery"
+          />
+        </View>
+      )}
     </View>
   );
 }
