@@ -103,7 +103,7 @@ export function PublishGalleryPreview({ galleryRef }: Props) {
         <View className="flex-row flex-wrap gap-2 max-h-64 overflow-hidden">
           {rows.map((row) => {
             // 64 is the padding on the left and right of the container
-            const widthPerToken = (CONTAINER_WIDTH - 64) / row.columns;
+            const widthPerToken = (CONTAINER_WIDTH - 64 - 16) / row.columns;
 
             return (
               <View key={row.id} className="flex-row flex-wrap gap-2">
