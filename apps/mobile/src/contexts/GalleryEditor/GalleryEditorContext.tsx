@@ -392,8 +392,11 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         sectionCollectorsNote = tokensToAdd[0].communityDescription;
       }
 
+      let isNewSection = false;
+
       updateRow(rowId, (previousRow) => {
         if (previousRow.items.length === 0) {
+          isNewSection = true;
           //  if the total number of tokens is less than 6, then the number of columns should be equal to the number of tokens
           //  if more than 6, then the number of columns should be equal to 6
           const columns = tokensToAdd.length < 6 ? tokensToAdd.length : 6;
@@ -408,10 +411,12 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         return;
       }
 
-      // Update the section with the new name and collectors note
-      updateSection(sectionIdBeingEdited, (previousSection) => {
-        return { ...previousSection, name: sectionName, collectorsNote: sectionCollectorsNote };
-      });
+      if (isNewSection) {
+        // Update the section with the new name and collectors note
+        updateSection(sectionIdBeingEdited, (previousSection) => {
+          return { ...previousSection, name: sectionName, collectorsNote: sectionCollectorsNote };
+        });
+      }
     },
     [activeRowId, nonNullAllTokens, sectionIdBeingEdited, updateRow, updateSection]
   );
