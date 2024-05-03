@@ -29,7 +29,7 @@ export function GalleryPreviewCardBottomSheet({ galleryRef, onClose }: Props) {
     galleryRef
   );
 
-  const galleryId = gallery.dbid;
+  const galleryId = gallery?.dbid;
 
   const { bottom } = useSafeAreaPadding();
   const { pushToast } = useToastActions();

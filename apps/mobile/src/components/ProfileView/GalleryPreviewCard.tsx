@@ -62,7 +62,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    navigation.push('Gallery', { galleryId: gallery.dbid });
+    navigation.push('Gallery', { galleryId: gallery?.dbid });
   }, [gallery.dbid, navigation]);
 
   const handleOptionPress = useCallback(() => {
