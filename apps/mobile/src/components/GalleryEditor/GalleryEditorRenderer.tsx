@@ -30,6 +30,13 @@ export function GalleryEditorRenderer({ queryRef }: Props) {
     graphql`
       fragment GalleryEditorRendererQueryFragment on Query {
         ...GalleryEditorSectionFragment
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
       }
     `,
     queryRef
@@ -40,6 +47,8 @@ export function GalleryEditorRenderer({ queryRef }: Props) {
 
   const navigation = useNavigation<RootStackNavigatorProp>();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
+
+  const username = query.viewer?.user?.username;
 
   useEffect(() => {
     if (route.params.isNewGallery) {
@@ -57,7 +66,7 @@ export function GalleryEditorRenderer({ queryRef }: Props) {
                   params: {
                     screen: 'Profile',
                     params: {
-                      username: 'fraser',
+                      username,
                       navigateToTab: 'Galleries',
                     },
                   },
@@ -96,6 +105,7 @@ export function GalleryEditorRenderer({ queryRef }: Props) {
     toggleTokensStaged,
     route.params.galleryId,
     route.params.isNewGallery,
+    username,
   ]);
 
   const items = useMemo((): ListItemType[] => {
