@@ -10,6 +10,7 @@ import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 import { MaximizeIcon } from 'src/icons/MaximizeIcon';
+import { CloseIcon } from 'src/icons/CloseIcon';
 import Lightbox from 'react-native-lightbox-v2';
 
 import { BackButton } from '~/components/BackButton';
@@ -21,6 +22,7 @@ import { MintLinkButton } from '~/components/MintLinkButton';
 import { Pill } from '~/components/Pill';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
@@ -124,6 +126,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     }
   }, [navigateToCommunity, tokenDefinition.community]);
 
+  const { top } = useSafeAreaPadding();
+
   const handleCreatePost = useCallback(() => {
     if (token.dbid) {
       navigation.navigate('PostComposer', {
@@ -166,6 +170,22 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     queryRef: query,
   });
 
+  const customHeader = useCallback(
+    (close) => {
+      return (
+        <View
+          className="flex-row justify-end items-center px-3 bg-black-800"
+          style={{
+            paddingTop: top,
+          }}
+        >
+          <IconContainer color="faint" icon={<CloseIcon />} onPress={close} />
+        </View>
+      );
+    },
+    [top]
+  );
+
   const { contractName } = extractRelevantMetadataFromToken(token);
 
   const blueToDisplay = useMemo(
@@ -201,6 +221,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               isOpen={isLightboxOpen}
               onClose={() => setIsLightboxOpen(false)}
               onOpen={() => setIsLightboxOpen(true)}
+              backgroundColor={colors.black['800']}
+              swipeToDismiss={true}
+              renderHeader={customHeader}
             >
               <TokenFailureBoundary tokenRef={token} variant="large">
                 <NftDetailAssetCacheSwapper

@@ -10,7 +10,7 @@ type IconContainerProps = {
   onPress: () => void;
   size?: 'xs' | 'sm' | 'md';
   border?: boolean;
-  color?: 'default' | 'white' | 'black';
+  color?: 'default' | 'white' | 'black' | 'faint';
 } & GalleryTouchableOpacityProps;
 
 export function IconContainer({
@@ -28,10 +28,11 @@ export function IconContainer({
     md: 'h-8 w-8',
   };
 
-  const colorVariants: { [color in 'default' | 'white' | 'black']: string } = {
+  const colorVariants: { [color in 'default' | 'white' | 'black' | 'faint']: string } = {
     default: 'bg-faint dark:bg-black-500',
     white: 'bg-white dark:bg-black-900',
     black: 'bg-black-900 dark:bg-white',
+    faint: 'bg-black-700',
   };
 
   return (
