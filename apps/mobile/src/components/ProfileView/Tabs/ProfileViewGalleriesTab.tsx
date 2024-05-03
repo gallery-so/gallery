@@ -17,16 +17,12 @@ import { RootStackNavigatorProp } from '~/navigation/types';
 import useCreateGallery from '~/shared/hooks/useCreateGallery';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-type ListItem =
-  | {
-      kind: 'gallery';
-      isFeatured: boolean;
-      gallery: GalleryPreviewCardFragment$key;
-      galleryId: string;
-    }
-  | {
-      kind: 'add-gallery';
-    };
+type ListItem = {
+  kind: 'gallery';
+  isFeatured: boolean;
+  gallery: GalleryPreviewCardFragment$key;
+  galleryId: string;
+};
 
 type ProfileViewGalleriesTabProps = {
   queryRef: ProfileViewGalleriesTabFragment$key;
@@ -92,27 +88,11 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
       });
     });
 
-    items.push({ kind: 'add-gallery' });
-
     return items;
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
     ({ item }) => {
-      if (item.kind === 'add-gallery') {
-        return (
-          <View className="px-4 py-5">
-            <Button
-              onPress={handleCreateGallery}
-              eventElementId={null}
-              eventName={null}
-              eventContext={null}
-              text="Add New Gallery"
-            />
-          </View>
-        );
-      }
-
       return (
         <View className="px-4 pb-8">
           <GalleryPreviewCard
@@ -123,7 +103,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
         </View>
       );
     },
-    [handleCreateGallery, query]
+    [query]
   );
 
   const contentContainerStyle = useListContentStyle();
@@ -131,6 +111,15 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
   return (
     <View style={contentContainerStyle}>
       <Tabs.FlashList data={items} estimatedItemSize={300} renderItem={renderItem} />
+      <View className="px-4 py-5">
+        <Button
+          onPress={handleCreateGallery}
+          eventElementId={null}
+          eventName={null}
+          eventContext={null}
+          text="Add New Gallery"
+        />
+      </View>
     </View>
   );
 }
