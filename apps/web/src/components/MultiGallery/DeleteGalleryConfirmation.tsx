@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { contexts } from '~/shared/analytics/constants';
+import useDeleteGallery from '~/shared/hooks/useDeleteGallery';
 
 import { Button } from '../core/Button/Button';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import useDeleteGallery from '~/shared/hooks/useDeleteGallery';
 
 type Props = {
   galleryId: string;
