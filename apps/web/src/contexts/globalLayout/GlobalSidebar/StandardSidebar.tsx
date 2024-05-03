@@ -12,6 +12,7 @@ import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementProvider';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
 import useUniversalAuthModal from '~/hooks/useUniversalAuthModal';
@@ -77,13 +78,17 @@ export function StandardSidebar({ queryRef }: Props) {
     [activeDrawerState]
   );
 
+  const { announcement, hasSeenAnnouncement } = useSanityAnnouncementContext();
+
   const notificationCount = useMemo(() => {
+    const announcementNotificationCount = announcement && !hasSeenAnnouncement ? 1 : 0;
+
     if (query.viewer && query.viewer.__typename === 'Viewer') {
-      return query.viewer.notifications?.unseenCount ?? 0;
+      return (query.viewer.notifications?.unseenCount ?? 0) + announcementNotificationCount;
     }
 
-    return 0;
-  }, [query.viewer]);
+    return 0 + announcementNotificationCount;
+  }, [announcement, hasSeenAnnouncement, query.viewer]);
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 

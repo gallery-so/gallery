@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { SanityAnnouncementProvider } from '~/contexts/SanityAnnouncementProvider';
 import colors from '~/shared/theme/colors';
 
 import AnimatedSidebarDrawer from './AnimatedSidebarDrawer';
@@ -26,12 +27,14 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
 
   return (
     <StyledGlobalSidebar isDrawerOpen={isDrawerOpen}>
-      <StyledGlobalSidebarContent>{content}</StyledGlobalSidebarContent>
-      <AnimatePresence>
-        {drawerState.activeDrawer && (
-          <AnimatedSidebarDrawer content={drawerState.activeDrawer.content} />
-        )}
-      </AnimatePresence>
+      <SanityAnnouncementProvider>
+        <StyledGlobalSidebarContent>{content}</StyledGlobalSidebarContent>
+        <AnimatePresence>
+          {drawerState.activeDrawer && (
+            <AnimatedSidebarDrawer content={drawerState.activeDrawer.content} />
+          )}
+        </AnimatePresence>
+      </SanityAnnouncementProvider>
     </StyledGlobalSidebar>
   );
 }
