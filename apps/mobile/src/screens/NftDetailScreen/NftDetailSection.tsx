@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
@@ -9,6 +9,8 @@ import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { BookmarkIcon } from 'src/icons/BookmarkIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
+import { MaximizeIcon } from 'src/icons/MaximizeIcon';
+import Lightbox from 'react-native-lightbox-v2';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
@@ -18,6 +20,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { MintLinkButton } from '~/components/MintLinkButton';
 import { Pill } from '~/components/Pill';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
@@ -96,6 +99,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   );
 
   const { colorScheme } = useColorScheme();
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const token = query.tokenById;
   const ownerWalletAddress =
@@ -169,6 +173,10 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     [colorScheme]
   );
 
+  const handleMaximizeToggle = () => {
+    setIsLightboxOpen((currIsLightboxOpen) => !currIsLightboxOpen);
+  };
+
   return (
     <ScrollView>
       <View className="flex flex-col space-y-3 px-4 pb-4">
@@ -188,14 +196,20 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             />
           </View>
 
-          <View className="w-full mb-3">
-            <TokenFailureBoundary tokenRef={token} variant="large">
-              <NftDetailAssetCacheSwapper
-                cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
-              >
-                <NftDetailAsset tokenRef={token} />
-              </NftDetailAssetCacheSwapper>
-            </TokenFailureBoundary>
+          <View className="flex justify-between w-full mb-3">
+            <Lightbox
+              isOpen={isLightboxOpen}
+              onClose={() => setIsLightboxOpen(false)}
+              onOpen={() => setIsLightboxOpen(true)}
+            >
+              <TokenFailureBoundary tokenRef={token} variant="large">
+                <NftDetailAssetCacheSwapper
+                  cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+                >
+                  <NftDetailAsset tokenRef={token} />
+                </NftDetailAssetCacheSwapper>
+              </TokenFailureBoundary>
+            </Lightbox>
           </View>
         </View>
 
@@ -211,6 +225,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 {tokenDefinition.name}
               </Typography>
             </View>
+            <GalleryTouchableOpacity
+              onPress={handleMaximizeToggle}
+              eventElementId="NFT Detail Maximize Icon"
+              eventName="NFT Detail Maximize Icon Clicked"
+              eventContext={contexts['NFT Detail']}
+            >
+              <MaximizeIcon />
+            </GalleryTouchableOpacity>
           </View>
           <GalleryTouchableOpacity
             eventElementId="NFT Detail Contract Name Pill"
