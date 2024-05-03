@@ -22,7 +22,7 @@ export function PublishGalleryBottomSheet({ onPublish }: Props) {
   const handlePostAndPublish = useCallback(() => {
     // handle post and publish
     pushToast({
-      message: 'Post in progress',
+      message: 'Feature in progress',
     });
   }, [pushToast]);
 
