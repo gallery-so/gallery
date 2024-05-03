@@ -56,8 +56,8 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
 
   const isGalleryEditorEnabled = isFeatureEnabled(FeatureFlag.GALLERY_EDITOR, query);
 
-  const [firstToken, secondToken, thirdToken, fourthToken] = gallery.tokenPreviews ?? [];
-  const descriptionFirstLine = gallery.description?.split('\n')[0];
+  const [firstToken, secondToken, thirdToken, fourthToken] = gallery?.tokenPreviews ?? [];
+  const descriptionFirstLine = gallery?.description?.split('\n')[0];
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();

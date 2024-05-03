@@ -108,8 +108,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         __typename
         ... on UpdateGalleryPayload {
           gallery {
+            id
+            dbid
             name
             description
+            tokenPreviews {
+              medium
+            }
             ...getInitialCollectionsFromServerFragment
           }
         }
