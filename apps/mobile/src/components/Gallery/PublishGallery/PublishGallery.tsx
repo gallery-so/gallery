@@ -34,9 +34,9 @@ export function PublishGallery({ galleryRef }: Props) {
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
   const navigation = useNavigation<RootStackNavigatorProp>();
 
-  const handleSaveGallery = useCallback(() => {
-    saveGallery();
+  const handleSaveGallery = useCallback(async () => {
     hideBottomSheetModal();
+    await saveGallery();
     navigation.navigate('MainTabs', {
       screen: 'HomeTab',
       params: { screen: 'Home', params: { screen: 'For You', params: {} } },
