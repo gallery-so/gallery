@@ -26,14 +26,17 @@ export type RootStackNavigatorParamList = {
   GalleryEditor: {
     galleryId: string;
     stagedTokens: string[];
+    isNewGallery?: boolean;
   };
   NftSelectorGalleryEditor: {
     galleryId: string;
+    isNewGallery?: boolean;
   };
   NftSelectorContractGalleryEditor: {
     galleryId: string;
     contractAddress: string;
     ownerFilter?: 'Collected' | 'Created';
+    isNewGallery?: boolean;
   };
   PublishGallery: {
     galleryId: string;

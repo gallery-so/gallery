@@ -53,12 +53,13 @@ export function GalleryEditorNftSelector() {
           params: {
             galleryId: route.params.galleryId,
             stagedTokens: [tokenId],
+            isNewGallery: route.params.isNewGallery,
           },
           merge: true,
         });
       }
     },
-    [isMultiselectMode, navigation, route.params.galleryId]
+    [isMultiselectMode, navigation, route.params.galleryId, route.params.isNewGallery]
   );
 
   const handleSelectNftGroup = useCallback(
@@ -82,11 +83,12 @@ export function GalleryEditorNftSelector() {
           params: {
             galleryId: route.params.galleryId,
             contractAddress,
+            isNewGallery: route.params.isNewGallery,
           },
         });
       }
     },
-    [isMultiselectMode, navigation, route.params.galleryId]
+    [isMultiselectMode, navigation, route.params.galleryId, route.params.isNewGallery]
   );
 
   const handleAddSelectedTokens = useCallback(() => {

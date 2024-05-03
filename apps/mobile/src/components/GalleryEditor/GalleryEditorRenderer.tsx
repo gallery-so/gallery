@@ -42,16 +42,61 @@ export function GalleryEditorRenderer({ queryRef }: Props) {
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'GalleryEditor'>>();
 
   useEffect(() => {
-    if (route.params.stagedTokens) {
+    if (route.params.isNewGallery) {
+      // reset the navigation stack to remove the nft selector screen
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'MainTabs',
+            state: {
+              index: 0,
+              routes: [
+                {
+                  name: 'AccountTab',
+                  params: {
+                    screen: 'Profile',
+                    params: {
+                      username: 'fraser',
+                      navigateToTab: 'Galleries',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            name: 'GalleryEditor',
+            params: {
+              galleryId: route.params.galleryId,
+              stagedTokens: route.params.stagedTokens,
+              isNewGallery: false,
+            },
+          },
+        ],
+      });
+
+      return;
+    }
+
+    if (route.params.stagedTokens.length > 0) {
       toggleTokensStaged(route.params.stagedTokens);
 
       // remove the staged tokens from the route params
       // to prevent them from being used again
       navigation.setParams({
-        stagedTokens: null,
+        stagedTokens: [],
+        isNewGallery: false,
       });
     }
-  }, [navigation, route.params.stagedTokens, toggleTokensStaged]);
+  }, [
+    navigation,
+    route.params,
+    route.params.stagedTokens,
+    toggleTokensStaged,
+    route.params.galleryId,
+    route.params.isNewGallery,
+  ]);
 
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];

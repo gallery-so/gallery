@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
-import { graphql,SelectorStoreUpdater } from 'relay-runtime';
+import { graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { Button } from '~/components/Button';
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
@@ -67,7 +67,7 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
       await createGallery(
         latestPosition,
         (galleryId) => {
-          navigation.navigate('NftSelectorGalleryEditor', { galleryId });
+          navigation.navigate('NftSelectorGalleryEditor', { galleryId, isNewGallery: true });
         },
         updater
       );
