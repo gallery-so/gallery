@@ -86,7 +86,8 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   // TODO: Change length to properly reflect virtualizedList onLoad. Some profile's onLoad function not triggering
   const filteredTokenIds = useMemo(() => {
-    return tokenIds ? tokenIds.slice(0, 1) : [];
+    // Temp fix for stuck loader
+    return tokenIds ? [] : [];
   }, [tokenIds]);
 
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
