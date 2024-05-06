@@ -67,7 +67,6 @@ export function NotificationList({ queryRef, toggleSubView }: NotificationListPr
   });
 
   const { announcement, hasDismissedAnnouncement } = useSanityAnnouncementContext();
-  console.log({ announcement });
 
   const handleDismiss = useCallback(async () => {
     await setEmailExperienced();
