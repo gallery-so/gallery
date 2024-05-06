@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useCallback, useMemo, useState, useRef } from 'react';
+import { ScrollView, Dimensions, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
@@ -45,6 +45,8 @@ type Props = {
   onShare: () => void;
   queryRef: NftDetailSectionQueryFragment$key;
 };
+
+const { width } = Dimensions.get('window');
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -197,6 +199,36 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     setIsLightboxOpen((currIsLightboxOpen) => !currIsLightboxOpen);
   };
 
+  const thumbnailRef = useRef<View | null>(null);
+  const [thumbnailPosition, setThumbnailPosition] = useState({
+    width: width * 0.9,
+    height: width * 0.9,
+    x: 0,
+    y: 0,
+  });
+
+  const updateThumbnailPosition = () => {
+    if (thumbnailRef.current) {
+      thumbnailRef.current.measure((x, y, w, h, pageX, pageY) => {
+        setThumbnailPosition({
+          width: w,
+          height: h,
+          x: pageX,
+          y: pageY,
+        });
+      });
+    }
+  };
+
+  const handleOpenLightbox = () => {
+    updateThumbnailPosition();
+    setIsLightboxOpen(true);
+  };
+
+  const handleCloseLightbox = () => {
+    setIsLightboxOpen(false);
+  };
+
   return (
     <ScrollView>
       <View className="flex flex-col space-y-3 px-4 pb-4">
@@ -219,19 +251,41 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
           <View className="flex justify-between w-full mb-3">
             <Lightbox
               isOpen={isLightboxOpen}
-              onClose={() => setIsLightboxOpen(false)}
-              onOpen={() => setIsLightboxOpen(true)}
+              onClose={handleCloseLightbox}
+              onOpen={handleOpenLightbox}
               backgroundColor={colors.black['800']}
               swipeToDismiss={true}
               renderHeader={customHeader}
+              doubleTapZoomEnabled={false}
+              renderContent={() => (
+                <TokenFailureBoundary tokenRef={token} variant="large">
+                  <NftDetailAssetCacheSwapper
+                    cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+                  >
+                    <NftDetailAsset tokenRef={token} />
+                  </NftDetailAssetCacheSwapper>
+                </TokenFailureBoundary>
+              )}
+              origin={{
+                x: thumbnailPosition.x,
+                y: thumbnailPosition.y,
+                width: thumbnailPosition.width,
+                height: thumbnailPosition.height,
+              }}
             >
-              <TokenFailureBoundary tokenRef={token} variant="large">
-                <NftDetailAssetCacheSwapper
-                  cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
-                >
-                  <NftDetailAsset tokenRef={token} />
-                </NftDetailAssetCacheSwapper>
-              </TokenFailureBoundary>
+              <View
+                ref={thumbnailRef}
+                style={{ width: width * 0.92, minHeight: width * 0.92 }}
+                onLayout={updateThumbnailPosition}
+              >
+                <TokenFailureBoundary tokenRef={token} variant="large">
+                  <NftDetailAssetCacheSwapper
+                    cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+                  >
+                    <NftDetailAsset tokenRef={token} />
+                  </NftDetailAssetCacheSwapper>
+                </TokenFailureBoundary>
+              </View>
             </Lightbox>
           </View>
         </View>
