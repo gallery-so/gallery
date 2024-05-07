@@ -17,7 +17,7 @@ import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
 import { OnboardingAddUsernamePageQuery } from '~/generated/OnboardingAddUsernamePageQuery.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
-import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
+import useAuthPayloadQuery, { isNeynarPayload } from '~/hooks/api/users/useAuthPayloadQuery';
 import {
   alphanumericUnderscores,
   maxLength,
@@ -54,15 +54,26 @@ export function OnboardingAddUsernamePage() {
   );
 
   const user = query?.viewer?.user;
+  const authPayloadQuery = useAuthPayloadQuery();
 
-  const [username, setUsername] = useState(user?.username || '');
+  const initialUsername = useMemo(() => {
+    if (
+      authPayloadQuery &&
+      isNeynarPayload(authPayloadQuery) &&
+      authPayloadQuery.farcasterUsername
+    ) {
+      return authPayloadQuery.farcasterUsername;
+    }
+    return user?.username || '';
+  }, [authPayloadQuery, user]);
+
+  const [username, setUsername] = useState(initialUsername);
   const debouncedUsername = useDebounce(username, 500);
 
   const [usernameError, setUsernameError] = useState('');
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
-  const authPayloadQuery = useAuthPayloadQuery();
   const trackCreateUserSuccess = useTrackCreateUserSuccess(
     authPayloadQuery?.userFriendlyWalletName
   );

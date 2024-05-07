@@ -143,6 +143,7 @@ input AuthMechanism {
   oneTimeLoginToken: OneTimeLoginTokenAuth
   privy: PrivyAuth
   neynar: NeynarAuth
+  farcasterUsername: String
 }
 
 type AuthNonce {
@@ -1504,6 +1505,7 @@ input NeynarAuth {
   that both primaryPubKey and the required custodyPubKey are owned by the same Neynar user
   """
   primaryPubKey: ChainPubKeyInput
+  farcasterUsername: String!
 }
 
 interface Node {

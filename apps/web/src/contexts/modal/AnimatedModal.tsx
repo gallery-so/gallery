@@ -1,3 +1,4 @@
+import { usePrivy } from '@privy-io/react-auth';
 import { ReactElement, useCallback, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
@@ -92,10 +93,12 @@ function AnimatedModal({
     hideModal();
   }, [onCloseOverride, hideModal]);
 
+  const { isModalOpen } = usePrivy();
+
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={handleClick} />
-      <StyledModal isFullPage={isFullPage}>
+      <StyledModal isFullPage={isFullPage} isPrivyModalOpened={isModalOpen}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
             <StyledHeader isPaddingDisabled={!headerText && isPaddingDisabled}>
@@ -172,7 +175,8 @@ const Overlay = styled.div`
   -webkit-backface-visibility: hidden;
 `;
 
-const StyledModal = styled.div<{ isFullPage: boolean }>`
+const StyledModal = styled.div<{ isFullPage: boolean; isPrivyModalOpened?: boolean }>`
+  opacity: ${(props) => (props.isPrivyModalOpened ? '0' : '1')};
   position: fixed;
   top: 50%;
   left: 50%;

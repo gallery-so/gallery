@@ -28,7 +28,7 @@ function InnerOnboardingEmailScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'Onboarding2FA'>>();
 
-  const { authMethod, authMechanism, email, loginWithCode } = route.params;
+  const { authMethod, authMechanism, email, loginWithCode, farcasterUsername } = route.params;
 
   const { bottom } = useSafeAreaInsets();
 
@@ -91,6 +91,7 @@ function InnerOnboardingEmailScreen() {
               privyToken: token,
             },
             email,
+            farcasterUsername,
           });
         }
       } else {
@@ -120,6 +121,7 @@ function InnerOnboardingEmailScreen() {
     loginWithCode,
     navigation,
     track,
+    farcasterUsername,
   ]);
 
   const handleBack = useCallback(() => {

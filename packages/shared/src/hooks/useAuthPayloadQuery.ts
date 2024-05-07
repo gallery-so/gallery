@@ -33,6 +33,7 @@ export type NeynarPayloadVariables = {
   privyToken?: string;
   email?: string;
   userFriendlyWalletName?: string;
+  farcasterUsername?: string;
 } & SignerVariables;
 
 export type AuthPayloadVariables =

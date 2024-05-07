@@ -14,6 +14,10 @@ export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPaylo
   return payload.authMechanismType === 'eoa';
 }
 
+export function isNeynarPayload(payload: AuthPayloadVariables): payload is NeynarPayloadVariables {
+  return 'authMechanismType' in payload && payload.authMechanismType === 'neynar';
+}
+
 export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
   const { query } = useRouter();
 
@@ -71,6 +75,8 @@ export default function useAuthPayloadQuery(): AuthPayloadVariables | null {
       address: query.address,
       primaryAddress: query.primaryAddress,
       email: typeof query.email === 'string' ? query.email : undefined,
+      farcasterUsername:
+        typeof query.farcasterUsername === 'string' ? query.farcasterUsername : undefined,
     };
   }
 

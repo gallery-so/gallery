@@ -34,7 +34,11 @@ export function FarcasterAuthProvider({ children }: { children: ReactNode }) {
   return <AuthKitProvider config={config}>{children}</AuthKitProvider>;
 }
 
-export function useLoginWithFarcaster() {
+type FarcasterBottomSheetRowProps = {
+  setIsFarcasterLoading: (isLoading: boolean) => void;
+};
+
+export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottomSheetRowProps) {
   const { hideBottomSheetModal } = useBottomSheetModalActions();
 
   const getUsersByWalletAddresses = useGetUsersByWalletAddressesImperatively();
@@ -53,6 +57,7 @@ export function useLoginWithFarcaster() {
 
   const handleFarcasterLoginError = useCallback(
     (error?: AuthClientError | Error) => {
+      setIsFarcasterLoading(false);
       const errorMessage = error?.message ?? 'unknown error';
       pushToast({
         message: `There was an error signing in with Farcaster: ${errorMessage}`,
@@ -64,11 +69,12 @@ export function useLoginWithFarcaster() {
       });
       hasRedirectedToWarpcast.current = false;
     },
-    [pushToast, reportError]
+    [pushToast, reportError, setIsFarcasterLoading]
   );
 
   const handleSuccess = useCallback(
     async (req: StatusAPIResponse) => {
+      setIsFarcasterLoading(false);
       try {
         if (!req.custody) {
           throw new Error('no custody address produced from farcaster');
@@ -115,6 +121,7 @@ export function useLoginWithFarcaster() {
           navigation.navigate('OnboardingEmail', {
             authMethod: 'Farcaster',
             authMechanism: createUserAuthMechanism,
+            farcasterUsername: req.username,
           });
           return;
         }
@@ -129,6 +136,7 @@ export function useLoginWithFarcaster() {
               pubKey: req.custody,
               chain: 'Ethereum' as Chain,
             },
+            farcasterUsername: req.username || '',
           },
         };
         if (req.verifications?.[0]) {
@@ -152,6 +160,7 @@ export function useLoginWithFarcaster() {
         hideBottomSheetModal();
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } catch (e) {
+        setIsFarcasterLoading(false);
         if (e instanceof Error) {
           handleFarcasterLoginError(e);
         }
@@ -163,6 +172,7 @@ export function useLoginWithFarcaster() {
       hideBottomSheetModal,
       login,
       navigation,
+      setIsFarcasterLoading,
       track,
     ]
   );
@@ -182,19 +192,44 @@ export function useLoginWithFarcaster() {
     nonce,
   });
 
-  const initiateConnection = useCallback(async () => {
-    if (!isConnected) {
-      const { nonce } = await createNonce();
-      setNonce(nonce);
+  const initiateConnection = useCallback(
+    async (shouldAttemptReconnect = false) => {
+      setIsFarcasterLoading(true);
 
-      if (isConnectError) {
+      if (shouldAttemptReconnect && !isSuccess && url) {
         reconnect();
+        const { nonce } = await createNonce();
+        setNonce(nonce);
+        signIn();
+        Linking.openURL(url);
         return;
       }
 
-      await connect();
-    }
-  }, [connect, createNonce, isConnectError, isConnected, reconnect]);
+      if (!isConnected) {
+        const { nonce } = await createNonce();
+        setNonce(nonce);
+
+        if (isConnectError) {
+          reconnect();
+          setIsFarcasterLoading(false);
+          return;
+        }
+
+        await connect();
+      }
+    },
+    [
+      connect,
+      createNonce,
+      isConnectError,
+      isConnected,
+      isSuccess,
+      reconnect,
+      setIsFarcasterLoading,
+      signIn,
+      url,
+    ]
+  );
 
   useEffect(() => {
     if (url && nonce.length && !isPolling && !isSuccess && !hasRedirectedToWarpcast.current) {
@@ -208,5 +243,8 @@ export function useLoginWithFarcaster() {
 
   return {
     open: initiateConnection,
+    isSuccess,
+    isPolling,
+    isConnected,
   };
 }

@@ -75,8 +75,11 @@ function InnerOnboardingUsernameScreen() {
   const email = route.params.email;
   const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
+  const farcasterUsername = route.params.farcasterUsername;
 
-  const [username, setUsername] = useState(user?.username ?? '');
+  const [username, setUsername] = useState(
+    farcasterUsername ? farcasterUsername : user?.username ?? ''
+  );
   const [bio] = useState('');
 
   // This cannot be derived from a "null" `usernameError`
