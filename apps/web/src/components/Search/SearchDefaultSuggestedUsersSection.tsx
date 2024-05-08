@@ -24,7 +24,7 @@ export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, 
       fragment SearchDefaultSuggestedUsersSectionFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            suggestedUsers(first: 2) @required(action: THROW) {
+            suggestedUsers(first: 4) @required(action: THROW) {
               __typename
               edges {
                 node {
@@ -57,7 +57,8 @@ export default function SearchDefaultSuggestedUsersSection({ queryRef, variant, 
       .flatMap((edge) => (edge?.node ? [edge.node] : []))
       .filter((user) =>
         user?.galleries?.some((gallery) => removeNullValues(gallery?.tokenPreviews).length > 0)
-      );
+      )
+      ?.slice(0, 2);
   }, [query.viewer.suggestedUsers?.edges]);
 
   if (query.viewer?.suggestedUsers?.__typename !== 'UsersConnection' || !nonNullProfiles) {
