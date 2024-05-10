@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { Dimensions, ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Lightbox from 'react-native-lightbox-v2';
+import Zoom from 'react-native-zoom-reanimated';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
@@ -12,7 +13,6 @@ import { CloseIcon } from 'src/icons/CloseIcon';
 import { MaximizeIcon } from 'src/icons/MaximizeIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
-import Zoom from 'react-native-zoom-reanimated';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
