@@ -1,4 +1,3 @@
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -47,7 +46,7 @@ type Props = {
   queryRef: NftDetailSectionQueryFragment$key;
 };
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -105,7 +104,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const { colorScheme } = useColorScheme();
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [isLightboxFullyOpen, setIsLightboxFullyOpen] = useState(false);
 
   const token = query.tokenById;
   const ownerWalletAddress =
@@ -238,14 +236,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     setIsLightboxOpen(false);
   };
 
-  const handleLightboxDidOpen = () => {
-    setIsLightboxFullyOpen(true);
-  };
-
-  const handleLightboxWillClose = () => {
-    setIsLightboxFullyOpen(false);
-  };
-
   return (
     <ScrollView>
       <View className="flex flex-col space-y-3 px-4 pb-4">
@@ -269,9 +259,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             <Lightbox
               isOpen={isLightboxOpen}
               onClose={handleCloseLightbox}
-              didOpen={handleLightboxDidOpen}
-              willClose={handleLightboxWillClose}
-              onLayout={() => setIsLightboxFullyOpen(false)}
               onOpen={handleOpenLightbox}
               backgroundColor={colors.black['800']}
               swipeToDismiss={false}
