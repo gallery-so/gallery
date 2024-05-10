@@ -1,17 +1,19 @@
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useState, useRef } from 'react';
-import { ScrollView, Dimensions, View } from 'react-native';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { Dimensions, ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import Lightbox from 'react-native-lightbox-v2';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { BookmarkIcon } from 'src/icons/BookmarkIcon';
+import { CloseIcon } from 'src/icons/CloseIcon';
+import { MaximizeIcon } from 'src/icons/MaximizeIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
-import { MaximizeIcon } from 'src/icons/MaximizeIcon';
-import { CloseIcon } from 'src/icons/CloseIcon';
-import Lightbox from 'react-native-lightbox-v2';
+import Zoom from 'react-native-zoom-reanimated';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
@@ -21,12 +23,11 @@ import { IconContainer } from '~/components/IconContainer';
 import { MintLinkButton } from '~/components/MintLinkButton';
 import { Pill } from '~/components/Pill';
 import ProcessedText from '~/components/ProcessedText/ProcessedText';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -46,7 +47,7 @@ type Props = {
   queryRef: NftDetailSectionQueryFragment$key;
 };
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -104,6 +105,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const { colorScheme } = useColorScheme();
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isLightboxFullyOpen, setIsLightboxFullyOpen] = useState(false);
 
   const token = query.tokenById;
   const ownerWalletAddress =
@@ -173,7 +175,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   });
 
   const customHeader = useCallback(
-    (close) => {
+    (close: () => void) => {
       return (
         <View
           className="flex-row justify-end items-center px-3 bg-black-800"
@@ -181,7 +183,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             paddingTop: top,
           }}
         >
-          <IconContainer color="faint" icon={<CloseIcon />} onPress={close} />
+          <IconContainer
+            color="faint"
+            icon={<CloseIcon />}
+            onPress={close}
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+          />
         </View>
       );
     },
@@ -201,8 +210,8 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const thumbnailRef = useRef<View | null>(null);
   const [thumbnailPosition, setThumbnailPosition] = useState({
-    width: width * 0.9,
-    height: width * 0.9,
+    width: width,
+    height: width,
     x: 0,
     y: 0,
   });
@@ -229,6 +238,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     setIsLightboxOpen(false);
   };
 
+  const handleLightboxDidOpen = () => {
+    setIsLightboxFullyOpen(true);
+  };
+
+  const handleLightboxWillClose = () => {
+    setIsLightboxFullyOpen(false);
+  };
+
   return (
     <ScrollView>
       <View className="flex flex-col space-y-3 px-4 pb-4">
@@ -252,9 +269,12 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             <Lightbox
               isOpen={isLightboxOpen}
               onClose={handleCloseLightbox}
+              didOpen={handleLightboxDidOpen}
+              willClose={handleLightboxWillClose}
+              onLayout={() => setIsLightboxFullyOpen(false)}
               onOpen={handleOpenLightbox}
               backgroundColor={colors.black['800']}
-              swipeToDismiss={true}
+              swipeToDismiss={false}
               renderHeader={customHeader}
               doubleTapZoomEnabled={false}
               renderContent={() => (
@@ -262,7 +282,20 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                   <NftDetailAssetCacheSwapper
                     cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
                   >
-                    <NftDetailAsset tokenRef={token} />
+                    <Zoom
+                      contentContainerStyle={{
+                        display: 'flex',
+                        width: width,
+                        flexGrow: 1,
+                        backgroundColor: colors.black['800'],
+                      }}
+                      style={{ display: 'flex', flexGrow: 1 }}
+                      doubleTapConfig={{
+                        minZoomScale: 1,
+                      }}
+                    >
+                      <NftDetailAsset tokenRef={token} />
+                    </Zoom>
                   </NftDetailAssetCacheSwapper>
                 </TokenFailureBoundary>
               )}
@@ -305,7 +338,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             <GalleryTouchableOpacity
               onPress={handleMaximizeToggle}
               eventElementId="NFT Detail Maximize Icon"
-              eventName="NFT Detail Maximize Icon Clicked"
+              eventName="NFT Detail Maximize Icon Pressed"
               eventContext={contexts['NFT Detail']}
             >
               <MaximizeIcon />
