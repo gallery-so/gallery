@@ -202,9 +202,9 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     [colorScheme]
   );
 
-  const handleMaximizeToggle = () => {
+  const handleMaximizeToggle = useCallback(() => {
     setIsLightboxOpen((currIsLightboxOpen) => !currIsLightboxOpen);
-  };
+  }, []);
 
   const thumbnailRef = useRef<View | null>(null);
   const [thumbnailPosition, setThumbnailPosition] = useState({
@@ -214,7 +214,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     y: 0,
   });
 
-  const updateThumbnailPosition = () => {
+  const updateThumbnailPosition = useCallback(() => {
     if (thumbnailRef.current) {
       thumbnailRef.current.measure((x, y, w, h, pageX, pageY) => {
         setThumbnailPosition({
@@ -225,16 +225,63 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
         });
       });
     }
-  };
+  }, []);
 
-  const handleOpenLightbox = () => {
+  const handleOpenLightbox = useCallback(() => {
     updateThumbnailPosition();
     setIsLightboxOpen(true);
-  };
+  }, [updateThumbnailPosition]);
 
-  const handleCloseLightbox = () => {
+  const handleCloseLightbox = useCallback(() => {
     setIsLightboxOpen(false);
-  };
+  }, []);
+
+  const contentStyle = useMemo(
+    () => ({
+      width: width * 0.92,
+      minHeight: width * 0.92,
+    }),
+    []
+  );
+
+  const zoomContentContainerStyle = useMemo(
+    () => ({
+      display: 'flex',
+      width: width,
+      flexGrow: 1,
+      backgroundColor: colors.black['800'],
+    }),
+    []
+  );
+
+  const renderContent = useCallback(
+    () => (
+      <TokenFailureBoundary tokenRef={token} variant="large">
+        <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
+          <Zoom
+            contentContainerStyle={zoomContentContainerStyle}
+            style={{ display: 'flex', flexGrow: 1 }}
+            doubleTapConfig={{
+              minZoomScale: 1,
+            }}
+          >
+            <NftDetailAsset tokenRef={token} />
+          </Zoom>
+        </NftDetailAssetCacheSwapper>
+      </TokenFailureBoundary>
+    ),
+    [token, route.params.cachedPreviewAssetUrl, zoomContentContainerStyle]
+  );
+
+  const tokenOrigin = useMemo(
+    () => ({
+      x: thumbnailPosition.x,
+      y: thumbnailPosition.y,
+      width: thumbnailPosition.width,
+      height: thumbnailPosition.height,
+    }),
+    [thumbnailPosition]
+  );
 
   return (
     <ScrollView>
@@ -265,41 +312,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 swipeToDismiss: false,
                 renderHeader: customHeader,
                 doubleTapZoomEnabled: false,
-                renderContent: () => (
-                  <TokenFailureBoundary tokenRef={token} variant="large">
-                    <NftDetailAssetCacheSwapper
-                      cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
-                    >
-                      <Zoom
-                        contentContainerStyle={{
-                          display: 'flex',
-                          width: width,
-                          flexGrow: 1,
-                          backgroundColor: colors.black['800'],
-                        }}
-                        style={{ display: 'flex', flexGrow: 1 }}
-                        doubleTapConfig={{
-                          minZoomScale: 1,
-                        }}
-                      >
-                        <NftDetailAsset tokenRef={token} />
-                      </Zoom>
-                    </NftDetailAssetCacheSwapper>
-                  </TokenFailureBoundary>
-                ),
-                origin: {
-                  x: thumbnailPosition.x,
-                  y: thumbnailPosition.y,
-                  width: thumbnailPosition.width,
-                  height: thumbnailPosition.height,
-                },
+                renderContent: renderContent,
+                origin: tokenOrigin,
               }}
             >
-              <View
-                ref={thumbnailRef}
-                style={{ width: width * 0.92, minHeight: width * 0.92 }}
-                onLayout={updateThumbnailPosition}
-              >
+              <View ref={thumbnailRef} style={contentStyle} onLayout={updateThumbnailPosition}>
                 <TokenFailureBoundary tokenRef={token} variant="large">
                   <NftDetailAssetCacheSwapper
                     cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
