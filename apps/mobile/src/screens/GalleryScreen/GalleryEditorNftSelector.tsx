@@ -1,12 +1,13 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { noop } from 'shared/utils/noop';
 
+import { Button } from '~/components/Button';
 import { NftSelectorHeader } from '~/components/NftSelector/NftSelectorHeader';
 import { NftSelectorToolbar } from '~/components/NftSelector/NftSelectorToolbar';
 import { NftSelectorWrapper } from '~/components/NftSelector/NftSelectorWrapper';
 import { useNftSelector } from '~/components/NftSelector/useNftSelector';
+import { NftSelectorPickerGridTokenGridFragment$data } from '~/generated/NftSelectorPickerGridTokenGridFragment.graphql';
 import { RootStackNavigatorParamList, RootStackNavigatorProp } from '~/navigation/types';
 import { NftSelectorLoadingSkeleton } from '~/screens/NftSelectorScreen/NftSelectorLoadingSkeleton';
 import { NftSelectorPickerGrid } from '~/screens/NftSelectorScreen/NftSelectorPickerGrid';
@@ -29,19 +30,77 @@ export function GalleryEditorNftSelector() {
 
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'NftSelectorGalleryEditor'>>();
 
+  const [isMultiselectMode, setIsMultiselectMode] = useState(false);
+
+  const [selectedTokens, setSelectedTokens] = useState<Set<string>>(new Set());
+
   const handleSelectNft = useCallback(
     (tokenId: string) => {
-      navigation.navigate({
-        name: 'GalleryEditor',
-        params: {
-          galleryId: route.params.galleryId,
-          stagedTokens: [tokenId],
-        },
-        merge: true,
-      });
+      if (isMultiselectMode) {
+        setSelectedTokens((prevTokens) => {
+          const newTokens = new Set(prevTokens);
+
+          if (newTokens.has(tokenId)) {
+            newTokens.delete(tokenId);
+          } else {
+            newTokens.add(tokenId);
+          }
+          return newTokens;
+        });
+      } else {
+        navigation.navigate({
+          name: 'GalleryEditor',
+          params: {
+            galleryId: route.params.galleryId,
+            stagedTokens: [tokenId],
+          },
+          merge: true,
+        });
+      }
     },
-    [navigation, route.params.galleryId]
+    [isMultiselectMode, navigation, route.params.galleryId]
   );
+
+  const handleSelectNftGroup = useCallback(
+    (contractAddress: string, tokens: NftSelectorPickerGridTokenGridFragment$data[number][]) => {
+      if (isMultiselectMode) {
+        setSelectedTokens((prevTokens) => {
+          const newTokens = new Set(prevTokens);
+
+          tokens.forEach((token) => {
+            if (newTokens.has(token.dbid)) {
+              newTokens.delete(token.dbid);
+            } else {
+              newTokens.add(token.dbid);
+            }
+          });
+          return newTokens;
+        });
+      } else {
+        navigation.navigate({
+          name: 'NftSelectorContractGalleryEditor',
+          params: {
+            galleryId: route.params.galleryId,
+            contractAddress,
+          },
+        });
+      }
+    },
+    [isMultiselectMode, navigation, route.params.galleryId]
+  );
+
+  const handleAddSelectedTokens = useCallback(() => {
+    const formattedTokens = Array.from(selectedTokens);
+
+    navigation.navigate({
+      name: 'GalleryEditor',
+      params: {
+        galleryId: route.params.galleryId,
+        stagedTokens: formattedTokens,
+      },
+      merge: true,
+    });
+  }, [navigation, route.params.galleryId, selectedTokens]);
 
   const searchCriteria = useMemo(
     () => ({
@@ -56,7 +115,23 @@ export function GalleryEditorNftSelector() {
   return (
     <NftSelectorWrapper ownershipTypeFilter={ownershipTypeFilter} isFullscreen>
       <View className="gap-8">
-        <NftSelectorHeader title="Select item to add" />
+        <NftSelectorHeader
+          title="Select item to add"
+          rightButton={
+            isMultiselectMode && selectedTokens.size > 0 ? (
+              <Button
+                onPress={handleAddSelectedTokens}
+                eventElementId={null}
+                eventName={null}
+                eventContext={null}
+                text="add"
+                size="xs"
+                fontWeight="Bold"
+                textTransform="capitalize"
+              />
+            ) : null
+          }
+        />
         <NftSelectorToolbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -68,6 +143,8 @@ export function GalleryEditorNftSelector() {
           setSortView={setSortView}
           isSyncing={isSyncing}
           isSyncingCreatedTokens={isSyncingCreatedTokens}
+          isMultiselectMode={isMultiselectMode}
+          setIsMultiselectMode={setIsMultiselectMode}
           handleSync={sync}
         />
       </View>
@@ -77,7 +154,9 @@ export function GalleryEditorNftSelector() {
             searchCriteria={searchCriteria}
             onRefresh={sync}
             onSelect={handleSelectNft}
-            onSelectNftGroup={noop}
+            onSelectNftGroup={handleSelectNftGroup}
+            isMultiselectMode={isMultiselectMode}
+            selectedTokens={selectedTokens}
           />
         </Suspense>
       </View>

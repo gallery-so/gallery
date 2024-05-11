@@ -84,6 +84,12 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     }, []);
   }, [collections]);
 
+  // TODO: Change length to properly reflect virtualizedList onLoad. Some profile's onLoad function not triggering
+  const filteredTokenIds = useMemo(() => {
+    // Temp fix for stuck loader
+    return tokenIds ? [] : [];
+  }, [tokenIds]);
+
   const isAuthenticatedUsersPage = loggedInUserId === owner?.id;
 
   const nonNullCollections = removeNullValues(collections);
@@ -160,7 +166,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <MultiShimmerProvider tokenIdsToLoad={tokenIds ? tokenIds?.slice(0, 12) : []}>
+    <MultiShimmerProvider tokenIdsToLoad={filteredTokenIds}>
       <StyledUserGalleryCollections>
         <WindowScroller>
           {({ height, registerChild, scrollTop, onChildScroll }) => (

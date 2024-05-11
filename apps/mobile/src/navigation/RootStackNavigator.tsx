@@ -9,6 +9,7 @@ import { useMaintenanceContext } from 'shared/contexts/MaintenanceStatusContext'
 import { ClaimMintUpsellBanner } from '~/components/ClaimMintUpsellBanner';
 import { ConnectWalletUpsellBanner } from '~/components/ConnectWalletUpsellBanner';
 import { MaintenanceNoticeBottomSheetWrapper } from '~/components/MaintenanceScreen';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
@@ -17,6 +18,7 @@ import { RootStackNavigatorParamList } from '~/navigation/types';
 import { Debugger } from '~/screens/Debugger';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
 import { GalleryEditorNftSelector } from '~/screens/GalleryScreen/GalleryEditorNftSelector';
+import { GalleryEditorNftSelectorContractScreen } from '~/screens/GalleryScreen/GalleryEditorNftSelectorContractScreen';
 import { GalleryEditorScreen } from '~/screens/GalleryScreen/GalleryEditorScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
@@ -105,6 +107,10 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
 
         <Stack.Screen name="GalleryEditor" component={GalleryEditorScreen} />
         <Stack.Screen name="NftSelectorGalleryEditor" component={GalleryEditorNftSelector} />
+        <Stack.Screen
+          name="NftSelectorContractGalleryEditor"
+          component={GalleryEditorNftSelectorContractScreen}
+        />
       </Stack.Navigator>
       <View className="flex">
         <PortalHost name="bottomSheetPortal" />
@@ -132,11 +138,15 @@ function MainScreen({ queryRef }: MainScreenProps) {
     queryRef
   );
 
+  const { announcement } = useSanityAnnouncementContext();
+
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
         <ConnectWalletUpsellBanner queryRef={query} />
-        <ClaimMintUpsellBanner queryRef={query} />
+        {announcement && (
+          <ClaimMintUpsellBanner queryRef={query} projectInternalId={announcement.internal_id} />
+        )}
       </Suspense>
       <MainTabNavigator />
     </View>

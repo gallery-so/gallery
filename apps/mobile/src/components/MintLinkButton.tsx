@@ -148,7 +148,14 @@ export function MintLinkButton({
 
   const handlePress = useCallback(() => {
     if (isRadiance) {
-      showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+      showBottomSheetModal({
+        content: (
+          <MintCampaignBottomSheet
+            projectInternalId="mchx-app-store-2024"
+            onClose={hideBottomSheetModal}
+          />
+        ),
+      });
     } else {
       Linking.openURL(mintURL);
     }

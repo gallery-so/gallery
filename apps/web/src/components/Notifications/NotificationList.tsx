@@ -6,9 +6,11 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/Notifications/SeeMore';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementProvider';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import useExperience from '~/shared/hooks/useExperience';
 
+import AnnouncementNotification from './AnnouncementNotification';
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
 import { NotificationTwitterAlert } from './NotificationTwitterAlert';
@@ -64,6 +66,8 @@ export function NotificationList({ queryRef, toggleSubView }: NotificationListPr
     queryRef: query,
   });
 
+  const { announcement, hasDismissedAnnouncement } = useSanityAnnouncementContext();
+
   const handleDismiss = useCallback(async () => {
     await setEmailExperienced();
   }, [setEmailExperienced]);
@@ -96,6 +100,9 @@ export function NotificationList({ queryRef, toggleSubView }: NotificationListPr
     <NotificationsContent grow>
       {showEmailAlert && <NotificationEmailAlert queryRef={query} onDismiss={handleDismiss} />}
       <NotificationTwitterAlert queryRef={query} />
+      {announcement && !hasDismissedAnnouncement && (
+        <AnnouncementNotification announcement={announcement} />
+      )}
       {hasNotifications ? (
         <>
           {nonNullNotifications.map((notification) => {
