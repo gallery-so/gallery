@@ -257,40 +257,42 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
           <View className="flex justify-between w-full mb-3">
             <Lightbox
-              isOpen={isLightboxOpen}
-              onClose={handleCloseLightbox}
-              onOpen={handleOpenLightbox}
-              backgroundColor={colors.black['800']}
-              swipeToDismiss={false}
-              renderHeader={customHeader}
-              doubleTapZoomEnabled={false}
-              renderContent={() => (
-                <TokenFailureBoundary tokenRef={token} variant="large">
-                  <NftDetailAssetCacheSwapper
-                    cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
-                  >
-                    <Zoom
-                      contentContainerStyle={{
-                        display: 'flex',
-                        width: width,
-                        flexGrow: 1,
-                        backgroundColor: colors.black['800'],
-                      }}
-                      style={{ display: 'flex', flexGrow: 1 }}
-                      doubleTapConfig={{
-                        minZoomScale: 1,
-                      }}
+              {...{
+                isOpen: isLightboxOpen,
+                onClose: handleCloseLightbox,
+                onOpen: handleOpenLightbox,
+                backgroundColor: colors.black['800'],
+                swipeToDismiss: false,
+                renderHeader: customHeader,
+                doubleTapZoomEnabled: false,
+                renderContent: () => (
+                  <TokenFailureBoundary tokenRef={token} variant="large">
+                    <NftDetailAssetCacheSwapper
+                      cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
                     >
-                      <NftDetailAsset tokenRef={token} />
-                    </Zoom>
-                  </NftDetailAssetCacheSwapper>
-                </TokenFailureBoundary>
-              )}
-              origin={{
-                x: thumbnailPosition.x,
-                y: thumbnailPosition.y,
-                width: thumbnailPosition.width,
-                height: thumbnailPosition.height,
+                      <Zoom
+                        contentContainerStyle={{
+                          display: 'flex',
+                          width: width,
+                          flexGrow: 1,
+                          backgroundColor: colors.black['800'],
+                        }}
+                        style={{ display: 'flex', flexGrow: 1 }}
+                        doubleTapConfig={{
+                          minZoomScale: 1,
+                        }}
+                      >
+                        <NftDetailAsset tokenRef={token} />
+                      </Zoom>
+                    </NftDetailAssetCacheSwapper>
+                  </TokenFailureBoundary>
+                ),
+                origin: {
+                  x: thumbnailPosition.x,
+                  y: thumbnailPosition.y,
+                  width: thumbnailPosition.width,
+                  height: thumbnailPosition.height,
+                },
               }}
             >
               <View
