@@ -26,7 +26,7 @@ export function useNavigateToCommunityScreen() {
       const { chain, contractAddress, subtype, projectId } =
         extractRelevantMetadataFromCommunity(community);
 
-      if (navigationType === 'push') {
+      if (navigation.push && navigationType === 'push') {
         navigation.push('Community', {
           subtype,
           contractAddress,
