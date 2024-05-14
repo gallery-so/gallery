@@ -13,17 +13,12 @@
     "fetch-schema-dev": "get-graphql-schema https://gateway.dev.gallery.so/ > schema.graphql"
   },
   "dependencies": {
-    "@openspacelabs/react-native-zoomable-view": "^2.1.6",
-    "add": "^2.0.6",
+    "expo": "^51.0.0",
     "nextjs-routes": "^1.0.8",
     "react": "^18.2.0",
     "react-hotkeys-hook": "^4.3.8",
-    "react-native-lightbox-v2": "^0.9.0",
-    "react-native-zoom-reanimated": "^1.4.5",
     "react-relay": "^15.0.0",
-    "relay-runtime": "^15.0.0",
-    "web3-utils": "^4.2.1",
-    "yarn": "^1.22.22"
+    "relay-runtime": "^15.0.0"
   },
   "engines": {
     "node": "20.5.0"
