@@ -76,7 +76,14 @@ export function SettingsScreen() {
   }, [navigation]);
 
   const handleDebugMintPress = useCallback(() => {
-    showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+    showBottomSheetModal({
+      content: (
+        <MintCampaignBottomSheet
+          onClose={hideBottomSheetModal}
+          projectInternalId="mchx-app-store-2024"
+        />
+      ),
+    });
   }, [hideBottomSheetModal, showBottomSheetModal]);
 
   const [logout, isLoggingOut] = useLogout();

@@ -11,6 +11,7 @@ import { Typography } from './Typography';
 type Variant = 'primary' | 'secondary' | 'danger' | 'disabled' | 'blue';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
+type TextTransform = 'uppercase' | 'capitalize' | 'lowercase';
 
 export type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
@@ -24,6 +25,7 @@ export type ButtonProps = {
   textClassName?: string;
   containerClassName?: string;
   fontWeight?: FontWeight;
+  textTransform?: TextTransform;
   size?: Size;
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
 } & GalleryTouchableOpacityProps;
@@ -179,6 +181,7 @@ export function Button({
   size = 'md',
   fontWeight = 'Medium',
   footerElement,
+  textTransform = 'uppercase',
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
@@ -226,9 +229,10 @@ export function Button({
             <Typography
               font={{ family: 'ABCDiatype', weight: fontWeight }}
               className={clsx(
-                'text-xs uppercase text-center',
+                'text-xs text-center',
                 variantClassNames.textClassName,
-                textClassName
+                textClassName,
+                textTransform
               )}
             >
               {text}

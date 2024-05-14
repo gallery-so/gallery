@@ -67,7 +67,7 @@ export default function WalletSelectorBottomSheet({
 
   return (
     <>
-      <View style={{ paddingBottom: bottom }} className="p-4 flex flex-col space-y-6">
+      <View style={{ paddingBottom: bottom }} className="flex flex-col space-y-6">
         {isSigningIn ? (
           <SignedInWalletMessage />
         ) : (

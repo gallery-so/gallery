@@ -49,7 +49,14 @@ export function GalleryAnnouncement({ queryRef, notificationRef }: Props) {
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
   const handlePress = useCallback(() => {
     if (internalId === 'apr-2024-mchx-collab') {
-      showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
+      showBottomSheetModal({
+        content: (
+          <MintCampaignBottomSheet
+            onClose={hideBottomSheetModal}
+            projectInternalId="mchx-app-store-2024"
+          />
+        ),
+      });
       return;
     }
     if (!ctaLink) return;

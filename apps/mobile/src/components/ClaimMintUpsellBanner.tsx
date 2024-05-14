@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { MCHX_CLAIM_CODE_KEY } from 'src/constants/storageKeys';
 import usePersistedState from 'src/hooks/usePersistedState';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
+import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
 import { ClaimMintUpsellBannerFragment$key } from '~/generated/ClaimMintUpsellBannerFragment.graphql';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
@@ -17,9 +17,10 @@ import { Typography } from './Typography';
 
 type Props = {
   queryRef: ClaimMintUpsellBannerFragment$key;
+  projectInternalId: string;
 };
 
-export function ClaimMintUpsellBanner({ queryRef }: Props) {
+export function ClaimMintUpsellBanner({ queryRef, projectInternalId }: Props) {
   const query = useFragment(
     graphql`
       fragment ClaimMintUpsellBannerFragment on Query {
@@ -37,10 +38,10 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
 
   const { showBottomSheetModal, hideBottomSheetModal } = useBottomSheetModalActions();
 
-  const [claimCode] = usePersistedState(MCHX_CLAIM_CODE_KEY, '');
+  const [claimCode] = usePersistedState(`${projectInternalId}-claim-code`, '');
 
   const [isUpsellMintBannerDismissed, setIsUpsellMintBannerDismissed] = usePersistedState(
-    'isUpsellMintBannerDismissed',
+    `${projectInternalId}-isUpsellMintBannerDismissed`,
     false
   );
 
@@ -49,12 +50,21 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
   }, [setIsUpsellMintBannerDismissed]);
 
   const handleClaimPress = useCallback(() => {
-    showBottomSheetModal({ content: <MintCampaignBottomSheet onClose={hideBottomSheetModal} /> });
-  }, [hideBottomSheetModal, showBottomSheetModal]);
+    showBottomSheetModal({
+      content: (
+        <MintCampaignBottomSheet
+          onClose={hideBottomSheetModal}
+          projectInternalId={projectInternalId}
+        />
+      ),
+    });
+  }, [hideBottomSheetModal, projectInternalId, showBottomSheetModal]);
+
+  const { announcement } = useSanityAnnouncementContext();
 
   const user = query.viewer?.user;
 
-  if (!user || claimCode || isUpsellMintBannerDismissed) {
+  if (!user || !announcement || claimCode || isUpsellMintBannerDismissed) {
     return <View className="bg-white dark:bg-black-900" />;
   }
 
@@ -71,7 +81,7 @@ export function ClaimMintUpsellBanner({ queryRef }: Props) {
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
           className="text-offWhite text-xs"
         >
-          Claim your free generative work by MCHX
+          {announcement.description}
         </Typography>
       </View>
       <View className="flex-row items-center space-x-2">

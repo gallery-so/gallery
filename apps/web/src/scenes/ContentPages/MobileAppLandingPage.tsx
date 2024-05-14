@@ -9,6 +9,8 @@ import { BaseXL, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { contexts } from '~/shared/analytics/constants';
 
+import { APP_STORE_URL } from '../LandingPage/LandingPage';
+
 export default function MobileAppLandingPage() {
   const navbarHeight = useGlobalNavbarHeight();
 
@@ -32,11 +34,7 @@ export default function MobileAppLandingPage() {
               </BodyText>
             </VStack>
             <VStack gap={8}>
-              <StyledLink
-                href="https://apps.apple.com/app/gallery/id6447068892"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <StyledLink href={APP_STORE_URL} target="_blank" rel="noreferrer">
                 <StyledButton
                   eventElementId="Mobile Landing Page Download App Button"
                   eventName="Mobile Landing Page Download App Button Click"

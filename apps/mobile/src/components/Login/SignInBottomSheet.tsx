@@ -35,9 +35,8 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
   }, [hideBottomSheetModal, navigation]);
 
   const handleConnectWallet = useCallback(() => {
-    hideBottomSheetModal();
     openManageWallet({ method: 'auth' });
-  }, [hideBottomSheetModal, openManageWallet]);
+  }, [openManageWallet]);
 
   return (
     <View className="flex flex-col space-y-6">

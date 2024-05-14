@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { BackButton } from '../BackButton';
 import { Typography } from '../Typography';
@@ -11,6 +12,12 @@ type Props = {
 } & PropsWithChildren;
 
 export function NftSelectorHeader({ rightButton, title, children, style }: Props) {
+  const animateStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(rightButton ? 1 : 0),
+    };
+  });
+
   return (
     <View style={style}>
       <View className="px-4 relative flex-row justify-between items-center">
@@ -24,8 +31,7 @@ export function NftSelectorHeader({ rightButton, title, children, style }: Props
             {title}
           </Typography>
         </View>
-
-        {rightButton && rightButton}
+        <Animated.View style={animateStyle}>{rightButton && rightButton}</Animated.View>
       </View>
 
       {children}
