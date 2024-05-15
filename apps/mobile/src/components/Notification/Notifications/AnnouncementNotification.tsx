@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect } from 'react';
@@ -12,19 +13,22 @@ import MintCampaignBottomSheet from '~/components/Mint/MintCampaign/MintCampaign
 import { BaseM } from '~/components/Text';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useSanityAnnouncementContext } from '~/contexts/SanityAnnouncementContext';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 // Displays announcement content from Sanity
 export default function AnnouncementNotification() {
   const { announcement, markAnnouncementAsSeen, dismissAnnouncement } =
     useSanityAnnouncementContext();
   const { showBottomSheetModal } = useBottomSheetModalActions();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handlePress = useCallback(() => {
     if (!announcement) return;
     showBottomSheetModal({
       content: <MintCampaignBottomSheet projectInternalId={announcement.internal_id} />,
+      navigationContext: navigation,
     });
-  }, [announcement, showBottomSheetModal]);
+  }, [announcement, navigation, showBottomSheetModal]);
 
   const handleDismissPress = useCallback(() => {
     dismissAnnouncement();
