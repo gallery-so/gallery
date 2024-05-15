@@ -144,7 +144,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
     }
 
     track('Admire Token Click');
-    admireToken(token.id, token.dbid, info, decodedTokenName);
+    admireToken(token.id, token.dbid, info, name);
   }, [
     query.viewer?.__typename,
     track,
@@ -152,7 +152,7 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
     token.id,
     token.dbid,
     info,
-    decodedTokenName,
+    name,
     showAuthModal,
   ]);
 
@@ -169,16 +169,9 @@ function NftDetailText({ queryRef, tokenRef, authenticatedUserOwnsAsset, toggleL
       token.dbid,
       token.viewerAdmire.dbid,
       query.viewer?.user?.dbid,
-      decodedTokenName
+      name
     );
-  }, [
-    decodedTokenName,
-    query.viewer,
-    removeTokenAdmire,
-    token.dbid,
-    token.id,
-    token.viewerAdmire?.dbid,
-  ]);
+  }, [name, query.viewer, removeTokenAdmire, token.dbid, token.id, token.viewerAdmire?.dbid]);
 
   const isMobile = useIsMobileWindowWidth();
 

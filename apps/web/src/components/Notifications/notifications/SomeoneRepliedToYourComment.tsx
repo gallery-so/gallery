@@ -138,7 +138,7 @@ export function SomeoneRepliedToYourComment({ notificationRef, queryRef, onClose
             <TimeAgoText as="span">{timeAgo}</TimeAgoText>
           </StyledTextWrapper>
           <VStack gap={4}>
-            <StyledCaption>{unescape(comment.comment)}</StyledCaption>
+            <StyledCaption>{comment.comment}</StyledCaption>
 
             <HStack gap={4}>
               <AdmireIcon

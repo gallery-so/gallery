@@ -9,7 +9,6 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourCommentFragment$key } from '~/generated/SomeoneAdmiredYourCommentFragment.graphql';
 import { AdmireIcon } from '~/icons/SocializeIcons';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
-import unescape from '~/shared/utils/unescape';
 
 import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 import { StyledAdmireIconWrapper } from './SomeoneAdmiredYourToken';
@@ -95,7 +94,7 @@ export default function SomeoneAdmiredYourComment({ notificationRef, onClose }: 
                 <strong>comment</strong>
               </BaseM>
             </StyledTextWrapper>
-            <StyledCaption>{unescape(comment?.comment ?? '')}</StyledCaption>
+            <StyledCaption>{comment?.comment ?? ''}</StyledCaption>
           </VStack>
         </VStack>
       </HStack>

@@ -18,7 +18,6 @@ import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragme
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { contexts } from '~/shared/analytics/constants';
 import colors from '~/shared/theme/colors';
-import unescape from '~/shared/utils/unescape';
 
 import {
   NavbarCenterContent,
@@ -75,7 +74,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
   const unescapedCollectionName = useMemo(() => {
     if (query.collectionById?.__typename === 'Collection') {
-      return unescape(query.collectionById?.name ?? '') || 'untitled';
+      return query.collectionById?.name || 'untitled';
     }
 
     return 'untitled';
