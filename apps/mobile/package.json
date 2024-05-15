@@ -51,7 +51,7 @@
     "mixpanel-react-native": "^3.0.0-beta.2",
     "nativewind": "^2.0.11",
     "node-html-parser": "^6.1.5",
-    "react": "18.2.0",
+    "react": "18.2.45",
     "react-native": "0.73.6",
     "react-native-collapsible-tab-view": "^6.1.4",
     "react-native-fast-image": "^8.6.3",
@@ -82,7 +82,7 @@
     "siwe": "^2.1.4",
     "swr": "^2.1.1",
     "text-encoding": "^0.7.0",
-    "typescript": "^5.1.3",
+    "typescript": "^5.3.3",
     "viem": "^1.19.11",
     "web-streams-polyfill": "^3.2.1",
     "zod": "^3.22.3"
