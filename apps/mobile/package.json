@@ -56,7 +56,7 @@
     "react-native-collapsible-tab-view": "^6.1.4",
     "react-native-fast-image": "^8.6.3",
     "react-native-fetch-api": "^3.0.0",
-    "react-native-gesture-handler": "~2.14.0",
+    "react-native-gesture-handler": "^2.15.0",
     "react-native-get-random-values": "~1.8.0",
     "react-native-haptic-feedback": "^2.2.0",
     "react-native-ios-context-menu": "^1.15.3",

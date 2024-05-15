@@ -26944,7 +26944,7 @@ __metadata:
     react-native-collapsible-tab-view: ^6.1.4
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
-    react-native-gesture-handler: ~2.14.0
+    react-native-gesture-handler: ^2.15.0
     react-native-get-random-values: ~1.8.0
     react-native-haptic-feedback: ^2.2.0
     react-native-ios-context-menu: ^1.15.3
@@ -29958,9 +29958,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gesture-handler@npm:~2.14.0":
-  version: 2.14.1
-  resolution: "react-native-gesture-handler@npm:2.14.1"
+"react-native-gesture-handler@npm:^2.15.0":
+  version: 2.16.2
+  resolution: "react-native-gesture-handler@npm:2.16.2"
   dependencies:
     "@egjs/hammerjs": ^2.0.17
     hoist-non-react-statics: ^3.3.0
@@ -29970,7 +29970,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: a037e8c5a88a9fc79c283f3064d7653ec8615cb05fc62622eaccb5f3db489ede9c3a0685b7aad210c7efabfd8f5aa34e4f19204318dfda64c8829266d78e0cae
+  checksum: 3f3309de471b8de654624c54793f6d72236869156ee61c1adc8bba0f4aca6ffc8ed02035eb85820473091d33eb5ec8b42a0e387a21ec25dc30ee345dff0c1142
   languageName: node
   linkType: hard
 

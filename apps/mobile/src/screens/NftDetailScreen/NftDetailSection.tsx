@@ -246,7 +246,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
 
   const zoomContentContainerStyle = useMemo(
     () => ({
-      display: 'flex',
+      display: 'flex' as const,
       width: width,
       flexGrow: 1,
       backgroundColor: colors.black['800'],
