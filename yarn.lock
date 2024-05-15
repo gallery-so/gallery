@@ -10611,6 +10611,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:20.11.16":
+  version: 20.11.16
+  resolution: "@types/node@npm:20.11.16"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 51f0831c1219bf4698e7430aeb9892237bd851deeb25ce23c5bb0ceefcc77c3b114e48f4e98d9fc26def5a87ba9d8079f0281dd37bee691140a93f133812c152
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^12.12.54, @types/node@npm:^12.12.6":
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
@@ -26248,6 +26257,7 @@ __metadata:
     "@shopify/flash-list": 1.6.3
     "@types/lodash.merge": ^4.6.7
     "@types/markdown-it": ^12.2.3
+    "@types/node": 20.11.16
     "@walletconnect/modal-react-native": ^1.0.0-rc.10
     babel-plugin-relay: ^14.1.0
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
@@ -33356,6 +33366,13 @@ __metadata:
   version: 1.13.6
   resolution: "underscore@npm:1.13.6"
   checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
