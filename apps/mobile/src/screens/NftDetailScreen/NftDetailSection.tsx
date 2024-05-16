@@ -1,16 +1,12 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { Dimensions, ScrollView, View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import Lightbox from 'react-native-lightbox-v2';
-import Zoom from 'react-native-zoom-reanimated';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
 import { BookmarkIcon } from 'src/icons/BookmarkIcon';
-import { CloseIcon } from 'src/icons/CloseIcon';
-import { MaximizeIcon } from 'src/icons/MaximizeIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { ShareIcon } from 'src/icons/ShareIcon';
 
@@ -26,7 +22,6 @@ import {
   CreatorProfilePictureAndUsernameOrAddress,
   OwnerProfilePictureAndUsername,
 } from '~/components/ProfilePicture/ProfilePictureAndUserOrAddress';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { NftDetailSectionQueryFragment$key } from '~/generated/NftDetailSectionQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
@@ -45,8 +40,6 @@ type Props = {
   onShare: () => void;
   queryRef: NftDetailSectionQueryFragment$key;
 };
-
-const { width } = Dimensions.get('window');
 
 export function NftDetailSection({ onShare, queryRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -103,7 +96,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   );
 
   const { colorScheme } = useColorScheme();
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const token = query.tokenById;
   const ownerWalletAddress =
@@ -127,8 +119,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
       navigateToCommunity(tokenDefinition.community);
     }
   }, [navigateToCommunity, tokenDefinition.community]);
-
-  const { top } = useSafeAreaPadding();
 
   const handleCreatePost = useCallback(() => {
     if (token.dbid) {
@@ -172,115 +162,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     queryRef: query,
   });
 
-  const customHeader = useCallback(
-    (close: () => void) => {
-      return (
-        <View
-          className="flex-row justify-end items-center px-3 bg-black-800"
-          style={{
-            paddingTop: top,
-          }}
-        >
-          <IconContainer
-            color="faint"
-            icon={<CloseIcon />}
-            onPress={close}
-            eventElementId={null}
-            eventName={null}
-            eventContext={null}
-          />
-        </View>
-      );
-    },
-    [top]
-  );
-
   const { contractName } = extractRelevantMetadataFromToken(token);
 
   const blueToDisplay = useMemo(
     () => (colorScheme === 'dark' ? 'darkModeBlue' : 'activeBlue'),
     [colorScheme]
-  );
-
-  const handleMaximizeToggle = useCallback(() => {
-    setIsLightboxOpen((currIsLightboxOpen) => !currIsLightboxOpen);
-  }, []);
-
-  const thumbnailRef = useRef<View | null>(null);
-  const [thumbnailPosition, setThumbnailPosition] = useState({
-    width: width,
-    height: width,
-    x: 0,
-    y: 0,
-  });
-
-  const updateThumbnailPosition = useCallback(() => {
-    if (thumbnailRef.current) {
-      thumbnailRef.current.measure((x, y, w, h, pageX, pageY) => {
-        setThumbnailPosition({
-          width: w,
-          height: h,
-          x: pageX,
-          y: pageY,
-        });
-      });
-    }
-  }, []);
-
-  const handleOpenLightbox = useCallback(() => {
-    updateThumbnailPosition();
-    setIsLightboxOpen(true);
-  }, [updateThumbnailPosition]);
-
-  const handleCloseLightbox = useCallback(() => {
-    setIsLightboxOpen(false);
-  }, []);
-
-  const contentStyle = useMemo(
-    () => ({
-      width: width * 0.92,
-      minHeight: width * 0.92,
-    }),
-    []
-  );
-
-  const zoomContentContainerStyle = useMemo(
-    () => ({
-      display: 'flex' as const,
-      width: width,
-      flexGrow: 1,
-      backgroundColor: colors.black['800'],
-    }),
-    []
-  );
-
-  const renderContent = useCallback(
-    () => (
-      <TokenFailureBoundary tokenRef={token} variant="large">
-        <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
-          <Zoom
-            contentContainerStyle={zoomContentContainerStyle}
-            style={{ display: 'flex', flexGrow: 1 }}
-            doubleTapConfig={{
-              minZoomScale: 1,
-            }}
-          >
-            <NftDetailAsset tokenRef={token} />
-          </Zoom>
-        </NftDetailAssetCacheSwapper>
-      </TokenFailureBoundary>
-    ),
-    [token, route.params.cachedPreviewAssetUrl, zoomContentContainerStyle]
-  );
-
-  const tokenOrigin = useMemo(
-    () => ({
-      x: thumbnailPosition.x,
-      y: thumbnailPosition.y,
-      width: thumbnailPosition.width,
-      height: thumbnailPosition.height,
-    }),
-    [thumbnailPosition]
   );
 
   return (
@@ -302,30 +188,14 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
             />
           </View>
 
-          <View className="flex justify-between w-full mb-3">
-            <Lightbox
-              {...{
-                isOpen: isLightboxOpen,
-                onClose: handleCloseLightbox,
-                onOpen: handleOpenLightbox,
-                backgroundColor: colors.black['800'],
-                swipeToDismiss: false,
-                renderHeader: customHeader,
-                doubleTapZoomEnabled: false,
-                renderContent: renderContent,
-                origin: tokenOrigin,
-              }}
-            >
-              <View ref={thumbnailRef} style={contentStyle} onLayout={updateThumbnailPosition}>
-                <TokenFailureBoundary tokenRef={token} variant="large">
-                  <NftDetailAssetCacheSwapper
-                    cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
-                  >
-                    <NftDetailAsset tokenRef={token} />
-                  </NftDetailAssetCacheSwapper>
-                </TokenFailureBoundary>
-              </View>
-            </Lightbox>
+          <View className="w-full mb-3">
+            <TokenFailureBoundary tokenRef={token} variant="large">
+              <NftDetailAssetCacheSwapper
+                cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+              >
+                <NftDetailAsset tokenRef={token} />
+              </NftDetailAssetCacheSwapper>
+            </TokenFailureBoundary>
           </View>
         </View>
 
@@ -341,14 +211,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 {tokenDefinition.name}
               </Typography>
             </View>
-            <GalleryTouchableOpacity
-              onPress={handleMaximizeToggle}
-              eventElementId="NFT Detail Maximize Icon"
-              eventName="NFT Detail Maximize Icon Pressed"
-              eventContext={contexts['NFT Detail']}
-            >
-              <MaximizeIcon />
-            </GalleryTouchableOpacity>
           </View>
           <GalleryTouchableOpacity
             eventElementId="NFT Detail Contract Name Pill"

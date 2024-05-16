@@ -6,14 +6,14 @@ export function useIntervalEffectOnAppForeground(callback: () => void) {
     let interval: number;
 
     // Set up the interval when the component mounts
-    interval = setInterval(callback, 10000) as unknown as number;
+    interval = setInterval(callback, 10000);
 
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
         // When the app comes into the foreground, trigger the callback
         // and kick off the interval
         callback();
-        interval = setInterval(callback, 10000) as unknown as number;
+        interval = setInterval(callback, 10000);
       } else if (nextAppState === 'background' || nextAppState === 'inactive') {
         // When the app goes to the background, clear the interval
         if (interval) {
