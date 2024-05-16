@@ -2,13 +2,15 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import React, { useRef } from 'react';
 import {
   Alert,
-  Button,
   NativeSyntheticEvent,
   StyleSheet,
   TextInput,
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
+
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { Typography } from '~/components/Typography';
 
 type Onboarding2FAInputProps = {
   code: string[];
@@ -75,7 +77,19 @@ const Onboarding2FAInput: React.FC<Onboarding2FAInputProps> = ({
           />
         ))}
       </View>
-      <Button title="Paste Code" onPress={handlePaste} />
+      <GalleryTouchableOpacity
+        onPress={handlePaste}
+        eventElementId={null}
+        eventName={null}
+        eventContext={null}
+      >
+        <Typography
+          className={'text-black-800 dark:text-white text-lg pt-2'}
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
+          Paste Code
+        </Typography>
+      </GalleryTouchableOpacity>
     </View>
   );
 };
