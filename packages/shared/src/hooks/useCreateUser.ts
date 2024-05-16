@@ -168,7 +168,8 @@ export function getAuthMechanismFromAuthPayload(authPayloadVariables: AuthPayloa
       },
     };
   } else if (authPayloadVariables.authMechanismType === 'neynar') {
-    const { address, nonce, message, signature, primaryAddress } = authPayloadVariables;
+    const { address, nonce, message, signature, primaryAddress, farcasterUsername } =
+      authPayloadVariables;
     authMechanism = {
       neynar: {
         nonce,
@@ -178,6 +179,7 @@ export function getAuthMechanismFromAuthPayload(authPayloadVariables: AuthPayloa
           pubKey: address,
           chain: 'Ethereum',
         },
+        farcasterUsername: farcasterUsername || '',
       },
     };
     if (primaryAddress) {

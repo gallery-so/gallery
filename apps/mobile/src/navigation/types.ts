@@ -135,6 +135,7 @@ export type LoginStackNavigatorParamList = {
   OnboardingEmail: {
     authMethod: AuthMethodTitle;
     authMechanism?: AuthPayloadVariables;
+    farcasterUsername?: string;
   };
 
   Onboarding2FA: {
@@ -142,12 +143,14 @@ export type LoginStackNavigatorParamList = {
     email: string;
     authMechanism: AuthPayloadVariables;
     loginWithCode: LoginWithEmailHookResult['loginWithCode'];
+    farcasterUsername?: string;
   };
 
   OnboardingUsername: {
     authMechanism: AuthPayloadVariables;
     email?: string;
     authMethod: AuthMethodTitle;
+    farcasterUsername?: string;
   };
 
   OnboardingProfileBio: undefined;

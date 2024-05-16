@@ -111,6 +111,7 @@ export default function useLoginOrRedirectToOnboarding() {
                 message: authMechanism.mechanism.neynar.message,
                 signature: authMechanism.mechanism.neynar.signature,
                 userFriendlyWalletName,
+                farcasterUsername: authMechanism.mechanism.neynar.farcasterUsername,
               },
             },
             '/onboarding/add-email'

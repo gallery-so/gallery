@@ -86,13 +86,14 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
 }
 
 function FarcasterBottomSheetRow() {
-  const { open: handleConnectFarcaster } = useLoginWithFarcaster();
+  const { handleConnectFarcasterPress, isFarcasterLoading } = useLoginWithFarcaster();
 
   return (
     <BottomSheetRow
       icon={<FarcasterOutlineIcon />}
       text="Farcaster"
-      onPress={handleConnectFarcaster}
+      isLoading={isFarcasterLoading}
+      onPress={handleConnectFarcasterPress}
       eventContext={contexts.Authentication}
       fontWeight="Bold"
     />

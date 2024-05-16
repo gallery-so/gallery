@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 
@@ -15,6 +15,7 @@ type BottomSheetRowProps = {
   fontWeight?: 'Regular' | 'Bold';
   rightIcon?: React.ReactNode;
   eventContext: GalleryElementTrackingProps['eventContext'];
+  isLoading?: boolean;
 };
 
 export function BottomSheetRow({
@@ -26,6 +27,7 @@ export function BottomSheetRow({
   fontWeight = 'Regular',
   rightIcon,
   eventContext,
+  isLoading,
 }: BottomSheetRowProps) {
   return (
     <GalleryTouchableOpacity
@@ -48,6 +50,7 @@ export function BottomSheetRow({
           {text}
         </Typography>
         {rightIcon && <View className="ml-auto">{rightIcon}</View>}
+        {isLoading && <ActivityIndicator className="ml-auto" />}
       </View>
     </GalleryTouchableOpacity>
   );

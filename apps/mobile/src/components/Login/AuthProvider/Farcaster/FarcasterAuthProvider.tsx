@@ -6,7 +6,7 @@ import {
 } from '@farcaster/auth-kit';
 import { useNavigation } from '@react-navigation/native';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { Linking } from 'react-native';
+import { AppState, Linking } from 'react-native';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { NeynarPayloadVariables } from 'shared/hooks/useAuthPayloadQuery';
@@ -36,7 +36,6 @@ export function FarcasterAuthProvider({ children }: { children: ReactNode }) {
 
 export function useLoginWithFarcaster() {
   const { hideBottomSheetModal } = useBottomSheetModalActions();
-
   const getUsersByWalletAddresses = useGetUsersByWalletAddressesImperatively();
 
   // `setNonce` needs to be called prior to `signIn`.
@@ -50,9 +49,13 @@ export function useLoginWithFarcaster() {
   const [login] = useLogin();
   const { pushToast } = useToastActions();
   const reportError = useReportError();
+  const [isFarcasterLoading, setIsFarcasterLoading] = useState(false);
+  const [attemptReconnect, setAttemptReconnect] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const handleFarcasterLoginError = useCallback(
     (error?: AuthClientError | Error) => {
+      setIsFarcasterLoading(false);
       const errorMessage = error?.message ?? 'unknown error';
       pushToast({
         message: `There was an error signing in with Farcaster: ${errorMessage}`,
@@ -69,6 +72,7 @@ export function useLoginWithFarcaster() {
 
   const handleSuccess = useCallback(
     async (req: StatusAPIResponse) => {
+      setIsFarcasterLoading(false);
       try {
         if (!req.custody) {
           throw new Error('no custody address produced from farcaster');
@@ -115,6 +119,7 @@ export function useLoginWithFarcaster() {
           navigation.navigate('OnboardingEmail', {
             authMethod: 'Farcaster',
             authMechanism: createUserAuthMechanism,
+            farcasterUsername: req.username,
           });
           return;
         }
@@ -129,6 +134,7 @@ export function useLoginWithFarcaster() {
               pubKey: req.custody,
               chain: 'Ethereum' as Chain,
             },
+            farcasterUsername: req.username || '',
           },
         };
         if (req.verifications?.[0]) {
@@ -152,6 +158,7 @@ export function useLoginWithFarcaster() {
         hideBottomSheetModal();
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } catch (e) {
+        setIsFarcasterLoading(false);
         if (e instanceof Error) {
           handleFarcasterLoginError(e);
         }
@@ -182,19 +189,32 @@ export function useLoginWithFarcaster() {
     nonce,
   });
 
-  const initiateConnection = useCallback(async () => {
-    if (!isConnected) {
-      const { nonce } = await createNonce();
-      setNonce(nonce);
+  const initiateConnection = useCallback(
+    async (shouldAttemptReconnect = false) => {
+      setIsFarcasterLoading(true);
 
-      if (isConnectError) {
+      if (shouldAttemptReconnect && !isSuccess && url) {
         reconnect();
+        signIn();
+        Linking.openURL(url);
         return;
       }
 
-      await connect();
-    }
-  }, [connect, createNonce, isConnectError, isConnected, reconnect]);
+      if (!isConnected) {
+        const { nonce } = await createNonce();
+        setNonce(nonce);
+
+        if (isConnectError) {
+          reconnect();
+          setIsFarcasterLoading(false);
+          return;
+        }
+
+        await connect();
+      }
+    },
+    [connect, createNonce, isConnectError, isConnected, isSuccess, reconnect, signIn, url]
+  );
 
   useEffect(() => {
     if (url && nonce.length && !isPolling && !isSuccess && !hasRedirectedToWarpcast.current) {
@@ -206,7 +226,28 @@ export function useLoginWithFarcaster() {
     }
   }, [isPolling, isSuccess, nonce.length, signIn, url]);
 
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        if (isPolling || (!isConnected && !isSuccess)) {
+          setAttemptReconnect(true);
+        }
+        setIsFarcasterLoading(false);
+      }
+      setAppState(nextAppState);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [appState, isPolling, isConnected, isSuccess]);
+
+  const handleConnectFarcasterPress = useCallback(() => {
+    initiateConnection(attemptReconnect);
+  }, [attemptReconnect, initiateConnection]);
+
   return {
-    open: initiateConnection,
+    handleConnectFarcasterPress,
+    isFarcasterLoading,
   };
 }

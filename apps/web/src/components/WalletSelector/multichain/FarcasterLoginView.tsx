@@ -115,6 +115,7 @@ export function FarcasterLoginView() {
               pubKey: primaryFarcasterAddress,
               chain: 'Ethereum' as Chain,
             },
+            farcasterUsername: req.username || '',
           },
         };
 

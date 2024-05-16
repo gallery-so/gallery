@@ -44,6 +44,7 @@ function InnerOnboardingEmailScreen() {
 
   const authMethod = route.params.authMethod;
   const authMechanism = route.params.authMechanism;
+  const farcasterUsername = route.params.farcasterUsername;
 
   const { bottom } = useSafeAreaInsets();
 
@@ -129,6 +130,7 @@ function InnerOnboardingEmailScreen() {
           authMechanism,
           loginWithCode,
           email,
+          farcasterUsername,
         });
       }
     } catch (error) {
@@ -141,7 +143,17 @@ function InnerOnboardingEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [authMechanism, authMethod, email, loginWithCode, navigation, reportError, sendCode, track]);
+  }, [
+    authMechanism,
+    authMethod,
+    email,
+    loginWithCode,
+    navigation,
+    reportError,
+    sendCode,
+    track,
+    farcasterUsername,
+  ]);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
