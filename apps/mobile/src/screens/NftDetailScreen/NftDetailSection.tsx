@@ -239,7 +239,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const contentStyle = useMemo(
     () => ({
       width: width * 0.92,
-      minHeight: width * 0.92,
     }),
     []
   );
