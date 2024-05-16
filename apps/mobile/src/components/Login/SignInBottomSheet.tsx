@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
-import { AppState, View } from 'react-native';
+import { forwardRef, useCallback } from 'react';
+import { View } from 'react-native';
 import { EmailIcon } from 'src/icons/EmailIcon';
 import { FarcasterOutlineIcon } from 'src/icons/FarcasterOutlineIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
@@ -87,39 +87,7 @@ function SignInBottomSheet({ onQrCodePress, openManageWallet }: Props) {
 }
 
 function FarcasterBottomSheetRow() {
-  const [isFarcasterLoading, setIsFarcasterLoading] = useState(false);
-  const [attemptReconnect, setAttemptReconnect] = useState(false);
-
-  const {
-    open: handleConnectFarcaster,
-    isSuccess,
-    isConnected,
-    isPolling,
-  } = useLoginWithFarcaster({
-    setIsFarcasterLoading,
-  });
-
-  const [appState, setAppState] = useState(AppState.currentState);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      if (appState.match(/inactive|background/) && nextAppState === 'active') {
-        if (isPolling || (!isConnected && !isSuccess)) {
-          setAttemptReconnect(true);
-        }
-        setIsFarcasterLoading(false);
-      }
-      setAppState(nextAppState);
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, [appState, isPolling, isConnected, isSuccess]);
-
-  const handleConnectFarcasterPress = useCallback(() => {
-    handleConnectFarcaster(attemptReconnect);
-  }, [attemptReconnect, handleConnectFarcaster]);
+  const { handleConnectFarcasterPress, isFarcasterLoading } = useLoginWithFarcaster();
 
   return (
     <BottomSheetRow

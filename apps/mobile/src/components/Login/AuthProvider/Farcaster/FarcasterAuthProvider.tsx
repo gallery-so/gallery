@@ -6,7 +6,7 @@ import {
 } from '@farcaster/auth-kit';
 import { useNavigation } from '@react-navigation/native';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { Linking } from 'react-native';
+import { AppState, Linking } from 'react-native';
 import { useTrack } from 'shared/contexts/AnalyticsContext';
 import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import { NeynarPayloadVariables } from 'shared/hooks/useAuthPayloadQuery';
@@ -34,13 +34,8 @@ export function FarcasterAuthProvider({ children }: { children: ReactNode }) {
   return <AuthKitProvider config={config}>{children}</AuthKitProvider>;
 }
 
-type FarcasterBottomSheetRowProps = {
-  setIsFarcasterLoading: (isLoading: boolean) => void;
-};
-
-export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottomSheetRowProps) {
+export function useLoginWithFarcaster() {
   const { hideBottomSheetModal } = useBottomSheetModalActions();
-
   const getUsersByWalletAddresses = useGetUsersByWalletAddressesImperatively();
 
   // `setNonce` needs to be called prior to `signIn`.
@@ -54,6 +49,9 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
   const [login] = useLogin();
   const { pushToast } = useToastActions();
   const reportError = useReportError();
+  const [isFarcasterLoading, setIsFarcasterLoading] = useState(false);
+  const [attemptReconnect, setAttemptReconnect] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const handleFarcasterLoginError = useCallback(
     (error?: AuthClientError | Error) => {
@@ -69,7 +67,7 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
       });
       hasRedirectedToWarpcast.current = false;
     },
-    [pushToast, reportError, setIsFarcasterLoading]
+    [pushToast, reportError]
   );
 
   const handleSuccess = useCallback(
@@ -172,7 +170,6 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
       hideBottomSheetModal,
       login,
       navigation,
-      setIsFarcasterLoading,
       track,
     ]
   );
@@ -198,8 +195,6 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
 
       if (shouldAttemptReconnect && !isSuccess && url) {
         reconnect();
-        const { nonce } = await createNonce();
-        setNonce(nonce);
         signIn();
         Linking.openURL(url);
         return;
@@ -218,17 +213,7 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
         await connect();
       }
     },
-    [
-      connect,
-      createNonce,
-      isConnectError,
-      isConnected,
-      isSuccess,
-      reconnect,
-      setIsFarcasterLoading,
-      signIn,
-      url,
-    ]
+    [connect, createNonce, isConnectError, isConnected, isSuccess, reconnect, signIn, url]
   );
 
   useEffect(() => {
@@ -241,10 +226,28 @@ export function useLoginWithFarcaster({ setIsFarcasterLoading }: FarcasterBottom
     }
   }, [isPolling, isSuccess, nonce.length, signIn, url]);
 
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        if (isPolling || (!isConnected && !isSuccess)) {
+          setAttemptReconnect(true);
+        }
+        setIsFarcasterLoading(false);
+      }
+      setAppState(nextAppState);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [appState, isPolling, isConnected, isSuccess]);
+
+  const handleConnectFarcasterPress = useCallback(() => {
+    initiateConnection(attemptReconnect);
+  }, [attemptReconnect, initiateConnection]);
+
   return {
-    open: initiateConnection,
-    isSuccess,
-    isPolling,
-    isConnected,
+    handleConnectFarcasterPress,
+    isFarcasterLoading,
   };
 }
