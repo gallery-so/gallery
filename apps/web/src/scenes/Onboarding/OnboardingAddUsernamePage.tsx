@@ -15,6 +15,7 @@ import useUpdateProfileImage from '~/components/NftSelector/useUpdateProfileImag
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
+import { useProgress } from '~/contexts/onboardingProgress';
 import { OnboardingAddUsernamePageQuery } from '~/generated/OnboardingAddUsernamePageQuery.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
@@ -71,6 +72,7 @@ export function OnboardingAddUsernamePage() {
   const { push } = useRouter();
   const updateEmail = useUpdateEmail();
   const reportError = useReportError();
+  const { setProgress } = useProgress();
 
   const handleUsernameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -106,8 +108,10 @@ export function OnboardingAddUsernamePage() {
           user?.profileImage?.__typename === 'EnsProfileImage'
         ) {
           push({ pathname: '/onboarding/add-user-info' });
+          setProgress('add-user-info');
         } else {
           push({ pathname: '/onboarding/add-profile-picture' });
+          setProgress('add-profile-picture');
         }
         return;
       }
@@ -122,6 +126,7 @@ export function OnboardingAddUsernamePage() {
       if (user?.username) {
         await updateUser(user.dbid, username, user.bio || '');
         push({ pathname: '/onboarding/add-user-info' });
+        setProgress('add-user-info');
         return;
       }
 
@@ -166,6 +171,7 @@ export function OnboardingAddUsernamePage() {
         // If it's a magic link, skip the profile picture step
         if (authPayloadQuery.authMechanismType === 'privy') {
           push('/onboarding/add-user-info');
+          setProgress('add-user-info');
           return;
         }
 
@@ -189,8 +195,10 @@ export function OnboardingAddUsernamePage() {
             },
           });
           push({ pathname: '/onboarding/add-user-info' });
+          setProgress('add-user-info');
         } else {
           push({ pathname: '/onboarding/add-profile-picture' });
+          setProgress('add-profile-picture');
         }
       }
     } catch (error) {
@@ -215,6 +223,7 @@ export function OnboardingAddUsernamePage() {
     updateUser,
     user,
     username,
+    setProgress,
   ]);
 
   return (

@@ -20,6 +20,7 @@ import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
 import NftPreviewFallbackProvider from './nftPreviewFallback/NftPreviewFallbackContext';
+import { ProgressProvider } from './onboardingProgress';
 import PostComposerProvider from './postComposer/PostComposerContext';
 import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
@@ -53,56 +54,58 @@ export default function AppProvider({
   globalLayoutContextPreloadedQuery,
 }: Props) {
   return (
-    <Boundary>
-      <ToastProvider>
-        <MaintenanceStatusProvider
-          sanityProjectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
-          MaintenancePageComponent={<MaintenancePage />}
-        >
-          <Boundary>
-            <RelayEnvironmentProvider environment={relayEnvironment}>
-              <PrivyProvider
-                appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ''}
-                config={privyConfig}
-              >
-                <AnalyticsProvider>
-                  <WebErrorReportingProvider>
-                    <SwrProvider>
-                      <GalleryNavigationProvider>
-                        <NftPreviewFallbackProvider>
-                          <NftErrorProvider>
-                            <SyncTokensLockProvider>
-                              <PostComposerProvider>
-                                <ModalProvider>
-                                  <SidebarDrawerProvider>
-                                    <SearchProvider>
-                                      <SnowProvider enabled={false}>
-                                        <GlobalLayoutContextProvider
-                                          preloadedQuery={globalLayoutContextPreloadedQuery}
-                                        >
-                                          <BottomSheetProvider>
-                                            <FullPageNftDetailModalListener />
-                                            {isProd ? null : <Debugger />}
-                                            {children}
-                                          </BottomSheetProvider>
-                                        </GlobalLayoutContextProvider>
-                                      </SnowProvider>
-                                    </SearchProvider>
-                                  </SidebarDrawerProvider>
-                                </ModalProvider>
-                              </PostComposerProvider>
-                            </SyncTokensLockProvider>
-                          </NftErrorProvider>
-                        </NftPreviewFallbackProvider>
-                      </GalleryNavigationProvider>
-                    </SwrProvider>
-                  </WebErrorReportingProvider>
-                </AnalyticsProvider>
-              </PrivyProvider>
-            </RelayEnvironmentProvider>
-          </Boundary>
-        </MaintenanceStatusProvider>
-      </ToastProvider>
-    </Boundary>
+    <ProgressProvider>
+      <Boundary>
+        <ToastProvider>
+          <MaintenanceStatusProvider
+            sanityProjectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
+            MaintenancePageComponent={<MaintenancePage />}
+          >
+            <Boundary>
+              <RelayEnvironmentProvider environment={relayEnvironment}>
+                <PrivyProvider
+                  appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ''}
+                  config={privyConfig}
+                >
+                  <AnalyticsProvider>
+                    <WebErrorReportingProvider>
+                      <SwrProvider>
+                        <GalleryNavigationProvider>
+                          <NftPreviewFallbackProvider>
+                            <NftErrorProvider>
+                              <SyncTokensLockProvider>
+                                <PostComposerProvider>
+                                  <ModalProvider>
+                                    <SidebarDrawerProvider>
+                                      <SearchProvider>
+                                        <SnowProvider enabled={false}>
+                                          <GlobalLayoutContextProvider
+                                            preloadedQuery={globalLayoutContextPreloadedQuery}
+                                          >
+                                            <BottomSheetProvider>
+                                              <FullPageNftDetailModalListener />
+                                              {isProd ? null : <Debugger />}
+                                              {children}
+                                            </BottomSheetProvider>
+                                          </GlobalLayoutContextProvider>
+                                        </SnowProvider>
+                                      </SearchProvider>
+                                    </SidebarDrawerProvider>
+                                  </ModalProvider>
+                                </PostComposerProvider>
+                              </SyncTokensLockProvider>
+                            </NftErrorProvider>
+                          </NftPreviewFallbackProvider>
+                        </GalleryNavigationProvider>
+                      </SwrProvider>
+                    </WebErrorReportingProvider>
+                  </AnalyticsProvider>
+                </PrivyProvider>
+              </RelayEnvironmentProvider>
+            </Boundary>
+          </MaintenanceStatusProvider>
+        </ToastProvider>
+      </Boundary>
+    </ProgressProvider>
   );
 }

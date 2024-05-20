@@ -3,6 +3,7 @@ import { startTransition, useCallback, useContext } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useProgress } from '~/contexts/onboardingProgress';
 import { RelayResetContext } from '~/contexts/RelayResetContext';
 import {
   useLoginOrRedirectToOnboardingMutation,
@@ -44,6 +45,7 @@ export default function useLoginOrRedirectToOnboarding() {
 
   const { push } = useRouter();
 
+  const { setProgress } = useProgress();
   const { hideModal } = useModalActions();
   const reset = useContext(RelayResetContext);
   const mutate = useCallback(
@@ -97,6 +99,7 @@ export default function useLoginOrRedirectToOnboarding() {
             },
             '/onboarding/add-email'
           );
+          setProgress('add-email');
         }
 
         if (authMechanism.mechanism.neynar) {
@@ -115,6 +118,7 @@ export default function useLoginOrRedirectToOnboarding() {
             },
             '/onboarding/add-email'
           );
+          setProgress('add-email');
         }
 
         // TODO: this should be privy
@@ -131,6 +135,7 @@ export default function useLoginOrRedirectToOnboarding() {
             },
             '/onboarding/add-username'
           );
+          setProgress('add-username');
         }
 
         // De-prioritizing gnosis safe logins for now
