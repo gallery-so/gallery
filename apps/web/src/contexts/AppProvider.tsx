@@ -20,7 +20,7 @@ import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
 import NftPreviewFallbackProvider from './nftPreviewFallback/NftPreviewFallbackContext';
-import { ProgressProvider } from './onboardingProgress';
+import { OnboardingProgressProvider } from './onboardingProgress';
 import PostComposerProvider from './postComposer/PostComposerContext';
 import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
@@ -54,7 +54,7 @@ export default function AppProvider({
   globalLayoutContextPreloadedQuery,
 }: Props) {
   return (
-    <ProgressProvider>
+    <OnboardingProgressProvider>
       <Boundary>
         <ToastProvider>
           <MaintenanceStatusProvider
@@ -106,6 +106,6 @@ export default function AppProvider({
           </MaintenanceStatusProvider>
         </ToastProvider>
       </Boundary>
-    </ProgressProvider>
+    </OnboardingProgressProvider>
   );
 }
