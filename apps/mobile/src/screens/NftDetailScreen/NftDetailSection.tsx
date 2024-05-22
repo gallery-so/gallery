@@ -4,7 +4,6 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { Dimensions, ScrollView, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Lightbox from 'react-native-lightbox-v2';
-import Zoom from 'react-native-zoom-reanimated';
 import { graphql, useFragment } from 'react-relay';
 import { useNavigateToCommunityScreen } from 'src/hooks/useNavigateToCommunityScreen';
 import { useToggleTokenAdmire } from 'src/hooks/useToggleTokenAdmire';
@@ -228,7 +227,6 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   }, []);
 
   const handleOpenLightbox = useCallback(() => {
-    updateThumbnailPosition();
     setIsLightboxOpen(true);
   }, [updateThumbnailPosition]);
 
@@ -239,16 +237,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
   const contentStyle = useMemo(
     () => ({
       width: width * 0.92,
-    }),
-    []
-  );
-
-  const zoomContentContainerStyle = useMemo(
-    () => ({
-      display: 'flex' as const,
-      width: width,
-      flexGrow: 1,
-      backgroundColor: colors.black['800'],
+      backgroundColor: 'red',
     }),
     []
   );
@@ -257,19 +246,11 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
     () => (
       <TokenFailureBoundary tokenRef={token} variant="large">
         <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
-          <Zoom
-            contentContainerStyle={zoomContentContainerStyle}
-            style={{ display: 'flex', flexGrow: 1 }}
-            doubleTapConfig={{
-              minZoomScale: 1,
-            }}
-          >
-            <NftDetailAsset tokenRef={token} />
-          </Zoom>
+          <NftDetailAsset tokenRef={token} />
         </NftDetailAssetCacheSwapper>
       </TokenFailureBoundary>
     ),
-    [token, route.params.cachedPreviewAssetUrl, zoomContentContainerStyle]
+    [token, route.params.cachedPreviewAssetUrl]
   );
 
   const tokenOrigin = useMemo(
@@ -308,14 +289,15 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
                 onClose: handleCloseLightbox,
                 onOpen: handleOpenLightbox,
                 backgroundColor: colors.black['800'],
-                swipeToDismiss: false,
+                swipeToDismiss: true,
                 renderHeader: customHeader,
+                onLayout: updateThumbnailPosition,
                 doubleTapZoomEnabled: false,
                 renderContent: renderContent,
                 origin: tokenOrigin,
               }}
             >
-              <View ref={thumbnailRef} style={contentStyle} onLayout={updateThumbnailPosition}>
+              <View ref={thumbnailRef}>
                 <TokenFailureBoundary tokenRef={token} variant="large">
                   <NftDetailAssetCacheSwapper
                     cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
@@ -341,6 +323,7 @@ export function NftDetailSection({ onShare, queryRef }: Props) {
               </Typography>
             </View>
             <GalleryTouchableOpacity
+              className="p-1"
               onPress={handleMaximizeToggle}
               eventElementId="NFT Detail Maximize Icon"
               eventName="NFT Detail Maximize Icon Pressed"
