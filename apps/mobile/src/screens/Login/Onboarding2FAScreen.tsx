@@ -11,19 +11,19 @@ import { useLogin } from 'src/hooks/useLogin';
 
 import { BackButton } from '~/components/BackButton';
 import { OnboardingProgressBar } from '~/components/Onboarding/OnboardingProgressBar';
-import { OnboardingTextInput } from '~/components/Onboarding/OnboardingTextInput';
 import { Typography } from '~/components/Typography';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
 import { navigateToNotificationUpsellOrHomeScreen } from './navigateToNotificationUpsellOrHomeScreen';
+import Onboarding2FAInput from './Onboarding2FAInput';
 
 const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
 
 function InnerOnboardingEmailScreen() {
-  const [code, setCode] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState('');
+  const [code, setCode] = useState<string[]>(new Array(6).fill('')); // Lifted code state
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'Onboarding2FA'>>();
@@ -54,73 +54,78 @@ function InnerOnboardingEmailScreen() {
     [reportError, track]
   );
 
-  const handleLoginOrCreateUser = useCallback(async () => {
-    try {
-      setIsLoggingIn(true);
-      const privyUser = await loginWithCode({ code, email });
-      if (!privyUser) {
-        throw new Error('No email found; code may be invalid. Restart and try again.');
-      }
+  const handleLoginOrCreateUser = useCallback(
+    async (inputCode?: string): Promise<void> => {
+      const codeString = inputCode || code.join('');
+      if (codeString.length !== 6) return;
+      try {
+        setIsLoggingIn(true);
+        const privyUser = await loginWithCode({ code: codeString, email });
+        if (!privyUser) {
+          throw new Error('No email found; code may be invalid. Restart and try again.');
+        }
 
-      const token = await getAccessToken();
-      if (!token) {
-        throw new Error('no access token for privy user');
-      }
-      const result = await login({ privy: { token } });
+        const token = await getAccessToken();
+        if (!token) {
+          throw new Error('no access token for privy user');
+        }
+        const result = await login({ privy: { token } });
 
-      // If user not found, create a new user
-      if (result.kind !== 'success') {
-        if (authMethod === 'Privy') {
-          // create an embedded wallet for users signing up through privy
-          await embeddedWallet?.create?.({ recoveryMethod: 'privy' });
+        // If user not found, create a new user
+        if (result.kind !== 'success') {
+          if (authMethod === 'Privy') {
+            // create an embedded wallet for users signing up through privy
+            await embeddedWallet?.create?.({ recoveryMethod: 'privy' });
 
-          navigation.navigate('OnboardingUsername', {
-            authMethod: 'Privy',
-            authMechanism: {
-              authMechanismType: 'privy',
-              privyToken: token,
-            },
-            email,
+            navigation.navigate('OnboardingUsername', {
+              authMethod: 'Privy',
+              authMechanism: {
+                authMechanismType: 'privy',
+                privyToken: token,
+              },
+              email,
+            });
+          }
+          if (authMethod === 'Wallet' || authMethod === 'Farcaster') {
+            navigation.navigate('OnboardingUsername', {
+              authMethod,
+              authMechanism: {
+                ...authMechanism,
+                privyToken: token,
+              },
+              email,
+            });
+          }
+        } else {
+          // otherwise, log them in
+          track('Sign In Success', { 'Sign in method': 'Email' });
+          await navigateToNotificationUpsellOrHomeScreen(navigation);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          handleLoginError({
+            message: error.message || FALLBACK_ERROR_MESSAGE,
+            underlyingError: error as Error,
           });
         }
-        if (authMethod === 'Wallet' || authMethod === 'Farcaster') {
-          navigation.navigate('OnboardingUsername', {
-            authMethod,
-            authMechanism: {
-              ...authMechanism,
-              privyToken: token,
-            },
-            email,
-          });
-        }
-      } else {
-        // otherwise, log them in
-        track('Sign In Success', { 'Sign in method': 'Email' });
-        await navigateToNotificationUpsellOrHomeScreen(navigation);
+      } finally {
+        setIsLoggingIn(false);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        handleLoginError({
-          message: error.message || FALLBACK_ERROR_MESSAGE,
-          underlyingError: error as Error,
-        });
-      }
-    } finally {
-      setIsLoggingIn(false);
-    }
-  }, [
-    authMechanism,
-    authMethod,
-    code,
-    email,
-    embeddedWallet,
-    getAccessToken,
-    handleLoginError,
-    login,
-    loginWithCode,
-    navigation,
-    track,
-  ]);
+    },
+    [
+      authMechanism,
+      authMethod,
+      email,
+      embeddedWallet,
+      getAccessToken,
+      handleLoginError,
+      login,
+      loginWithCode,
+      navigation,
+      track,
+      code,
+    ]
+  );
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -168,12 +173,10 @@ function InnerOnboardingEmailScreen() {
         </View>
 
         <View>
-          <OnboardingTextInput
-            autoFocus
-            placeholder="x x x x x x"
-            keyboardType="number-pad"
-            value={code}
-            onChange={(e) => setCode(e.nativeEvent.text)}
+          <Onboarding2FAInput
+            code={code}
+            setCode={setCode}
+            onCodeComplete={handleLoginOrCreateUser}
           />
         </View>
 
@@ -184,7 +187,9 @@ function InnerOnboardingEmailScreen() {
             eventContext={contexts.Onboarding}
             className="w-full"
             text="Next"
-            onPress={handleLoginOrCreateUser}
+            onPress={() => {
+              handleLoginOrCreateUser();
+            }}
             loading={isLoggingIn}
             disabled={isLoggingIn}
           />
