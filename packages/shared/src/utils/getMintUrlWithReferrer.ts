@@ -10,7 +10,7 @@ const providers = [
   { regex: '^https://(www\\.)?zora.co/?', name: 'Zora', param: 'referrer' },
   { regex: '^https://(www\\.)?fxhash.xyz/?', name: 'FxHash' },
   {
-    regex: '^https://(www\\.)?prohibition.art/?',
+    regex: '^https://(www\\.)?(prohibition.art|daily.prohibition.art)/?',
     name: 'Prohibition',
   },
   { regex: '^https://(www\\.)?ensemble.art/?', name: 'Ensemble' },
