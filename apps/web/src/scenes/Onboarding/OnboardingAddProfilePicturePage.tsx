@@ -7,15 +7,18 @@ import { NftSelector } from '~/components/NftSelector/NftSelector';
 import useUpdateProfileImage from '~/components/NftSelector/useUpdateProfileImage';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
+import { useProgress } from '~/contexts/onboardingProgress';
 
 const onboardingStepName = 'add-profile-picture';
 export function OnboardingAddProfilePicturePage() {
   const { setProfileImage } = useUpdateProfileImage();
   const { push } = useRouter();
+  const { setProgress } = useProgress();
 
   const redirectToNextStep = useCallback(() => {
     push('/onboarding/add-user-info');
-  }, [push]);
+    setProgress('add-user-info');
+  }, [push, setProgress]);
 
   const handleSelectToken = useCallback(
     (tokenId: string) => {
@@ -27,7 +30,8 @@ export function OnboardingAddProfilePicturePage() {
 
   const handlePrevious = useCallback(() => {
     push('/onboarding/add-username');
-  }, [push]);
+    setProgress('add-username');
+  }, [push, setProgress]);
 
   return (
     <VStack>

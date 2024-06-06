@@ -1,20 +1,16 @@
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import colors from 'shared/theme/colors';
 import styled from 'styled-components';
 
-import {
-  FOOTER_HEIGHT,
-  ONBOARDING_PROGRESS_BAR_STEPS,
-  StepName,
-} from '~/components/Onboarding/constants';
+import { FOOTER_HEIGHT, StepName } from '~/components/Onboarding/constants';
+import { useProgress } from '~/contexts/onboardingProgress';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 import { ANIMATED_COMPONENT_TRANSITION_S, rawTransitions } from '../core/transitions';
 
 type Props = {
   children: ReactNode | ReactNode[];
-  // If this is true, the page height will be reduced to account for the footer height
   withFooter?: boolean;
   stepName: StepName;
 };
@@ -23,13 +19,17 @@ type Props = {
  * A helper component to easily generate full-page steps where the content is centered
  */
 export default function FullPageCenteredStep({ children, withFooter, stepName }: Props) {
-  const { from, to } = ONBOARDING_PROGRESS_BAR_STEPS[stepName] ?? { from: 0, to: 0 };
+  const { to, setProgress } = useProgress();
+
+  useEffect(() => {
+    setProgress(stepName);
+  }, [setProgress, stepName]);
 
   return (
     <GalleryRoute
       element={
         <StyledPage withFooter={withFooter}>
-          <OnboardingProgressBar from={from} to={to} />
+          <OnboardingProgressBar to={to} />
           {children}
         </StyledPage>
       }
@@ -49,14 +49,13 @@ const StyledPage = styled.div<{ withFooter?: boolean }>`
 `;
 
 type OnboardingProgressBarProps = {
-  from: number;
   to: number;
 };
 
-function OnboardingProgressBar({ from, to }: OnboardingProgressBarProps) {
+function OnboardingProgressBar({ to }: OnboardingProgressBarProps) {
   return (
     <StyledBar
-      initial={{ width: from }}
+      initial={{ width: `${to}%` }}
       animate={{ width: `${to}%` }}
       transition={{
         duration: ANIMATED_COMPONENT_TRANSITION_S,

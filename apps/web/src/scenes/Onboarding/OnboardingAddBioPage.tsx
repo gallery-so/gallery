@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from 'shared/hooks/useUpdateUser';
 import colors from 'shared/theme/colors';
@@ -13,6 +13,7 @@ import { useNftSelectorForProfilePicture } from '~/components/NftSelector/useNft
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { useProgress } from '~/contexts/onboardingProgress';
 import { OnboardingAddBioPageQuery } from '~/generated/OnboardingAddBioPageQuery.graphql';
 import unescape from '~/shared/utils/unescape';
 
@@ -47,6 +48,7 @@ export function OnboardingAddBioPage() {
   const showNftSelector = useNftSelectorForProfilePicture();
   const updateUser = useUpdateUser();
   const { push } = useRouter();
+  const { setProgress } = useProgress();
 
   const user = query.viewer?.user;
   const farcasterBio = user?.socialAccounts?.farcaster?.bio;
@@ -73,19 +75,21 @@ export function OnboardingAddBioPage() {
         push({
           pathname: '/onboarding/add-persona',
         });
+        setProgress('add-persona');
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
       }
     }
-  }, [bio, updateUser, push, user?.dbid, user?.username]);
+  }, [bio, updateUser, push, user?.dbid, user?.username, setProgress]);
 
   const handleToUsernameStep = useCallback(() => {
     push({
       pathname: '/onboarding/add-username',
     });
-  }, [push]);
+    setProgress('add-username');
+  }, [push, setProgress]);
 
   return (
     <VStack>

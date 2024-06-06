@@ -11,6 +11,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
+import { useProgress } from '~/contexts/onboardingProgress';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { OnboardingAddEmailPageQuery } from '~/generated/OnboardingAddEmailPageQuery.graphql';
 import { EMAIL_FORMAT } from '~/shared/utils/regex';
@@ -24,6 +25,7 @@ export function OnboardingAddEmailPage() {
   const debouncedEmail = useDebounce(email, 500);
 
   const { push, query: queryRouter } = useRouter();
+  const { setProgress } = useProgress();
 
   const isInvalidEmail = useMemo(() => {
     return !EMAIL_FORMAT.test(email);
@@ -40,7 +42,8 @@ export function OnboardingAddEmailPage() {
       },
       '/onboarding/add-username'
     );
-  }, [email, push, queryRouter]);
+    setProgress('add-username');
+  }, [email, push, queryRouter, setProgress]);
 
   const handlePrevious = useCallback(() => {
     push('/');
