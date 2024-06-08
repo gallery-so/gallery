@@ -8,6 +8,7 @@ import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 
 import { QRCodeIcon } from '../icons/QRCodeIcon';
+import IconDesignSystem from './DesignSystemScreen/IconDesignSystem';
 
 const avatarUrl =
   'https://s3-alpha-sig.figma.com/img/9a4f/b777/fe4c335512ca4297ad4fd60554e66f18?Expires=1688342400&Signature=qkFea-QACeUhPrbGDD7yxcKCsvViLLP8l7gsEWDVaE-vJMZg7o71rmHqBY888UIiAC2dAgkuLzJR~0oFvM6M1iWnXCudJfJB64l4n9m1R0DDofhBTCp3Is-wXGx5NQzdvAYBKHUZtfHBCDUHLR2sj1EqL3QMwOR4mKnFhpq79y2Bd~0E1r5ulGAfOt85vXhcgbcspBOGW410Yetij4x7P2RidYGi7xwDgEg26hMUxeaapE~mZETmQupLCuWkl2eaLhDXvnUsXiek0IPYhNS~SxYvqQOok5R~DK2WleQGL7hiGfbLfAgVPloPIIB1kuZTepRTlBMh1MASPd6l1Fk3Zw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4';
@@ -390,6 +391,11 @@ export function DesignSystemButtonsScreen() {
                 size="xl"
               />
             </ProfilePictureSection>
+          </View>
+
+          <View className="flex flex-col p-4 space-y-2">
+            <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Icons</Typography>
+            <IconDesignSystem />
           </View>
         </View>
       </SafeAreaViewWithPadding>
