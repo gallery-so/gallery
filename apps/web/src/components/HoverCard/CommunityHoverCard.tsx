@@ -193,10 +193,7 @@ function CommunityHoverCardContent({
           {community.description && (
             <StyledCardDescription>
               <BaseM>
-                <Markdown
-                  text={unescape(community.description)}
-                  eventContext={contexts['Hover Card']}
-                />
+                <Markdown text={community.description} eventContext={contexts['Hover Card']} />
               </BaseM>
             </StyledCardDescription>
           )}

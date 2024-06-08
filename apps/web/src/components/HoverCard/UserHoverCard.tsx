@@ -1,4 +1,3 @@
-import unescape from 'lodash/unescape';
 import { Route } from 'nextjs-routes';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
@@ -190,7 +189,7 @@ function UserHoverCardContent({
         {user.bio && (
           <StyledCardDescription>
             <BaseM>
-              <Markdown text={unescape(user.bio)} eventContext={contexts['Hover Card']} />
+              <Markdown text={user.bio} eventContext={contexts['Hover Card']} />
             </BaseM>
           </StyledCardDescription>
         )}

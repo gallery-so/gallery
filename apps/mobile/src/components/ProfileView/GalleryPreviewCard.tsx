@@ -17,7 +17,6 @@ import { GalleryPreviewCardQueryFragment$key } from '~/generated/GalleryPreviewC
 import { MainTabStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import unescape from '~/shared/utils/unescape';
 
 import { BottomSheetRow } from '../BottomSheetRow';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -85,7 +84,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured, queryRef }: Gallery
       <View className="flex flex-row items-center justify-center">
         <View className="flex flex-1 flex-col">
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {gallery.name ? unescape(gallery.name) : 'Untitled'}
+            {gallery.name ?? 'Untitled'}
           </Typography>
           {descriptionFirstLine && (
             <Typography

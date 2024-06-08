@@ -9,7 +9,6 @@ import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHe
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/shared/utils/unescape';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
@@ -62,7 +61,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
     return null;
   }
 
-  const galleryName = unescape(feedEvent.eventData.gallery?.name || '');
+  const galleryName = feedEvent.eventData.gallery?.name || '';
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900 px-3 pb-2">

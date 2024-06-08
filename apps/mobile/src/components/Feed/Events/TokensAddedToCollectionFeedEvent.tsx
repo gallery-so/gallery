@@ -11,7 +11,6 @@ import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/T
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import unescape from '~/shared/utils/unescape';
 
 import { Typography } from '../../Typography';
 import { EventTokenGrid } from '../EventTokenGrid';
@@ -76,7 +75,7 @@ export function TokensAddedToCollectionFeedEvent({
     );
   }, [eventData.collection?.tokens, eventData.isPreFeed, eventData.newTokens]);
 
-  const collectionName = unescape(eventData.collection?.name ?? '');
+  const collectionName = eventData.collection?.name ?? '';
 
   return (
     <View className="flex flex-1 flex-col">

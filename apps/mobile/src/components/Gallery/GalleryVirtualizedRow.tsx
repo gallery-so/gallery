@@ -9,7 +9,6 @@ import { Typography } from '~/components/Typography';
 import { GalleryVirtualizedRowQueryFragment$key } from '~/generated/GalleryVirtualizedRowQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { contexts } from '~/shared/analytics/constants';
-import unescape from '~/shared/utils/unescape';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
@@ -68,7 +67,7 @@ export function GalleryVirtualizedRow({ queryRef, item, isOnCollectionScreen }: 
           properties={{ variant: 'collection title' }}
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {unescape(item.name || 'Untitled')}
+            {item.name || 'Untitled'}
           </Typography>
         </GalleryTouchableOpacity>
       </View>
