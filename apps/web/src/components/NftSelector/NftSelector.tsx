@@ -11,6 +11,7 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 import { contexts } from '~/shared/analytics/constants';
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { chains } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/shared/utils/doesUserOwnWalletFromChainFamily';
 
 import breakpoints from '../core/breakpoints';
@@ -145,9 +146,17 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   const tokensToDisplay = useMemo(() => {
     // Filter tokens
     const filteredTokens = tokenSearchResults.filter((token) => {
+      const isSpam =
+        token.isSpamByUser === null ? token.definition.contract?.isSpam : token.isSpamByUser;
+
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
         return true;
+      }
+
+      // Check if network is 'All Networks', then return true for all tokens
+      if (network === 'All Networks') {
+        return !isSpam;
       }
 
       if (token.definition.chain !== network) {
@@ -167,8 +176,6 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
       }
 
       // ...but incorporate with spam filtering logic for Collected view
-      const isSpam =
-        token.isSpamByUser !== null ? token.isSpamByUser : token.definition.contract?.isSpam;
       if (filterType === 'Hidden') {
         return isSpam;
       }
@@ -214,6 +221,10 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 
+  const availableChains = chains
+    .filter((chain) => chain.name !== 'All Networks')
+    .map((chain) => chain.name as Exclude<(typeof chains)[number]['name'], 'All Networks'>);
+
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
@@ -227,9 +238,11 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract, even
     if (filterType === 'Hidden') {
       return;
     }
-
-    await syncTokens({ type: filterType, chain: network });
-  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network]);
+    await syncTokens({
+      type: filterType,
+      chain: network === 'All Networks' ? availableChains : network,
+    });
+  }, [refreshDisabled, track, eventFlow, filterType, syncTokens, network, availableChains]);
 
   const [syncCreatedTokensForExistingContract, isContractRefreshing] =
     useSyncCreatedTokensForExistingContract();

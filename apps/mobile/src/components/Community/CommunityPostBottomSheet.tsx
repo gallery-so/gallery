@@ -41,7 +41,7 @@ export default function CommunityPostBottomSheet({ communityRef, onRefresh }: Pr
   const { chain } = extractRelevantMetadataFromCommunity(community);
 
   const handleSync = useCallback(async () => {
-    if (!chain) return;
+    if (!chain || chain === 'All Networks') return;
 
     await syncTokens(chain);
 

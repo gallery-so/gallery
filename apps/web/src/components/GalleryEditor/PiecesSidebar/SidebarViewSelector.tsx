@@ -17,12 +17,14 @@ type SidebarViewSelectorProps = {
   isSearching: boolean;
   selectedView: TokenFilterType;
   onSelectedViewChange: (selectedView: TokenFilterType) => void;
+  isAllNetworksSelected: boolean;
 };
 
 export function SidebarViewSelector({
   isSearching,
   selectedView,
   onSelectedViewChange,
+  isAllNetworksSelected,
 }: SidebarViewSelectorProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -60,12 +62,14 @@ export function SidebarViewSelector({
             name="Token Type"
             eventContext={contexts.Editor}
             label="Created"
+            disabled={isAllNetworksSelected}
           />
           <DropdownItem
             onClick={() => onSelectView('Hidden')}
             name="Token Type"
             eventContext={contexts.Editor}
             label="Hidden"
+            disabled={isAllNetworksSelected}
           />
         </DropdownSection>
       </StyledDropdown>

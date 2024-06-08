@@ -2,6 +2,15 @@ import keyBy from 'lodash.keyby';
 
 export const chains = [
   {
+    name: 'All Networks',
+    shortName: 'ALL',
+    icon: '/icons/all_logo.svg',
+    baseChain: 'N/A',
+    hasCreatorSupport: false,
+    isEnabled: true,
+    shouldAutoRefresh: false,
+  },
+  {
     name: 'Ethereum',
     shortName: 'ETH',
     icon: '/icons/ethereum_logo.svg',
@@ -77,6 +86,7 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]['name'];
 export type LowercaseChain = Lowercase<Chain>;
+export type AvailableChains = Exclude<(typeof chains)[number]['name'], 'All Networks'>;
 
 export type ChainMetadata = (typeof chains)[number];
 

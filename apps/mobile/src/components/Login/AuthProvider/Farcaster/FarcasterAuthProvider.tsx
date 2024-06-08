@@ -13,7 +13,6 @@ import { NeynarPayloadVariables } from 'shared/hooks/useAuthPayloadQuery';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
 import { useGetUsersByWalletAddressesImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import { removeNullValues } from 'shared/relay/removeNullValues';
-import { Chain } from 'shared/utils/chains';
 import { useLogin } from 'src/hooks/useLogin';
 
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
@@ -127,7 +126,7 @@ export function useLoginWithFarcaster() {
             signature: req.signature,
             custodyPubKey: {
               pubKey: req.custody,
-              chain: 'Ethereum' as Chain,
+              chain: 'Ethereum',
             },
           },
         };

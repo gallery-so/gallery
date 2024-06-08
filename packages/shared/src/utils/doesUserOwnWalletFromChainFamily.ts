@@ -2,12 +2,9 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import {
-  Chain,
-  doesUserOwnWalletFromChainFamilyFragment$key,
-} from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
+import { doesUserOwnWalletFromChainFamilyFragment$key } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
 
-import { chainsMap } from './chains';
+import { Chain, chainsMap } from './chains';
 
 export function doesUserOwnWalletFromChainFamily(
   _chain: Chain,
@@ -31,15 +28,12 @@ export function doesUserOwnWalletFromChainFamily(
   );
 
   return query.viewer?.user?.wallets?.some((wallet) => {
-    if (_chain === '%future added value') {
-      return false;
+    if (_chain === 'All Networks') {
+      return true;
     }
     if (!wallet?.chain) {
       return false;
     }
-    if (wallet.chain === '%future added value') {
-      return false;
-    }
-    return chainsMap[wallet.chain].baseChain === chainsMap[_chain].baseChain;
+    return chainsMap[wallet.chain as Chain].baseChain === chainsMap[_chain].baseChain;
   });
 }

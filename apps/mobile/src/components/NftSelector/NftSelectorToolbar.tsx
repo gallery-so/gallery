@@ -28,7 +28,7 @@ const NETWORKS: {
   ...chains.map((chain) => ({
     label: chain.name,
     id: chain.name,
-    icon: getChainIconComponent(chain),
+    icon: getChainIconComponent(chain.name),
     hasCreatorSupport: chain.hasCreatorSupport,
   })),
 ];

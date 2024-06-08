@@ -11,7 +11,6 @@ import { useReportError } from 'shared/contexts/ErrorReportingContext';
 import useCreateNonce from 'shared/hooks/useCreateNonce';
 import { useGetUsersByWalletAddressesImperatively } from 'shared/hooks/useGetUserByWalletAddress';
 import { removeNullValues } from 'shared/relay/removeNullValues';
-import { Chain } from 'shared/utils/chains';
 import styled from 'styled-components';
 
 import Loader from '~/components/core/Loader/Loader';
@@ -109,11 +108,11 @@ export function FarcasterLoginView() {
             signature: req.signature,
             custodyPubKey: {
               pubKey: req.custody,
-              chain: 'Ethereum' as Chain,
+              chain: 'Ethereum',
             },
             primaryPubKey: {
               pubKey: primaryFarcasterAddress,
-              chain: 'Ethereum' as Chain,
+              chain: 'Ethereum',
             },
           },
         };
