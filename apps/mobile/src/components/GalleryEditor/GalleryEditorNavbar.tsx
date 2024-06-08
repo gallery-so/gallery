@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useCallback } from 'react';
 import { View } from 'react-native';
@@ -5,13 +6,16 @@ import { View } from 'react-native';
 import { useBottomSheetModalActions } from '~/contexts/BottomSheetModalContext';
 import { useGalleryEditorActions } from '~/contexts/GalleryEditor/GalleryEditorContext';
 import { StagedSectionList } from '~/contexts/GalleryEditor/types';
+import { RootStackNavigatorProp } from '~/navigation/types';
 
 import { BackButton } from '../BackButton';
 import { Button } from '../Button';
 import { BaseM } from '../Text';
 
 export function GalleryEditorNavbar() {
-  const { activeRowId, sections, sectionIdBeingEdited, saveGallery } = useGalleryEditorActions();
+  const { activeRowId, galleryId, sections, sectionIdBeingEdited, saveGallery } =
+    useGalleryEditorActions();
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
   const { showBottomSheetModal } = useBottomSheetModalActions();
 
@@ -26,6 +30,14 @@ export function GalleryEditorNavbar() {
       ),
     });
   }, [activeRowId, sections, sectionIdBeingEdited, showBottomSheetModal]);
+
+  const handlePublishGallery = useCallback(async () => {
+    await saveGallery();
+
+    navigation.navigate('PublishGallery', {
+      galleryId,
+    });
+  }, [galleryId, navigation, saveGallery]);
 
   return (
     <View className="p-4 flex-row items-center justify-between">
@@ -43,7 +55,7 @@ export function GalleryEditorNavbar() {
           variant="secondary"
         />
         <Button
-          onPress={saveGallery}
+          onPress={handlePublishGallery}
           text="Publish"
           eventElementId={null}
           eventName={null}

@@ -1,14 +1,21 @@
+import { useNavigation } from '@react-navigation/native';
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { graphql, SelectorStoreUpdater } from 'relay-runtime';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
+import { Button } from '~/components/Button';
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
+import { useToastActions } from '~/contexts/ToastContext';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { ProfileViewGalleriesTabFragment$key } from '~/generated/ProfileViewGalleriesTabFragment.graphql';
+import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
+import { RootStackNavigatorProp } from '~/navigation/types';
+import useCreateGallery from '~/shared/hooks/useCreateGallery';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type ListItem = {
@@ -40,23 +47,51 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
           }
         }
         ...GalleryPreviewCardQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
+  const { pushToast } = useToastActions();
   const user = query.userByUsername;
+  const createGallery = useCreateGallery();
+  const navigation = useNavigation<RootStackNavigatorProp>();
+  const isGalleryEditorEnabled = isFeatureEnabled(FeatureFlag.GALLERY_EDITOR, query);
+
+  const handleCreateGallery = useCallback(async () => {
+    const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
+
+    try {
+      await createGallery(
+        latestPosition,
+        (galleryId) => {
+          navigation.navigate('NftSelectorGalleryEditor', { galleryId, isNewGallery: true });
+        },
+        updater
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        pushToast({
+          message: 'Unfortunately there was an error to create your gallery',
+        });
+      }
+    }
+  }, [createGallery, navigation, pushToast, query?.userByUsername?.galleries?.length]);
 
   const items = useMemo<ListItem[]>(() => {
-    return removeNullValues(user?.galleries).map((gallery): ListItem => {
-      return {
-        kind: 'gallery',
+    const items: ListItem[] = [];
 
+    removeNullValues(user?.galleries).forEach((gallery) => {
+      items.push({
+        kind: 'gallery',
         gallery,
         galleryId: gallery.dbid,
         isFeatured: user?.featuredGallery?.dbid === gallery.dbid,
-      };
+      });
     });
+
+    return items;
   }, [user?.featuredGallery?.dbid, user?.galleries]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
@@ -79,6 +114,54 @@ export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabPro
   return (
     <View style={contentContainerStyle}>
       <Tabs.FlashList data={items} estimatedItemSize={300} renderItem={renderItem} />
+      {isGalleryEditorEnabled && (
+        <View className="px-4 py-5">
+          <Button
+            onPress={handleCreateGallery}
+            eventElementId={null}
+            eventName={null}
+            eventContext={null}
+            text="Add New Gallery"
+          />
+        </View>
+      )}
     </View>
   );
 }
+
+const updater: SelectorStoreUpdater<useCreateGalleryMutation['response']> = (store, response) => {
+  if (response.createGallery?.__typename === 'CreateGalleryPayload') {
+    const gallery = response.createGallery.gallery;
+
+    if (gallery) {
+      const galleryId = gallery.id;
+      const newGallery = store.get(galleryId);
+
+      if (!newGallery) {
+        return;
+      }
+
+      const userId = response.createGallery.gallery.owner?.id;
+
+      if (!userId) {
+        return;
+      }
+
+      const user = store.get(userId);
+
+      if (!user) {
+        return;
+      }
+
+      const galleries = user.getLinkedRecords('galleries');
+
+      if (!galleries) {
+        return;
+      }
+
+      const newGalleries = [...galleries, newGallery];
+
+      user.setLinkedRecords(newGalleries, 'galleries');
+    }
+  }
+};

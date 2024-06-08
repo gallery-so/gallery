@@ -86,6 +86,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
                 dbid
                 # eslint-disable-next-line relay/must-colocate-fragment-spreads
                 ...GalleryEditorTokenPreviewFragment
+                definition {
+                  community {
+                    dbid
+                    name
+                    description
+                  }
+                }
               }
             }
           }
@@ -101,8 +108,13 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
         __typename
         ... on UpdateGalleryPayload {
           gallery {
+            id
+            dbid
             name
             description
+            tokenPreviews {
+              medium
+            }
             ...getInitialCollectionsFromServerFragment
           }
         }
@@ -131,7 +143,9 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     getInitialCollectionsFromServer(gallery)
   );
 
-  const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(null);
+  const [sectionIdBeingEdited, setSectionIdBeingEdited] = useState<string | null>(() => {
+    return sections[0]?.dbid ?? null;
+  });
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
@@ -334,14 +348,24 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
     [updateRow]
   );
 
+  type StagedToken = {
+    communityName: string;
+    communityDescription: string;
+    communityId: string;
+  } & StagedItem;
+
   const toggleTokensStaged = useCallback(
     (tokenIds: string[]) => {
-      if (!activeRowId) {
-        // Make a new row for the user
+      const rowId = activeRowId;
+
+      let sectionName = '';
+      let sectionCollectorsNote = '';
+
+      if (!rowId) {
         return;
       }
 
-      const tokensToAdd: StagedItem[] = [];
+      const tokensToAdd: StagedToken[] = [];
       tokenIds.forEach((tokenId) => {
         const tokenRef = nonNullAllTokens.find((token) => token.dbid === tokenId);
 
@@ -353,15 +377,48 @@ const GalleryEditorProvider = ({ children, queryRef }: Props) => {
           id: tokenId,
           kind: 'token',
           tokenRef,
+          communityName: tokenRef.definition.community?.name ?? '',
+          communityDescription: tokenRef.definition.community?.description ?? '',
+          communityId: tokenRef.definition.community?.dbid ?? '',
         });
       });
 
-      updateRow(activeRowId, (previousRow) => {
+      // Check if all the tokensToAdd have the same community
+      const communityIds = new Set(tokensToAdd.map((token) => token.communityId));
+
+      // if there are only tokens from the same community, then the section name should be the community name
+      if (communityIds.size === 1 && tokensToAdd[0]) {
+        sectionName = tokensToAdd[0].communityName;
+        sectionCollectorsNote = tokensToAdd[0].communityDescription;
+      }
+
+      let isNewSection = false;
+
+      updateRow(rowId, (previousRow) => {
+        if (previousRow.items.length === 0) {
+          isNewSection = true;
+          //  if the total number of tokens is less than 6, then the number of columns should be equal to the number of tokens
+          //  if more than 6, then the number of columns should be equal to 6
+          const columns = tokensToAdd.length < 6 ? tokensToAdd.length : 6;
+          return { ...previousRow, items: tokensToAdd, columns };
+        }
+
         const newItems = [...previousRow.items, ...tokensToAdd];
         return { ...previousRow, items: newItems };
       });
+
+      if (!sectionIdBeingEdited) {
+        return;
+      }
+
+      if (isNewSection) {
+        // Update the section with the new name and collectors note
+        updateSection(sectionIdBeingEdited, (previousSection) => {
+          return { ...previousSection, name: sectionName, collectorsNote: sectionCollectorsNote };
+        });
+      }
     },
-    [activeRowId, nonNullAllTokens, updateRow]
+    [activeRowId, nonNullAllTokens, sectionIdBeingEdited, updateRow, updateSection]
   );
 
   const reportError = useReportError();
