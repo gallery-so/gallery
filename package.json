@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "nextjs-routes": "^1.0.8",
-    "react": "^18.2.0",
+    "react": "^18.2.45",
     "react-hotkeys-hook": "^4.3.8",
     "react-relay": "^15.0.0",
     "relay-runtime": "^15.0.0",
@@ -24,12 +24,12 @@
     "node": "20.5.0"
   },
   "resolutions": {
-    "@types/react": "^18.0.0",
+    "@types/react": "^18.2.45",
     "@taquito/taquito": "^14.0.0",
-    "react": "18.2.0",
+    "react": "^18.2.45",
     "relay-runtime": "14.1.0",
     "entities": "3.0.1",
-    "typecript": "^5.0.0",
+    "typecript": "^5.3.3",
     "@expo/prebuild-config": "6.7.0",
     "@expo/config-plugins": "7.8.0",
     "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch",
@@ -52,6 +52,6 @@
     "prettier": "^2.8.4",
     "relay-compiler": "^15.0.0",
     "tsconfig-moon": "^1.2.2",
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   }
 }
